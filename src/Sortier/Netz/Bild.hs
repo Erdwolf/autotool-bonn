@@ -59,10 +59,10 @@ paint ( n, sts ) =
 	    z <- [ succ $ yscale * min x y .. pred $ yscale * max x y ]
 	    return ((xscale * t,z), c)
 	marken = do -- zahlen an komparatoren
-            ((x,y), n, t) <- cnts
+            ((x,y), i, t) <- cnts
 	    z <- [x, y]
-	    let vor  = ( sts !!      n ) !! z
-	        nach = ( sts !! succ n ) !! z
+	    let vor  = ( sts !!      i ) !! ( z - low n )
+	        nach = ( sts !! succ i ) !! ( z - low n )
             (d , m) <- [ (-1, vor), (1, nach) ]
 	    return ( ( xscale * t + ( xscale * d ) `div` 2, yscale * z )
 		   , head $ show m
