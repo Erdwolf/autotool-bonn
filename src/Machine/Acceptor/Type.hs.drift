@@ -7,6 +7,7 @@ module Machine.Acceptor.Type where
 import Informed
 import ToDoc
 import Reader
+import qualified Reporter.Checker as C
 import Reporter hiding ( output )
 import Machine.Class
 
@@ -15,17 +16,14 @@ data Acceptor = Acceptor
 {-! for Acceptor derive : Show, Read, ToDoc, Reader !-}
 
 data Type m dat = 
-     Make { acceptor_info :: Doc
+     Make { machine_info :: Doc
+	  , data_info :: Doc
 	  , yeah :: [ dat ] -- sollen akzeptiert werden
 	  , noh :: [ dat ] -- dürfen nicht akzeptiert werden
 	    , cut :: Int -- höchstens soviele schritte
-	    , check :: m -> Reporter () -- sonstige Bedingungen an Maschine
+	    , check :: C.Type m -- sonstige Bedingungen an Maschine
 	    , start :: m -- damit soll der student anfangen
 	      }
-
-instance Informed ( Type m dat  ) where
-     info = acceptor_info
-     informed info m = m { acceptor_info = info }
 
 instance ToDoc ( Type m dat  ) where
      toDoc = info

@@ -24,14 +24,14 @@ import FiniteMap
 import Set
 import Size
 
-numerical_test' ::  ( Numerical dat, Machine m dat conf )
+numerical_test' ::  ( Numerical dat, Machine m dat conf, Out m dat conf )
 	        => N.Type m
 		-> m
 		-> Reporter Int
 numerical_test' i m = numerical_test ( N.cut i ) ( N.args i ) ( N.fun i ) m
 
 
-numerical_test :: ( Numerical dat, Machine m dat conf )
+numerical_test :: ( Numerical dat, Machine m dat conf, Out m dat conf )
 	 => Int
 	 -> [[Integer]] -- Liste von eingabe-vektoren
 	 -> ( [Integer] -> Integer ) -- die funktion ist auszurechnen
@@ -49,7 +49,7 @@ numerical_test cut inputs fun m = do
     inner_fun_test cut inputs encode check m	    
 
 
-fun_test :: Machine m dat conf 
+fun_test :: ( Machine m dat conf , Out m dat conf )
      => Int 
      -> [(dat,dat)]  -- Liste von Paaren von Eingabe/Ausgabe
      -> m
@@ -63,7 +63,7 @@ fun_test cut pairs m = do
     inner_fun_test cut ( map fst pairs ) id check m	    
 
 
-inner_fun_test :: (ToDoc e, Machine m dat conf )
+inner_fun_test :: (ToDoc e, Machine m dat conf, Out m dat conf )
      => Int 
      -> [ e ] -- Liste von eingaben
      -> ( e -> dat ) -- input encoding
@@ -85,7 +85,7 @@ inner_fun_test cut inputs encode check m = do
     return $ size m
 
 
-richtige_ergebnisse :: ( ToDoc e, Machine m dat conf )
+richtige_ergebnisse :: ( ToDoc e, Machine m dat conf, Out m dat conf )
 	      => Int 
 	      -> m 
 	      -> [e] -- Liste von eingaben
@@ -98,7 +98,7 @@ richtige_ergebnisse cut m inputs encode check = do
    inform $ text "die richtige Ausgabe berechnet"
 
 
-re :: ( ToDoc e, Machine m dat conf )
+re :: ( ToDoc e, Machine m dat conf, Out m dat conf )
 	      => Int 
 	      -> m 
 	      -> ( e -> dat ) -- input encoding

@@ -5,7 +5,7 @@ module Grammatik.CF.Interface where
 import Language.Type
 import Grammatik.Type
 
-import qualified Grammatik.Checker as C
+import qualified Reporter.Checker as C
 
 import qualified Grammatik.CF.Instance.Config as I
 import qualified Grammatik.CF.Problem.Config as P

@@ -4,7 +4,7 @@ module NPDA.Beispiel where
 
 -- Skript Seite 56
 
-import NPDA
+import NPDA.Type
 
 -- import Akzeptieren
 import Set
@@ -13,16 +13,16 @@ import ToDoc
 -- import Seite56
 
 
--- der Automat soll { w w^R  |  w  in  {0, 1}* }
+-- der Automat soll { w w^R  |  w  in  {a, b}* }
 -- durch leeren Keller akzeptieren
 
-student :: NPDA Char Char Integer
-student = NPDA { eingabealphabet = mkSet "01"
-	       , kelleralphabet  = mkSet "abc"
+student :: NPDA Char Char Int
+student = NPDA { eingabealphabet = mkSet "ab"
+	       , kelleralphabet  = mkSet "ABC"
 	       , zustandsmenge	 = mkSet [ 2, 3 ]
 	       , tafel = t
 	       , startzustand	 = 2
-	       , startsymbol	 = 'a'
+	       , startsymbol	 = 'A'
 	       , akzeptiert	 = Leerer_Keller
 	       }
 
@@ -30,37 +30,37 @@ student = NPDA { eingabealphabet = mkSet "01"
 -- die Tabelle direkt aus dem Skript abgeschrieben
 
 t = listToFM [ -- Spalte 1 (Z 2, x = '0')
-	       ( ( Just '0' , 2, 'a'), mkSet [ ( 2, "ba") ] )
-	     , ( ( Just '0' , 2, 'b'), mkSet [ ( 2, "bb"), ( 3, "") ] )
-	     , ( ( Just '0' , 2, 'c'), mkSet [ ( 2, "bc") ] )
+	       ( ( Just 'a' , 2, 'A'), mkSet [ ( 2, "BA") ] )
+	     , ( ( Just 'a' , 2, 'B'), mkSet [ ( 2, "BB"), ( 3, "") ] )
+	     , ( ( Just 'a' , 2, 'C'), mkSet [ ( 2, "BC") ] )
 	     
 	     -- Spalte 2 (Z 2, x = '1')
-	     , ( ( Just '1' , 2, 'a'), mkSet [ ( 2, "ca") ] )
-	     , ( ( Just '1' , 2, 'b'), mkSet [ ( 2, "cb") ] )
-	     , ( ( Just '1' , 2, 'c'), mkSet [ ( 2, "cc"), (3, "") ] )
+	     , ( ( Just 'b' , 2, 'A'), mkSet [ ( 2, "CA") ] )
+	     , ( ( Just 'b' , 2, 'B'), mkSet [ ( 2, "CB") ] )
+	     , ( ( Just 'b' , 2, 'C'), mkSet [ ( 2, "CC"), (3, "") ] )
 	     
 	     -- Spalte 3 (Z 2, x = epsilon)
-	     , ( ( Nothing, 2, 'a'), mkSet [ ( 3, "") ] )
+	     , ( ( Nothing, 2, 'A'), mkSet [ ( 3, "") ] )
 
 	     -- Spalten 4 bis 6 (Z 3)
-	     , ( ( Just '0' , 3, 'b'), mkSet [ ( 3, "" ) ] )
-	     , ( ( Just '1' , 3, 'c'), mkSet [ ( 3, "" ) ] )
-	     , ( ( Nothing, 3, 'a'), mkSet [ ( 3, "" ) ] )
+	     , ( ( Just 'a' , 3, 'B'), mkSet [ ( 3, "" ) ] )
+	     , ( ( Just 'b' , 3, 'C'), mkSet [ ( 3, "" ) ] )
+	     , ( ( Nothing, 3, 'A'), mkSet [ ( 3, "" ) ] )
 	     ]
 
 
 -- durch List Comprehensions läßt sich das kompakter schreiben:
 
-t' = plusFM_C union speichern prüfen
+t' = plusFM_C union speichern pruefen
 
 speichern = listToFM 
     [ ( ( Just x, 2, y ), mkSet [ ( 2, [h, y] ) ] )
-    | (x, h) <- [ ('0', 'b'), ('1', 'c') ]
-    , y <- "abc"
+    | (x, h) <- [ ('0', 'A'), ('1', 'C') ]
+    , y <- "ABC"
     ]
 
-prüfen	  = listToFM 
+pruefen	  = listToFM 
     [ ( ( x, z, y ), mkSet [ ( 3, "" ) ] )
-    | (x, y) <- [ ( Just '0', 'b'), ( Just '1', 'c'), ( Nothing, 'a') ]
+    | (x, y) <- [ ( Just '0', 'B'), ( Just '1', 'B'), ( Nothing, 'A') ]
     , z <- [ 2, 3 ]
     ]

@@ -10,10 +10,11 @@ import qualified Challenger as C
 
 import Inter.Types
 import Reporter hiding ( output )
+import Reporter.Checker
 import ToDoc
 import Informed
 
-acceptor :: ( Machine m dat conf, ToDoc [dat] )
+acceptor :: ( Machine m dat conf )
          => String		-- aufgabe (major)
 	 -> String -- version ( minor )
      -> A.Type m dat 
@@ -31,13 +32,18 @@ acceptor auf ver num =
 	      return num
 	}
 
-{-
-instance ( Machine m dat conf , ToDoc [dat] ) 
-         => C.Partial A.Acceptor ( A.Type m dat conf ) m where
+
+instance ( Machine m dat conf , ToDoc [ dat ] ) 
+         => C.Partial A.Acceptor ( A.Type m dat ) m where
+    describe p i  = vcat
+	          [ text "Gesucht ist ein" <+> A.machine_info i 
+		  , text "für die Sprache" <+> A.data_info i
+		  , Reporter.Checker.condition ( A.check i )
+		  ]
     initial p i   = A.start i
-    partial p i b = A.check i b
+    partial p i b = Reporter.Checker.investigate ( A.check i ) b
     total   p i b = do
         positiv_liste (A.cut i) b $ A.yeah i
         negativ_liste (A.cut i) b $ A.noh  i
         return () -- größe der maschine (hier) ignorieren
--}
+

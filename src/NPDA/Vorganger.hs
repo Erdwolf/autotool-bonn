@@ -15,7 +15,7 @@ import Monad (guard)
 import Schichten
 
 
-vorganger :: (Ord x, Ord y, Ord z)
+vorganger :: NPDAC x y z
 	   => NPDA x y z -> Set (Konfiguration x y z) 
 	   -> [ Konfiguration x y z ]
 vorganger a ks = concat $ map setToList $
@@ -24,7 +24,7 @@ vorganger a ks = concat $ map setToList $
 
 
 vorganger_konfigurationen 
-    :: (Ord x, Ord y, Ord z)
+    :: NPDAC x y z
     => NPDA x y z -> Konfiguration x y z 
     -> Set (Konfiguration x y z)
 

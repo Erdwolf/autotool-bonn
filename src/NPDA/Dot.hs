@@ -24,7 +24,7 @@ import Maybe
 -- startzustände bekommen pfeil dran,
 -- dieser kommt aus unsichtbarem zustand mit idents U0, U1, ..
 
-instance ( ToDoc z, Ord z, Show z ) 
+instance NPDAC Char Char z
 	 => ToDot ( NPDA Char Char z ) where
     toDot a = 
         let fm = listToFM $ zip (setToList $ zustandsmenge a) $ [ 0.. ] 
@@ -40,7 +40,7 @@ instance ( ToDoc z, Ord z, Show z )
 			      False -> "circle"
 		    return $ Dot.Node.blank
 			   { Dot.Node.ident = show $ num p
-			   , Dot.Node.label = Just $ show p
+			   , Dot.Node.label = Just $ render $ toDoc p
 			   , Dot.Node.shape = Just sh
 			   }
 

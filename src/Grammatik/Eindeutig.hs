@@ -9,13 +9,13 @@ import Grammatik.Type
 import Grammatik.Ableitung
 import Grammatik.Links_Ableitung
 import Grammatik.Reduziert
-import qualified Grammatik.Checker as C
+import qualified Reporter.Checker as C
 
 import Reporter
 import ToDoc
 
 eindeutig :: Config
-	  -> C.Type
+	  -> C.Type Grammatik
 eindeutig conf = 
     C.make "Ein" ( text "Die Grammatik soll eindeutig sein." ) $ \ g0 -> do
         let g = reduktion g0

@@ -1,4 +1,4 @@
-module NPDA.Akzeptieren 
+obsolete module NPDA.Akzeptieren 
 
 -- $Id$
 
@@ -8,7 +8,7 @@ import NPDA.Type
 import NPDA.Konfiguration
 import NPDA.Nachfolger
 import NPDA.Vorganger
-import NPDA.Vorrechnen
+
 
 import Reporter
 import ToDoc
@@ -40,43 +40,4 @@ mit_leerem_keller_akzeptierte_eingaben a = take 10 $ do
 
 
 ----------------------------------------------------------------------
-
-ja :: Bool -> String
-ja True = "" ; ja False = "nicht"
-
-nein :: Bool -> String
-nein f = ja ( not f )
-
-liste :: (Ord x, Ord y, Ord z,
-	 	  ToDoc x, ToDoc y, ToDoc z
-	   ,	 ToDoc [x], ToDoc [y], ToDoc [z]) 
-	      => Bool
-	      -> Int 
-	      -> NPDA x y z -> [[x]] 
-	      -> Reporter ()
-liste acc cut a xss = case take 3 $
-    do xs <- xss
-       let ks = akzeptierend cut a xs
-       guard $ acc == null ks -- d. h. fälschlicherweise nicht akzeptiert
-       return xs
-  of []  -> inform $ text 
-	    $ unwords [ "alle Wörter wurden", ja acc, "akzeptiert" ]
-     xss -> reject $ vcat 
-		  $ [ text $ unwords [ "diese Wörter wurden", nein acc, "akzeptiert:" ]
-		    , nest 4 $ toDoc xss 
-		    , nest 4 $ vcat $ map (vorrechnen a) xss 
-		    ] 
-		    
-
-----------------------------------------------------------------------
-
-positiv_liste, negativ_liste :: (Ord x, Ord y, Ord z,
-	 	  ToDoc x, ToDoc y, ToDoc z
-	   ,	 ToDoc [x], ToDoc [y], ToDoc [z]) 
-	      => Int 
-	      -> NPDA x y z -> [[x]] 
-	      -> Reporter ()
-positiv_liste cut a xss = liste True  cut a xss
-negativ_liste cut a xss = liste False cut a xss
-
 

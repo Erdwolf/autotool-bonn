@@ -8,15 +8,19 @@ import NPDA.Type
 
 import Monad (guard)
 import Reporter
+import qualified Reporter.Checker  as C
 import Set
 import ToDoc
 
+check :: NPDAC x y z => C.Type ( NPDA x y z )
+check = C.Make 
+      { C.nametag = "det"
+      , C.condition = text "Der Kellerautomat soll determinstisch sein."
+      , C.investigate = ist_deterministisch
+      }
+
 ist_deterministisch 
-    :: ( Ord x, Ord y, Ord z
-       , Show x, Show y, Show z
-       , ToDoc x, ToDoc y, ToDoc z
-       , ToDoc [y]
-       )
+    :: NPDAC x y z
     => NPDA x y z -> Reporter ()
 ist_deterministisch a = 
     case do x <- setToList $ eingabealphabet a

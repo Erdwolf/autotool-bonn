@@ -1,4 +1,5 @@
-module NPDA.Vorrechnen
+obsolete module NPDA.Vorrechnen
+-- use Machine.Vorrechnen instead
 
 -- $Id$
 

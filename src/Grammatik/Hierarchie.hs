@@ -24,7 +24,7 @@ module Grammatik.Hierarchie
 where
 
 import Grammatik.Type
-import qualified  Grammatik.Checker as C
+import qualified Reporter.Checker as C
 import Wort
 
 import Reporter
@@ -40,7 +40,7 @@ import Maybe
 
 ---------------------------------------------------------------------------
 
-typ0 :: C.Type
+typ0 :: C.Type Grammatik
 typ0 = C.make "Typ0" ( text "Die Grammatik soll vom Typ-0 sein." ) $ \ g -> do
 
     let us = filterSet ( \ (l, r) -> 
@@ -68,7 +68,7 @@ typ0 = C.make "Typ0" ( text "Die Grammatik soll vom Typ-0 sein." ) $ \ g -> do
     
 ---------------------------------------------------------------------------
 
-monoton :: C.Type 
+monoton :: C.Type Grammatik 
 monoton = C.make "Monoton" ( text "Die Grammatik soll monoton sein." ) $ \ g -> do
 
     let (eps, noeps) = partition ( null . snd ) $ rules g
@@ -115,7 +115,7 @@ kontexte g (lhs, rhs) = do
     guard $ post == hinten
     return $ ((pre, post), (x, mitte))
 
-kontextsensitiv :: C.Type
+kontextsensitiv :: C.Type Grammatik
 kontextsensitiv = C.make "CS" ( text "Die Grammatik soll kontextsensitiv sein." ) $ \ g -> do
     let zs = filterSet (null . kontexte g ) $ regeln g
     verboten ( not $ isEmptySet zs ) 
@@ -124,7 +124,7 @@ kontextsensitiv = C.make "CS" ( text "Die Grammatik soll kontextsensitiv sein." 
 
 ---------------------------------------------------------------------------
 
-kontextfrei :: C.Type
+kontextfrei :: C.Type Grammatik
 kontextfrei = 
   C.make "CF" ( text "Die Grammatik soll kontextfrei sein." ) $ \ g -> do
     let lang = filterSet ( (> 1) . length . fst ) $ regeln g
@@ -134,7 +134,7 @@ kontextfrei =
 
 -----------------------------------------------------------------------------
 
-linear :: C.Type
+linear :: C.Type Grammatik
 linear = C.make "Lin" ( text "Die Grammatik soll linear sein." ) $ \ g -> do
     let schlecht = filterSet 
 	   ( (>1) . length . filter (`elementOf` nichtterminale g) . snd ) 
@@ -145,7 +145,7 @@ linear = C.make "Lin" ( text "Die Grammatik soll linear sein." ) $ \ g -> do
 
 ------------------------------------------------------------------------------
 
-rechtslinear :: C.Type
+rechtslinear :: C.Type Grammatik
 rechtslinear = C.make "RightLin" ( text "Die Grammatik soll rechtslinear sein." ) $ \ g -> do
     let schlecht 
 	  = filterSet ( not . ( `elementOf` nichtterminale g ) . last . snd ) 
@@ -157,7 +157,7 @@ rechtslinear = C.make "RightLin" ( text "Die Grammatik soll rechtslinear sein." 
 
 ------------------------------------------------------------------------------
 
-linkslinear :: C.Type
+linkslinear :: C.Type Grammatik
 linkslinear = C.make "LeftLin" ( text "Die Grammatik soll linkslinear sein." ) $ \ g -> do
     let schlecht 
 	  = filterSet ( not . ( `elementOf` nichtterminale g ) . head . snd ) 
@@ -169,14 +169,14 @@ linkslinear = C.make "LeftLin" ( text "Die Grammatik soll linkslinear sein." ) $
 
 ---------------------------------------------------------------------------
 
-epsfrei :: C.Type
+epsfrei :: C.Type Grammatik
 epsfrei = C.make "EpsFree" ( text "Die Grammatik soll Epsilon-frei sein." ) $ \ g -> do
     let schlecht = filterSet ( \ (lhs, rhs) -> null rhs ) $ regeln g
     verboten ( not $ isEmptySet schlecht )  
 	 "sind verboten:"
 	 schlecht
 
-kettenfrei :: C.Type
+kettenfrei :: C.Type Grammatik
 kettenfrei = C.make "ChFree" ( text "Die Grammatik soll kettenfrei sein." ) $ \ g -> do
     let schlecht = filterSet ( \ (lhs, rhs) -> 
 	 length rhs == 1 && head rhs `elementOf` nichtterminale g ) $ regeln g
@@ -184,7 +184,7 @@ kettenfrei = C.make "ChFree" ( text "Die Grammatik soll kettenfrei sein." ) $ \ 
 	 "sind verboten:"
 	 schlecht
 
-chomsky :: C.Type
+chomsky :: C.Type Grammatik
 chomsky = C.make "CNF" ( text "Die Grammatik soll in Chomsky-Normalform sein." ) $ \ g -> do
     let ok rhs = ( length rhs == 1 && head rhs `elementOf` terminale g )
               || ( length rhs == 2 && and [ x `elementOf` nichtterminale g 
@@ -194,7 +194,7 @@ chomsky = C.make "CNF" ( text "Die Grammatik soll in Chomsky-Normalform sein." )
 	 "sind nicht von der Form N -> T oder N -> N N"
 	 schlecht
 
-greibach :: C.Type
+greibach :: C.Type Grammatik
 greibach = C.make "Greibach" ( text "Die Grammatik soll in Greibach-Normalform sein." ) $ \ g -> do
     let ok rhs = ( length rhs > 0 
 		   && head rhs `elementOf` terminale g
@@ -215,7 +215,7 @@ verboten f msg d = do
 	 ]
     inform $ text "Ja." 
 
-combine :: String -> [ C.Type ] -> C.Type
+combine :: String -> [ C.Type Grammatik ] -> C.Type Grammatik
 combine msg cs = C.make msg 
     ( text "Die Grammatik soll vom"  <+> text msg <+> text "sein." ) $ \ g -> do
       f <- wrap $ nested 4 $ sequence_ $ do c <- cs ; return $ C.run c g 
@@ -239,6 +239,6 @@ typ2 = combine "Typ2"
 typ3 = combine "Typ3"
        $ [ typ0, kontextfrei, linear, rechtslinear ]
 
-immergut :: C.Type
+immergut :: C.Type Grammatik
 immergut = C.make "G" empty $ \ g -> return ()
 

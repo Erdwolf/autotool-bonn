@@ -18,7 +18,7 @@ instance Compute Program State where
     accepting p s =   inRange ( bounds $ code s ) ( pc s )
 		  &&  Halt == code s ! pc s
 
-instance InOut Program Memory State where
+instance In Program Memory State where
     input  p m = State { code = listArray (0, pred $ length p) p
 		       , pc = 0
 		       , stack = []
@@ -26,6 +26,7 @@ instance InOut Program Memory State where
 		       , schritt = 0
 		       , past = [] 
 		       }
+instance Out Program Memory State where
     output p s = memory s
 
 instance Numerical Memory where

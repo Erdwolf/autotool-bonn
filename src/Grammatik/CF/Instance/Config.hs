@@ -4,14 +4,14 @@ module Grammatik.CF.Instance.Config where
 
 import Language.Type
 import Grammatik.Type
-import qualified Grammatik.Checker
+import qualified Reporter.Checker
 
 import Reporter
 import ToDoc
 
 data Config =
      Config { lang :: Language
-	    , typ :: Grammatik.Checker.Type
+	    , typ :: Reporter.Checker.Type Grammatik
 	    , yeah :: [ String ]
 	    , noh :: [ String ]
 	    }

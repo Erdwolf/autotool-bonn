@@ -1,4 +1,4 @@
-module Grammatik.Checker where
+obsolete module Grammatik.Checker where
 
 -- $Id$
 

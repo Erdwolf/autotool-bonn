@@ -1,0 +1,40 @@
+-- -*- mode: haskell -*-
+
+-- $Id$
+
+module Grammatik.Type 
+
+( module Grammatik.Type
+, module Sets
+)
+
+where
+
+
+import Sets
+
+import Size
+import ToDoc
+import Reader
+
+data Grammatik = Grammatik
+	       { terminale      :: Set Char
+	       , nichtterminale :: Set Char
+	       , startsymbol	:: Char
+	       , regeln		:: Set (String, String) 
+	       }
+
+{-! for Grammatik derive: ToDoc, Reader !-}
+
+terms = setToList . terminale
+vars  = setToList . nichtterminale
+rules = setToList . regeln
+
+instance Show Grammatik where show = render . toDoc
+instance Read Grammatik where readsPrec = parsec_readsPrec
+
+instance Size Grammatik where size = cardinality . regeln
+
+
+
+
