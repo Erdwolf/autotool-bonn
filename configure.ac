@@ -1,6 +1,6 @@
 AC_INIT([autotool],[0.0],[],[autotool])
 
-AC_CONFIG_FILES([config.mk:config.mk.in src/Util/Datei/Base.hs:src/Util/Datei/Base.hs.in])
+AC_CONFIG_FILES([config.mk:config.mk.in src/Util/Datei/Base.hs:src/Util/Datei/Base.hs.in src/Inter/Boiler.hs:src/Inter/Boiler.hs.in])
 
 AC_CANONICAL_SYSTEM
 
@@ -81,6 +81,7 @@ AC_SUBST(HADDOCK)
 dnl ***********************************************
 dnl autotool base directory
 dnl ***********************************************
+BASE="/space"
 AC_ARG_WITH(base,
 [  --with-base=<autotool base directory>
         Where autotool stores its working files 
@@ -89,13 +90,30 @@ AC_ARG_WITH(base,
 [BASE="$withval"]
 )
 
-AC_CHECK_FILE(BASE,base)
-
 if test "$BASE" = "" || test ! -d $BASE; then
   AC_MSG_ERROR([need a base directory to build the package])
 fi
 
 AC_SUBST(BASE)
+
+
+dnl ***********************************************
+dnl autotool problem source directory
+dnl ***********************************************
+SCHOOL="HTWK"
+AC_ARG_WITH(school,
+[  --with-school=<autotool problem source>
+        name of the module that exports "boiler"
+        (= list of problems)
+],
+[SCHOOL="$withval"]
+)
+
+dnl if test "src/$SCHOOL.hs" = "" || test ! -f src/$SCHOOL.hs; then
+dnl   AC_MSG_ERROR([need a problem source module])
+dnl fi
+
+AC_SUBST(SCHOOL)
 
 
 dnl ***********************************************
