@@ -17,6 +17,10 @@ import Util.Wort
 import Reporter
 import ToDoc
 
+takeUntil :: (a -> Bool) -> [a] -> [a]
+takeUntil p [] = []
+takeUntil p (x : xs) = x : if p x then [] else takeUntil p xs
+
 zeige :: Int -- höchstens so lange satzformen
       -> Int -- höchstens soviele schichten
       -> Int -- höchstens soviele ableitungen anzeigen
@@ -26,11 +30,10 @@ zeige :: Int -- höchstens so lange satzformen
 zeige l d a n g = do
 
     let abss = take d -- schichten
+	     $ takeUntil ( \ s -> cardinality s > n )
 	     $ ableitungen ( Just l ) g
 
-    inform $ text "Ich zeige Ihnen für die Grammatik"
-    inform $ nest 4 $ toDoc g
-    inform $ text "einige Ableitungen:"
+    inform $ text "Ich zeige Ihnen einige Ableitungen:"
     inform $ nest 4 $ vcat $ take a $ do 
 	       abs <- drop ( d `div` 2 ) abss
 	       ab  <- setToList abs
