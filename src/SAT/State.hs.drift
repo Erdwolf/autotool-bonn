@@ -6,21 +6,21 @@ module SAT.State where
 
 import SAT.Types
 
-import ToDoc
-import Reader
+import Autolib.ToDoc
+import Autolib.Reader
 
-import Sets
-import qualified Relation
-import Data.FiniteMap
+import Autolib.Set
+import qualified Autolib.Relation as Relation
+import Autolib.FiniteMap
 
 data State = 
-     State { assignment :: Belegung -- erfüllend
-	   , satisfying :: Set Literal -- dazu gehörende literale
-	   , todo :: Int -- noch so viele klauseln
-	   , width :: Int -- soviele literale pro klausel
-	   , formula  :: Formel -- soweit schon gebaut
-	   , clause :: Klausel -- currently being built
-	   , csat :: Bool -- klausel ist bereits erfüllt?
+     State { assignment :: Belegung -- ^ erfüllend
+	   , satisfying :: Set Literal -- ^ dazu gehörende literale
+	   , todo :: Int -- ^ noch so viele klauseln
+	   , width :: Int -- ^ soviele literale pro klausel
+	   , formula  :: Formel -- ^ soweit schon gebaut
+	   , clause :: Klausel -- ^ currently being built
+	   , csat :: Bool -- ^ klausel ist bereits erfüllt?
 	   , unfrequent :: Set Literal
 	   , morefrequent :: Set Literal
 	   , dependencies :: Relation.Type Variable Variable
@@ -28,5 +28,4 @@ data State =
 
 {-! for State derive: ToDoc, Reader !-}
 
-instance Show State where show = render . toDoc
-instance Read State where readsPrec = parsec_readsPrec
+

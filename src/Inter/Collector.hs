@@ -74,7 +74,8 @@ makers = [ Blank.make
          , Grammatik.CF.Interface.make
 	 , NPDA.Inter.make
 
-         , SAT.SAT.make
+         , SAT.SAT.make_fixed
+         , SAT.SAT.make_quiz
 	 ]
 
 

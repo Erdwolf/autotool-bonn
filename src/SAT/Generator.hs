@@ -8,15 +8,15 @@ import SAT.Wert
 import SAT.State
 
 import Random
-import Util.Zufall
-import Util.Sort
-import qualified Relation
-import Data.Set
-import Data.FiniteMap
+import Autolib.Util.Zufall
+import Autolib.Util.Sort
+import qualified Autolib.Relation as Relation
+import Autolib.Set
+import Autolib.FiniteMap
 import Control.Monad ( guard )
-import Maybe
+import Data.Maybe
 
--- algorithm "hgen2" (c) Edward A Hirsch
+-- | algorithm "hgen2" (c) Edward A Hirsch
 -- as sketched in Simon/Berre/Hirsch: SAT2002 Competition
 
 hgen2 :: Param -> IO ( Formel, Belegung )

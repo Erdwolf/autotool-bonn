@@ -1,8 +1,10 @@
 
 -- | Korrekturfunktion für 3SAT
 -- 
--- Autor: Mohammad Esad-Djou
+-- Mohammad Esad-Djou (c) 2002
 -- bss98aou@studserv.uni-leipzig.de
+
+-- Überarbeitung: Johannes Waldmann (c) 2004, ..
 
 -- -- $Id$
 
@@ -24,6 +26,9 @@ module SAT.SAT
 , Klausel, Formel, Belegung
 , module Autolib.FiniteMap
 
+, make_fixed
+, make_quiz
+
 )
 
 where
@@ -31,6 +36,8 @@ where
 import Autolib.FiniteMap
 
 import Challenger.Partial
+import Inter.Types
+import Inter.Quiz
 
 import Autolib.ToDoc
 import Control.Monad (guard)
@@ -46,6 +53,9 @@ import Data.Maybe
 
 import SAT.Types
 import SAT.Wert
+import SAT.Generator
+import SAT.Param
+import SAT.Beispiel
 
 ---------------------------------------------------------------------------
 
@@ -96,6 +106,19 @@ instance Partial SAT Formel Belegung where
 	     , nest 4 $ toDoc fehl
 	     ]
 	inform $ text "Alle Variablen sind belegt."
+
+
+make_fixed :: Make
+make_fixed = direct SAT SAT.Beispiel.formel
+
+instance Generator SAT Param ( Formel, Belegung ) where
+    generator SAT conf key = hgen2 conf
+
+instance Project SAT ( Formel, Belegung ) Formel where
+    project SAT ( f, b ) = f
+
+make_quiz :: Make
+make_quiz = quiz SAT $ SAT.Param.p 5
 
 
 

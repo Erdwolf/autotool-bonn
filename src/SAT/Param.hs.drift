@@ -6,15 +6,18 @@ module SAT.Param where
 
 import SAT.Types
 
-import Reader
-import ToDoc
+import Autolib.Reader
+import Autolib.ToDoc
+import Autolib.Set
 
-import Sets
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 data Param = 
      Param { vars :: Set Variable
-	   , clauses :: Int -- anzahl (empfohlen: 3.5 * variablen)
+	   , clauses :: Int -- ^ anzahl (empfohlen: 3.5 * variablen)
 	   }
+     deriving ( Typeable )
 
 p :: Int -> Param
 p n = let f = 3.5 :: Double
@@ -22,8 +25,6 @@ p n = let f = 3.5 :: Double
 	      , clauses = round $ f * fromIntegral n 
 	      }
 
-{-! for Param derive: ToDoc, Reader !-}
+{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Param where show = render . toDoc
-instance Read Param where readsPrec = parsec_readsPrec
 
