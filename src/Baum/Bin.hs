@@ -6,12 +6,12 @@ import Baum.Type
 import Baum.Label
 
 import Control.Monad ( when )
-import Reporter.Type
-import ToDoc
+import Autolib.Reporter.Type
+import Autolib.ToDoc
 
 -- | check whether tree is binary
 -- i. e. each node has 0 or 2 children exactly
-checkbin :: ( Show c, ToDoc v, ToDoc c )
+checkbin :: ( Symbol c, ToDoc v )
 	 => Term v c -> Reporter ()
 checkbin = mapM_ check . subterms where
     check t @ ( Node f args ) 

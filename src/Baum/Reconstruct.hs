@@ -3,24 +3,33 @@ module Baum.Reconstruct where
 --  $Id$
 
 import Baum.Type
+import Baum.Config
 import Baum.Traverse
 import Baum.Label
 import Baum.Bin
+import Baum.Roll
 
 import Challenger.Partial
-import Reporter
-import ToDoc
-import Reader
+import Autolib.Reporter
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Xml
+import Autolib.Util.Seed
+
+import Inter.Types
+import Inter.Quiz
+import Data.Typeable
 
 data Reconstruct = Reconstruct
-     deriving (Eq, Ord, Show, Read)
-
-instance ToDoc Reconstruct where toDoc = text . show
+     deriving ( Eq, Ord, Show, Read, Typeable )
 
 type Traversals c = [ ( Order, [ c ]  ) ]
 
-instance ( Eq c, Show c, ToDoc c, ToDoc [c], Reader c ) =>
-    Partial Reconstruct ( Traversals c ) ( Term () c ) where
+
+
+instance ( Symbol c, ToDoc [c] ) 
+       => Partial Reconstruct ( Traversals c ) ( Term () c ) 
+    where
         describe Reconstruct ocs = vcat
 	  [ hsep [ text "Gesucht ist ein"
 		 , if onlybin ocs then text "binärer" else empty
@@ -33,7 +42,7 @@ instance ( Eq c, Show c, ToDoc c, ToDoc [c], Reader c ) =>
 	initial Reconstruct traversals = 
 	     let ( o, cs ) = head traversals
 		 t = balanced $ length cs
-	     in	 label Pre t $ reverse cs
+	     in	 Baum.Label.label Pre t $ reverse cs
 
 	partial Reconstruct traversals t = do
 	     inform $ text "Ihr Baum t ist" <+> present t
@@ -58,7 +67,34 @@ instance ( Eq c, Show c, ToDoc c, ToDoc [c], Reader c ) =>
 	     let ok = and $ do ( o, cs, ds ) <- ocds ; return ( cs == ds )
 	     assert ok $ text "stimmt alles überein?"
 
+-- | if inorder is involved, then tree must be binary
 onlybin :: Traversals c -> Bool
--- if inorder is involved, then tree must be binary
 onlybin ts = or $ do ( o, cs ) <- ts ; return ( o == In )
 
+make_fixed :: Make
+make_fixed = 
+    let ts :: Traversals Identifier
+	ts = [ ( Pre , read "[ e, j, b, i, f, m, l, k, d, g, c, a, h ]" )
+	     , ( In  , read "[ b, j, i, e, k, l, d, m, g, f, a, c, h ]" )
+	     ]
+    in  direct Reconstruct ts
+
+instance Container Identifier String where
+    label _ = "Identifier"
+    pack = show
+    unpack = read
+           
+make_quiz :: Make
+make_quiz = quiz Reconstruct Baum.Config.example
+
+instance Generator Reconstruct Config ( Traversals Identifier ) where
+    generator Reconstruct conf key = do
+          seed $ read key + hash conf
+	  t <- roll $ nodes conf
+          return $ do 
+		 o <- orders conf
+		 return ( o , traverse o t )
+
+instance Project Reconstruct  
+                 ( Traversals Identifier )  ( Traversals Identifier ) where
+    project Reconstruct t = t

@@ -3,12 +3,9 @@ module Baum.Traverse where
 --  $Id$
 
 import Baum.Type
-import ToDoc
+import Baum.Order
+import Autolib.ToDoc
 
-data Order = Pre | In | Post | Level
-     deriving ( Eq, Ord, Show, Read )
-
-instance ToDoc Order where toDoc = text . show
 
 traverse :: Order -> Term a c -> [ c ]
 traverse o = case o of

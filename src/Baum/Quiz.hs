@@ -12,15 +12,7 @@ import Util.Seed
 import Util.Cache
 import Util.Datei
 
-data Config = 
-     Config { nodes :: Int
-	    , orders :: [ Order ]
-	    }
 
-hash :: Config -> Int
-hash conf = foldl ( \ x y -> 13 * x + y + 29 ) 0
-	  $ map fromEnum
-	  $ show $ orders conf
      
 quiz :: Config
      -> Var Reconstruct ( Traversals Identifier ) ( Baum )

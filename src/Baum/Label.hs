@@ -9,6 +9,7 @@ where
 --  $Id$
 
 import Baum.Type
+import Baum.Order
 import Baum.Traverse
 import Control.Monad.State
 

@@ -33,8 +33,8 @@ import qualified NFA.Equiv.Challenger
 import qualified Exp.Convert
 import qualified Grammatik.CF.Interface
 import qualified NPDA.Inter
-
 import qualified SAT.SAT
+import qualified Baum.Reconstruct
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -76,6 +76,9 @@ makers = [ Blank.make
 
          , SAT.SAT.make_fixed
          , SAT.SAT.make_quiz
+
+         , Baum.Reconstruct.make_fixed
+         , Baum.Reconstruct.make_quiz
 	 ]
 
 

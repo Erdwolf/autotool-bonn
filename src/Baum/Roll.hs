@@ -5,9 +5,9 @@ module Baum.Roll where
 import Baum.Type
 import Baum.Label
 
-import ToDoc
-import Random
-import qualified Util.Zufall
+import Autolib.ToDoc
+import System.Random
+import qualified Autolib.Util.Zufall as AUZ
 
 -- | make "random" binary tree of given size (must be odd)
 -- contains no variables
@@ -25,7 +25,7 @@ rollbin s = do
 rollab :: [ c ] -> IO ( Term a c )
 rollab cs = do
     t  <- rollbin $ length cs
-    ds <- Util.Zufall.permutation cs
+    ds <- AUZ.permutation cs
     return $ label Pre t ds
 
 -- | make random binary tree of given size with labels a, b, ..
