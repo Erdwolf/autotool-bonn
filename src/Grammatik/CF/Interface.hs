@@ -53,10 +53,10 @@ instance Partial CFG I.Config Grammatik where
 
     partial p i b = do
           C.run typ2 b
-          C.run ( I.typ i ) b
 
     total p i b = do
           cf_yeah_noh i b
+          C.run ( I.typ i ) b
 
 ---------------------------------------------------------------------------
 
