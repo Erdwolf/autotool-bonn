@@ -19,15 +19,15 @@ data Language = Language
 	      , nametag      :: String
 	      , alphabet     :: Set Char
 
-	      -- testet Mitgliedschaft in Sprache
+	      -- | testet Mitgliedschaft in Sprache
 	      , contains     :: String -> Bool
 
-	      -- sample  c n
+	      -- | sample  c n
 	      -- würfelt maximal c Wörter der Sprache
 	      -- mit Länge == n
 	      , sample       :: Int -> Int -> IO [ String ]
 
-              -- das gleiche für wörter im komplement
+              -- | das gleiche für wörter im komplement
               , anti_sample  :: Int -> Int -> IO [ String ]
 
 	      }
@@ -45,9 +45,9 @@ instance ToDoc Language where
 instance Show Language where
     show = render . toDoc
 
-komplett :: Language -> [ String ]
--- wirklich *alle* wörter des alphabets werden erzeugt und getestet,
+-- | wirklich *alle* wörter des alphabets werden erzeugt und getestet,
 -- es entsteht unendliche liste
+komplett :: Language -> [ String ]
 komplett l = do
     n <- [ 0 .. ]
     w <- alle ( setToList $ alphabet l ) n  
@@ -55,17 +55,23 @@ komplett l = do
     return w
 
 
-random_sample :: Language -> Int -> Int -> IO [ String ]
--- würfeln und testen
+-- | würfeln und testen
 -- nur sinnvoll, wenn sprache genügend dicht ist
+random_sample :: Language 
+	      -> Int -- ^ so oft würfeln 
+	      -> Int -- ^ für wörter genau dieser länge
+	      -> IO [ String ]
 random_sample l c n = do
     ws <- sequence $ replicate c $ someIO (setToList $ alphabet l) n
     return $ filter (contains l) ws
 
-samples :: Language -> Int -> Int -> IO [ String ]
--- würfelt genau (!) c Wörter der Sprache l, mit Länge >= n,
+-- | würfelt genau (!) c Wörter der Sprache l, mit Länge >= n,
 -- dabei von jeder festen länge höchstens sqrt c viele
 -- das klappt nur, wenn die sprache unendlich ist
+samples :: Language 
+	-> Int -- ^ so viele wörter (c)
+	-> Int -- ^ mindestens so lang (n)
+	-> IO [ String ]
 samples l c n | c > 0 = do
     let m = truncate $ sqrt $ fromIntegral c    
     here <- sample l m n 

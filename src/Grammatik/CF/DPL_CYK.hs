@@ -24,27 +24,30 @@ import Grammatik.CF.CYK_Arrays
 
 
 import Util.DPL_Set
+import Data.List (partition)
 
-import Ix
+-- import Ix
 
--- accepted :: Ix a => Chomsky a -> String -> Bool
--- input: eine reduzierte grammatik
 accepted :: Chomsky Int -> String -> Bool
 accepted ch w = 
     let c = ctable $ rules ch
 	v = vtable $ rules ch
 	top = value (ctable_lookup c) (vtable_lookup v) w 
-    in	thing ch top
+    in	if null w then eps ch
+        else thing ch top
 
--- accepteds :: Ix a => Chomsky a -> [ String ] -> [ (String, Bool) ]
--- input: eine reduzierte grammatik
 accepteds :: Chomsky Int -> [ String ] -> [ (String, Bool) ]
-accepteds ch ws = do
-    let c = ctable $ rules ch
-    let v = vtable $ rules ch
-    (w, top) <- values (ctable_lookup c) (vtable_lookup v) 
-	     $ filter (not . null) ws
-    return ( w, thing ch top )
+accepteds ch ws =
+    let ( small, large ) = partition null ws
+	xsmall = do 
+	    w <- small
+	    return ( w, eps ch )
+        xlarge = do
+	    let c = ctable $ rules ch
+		v = vtable $ rules ch
+	    (w, top) <- values (ctable_lookup c) (vtable_lookup v) large
+	    return ( w, thing ch top )
+    in	xsmall ++ xlarge
 
 thing :: Chomsky Int -> Set Int -> Bool
 thing ch top = if null $ rules ch

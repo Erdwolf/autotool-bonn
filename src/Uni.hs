@@ -16,6 +16,8 @@ import qualified Syntax.Pumping
 boiler :: IO [ Variant ]
 boiler = sequence -- der erste ist der default-wert!       
        $  []
+
+       ++ Syntax.Grammatik.quizzes
 	  -- Serie 5 (?)
        ++ Syntax.Grammatik.grammatiken5
 

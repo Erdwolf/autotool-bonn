@@ -1,8 +1,22 @@
-module Grammatik.CF.Chomsky where
+module Grammatik.CF.Chomsky 
+
+( Chomsky (..)
+, Rules 
+, make
+, vars
+)
+
+where
 
 -- -- $Id$
 
 import qualified Grammatik.Type as G
+import Grammatik.CF.Chomsky.Type
+
+import Grammatik.CF.Epsfrei
+import Grammatik.CF.Kettenfrei
+import Grammatik.Reduziert
+import Grammatik.CF.Nullable
 
 import Sets
 
@@ -14,37 +28,29 @@ import Size
 import Fix
 
 
-type Rules a   = [ ( a, Either Char (a, a) ) ]
-data Chomsky a = Chomsky 
-	       { start :: a
-	       , rules :: Rules a
-	       }
-     deriving (Eq, Ord)
-
-instance Size (Chomsky a) where size = length . rules
-
-instance ToDoc a => ToDoc (Chomsky a) where
-    toDoc ch = 
-	 let pstart = text "start" <+> equals <+> toDoc (start ch)
-	     pregeln  = text "rules" <+> equals <+> toDoc (rules ch)
-
-	 in      text "Chomsky" 
-	     <+> braces ( fsep $ punctuate comma [ pstart, pregeln] )
-
-instance ToDoc a => Show (Chomsky a) where show = render . toDoc
-
 
 ---------------------------------------------------------------------------
-    
 
-chomsky :: G.Grammatik -> Chomsky Int
+make :: G.Grammatik -> Chomsky Int
+make g =     
+    let h = kettenfrei 
+	   $ epsfrei 
+	   $ reduktion
+	   $ g 
+    in	chomsky ( creates_epsilon g ) h
+
+chomsky :: Bool -- ^ erzeugt epsilon?
+	-> G.Grammatik 
+	-> Chomsky Int
 -- eingabe: CF-grammatik ohne Eps und ohne Ketten
 -- ausgabe: Chomsky-Normalform
-chomsky = normalize . construct2
+chomsky eps = normalize . construct2 eps
 
 
-construct2 :: G.Grammatik -> Chomsky String
-construct2 g = 
+construct2 :: Bool -- ^ erzeugt Epsilon?
+	   -> G.Grammatik 
+	   -> Chomsky String
+construct2 epsflag g = 
     let rs = do 
 	   ( lhs, rhs ) <- G.rules g
 	   rewrite lhs rhs
@@ -63,22 +69,11 @@ construct2 g =
 	       return ( [z], Left z )
     in	Chomsky { start = [ G.startsymbol g ]
 		, rules = nub (alphas ++ rs)	
+		, eps = epsflag
 		}
 
 
 ---------------------------------------------------------------------------
-
-instance Functor Chomsky where
-    fmap f ch = 
-	 Chomsky { start = f $ start ch
-		 , rules = do
-		      ( lhs, rhs ) <- rules ch 
-		      return ( f lhs 
-			     , case rhs of 
-				    Left c -> Left c
-				    Right (x,y) -> Right (f x, f y) 
-		             )
-		 }
 
 normalize :: Ord a => Chomsky a -> Chomsky Int
 normalize ch = 

@@ -51,11 +51,7 @@ cf_yeah_noh c g = do
     -- trace t ( g, demos ) ts 
     -- wenn wir hier ankommen, sind die ableitungen OK
 
-    let ch = C.chomsky 
-	   $ kettenfrei 
-	   $ epsfrei 
-	   $ reduktion -- x-perry-mental
-	   $ g 
+    let ch = C.make g
     -- inform $ text "DEBUG: chomsky nf" <+> toDoc ch
 
     let snip = take 5 -- ??
