@@ -35,8 +35,8 @@ studAufgDB mat =
        conn <- myconnect 
        stat <- squery conn $
             Query ( Select (      [ reed "vorlesung.Name AS vorlesung" 
-				  , reed "aufgabe.Name AS Typ"
-				  , reed "aufgabe.Subject AS Nr"
+				  , reed "aufgabe.Typ AS Typ"
+				  , reed "aufgabe.Name AS Name"
 				  , reed "stud_aufg.Ok AS Ok"
 				  , reed "stud_aufg.No AS No"
 				  ] 
@@ -54,11 +54,11 @@ studAufgDB mat =
 		  ]
        inh <- collectRows ( \ state -> do
                             v <- getFieldValue state "Vorlesung"
+                            s <- getFieldValue state "Name"
                             t <- getFieldValue state "Typ"
-                            s <- getFieldValue state "Nr"
                             o <- getFieldValue state "Ok"
                             n <- getFieldValue state "No"
-                            return [ S v, S t, S s , I o , I n  ] -- FIXME
+                            return [ S v, S s , S t, I o , I n  ] -- FIXME
                           ) stat
        disconnect conn
        return ( showColTypes stat, inh )
@@ -176,10 +176,10 @@ getAllVorlesungenDB =
        logged "getAllVorlesungenDB"
        conn <- myconnect
        stat <- squery conn $ Query
-	       ( Select $      [ reed "vorlesung.Name AS Vorlesung" ] )
+	       ( Select $      [ reed "vorlesung.Name" ] )
                [ From [ reed "vorlesung" ]]
        inh <- collectRows ( \ state -> do
-                            a <- getFieldValue state "Vorlesung"
+                            a <- getFieldValue state "Name"
                             return a
                           ) stat
        disconnect conn 
@@ -197,7 +197,7 @@ getVorlesungWithPointsDB mnr =
     do 
        conn <- myconnect
        stat <- squery conn $ Query
-               ( Select $      [ reed "vorlesung.Name AS Vorlesung" ] ) 
+               ( Select $ [ reed "vorlesung.Name AS Vorlesung" ] ) 
 	       [ From $ map reed [ "vorlesung", "stud_aufg" , "student" , "aufgabe" ]
 	       , Where $ ands [ reed "student.SNr = stud_aufg.SNr"
 			      , equals (reed "student.MNr") (toEx mnr)
@@ -352,48 +352,61 @@ getSNrFromMatDB ( mat :: MNr ) = do
 	     ]
    inh  <- collectRows ( \ state -> do
                          snr <- getFieldValue state "SNr"
-                         return ( snr :: String)
+                         return ( snr :: SNr )
                        ) stat
    disconnect conn  
    return inh
 
 -- | if student ist bereits in gruppe zu gleicher vorlesung,
 -- then diese ändern, else gruppe hinzufügen
-changeStudGrpDB mat grp =     do
-    snrh <- getSNrFromMatDB mat
-    if null snrh 
-      then return ()
-      else  
-      do {
-         ; conn <- myconnect
-         ; stat <- query conn $ "DELETE FROM stud_grp USING stud_grp, gruppe AS g1, gruppe AS g2 "
-	       ++ "WHERE stud_grp.SNr = \"" ++ filterQuots (snrh!!0) ++ "\" " 
-               ++ "AND stud_grp.GNr = g1.GNr "
-	       ++ "AND g2.GNR = " ++ filterQuots (show grp) ++ " "
-	       ++ "AND g1.VNr = g2.VNr "
-	       ++ ";"
-         ; stat <- query conn $ "INSERT INTO stud_grp (SNr,GNr) VALUES (" ++ filterQuots (snrh!!0) ++ "," 
-                            ++ filterQuots (show grp) ++");"
-         ; disconnect conn 
-         ; return ()
-         }
 
+changeStudGrpDB  mat grp =  
+    changeStudGrpDB' mat (fromCGI grp )
 
-leaveStudGrpDB mat grp =     do
-    snrh <- getSNrFromMatDB mat
-    if null snrh 
-      then return ()
-      else  
-      do {
-         ; conn <- myconnect
-         ; stat <- query conn $ "DELETE FROM stud_grp  "
-	       ++ "WHERE stud_grp.SNr = \"" ++ filterQuots (snrh!!0) ++ "\" " 
-               ++ "AND stud_grp.GNr = " ++ filterQuots (show grp) ++ " "
-	       ++ ";"
-         ; disconnect conn 
-         ; return ()
-         }
+changeStudGrpDB' :: MNr -> GNr -> IO ()
+changeStudGrpDB' mnr gnr =     do
+    snrs <- getSNrFromMatDB mnr
+    case snrs of
+       _ | 1 /= length snrs -> return ()
+       [ snr ] -> do
+         conn <- myconnect
+         stat <- squery conn $ Query
+	     ( Delete $ reed "stud_grp"  )
+	     [ Using $ map reed [ "stud_grp", "gruppe AS g1", "gruppe AS g2" ]
+             , Where $ ands
+	          [ equals ( reed "stud_grp.SNr" ) ( toEx snr )
+                  , equals ( reed "stud_grp.GNr" ) ( reed "g1.GNr" )
+		  , equals ( reed "g2.GNr" ) ( toEx gnr )
+	          , equals ( reed "g1.VNr" ) ( reed "g2.VNr" )
+		  ]
+	     ]
+         stat <- squery conn $ Query
+	     ( Insert ( reed "stud_grp" )
+                      [ ( reed "SNr", toEx snr )
+		      , ( reed "GNr", toEx gnr )
+		      ]
+	     ) []
+         disconnect conn 
+         return ()
 
+leaveStudGrpDB mat grp = leaveStudGrpDB' mat ( fromCGI grp )
+
+leaveStudGrpDB' :: MNr -> GNr -> IO ()
+leaveStudGrpDB' mnr gnr =     do
+    snrs <- getSNrFromMatDB mnr
+    case snrs of
+       _ | 1 /= length snrs -> return ()
+       [ snr ] -> do
+         conn <- myconnect
+         stat <- squery conn $ Query
+	     ( Delete $ reed "stud_grp"  )
+	     [ Where $ ands
+	          [ equals ( reed "stud_grp.SNr" ) ( toEx snr )
+                  , equals ( reed "stud_grp.GNr" ) ( toEx gnr )
+		  ]
+	     ]
+         disconnect conn 
+         return ()
 
 -- tricky
 data Col a = Col String
@@ -414,7 +427,7 @@ mglAufgabenDB' isAdmin snr = 	do
     stat <- squery conn $ Query
 	    ( Select $ do 
 	         col <- cols
-                 let long = EId $ Id [ "aufgabe", col ] ; short = Id [ col ]
+                 let long = Id [ "aufgabe", col ] ; short = Id [ col ]
                  return $ Bind long (Just short)
 	    )
             [ From $ map reed [ "aufgabe", "gruppe" , "stud_grp" ]
@@ -444,32 +457,31 @@ mglAufgabenDB' isAdmin snr = 	do
 ----------------------------------------------------------------------------------
 
 
-{-
-
 -- | liefert (nun und demnaechst mgl). Aufgaben für Student
 
 -- >  bzw. alle Student (snr=[])
 -- > ( [header ... ] , [ ( ANr, Name , Subject , Path , Highscore , Von , Bis ) ] ) 
-mglNextAufgabenDB :: String -> IO ( [String],[[String]])
+mglNextAufgabenDB :: SNr -> IO ( [String],[[String]])
 mglNextAufgabenDB snr = do
+    let ssnr = toString snr
     conn <- myconnect
     stat <- query conn
             ( concat
-              [ "SELECT aufgabe.ANr, aufgabe.Name AS Typ, aufgabe.Subject AS Nr, aufgabe.Highscore \n"
+              [ "SELECT aufgabe.ANr, aufgabe.Typ AS Typ, aufgabe.Name AS Name, aufgabe.Highscore \n"
               , ", DATE_FORMAT( aufgabe.Von , \"%H:%i %a %d. %b %Y\") as Von " 
               , ", DATE_FORMAT( aufgabe.Bis , \"%H:%i %a %d. %b %Y\") as Bis\n"
               , "FROM aufgabe "
-              , if null snr 
+              , if null ssnr 
                 then " \n" 
                 else ", gruppe, stud_grp \n"
               , "WHERE \n"
-              , if null snr 
+              , if null ssnr 
                 then 
                 " "
                 else
                 "gruppe.VNr = aufgabe.VNr \n" ++
                 "AND gruppe.GNr = stud_grp.GNr \n" ++
-                "AND stud_grp.SNr = \"" ++ filterQuots snr ++ "\" \n" ++
+                "AND stud_grp.SNr = \"" ++ filterQuots ssnr ++ "\" \n" ++
                 "AND \n" 
               -- noch offene Aufg.
               , "NOW() < Bis "
@@ -477,8 +489,8 @@ mglNextAufgabenDB snr = do
               ] )
     inh <- collectRows ( \ state -> do
                  a <- getFieldValue state "ANr"
-                 b <- getFieldValue state "Typ"
-                 c <- getFieldValue state "Nr"
+                 b <- getFieldValue state "Name"
+                 c <- getFieldValue state "Typ"
                  h <- getFieldValue state "Highscore"
                  vo <- getFieldValue state "Von"
                  bi <- getFieldValue state "Bis"
@@ -487,4 +499,3 @@ mglNextAufgabenDB snr = do
     disconnect conn
     return ( showColTypes stat, inh )
 
--}

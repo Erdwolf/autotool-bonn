@@ -76,9 +76,6 @@ instance R.Reader Id where
         ids <- R.my_identifier `R.sepBy1` R.my_dot 
         return $ Id ids
 
-instance Show Id where show      = render . T.toDoc
-instance Read Id where readsPrec = R.parsec_readsPrec
-
 --------------------------------------------------------------------------------
 
 data Query = Query Action [ Modifier ]  deriving Typeable
@@ -94,12 +91,10 @@ instance R.Reader Query where
 	R.my_semi
 	return $ Query a ms
 
-instance Show Query where show      = render . T.toDoc
-instance Read Query where readsPrec = R.parsec_readsPrec
-
 --------------------------------------------------------------------------------
-		     
-data Bind = Bind  Expression (Maybe Id)   deriving Typeable
+
+-- data Bind = Bind  Expression (Maybe Id)   deriving Typeable
+data Bind = Bind Id (Maybe Id)   deriving Typeable
 
 instance T.ToDoc Bind where
     toDoc (Bind e mi) = case mi of
@@ -109,12 +104,11 @@ instance T.ToDoc Bind where
 instance R.Reader Bind where
     reader = do 
          e <- R.reader
-	 mi <- R.option Nothing $ do { R.my_reserved "AS" ; fmap Just R.reader }
+	 mi <- R.option Nothing $ do 
+               R.my_reserved "AS" <|> R.my_reserved "as" 
+	       fmap Just R.reader
 	 return $ Bind e mi 
 
-
-instance Show Bind where show      = render . T.toDoc
-instance Read Bind where readsPrec = R.parsec_readsPrec
 
 ----------------------------------------------------------------------------
 
@@ -156,7 +150,7 @@ data Modifier = From [ Id ]
 instance T.ToDoc Modifier where
     toDoc (From ids) = T.text "FROM" <+> T.sepBy T.comma ( map T.toDoc ids )
     toDoc (Where e)  = T.text "WHERE" <+> T.toDoc e
-    toDoc (Using b)  = T.text "USING" <+> T.toDoc b
+    toDoc (Using b)  = T.text "USING" <+> T.sepBy T.comma ( map T.toDoc b )
 
 instance R.Reader Modifier where
     reader = do { R.my_reserved "FROM" ; ids <- many1 reader ; return $ From ids }
@@ -225,9 +219,6 @@ operators =
        , map lop [ "BETWEEN" ] -- ?
        , map lop [ "AND", "OR" ]
        ]
-
-instance Show Expression where show      = render . T.toDoc
-instance Read Expression where readsPrec = R.parsec_readsPrec
 
 -----------------------------------------------------------------------------------
 

@@ -12,7 +12,7 @@ import Control.Monad ( guard )
 import Data.Maybe
 
 -- autoan-modules
-import HTMLshortcuts
+import Control.HTMLshortcuts
 -- import SQLqueries
 import Control.Queries
 import Control.Types
@@ -208,8 +208,8 @@ checkLoginPage (F2 matF pwdF) =
 studStatusPage ( mat :: MNr ) F0 = 
         do 
           io $ logged $ "studStatusPage"
-          snr                   <- io $ getSNrFromMatDB mat 
-          io $ logged $ "snr: " ++ show snr
+          snrs                   <- io $ getSNrFromMatDB mat 
+          io $ logged $ "snr: " ++ show snrs
           -- a) Persoenliche Daten aus DB holen 
           inh                   <- io $ checkPasswdMNrDB Nothing mat
           io $ logged $ "inh: " ++ show inh
@@ -228,7 +228,7 @@ studStatusPage ( mat :: MNr ) F0 =
           let   grp = filter ( \ (g,_) -> g `elem` stdgrp ) grps
 
           -- b) Mgl. Aufgaben aus DB holen, und erste Spalte entfernen 
-          mglAufgs      <- io $ mglNextAufgabenDB (snr!!0) 
+          mglAufgs      <- io $ mglNextAufgabenDB $ (snrs !!0 ) 
           io $ logged $ "mglAufgs: " ++ show mglAufgs
 
           let mglAufgs2 = ( tail (fst mglAufgs) , Prelude.map tail (snd mglAufgs))
@@ -320,8 +320,8 @@ grptab grps = mytable $ do
         grp @ (gnr, [v,g,r]) <- grps
         return $ tableRow3 [ text v, text g, text r ]
 
-changedGrpPage = commonGrpPage "ausgewählt" changeStudGrpDB 
-leaveGrpPage   = commonGrpPage "verlassen"  leaveStudGrpDB 
+changedGrpPage = commonGrpPage "ausgewählt" changeStudGrpDB' 
+leaveGrpPage   = commonGrpPage "verlassen"  leaveStudGrpDB' 
 
 commonGrpPage name action  mat (F1 grpF) = do 
         let (grp,desc) = value $ grpF

@@ -22,9 +22,10 @@ get vnr only_current = do
 			    ]
 	) $
         [ From $ map reed [ "aufgabe" ] 
-        , Where $ equals ( reed "aufgabe.VNr" ) ( toEx vnr )
-        ] ++
-        [ Where $ reed "NOW() BETWEEN ( Von AND Bis )" | only_current ]
+        , Where $ ands $
+	        [ equals ( reed "aufgabe.VNr" ) ( toEx vnr ) ] 
+	     ++ [ reed "NOW() BETWEEN ( Von AND Bis )" | only_current ]
+        ]
     inh  <- collectRows (\ state -> do
         g_anr <- getFieldValue state "ANr"
     	g_vnr <- getFieldValue state "VNr"

@@ -102,7 +102,7 @@ instance Show MNr where show = render . toDoc
 instance Read MNr where readsPrec = parsec_readsPrec
 instance SqlBind MNr where 
     -- fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
-    fromSqlValue (SqlNumeric _ _) s = Just $ MNr $ read s
+    fromSqlValue _ s = Just $ MNr $ read s
     toSqlValue (MNr i) = toSqlValue i
 
 instance FromCGI MNr where
@@ -209,6 +209,8 @@ instance SqlBind SNr where
 
 instance ToEx SNr where
     toEx (SNr x) = EString $ show x
+instance ToString SNr where
+    toString (SNr x) = show x
 
 -- | Aufgaben-Nummer
 
@@ -233,6 +235,8 @@ instance SqlBind GNr where
     toSqlValue (GNr i) = toSqlValue i
 instance ToEx GNr where
     toEx (GNr x) = EString $ show x
+instance FromCGI GNr where
+    fromCGI cs = GNr $ read cs
 
 -- | Vorlesungs-Nummer
 

@@ -222,7 +222,9 @@ selector_submit tag title def opts = do
     sopt <- submit   ("S" ++ tag) "submit"
     close -- row
     case mopt of
-	 Nothing -> mzero
+	 Nothing -> case opts of
+              [( name, opt) ] -> return opt
+	      _       -> mzero
 	 Just opt -> do
 	      when sopt blank
 	      return opt
