@@ -43,6 +43,15 @@ instance ToDoc Language where
 instance Show Language where
     show = render . toDoc
 
+komplett :: Language -> [ String ]
+-- wirklich *alle* wörter des alphabets werden erzeugt und getestet,
+-- es entsteht unendliche liste
+komplett l = do
+    n <- [ 0 .. ]
+    w <- alle ( setToList $ alphabet l ) n  
+    guard $ contains l w
+    return w
+
 
 random_sample :: Language -> Int -> Int -> IO [ String ]
 -- würfeln und testen
