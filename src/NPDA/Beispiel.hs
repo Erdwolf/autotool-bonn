@@ -5,6 +5,7 @@ module NPDA.Beispiel where
 -- Skript Seite 56
 
 import NPDA.Type
+import NPDA.Dot
 
 -- import Akzeptieren
 import Set
