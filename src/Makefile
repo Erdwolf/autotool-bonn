@@ -73,7 +73,9 @@ haddock :
 
 ###############################################################################
 
-MATCHBOX_DIRS = util Util Reporter GVKnoten Graph Boxing Dot NFA NFTA Exp TES SRS 
+MATCHBOX_DIRS = util Util Reporter Inter \
+	GVKnoten Graph Boxing Dot \
+	NFA NFTA Exp TES SRS 
 MATCHBOX_SRC = $(wildcard Makefile* *.hs) \
 	$(shell find $(MATCHBOX_DIRS) -name "*.hs" -print)
 MATCHBOX_DOWNLOAD = $(CGIDIR)/download
