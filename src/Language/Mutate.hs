@@ -5,7 +5,8 @@ module Language.Mutate where
 import Language.Type
 
 import Util.Zufall
-import Edit
+import Util.Edit
+
 import List ( nub, partition )
 
 mutate :: Language -> Language
