@@ -35,7 +35,6 @@ all : drift face
 control : 
 	(cd control && make autoan.cgi )
 
-
 # $(DIRS):
 # 	$(MAKE) -C $@
 

@@ -9,7 +9,7 @@ import Reader
 import Size
 
 data Statement = 
-	   Push Integer	 | Drop
+	   Push Integer	 | Drop | Dup
 	 | Add | Sub | Mul -- | Div
 	 | Load 	 | Store 
 	 | Jump Int | Jumpz Int -- relative Sprünge

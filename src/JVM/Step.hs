@@ -17,7 +17,8 @@ step s = do
     let b = code s ! pc s ; s' = stepped s
     case b of
          Push i -> push i s'
-	 Drop   -> do ( a, s ) <- pop s' ; return s
+	 Drop   -> JVM.Step.drop s' 
+	 Dup    -> dup s'
          Add    -> zwei (+) s' ; Sub    -> zwei (-) s' ; Mul    -> zwei (*) s'
          Load   -> load s'     ; Store  -> store s'
 	 Jump d -> jump d s'   ; Jumpz d -> jumpz d s'
@@ -45,6 +46,16 @@ pop s = do
 	    -- paﬂt nur, falls nicht leer
 	    top : rest <- return $ stack s
 	    return ( top , s { stack = rest } )
+
+drop :: State -> [ State ]
+drop s = do ( _ , s ) <- pop s ; return s
+
+dup :: State -> [ State ]
+dup s = do 
+    ( a, s ) <- pop s
+    s <- push a s
+    s <- push a s
+    return s
 
 -----------------------------------------------------------------------
 
