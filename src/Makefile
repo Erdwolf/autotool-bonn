@@ -19,9 +19,16 @@ GHC = ghc
 
 BINS = DB/Server.bin DB/Client.bin DB/CGI.cgi
 
-# location of DB script
+CGIS = SRS/Deleting/Demo.cgi \
+       SRS/Bounded/MB.cgi \
+       SRS/RFC/RFC.cgi 
 
-WWW = $(HOME)/public_html/db
+CGIINDEX = SRS/Interface/index.html
+
+CGIDIR = $(HOME)/public_html/cgi-bin
+
+# location of DB script
+# WWW = $(HOME)/public_html/db
 
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
 
@@ -55,9 +62,11 @@ tags :
 
 drift : $(DRIFT) 
 
-www : DB/CGI.cgi
-	cp DB/CGI.cgi DB/index.html $(WWW)/
+# www : DB/CGI.cgi
+#	cp DB/CGI.cgi DB/index.html $(WWW)/
 
+cgi : $(CGIS)
+	cp $(CGIS) $(CGIINDEX) $(CGIDIR)
 
 .PHONY : do
 
