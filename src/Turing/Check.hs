@@ -3,7 +3,7 @@ module Turing.Check where
 -- $Id$
 
 import Turing.Type
-
+import Monad ( guard )
 
 check :: TUM y z
       => Turing y z -> Either String String

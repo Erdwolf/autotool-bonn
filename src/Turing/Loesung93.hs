@@ -1,11 +1,13 @@
 module Loesung93 where
 
 
-import Aufgabe93
+-- import Aufgabe93
 import Turing
 
-data Z = A0 | A1 | A2 | B | C | D | E | F
-     deriving (Eq, Ord, Show)
+import ToDoc
+import Reader
+
+import Turing.Z
 
 -- die Maschine soll { I ^ (a * b) | a, b > 1 } akzeptieren
 

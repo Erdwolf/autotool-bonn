@@ -29,7 +29,7 @@ CGIBIN = $(PUB)/cgi-bin
 
 CGIDIR = $(PUB)/bounded
 
-
+DrIFT = DrIFT-2.0rc3/src/DrIFT
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
 DP = /usr/local/lib/hugs:$(HOME)/autotool/util
 
@@ -59,9 +59,12 @@ tags :
 	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $*.hs -o $@
 
 %.hs : %.hs.drift
-	DERIVEPATH=$(DP)  DrIFT $< > $@
+	DERIVEPATH=$(DP)  $(DrIFT) $< > $@
 
 drift : $(DRIFT) 
+
+
+
 
 cgi : $(CGIS)
 	cp $(CGIS) $(CGIINDEX) $(CGIDIR)

@@ -1,3 +1,5 @@
+-- -*- mode: haskell -*-
+
 module Turing.Type 
 
 ( module Turing.Type
@@ -16,16 +18,25 @@ import ToDoc
 import Reader
 
 data Bewegung = L | O | R
-     deriving (Eq, Show, Ord)
+     deriving (Eq, Ord, Show, Read)
 
 {-! for Bewegung derive : ToDoc, Reader !-}
 
-data Turing y z = 
+-- ohne methoden, soll nur die constraints aufsammeln
+class ( Ord y, Show y, ToDoc y, ToDoc [y], Reader y, Reader [y]  ) => UM y
+class ( UM y, UM z ) => TUM y z 
+
+instance UM Char
+instance UM Integer
+instance TUM Char Integer
+
+
+data (UM y, UM z) => Turing y z = 
      Turing { eingabealphabet  :: Set y
 	    , arbeitsalphabet  :: Set y
-	    , leerzeichen	     :: y
+	    , leerzeichen      :: y
 	    , zustandsmenge    :: Set z 
-	    , tafel	     :: FiniteMap (y, z) (Set (y, z, Bewegung))
+	    , tafel	       :: FiniteMap (y, z) (Set (y, z, Bewegung))
 	    , startzustand     :: z
 	    , endzustandsmenge :: Set z
 	    }
@@ -33,15 +44,13 @@ data Turing y z =
 {-! for Turing derive : ToDoc, Reader !-}
 
 
-class (Ord y, Ord z, Show y, Show z, ToDoc y, ToDoc z
-	 , ToDoc [y], ToDoc [z]) => TUM y z 
-    -- ohne methoden, soll nur die constraints aufsammeln
-instance TUM Char Integer
-
 
 instance TUM y z => Show (Turing y z) where
     show = render . toDoc
 
+instance ( TUM y z )
+    => Read (Turing y z) where
+    readsPrec = parsec_readsPrec
 
 lookupset :: Ord a => FiniteMap a (Set b) -> a -> Set b
 lookupset fm x = case lookupFM fm x of
