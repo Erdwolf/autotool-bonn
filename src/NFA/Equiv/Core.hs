@@ -9,7 +9,7 @@ import Autolib.ToDoc
 import Autolib.Util.Fix
 
 import Data.Set
-import Data.FiniteMap
+import Autolib.FiniteMap
 import Data.List (partition, tails)
 import Maybe (fromMaybe,maybeToList)
 

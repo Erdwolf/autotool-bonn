@@ -8,7 +8,7 @@ import Autolib.NFA.Equiv.Core
 import Autolib.ToDoc
 import Autolib.Reporter
 import Autolib.Informed
-import Autolib.Sets
+import Autolib.Set
 import Autolib.Util.Size
 import Autolib.Letters
 
