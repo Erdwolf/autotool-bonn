@@ -97,6 +97,19 @@ iface mks = do
     when ( tutor && Statistics == action ) $ do
          Just auf <- return mauf 
 	 ( act, sauf, stud ) <- tutor_statistik vnr auf
+
+         when ( act == Clear_Cache ) $ do
+            let d =  D.Datei { D.pfad = [ "autotool", "cache"
+				   , toString vnr
+				   , toString $ SA.anr sauf
+				   ]
+			  , D.name = toString $ S.mnr stud 
+			  , D.extension = "cache"
+			  } 
+            io $ D.loeschen d `catch` \ any -> return ()
+            plain $ "geloescht: " ++ show d
+	    mzero
+
          mtriple <- show_previous ( Edit == act ) vnr mks stud auf sauf
          case mtriple of
 	     Nothing -> return ()
@@ -141,15 +154,6 @@ iface mks = do
 	View -> do
 	    find_previous False vnr mks stud' auf'
             return ()
-        Clear_Cache -> 
-            io $ D.loeschen ( D.Datei { D.pfad = [ "autotool", "cache"
-				   , toString vnr
-				   , fromMaybe "none" $ fmap toString manr
-				   ]
-			  , D.name = toString $ S.mnr stud' 
-			  , D.extension = "cache"
-			  } )
-                `catch` \ any -> return ()
 
     return ()
 
