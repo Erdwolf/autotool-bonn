@@ -3,8 +3,9 @@ module Inter.Types where
 -- $Id$
 
 import Reporter
-import Challenger ( Problem (..), Partial (..) )
-import Step
+
+import Challenger.Problem
+import Challenger.Partial
 
 import ShowFunctions
 import ToDoc
