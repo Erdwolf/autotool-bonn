@@ -8,7 +8,6 @@ import Autolib.Hash
 
 import Tree
 import Data.Typeable
-import Baum.Dot
 
 class Such baum where
 
