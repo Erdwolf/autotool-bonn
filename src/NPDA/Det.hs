@@ -14,7 +14,7 @@ import Autolib.Set
 import Autolib.ToDoc
 
 check :: NPDAC x y z => C.Type ( NPDA x y z )
-check = sanity `C.and_then` C.Make 
+check = C.Make 
       { C.nametag = "det"
       , C.condition = text "Der Kellerautomat soll determinstisch sein."
       , C.investigate = ist_deterministisch

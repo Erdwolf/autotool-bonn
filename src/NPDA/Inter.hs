@@ -42,7 +42,7 @@ instance Generator A.Acceptor Config Accept where
     	   , A.yeah = take m $ filter small yeah
     	   , A.noh  = take m $ filter small noh
     	   , A.cut  = cut config 
-    	   , A.properties = properties config
+    	   , A.properties = Sane : properties config
     	   , A.start = start config
     	   }
 

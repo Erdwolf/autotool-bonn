@@ -4,6 +4,7 @@ module NPDA.Property where
 
 import NPDA.Type
 import NPDA.Det
+import NPDA.Sane
 
 import Condition
 
@@ -18,6 +19,7 @@ import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data Property = Det
+	      | Sane
     deriving ( Eq, Ord, Typeable )
 
 {-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
@@ -28,5 +30,6 @@ instance Condition  Property ( NPDA Char Char Int ) where
 
 check :: Property -> C.Type  ( NPDA Char Char Int )
 check p = case p of
+	 Sane -> NPDA.Sane.sanity
          Det -> NPDA.Det.check 
 
