@@ -2,6 +2,7 @@ Prerequisites:
 
 * ghc-6.2 ( http://www.haskell.org/ghc/ )
 * HaXml-1.12 ( http://www.cs.york.ac.uk/fp/HaXml/ )
+* mysql-4.1 ( http://www.mysql.com/ )
 * hsql-1.2 ( is part of http://htoolkit.sourceforge.net/ )
 * auto-drift ( http://141.57.11.163/auto/ )
 * auto-lib ( http://141.57.11.163/auto/ )
@@ -18,3 +19,103 @@ The program is a CGI executable.
 Warning: The installed program won't work as is.
 You need additional configuration for the database access.
 
+-------------------------------------------------------------------------------
+
+* BEFORE COMPILE:
+0. Be sure the prerequisites are fulfilled.
+1. Create user and database in mysql, e.g. user=autotool, db=autodb.
+2. Edit the file src/control/Mysqlconnect.hs.example:
+   - Fill in the correct values.
+   - Save the file as src/control/Mysqlconnect.hs.
+
+* BEFORE USE:
+0. Copy the file Inter/Super.cgi to a location that allows execution of
+   CGI-programs. (e.g. /home/autotool/public_html/cgi-bin/Super.cgi)
+1. Be sure the configured path /space is writeable by the
+   user that executes CGI-programs on your machine.
+2. Be sure the path ../pics (relative to the location of Super.cgi) is
+   writeable by this user too. (e.g. /home/autotool/public_html/pics)
+3. Be sure this paths are readable by the webserver user.
+4. Create the tables in mysql:
+
+CREATE TABLE `admin` (
+  `AdNr` int(10) unsigned NOT NULL auto_increment,
+  `Name` varchar(20) NOT NULL default '',
+  `Passwort` varchar(20) NOT NULL default '',
+  PRIMARY KEY  (`AdNr`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `aufgabe` (
+  `ANr` int(11) NOT NULL auto_increment,
+  `Name` varchar(30) NOT NULL default '',
+  `Subject` varchar(20) NOT NULL default '',
+  `VNr` int(10) NOT NULL default '0',
+  `Path` varchar(100) character set latin1 collate latin1_bin NOT NULL default '.',
+  `Highscore` enum('low','high','no') NOT NULL default 'no',
+  `Von` datetime NOT NULL default '0000-00-00 00:00:00',
+  `Bis` datetime NOT NULL default '0000-00-00 00:00:00',
+  `Remark` text,
+  `Config` text,
+  `Typ` text,
+  `Status` enum('demo','mandatory','optional') default NULL,
+  PRIMARY KEY  (`ANr`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='aufgabe';
+
+CREATE TABLE `gruppe` (
+  `GNr` int(10) unsigned NOT NULL auto_increment,
+  `VNr` int(10) unsigned NOT NULL default '0',
+  `Name` varchar(100) default 'GruppenName <empty>',
+  `MaxStudents` int(10) unsigned NOT NULL default '0',
+  `Referent` varchar(60) NOT NULL default 'unbekannt',
+  PRIMARY KEY  (`GNr`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `punkte` (
+  `Rubrik` varchar(25) default NULL,
+  `MNr` varchar(12) default NULL,
+  `punkte` int(11) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `stud_aufg` (
+  `SNr` int(10) unsigned NOT NULL default '0',
+  `ANr` int(10) unsigned NOT NULL default '0',
+  `Ok` int(11) default NULL,
+  `No` int(11) default NULL,
+  `size` int(11) default NULL,
+  `Scoretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `Input` text,
+  `Report` text,
+  `Result` text,
+  `Instant` text,
+  PRIMARY KEY  (`SNr`,`ANr`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Aufgaben Student';
+
+CREATE TABLE `stud_grp` (
+  `SNr` int(10) unsigned NOT NULL default '0',
+  `GNr` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`SNr`,`GNr`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `student` (
+  `SNr` int(10) unsigned NOT NULL auto_increment,
+  `MNr` varchar(12) NOT NULL default '',
+  `Name` varchar(25) NOT NULL default '',
+  `Vorname` varchar(25) NOT NULL default '',
+  `Email` varchar(150) NOT NULL default '',
+  `Status` varchar(10) NOT NULL default 'inaktiv',
+  `Passwort` varchar(64) default NULL,
+  PRIMARY KEY  (`SNr`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='angemeldete Studenten';
+
+CREATE TABLE `tutor` (
+  `SNr` int(10) default NULL,
+  `VNr` int(10) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `vorlesung` (
+  `VNr` int(10) unsigned NOT NULL auto_increment,
+  `Name` varchar(50) NOT NULL default '',
+  `EinschreibVon` datetime NOT NULL default '2005-01-01 00:00:00',
+  `EinschreibBis` datetime NOT NULL default '2005-01-01 00:00:00',
+  PRIMARY KEY  (`VNr`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='vorlesung';
