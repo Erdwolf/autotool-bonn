@@ -2,7 +2,7 @@
 
 module Hanoi.Type where
 
--- $Id$
+--  $Id$
 
 import Data.FiniteMap
 import ToDoc

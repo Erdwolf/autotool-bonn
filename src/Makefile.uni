@@ -14,11 +14,7 @@ COMMON = util:wash:control
 
 DIRS = $(LOCAL)$(COMMON)
 
-ifeq ($(shell hostname), theo1)
-EXTRA_PACKS = -package hsql
 DEFINES = -DPOSIX=1
-GHC = ghc6
-endif
 
 # common parts ############################################################
 

@@ -10,13 +10,12 @@ import Reader
 import ReadFM
 import Sets
 
--- *****************************************************************
---Bemerkungen: 
---1. Aussagenlogische Formel in konjunktiver Normalform (KNF):
---Literal = Variable oder nonVariableVariable
---Klausel= Literal || Literal ||...|| Literal 	
---KNF = Klausel && Klausel && ... && Klausel
--- *****************************************************************
+-- Bemerkungen: 
+-- 1. Aussagenlogische Formel in konjunktiver Normalform (KNF):
+-- Literal = Variable oder nonVariableVariable
+-- Klausel= Literal || Literal ||...|| Literal 	
+-- KNF = Klausel && Klausel && ... && Klausel
+
 
 data SAT = SAT deriving Show
 

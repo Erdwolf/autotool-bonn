@@ -1,8 +1,8 @@
--- | Korrekturfunktion für PCP-Aufgaben
 
 -- autor Markus Kreuz
 -- mai99byv@studserv.uni-leipzig.de
 
+-- | Korrekturfunktion für PCP-Aufgaben
 module PCProblem.PCProblem (
      PCProblem (..)
     ,Folge (..)
@@ -93,18 +93,23 @@ instance  Step PCProblem PCP Folge ( Select Int ) where
         step Vertex ( g, k ) xs ( Pick x ) =
             xs ++ [x]
 
+{-
 instance  Interactive PCProblem PCP Folge ( Select Int ) where
     interactive PCProblem (PCP p) listen = do
         let 
-
+-}
 
 
 ---------------------------------------------------------------------------
 
 lr :: PCP -> Folge -> ( String, String )
 lr (PCP pcp) folge = 
-    let links  = do k <- folge ; let { (l,r) = pcp !! fromIntegral (k-1) } ; l
-	rechts = do k <- folge ; let { (l,r) = pcp !! fromIntegral (k-1) } ; r
+    let links  = do k <- folge
+		    let (l,r) = pcp !! fromIntegral (k-1)
+		    l
+	rechts = do k <- folge
+		    let (l,r) = pcp !! fromIntegral (k-1)
+		    r
     in	( links, rechts )
 
 common :: Eq a => [a] -> [a] -> [a]
