@@ -22,8 +22,8 @@ import List (partition)
 import Monad ( guard )
 import Maybe ( isJust, maybeToList, fromMaybe )
 import FiniteMap
-import Set
-import OrdSet
+import Sets
+
 
 import ToDoc
 import Boc
