@@ -5,8 +5,11 @@ module Grammatik.CF.Yeah_Noh where
 -- -- $Id$
 
 import Language.Inter
+import Language.Type
+import Language.Syntax
 
 import Grammatik.Type
+import qualified Grammatik.Property 
 import qualified Grammatik.Ableitung as A
 
 import Grammatik.CF.Instance.Config
@@ -25,6 +28,8 @@ import Autolib.FilterBound
 import Autolib.Util.Sort
 import Autolib.ToDoc
 import Autolib.Reporter
+
+
 
 -- eins der beiden imports auswählen:
 
@@ -55,7 +60,6 @@ cf_yeah_noh c g = do
     -- wenn wir hier ankommen, sind die ableitungen OK
 
     let ch = C.make g
-    -- inform $ text "DEBUG: chomsky nf" <+> toDoc ch
 
     let snip = take 5 -- ??
 
@@ -97,3 +101,26 @@ cf_yeah_noh c g = do
 
     -- wenn wir hier sind, ist alles OK
 
+--------------------------------------------------------------------
+
+test = do
+     let s = Gleich "ab"
+         l = inter s
+     y <-      samples l 50 4
+     n <- anti_samples l 50 4
+     let conf = Config 
+		 { lang = s
+		 , properties  = [ Grammatik.Property.Eindeutig 500 ]
+		 , yeah = Long $ map Long y
+		 , noh  = Long $ map Long n
+                 }
+     let g = Grammatik 
+                 { terminale = mkSet "ab", variablen = mkSet "ST"
+	         , start = 'S'
+	         , regeln = mkSet [ ( "S", "" ),("S","aSbS"),("S", "bSaS") ]
+	         }
+
+     let ch = C.make g
+     mapM_ print $ accepteds ch ( y ++ n )
+
+     print $ repo $ cf_yeah_noh conf g
