@@ -15,9 +15,12 @@ module HTWK.SS04.Informatik where
 -- ss04/informatik
 
 import qualified HTWK.SS04.Informatik.Boolean
+import qualified HTWK.SS04.Informatik.Code
 
 aufgaben = []
        ++ HTWK.SS04.Informatik.Boolean.generates
+       ++ HTWK.SS04.Informatik.Code.generates
+
 {-
        ++ Baum.Quiz.generates
        ++ Sortier.Netz.Check.generates 

@@ -1,0 +1,34 @@
+-- -*- mode: haskell -*-
+
+module Code.Huffman.LR where
+
+-- $Id$
+
+import ToDoc
+import Reader
+
+import Code.Type
+
+data LR = L | R 
+     deriving ( Eq, Ord, Enum, Bounded )
+
+{-! for LR derive : ToDoc, Reader !-}
+
+instance Show LR where show = render . toDoc
+instance Read LR where readsPrec = parsec_readsPrec
+
+data Ord a => Letter a = Letter 
+	      { weight :: Int
+	      , codes  :: Code a LR
+	      }
+     
+{-! for Letter derive : ToDoc, Reader !-}
+
+instance ( Ord a, ToDoc a ) => Show ( Letter a ) where
+    show = render . toDoc
+instance ( Ord a, Reader a ) => Read ( Letter a ) where 
+    readsPrec = parsec_readsPrec
+
+
+
+

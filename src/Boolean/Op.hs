@@ -6,6 +6,7 @@ import Reader
 import ToDoc
 import Hash
 
+
 import qualified TES.Symbol
 import qualified TES.Parsec
 

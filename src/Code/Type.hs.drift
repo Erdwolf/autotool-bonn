@@ -1,0 +1,19 @@
+module Code.Type 
+
+( module Code.Type
+, module Data.FiniteMap
+, module Sets
+)
+
+where
+
+--  $Id$
+
+import Data.FiniteMap
+import Sets
+
+type Frequency a = FiniteMap a Int
+
+type Code a b = FiniteMap a [ b ]
+
+
