@@ -17,6 +17,8 @@ import qualified Graph.Col.Plain
 import qualified Graph.Col.Quiz
 import qualified Graph.Cage.Central
 import qualified Graph.Graceful.Central
+import qualified Collatz.Plain
+import qualified Collatz.Inverse
 
 makers :: [ Make ]
 makers = [ NFA.Analyse.make
@@ -36,5 +38,9 @@ makers = [ NFA.Analyse.make
 	 , Graph.Col.Quiz.make
 	 , Graph.Cage.Central.make
 	 , Graph.Graceful.Central.make
+	 , Collatz.Plain.make
+	 , Collatz.Plain.qmake
+	 , Collatz.Inverse.make
+	 , Collatz.Inverse.qmake
 	 ]
 

@@ -4,14 +4,14 @@ module Inter.Types where
 
 import Autolib.Reporter
 
-import Challenger.Problem
+-- import Challenger.Problem
 import Challenger.Partial
 
 import Control.Types
 
 import  Autolib.ToDoc
 import  Autolib.Reader
-import  Autolib.Size
+-- import  Autolib.Size
 import  Autolib.Informed
 
 import Data.Typeable
@@ -72,13 +72,13 @@ data Var p i b =
 class ( Show p, Typeable p
       , Show i, Typeable i, ToDoc i
       -- , Haskell2Xml i, Reader i, Read i
-      , Show b, Typeable b, Haskell2Xml b, ToDoc b, Reader b , Size b
+      , Show b, Typeable b, Haskell2Xml b, ToDoc b, Reader b 
       , Partial p i b
       ) => V p i b -- ohne methoden
 instance ( Show p, Typeable p
       , Show i, Typeable i, ToDoc i
       -- , Haskell2Xml i, Reader i, Read i
-      , Show b, Typeable b, Haskell2Xml b, ToDoc b, Reader b , Size b
+      , Show b, Typeable b, Haskell2Xml b, ToDoc b, Reader b 
       , Partial p i b
       ) => V p i b -- ohne methoden
 

@@ -1,0 +1,29 @@
+-- -*- mode: haskell -*-
+
+module Collatz.Parameter where
+
+import Prelude hiding ( length )
+import qualified Prelude
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Text.XML.HaXml.Haskell2Xml
+import Data.Typeable
+
+data Parameter = Parameter { length :: Int
+		   , top :: Integer
+		   }
+    deriving ( Eq, Ord, Typeable )
+
+{-! for Parameter derive: ToDoc, Reader, Haskell2Xml !-}
+
+compute x =
+        let xs = takeWhile ( > 1 )
+	       $ iterate ( \ x -> if even x then div x 2 else 3 * x + 1 )
+	       $ x
+        in Parameter { length = Prelude.length xs 
+			    , top = maximum xs
+			    }
+
+one :: Parameter
+one = Parameter { length = 1, top = 1 }

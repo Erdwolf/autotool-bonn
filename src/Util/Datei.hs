@@ -72,18 +72,19 @@ home_dir :: IO FilePath
 home_dir = do
 	    return Util.Datei.Base.base
 
-sanity :: Datei -> IO ()
--- mit großer vorsicht: über das argument von Get.cgi
+-- | mit großer vorsicht: über das argument von Get.cgi
 -- könnte jemand von außen files zu lesen probieren.
 -- inklusive aller tricks mit "../.." usw.
 -- deswegen vor jedem zugriff testen
+sanity :: Datei -> IO ()
 sanity d = 
     when ( not $ all isok
 	       $ concat $ pfad d ++ [ name d , extension d ] 
-	 ) $ error "strange zeichen in dateiname"
+	 ) $ error 
+           $ "strange zeichen in dateiname: " ++ show d
 
 isok :: Char -> Bool
-isok c = isAlphaNum c || c == '-'
+isok c = isAlphaNum c || c `elem` "-_"
 
 
 home :: Datei -> IO FilePath

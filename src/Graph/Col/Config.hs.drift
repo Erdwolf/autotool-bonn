@@ -2,8 +2,6 @@
 
 module Graph.Col.Config where
 
-import Inter.Types
-
 import Autolib.ToDoc
 import Autolib.Reader
 
