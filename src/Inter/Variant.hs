@@ -148,11 +148,19 @@ handler par0  (Variant v ) =   standardQuery "Computer" $ do
 		  -- hier (NO) in DB eintragen
         Left e -> do
 	    h3 $ CGI.text "Syntaxfehler"
-	    CGI.pre $ CGI.text $ show e
+	    CGI.pre $ CGI.text $ render $ errmsg e $ P.input par
 
     hr CGI.empty
 
+---------------------------------------------------------------------------
 
+errmsg :: ParseError -> String -> Doc
+errmsg e inp = 
+    let css = lines inp
+	p = errorPos e
+	(pre, post) = splitAt (sourceLine p - 1) css
+	it  = replicate (sourceColumn p - 1) '-' ++ "?"
+    in  vcat $ map text $ pre ++ [ it , messageString e ] ++ post
 
 
     
