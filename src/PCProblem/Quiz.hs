@@ -12,13 +12,13 @@ import Challenger.Partial
 
 import Util.Datei
 import Util.Cache
-import Util.Seed
+import Autolib.Util.Seed
 
-import Array
-import Reporter
+import Data.Array
+import Autolib.Reporter
 import Data.List (isPrefixOf)
-import ToDoc
-import Informed
+import Autolib.ToDoc
+import Autolib.Informed
 
 
 instance Partial PCProblem PCP Folge where
@@ -102,8 +102,18 @@ quiz par = \ key -> do
      (p, f) <- generator par
      return p
 
+make_quiz :: Make
+make_quiz = Make "PCP-Quiz"
+    ( \ par -> make "PCP" "Quiz" $ quiz par )
+    PCProblem.Param.g
+
 fixed :: PCP -> Key -> IO PCP
 fixed pcp = \ key -> return pcp
+
+make_fixed :: Make
+make_fixed = Make "PCP-Fixed"
+    ( \ pcp -> make "PCP" "Fixed" $ fixed pcp )
+    ( PCP [ ("bba","b"),("a","b"),("b","ab") ] )
 
 
 

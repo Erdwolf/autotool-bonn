@@ -21,7 +21,7 @@ import Autolib.TES.In
 
 import Autolib.Reader
 
-type Exp = Term Identifier Op
+type Exp = Term Identifier ( Op Bool )
 
 instance Reader Exp where
     readerPrec p = treader $ Config { reserved_symbols = ops

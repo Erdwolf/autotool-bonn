@@ -33,18 +33,21 @@ import Text.Html hiding ( text, input, version, width, height )
 data Par =
      Par { env :: Env
 	 , makers :: [ Make ]
-	 , maker :: Make
-	 , config :: Area
-	 , solution :: Area
 	 }
+
+click :: String
+click = "Click"
+
+maker :: String
+maker = "Maker"
 
 main :: IO ()
 main = wrapper $ \ e ->  
          iface ( Par { makers = Inter.Collector.makers
-		     , maker = error "Super.maker"
-		     , config = error "Super.config"
-		     , solution = error "Super.solution"
-		     , env = e
+		     -- sort of a bit of a hack:
+		     , env = case lookup click e of
+		          Nothing -> e
+		          Just "Change" -> filter ( \ (i,v)-> i==maker ) e
 		     } ) 
              `Control.Exception.catch` \ err -> 
                  return $ p << pre << primHtml ( show err )
@@ -106,7 +109,9 @@ core ( var :: Var p i b ) env = do
 		    evaluate' p i b
            return $ pre << show com
 
-    return $ header +++ belly +++ desc +++ log
+    return $ header 
+	   +++ h3 << "Diese Konfiguration erzeugt folgende Aufgabe:" +++ belly 
+	   +++ h3 << "Für den Studenten sieht das dann so aus:" +++ desc +++ log
 
 ---------------------------------------------------------------------------------
 
@@ -121,13 +126,14 @@ page par contents =
 				   ! [ Text.Html.action "Super.cgi" , method "POST" ]
 		 )
          
-preface par = btable << aboves [ besides ( selector par
-					  ++ [ td << submit "Click" ( show Change ) ] ) ]
+preface par = btable << aboves [ besides ( selector par 
+  ++    [ td << submit click ( show Change ) ] ) ]
+
 selector par =
     let opts = do
-          let sel = lookup "Maker" (env par)
+          let sel = lookup maker (env par)
 	  Make doc _ _ <- makers par
           return $ Text.Html.option (primHtml doc) ! [ selected | Just doc == sel ]
-    in  [ td << "Maker:" ,  td << select ! [ Text.Html.name "Maker"] << opts ]
+    in  [ td << "choose Maker:" ,  td << select ! [ Text.Html.name maker ] << opts ]
 
 btable x = table x ! [ border 1 ]

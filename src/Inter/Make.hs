@@ -26,7 +26,7 @@ get_boiler makers configs = do
 
 -- | für den tutor: präsentiert liste der bekannten maker-typen
 present :: [ Make ] -> Doc
-present makers = hcat $ do
+present makers = vcat $ do
     maker <- makers
     case maker of
         Make doc ( fun :: fun ) ex -> return $ text $ show 

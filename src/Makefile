@@ -10,7 +10,8 @@ CGIBIN = $(PUB)/cgi-bin
 ###############################################################################
 
 
-PROGS = Face Super
+# PROGS = Face Super
+PROGS = Super
 CGIS = $(patsubst %,Inter/%.cgi,$(PROGS))
 
 all : drift $(CGIS)

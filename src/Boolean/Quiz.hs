@@ -21,14 +21,14 @@ import Util.Cache
 
 import Inter.Types
 
-conf :: E.Binu Op
+conf :: E.Binu ( Op Bool )
 conf = E.Binu
      { E.binary  = [ read "&&", read "||", read "<", read "==" ]
      , E.unary   = [ ]
      , E.nullary = [ read "true", read "false" ]
      }
 
-roll :: Int -> IO ( Term Identifier Op )
+roll :: Int -> IO ( Term Identifier ( Op Bool ))
 roll i = do
     -- throw term
     t <- E.choose conf i
@@ -42,10 +42,17 @@ roll i = do
     let r = pokes s qvs
     return r
 
+{-
 make :: Int -> IO Inter.Types.Variant
 make p = return 
        $ Inter.Types.Variant
        $ quiz "Boolean" "Quiz" p
+-}
+
+make :: Make
+make = Make "Boolean-Quiz"
+            ( \ i -> quiz "Boolean" "Quiz" i )
+	    5
 
 quiz :: String -- Aufgabe
      -> String -- Version

@@ -15,6 +15,7 @@ where
 
 import PCProblem.Data
 import Autolib.Size
+import Data.Typeable
 
 {-
 import Iso
@@ -30,7 +31,8 @@ instance Number PCP PCP where
    number = id
 -}
 
-data PCProblem = PCProblem deriving Show
+data PCProblem = PCProblem deriving ( Show, Typeable )
+
 type Folge = [ Integer ]
 instance Size Folge where size = length
 

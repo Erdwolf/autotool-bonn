@@ -8,12 +8,15 @@ import Autolib.Reader
 import Autolib.Set
 import Autolib.Letters
 
-data PCP = PCP [(String, String)]
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data PCP = PCP [(String, String)] deriving ( Typeable )
 
 instance Letters PCP Char where
     letters ( PCP uvs ) = mkSet $ do (u, v) <- uvs ; u ++ v
 
-{-! for PCP derive: ToDoc, Reader !-}
+{-! for PCP derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance Show PCP where show = render . toDoc
 instance Read PCP where readsPrec = parsec_readsPrec
