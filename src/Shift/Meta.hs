@@ -56,15 +56,9 @@ delta deg ps = do
     inform $ fsep [ text "Betrachte die", toDoc deg <> text "-te"
 		  , text "Differenzenfolge", toDoc ps
 		  ]
-    if ( null ps )
-       then do
-	 inform $ text "Die Folge ist zu kurz,"
+    when ( null ps )
+         $ reject $ text "Die Folge ist zu kurz,"
 		    <+> text "ich kann das Wachstum nicht bestimmen."
-	 inform $ text "Da bis hier alle Differenzen >= 0 waren, nehme ich an,"
-	 inform $ text "daﬂ die Folge wenigstens wie ein Polynom"
-	 inform $ text "vom Grad" <+> toDoc (deg - 1) <+> text "w‰chst"
-	 return $ deg - 1
-       else do
 
     if ( all (== 0) ps )
        then do

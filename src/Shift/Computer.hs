@@ -3,6 +3,7 @@ module Shift.Computer where
 -- $Id$
 
 import Shift.Type
+import Shift.Enum
 
 import FiniteMap
 import Monad ( guard, when, foldM )
@@ -77,20 +78,21 @@ somes n k = do
 
 suche :: Int -> Int -> IO () 
 suche n k = do
-    putStrLn $ "optimiere differenz (q - p)"
-    let handle top = do
+    putStrLn $ "optimiere q"
+
+    let handle top ( ps : rest ) = do
 	    ps <- somes n k
 	    let (q, p) = find $ zustands_folge ps
 
 	    -- hiernach wird optimiert
-	    let m = p
+	    let m = q
 
 	    let sh = Shift { pins = ps, vorperiode = q, periode =  p }	
 	    when ( m  > top ) $ print $ sh
 	    when ( m == top ) $ putStr " * " 
-	    hFlush stdout
-	    handle (max top m)
-    handle 0
+	    handle ( max m top ) rest
+
+    handle 0 $ subsets k [1 .. n]
 
 
     
