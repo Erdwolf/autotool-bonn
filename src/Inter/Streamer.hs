@@ -94,7 +94,7 @@ hGetBlock :: Handle -> IO [ String ]
 hGetBlock h = do
     l <- hGetLine h
     if null l 
-	then return []
+	then return [ l ]
 	else do ls <- hGetBlock h
 	        return $ l : ls
 
