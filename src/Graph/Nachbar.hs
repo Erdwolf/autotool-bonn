@@ -14,6 +14,8 @@ import Autolib.Reporter
 import Autolib.Util.Teilfolgen
 import qualified Challenger as C
 
+import Autolib.Dot ( peng )
+
 import Data.Typeable
 import Data.List ( partition )
 
@@ -39,6 +41,8 @@ instance C.Partial Nachbar () ( Graph Int ) where
     initial p _ = circle [ 1 .. 6 ]
 
     partial p _ g = do
+        inform $ vcat [ text "Der Graph ist" , nest 4 $ toDoc g ]
+	peng g
 	validate g
         check_not_iso (circle [1 :: Int .. 5]) g
 	check_not_iso petersen          g
@@ -46,7 +50,6 @@ instance C.Partial Nachbar () ( Graph Int ) where
         nicht $ kx_mit_dach           g
     
     total p _ g = do
-        inform $ vcat [ text "Der Graph ist" , nest 4 $ toDoc g ]
         check_nach g
 
 make :: Make

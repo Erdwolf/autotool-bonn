@@ -4,8 +4,11 @@ module Graph.Cross where
 
 import Graph.Util
 import Autolib.Graph.Basic
+import Autolib.Dot
 
+import Autolib.Hash
 import Autolib.FiniteMap
+import Autolib.Boxing.Position
 import Inter.Types
 import Autolib.Reporter
 import qualified Challenger as C
@@ -20,7 +23,8 @@ type Strecke = ( Punkt, Punkt )
 -- | straight line drawing
 type Karte a = FiniteMap a Punkt
 
-instance GraphC a => C.Measure Cross ( Int, Graph a ) ( Karte a ) where
+instance GraphC a 
+       => C.Measure Cross ( Int, Graph a ) ( Karte a ) where
     measure p (c, g) f = 
         1000 * fromIntegral (length $ crossings g f) + extension f
 
@@ -35,17 +39,22 @@ extension f =
 
 data Cross = Cross deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance GraphC a => C.Partial Cross ( Int, Graph a ) (Karte a) where
+instance ( Show a, GraphC a )
+       => C.Partial Cross ( Int, Graph a ) ( Karte a ) where
 
-    describe p (c, g) = vcat
-        [ text "Ordnen Sie den Knoten dieses Graphen"
-	, nest 4 $ toDoc g
-	, text "ganzzahlige Koordinaten zu,"
-	, text "so daß sich eine Zeichnung mit höchstens"
-            <+> toDoc c <+> text "Kreuzungen"
-	, text "und mit geringer Ausdehnung ergibt."
-        , parens $ text "Bewertung: 1000 * Kreuzungszahl + größte Ausdehnung"
-	]
+    report p (c, g) = do
+        inform $ vcat
+	       [ text "Ordnen Sie den Knoten dieses Graphen"
+	       , nest 4 $ toDoc g
+	       ]
+	peng g
+	inform $ vcat 
+	       [ text "ganzzahlige Koordinaten zu,"
+	       , text "so daß sich eine Zeichnung mit höchstens"
+                     <+> toDoc c <+> text "Kreuzungen"
+	       , text "und mit geringer Ausdehnung ergibt."
+               , parens $ text "Bewertung: 1000 * Kreuzungszahl + größte Ausdehnung"
+	       ]
 
     initial p (c, g) = listToFM $ do
         (k, x) <- zip [ 0 .. ] $ lknoten g
@@ -57,6 +66,8 @@ instance GraphC a => C.Partial Cross ( Int, Graph a ) (Karte a) where
                   ( text "domain(f)", mkSet $ keysFM b )
 
     total p (c, g) b = do
+        inform $ text "Ihre Zeichnung ist:"
+        peng $ Pin g b 
         let crs = crossings g b
         inform $ vcat
 	       [ text "Ihre Zeichnung ergibt diese Kreuzungen:"
@@ -68,6 +79,44 @@ instance GraphC a => C.Partial Cross ( Int, Graph a ) (Karte a) where
 
 make :: Make
 make = direct Cross (1 :: Int, clique $ mkSet [1:: Int .. 5])
+
+g :: Graph Int
+g = clique $ mkSet [1 :: Int .. 5]
+
+b :: Karte Int
+b = C.initial Cross (1, g)
+
+--------------------------------------------------------------
+
+data Pin a = Pin ( Graph a ) ( Karte a )
+    deriving ( Eq, Ord, Show )
+
+instance GraphC a  => Hash ( Pin a ) where
+    hash (Pin g f) = hash (g, f)
+
+instance ( GraphC a, Show a ) => ToDot ( Pin a ) where
+    toDot ( Pin g f ) = toDot $ pin g f 
+    toDotProgram _ = "neato" 
+    toDotOptions _ = unwords [ "-s" ]
+
+pin :: GraphC a
+    => Graph a
+    -> Karte a
+    -> Graph a
+pin g f =
+    let 
+        h = mapFM ( \ k v -> toPos v ) f
+        ( ul, or ) = minimax $ eltsFM h
+	scale = 7 / abs ( or - ul )
+    in  g { graph_layout = mapFM ( \ k p -> ( p - ul ) * scale ) h
+	  , bounding = or
+	  , show_labels = True
+          }
+
+toPos ( x , y ) = Position { width  = fromIntegral x 
+				   , height = fromIntegral y
+				   }
+---------------------------------------------------------------
 
 crossings :: GraphC a 
           => Graph a 
@@ -105,13 +154,4 @@ det3 [ [a1,a2,a3], [b1,b2,b3], [c1,c2,c3] ]
     - a2 * ( b1 * c3 - b3 * c1 )
     + a3 * ( b1 * c2 - b2 * c1 )
 
-------------------------------------------------
-
-a = (2,1)
-b = (1,3)
-c = (1,2)
-d = (3,1)
-
-ab = (a,b)
-cd = (c,d)
 

@@ -26,6 +26,10 @@ class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
       -- die nur von p allein abhängt (dann muß man nicht erst erzeugen
       -- und kann trotzdem schon was ausgeben)
       describe :: p -> i -> Doc
+      describe p i = vcat
+          [ text "Problem" <+> toDoc p
+	  , text "Instanz" <+> toDoc i
+	  ]
 
       -- | falls wir auch rechnen wollen (z. b. Bilder malen)
       -- hat default-implementierung, die describe benutzt
@@ -42,7 +46,7 @@ class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
       -- default
       partial p i b = return ()
 
-      -- | hier können wir irgendwas vorrechen
+      -- | hier können wir irgendwas vorrechen,
       -- nachdem der partial-test bestanden wurde 
       -- (zur Reihenfolge siehe Inter.Evaluate)
       demonstrate :: p -> i -> b -> Reporter ()

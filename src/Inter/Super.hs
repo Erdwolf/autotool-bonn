@@ -195,42 +195,44 @@ get_stud tutor stud =
 -- für student echt
 solution stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
-            let conf = read $ toString $ A.config auf
-                var = fun  conf
-                p = problem var
-            let mat = S.mnr stud
-            k <- io $ key var $ toString mat 
-            g <- io $ gen var k
-            let ( Just i  , com :: Doc ) = export g
-                desc = describe (problem var) i
-                ini  = initial  (problem var) i
-            h3 "Aufgabenstellung"
-            pre $ show desc
-            br
-	    plain "Hinweise"
-	    pre $ toString $ A.remark auf
+    let conf = read $ toString $ A.config auf
+        var = fun  conf
+        p = problem var
+    let mat = S.mnr stud
+    k <- io $ key var $ toString mat 
+    g <- io $ gen var k
+    let ( Just i  , com :: Doc ) = export g
+        ini  = initial  (problem var) i
+        -- desc = describe (problem var) i
+    ( _ , desc :: Html ) <- io $ run $ report (problem var) i
+    h3 "Aufgabenstellung"
+    html desc
+    br
+    plain "Hinweise"
+    pre $ toString $ A.remark auf
 
-            hr ---------------------------------------------------------
-	    h3 "Lösung"
+    hr ---------------------------------------------------------
+    h3 "Lösung"
 
-            ex <- submit "subex" "example"
-            prev <- submit "subprev" "previous"
-            sub <- submit "subsol" "submit"
-	    br
-            when ( ex || prev ) blank
+    ex <- submit "subex" "example"
+    prev <- submit "subprev" "previous"
+    sub <- submit "subsol" "submit"
+    br
+    when ( ex || prev ) blank
 
-            let b0 = render $ toDoc ini 
-            def <- io $ if prev 
-		   then Inter.Store.latest (mkpar stud auf)
-                              `Control.Exception.catch` \ _ -> return b0
-		   else return b0
-		
+    let b0 = render $ toDoc ini 
+    def <- io $ if prev 
+	   then Inter.Store.latest (mkpar stud auf)
+                      `Control.Exception.catch` \ _ -> return b0
+	   else return b0
+	
 
-            Just cs <- textarea "sol" def
+    Just cs <- textarea "sol" def
 
-     	    let (res, com :: Html) = export $ evaluate p i cs
-            html com
-	    return ( cs, res )
+    -- let (res, com :: Html) = export $ evaluate p i cs
+    (res, com :: Html) <- io $ run $ evaluate p i cs
+    html com
+    return ( cs, res )
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
