@@ -5,7 +5,7 @@
 import FiniteMap
 import Challenger
 
-import SAT
+import SAT.SAT
 
 
 
