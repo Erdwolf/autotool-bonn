@@ -12,7 +12,7 @@ FLAGS = -fallow-overlapping-instances \
 	-fallow-undecidable-instances 
 
 PACKS = -package text -package data \
-	-package posix -package network -package HaXml
+	-package posix -package network # -package HaXml
 
 OPT = -O2
 GHC = ghc
@@ -39,7 +39,7 @@ DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
 
 # all: $(DIRS)
 
-all : $(BINS)
+all : cgi
 
 
 # $(DIRS):
