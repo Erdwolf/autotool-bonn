@@ -10,6 +10,7 @@ import qualified Inter.Param as P
 import qualified Reporter.Result
 
 import qualified Inter.Store
+import Util.Datei
 
 bank :: P.Type -> Maybe Int -> IO String
 bank p res = do
@@ -27,16 +28,22 @@ bank p res = do
 		     , Reporter.Result.result_string res
 		     , "\n"
 		     ]
-    rf <- home  "autotool/log/CGI" --  TODO: konfigurierbar machen!
-    appendFile rf  msg	
+
+    let logcgi = Datei	{ pfad = [ "autotool", "log" ], name = "CGI"
+			, relativzahl = error "Inter.Bank.relativzahl"
+			}
+    anhaengen logcgi msg
+
     return msg
 
 
-home :: FilePath -> IO FilePath
+-- wer braucht das? soll Util.Datei benutzen!
+
+-- home :: FilePath -> IO FilePath
 -- absolut machen ( $HOME davor )
-home fp = do
-    user <- Posix.getEffectiveUserName
-    return $ "/home/" ++ user ++ "/" ++ fp
+-- home fp = do
+--    user <- Posix.getEffectiveUserName
+--    return $ "/home/" ++ user ++ "/" ++ fp
 
 zeit :: IO String
 zeit = do
