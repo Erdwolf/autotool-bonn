@@ -8,6 +8,8 @@ import Autolib.Reporter
 import Autolib.ToDoc
 import Autolib.Util.Fix
 
+import Autolib.Dot.Dotty ( peng )
+
 import Autolib.Set
 import Autolib.FiniteMap
 import Data.List (partition, tails)
@@ -153,8 +155,18 @@ schritt sigma a xss (k, ts) = do
         inform $ text "sind alle für diesen Schritt nötigen Tupel vorhanden?"
         let ts' = trenner sigma a xss
         if isEmptySet (mkTafel ts' `minusSet` mkTafel ts)
-            then do inform $ text "Ja." 
-	            return $ anwende xss ts
+            then do 
+		 inform $ text "Ja." 
+                 let cls = anwende xss ts 
+                 let ca = compact a cls
+		 inform $ vcat 
+			[ text "Durch Zusammenfassen der bis hier äquivalenten Zustände"
+			, text "ergibt sich dieser Automat"
+			, text "(ist im Allgemeinen nicht deterministisch"
+			, text "und nicht äquivalent zur Eingabe):"
+			]
+		 peng ca
+	         return $ cls
             else do reject $ text "Nein. Sie müssen noch mehr Zustände trennen."
 
 ----------------------------------------------------------------------------
