@@ -24,6 +24,10 @@ import qualified JVM.TIMES
 import qualified JVM.EXP1
 import qualified JVM.EXP2
 
+import qualified JVM.NUM32
+import qualified JVM.NUM42
+import qualified JVM.NUMMAT
+
 import qualified Demo.L
 
 -- hier steht ALLES machbare drin
