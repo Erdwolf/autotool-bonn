@@ -21,6 +21,7 @@ import System.Time
 import Control.SQL
 import Database.MySQL.HSQL
 
+import qualified Exception
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
@@ -68,7 +69,10 @@ instance SqlBind MNr where
 instance ToEx MNr where
     toEx x = EString $ show x
 instance FromCGI MNr where
-    fromCGI cs = MNr $ read cs -- FIXME: error checking
+    fromCGI cs = MNr $ case readsPrec 0 cs of
+              [(i, rest)] -> i
+	      sonst -> error $ "FromCGI MNr:" ++ show sonst -- FIXME: error checking
+
 
 -- | Aufgaben-Typ
 data Typ = Typ String deriving ( Eq, Ord, Typeable )

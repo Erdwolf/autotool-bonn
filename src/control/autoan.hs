@@ -37,8 +37,6 @@ msgPasswort = do
 -- a) Neuanmeldung:             registerPage 
 -- b) Normaler Login:           checkLoginPage
 
-fv mthing = fieldVALUE $ fromMaybe "?" $ fmap show mthing
-
 loginPage (mat :: String) F0  = do
         io $ logged "loginPage"
         mglVorlesungen <- io getAllVorlesungenDB                        

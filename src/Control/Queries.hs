@@ -40,7 +40,7 @@ studAufgDB mat =
 			   )
 		  )
 		  [ From  $ map read [ "student", "aufgabe", "stud_aufg", "vorlesung" ] 
-		  , Where $ foldr1 (EBinop "AND") 
+		  , Where $ ands
 		          $ [ read "stud_aufg.SNr = student.SNr"
 			    , read "stud_aufg.ANr = aufgabe.ANr"
 			    , read "vorlesung.VNr = aufgabe.VNr"
@@ -170,6 +170,7 @@ duplMatOrEmailDB mat eml =
 getAllVorlesungenDB :: IO [ String ]
 getAllVorlesungenDB = 
     do 
+       logged "getAllVorlesungenDB"
        conn <- myconnect
        stat <- squery conn $ Query
 	       ( Select $ Bind [ read "vorlesung.Name AS Vorlesung" ] )
