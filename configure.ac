@@ -106,8 +106,8 @@ dnl ***********************************************
 PUB="/var/www"
 AC_ARG_WITH(pub,
 [  --with-pub=<autotool www directory>
-        CGI script is installed in $pub/cgi-bin
         haddockumentaion goes to $pub/auto/tool
+	pics go in $pub/pics
 ],
 [PUB="$withval"]
 )
@@ -120,23 +120,21 @@ AC_SUBST(PUB)
 
 
 dnl ***********************************************
-dnl autotool problem source directory
+dnl cgi script directory
 dnl ***********************************************
-SCHOOL="HTWK"
-AC_ARG_WITH(school,
-[  --with-school=<autotool problem source>
-        name of the module that exports "boiler"
-        (= list of problems)
+CGIDIR=$PUB/cgi-bin
+AC_ARG_WITH(cgi,
+[  --with-cgi-dir=<cgi script directory>
+        CGI script is installed here
 ],
-[SCHOOL="$withval"]
+[CGIDIR="$withval"]
 )
 
-dnl if test "src/$SCHOOL.hs" = "" || test ! -f src/$SCHOOL.hs; then
-dnl   AC_MSG_ERROR([need a problem source module])
-dnl fi
+if test "$CGIDIR" = "" || test ! -d $CGIDIR; then
+  AC_MSG_ERROR([need a cgi script directory])
+fi
 
-AC_SUBST(SCHOOL)
-
+AC_SUBST(CGIDIR)
 
 dnl ***********************************************
 dnl debugging?

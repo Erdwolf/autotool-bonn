@@ -271,7 +271,7 @@ PACKAGE_VERSION='0.0'
 PACKAGE_STRING='autotool 0.0'
 PACKAGE_BUGREPORT=''
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os GHC GHC_PKG AUTODRIFT HADDOCK BASE PUB SCHOOL DEBUG CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AR LD DEP_LIBS LIB_DIRS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os GHC GHC_PKG AUTODRIFT HADDOCK BASE PUB CGIDIR DEBUG CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AR LD DEP_LIBS LIB_DIRS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -826,12 +826,11 @@ Optional Packages:
         (must be writable by the CGI program started by the web server)
 
   --with-pub=<autotool www directory>
-        CGI script is installed in $pub/cgi-bin
         haddockumentaion goes to $pub/auto/tool
+	pics go in $pub/pics
 
-  --with-school=<autotool problem source>
-        name of the module that exports "boiler"
-        (= list of problems)
+  --with-cgi-dir=<cgi script directory>
+        CGI script is installed here
 
   --with-debug=<True|False>
 
@@ -1669,16 +1668,20 @@ fi
 
 
 
-SCHOOL="HTWK"
+CGIDIR=$PUB/cgi-bin
 
-# Check whether --with-school or --without-school was given.
-if test "${with_school+set}" = set; then
-  withval="$with_school"
-  SCHOOL="$withval"
+# Check whether --with-cgi or --without-cgi was given.
+if test "${with_cgi+set}" = set; then
+  withval="$with_cgi"
+  CGIDIR="$withval"
 
 fi;
 
-
+if test "$CGIDIR" = "" || test ! -d $CGIDIR; then
+  { { echo "$as_me:$LINENO: error: need a cgi script directory" >&5
+echo "$as_me: error: need a cgi script directory" >&2;}
+   { (exit 1); exit 1; }; }
+fi
 
 
 
@@ -3707,7 +3710,7 @@ s,@AUTODRIFT@,$AUTODRIFT,;t t
 s,@HADDOCK@,$HADDOCK,;t t
 s,@BASE@,$BASE,;t t
 s,@PUB@,$PUB,;t t
-s,@SCHOOL@,$SCHOOL,;t t
+s,@CGIDIR@,$CGIDIR,;t t
 s,@DEBUG@,$DEBUG,;t t
 s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
