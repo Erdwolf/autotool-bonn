@@ -342,7 +342,7 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 		  Nothing -> mzero
 
     hr ; h3 "Neue Bewertung"
-    let (res, com :: Html) = export $ evaluate p i cs
+    (res, com :: Html) <- io $ run $ evaluate p i cs
     html com
     return ( cs, fromMaybe No res, com )
 
