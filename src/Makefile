@@ -57,6 +57,9 @@ matchbox : do
 checker : do
 	$(GHC_COMMAND) \
 		SRS/Checker.hs -o SRS/Checker
+loop :
+	$(GHC_COMMAND) $(EXTRA_PACKS)  \
+		Exp/Loop.hs -o Exp/Loop
 
 install-matchbox : do
 	$(GHC_COMMAND)  \
