@@ -15,7 +15,8 @@ import qualified Number.Float.Data as F
 
 data Config = Config
 	    { basis :: Int
-	    , normalisiert :: Bool
+            -- müssen alle normalisiert sein
+	    -- , normalisiert :: Bool   
 	    , max_stellen_mantisse :: Int 
 	    , max_stellen_exponent :: Int 
 	    }
@@ -26,7 +27,7 @@ data Config = Config
 example :: Config
 example = Config
         { basis = 2
-        , normalisiert = True
+        -- , normalisiert = True
         , max_stellen_mantisse = 3
         , max_stellen_exponent = 3
         }
@@ -35,7 +36,7 @@ conforms :: Config -> F.Zahl -> Reporter ()
 conforms c z = do
     assert ( basis c == F.basis z )
 	   $ text "Ist die Basis gleich" <+> toDoc (basis c) <+> text "?"
-    when ( normalisiert c )
+    when True -- ( normalisiert c )
 	 $ assert ( F.ist_normalisiert z ) 
 	 $ text "Ist die Zahl normalisiert?"
     assert ( size ( F.mantisse z ) <= max_stellen_mantisse c )

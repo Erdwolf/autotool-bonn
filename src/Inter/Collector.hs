@@ -52,7 +52,8 @@ import qualified Graph.Circle.Plain
 -- import qualified Graph.Bisekt.Quiz
 
 import qualified Number.Base.Central
-import qualified Number.Float.Central
+import qualified Number.Float.From
+import qualified Number.Float.To
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -120,7 +121,9 @@ makers = [ Blank.make
          , Number.Base.Central.make_fixed
          , Number.Base.Central.make_quiz
 
-         , Number.Float.Central.fixed_from_float
-         , Number.Float.Central.quiz_from_float
+         , Number.Float.From.make_fixed
+         , Number.Float.From.make_quiz
+         , Number.Float.To.make_fixed
+         , Number.Float.To.make_quiz
 
 	 ]
