@@ -27,11 +27,16 @@ showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
 -- DB Funktionen
 --  ------------------------------------------------------------------------------
 
+wrapped msg act = do
+    logged $  msg ++ " ... "
+    x <- act
+    logged $ " ... " ++ msg
+    return x
+
 -- | liefert bewertete Aufgaben von mat aus DB,
 -- TODO: mat = [] sollte auch StudentMNr als Spalte zurückliefern
 studAufgDB :: Maybe MNr -> IO ( [ String ] , [ [ StrOrInt ] ])
-studAufgDB mat =
-    do
+studAufgDB mat = wrapped "studAufgDB" $ do
        conn <- myconnect 
        stat <- squery conn $
             Query ( Select (      [ reed "vorlesung.Name AS vorlesung" 
@@ -74,7 +79,7 @@ insertNewStudentDB :: String -- ^ vorname
 		   -> String -- ^ email
 		   -> String -- ^ passwort
 		   -> IO ()
-insertNewStudentDB vnm nme mat eml ps1 =    do
+insertNewStudentDB vnm nme mat eml ps1 = wrapped "insertNewStudentDB" $ do
     cps1 <- encrypt ps1
     conn <- myconnect 
     stat <- squery conn $ Query
@@ -99,8 +104,7 @@ insertNewStudentDB vnm nme mat eml ps1 =    do
 checkPasswdMNrDB :: Maybe String 
 		 -> MNr 
 		 -> IO [ ( String , String , String , String ) ]
-checkPasswdMNrDB maybePass mat =
-    do
+checkPasswdMNrDB maybePass mat = wrapped "checkPasswdMNrDB" $ do
        conn <- myconnect
        state <- squery conn $ Query 
                ( Select $      [ reed "student.MNr AS MNr"
@@ -139,8 +143,7 @@ checkPasswdMNrDB maybePass mat =
 -- Ouput:   ( mnr Duplikat :: Bool , email Duplikat ::Bool)
 --
 duplMatOrEmailDB :: MNr -> String -> IO ( Bool , Bool )
-duplMatOrEmailDB mat eml = 
-    do 
+duplMatOrEmailDB mat eml = wrapped "duplMatOrEmailDB" $ do 
        conn <- myconnect
        stat <- query conn 
                ( concat 
@@ -171,9 +174,7 @@ duplMatOrEmailDB mat eml =
 -- Output:  IO [ Vorlesungsname ]
 --
 getAllVorlesungenDB :: IO [ String ]
-getAllVorlesungenDB = 
-    do 
-       logged "getAllVorlesungenDB"
+getAllVorlesungenDB = wrapped "getAllVorlesungenDB" $ do 
        conn <- myconnect
        stat <- squery conn $ Query
 	       ( Select $      [ reed "vorlesung.Name" ] )
@@ -193,8 +194,7 @@ getAllVorlesungenDB =
 -- Output:  IO [ Vorlesungsname ]
 --
 getVorlesungWithPointsDB :: MNr -> IO [ String ]
-getVorlesungWithPointsDB mnr = 
-    do 
+getVorlesungWithPointsDB mnr = wrapped "getVorlesungWithPointsDB" $ do 
        conn <- myconnect
        stat <- squery conn $ Query
                ( Select $ [ reed "vorlesung.Name AS Vorlesung" ] ) 
@@ -221,8 +221,7 @@ getVorlesungWithPointsDB mnr =
 -- TODO email validierung
 --
 updateEmailDB :: MNr -> String -> IO ()
-updateEmailDB mat email =
-    do
+updateEmailDB mat email = wrapped "updateEmailDB" $ do
        conn <- myconnect
        stat <- squery conn $ Query
 	       ( Update ( reed "student" )
@@ -238,8 +237,7 @@ updateEmailDB mat email =
 -- Output:  IO () 
 --
 updatePasswortDB :: MNr -> String -> IO ()
-updatePasswortDB mat pass =
-    do
+updatePasswortDB mat pass = wrapped "updatePasswortDB" $ do
        cpass <- Inter.Crypt.encrypt pass
 
        conn <- myconnect
@@ -253,8 +251,8 @@ updatePasswortDB mat pass =
 
 -- | Übungsgruppen
 -- liefert alle freien Gruppen
-getFreeGruppenDB =
-    do
+getFreeGruppenDB :: IO ( [String], [ (GNr, [String]) ] )
+getFreeGruppenDB = wrapped "getFreeGruppenDB" $ do
        conn <- myconnect
        stat <- query conn $
             "SELECT \n"
@@ -296,7 +294,8 @@ getFreeGruppenDB =
        disconnect conn
        return ( showColTypes stat, inh )
 
-getAllGruppenDB = do
+getAllGruppenDB :: IO ( [String], [ (GNr, [String]) ] )
+getAllGruppenDB = wrapped "getAllGruppenDB" $ do
     conn <- myconnect
     state <- query conn $
             "SELECT \n"
@@ -325,8 +324,9 @@ getAllGruppenDB = do
     disconnect conn
     return ( showColTypes state, inh )
 
-getGruppenStudDB ( mat :: MNr ) =
-    do
+getGruppenStudDB :: MNr -> IO [ GNr ]
+getGruppenStudDB ( mat :: MNr ) = 
+  wrapped ( "getAllGruppenDB " ++ show mat ) $   do
     conn <- myconnect
     stat <- squery conn $ Query 
             ( Select $      [ reed "stud_grp.GNr AS GNr" ] )
@@ -343,19 +343,21 @@ getGruppenStudDB ( mat :: MNr ) =
     disconnect conn 
     return inh
 
-getSNrFromMatDB ( mat :: MNr ) = do
-   conn <- myconnect
-   stat <- squery conn $ Query 
+getSNrFromMatDB :: MNr -> IO [ SNr ]
+getSNrFromMatDB ( mat :: MNr ) = 
+  wrapped ( "getSNrFromMatDB: start collecting for " ++ show mat ) $ do
+    conn <- myconnect
+    stat <- squery conn $ Query 
              ( Select $      [ reed "student.SNr AS SNr" ] )
              [ From [ reed "student" ]
 	     , Where $ equals ( reed "student.MNr" ) ( toEx mat )
 	     ]
-   inh  <- collectRows ( \ state -> do
+    inh  <- collectRows ( \ state -> do
                          snr <- getFieldValue state "SNr"
                          return ( snr :: SNr )
                        ) stat
-   disconnect conn  
-   return inh
+    disconnect conn  
+    return inh
 
 -- | if student ist bereits in gruppe zu gleicher vorlesung,
 -- then diese ändern, else gruppe hinzufügen
@@ -364,7 +366,8 @@ changeStudGrpDB  mat grp =
     changeStudGrpDB' mat (fromCGI grp )
 
 changeStudGrpDB' :: MNr -> GNr -> IO ()
-changeStudGrpDB' mnr gnr =     do
+changeStudGrpDB' mnr gnr = 
+  wrapped (  "changeStudGrpDB" ++ show (mnr, gnr) ) $   do
     snrs <- getSNrFromMatDB mnr
     case snrs of
        _ | 1 /= length snrs -> return ()
@@ -392,7 +395,8 @@ changeStudGrpDB' mnr gnr =     do
 leaveStudGrpDB mat grp = leaveStudGrpDB' mat ( fromCGI grp )
 
 leaveStudGrpDB' :: MNr -> GNr -> IO ()
-leaveStudGrpDB' mnr gnr =     do
+leaveStudGrpDB' mnr gnr =  
+  wrapped ( "leaveStudGrpDB" ++ show (mnr, gnr) ) $   do
     snrs <- getSNrFromMatDB mnr
     case snrs of
        _ | 1 /= length snrs -> return ()
@@ -421,7 +425,8 @@ mglAufgabenDB snr = mglAufgabenDB' False snr
 mglAufgabenDB' :: Bool 
     -> SNr
            -> IO [(( ANr, Name, Typ), ( Config, HiLo, Remark)) ]
-mglAufgabenDB' isAdmin snr = 	do
+mglAufgabenDB' isAdmin snr = 
+  wrapped ( "mglAufgabenDB" ++ show (isAdmin, snr) ) $ do
     let cols =  [ "ANr", "Name", "Typ", "Config", "Highscore", "Remark" ]
     conn <- myconnect
     stat <- squery conn $ Query
@@ -462,7 +467,8 @@ mglAufgabenDB' isAdmin snr = 	do
 -- >  bzw. alle Student (snr=[])
 -- > ( [header ... ] , [ ( ANr, Name , Subject , Path , Highscore , Von , Bis ) ] ) 
 mglNextAufgabenDB :: SNr -> IO ( [String],[[String]])
-mglNextAufgabenDB snr = do
+mglNextAufgabenDB snr = 
+  wrapped ( "mglNextAufgabenDB" ++ show snr ) $ do
     let ssnr = toString snr
     conn <- myconnect
     stat <- query conn

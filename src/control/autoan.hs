@@ -1,7 +1,8 @@
 module Main where
 
 import Wash.HTMLMonad 
-import Wash.CGI
+import Wash.CGI hiding ( io )
+import qualified Wash.CGI
 
 import IO
 import Data.Char ( toLower )
@@ -19,6 +20,8 @@ import Control.Types
 import Control.SQL (logged)
 import Helper
 
+
+
 -- | TODO 
 -- SQL-Exception fangen
 -- Seiten Struktur rausziehen: stdpage ttl bdy menu
@@ -26,6 +29,8 @@ main :: IO ()
 main =  run [] ( loginPage "" F0 ) --mainCGI 
      `Exception.catch` \ ex -> putStrLn $ "\n\n" ++ show ex 
 
+
+io = Wash.CGI.io
 
 
 msgPasswort = do 
@@ -219,13 +224,16 @@ studStatusPage ( mat :: MNr ) F0 =
           --    Alle-Gruppen minus Students-Gruppen, warum so kompliziert?
           --    stdgrp ist Liste von Gruppennummern, grps enthaelt zusaetzlich 
           --    Vorlesungsname, Gruppenname und Referent.
-          (h,grps)              <- io $ getAllGruppenDB 
+          ( h , grps :: [(GNr, [String])] ) <- io $ getAllGruppenDB 
           io $ logged $ "grps: " ++ show grps
 
           stdgrp        <- io $ getGruppenStudDB mat
           io $ logged $ "stdgrp: " ++ show stdgrp
 
-          let   grp = filter ( \ (g,_) -> g `elem` stdgrp ) grps
+
+          let grp :: [ (GNr,[String]) ]  
+	      grp = filter ( \ (g,_) -> g `elem` stdgrp ) grps
+
 
           -- b) Mgl. Aufgaben aus DB holen, und erste Spalte entfernen 
           mglAufgs      <- io $ mglNextAufgabenDB $ (snrs !!0 ) 
@@ -314,18 +322,20 @@ changeGrpPage mat F0 = do
                   hrrow
                   smallSubButton F0 (studStatusPage mat) "Zurück"
 
-grptab grps = mytable $ do
+grptab ( grps :: [ (GNr, [String]) ] ) = mytable $ do
     tableRow3 [ text "Vorlesung", text "Gruppe", text "Dozent" ]
     sequence $ do
-        grp @ (gnr, [v,g,r]) <- grps
+        grp @ ( _ , [v,g,r]) <- grps
         return $ tableRow3 [ text v, text g, text r ]
 
 changedGrpPage = commonGrpPage "ausgewählt" changeStudGrpDB' 
 leaveGrpPage   = commonGrpPage "verlassen"  leaveStudGrpDB' 
 
 commonGrpPage name action  mat (F1 grpF) = do 
-        let (grp,desc) = value $ grpF
-        io $ action mat grp   
+        io $ logged $ "commonGrpPage.name  " ++ name
+        let v @ (grp :: GNr ,desc) = value $ grpF
+        io $ logged $ "commonGrpPage.v  " ++ show v
+        -- io $ action mat grp   
         let msg = unwords [ "Übungsgruppe" , show desc, name ]
         standardQuery msg $ table $ do
                         attr "width" "600"
