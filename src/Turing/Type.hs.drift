@@ -23,6 +23,11 @@ data Bewegung = L | O | R
 
 {-! for Bewegung derive : ToDoc, Reader !-}
 
+data TM = TM -- for challenger instances
+     deriving (Eq, Ord, Show, Read)
+     
+{-! for TM derive : ToDoc, Reader !-}
+
 -- ohne methoden, soll nur die constraints aufsammeln
 class ( Ord y, Show y, Show [y], ToDoc y, ToDoc [y], Reader y, Reader [y]  ) => UM y
 instance ( Ord y, Show y, ToDoc y, ToDoc [y], Reader y, Reader [y]  ) => UM y

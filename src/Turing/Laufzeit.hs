@@ -1,4 +1,10 @@
-module Turing.Laufzeit where
+module Turing.Laufzeit 
+
+( Laufzeit (..)
+, test, wrapped_test -- classical
+)
+
+where
 
 -- $Id$
 
@@ -7,6 +13,11 @@ import Turing.Akzeptieren
 import Turing.Vorrechnen
 import Turing.Konfiguration
 
+import Turing.Laufzeit.Type
+
+import Challenger
+
+import Informed
 import Reporter
 import qualified Reporter.Result
 import ToDoc
@@ -14,19 +25,35 @@ import Size
 
 wrapped_test note f args m = Reporter.Result.wrapper ( test note f args m )
 
-test :: TUM Char z
-     => String
+test :: String
      -> (Int -> Int) -> [ Int ]
-     -> Turing Char z 
+     -> Turing Char Integer 
      -> Reporter Int
+test n f a m = do
+    verifiziereR TM ( Laufzeit { fun = f , fun_info = text n , args = a } ) m
+    return $ size m
 
-test note f args m = do
+instance Partial TM Laufzeit ( Turing Char Integer ) where
+    initial p i =
+      Turing 
+	{ eingabealphabet = mkSet "A"
+	, arbeitsalphabet = mkSet "#AB"
+	, leerzeichen = '#'
+	, zustandsmenge = mkSet [ 1 .. 2 ]
+	, startzustand = 1
+	, endzustandsmenge = mkSet [ 2 ]
+	, tafel = collect [ (('A', 1), ('B', 2, L)) ]
+	}		
+    total = verifiziereR
+
+instance Problem TM Laufzeit ( Turing Char Integer ) where
+
+  verifiziereR TM conf m = do
 
     inform $ fsep [ text "Ihre Turingmaschine"
 		  , text "soll für Eingaben der Form A^n"
-		  , text "genau", text note, text "Schritte ausführen."
+		  , text "genau", info conf, text "Schritte ausführen."
 		  ]
-    
 
     inform $ text "Ihre Turingmaschine ist"
     inform $ toDoc m
@@ -35,11 +62,11 @@ test note f args m = do
     deterministisch m
 
     inform $ text "ich teste die Laufzeit für die Eingabelängen" 
-	     <+> toDoc args
+	     <+> toDoc ( args conf )
 
     let falsch = do 
-	  x <- args
-	  let t = f x
+	  x <- args conf
+	  let t = fun conf x
 	  let ein = take  x $ repeat 'A' -- fixiertes eingabe-alphabet
 	  let ks = akzeptierend (t+1) m ein
 	  case ks of
@@ -63,7 +90,6 @@ test note f args m = do
     case  falsch of
         [] -> do 
 		  inform $ text $ "alle Laufzeiten sind korrekt"
-		  return $ size m
         wms -> do 
 	    inform $ text  "diese Eingaben/Laufzeiten sind falsch:"
 		   $$ ( vcat $ do 
