@@ -4,7 +4,7 @@
 
 ifeq ($(shell hostname), theo1)
 EXTRA_PACKS = -package hsql
-GHC = ghc6
+GHC = ghc-6.2
 endif
 
 ifeq ($(shell hostname), afa)
@@ -24,7 +24,7 @@ endif
 
 ifeq ($(shell hostname), aaron)
 EXTRA_PACKS = -package-conf /home/alf/autotool/autotool.pkg -package hsql
-GHC = ghc-6.0
+GHC = ghc-6.2
 endif
 
 
