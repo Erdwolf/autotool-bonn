@@ -1,3 +1,5 @@
+#!/bin/bash
+
 INITFILE=autotool-init.sql
 
 # extract mysql connect data from Mysqlconnect.hs

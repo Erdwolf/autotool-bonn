@@ -18,8 +18,11 @@ import ReadFM
 import ToDoc
 import Reader
 
+import Data.Typeable
+import TypeableFM
+
 data Bewegung = L | O | R
-     deriving (Eq, Ord, Show, Read)
+     deriving (Eq, Ord, Show, Read, Typeable)
 
 {-! for Bewegung derive : ToDoc, Reader !-}
 
@@ -29,8 +32,19 @@ data TM = TM -- for challenger instances
 {-! for TM derive : ToDoc, Reader !-}
 
 -- ohne methoden, soll nur die constraints aufsammeln
-class ( Ord y, Show y, Show [y], ToDoc y, ToDoc [y], Reader y, Reader [y]  ) => UM y
-instance ( Ord y, Show y, ToDoc y, ToDoc [y], Reader y, Reader [y]  ) => UM y
+class ( Ord y
+      , Show y, Show [y]
+      , ToDoc y, ToDoc [y]
+      , Reader y, Reader [y]  
+      , Typeable y
+      ) 
+    => UM y
+instance ( Ord y, Show y
+	 , ToDoc y, ToDoc [y]
+	 , Reader y, Reader [y]  
+	 , Typeable y
+	 )
+    => UM y
 
 class ( UM y, UM z ) => TUM y z 
 instance ( UM y, UM z ) => TUM y z 
@@ -45,6 +59,7 @@ data (UM y, UM z) => Turing y z =
 	    , startzustand     :: z
 	    , endzustandsmenge :: Set z
 	    }
+     deriving ( Typeable )
 
 {-! for Turing derive : ToDoc, Reader !-}
 

@@ -5,10 +5,12 @@ module Code.Move_To_Front.Data where
 import Reader
 import ToDoc
 
+import Data.Typeable
+
 data Coding a = Coding { queue  :: a
 		       , output :: [ Int ]
 		       }
-     deriving ( Eq, Ord )
+     deriving ( Eq, Ord, Typeable )
 
 {-! for Coding derive: Reader, ToDoc !-}
 

@@ -18,9 +18,12 @@ import Inter.Types
 import Reader
 import ToDoc
 
+import Data.Typeable
+
 make :: ( Ord a
 	, Reader a
 	, Show a, ToDoc a, ToDoc [a]
+	, Typeable a
 	) => Config a 
 	  -> IO Variant
 make conf = return $ Variant 

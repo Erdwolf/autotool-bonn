@@ -24,7 +24,7 @@ import Size
 import Data.List (partition)
 
 import Reporter.Checker
-
+import Data.Typeable
 
 type Dat = Int
 

@@ -17,12 +17,18 @@ import Text.ParserCombinators.Parsec.Language
 
 import Data.List (partition)
 
+import Data.Typeable
+
 data Op = Op { name  :: String
 	     , arity :: Int
 	     , precedence :: Maybe Int
 	     , assoc :: Assoc
 	     , inter :: [Bool] -> Bool
 	     }
+
+instance Typeable Op where
+    typeOf _ = mkAppTy (mkTyCon "Op") [] -- ??
+
 
 instance Eq Op where o == p = name o == name p
 instance Ord Op where compare o p = compare (name o) (name p)

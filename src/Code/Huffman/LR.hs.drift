@@ -9,8 +9,10 @@ import Reader
 
 import Code.Type
 
+import Data.Typeable
+
 data LR = L | R 
-     deriving ( Eq, Ord, Enum, Bounded )
+     deriving ( Eq, Ord, Enum, Bounded, Typeable )
 
 {-! for LR derive : ToDoc, Reader !-}
 

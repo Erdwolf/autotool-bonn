@@ -10,6 +10,8 @@ where
 --  $Id$
 
 import Data.FiniteMap
+import TypeableFM
+
 import Sets
 import ToDoc
 

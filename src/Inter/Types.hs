@@ -14,6 +14,8 @@ import Reader
 import Size
 import Informed
 
+import Data.Typeable
+
 type Matrikel = String
 
 type Key = String
@@ -43,11 +45,13 @@ class ( Show p
 	   , Show i
 	   , Show b, ToDoc b, Reader b , Size b
 	   , Partial p i b
+	, Typeable b
 	   ) => V p i b -- ohne methoden
 instance ( Show p 
 	   , Show i
 	   , Show b, ToDoc b, Reader b , Size b
 	   , Partial p i b
+	, Typeable b
 	   ) => V p i b 
 
 

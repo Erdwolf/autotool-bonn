@@ -10,6 +10,9 @@ import Reader
 import ReadFM
 import Sets
 
+import Data.Typeable
+import TypeableFM
+
 -- Bemerkungen: 
 -- 1. Aussagenlogische Formel in konjunktiver Normalform (KNF):
 -- Literal = Variable oder nonVariableVariable
@@ -21,7 +24,7 @@ data SAT = SAT deriving Show
 
 -- Elementare Def.
 data Literal = Pos Variable | Neg Variable
-    deriving (Eq,Ord)
+    deriving (Eq,Ord, Typeable)
 
 unLiteral ( Pos v ) = v
 unLiteral ( Neg v ) = v
@@ -37,7 +40,7 @@ instance Read Literal where readsPrec = parsec_readsPrec
 -- Klausel = Tripeln von Literalen
 -- type Klausel = (Literal,Literal,Literal)
 
-data Klausel = Or [ Literal ] deriving ( Eq, Ord )
+data Klausel = Or [ Literal ] deriving ( Eq, Ord , Typeable)
 
 literale :: Klausel -> [ Literal ]
 literale (Or lits) = lits

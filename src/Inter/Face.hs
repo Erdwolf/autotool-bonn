@@ -76,6 +76,10 @@ import qualified Challenger
 import Inter.Types
 import qualified Control.Exception
 
+
+import Data.Typeable
+
+
 import Inter.Timer
 import Inter.Logged
 --
@@ -189,12 +193,16 @@ iface variants env = do
 		   Nothing -> 
 			   p << bold << ( "Hier Lösung eingeben:" )
 
+			   +++ p << "(experimentell) Typ der Eingabe:"
+			   +++ p << pre << show (typeOf b0)
+
 			   +++ textarea ( primHtml $ P.input par2  ) 
 					! [ name "Input"
 					  , rows $ show $ height + 2
 					  , cols $ show $ P.input_width par2
 					  ]
-			   +++ br 
+			   +++ br
+
 			   +++ submit "Click" ( show Submit   ) +++ " " 
 			   +++ submit "Click" ( show Previous ) +++ " " 
 			   +++ submit "Click" ( show Example  ) +++ " " 
