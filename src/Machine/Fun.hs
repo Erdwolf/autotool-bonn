@@ -30,6 +30,7 @@ numerical_test' ::  ( Numerical dat, Machine m dat conf )
 		-> Reporter Int
 numerical_test' i m = numerical_test ( N.cut i ) ( N.args i ) ( N.fun i ) m
 
+
 numerical_test :: ( Numerical dat, Machine m dat conf )
 	 => Int
 	 -> [[Integer]] -- Liste von eingabe-vektoren

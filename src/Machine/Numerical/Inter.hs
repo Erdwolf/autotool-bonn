@@ -17,14 +17,22 @@ computer :: ( Machine m dat conf, Numerical dat )
          => String		-- aufgabe (major)
 	 -> String -- version ( minor )
      -> N.Type m
-     -> Var N.Computer ( N.Type m ) m
-computer auf ver num =
+     -> Var N.Computer ( N.Type m ) m 
+computer auf ver num = computer_mat auf ver ( const num )
+
+computer_mat :: ( Machine m dat conf, Numerical dat )
+         => String		-- aufgabe (major)
+	 -> String -- version ( minor )
+     -> ( Key -> N.Type m )
+     -> Var N.Computer ( N.Type m ) m 
+computer_mat auf ver fnum =
     Var { problem = N.Computer
 	, aufgabe = auf
 	, version = ver
 	, key = \ matrikel -> do
 	      return matrikel
 	, gen = \ matrikel -> return $ do
+	      let num = fnum matrikel
 	      inform $ text "Konstruieren Sie eine Maschine,"
 	      inform $ text "welche die Funktion" <+> info num 
 	               <+> text "berechnet!"

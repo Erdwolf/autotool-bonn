@@ -14,7 +14,7 @@ data Computer = Computer
 {-! for Computer derive : Show, Read, ToDoc, Reader !-}
 
 data Type m = 
-     Make { fun :: [ Integer ] -> Integer -- zu berechnende funktion
+     Make { fun ::  [ Integer ] -> Integer -- zu berechnende funktion
 	      , fun_info :: Doc	      -- funktions-name/-erklärung
 	      , args :: [[ Integer ]]	      -- argumente zum testen
 	    , cut :: Int -- höchstens soviele schritte
