@@ -46,7 +46,9 @@ quiz conf =
 
 generates :: [ IO Variant ]
 generates = do
-    os <- [  [ Pre, Post ], [ Pre, In ], [ Post, Level ], [ In, Level ] ]
+    os <- [ [ Pre, Post ], [ Pre, In ]
+	  , [ Post, Level ], [ In, Level ] 
+	  ]
     return $ return $ Variant 
 	   $ quiz   $ Config { nodes = 13 , orders = os }
     
