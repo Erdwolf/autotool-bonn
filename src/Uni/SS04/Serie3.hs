@@ -19,6 +19,8 @@ import Fun.Table
 import qualified Random
 import Array
 import Prime
+import Sets (mkSet,union)
+
 
 -- Machine Parts
 import Machine.Class
@@ -114,10 +116,13 @@ funTeilbar2 = do
     let it = N.Make
            { N.fun = \ [ x , y ] -> if x `mod` y == 0 then 1 else 0
            , N.fun_info = text "if x `mod` y == 0 then 1 else 0"
-           , N.args =  [[x,y] | x <- [ 13 .. 25 ] , y <- [ 2 .. 7 ]]-- testlisteTeilbar
-           , N.cut = 20000
+           , N.args =  [[x,y] | x <- [ 13 .. 20 ] , y <- [ 2 .. 7 ]]-- testlisteTeilbar
+           , N.cut = 200000
            , N.check = \ f -> do
-                 check_builtins RAM.Builtin.none f
+                 check_builtins ( mkSet[ RAM.Builtin.Plus 
+                                     , RAM.Builtin.Minus
+                                     , RAM.Builtin.Times  
+                                     ] ) f
                  check_arity 2 f
            , N.start = Fun.Examples.plus
            }
