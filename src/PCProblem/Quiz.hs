@@ -78,6 +78,7 @@ quiz auf ver par =
 	           ( p, f ) <- cache (  Datei { pfad = [ "autotool", "cache"
 					   , auf, ver
 					   ]
+					, relativzahl = error "PCProblem.Quiz.relativzahl"
 				  , name = key ++ ".cache" 
 				  }
 			 ) ( generator par )
