@@ -45,5 +45,8 @@ empty = Param { matrikel = ""
 	          , input_width = 65
 		  , variants = []
 		  , variante = error "empty.variante"
+
+		  , highscore = error "empty.highscore"
+		  , anr = error "empty.anr"
 		  }
 

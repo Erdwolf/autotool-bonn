@@ -70,8 +70,9 @@ labeled (srs :: SRS c) rel = do
     let srs' = labeled_srs m srs :: SRS (Aged c)
     -- TODO: add decreasing rules
     guard $ not $ contains_a_copy srs srs'
+
     let e = essential srs'
-    guard $ letters e == ( letters srs' :: Set (Aged c))
+    -- guard $ letters e == ( letters srs' :: Set (Aged c))
 
     -- mal sehen
     -- guard $ length e < length srs'
@@ -202,4 +203,4 @@ labeled_string m a (x : xs) =
 
 hans :: SRS Char
 hans = -- [ ("f", "nc"), ("cf", "fc"), ("ns", "fs"), ("nf", "fn") ]
-       [ ("a", "bc"), ("ca", "ac"), ("bd", "ab"), ("ba", "ab") ]
+       [ ("a", "bc"), ("ca", "ac"), ("bd", "ad"), ("ba", "ab") ]

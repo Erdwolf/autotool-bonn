@@ -22,6 +22,7 @@ store p mres = do
 			    , if flag then "OK" else "NO"
 			    ]
                    , name = pid ++ ".input" 
+		   , relativzahl = error "Inter.Store.relativzahl"
 		   }
     schreiben d $ P.input p
     return $ pid
