@@ -5,11 +5,12 @@ module Graph.Iso where
 import Graph.Util
 import Autolib.Util.Splits
 
+import Autolib.ToDoc
 import Autolib.Graph.Basic
 import Data.List ( partition )
 import Control.Monad ( guard )
 
-check_not_iso :: ( GraphC a, GraphC b )
+check_not_iso :: ( GraphC a, GraphC b , ToDoc (FiniteMap a b) )
      => Graph a 
      -> Graph b 
      -> Reporter ()
@@ -63,7 +64,7 @@ find_with g h done (x : xs) yys = do
 
 --------------------------------------------------------------------------
 
-check_iso :: ( GraphC a, GraphC b )
+check_iso :: ( GraphC a, GraphC b, ToDoc  (FiniteMap a b)  )
 	  => FiniteMap a b
 	  -> Graph a
 	  -> Graph b
