@@ -6,6 +6,7 @@
 
 module Col.DreiCol
 	( DreiCol, Faerbung
+	, module FiniteMap
 	, module Graph.Graph
 	) 
 	where
