@@ -50,8 +50,8 @@ find_with g h done (x : xs) yys = do
     let nx = setToList $ nachbarn g x
         ny = setToList $ nachbarn h y
     guard $ length nx == length ny
-    let ( rx, lx ) = partition (`elem` xs) nx
-        ( ry, ly ) = partition (`elem` ys) ny
+    let ( rx, lx ) = Data.List.partition (`elem` xs) nx
+        ( ry, ly ) = Data.List.partition (`elem` ys) ny
     guard $ length rx == length ry
     guard $ length lx == length ly
     guard $ and $ do

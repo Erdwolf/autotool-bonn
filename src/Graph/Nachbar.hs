@@ -101,7 +101,7 @@ kx_mit_dach g = do
            $ text "bilden diese eine unabhängige Menge?"
     let g' = restrict (minusSet (knoten g) xs) g
     inform $ text "G' := G ohne diese Menge."
-    let (ys, zs) = partition ( \ v -> 0 < degree g' v ) $ lknoten g'
+    let (ys, zs) = Data.List.partition ( \ v -> 0 < degree g' v ) $ lknoten g'
     assert ( 1 == length zs )
            $ text "gibt es in G' genau eine Knoten vom Grad 0?"
     assert ( is_clique g' $ mkSet ys )
