@@ -4,11 +4,13 @@
 module Turing.Dot where
 
 import Turing.Type
+import Dot.Dot
+
 import NFA
+import Compact
 import ToDoc
 
-data Triple y = Triple y y Bewegung
-    deriving ( Eq, Ord, Show, Read )
+type Triple y = ( y,  y, Bewegung )
 
 convert :: ( NFAC (Triple Char) z , UM z ) 
 	=> Turing Char z -> NFA (Triple Char ) z
@@ -20,5 +22,16 @@ convert tm =
 	, trans    = collect $ do
 	      ( (input, p), next ) <- fmToList $ tafel tm
 	      ( output, q, move )  <- setToList next
-	      return ( p, Triple input output move , q )
+	      return ( p, (input, output, move) , q )
 	}
+
+instance ToDoc [ Triple Char ] where
+    toDoc ts = brackets $ vcat $ punctuate comma $ map toDoc ts
+instance Show  [ Triple Char ] where
+    show = render . toDoc
+
+
+instance ( NFAC (Triple Char) z , NFAC [Triple Char] z , TUM Char z ) 
+    => ToDot ( Turing Char z ) where
+    toDot tm = toDot $ parallel_compact $ convert tm
+    toDotOptions tm = ""

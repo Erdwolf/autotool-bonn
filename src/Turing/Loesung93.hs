@@ -6,6 +6,7 @@ import Turing
 
 import ToDoc
 import Reader
+import Dot.Dot
 
 import Turing.Z
 
