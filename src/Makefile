@@ -45,6 +45,10 @@ tags :
 ###############################################################################
 
 matchbox : do
+	$(GHC_COMMAND) \
+		SRS/Matchbox.hs -o SRS/Matchbox
+
+install-matchbox : do
 	$(GHC_COMMAND)  \
 		SRS/Closure/Terminator.hs -o $(CGIDIR)/Terminator.cgi
 	$(GHC_COMMAND)  \
