@@ -13,6 +13,9 @@ import Reporter.Wash
 import qualified Challenger 
 
 import Reader
+import ParsecError
+import ParsecPos
+
 import qualified Posix
 
 -- wash
@@ -133,8 +136,16 @@ handler par0  (Variant v ) =   standardQuery "Computer" $ do
             pc <- CGI.p $ Reporter.Wash.embed $ Challenger.partial p i b
             h3 $ CGI.text "totale Korrektheit"
             tc <- CGI.p $ Reporter.Wash.embed $ Challenger.total   p i b
-            h3 $ CGI.text $ "Aufgabe gelöst? " 
-		   ++ show ( isJust pc && isJust tc )
+            h3 $ CGI.text $ "Aufgabe gelöst?"
+	    if ( isJust pc && isJust tc )
+	       then do
+	          CGI.p $ CGI.text $ "Ja."
+		  let s = size b
+		  CGI.p $ CGI.text $ "Größe der Lösung: " ++ show s
+		  -- hier (OK s) in DB eintragen
+	       else do
+	          CGI.p $ CGI.text "Nein."
+		  -- hier (NO) in DB eintragen
         Left e -> do
 	    h3 $ CGI.text "Syntaxfehler"
 	    CGI.pre $ CGI.text $ show e
