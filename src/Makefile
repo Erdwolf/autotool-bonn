@@ -65,8 +65,8 @@ tags :
 
 drift : $(DRIFT) 
 
-
-
+drift-clean :
+	rm -v ` find . -name "*.drift" -print | sed s/.drift$$// `
 
 cgi : $(CGIS)
 	cp $(CGIS) $(CGIINDEX) $(CGIDIR)
