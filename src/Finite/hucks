@@ -1,0 +1,5 @@
+#!/bin/bash
+
+INC=../:../util:
+
+hugs -98 +o -P$INC $*
