@@ -40,7 +40,7 @@ numerical_test cut inputs fun m = do
     let check ein aus = do
 	    let a = decode aus
 	    let a' = fun ein
-	    inform $ fsep
+	    inform $ vcat
 		   [ text "Die Endkonfiguration enthält das Resultat", toDoc a
 		   , text "gefordert war", toDoc a'
 		   ]
@@ -110,7 +110,7 @@ re cut m encode check ein = do
     let aks = akzeptierend_oder_ohne_nachfolger cut m $ s
 	ks = filter ( isEmptySet . next m ) aks
     when ( null ks )
-	 $ reject $ vcat [ fsep [ text  "Bei Eingabe", toDoc ein 
+	 $ reject $ vcat [ vcat [ text  "Bei Eingabe", toDoc ein 
 				, text "Startkonfiguration", toDoc s
 				]
 			 , text "erreicht die Maschine keine Endkonfiguration."
