@@ -9,18 +9,14 @@ CGIS = SRS/Deleting/Demo.cgi \
 
 HTMLS = SRS/Interface/*.html
 
-# for face: ########################################################
+ifndef CGIDIR
+CGIDIR = $(CGIBIN)/matchbox
+endif
+
+# for autotool: ########################################################
 
 PUB =  $(HOME)/public_html
 CGIBIN = $(PUB)/cgi-bin
-
-# for autotool ####################################################
-
-ifndef CGIDIR
-CGIDIR = $(CGIBIN)
-endif
-
-
 
 # for drift ########################################################
 

@@ -6,7 +6,6 @@ ifeq ($(shell hostname), theo1)
 EXTRA_PACKS = -package hsql
 GHC = ghc-6.2
 # CGIDIR = /var/www/matchbox
-CGIDIR = $(HOME)/public_html/matchbox
 endif
 
 ifeq ($(shell hostname), afa)
