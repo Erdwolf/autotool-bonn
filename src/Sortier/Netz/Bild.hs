@@ -22,7 +22,9 @@ helped :: Array Int Int -> [ Comp ] -> Int
 -- ausgabe: (comp, alte nummer, level)
 helped a [] n = []
 helped a ( (x,y) : rest ) n =
-    let this = succ $ max ( a ! x ) ( a ! y )
+    let this = succ $ maximum $ do
+		    z <- [ min x y .. max x y ]
+		    return $ a ! z
         b    = a // do 
 		    z <- [ min x y .. max x y ]
 		    return ( z, this )
