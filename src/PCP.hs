@@ -1,19 +1,20 @@
 {-# OPTIONS -fallow-overlapping-instances #-}
 
-import PCP.Compressed
+-- | standalone solver
+-- command line arguments:
+-- depth, width, instance
 
-import Autolib.ToDoc
+import PCProblem.Family
+import PCProblem.Param
 
 import System
 import IO
 
 main = runit
-
-{- 
-  do
-    ws <- getArgs
-    mapM_ (printf. toDoc) 
-        $ take 1
-	$ topdown
-	$ map read ws
--}
+      $ Param { alpha = "01"
+	      , paare = 4
+	      , breite = 4
+	      , nah = 1
+	      , fern = 100
+	      , viel = 3000
+	      }

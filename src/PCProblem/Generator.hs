@@ -11,12 +11,13 @@ import PCProblem.Type
 import PCProblem.Param
 import PCProblem.Solver
 
-import Util.Zufall
-import Util.Wort
+import Autolib.Util.Zufall
+import Autolib.Util.Wort
+import Autolib.Letters
+
 import Random
-import Letters
-import Maybe
-import Data.Set
+import Data.Maybe
+import Autolib.Sets
 
 gen :: Param -> IO PCP
 gen g = do

@@ -14,10 +14,11 @@ module PCProblem.Type
 where
 
 import PCProblem.Data
+import Autolib.Size
 
+{-
 import Iso
 import Number
-import Size
 
 -- Isomorphie Instanz
 -- !!!!!!!!!!!!Muss noch fertig gestellt werden
@@ -27,7 +28,7 @@ instance Iso (PCP) where
 
 instance Number PCP PCP where
    number = id
-
+-}
 
 data PCProblem = PCProblem deriving Show
 type Folge = [ Integer ]

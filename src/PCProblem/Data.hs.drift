@@ -2,11 +2,11 @@
 
 module PCProblem.Data where
 
-import ToDoc
-import Reader
+import Autolib.ToDoc
+import Autolib.Reader
 
-import Data.Set
-import Letters
+import Autolib.Sets
+import Autolib.Letters
 
 data PCP = PCP [(String, String)]
 

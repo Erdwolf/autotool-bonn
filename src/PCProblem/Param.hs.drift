@@ -2,16 +2,16 @@
 
 module PCProblem.Param where
 
-import ToDoc
-import Reader
+import Autolib.ToDoc
+import Autolib.Reader
 
 data Param =
-     Param { alpha :: String -- zu benutzende Buchstaben
-	       , paare :: Int -- anzahl
-	       , breite :: Int -- maximale wortlänge
-	       , nah :: Int -- keines mit kürzerer lösung
-	       , fern :: Int -- keines mit längerer lösung
-	       , viel :: Int -- nur soviele Knoten im suchbaum (bfs)
+     Param { alpha :: String -- ^ zu benutzende Buchstaben
+	       , paare :: Int -- ^ anzahl
+	       , breite :: Int -- ^ maximale wortlänge
+	       , nah :: Int -- ^ keines mit kürzerer lösung
+	       , fern :: Int -- ^ keines mit längerer lösung
+	       , viel :: Int -- ^ nur soviele Knoten im suchbaum (bfs)
 	       }
 
 g :: Param

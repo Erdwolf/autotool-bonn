@@ -5,8 +5,8 @@ module PCProblem.Solver where
 import PCProblem.Type
 import PCProblem.Konfig
 
-import Schichten ( bfs )
-import Data.Set
+import Autolib.Schichten ( bfs )
+import Autolib.Sets
 import Control.Monad ( guard )
 
 start :: PCP -> Konfig
@@ -58,4 +58,4 @@ solutions depth width i = do
     guard $ final k
     return $ reverse $ folge k -- hier rumdrehen
 
-
+test = solutions 75
