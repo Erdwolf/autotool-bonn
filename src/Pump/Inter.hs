@@ -77,7 +77,7 @@ make l =
 	      seed $ read key
 	      -- TODO: cache this:
 	      wss <- sequence $ do
-	           c <- [ 0 .. 20 ]
+	           c <- [ 10 .. 30 ]
 	           return $ samples l 2 c
 	      return $ return 
 	             $ Conf { lang = l
