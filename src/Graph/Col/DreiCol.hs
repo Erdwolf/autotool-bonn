@@ -1,9 +1,8 @@
 -- | drei-färbung (mit würfeln) 
 -- autor m.lindemeyer
--- stinfwww.informatik.uni-leipzig.de/~psy99hvr
+-- stinfwww.informatik.uni-leipzig.de\/~psy99hvr
 -- (8484955)
--- patches: joe@informatik.uni-leipzig.de
-
+-- patches: <joe@informatik.uni-leipzig.de>
 module Col.DreiCol
 	( DreiCol, Faerbung
 	, module FiniteMap
