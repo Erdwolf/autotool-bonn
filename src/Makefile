@@ -127,8 +127,8 @@ release : SRS/Config/Build.hs SRS/Config/Release.hs
 	bzip2 -v --force --best  $(MATCHBOX_STORE)/$(MATCHBOX_EXE)
 	tar -cvjf $(MATCHBOX_STORE)/$(MATCHBOX_ARCHIVE) \
 		-C.. $(patsubst %, autotool/%, $(MATCHBOX_SRC))
-	rm -f $(MATCHBOX_CURRENT_EXE)
-	ln -s $(MATCHBOX_STORE)/$(MATCHBOX_EXE) $(MATCHBOX_CURRENT_EXE)
+	rm -f $(MATCHBOX_CURRENT_EXE).bz2
+	ln -s $(MATCHBOX_STORE)/$(MATCHBOX_EXE).bz2 $(MATCHBOX_CURRENT_EXE).bz2
 	rm -f $(MATCHBOX_CURRENT_ARCHIVE)
 	ln -s $(MATCHBOX_STORE)/$(MATCHBOX_ARCHIVE) $(MATCHBOX_CURRENT_ARCHIVE)
 
