@@ -125,6 +125,8 @@ data Conf = Conf { max_arity :: Int
 		 , types :: [ Type ]
 		 , min_symbols :: Int
 		 , max_symbols :: Int
+		 , min_size :: Int
+		 , max_size :: Int
 		 }
     deriving ( Typeable )
 
@@ -133,6 +135,8 @@ conf = Conf { max_arity = 3
 	    , types = read "[ int, boolean, char, String, Foo, Bar ]"
 	    , min_symbols = 4
 	    , max_symbols = 10
+	    , min_size = 5
+	    , max_size = 10
 	    }
 
 {-! for Conf derive: ToDoc, Reader, Haskell2Xml !-}
