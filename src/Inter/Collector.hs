@@ -36,6 +36,7 @@ import qualified Grammatik.CF.Interface
 import qualified NPDA.Inter
 import qualified SAT.SAT
 import qualified Baum.Reconstruct
+import qualified Baum.Such.Central
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -81,6 +82,7 @@ makers = [ Blank.make
 
          , Baum.Reconstruct.make_fixed
          , Baum.Reconstruct.make_quiz
+         , Baum.Such.Central.make_quiz
 	 ]
 
 

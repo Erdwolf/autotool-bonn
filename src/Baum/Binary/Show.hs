@@ -1,5 +1,7 @@
 module Baum.Binary.Show where
 
+--  $Id$
+
 import Baum.Binary.Type
 import Data.Tree
 
@@ -17,6 +19,6 @@ toTree b = Node ( Genau $ key b )
 	        [ toTree ( right b ) , toTree ( left b ) ]
 
 instance Show a => ToDoc (Tree a) where
-    toDoc t = vcat $ map text $ lines $ show t
+    toDoc t = vcat $ map text $ lines $ drawTree t
 
         

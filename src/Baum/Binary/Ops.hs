@@ -1,6 +1,10 @@
 module Baum.Binary.Ops where
 
+--  $Id$
+
 import Baum.Binary.Type 
+import Baum.Such.Op
+
 
 contains :: Ord a
 	 => Baum a -> a -> Bool
@@ -9,13 +13,9 @@ contains b k | k == key b = True
 	     | k < key b = contains (left b) k
 	     | otherwise = contains (right b) k
 
-inter :: Ord a
-      => Op
-      -> Baum a
-      -> Baum a
-inter op = case op of
-    Insert -> insert 
-    Delete -> delete
+contents :: Baum a -> [a]
+contents Null = []
+contents b = contents (left b) ++ [key b] ++ contents (right b)
 
 insert :: Ord a
        => Baum a -> a -> Baum a

@@ -84,7 +84,7 @@ g :: Graph Int
 g = clique $ mkSet [1 :: Int .. 5]
 
 b :: Karte Int
-b = C.initial Cross (1, g)
+b = C.initial Cross (1 :: Int, g)
 
 --------------------------------------------------------------
 

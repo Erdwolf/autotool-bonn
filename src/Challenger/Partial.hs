@@ -29,7 +29,8 @@ instance Size b => Measure p i b where
       
 -- | Klasse: Partial
 class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
-    => Partial p i b | p i -> b , p b -> i where
+--    => Partial p i b | p i -> b , p b -> i where
+    => Partial p i b | p i -> b  where
       -- | Beschreibung der Aufgabe herstellen
       --
       -- TODO: es sollte (auch oder nur) eine Beschreibung geben,

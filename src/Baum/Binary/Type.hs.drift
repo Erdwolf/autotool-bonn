@@ -13,7 +13,7 @@ data Baum a = Null
 		   , left :: Baum a
 		   , right :: Baum a
 		   }
-     deriving ( Typeable )
+     deriving ( Typeable, Eq )
 
 isNull :: Baum a -> Bool
 isNull Null = True
@@ -21,10 +21,6 @@ isNull _ = False
 
 {-! for Baum derive: Reader, ToDoc, Haskell2Xml !-}
 
-data Op = Insert | Delete
-     deriving Typeable
-
-{-! for Op derive: Reader,  ToDoc, Haskell2Xml !-}
 
 
 
