@@ -5,11 +5,17 @@ module Robots.Interface where
 import Robots.Data
 import Robots.Konfig
 import Robots.Move
-import Robots.Examples
+import Robots.Nice
 
+
+import Reporter
 import ToDoc
 
 import Challenger.Partial
+import Inter.Types
+
+import Data.Maybe ( isJust )
+import Data.List ( partition )
 
 instance Partial Robots 
 		 Konfig
@@ -17,7 +23,8 @@ instance Partial Robots
 	 where
 
     describe Robots k = vcat
-        [ "Lunar Lockout: Finden Sie eine Zugfolge für diese Konfiguration:"
+        [ text "Lunar Lockout." 
+	, text "Finden Sie eine Zugfolge für diese Konfiguration:"
 	, nest 4 $ nice k
 	]
 
@@ -27,6 +34,7 @@ instance Partial Robots
 
     partial Robots k zs = do
         executes k zs
+	return ()
 
     total Robots k zs = do
         k' <- silent $ executes k zs
@@ -44,4 +52,22 @@ final k = do
 			 , text "Diese nicht: " <+> toDoc ( map snd noh )
 			 ]
     assert ( null noh ) $ text "Geschafft?"
+
+------------------------------------------------------------------------------
+
+make :: String -- aufgabe (major)
+     -> String -- aufgabe (minor)
+     -> Konfig 
+     -> Var Robots Konfig [ Zug ]
+make auf ver conf = 
+    Var { problem = Robots
+        , aufgabe = auf
+        , version = ver
+        , key = \ matrikel -> do 
+	      return matrikel
+        , gen = \ key -> do
+	      return $ return conf
+        }
+
+
 

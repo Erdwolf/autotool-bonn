@@ -6,8 +6,11 @@ module Robots.Data where
 
 import Reader
 import ToDoc
-import Number
-import Iso
+
+import Util.Size
+
+-- import Number
+-- import Iso
 
 data Robots 
    = Robots deriving ( Show, Read )
@@ -40,4 +43,5 @@ instance Read Richtung where readsPrec = parsec_readsPrec
 
 type Zug = ( String, Richtung )
 
+instance Size Zug where size _ = 1
 

@@ -5,6 +5,15 @@ module Robots.Examples where
 import Robots.Data
 import Robots.Konfig
 
+import Inter.Types
+import Robots.Interface ( make )
+
+generates :: [ IO Variant ]
+generates = map ( return . Variant )
+	  [ make "R" "Alex" alex
+	  , make "R" "Fourty" fourty
+	  ]
+
 alex :: Konfig 
 -- aufgaben von Alexander Krabbes
 alex = mkKonfig

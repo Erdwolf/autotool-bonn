@@ -11,7 +11,9 @@ import FiniteMap
 import Maybe
 import List (sortBy)
 import Monad ( foldM )
-import Boc
+
+import Reporter
+import ToDoc
 
 
 offset :: Richtung -> ( Integer, Integer )
@@ -59,7 +61,7 @@ executes k [] = do
     return k
 executes k (z : zs) = do
     inform $ vcat [ nice k , nest 4  $ text "nächster Zug:" <+> toDoc z ] 
-    case execute k z of
+    case Robots.Move.execute k z of
 	   Nothing -> reject $ text "nicht erlaubt" 
 	   Just k' -> executes k' zs
 
