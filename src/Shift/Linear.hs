@@ -3,6 +3,7 @@ module Shift.Linear where
 -- $Id$
 
 import Shift.Iterate
+import Shift.For
 
 import ToDoc
 import Monad ( guard, mzero )
@@ -22,8 +23,19 @@ data Linear a = Item { unItem :: a }
 		       , count  :: Int 
 		       , diff  :: [ Diff ]
 		       }
-	    | Wild
-     deriving ( Eq )
+	    | Junk { food :: [ Linear a ] }
+
+instance Eq a => Eq ( Linear a ) where
+    x @ Item {} == y @ Item {} = unItem x == unItem y
+    x @ Repeat {} == y @ Repeat {} = 
+	( start x, count x, diff x ) == ( start y, count y, diff y ) 
+    x @ Junk {} == y @ Junk {} = True
+    _ == _ = False
+    
+
+isJunk :: Linear a -> Bool
+isJunk ( Junk {} ) = True
+isJunk _ = False
 
 instance ToDoc a => ToDoc ( Linear a ) where
     toDoc ( Item i ) = toDoc i
@@ -35,7 +47,7 @@ instance ToDoc a => ToDoc ( Linear a ) where
 		 ]
 	  , nest 4 $ toDoc ( start r ) 
 	  ]
-    toDoc ( Wild ) = text "?"
+    toDoc ( Junk {} ) = text "?"
 
 
 instance ToDoc a => Show ( Linear a ) where show = render . toDoc
@@ -46,7 +58,7 @@ data Diff = DZero -- no difference on items
 	  | DRepeat { dcount :: Int
 		    , dstart :: [ Diff ]
 		    }
-	  | DWild
+	  | DJunk
     deriving ( Eq, Ord )
 
 instance ToDoc Diff where
@@ -56,7 +68,7 @@ instance ToDoc Diff where
 	( if all nul $ dstart d then empty else 
 	  toDoc (dstart d)
 	) <+>  toDoc (dcount d) 
-    toDoc DWild = text "?"
+    toDoc DJunk = text "?"
 
 instance Show Diff where show = render . toDoc
 
@@ -88,14 +100,39 @@ plus ( x @ Repeat {} ) ( y @ DRepeat {} ) =
 		, count = (+)  (count x) (dcount y)
 		, diff  = diff x
 		}
-plus ( Wild ) ( DWild ) = Wild
+plus ( Junk {} ) ( DJunk ) = Junk { food = [] }
 plus _ _ = error "Shift.Linear.plus: args do not match"
 
+------------------------------------------------------------------------
+
+
+mkFor :: Linear a -> Prog a 
+mkFor s = mkf s [] 
+
+vname l =  "x" ++ show l
+
+mkf ( Item x ) dstack  = It x
+mkf ( Junk {} ) dstack  = FJunk
+mkf ( r @ Repeat {} ) dstack  = 
+    let n = vname $ length dstack
+    in  For { var = n
+	    , bound = Ex { vars = do d : ds <- tails dstack
+			             return ( dcount d, vname (length ds) )
+			 , off = count r 
+			 }
+	    , body = do
+	        k <- [ 0 .. length ( start r ) -1 ]
+	        let dstack' = ( diff r !! k ) : map ( (!!k) . dstart ) dstack
+	        return $ mkf ( start r !! k ) dstack'
+	    }
+
+------------------------------------------------------------------------
+
 conform :: Linear a -> Diff -> Bool
-conform ( Item x ) ( DZero ) = True
+conform ( Item x ) ( DZero ) = True 
 conform ( x @ Repeat {} ) ( y @ DRepeat {} ) = 
     conforms ( start x ) ( dstart y )
-conform ( Wild ) ( DWild ) = True
+conform ( Junk {} ) ( DJunk ) = True
 conform _ _ = False
 
 conforms :: [ Linear a ] -> [ Diff ] -> Bool
@@ -107,19 +144,19 @@ conforms xs ds =
 
 small :: Diff -> Bool
 small ( DZero ) = True
-small ( DWild ) = True
+small ( DJunk ) = True
 small ( r @ DRepeat {} ) = 
     abs (dcount r) <= 1 &&  all small ( dstart r )
 
 nul :: Diff -> Bool
 nul ( DZero ) = True
-nul ( DWild ) = True
+nul ( DJunk ) = True
 nul ( r @ DRepeat {} ) = 
     abs (dcount r) == 0 &&  all nul   ( dstart r )
 
 depth :: Linear a -> Int
 depth ( Item _ ) = 0
-depth ( Wild ) = 0
+depth ( Junk {} ) = 0
 depth ( r @ Repeat {} ) = 
     succ $ maximum $ map depth $ start r
 
@@ -139,7 +176,7 @@ minus (x @ Repeat {}) (y @ Repeat {}) = do
     return $ DRepeat { dstart = s 
 		    , dcount = c
                     }
-minus Wild Wild = return DWild
+minus ( Junk {} ) ( Junk {} ) = return DJunk
 minus _ _ = mzero
 
 minusses :: Eq a => [ Linear a ] -> [ Linear a ] -> Maybe [ Diff ]
@@ -172,7 +209,7 @@ topdiffs k0 w xs = uniq $ do
     return ds
 
 apply :: Eq a => Bool -> [ Diff ] -> [ Linear a ] -> [ Linear a ]
--- if compact == True, then insert Wild elements for non-matching items
+-- if compact == True, then insert Junk elements for non-matching items
 apply compact ds [] = []
 apply compact ds xs = 
     let k = length ds
@@ -186,11 +223,14 @@ apply compact ds xs =
 	c  = length $ takeWhile ( uncurry (==) ) $ zip ys zs
     in  if   conforms y ds && c > 1
 	then r : apply compact ds ( drop ( c * k ) xs )
-	else ( if compact then wild
-	       else ( head xs : )
-	     ) $ apply compact ds ( drop         1 xs )
+	else ( if compact then junk else (:) ) ( head xs ) 
+		 $ apply compact ds ( drop         1 xs )
 
-wild xs = Wild : dropWhile (== Wild) xs
+junk :: Eq a => Linear a -> [ Linear a ] -> [ Linear a ]
+-- collects junk food
+junk x xs = 
+    let ( pre, post ) = span isJunk xs
+    in  Junk ( (x :) $ concat $ map food pre ) : post
 
 cuts :: Int -> [a] -> [[a]]
 -- schneidet in gleichlange stücke
@@ -219,4 +259,18 @@ helper compact f w xs = xs :
     case work compact (if f then 1 else 1 ) w xs of
 	 [] -> []
 	 ys -> helper compact True w ys
+
+
+---------------------------------------------------------------------------
+
+alljunk :: Linear a -> [ Linear a ]
+alljunk ( Item x ) = []
+alljunk ( r @ Repeat {} ) = concat $ map alljunk $ start r
+alljunk ( j @ Junk {} ) = food j
+
+junks :: [ Linear a ] -> [[ Linear a ]]
+junks xs = 
+    case concat $ map alljunk xs of
+         [] -> []
+	 js -> js : junks js
 

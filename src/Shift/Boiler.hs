@@ -4,7 +4,6 @@ import Shift.Linear
 import Shift.Computer
 import Shift.Break
 
-
 import Bits
 import List ( group )
 import ToDoc
@@ -20,6 +19,9 @@ itemize = map ( \ g -> Repeat { start = [ Item $ ch $ head g ]
 			   }
 	   ) . group 
 
+sub ps = itemize $ folge ps
+
+
 brk :: Break -> [ Linear () ]
 brk ms = map ( \ n -> Repeat { start = [ Item () ], diff = [ DZero ]
 			     , count = fromIntegral n
@@ -27,6 +29,13 @@ brk ms = map ( \ n -> Repeat { start = [ Item () ], diff = [ DZero ]
        $ grundy ms
 
 -- mainf a b c = smp $ worker False a $ take b $ brk c
-mainf a b c d = smp $ worker a b $ take c $ itemize $ folge d
+mainf a b c d = do
+    putStrLn $ "find patterns"
+    let xss = worker a b $ take c $ itemize $ folge d
+    smp $ xss
+    putStrLn $ "find junk"
+    smp $ junks $ last xss
+    putStrLn $ "render program"
+    smp $ map mkFor $ last xss
 
 
