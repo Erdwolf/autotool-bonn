@@ -23,10 +23,11 @@ import Challenger
 import ToDoc
 import Monad (guard)
 import Set
-import System 
-import Auswertung
-import Report
-import Right
+import System
+
+-- ???
+import Number
+import Iso
 
 -- *****************************************************************
 --Bemerkungen: 
@@ -56,11 +57,33 @@ type Variable = String
 
 --Belegung = Variable -> B00l
 type Belegung = FiniteMap Variable Bool
+type Map = [(Literal,Literal)]
+
+
+variablen :: Formel -> Set Variable
+variablen f = mkSet $ do
+    ( l1, l2, l3 ) <- f
+    l <- [ l1, l2, l3 ]
+    return $ case l of Pos v -> v ; Neg v -> v
+
 
 instance Problem SAT Formel Belegung where 
 
-   --TODO: prüfe, ob alle Variablen wirklich belegt werden
-   validiere SAT f b = ( True, text "zunächst ist alles valid" )
+ 
+   validiere SAT f b = 
+       let vf = variablen f
+	   vb = mkSet (keysFM b)
+           fb = minusSet vf vb
+	   bf = minusSet vb vf
+       in
+	if not ( isEmptySet fb )
+	then ( False, text "Diese Variablen sind nicht belegt:" <+> toDoc fb )
+	else if not ( isEmptySet bf )
+	then ( False, text "Diese Variablen sind nicht in der Formel:" <+> toDoc bf )
+	else (True, text "Die Belegung passt zur Formel.")
+
+
+
 
    verifiziere SAT f b = 
     let w = wert_formel f b
@@ -68,29 +91,39 @@ instance Problem SAT Formel Belegung where
     in  if w then (w, text "Die Belegung erfüllt die Formel.")
              else (w, text "Diese Klauseln sind nicht erfüllt:" <+> toDoc ks ) 
 
-    -- Erzeugt HTML-File zur Visualisierung
+-- Erzeugt HTML-File zur Visualisierung
    getInstanz SAT f b dateiName =
-         do 
-          writeFile (dateiName ++ ".html") 
-                    ("<br><table borders><caption>Diese Formel ist zu erfüllen:")
-          return (dateiName ++ ".html","html",ExitSuccess)
-        
-    -- Erzeugt HTML-File zur Visualisierung
+	do 
+	 writeFile (dateiName ++ ".html")
+	            ("<br><table borders><caption>Diese Formael ist zu erfüllen:</caption>" ++ (erzInstanz f) ++ "</table>")
+	 return (dateiName ++ ".html", "html",ExitSuccess)
+
+
+-- Erzeugt HTML-File zur Visualisierung
    getBeweis SAT f b dateiName =
-         do 
-          writeFile (dateiName ++ ".html") 
-		    $ "<TR><TD>" ++ show b ++ "</TD></TR>"
-          return (dateiName ++ ".html","html",ExitSuccess)
+	do
+	 writeFile (dateiName ++ ".html")
+		    (erzBeweis b)
+	 return (dateiName ++ ".html", "html",ExitSuccess)
 
 
+instance Number Formel Formel where number = id 
 
-
-instance Number Formel Formel where number = id
-
-instance Iso Formel where iso = (==)
-
+-- Version 1
+instance Iso Formel where iso f1 f2 = (mkSet f1) == (mkSet f2)
 
 ------------------------------------------------
+-- erzeugt den Ausgabestring fuer die HTML Ausgabe der Instanz
+erzInstanz :: Formel -> String
+erzInstanz f = "<tr><td>" ++ show f ++ "</td></tr>"
+
+-- erzeugt den Ausgabestring fuer die HTML Ausgabe des Beweises
+erzBeweis :: Belegung -> String
+erzBeweis b = "<tr><td>" ++ show b ++ "</td></tr>"
+
+
+--belegtest = 
+-------------------------------------------------
 l1 = Pos "x" :: Literal
 v1 = "x" :: Variable
 k1 = (Pos "x", Neg "y", Pos "z") :: Klausel
@@ -122,8 +155,3 @@ wert_variable v b =
     case lookupFM b v of
 	Nothing -> error "variable nicht in belegung."
 	Just w  -> w
-
-
--- Beispiel -> doc/Aufgabe.hs
-
-
