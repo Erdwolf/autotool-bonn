@@ -7,6 +7,8 @@ import Util.Faktor
 import Reporter
 import ToDoc
 
+nth :: [Int] -> Int -> [Bool]
+nth ps q = zustands_folge ps !! q
 
 verify :: Int -> Shift -> Reporter Int
 verify limit sh = do
@@ -25,8 +27,8 @@ verify limit sh = do
 
     -- das rechnen wir zweimal aus, damit es jedesmal (hoffentlich)
     -- in konstantem space läuft
-    let sq  = zustands_folge ps !! q
-    let sqp = zustands_folge ps !! (q + p)
+    let sq  = nth ps q
+    let sqp = nth ps (q + p)
 
     inform $ fsep [ text "Stimmen die Zustände zu den Zeiten"
 		  , toDoc q, text "und", toDoc (p+q), text "überein?"
@@ -45,7 +47,7 @@ verify limit sh = do
 	guard $ t < p
 	return $ do
 	    let pt = p `div` t
-	    let sqpt = zustands_folge ps !! (q + pt)
+	    let sqpt = nth ps (q + pt)
 	    let flag = ( sq /= sqpt ) 
 	    inform $ fsep [ text "Teiler", toDoc t, comma
 			  , text "Teilperiode", toDoc pt, comma
