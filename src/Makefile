@@ -73,6 +73,13 @@ haddock :
 
 ###############################################################################
 
+MATCHBOX_DIRS = util Util Reporter GVKnoten Graph Boxing Dot NFA NFTA Exp TES SRS 
+MATCHBOX_SRC = $(wildcard Makefile* *.hs) \
+	$(shell find $(MATCHBOX_DIRS) -name "*.hs" -print)
+MATCHBOX_DOWNLOAD = $(CGIDIR)/download
+MATCHBOX_ARCHIVE = Matchbox-src-$(shell date -I).tar.bz2
+MATCHBOX_EXEC = Matchbox-exec-$(shell date -I)
+
 matchbox : do
 	$(GHC_COMMAND) \
 		SRS/Matchbox.hs -o SRS/Matchbox
@@ -83,16 +90,20 @@ loop :
 	$(GHC_COMMAND)  \
 		Exp/Loop.hs -o Exp/Loop
 
-install-matchbox : do
-	$(GHC_COMMAND) \
-		SRS/Matchbox.hs -o SRS/Matchbox
+# install source archive and executable
+release : do
+	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXEC)
+	bzip2 -v --force --best  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXEC)
+	tar -cvjf $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_ARCHIVE) \
+		-C.. $(patsubst %, autotool/%, $(MATCHBOX_SRC))
+
+# install CGI programs and copy web pages
+install-matchbox : do release
 	$(GHC_COMMAND)  \
 		SRS/Closure/Terminator.hs -o $(CGIDIR)/Terminator.cgi
 	$(GHC_COMMAND)  \
 		SRS/Deleting/Demo.hs -o $(CGIDIR)/Demo.cgi
 	cp $(HTMLS) $(CGIDIR)/
-	cp SRS/Matchbox $(CGIDIR)/
-	bzip2 -v --force --best $(CGIDIR)/Matchbox
 
 
 ###############################################################################
