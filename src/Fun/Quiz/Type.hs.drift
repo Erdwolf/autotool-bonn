@@ -1,0 +1,13 @@
+-- -*- mode: haskell -*-
+
+module Fun.Quiz.Type where
+
+-- $Id$
+
+import Reader
+import ToDoc
+
+
+data Quiz = Quiz deriving ( Eq, Ord, Show, Read )
+
+{-! for Quiz derive : Reader, ToDoc !-}
