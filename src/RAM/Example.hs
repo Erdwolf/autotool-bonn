@@ -2,7 +2,7 @@ module RAM.Example where
 
 import RAM
 
-import LOOP.PRIM
+
 
 student :: Program
 -- Wirkung:  x0 := 2 ^ x1

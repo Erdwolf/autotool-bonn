@@ -13,6 +13,7 @@ import Inter.Types
 -- import Serie6
 
 import qualified Uni.SS04.Serie1
+import qualified Uni.SS04.Serie2
 
 -- hier steht ALLES machbare drin
 -- in der datenbank steht dann, zu welcher zeit es erlaubt ist.
@@ -22,6 +23,7 @@ boiler = sequence -- der erste ist der default-wert!
        $  []
 
        ++ Uni.SS04.Serie1.generate
+       ++ Uni.SS04.Serie2.generate
 
 
 
