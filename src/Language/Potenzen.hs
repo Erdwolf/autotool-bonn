@@ -10,6 +10,7 @@ import Language.Zahl
 import Set
 import Random
 import Monad ( guard )
+import Char
 
 alpha = [ '0' .. '9' ]
 

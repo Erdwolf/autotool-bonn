@@ -9,6 +9,7 @@ import Language.Zahl
 
 import Set
 import Random
+import Char
 
 alpha = [ '0' .. '9' ]
 
