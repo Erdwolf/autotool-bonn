@@ -4,6 +4,9 @@ module Machine.History where
 
 import ToDoc
 
+detail :: Int
+detail = 7
+
 class History conf where
     -- ergibt den Pfad im Berechnungsbaum, der zu der Konfiguration führt
     -- (in falscher reihenfolge, d. h. wurzel des baums kommt zuletzt)
@@ -14,8 +17,8 @@ present :: ( ToDoc conf, History conf )
 	=> conf -> Doc
 present conf = 
     let cs = conf : history conf
-        ( rnew, mo  ) = splitAt 4 $ cs
-	( old, mid ) = splitAt 4 $ reverse mo 
+        ( rnew, mo  ) = splitAt detail $ cs
+	( old, mid ) = splitAt detail $ reverse mo 
     in  if null mid
 	then vcat [ text "Die Rechnung verläuft so:"
 	          , nest 4 $ vcat $ map toDoc $ reverse cs
