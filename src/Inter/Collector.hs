@@ -39,6 +39,7 @@ import qualified Baum.Reconstruct
 import qualified Baum.Binary
 import qualified Baum.ZweiDrei
 import qualified Graph.TreeWidth
+import qualified Graph.PartialKTree
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -88,6 +89,7 @@ makers = [ Blank.make
          , Baum.ZweiDrei.make_quiz
 
          , Graph.TreeWidth.make
+         , Graph.PartialKTree.make
 	 ]
 
 

@@ -1,0 +1,16 @@
+-- -*- mode: haskell -*-
+
+module Graph.PartialKTree.Config where
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Config a = 
+     Config { nodes :: Int
+	    , width :: Int -- of clique
+	    }
+
+
