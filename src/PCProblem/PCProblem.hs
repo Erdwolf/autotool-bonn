@@ -4,12 +4,12 @@
 -- mai99byv@studserv.uni-leipzig.de
 
 module PCProblem.PCProblem (
-	  PCProblem
-         ,Folge (..)
-	 ,module PCP.Type
-	 ,validiere
-	 ,verifiziere) 
-  	where
+     PCProblem
+    ,Folge (..)
+    ,module PCP.Type
+    ,validiere
+    ,verifiziere
+    ) where
 
 import FiniteMap
 import PCP.Type
@@ -21,9 +21,9 @@ import System
 
 
 data PCProblem = PCProblem deriving Show
-data Folge a = Folge [a] deriving (Show, Read)
+data Folge = Folge [Int] deriving (Show, Read)
 
-instance (ToDoc [a]) => ToDoc (Folge a) where
+instance ToDoc (Folge) where
 	toDoc (Folge flg) = text "Loesung: " <+> toDoc flg
 
 
@@ -32,9 +32,9 @@ instance (ToDoc [a]) => ToDoc (Folge a) where
 -- Instanz: PCP [(a,(String,String))]
 -- Beweis: Folge 
 
-instance (ToDoc (PCP a), Show (PCP a), Read (PCP a), Iso (PCP a)
-         , ToDoc (Folge a), Show (Folge a), Read (Folge a), Ord a, ToDoc a, Show a)
-    => Problem PCProblem (PCP a) (Folge a) where
+instance (ToDoc PCP, Show PCP, Read PCP, Iso PCP
+         , ToDoc Folge, Show Folge, Read Folge)
+    => Problem PCProblem PCP Folge where
 
     validiere PCProblem ((PCP pcp)) (folge @ (Folge fol)) = 
     		if and [(not(pcp == [])),not(fol == []),folgeIsInPcP (listToFM pcp) folge]
@@ -45,28 +45,29 @@ instance (ToDoc (PCP a), Show (PCP a), Read (PCP a), Iso (PCP a)
 
     -- Erzeugt HTML-File zur Visualisierung
     getInstanz PCProblem (PCP pcp) folge dateiName =
-	do 
-	writeFile (dateiName ++ ".html") ("<br><table borders><caption>PCP-Instanz</caption>" ++ (erzInstanz pcp) ++ "</table>")
-	return (dateiName ++ ".html","html",ExitSuccess)
+	 do 
+	  writeFile (dateiName ++ ".html") ("<br><table borders><caption>PCP-Instanz</caption>" ++ (erzInstanz pcp) ++ "</table>")
+	  return (dateiName ++ ".html","html",ExitSuccess)
         
     -- Erzeugt HTML-File zur Visualisierung
     getBeweis PCProblem (PCP pcp) (fol @ (Folge folge)) dateiName =
-	do 
-	writeFile (dateiName ++ ".html") ("L&ouml;sungsfolge: " ++ show folge ++ "\n<br>" ++ (erzBeweis (listToFM pcp) fol ""))
-	return (dateiName ++ ".html","html",ExitSuccess)
+	 do 
+	  writeFile (dateiName ++ ".html") ("L&ouml;sungsfolge: " ++ show folge ++ "\n<br>" ++ (erzBeweis (listToFM pcp) fol ""))
+	  return (dateiName ++ ".html","html",ExitSuccess)
+
 
 
 -- erzeugt den Ausgabestring fuer die HTML Ausgabe der PCP-Instanz
-erzInstanz :: (Show a) => [(a,(String,String))] -> String
-erzInstanz [] = ""
+erzInstanz :: [(Int,(String,String))] -> String
 erzInstanz (x:xs) = 
 	let
 	(a,(str1,str2)) = x
 	in "<tr><td>" ++ str1 ++ "</td><td>" ++ show a ++ "</td><td>" ++ str2 ++ "</td></tr>\n" ++ (erzInstanz xs)
+erzInstanz [] = ""    
 	
 
 -- erzeugt den AusgabeString fuer die HTML Ausgabe des Beweises 
-erzBeweis :: (Ord a) => FiniteMap a (String,String) -> Folge a -> String -> String
+erzBeweis :: FiniteMap Int (String,String) -> Folge -> String -> String
 erzBeweis pcp (Folge []) str1 = "L&ouml;sungsketten: " ++ str1 ++ "<br>\n"
 erzBeweis pcp (Folge (x:xs)) str1 =
 	let
@@ -77,7 +78,7 @@ erzBeweis pcp (Folge (x:xs)) str1 =
 
 
 --Funktion erzeugt die beiden Ketten und vergleicht sie
-pcpTest :: (Ord a) => FiniteMap a (String,String) -> Folge a -> String -> String -> (Bool,Doc) 
+pcpTest :: FiniteMap Int (String,String) -> Folge -> String -> String -> (Bool,Doc) 
 pcpTest pcp (Folge []) str1 str2 = if str1 == str2
 									then (True,text "Korrektes PCP\n" <+> text "Kette 1/2:" <+> text str1)
                                     else (False,text "Ketten sind nicht identisch" <+> 
@@ -91,7 +92,7 @@ pcpTest pcp (Folge (x:xs)) str1 str2 =
 
 
 --Testet ob Folgenelemente im PCP sind
-folgeIsInPcP :: Ord a => FiniteMap a (String,String) -> Folge a -> Bool
+folgeIsInPcP :: FiniteMap Int (String,String) -> Folge -> Bool
 folgeIsInPcP pcp (Folge []) = True
 folgeIsInPcP pcp (Folge (x:xs)) = if (elemFM x pcp) then (folgeIsInPcP pcp (Folge xs)) else False
 
@@ -99,10 +100,10 @@ folgeIsInPcP pcp (Folge (x:xs)) = if (elemFM x pcp) then (folgeIsInPcP pcp (Folg
 
 
 --Beispielstrukturen
-bsp_pcp =PCP([('A',("001","0")),
-        	('B',("10","011")),
-                 ('C',("01","001"))
+bsp_pcp =PCP([(1,("001","0")),
+        	(2,("10","011")),
+                 (3,("01","001"))
                 ])
 
 
-bsp_folge = Folge ['A','B','C','A']
+bsp_folge = Folge [1,2,3,1]

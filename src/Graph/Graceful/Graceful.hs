@@ -43,36 +43,38 @@ data Graceful = Graceful deriving Show
 --     beliebigem Knotentyp a auf  
 
 instance
-	( Ord knoten, Show knoten, ShowText knoten, ToDoc knoten
-	, ToDoc (Graph knoten), Show (Graph knoten), Read (Graph knoten)
-	, ToDoc (Labeling knoten), Show (Labeling knoten), Read (Labeling knoten)
-	)
-	=> Problem Graceful (Graph knoten) (Labeling knoten) where
+    ( Ord knoten, Show knoten, ShowText knoten, ToDoc knoten
+    , ToDoc (Graph knoten), Show (Graph knoten), Read (Graph knoten)
+    , Number (Graph knoten) (Graph Int), Show (Graph Int), Read (Graph Int), Iso (Graph knoten)
+    , ToDoc (Labeling knoten), Show (Labeling knoten), Read (Labeling knoten)
+    )
+    => Problem Graceful (Graph knoten) (Labeling knoten) where
 
 
-	validiere Graceful graph labeling =
-		testeAlles (text "Der Graph ist valid.")
-			[ kantenPassenZuKnotenTest $ kantenPassenZuKnoten graph
-			, ( isZusammen graph
-			  , text "Der Graph ist nicht zusammenhängend."
-			  )
-			]
-    
-	verifiziere Graceful graph labeling =
-		testeAlles (text "Die Lösung ist richtig.") (
-			[ isLabelingAbbildungVonKnoten graph labeling
-			, isSmallestLabelNull labeling
-			, isBiggestLabelAnzKanten graph labeling
-			, isLabelingEineindeutig labeling
-			, isDiffListTight $ sort $ getDiffList graph labeling
-			])
+    validiere Graceful graph labeling =
+	    testeAlles (text "Der Graph ist valid.")
+		    [ kantenPassenZuKnotenTest $ kantenPassenZuKnoten graph
+		    , ( isZusammen graph
+		      , text "Der Graph ist nicht zusammenhängend."
+		      )
+		    ]
 
-	getInstanz Graceful graph labeling dateiName =
-		-- mehr muss hier keiner machen, der Graphviz nutzt
-		getGraphviz graph instanzTrans dateiName
-	
-	getBeweis Graceful graph labeling dateiName =
-		getGraphviz graph (getBeweisTrans labeling) dateiName
+    verifiziere Graceful graph labeling =
+	    testeAlles (text "Die Lösung ist richtig.") (
+		    [ isLabelingAbbildungVonKnoten graph labeling
+		    , isSmallestLabelNull labeling
+		    , isBiggestLabelAnzKanten graph labeling
+		    , isLabelingEineindeutig labeling
+		    , isDiffListTight $ sort $ getDiffList graph labeling
+		    ])
+
+    getInstanz Graceful graph labeling dateiName =
+	    -- mehr muss hier keiner machen, der Graphviz nutzt
+	    getGraphviz graph instanzTrans dateiName
+
+    getBeweis Graceful graph labeling dateiName =
+	    getGraphviz graph (getBeweisTrans labeling) dateiName
+
 		
 -------------------------------------------------------------------------------
 -- hier folgen Transformationen

@@ -62,6 +62,7 @@ instance
 	getBeweis Col (graph,anzahl) loesung dateiName =
 		-- Komplexität ist noch verbesserunswürdig
 		getGraphviz graph (getBeweisTrans (sortLoesung $ loesung)) dateiName
+
 		
 -------------------------------------------------------------------------------
 -- hier folgen Transformationen
