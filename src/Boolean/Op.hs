@@ -27,10 +27,10 @@ instance ToDoc Op where
 instance Show Op where
     show = render . toDoc
 
+
 instance Reader Op where
-    readerPrec p = do
-        i <- my_identifier	
-	return $ Op { name = i, arity = 0, precedence = Nothing }
+    readerPrec p = error "no instance Reader Boolean.Op"
+
 
 ops :: [ Op ]
 ops = nullary ++ unary ++ binary

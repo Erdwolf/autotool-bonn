@@ -1,14 +1,23 @@
 -- | Boolean expressions, in Java/C syntax
 
-module Boolean.Data where
+module Boolean.Data 
+
+( Op, Exp, Identifier
+, module TES.Term
+, module TES.Position
+)
+
+
+where
 
 --  $Id$
 
 import Boolean.Op
 
 import TES.Term
-import TES.Symbol
+import TES.Position
 import TES.Identifier
+import TES.In
 
 import Reader
 
@@ -19,3 +28,4 @@ instance Reader Exp where
 
 instance Read Exp where
     readsPrec = parsec_readsPrec
+
