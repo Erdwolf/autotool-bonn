@@ -55,10 +55,10 @@ home_dir = do
 #else
 #ifdef POSIX
         user <- Posix.getEffectiveUserName
-	    return $ "/home/" ++ user
+        return $ "/home/" ++ user
 #else            
-            let user = "autotool"
-	    return $ "/home/" ++ user
+        let user = "autotool"
+        return $ "/home/" ++ user
 #endif
 #endif
 #endif
