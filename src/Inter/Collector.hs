@@ -55,6 +55,8 @@ import qualified Number.Base.Central
 import qualified Number.Float.From
 import qualified Number.Float.To
 
+import qualified LCS.Instance
+
 makers :: [ Make ]
 makers = [ Blank.make
 	 , Upload.make
@@ -125,5 +127,8 @@ makers = [ Blank.make
          , Number.Float.From.make_quiz
          , Number.Float.To.make_fixed
          , Number.Float.To.make_quiz
+
+         , LCS.Instance.make_fixed
+         , LCS.Instance.make_quiz
 
 	 ]

@@ -10,7 +10,6 @@ import Data.Maybe
 
 import Autolib.ToDoc
 import Autolib.Reader
-import Text.XML.HaXml.Haskell2Xml
 
 
 get_boiler :: [ Make ] 
@@ -32,6 +31,7 @@ present makers = vcat $ do
         Make doc ( fun :: fun ) ex -> return $ text $ show 
 	       $ hsep [ text doc, comma, toDoc $ typeOf fun ]
 
+{-
 cpresent :: [ Make ] -> [ Dynamic ] -> Doc
 cpresent makers configs = hcat $ do
     dyn <- configs
@@ -40,7 +40,7 @@ cpresent makers configs = hcat $ do
         Make doc ( fun :: conf -> Var p i b ) ex -> do
 	    it <- maybeToList ( fromDynamic dyn :: Maybe conf )
 	    return $ text $ showXml it
-
+-}
 
 
 		   

@@ -1,14 +1,23 @@
---  -*- mode: haskell -*-
+{-# OPTIONS -fallow-overlapping-instances #-}
+
 module LCS.Data where
 
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Set
 
 import Data.Typeable
+import Autolib.Xml
 import Text.XML.HaXml.Haskell2Xml
 
-class    ( Eq a, Reader a, ToDoc [a], ToDoc a, Reader [a], Haskell2Xml a ) => InstanceC a 
-instance ( Eq a, Reader a, ToDoc [a], ToDoc a, Reader [a], Haskell2Xml a ) => InstanceC a 
+class    ( Ord a,  ToDoc [a], Reader [a]
+	 -- , Haskell2Xml [a] 
+	 )
+    => InstanceC a 
+instance ( Ord a, ToDoc [a], Reader [a]
+	 -- , Haskell2Xml [a] 
+	 )
+    => InstanceC a 
 
 data InstanceC a => Instance a = 
      Instance { left :: [a]
@@ -17,7 +26,15 @@ data InstanceC a => Instance a =
 	      }
      deriving ( Typeable )
 
-{-! for Instance derive : Reader, ToDoc, Haskell2Xml !-}
+{-! for Instance derive: Reader, ToDoc, Haskell2Xml !-}
 
-instance InstanceC a => Show (Instance a) where show = render . toDoc
-instance InstanceC a => Read (Instance a) where readsPrec = parsec_readsPrec
+example :: Instance Char
+example = Instance
+	{ left = "ABCABBA"
+	, right = "CBABAC"
+	, sharp = True
+	}
+
+-- Local Variables:
+-- mode: haskell
+-- End:
