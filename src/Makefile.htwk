@@ -38,7 +38,7 @@ include Makefile
 # special targets #########################################################
 
 Inter/Streamer : do
-	$(GHC_COMMAND)  $@.hs -o $@
+	$(GHC_COMMAND) $(EXTRA_PACKS)  $@.hs -o $@
 
 stream : Inter/Streamer
 
