@@ -98,6 +98,25 @@ AC_SUBST(BASE)
 
 
 dnl ***********************************************
+dnl autotool www directory
+dnl ***********************************************
+PUB="/var/www"
+AC_ARG_WITH(pub,
+[  --with-pub=<autotool www directory>
+        CGI script is installed in $pub/cgi-bin
+        haddockumentaion goes to $pub/auto/tool
+],
+[PUB="$withval"]
+)
+
+if test "$PUB" = "" || test ! -d $PUB; then
+  AC_MSG_ERROR([need a www directory to build the package])
+fi
+
+AC_SUBST(PUB)
+
+
+dnl ***********************************************
 dnl autotool problem source directory
 dnl ***********************************************
 SCHOOL="HTWK"

@@ -9,3 +9,5 @@ exec_prefix = @exec_prefix@
 CPPFLAGS = @CPPFLAGS@
 HADDOCK = @HADDOCK@
 AUTODRIFT = @AUTODRIFT@
+PUB = @PUB@
+BASE = @BASE@
