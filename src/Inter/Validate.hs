@@ -13,7 +13,7 @@ import Text.Html
 import SQLqueries
 
 import Control.Monad ( guard )
-import ToDoc
+import Autolib.ToDoc
 
 validate :: P.Type -> IO ( Either Html P.Type )
 validate par = do

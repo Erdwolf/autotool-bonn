@@ -2,17 +2,17 @@ module Inter.Types where
 
 --   $Id$
 
-import Reporter
+import Autolib.Reporter
 
 import Challenger.Problem
 import Challenger.Partial
 
 -- import ShowFunctions
 
-import ToDoc
-import Reader
-import Size
-import Informed
+import  Autolib.ToDoc
+import  Autolib.Reader
+import  Autolib.Size
+import  Autolib.Informed
 
 import Data.Typeable
 

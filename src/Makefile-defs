@@ -69,7 +69,7 @@ endif
 
 # erlaube überschreibung, s.o
 ifndef DIRS
-DIRS = util:wash:control:bridge:challenger:ws03/aus:
+# DIRS = util:wash:control:bridge:challenger:ws03/aus:
 endif
 
 ########################################################################
@@ -85,7 +85,7 @@ FLAGS = -fallow-overlapping-instances \
 	-fallow-undecidable-instances 
 
 # PACKS = -package text -package data -package posix -package network 
-PACKS = 
+# PACKS = -package Autolib
 
 OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
 

@@ -7,7 +7,7 @@ import Data.Typeable
 import Data.Dynamic
 import Data.Maybe
 
-import ToDoc
+import Autolib.ToDoc
 import Text.XML.HaXml.Haskell2Xml
 
 data Make = forall conf p i b 

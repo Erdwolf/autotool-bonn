@@ -2,10 +2,10 @@ module Inter.Store where
 
 -- -- $Id$
 
-import Util.Datei
+import  Autolib.Util.Datei
 import qualified System.Posix
 import qualified Inter.Param as P
-import Maybe
+import Data.Maybe
 
 store ::  P.Type -> Maybe Int -> IO String
 -- von falschen einsendungen: speichert in "latest.input"

@@ -9,14 +9,14 @@ import Boolean.Data
 import qualified Boolean.Equiv
 
 import Challenger.Partial
-import qualified Reporter.Subset
+import qualified Autolib.Reporter.Subset
 
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
-import ToDoc
-import Reporter
-import Sets
+import Autolib.ToDoc
+import Autolib.Reporter
+import Autolib.Sets
 
 data Boolean = Boolean deriving ( Eq, Ord, Show, Read, Typeable )
 

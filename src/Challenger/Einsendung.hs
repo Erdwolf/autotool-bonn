@@ -4,7 +4,7 @@ module Challenger.Einsendung where
 
 import Challenger.Ident
 
-import ToDoc
+import Autolib.ToDoc
 
 data Einsendung p i b
     = Aufgabe { problem::p, instanz::i, beweis::b}

@@ -2,10 +2,10 @@ module Boolean.Op where
 
 --  $Id$
 
-import Reader 
-import ToDoc
-import Hash
-import Util.Size
+import Autolib.Reader 
+import Autolib.ToDoc
+import Autolib.Hash
+import Autolib.Util.Size
 
 import qualified TES.Symbol
 import qualified TES.Parsec

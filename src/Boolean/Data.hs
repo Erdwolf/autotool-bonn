@@ -19,7 +19,7 @@ import TES.Position
 import TES.Identifier
 import TES.In
 
-import Reader
+import Autolib.Reader
 
 type Exp = Term Identifier Op
 

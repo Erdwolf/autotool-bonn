@@ -11,12 +11,12 @@ import qualified TES.Enum as E
 import TES.Identifier
 import TES.Position
 
-import Util.Zufall
-import Util.Wort
-import Util.Seed
-import Util.Datei
-import Util.Cache
-import Sets
+import Autolib.Util.Zufall
+import Autolib.Util.Wort
+import Autolib.Util.Seed
+import Autolib.Util.Datei
+import Autolib.Util.Cache
+import Autolib.Sets
 
 import Inter.Types
 

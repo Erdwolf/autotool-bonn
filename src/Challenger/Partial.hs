@@ -3,9 +3,9 @@ module Challenger.Partial where
 
 --   $Id$
 
-import Reporter
-import ToDoc
-import Size
+import Autolib.Reporter
+import Autolib.ToDoc
+import Autolib.Size
 
 -- | Klasse: Partial
 class Size b => Partial p i b | p i -> b , p b -> i where

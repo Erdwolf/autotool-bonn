@@ -7,10 +7,10 @@ import qualified System.Posix
 
 import System.Time
 import qualified Inter.Param as P
-import qualified Reporter.Result
+import qualified  Autolib.Reporter.Result
 
 import qualified Inter.Store
-import Util.Datei
+import  Autolib.Util.Datei
 
 bank :: P.Type -> Maybe Int -> IO String
 bank p res = do

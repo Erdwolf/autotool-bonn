@@ -8,10 +8,10 @@ import qualified Inter.Param as P
 
 import qualified  Challenger 
 
-import Reporter.Type
-import Size
-import Reader
-import ToDoc
+import Autolib.Reporter.Type
+import Autolib.Size
+import Autolib.Reader
+import Autolib.ToDoc
 
 evaluate :: ( Reader b
 	    , Size b

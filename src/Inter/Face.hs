@@ -27,12 +27,12 @@ import Network.CGI
 import Text.Html hiding ( text  )
 
 -- Pretty-Printer Erweiturng
-import ToDoc (Doc, render, toDoc, text)
+import Autolib.ToDoc (Doc, render, toDoc, text)
 
 -- Aufgaben Bewertungsprotokoll
-import Reporter
-import qualified Output
-import qualified Output.Html
+import Autolib.Reporter
+import qualified Autolib.Output
+import qualified Autolib.Output.Html
 
 --
 -- CGI Env-Variabeln in Parameter umwandeln
@@ -92,7 +92,7 @@ import Inter.Boiler
 -- temporarily:
 import qualified HTWK.SS04.Informatik.Boolean as B
 
-import Informed
+import Autolib.Informed
 
 patience :: Int
 patience = 15 -- seconds

@@ -3,8 +3,8 @@ module Challenger.Problem where
 --   $Id$
 
 
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 import System (ExitCode)
 
 -- | Klasse Problem steht für ein abstraktes Problem zu dem

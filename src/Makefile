@@ -20,9 +20,10 @@ CGIBIN = $(PUB)/cgi-bin
 
 # for drift ########################################################
 
-DrIFT = DrIFT-2.0rc3/src/DrIFT
+# TODO: autoconf
+DrIFT = $(HOME)/space/Autolib-0.0.0/DrIFT-2.0rc3/src/DrIFT
+
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
-DP = $(HUGS):$(HOME)/autotool/util
 
 ###############################################################################
 
