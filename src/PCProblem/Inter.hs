@@ -20,6 +20,15 @@ instance Partial PCProblem PCP Folge where
         let (l,r) = lr pcp lsg
         assert ( isPrefixOf l r || isPrefixOf r l )
 	    $ text "Ist das eine Wort ein Präfix des anderen?"
+    total PCProblem pcp lsg = do
+        let (l, r) = lr pcp lsg
+	    c = common l r
+	    [cl, cr] = map (drop (length c)) [ l, r ]
+	when ( not $ null cl ) $ reject 
+	     $ text "Oberer Vorsprung:" <+> text cl
+	when ( not $ null cr ) $ reject 
+	     $ text "Unterer Vorsprung:" <+> text cr
+
 
 instance  Step PCProblem PCP Folge ( Select Int ) where
         step PCProblem pcp xs ( Pick x ) =
