@@ -1,6 +1,7 @@
--- $Header$
+module Language.Lukas
 
-module Lukas
+-- $Id$
+
 
 ( lukas
 , nolukas
@@ -10,47 +11,54 @@ module Lukas
 
 where
 
--- Sprache von Lukasiewicz
-
-
+-- Sprachen von Lukasiewicz, Dyck
 
 import Set
 import List ( mapAccumL, nub )
 import Random
 
-import Wort
-import Language
+import Util.Wort
+import Language.Type
 
 lukas :: Language
 lukas = Language
-	      { abbreviation = "Lukasiewicz-Sprache über {a,b}"
+	      { nametag      = "Lukas" 
+	      , abbreviation = "Lukasiewicz-Sprache über {a,b}"
 	      , alphabet     = mkSet "ab"
 	      , contains     = lukas_ok
 	      , sample       = lukas_sam
-	      }
-
-dyck :: Language
-dyck = Language
-	      { abbreviation = "Dyck-Sprache über {a,b}"
-	      , alphabet     = mkSet "ab"
-	      , contains     = dyck_ok
-	      , sample       = dyck_sam
+	      , anti_sample  = sample nolukas
 	      }
 
 nolukas :: Language
 nolukas = Language
-	      { abbreviation = "Komplement der Lukasiewicz-Sprache über {a,b}"
+	      { nametag      = "ComLukas"
+	      , abbreviation = "Komplement der Lukasiewicz-Sprache über {a,b}"
 	      , alphabet     = mkSet "ab"
 	      , contains     = not . lukas_ok
 	      , sample       = random_sample nolukas
+	      , anti_sample  = sample lukas
 	      }
+
+dyck :: Language
+dyck = Language
+	      { nametag      = "Dyck"
+	      , abbreviation = "Dyck-Sprache (korrekt geklammerte Wörter über {a,b})"
+	      , alphabet     = mkSet "ab"
+	      , contains     = dyck_ok
+	      , sample       = dyck_sam
+	      , anti_sample  = sample nodyck
+	      }
+
 
 nodyck :: Language
 nodyck = Language
-	      { abbreviation = "Komplement der Dyck-Sprache über {a,b}"
+	      { nametag      = "ComDyck"
+	      , abbreviation = "Komplement der Dyck-Sprache (nicht korrekt geklammerte Wörter über {a,b})"
 	      , alphabet     = mkSet "ab"
 	      , contains     = not . dyck_ok
 	      , sample       = random_sample nodyck
+	      , anti_sample  = sample dyck
 	      }
 
 -------------------------------------------------------------------------
@@ -72,6 +80,7 @@ dyck_ok [] = True
 dyck_ok w = 
     let ds = diffs w
     in	and [ d >= 0 | d <- ds ]
+	&& last ds == 0
 
 -------------------------------------------------------------------------
 
