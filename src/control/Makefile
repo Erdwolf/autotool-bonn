@@ -10,22 +10,22 @@ HCFLAGS=	$(OPT) $(HC_SPEC_FLAGS) $(HINCLUDES)
 
 HMAKE=		ghc --make 			# hmake
 HMAKEFLAGS=	$(HCFLAGS) $(HINCLUDES)
-# HINCLUDES=	-i../wash -package"HToolkit" -package"lang"
-HINCLUDES=	-i../wash -i../HToolkit -package lang
+HINCLUDES=	-i../wash -package"HToolkit" -package"lang"
+# HINCLUDES=	-i../wash -i../HToolkit -package lang
 HAPPY=		happy
 HAPPYFLAGS=	-i
 RM=			rm -f
 
 TARGET=		autoan
 SRCCMN=		Helper.hs HTMLshortcuts.hs SQLqueries.hs 
-SRCAN =		$(SRCCMN) Main.hs
+SRCAN =		$(SRCCMN) autoan.hs
 SRCAD =		$(SRCCMN) autoadmin.hs
 SRCSG =		$(SRCCMN) showgruppen.hs
 
 all: autoan.cgi autoadmin.cgi showgruppen.cgi
 
 autoan.cgi: $(SRCAN)
-	$(HMAKE) $(HMAKEFLAGS) Main.hs -o $@
+	$(HMAKE) $(HMAKEFLAGS) autoan.hs -o $@
 
 autoadmin.cgi: $(SRCAD)
 	$(HMAKE) $(HMAKEFLAGS) autoadmin.hs -o $@
@@ -38,12 +38,14 @@ showgruppen.cgi: $(SRCSG)
 #	$(HMAKE) $(HMAKEFLAGS) $@.hs -o $@
 
 clean: 
-	$(RM) *.o 
-	$(RM) *.hi
-	$(RM) $(TARGET)
+	$(RM) *.hi *.o 
+	$(RM) *.cgi
 
-install-cgi: autoan.cgi showgruppen.cgi
-	su -c "cp -fi autoan.cgi showgruppen.cgi /usr/lib/cgi-bin/"
+
+install-autoan.cgi:
+	su -c "cp -f autoan.cgi /usr/lib/cgi-bin/autoan.cgi"
+install-showgruppen.cgi:
+	su -c "cp -f showgruppen.cgi /usr/lib/cgi-bin/showgruppen.cgi"
 
 ghci-sql: 
 	ghci $(HINCLUDES) SQLqueries.hs
