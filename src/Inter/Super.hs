@@ -70,8 +70,10 @@ iface :: [ Make ] -> Form IO ()
 iface mks = do
 
     h3 "Login und Auswahl der Vorlesung"
+    -- für Student und Tutor gleicher Start
 
     ( stud, vnr, tutor ) <- Inter.Login.form
+    -- tutor ist True, falls derjenige einer ist.
 
     let snr = S.snr stud
 
@@ -117,7 +119,9 @@ iface mks = do
 	     Nothing -> return ()
 	     Just ( inst, inp, res, com ) -> do
                  [ stud ] <- io $ S.get_snr $ SA.snr sauf
-		 punkte stud auf ( inst, inp, res, com )
+                 -- das muß auch nach Einsendeschluß gehen,
+                 -- weil es der Tutor ausführt
+		 punkte tutor stud auf ( inst, inp, res, com )
 	 mzero
 
     let manr = fmap A.anr mauf
@@ -149,7 +153,7 @@ iface mks = do
 	    return ()
         Solve -> do
             ( minst, cs, res, com ) <- solution vnr manr stud' mk auf' 
-	    punkte stud' auf' ( minst, cs, Just res, com )
+	    punkte False stud' auf' ( minst, cs, Just res, com )
 	Edit | tutor -> do
 	    find_previous True  vnr mks stud' auf'
             return ()
@@ -465,8 +469,8 @@ parameter_table auf = do
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
-punkte stud auf ( minst, mcs, mres, com ) = 
-     if A.current auf
+punkte tutor stud auf ( minst, mcs, mres, com ) = 
+     if tutor || A.current auf
 	then do
              hr ; h3 "Eintrag ins Logfile"
 	     let p = ( mkpar stud auf )  
@@ -654,9 +658,9 @@ footer = do
     embed $ output
           $ O.Itemize
 	      [ entry "home: " 
-		      "http://141.57.11.163/auto/"
+		      "http://dfa.imn.htwk-leipzig.de/auto/"
 	      , entry "bugs (bekannte ansehen und neue melden): " 
-		      "http://141.57.11.163/cgi-bin/bugzilla/buglist.cgi?value-0-0-0=autotool"
+		      "http://dfa.imn.htwk-leipzig.de/cgi-bin/bugzilla/buglist.cgi?value-0-0-0=autotool"
 	      , entry "scores: " 
 		      "http://www.imn.htwk-leipzig.de/~autotool/scores"
 	      ]
