@@ -21,8 +21,9 @@ BINS = DB/Server.bin DB/Client.bin DB/CGI.cgi
 
 CGIS = SRS/Deleting/Demo.cgi \
        SRS/Bounded/MB.cgi \
-       SRS/RFC/Ancestor.cgi \
-       SRS/RFC/RFC.cgi 
+       SRS/Closure/Ancestor.cgi \
+       SRS/Closure/RFC.cgi \
+       SRS/Closure/Terminator.cgi 
 
 CGIINDEX = SRS/Interface/index.html
 
