@@ -46,13 +46,13 @@ instance C.Partial Cage Config ( Graph Int ) where
         let gi   =  small_circles (girth conf - 1) g
 	when ( not $ null gi ) $ reject $ vcat
 	     [ text "Die Taillenweite ist <" <+> (toDoc $ girth conf) <+> text ","
-	     , text "denn es gibt diese kurzen Kreise:"
+	     , text "denn es gibt (unter anderem) diese kurzen Kreise:"
 	     , nest 4 $ toDoc $ take 5 gi
 	     ]
         let cols =  colourings (chi conf - 1) g
 	when ( not $ null cols ) $ reject $ vcat
 	     [ text "Die chromatische Zahl ist <" <+> (toDoc $ chi conf) <+> text ","
-	     , text "denn es gibt diese Färbungen:"
+	     , text "denn es gibt (unter anderem) diese Färbungen:"
 	     , nest 4 $ toDoc $ take 5 cols
 	     ]
 	inform $ text "OK."
@@ -97,25 +97,35 @@ updateFM fm a b = case lookupFM fm a of
 
 -------------------------------------------------------------------------
 
--- | all circles on length less than l
+-- | all circles of length at most l
 small_circles :: GraphC a
 	      => Int 
 	      -> Graph a 
 	      -> [[a]]
 small_circles l g = do
     k <- lkanten g
-    let x = von k; y = nach k
-    z <- lnachbarn g $ y
-    guard $ x /= z
-    p <- paths l g [ z, y, x ]
-    guard $ head p == last p
+    p <- paths l g [ von k, nach k ]
+    guard $ length p > 2
+    guard $ kante (head p) (last p) `elementOf` kanten g
     return p
 
 paths l g path = path : do
-    guard $ length path <= l
+    guard $ length path < l
     x <- lnachbarn g $ head path
-    paths (pred l) g $ x : path
+    guard $ not $ x `elem` path
+    paths l g $ x : path
 
+------------------------------------------------------------------
+
+g = mkGraph ( mkSet [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11] )
+      ( mkSet [
+		kante 1 2, kante 2 3, kante 3 4, kante 4 5, kante 5 1,
+		kante 1 8, kante 1 11, kante 2 7, kante 2 9,
+		kante 3 8, kante 3 10,
+		kante 4 9, kante 4 11, kante 5 10, kante 5 7,
+		kante 6 7, kante 6 8, kante 6 9, kante 6 10, kante 6 11
+	       ]
+      )
 
 
 
