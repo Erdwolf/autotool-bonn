@@ -43,6 +43,8 @@ import qualified Baum.ZweiDrei
 import qualified Graph.TreeWidth
 import qualified Graph.PartialKTree
 
+import qualified Graph.Bi.Quiz
+
 makers :: [ Make ]
 makers = [ Blank.make
 	 , Upload.make
@@ -96,6 +98,8 @@ makers = [ Blank.make
 
          , Faktor.Faktor.make_fixed
          , Faktor.Faktor.make_quiz
+
+	 , Graph.Bi.Quiz.make
 	 ]
 
 
