@@ -194,12 +194,11 @@ checkLoginPage (F2 matF pwdF) =
                  else 
                         do studStatusPage mat F0
 
---
 -- | Hauptseite fuer den Studenten
 --
 -- Mit folgenden Informationen 
 -- a) Vorname, Name, Matrikelnr, Email-Adresse, Email-Check-Status, 
---    Gruppen/Vorlesungen des Studenten
+--    Gruppen\/Vorlesungen des Studenten
 -- b) momentan mgl. Aufgaben
 -- c) Bepunktung der Aufgaben
 --
@@ -212,7 +211,8 @@ checkLoginPage (F2 matF pwdF) =
 -- g) Aktualisieren der Ansicht: studStatusPage
 -- h) Beendigung von autonan:    endPage
 --
--- TODO: mglNextAufgabenDB [ ] vom SNr abhaengen lasse
+-- TODO: @mglNextAufgabenDB [ ]@ vom SNr abhaengen lasse
+
 studStatusPage ( mat :: MNr ) F0 = 
         do 
           io $ logged $ "studStatusPage"
@@ -258,8 +258,7 @@ studStatusPage ( mat :: MNr ) F0 =
                                 tableRow2 (text "Matrikelnr.")   ( text $ show mat )
                                 tableRow2 (text "Email-Adresse") ( text email )
                                 tableRow2 (text "Übungsgruppen") ( grptab grp )
-
-                        -- gesamtergTable gesamtres
+                                -- gesamtergTable gesamtres
                                 -- (c)
                         if ( length (snd result)) > 0 
                            then do { h3 $ text "Ergebnisse" ; ( showAsTable result ) }

@@ -6,7 +6,7 @@ module Control.Student
 
 where
 
--- $Id$
+--  $Id$
 
 import Control.Student.Type
 import Control.Student.DB

@@ -41,7 +41,7 @@ loginDB mnr pass =
            _ -> Nothing
 
 
--- | erhöht von Student, für Aufgabe (Ok,Size) / No 
+-- | erhöht von Student, für Aufgabe (Ok,Size) \/ No 
 --
 -- Input: (SNr,ANr,{No,Ok size}, {High,Low,Keine} )
 -- Output: IO ()

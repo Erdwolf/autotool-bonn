@@ -109,7 +109,7 @@ kx_mit_dach g = do
 
 ---------------------------------------------------------------
 
--- | dreht ergebnis (ablehnen/akzeptieren) um
+-- | dreht ergebnis (ablehnen\/akzeptieren) um
 -- TODO: move to Reporter.Type
 nicht :: Reporter () -> Reporter ()
 nicht r = do
