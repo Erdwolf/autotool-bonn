@@ -31,15 +31,17 @@ import Grammatik.DPL_CYK
 
 import Size
 import Set
-import Wort
-import Util.Zufall
 
 import List (partition, nub, sortBy)
 import FilterBound
 
 import ToDoc
 import Random
+
 import Util.Seed
+import Util.Wort
+import Util.Zufall
+
 
 import Reporter
 
@@ -56,9 +58,10 @@ cf_check l typ w n ds t mat ( g, ts ) = do
 
     seed $ read mat
 
+    let klein = take 128 $ do n <- [0 .. ] ; alle ( setToList $ alphabet l ) n
     here   <- samples      l w n
     there  <- anti_samples l w n
-    let (yeah, noh) = partition (contains l) $ nub $ here ++ there
+    let (yeah, noh) = partition (contains l) $ nub $ klein ++ here ++ there
 
     let handle d = do
 	    ws <- samples l d d
