@@ -64,7 +64,7 @@ tags :
 
 ###############################################################################
 
-SRS/Bounder : do
+SRS/Matchbox : do
 	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $@.hs -o $@
 
 bounded : do
