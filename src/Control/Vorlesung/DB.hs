@@ -68,12 +68,13 @@ common = collectRows $ \ state -> do
     			   }
 
 
-teilnehmer :: VNr -> IO [ ( SNr, (MNr, Name) ) ]
+teilnehmer :: VNr -> IO [ ( SNr, (MNr, Name, Name) ) ]
 teilnehmer vnr = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "student.SNr AS SNr" 
 			    , "student.MNr AS MNr" 
+			    , "student.Vorname AS Vorname" 
 			    , "student.Name AS Name" 
 			    ] 
 	)
@@ -87,8 +88,9 @@ teilnehmer vnr = do
     res <- collectRows ( \ state -> do
         s <- getFieldValue state "SNr" 
         m <- getFieldValue state "MNr" 
+	v <- getFieldValue state "Vorname"
 	n <- getFieldValue state "Name"
-	return ( s, (m, n ))
+	return ( s, (m, v, n ))
       ) stat
     disconnect conn
     return res

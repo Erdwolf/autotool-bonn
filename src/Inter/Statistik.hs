@@ -13,10 +13,15 @@ import qualified Control.Vorlesung.DB
 
 import Control.Stud_Aufg.Typ
 import Control.Stud_Aufg.DB
+import Control.Student.DB
+import Control.Student.CGI
 
 import Autolib.ToDoc
 import Autolib.FiniteMap
 import Autolib.Set
+import Autolib.Util.Sort
+
+import Control.Monad
 
 main :: IO ()
 main = Inter.CGI.execute "Statistik.cgi" $ iface 
@@ -26,11 +31,36 @@ iface = do
 
     h3 "autotool: Statistiken"
     open btable
-    ( stud, vnr, tutor ) <- Inter.Login.form
+    svt @ ( stud, vnr, tutor ) <- Inter.Login.form
     close -- btable
 
+    guard $ tutor
+
+    open btable
+    ( action, _ ) <- selector_submit_click "sel" "zeige" Nothing
+           [ ("Resultate", resultate vnr) 
+	   , ("Studenten", studenten vnr)
+	   ]
+    action
+
+--------------------------------------------------------------------------
+
+studenten vnr = do
     t <- io $ Control.Vorlesung.DB.teilnehmer vnr
-    let fmt = listToFM t -- snr to (mnr, name)
+    ( mnr, _ ) <- selector_submit_click "pick" "bearbeite" Nothing $ do
+        (mnr, v, n) <- sortBy (\(m,v,n) -> n) $ map snd t
+        let s = unwords [ toString mnr , toString v, toString n ]
+        return (s, mnr)
+    close -- btable
+    [ stud ] <- io $ Control.Student.DB.get mnr
+    Control.Student.CGI.edit stud
+    
+--------------------------------------------------------------------------
+
+resultate vnr = do
+    close -- btable
+    t <- io $ Control.Vorlesung.DB.teilnehmer vnr
+    let fmt = listToFM t -- snr to (mnr, vorname,  name)
 
     aufs <- io $ Control.Aufgabe.DB.get ( Just vnr ) False
     -- anr to name
@@ -50,7 +80,7 @@ iface = do
     h3 "Einsendungen (Ok/No)"
     open btable
     open row
-    plain "MNr" ; plain "Name"
+    plain "MNr" ; plain "Vorname" ; plain "Name"
     sequence_ $ do
         anr <- setToList anrs
 	return $ plain $ case lookupFM fma anr of
@@ -59,12 +89,13 @@ iface = do
     close -- row
     sequence_ $ do
         snr <- setToList $ snrs
-	let (mnr, name) = case lookupFM fmt snr of
-	       Just (mnr, name) -> (toString mnr, toString name)
-	       Nothing -> ("??", "??")
+	let (mnr, vorname, name) = case lookupFM fmt snr of
+	       Just (mnr, vorname, name) 
+		   -> (toString mnr, toString vorname, toString name)
+	       Nothing -> ( "??", "??", "??" )
 	return $ do
 	    open row 
-	    plain mnr ; plain name
+	    plain mnr ; plain vorname ; plain name
 	    sequence_ $ do
 	        anr <- setToList $ anrs
 		return $ do
