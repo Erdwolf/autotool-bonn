@@ -50,7 +50,7 @@ instance C.Partial  Synthese SI ( NFA Char Int )
 	, text "akzeptiert."
 	]
 
-    initial p i   = NFA.Example.example
+    initial p i   = NFA.Example.example_sigma $ alphabet i
 
     partial p i b = do
         restrict_states b
