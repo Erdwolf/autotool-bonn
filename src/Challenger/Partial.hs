@@ -5,6 +5,7 @@ module Challenger.Partial where
 
 import Reporter
 import ToDoc
+import Size
 
 -- | Klasse: Partial
 class Partial p i b | p i -> b , p b -> i where
@@ -41,3 +42,12 @@ class Partial p i b | p i -> b , p b -> i where
       -- vorher wird immer erst partial angewendet
       total   :: p -> i -> b -> Reporter ()
 
+
+class Measure p i b where
+      -- | bewertung der lösung
+      measure :: p -> i -> b -> Int
+      
+-- | default instance 
+-- kann überschrieben werden durch genaue Angaben von p, b
+instance Size b => Measure p i b where
+      measure p i b = size b
