@@ -1,0 +1,11 @@
+- von autotool verallgemeinern auf normale vorlesungen
+- übungsgruppen
+- stammdaten , und dann vorl. + übgrp
+
+- üg : name beschreibung halter vorlesung
+- # üg < maxzahl
+- stud_aufg (nicht,f,m,r)=(0,1,2,3)
+
+- scheinvergabe?
+
+-

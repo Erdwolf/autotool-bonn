@@ -1,57 +1,43 @@
-# $Id$
+HC=			ghc
+HC_SPEC_FLAGS=	 # -fglasgow-exts		# -cpp -package posix -package data
+HCLOADFLAGS=
 
-#DIRS = util
+#OPT=		-fvia-C -O2-for-C 
+#OPT=		-O
+OPT=
 
-FLAGS = -fallow-overlapping-instances \
-	-fglasgow-exts \
-	-fallow-undecidable-instances 
+HCFLAGS=	$(OPT) $(HC_SPEC_FLAGS) $(HINCLUDES)
 
-PACKS = -package text -package data \
-	-package posix -package network -package HaXml
+HMAKE=		ghc --make 			# hmake
+HMAKEFLAGS=	$(HCFLAGS) $(HINCLUDES)
+HINCLUDES=	-i../wash -package"HToolkit" -package"lang"
+HAPPY=		happy
+HAPPYFLAGS=	-i
+RM=			rm -f
 
-OPT = -O2
-GHC = ghc
+TARGET=		autoan
+SRCCMN=		Helper.hs HTMLshortcuts.hs SQLqueries.hs Main.hs
+SRCAN =		$(SRCCMN) Main.hs
+SRCAD =		$(SRCCMN) autoadmin.hs
 
-BINS = HToolkit/testdb.bin
+all: autoan.cgi autoadmin.cgi
 
-###############################################################################
+autoan.cgi: $(SRCAN)
+	$(HMAKE) $(HMAKEFLAGS) Main.hs -o $@
 
-# .PHONY: all $(DIRS)
+autoadmin.cgi: $(SRCAD)
+	$(HMAKE) $(HMAKEFLAGS) autoadmin.hs -o $@
 
-# all: $(DIRS)
+#$(TARGET):: $(SRC:.hs=.o)
+#	$(HMAKE) $(HMAKEFLAGS) $@.hs -o $@
 
-all : $(BINS)
+clean: 
+	$(RM) *.o 
+	$(RM) *.hi
+	$(RM) $(TARGET)
 
+#%.o: %.hs
+#	$(HMAKE) $(HCFLAGS) -c $< -o $@
 
-$(DIRS):
-	$(MAKE) -C $@
-
-tags :
-	find . -name "*.hs" -print | xargs etags
-
-###############################################################################
-
-
-%.bin : do
-	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) $*.hs -o $@
-	#-i$(DIRS) $*.hs -o $@
-
-
-%.cgi : do
-	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $*.hs -o $@
-
-.PHONY : do
-
-###############################################################################
-
-.PHONY: objclean clean
-
-forall = $(foreach DIR,$(DIRS),$(MAKE) -C $(DIR) $(1);)
-
-objclean:
-	rm -f `find . -name '*.o'`
-	rm -f `find . -name '*.hi'`
-	$(call forall,$@)
-
-clean: objclean
-	$(call forall,$@)
+#%.hi: %.o
+#	@\:
