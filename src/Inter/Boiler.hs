@@ -30,6 +30,10 @@ import qualified JVM.NUMAT
 
 import qualified Demo.L
 
+
+-- ws03/aus NFA 
+import qualified Serie1
+
 -- hier steht ALLES machbare drin
 -- in der datenbank steht dann, zu welcher zeit es erlaubt ist.
 
@@ -59,7 +63,8 @@ boiler = sequence $
        -- , fmap Variant $ FUN.PRIM.generate
        , fmap Variant $ FUN.FIB.generate
        , fmap Variant $ FUN.QUIZ.generate
-
+          
        ]
-       ++ Demo.L.generates
+       ++ Serie1.generates 
+       -- ++ Demo.L.generates
 

@@ -5,7 +5,7 @@
 
 # DIRS = $(BINDIR) $(EXERCISEDIRS)
 
-DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau
+DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau:ws03/aus
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
