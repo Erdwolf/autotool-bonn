@@ -11,7 +11,7 @@ import Autolib.ToDoc
 
 -- | check whether tree is binary
 -- i. e. each node has 0 or 2 children exactly
-checkbin :: ( Symbol c, ToDoc v )
+checkbin :: ( Symbol c, ToDoc v, Show v )
 	 => Term v c -> Reporter ()
 checkbin = mapM_ check . subterms where
     check t @ ( Node f args ) 

@@ -42,7 +42,11 @@ OPT = -O2 -fvia-C -funbox-strict-fields # -fnumbers-strict # -fdicts-strict
 ifeq ($(HSQL),1.4)
 	DEFINES = -cpp -DHSQL14
 else
+ifeq ($(HSQL),1.2)
+	DEFINES = -cpp -DHSQL12
+else
 	DEFINES = -cpp
+endif
 endif
 
 GHC_COMMAND = $(GHC) --make \

@@ -31,7 +31,7 @@ mkTree :: ( Show c, ToDoc c )
 mkTree ( Node f args ) = D.Node f $ map mkTree $ reverse args
 -}
 
-present :: ( Symbol c, ToDoc v )
+present :: ( Symbol c, ToDoc v, Show v )
 	=> Term v c -> Doc
 present t = 
     vcat [ toDoc t
