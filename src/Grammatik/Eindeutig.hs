@@ -14,16 +14,16 @@ import qualified Grammatik.Checker as C
 import Reporter
 import ToDoc
 
-eindeutig :: Maybe Int 
+eindeutig :: Config
 	  -> C.Type
-eindeutig schranke = 
+eindeutig conf = 
     C.make "Ein" ( text "Die Grammatik soll eindeutig sein." ) $ \ g0 -> do
         let g = reduktion g0
         inform $ vcat 
 	       [ text "Hier sind einige Links-Ableitungen:"
-	       , nest 4 $ toDoc $ take 4 $ links_ableitungen schranke g
+	       , nest 4 $ toDoc $ take 4 $ links_ableitungen conf g
 	       ]
-        let wrong = mehrdeutige_links_ableitungen schranke g 
+        let wrong = mehrdeutige_links_ableitungen conf g 
 	let interesting (x, y) = cadr x /= cadr y -- aber car x == car y
 	when ( not $ null wrong ) $ reject $ vcat
 	     [ text "Diese Grammatik ist nicht eindeutig."
@@ -39,6 +39,6 @@ eindeutig schranke =
 	     ]
         inform $ text "OK" 
 	       <+> parens ( fsep [ text "für Wörter der Länge <="
-				 , toDoc schranke
+				 , toDoc ( max_length conf )
 				 ]
 			  )

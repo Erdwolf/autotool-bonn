@@ -10,6 +10,8 @@ where
 import Grammatik.Type
 import Grammatik.Zeige
 
+import Grammatik.Ableitung ( Config (..) )
+
 import Language.Type
 
 import Reporter
@@ -18,15 +20,12 @@ import ToDoc
 import List (partition)
 
 check :: Language
-      -> Int -- höchstens so lange satzformen
-      -> Int -- höchstens soviele schichten
-      -> Int -- höchstens soviele ableitungen anzeigen
-      -> Int -- höchstens soviele terminalwörter zurückgeben
+      -> Config
       -> Grammatik 
       -> Reporter Int
-check lang l d a n g = do
+check lang conf g = do
 
-     ws <- zeige l d a n g
+     ws <- zeige conf g
 
      inform $ text
 	    $ "Gehören diese Wörter zur Sprache " ++ abbreviation lang ++ " ?"

@@ -10,6 +10,13 @@ import Grammatik.Type
 
 -------------------------------------------------------------------
 
+data Config = Config
+	   { max_length :: Int -- wortlänge
+	   , max_depth :: Int -- anzahl schichten
+	   , max_width :: Int -- breite der schicht
+	   }
+    deriving ( Read, Show )
+
 
 data Ableitung = Ableitung [ String ]
      -- trick: ableitung steht hierin falschrum
@@ -45,23 +52,28 @@ nil = Ableitung []
 
 -------------------------------------------------------------------
 
-schritt :: Maybe Int -- wörter höchstens so lang
+
+
+schritt :: Config
 	-> Grammatik -> Ableitung -> Set Ableitung
-schritt schranke g a = mkSet $ do
+-- nur die wörter, die nicht zu lang sind
+schritt conf g a = mkSet $ do
     let w = car a
     (vorn, hinten) <- zerlegungen w
     (links, rechts) <- rules g
     let (mitte, rest) = splitAt (length links) hinten
     guard $ mitte == links    
     let w' = vorn ++ rechts ++ rest
-    guard $ case schranke of Nothing -> True; Just n -> length w' <= n
+    guard $ length w' <= max_length conf
     return $ cons w' a
 
-ableitungen :: Maybe Int -> Grammatik -> [ Set Ableitung ]
--- erzeugt unendliche Liste (schichten)
-ableitungen schranke g = do
-    let w0 = [ startsymbol g ]
-    schichten (schritt schranke g) $ cons w0 nil
+ableitungen :: Config -> Grammatik -> [ Set Ableitung ]
+-- beachte config
+ableitungen conf g 
+    = take ( max_depth conf )
+    $ takeWhile ( \ s -> cardinality s < max_width conf )
+    $ schichten ( schritt conf g ) 
+    $ cons [ startsymbol g ] nil
 
 
 

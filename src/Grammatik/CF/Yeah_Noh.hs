@@ -3,6 +3,8 @@ module Grammatik.CF.Yeah_Noh where
 -- $Id$
 
 import Grammatik.Type
+import qualified Grammatik.Ableitung as A
+
 import Grammatik.CF.Instance.Config
 import Grammatik.Check
 
@@ -33,14 +35,12 @@ cf_yeah_noh :: Config -> Grammatik -> Reporter ()
 cf_yeah_noh c g = do
 
     -- first, some simple checks (not CF-specific)
-    check ( lang c)
-	       12 -- max wortlänge 
-	        7 -- max schichttiefe
-		5 -- max abl anz
-	      100 -- max wörter zurück
-	        g
-    -- TODO: move parameters into Config
-
+    let conf = A.Config
+	  { A.max_length = 12
+	  , A.max_depth = 7
+	  , A.max_width = 100
+	  } 
+    check ( lang c) conf g
 
     let arrange = sortBy length
     let [ yeahs, nohs ] = map arrange [ yeah c, noh c ]

@@ -21,27 +21,21 @@ takeUntil :: (a -> Bool) -> [a] -> [a]
 takeUntil p [] = []
 takeUntil p (x : xs) = x : if p x then [] else takeUntil p xs
 
-zeige :: Int -- höchstens so lange satzformen
-      -> Int -- höchstens soviele schichten
-      -> Int -- höchstens soviele ableitungen anzeigen
-      -> Int -- höchstens soviele terminalwörter zurückgeben
+zeige :: Config
       -> Grammatik 
       -> Reporter [ String ]
-zeige l d a n g = do
+zeige conf g = do
 
-    let abss = take d -- schichten
-	     $ takeUntil ( \ s -> cardinality s > n )
-	     $ ableitungen ( Just l ) g
+    let abss = ableitungen conf g
 
     inform $ text "Ich zeige Ihnen einige Ableitungen:"
-    inform $ nest 4 $ vcat $ take a $ do 
-	       abs <- drop ( d `div` 2 ) abss
+    inform $ nest 4 $ vcat $ do 
+	       abs <- drop ( max_depth conf `div` 2 ) abss
 	       ab  <- setToList abs
 	       return $ toDoc ab
     newline
 	   
-    let terms = take n
-	      $ do abs <- abss
+    let terms = do abs <- abss
 		   ab <- setToList abs
 		   let w = car ab
 		   guard $ all (`elementOf` terminale g) w

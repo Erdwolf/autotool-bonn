@@ -18,19 +18,23 @@ import List (nub)
 
 power :: Int -> Language
 power k = Language
-	{ abbreviation = "{ w^" ++ show k ++ " : w in {0, 1}^* }"
+	{ nametag = "Power" ++ show k
+	, abbreviation = "{ w^" ++ show k ++ " : w in {0, 1}^* }"
 	, alphabet     = mkSet "01"
 	, contains     = is_power k
 	, sample       = sam k
+	, anti_sample  = sample ( nopower k )
 	}
 
 
 nopower :: Int -> Language
 nopower k = Language
-	{ abbreviation = "Komplement von { w^" ++ show k ++ " : w in {0,1}^* }"
+	{ nametag      = "Com" ++ nametag ( power k )
+	, abbreviation = "Komplement von { w^" ++ show k ++ " : w in {0,1}^* }"
 	, alphabet     = mkSet "01"
 	, contains     = not . is_power k
 	, sample       = random_sample ( nopower k )
+	, anti_sample  = sample ( power k )
 	}
 
 -------------------------------------------------------------------------
