@@ -16,9 +16,10 @@ HAPPYFLAGS=	-i
 RM=			rm -f
 
 TARGET=		autoan
-SRCCMN=		Helper.hs HTMLshortcuts.hs SQLqueries.hs Main.hs
+SRCCMN=		Helper.hs HTMLshortcuts.hs SQLqueries.hs 
 SRCAN =		$(SRCCMN) Main.hs
 SRCAD =		$(SRCCMN) autoadmin.hs
+SRCSG =		$(SRCCMN) showgruppen.hs
 
 all: autoan.cgi autoadmin.cgi
 
@@ -28,6 +29,10 @@ autoan.cgi: $(SRCAN)
 autoadmin.cgi: $(SRCAD)
 	$(HMAKE) $(HMAKEFLAGS) autoadmin.hs -o $@
 
+showgruppen.cgi: $(SRCSG)
+	$(HMAKE) $(HMAKEFLAGS) showgruppen.hs -o $@
+
+ 
 #$(TARGET):: $(SRC:.hs=.o)
 #	$(HMAKE) $(HMAKEFLAGS) $@.hs -o $@
 
@@ -38,6 +43,7 @@ clean:
 
 install-cgi:
 	su -c "cp -f /home/alf/autotool/control/autoan.cgi /usr/lib/cgi-bin/autoan.cgi"
+	su -c "cp -f /home/alf/autotool/control/showgruppen.cgi /usr/lib/cgi-bin/showgruppen.cgi"
 
 ghci-sql: 
 	ghci $(HINCLUDES) SQLqueries.hs
