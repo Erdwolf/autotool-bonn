@@ -12,6 +12,7 @@ import Inter.Types
 import Inter.Click
 import Inter.Area
 import Inter.Errmsg
+import Inter.Evaluate
 
 import Autolib.Reporter.Type
 import Autolib.ToDoc
@@ -65,41 +66,21 @@ iface par = do
           []   -> return $ h3 << ( "No Maker with name: " ++ show mcs )
 	  [ mk @ ( Make doc fun ex ) ] -> do  
                   let inp = fromMaybe (show ex) $ lookup "input" $ env par
-		  c <- core $ par { maker = mk 
-				  , config = Inter.Area.make "input" inp
-				  } 
+		  c <- editor "config" ex (env par) $ \ conf ->
+		          core ( fun conf ) ( env par )
 		  return $  h3 << ( "Chosing Maker: " ++ show mcs ) +++ c 
           _    -> return $ h3 << ( "More than one Maker with name: " ++ show mcs )
 
     return $ page par [ presenter, center ]
 
-core :: Par -> IO Html 
-core par = case maker par of 
-    Make doc fun ex -> do    
-        let ty = primHtml "has type"
-	        +++ pre << show ( toDoc $ typeOf fun )
-
-        let scratch = Inter.Area.display ( config par )
-
-	let buttons name = (<<) table $ aboves $ return $ besides $ do
-               act <- [ Submit, Previous, Example, Reset ]
-               return $ td <<  submit name ( show act )
-
-        va <- Inter.Area.parser (config par) $ \ conf -> do
-                    h <- handler par ( fun conf )
-		    return h
-
-        return $ foldr1 (+++) 
-	       $ intersperse br
-               $ [ ty, scratch, buttons "Click", va ]
-
-handler :: ( Reader b, Partial p i b )
-	=> Par
-	-> Var p i b 
-	-> IO Html
-handler par ( var :: Var p i b ) = do
-    let header = table << aboves 
-            [ besides [ td << "Problem", td << show (problem var) ]
+core ::  ( Reader b, Partial p i b )
+     => Var p i b
+     -> Env
+     -> IO Html 
+core ( var :: Var p i b ) env = do
+    let p = problem var
+    let header = btable << aboves 
+            [ besides [ td << "Problem", td << show p ]
 	    , besides [ td << "Aufgabe", td << aufgabe var ]
 	    , besides [ td << "Version", td << version var ]
 	    ]     
@@ -110,24 +91,26 @@ handler par ( var :: Var p i b ) = do
     let ( Just i , com :: Html ) = export g
     let desc = describe (problem var) i
         ini = initial (problem var) i
-    let belly = table << aboves 
-           [ besides [ td << "Matrikel", td << show m ]
-	   , besides [ td << "Key", td << show k ]
+    let belly = btable << aboves 
+           [ besides [ td << "Matrikel", td << pre << show m ]
+	   , besides [ td << "Key", td << pre << show k ]
 	   , besides [ td << "Instanz", td << pre << show (toDoc i) ]
 	   , besides [ td << "Description", td << pre << show desc ]
 	   , besides [ td << "Initial", td << pre << show ( toDoc ini ) ]
 	   ]
     
-    let sol = fromMaybe (show $ toDoc ini) $ lookup "solution" $ env par
-	asol = Inter.Area.make "solution" sol
-    log <- Inter.Area.parser asol $ \ ( x :: b ) -> do
-              return $ primHtml "hier Inter.Evaluate aufrufen"
+    log <- editor "solution" ini env $ \ b -> do
+	   let (res, com :: Doc) = export $ evaluate' p i b
+           return $ pre << show com
 
     return $ header +++ belly +++ log
 
+---------------------------------------------------------------------------------
+
 page par contents = 
     let 
-	heading = h2 << "Autotool Super Interface"
+	heading = h2 << "Autotool-Super-Interface:"
+		+++ primHtml "Aufgaben konfigurieren und testen"
 	pref = preface par 
     in  header << thetitle << "Super.cgi"
             +++ body ( form ( foldr1 (+++) 
@@ -135,9 +118,10 @@ page par contents =
 				   ! [ Text.Html.action "Super.cgi" , method "POST" ]
 		 )
          
-preface par = table << aboves [ besides ( selector ( makers par) 
+preface par = btable << aboves [ besides ( selector ( makers par) 
 					  ++ [ td << submit "Click" ( show Change ) ] ) ]
 selector mks =
     let docs = map primHtml $ do Make doc _ _ <- mks ; return doc
     in  [ td << "Maker:" ,  td << menu "Maker" docs ]
 
+btable x = table x ! [ border 1 ]

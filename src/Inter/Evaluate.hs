@@ -28,15 +28,18 @@ evaluate p i par =
 	       reject $ errmsg (P.input_width par) e $ P.input par
 	 Right b  -> do
 	       inform $ text "gelesen:" <+> toDoc b
-	       inform $ text "partiell korrekt?"
-	       Challenger.partial     p i b
-	       Challenger.demonstrate p i b
-	       inform $ text "total korrekt?"
-	       Challenger.total       p i b
-               let m = Challenger.measure p i b 
-	       inform $ text "Lösung ist korrekt und hat Größe" 
-		      <+> toDoc m
-	       return $ m
+               evaluate' p i b
+
+evaluate' p i b = do
+       inform $ text "partiell korrekt?"
+       Challenger.partial     p i b
+       Challenger.demonstrate p i b
+       inform $ text "total korrekt?"
+       Challenger.total       p i b
+       let m = Challenger.measure p i b 
+       inform $ text "Lösung ist korrekt und hat Größe" 
+	      <+> toDoc m
+       return $ m
 
 
     
