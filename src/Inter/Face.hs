@@ -24,9 +24,15 @@ import Inter.Types
 import qualified Exception
 
 import Inter.Boiler
+import qualified Posix
 
 main :: IO ()
 main = do
+
+     -- damit die Datei-Geschichten funktionieren
+     user <- Posix.getEffectiveUserName
+     Posix.setEnvVar "HOME" $ "/home/" ++ user
+
      vs <- boiler
      wrapper $ \ env -> 
 	 iface vs env

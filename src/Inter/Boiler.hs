@@ -15,6 +15,7 @@ import qualified FUN.SQRT
 import qualified FUN.TIMES
 -- import qualified FUN.PRIM
 import qualified FUN.FIB
+import qualified FUN.QUIZ
 
 
 -- hier steht ALLES machbare drin
