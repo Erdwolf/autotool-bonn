@@ -6,6 +6,7 @@ import Reader
 import ToDoc
 
 import qualified TES.Symbol
+import qualified TES.Parsec
 
 data Op = Op { name  :: String
 	     , arity :: Int
@@ -27,10 +28,13 @@ instance ToDoc Op where
 instance Show Op where
     show = render . toDoc
 
-
 instance Reader Op where
-    readerPrec p = error "no instance Reader Boolean.Op"
+    readerPrec p = choice $ do
+       op <- ops
+       return $ do TES.Parsec.symbol TES.Parsec.trs ( name op ) ; return op
 
+instance Read Op where
+    readsPrec = parsec_readsPrec
 
 ops :: [ Op ]
 ops = nullary ++ unary ++ binary

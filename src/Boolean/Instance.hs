@@ -15,7 +15,8 @@ import Sets
 data Boolean = Boolean deriving ( Eq, Ord, Show, Read )
 
 data BI =
-     BI { formula :: Exp
+     BI { tag :: String
+        , formula :: Exp
 	, operators :: Set Op
 	}
 
