@@ -136,10 +136,10 @@ iface mks = do
             ( cs, res, com ) <- solution vnr manr stud' mk auf' 
 	    punkte stud' auf' ( cs, Just res, com )
 	Edit | tutor -> do
-	    find_previous True stud' auf'
+	    find_previous vnr mks True stud' auf'
             return ()
 	View -> do
-	    find_previous False stud' auf'
+	    find_previous vnr mks False stud' auf'
             return ()
 
     return ()
@@ -251,7 +251,7 @@ get_stud tutor stud =
 	 return stud
 
 
-find_previous edit stud auf = do
+find_previous vnr mks edit stud auf = do
 
     -- kann sein, daß S.anr  error  ergibt (für tutor)
     sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
@@ -272,12 +272,40 @@ find_previous edit stud auf = do
 		        then do
                              -- nur infile-location einschreiben
 			     Control.Punkt.bepunkteStudentDB 
-				      (P.ident p) (P.anr p) Nothing 
-				      (P.highscore p) ( Just inf )
+				      (P.ident p) (P.anr p) 
+                                      Nothing
+				      Nothing (P.highscore p) 
+				      ( Just inf )
 				      Nothing
 			     return $ Just inf
 		        else return $ Nothing
-	    show_previous edit $ sa { SA.input = inf }
+            inst <- case SA.instant sa of
+		Just file -> return $ Just file
+		Nothing -> 
+                    -- transitional:
+                    -- (try to) re-generate previous instance
+                    let mmk = lookup ( toString $ A.typ auf ) 
+			     $ do mk <- mks ; return ( show mk, mk )
+		    in case mmk of
+		         Nothing -> do
+			     plain "Aufgabenstellung nicht auffindbar"
+			     return Nothing
+			 Just mk -> io $ do
+			     ( _, _, com ) <- make_instant vnr stud mk auf
+                             let p = mkpar stud auf
+		                 d = Inter.Store.location Inter.Store.Instant
+			                p "latest" False
+			     file <- Util.Datei.home d
+			     writeFile file $ show com
+			     let inst = fromCGI file
+			     Control.Punkt.bepunkteStudentDB 
+				      (P.ident p) (P.anr p) 
+                                      ( Just inst )
+				      Nothing (P.highscore p) 
+				      Nothing 
+				      Nothing
+			     return $ Just inst
+	    show_previous edit $ sa { SA.input = inf, SA.instant = inst }
         _ -> return Nothing
 
 -- | TODO: possibly with edit (for tutor)
@@ -285,6 +313,14 @@ show_previous edit sa = do
 
     hr ;  h3 "Vorige Einsendung und Bewertung zu dieser Aufgabe"
     -- pre $ show sa
+    br ; plain "Aufgabenstellung:"
+    case SA.instant sa of
+        Just file -> do
+            cs <- io $ logged "Super.view" 
+    	         $ readFile $ toString file
+    	    pre cs
+        Nothing -> do
+	    plain "(keine Aufgabe)"
     br ; plain "Einsendung:"
     case SA.input sa of
         Just file -> do
@@ -293,8 +329,7 @@ show_previous edit sa = do
     	    pre cs
         Nothing -> do
 	    plain "(keine Einsendung)"
-    br
-    plain "Bewertung:"
+    br ; plain "Bewertung:"
     h <- case SA.report sa of
         Just file -> do
             -- alte bewertung ist schon da
@@ -331,6 +366,17 @@ show_previous edit sa = do
 			     )
 
 
+make_instant vnr stud 
+         ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+    let conf = read $ toString $ A.config auf
+        var = fun  conf
+        p = problem var
+    let mat = S.mnr stud
+    k <- io $ key var $ toString mat 
+    g <- io $ gen var vnr ( A.ANr auf ) k -- ?
+    let ( Just i  , com :: Doc ) = export g
+    return ( p, i, com )
+
 data Method = Textarea | Upload
     deriving ( Eq, Show, Typeable )
 
@@ -338,23 +384,18 @@ data Method = Textarea | Upload
 -- für tutor zum ausprobieren
 -- für student echt
 solution vnr manr stud 
-         ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+         mk @ ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
-    let conf = read $ toString $ A.config auf
-        var = fun  conf
-        p = problem var
-        past = mkpar stud auf
+    ( p, i, com ) <- make_instant vnr stud mk auf
 
-    let mat = S.mnr stud
-    k <- io $ key var $ toString mat 
-    g <- io $ gen var vnr manr k
-    let ( Just i  , com :: Doc ) = export g
-        ini  = initial  (problem var) i
+    let past = mkpar stud auf
+
+    let ini  = initial p i
     br
     parameter_table auf
 
     h3 "Aufgabenstellung"
-    embed $ report (problem var) i
+    embed $ report p i
 
     when ( not $ A.current auf ) vorbei
 

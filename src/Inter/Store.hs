@@ -13,7 +13,7 @@ import Inter.Logged
 import Data.Maybe
 import Data.Char
 
-data Type = Input | Report deriving ( Eq, Ord, Show )
+data Type = Instant | Input | Report deriving ( Eq, Ord, Show )
 
 -- | alles: speichert in "latest.input"
 -- d. h. überschreibt immer
@@ -25,6 +25,7 @@ store ty p = logged "Inter.store" $ do
     let flag = case P.mresult p of Just (Ok _) -> True ; _ -> False
         mthing = case ty of 
                    Input -> P.input p
+                   Instant -> fmap show $ P.minstant p
                    Report -> fmap show $  P.report p
     when flag $ do
             logged "Inter.store.schreiben" 

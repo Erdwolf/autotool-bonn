@@ -18,6 +18,7 @@ data Stud_Aufg  =
              , ok :: Oks
 	     , no :: Nos
              -- ignored: size, scoretime
+             , instant :: Maybe File
 	     , result :: Maybe Wert
 	     , input :: Maybe File
 	     , report :: Maybe File

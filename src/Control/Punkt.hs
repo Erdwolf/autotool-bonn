@@ -42,12 +42,13 @@ loginDB mnr pass =
            _ -> Nothing
 
 set :: SNr -> ANr 
+    -> Maybe File -- ^ instant
     -> Maybe Wert 
     -> Maybe File -- ^ Eingabe des Studenten
     -> Maybe File -- ^ Bewertung (automatische)
     -> IO ()
-set snr anr wert minput mreport = 
-    bepunkteStudentDB snr anr wert Keine minput mreport
+set snr anr minstant mwert minput mreport = 
+    bepunkteStudentDB snr anr minstant mwert Keine minput mreport
 
 -- | erhöht von Student, für Aufgabe (Ok,Size) \/ No 
 --
@@ -59,12 +60,13 @@ set snr anr wert minput mreport =
 
 bepunkteStudentDB :: SNr 
 		  -> ANr 
+		  -> Maybe File -- ^ instant
 		  -> Maybe Wert 
 		  -> HiLo 
 		  -> Maybe File -- ^ input
 		  -> Maybe File -- ^ report
 		  -> IO ()
-bepunkteStudentDB snr anr mbewert highlow minput mreport = do
+bepunkteStudentDB snr anr minstant mbewert highlow minput mreport = do
    conn <- myconnect
    stat <- squery conn $ Query 
 	   ( Select [ reed "SNr" ] )
@@ -104,10 +106,13 @@ bepunkteStudentDB snr anr mbewert highlow minput mreport = do
        inpt = maybeToList $ do 
                 inp <-  minput
 		return ( reed "Input", toEx inp )
+       inst = maybeToList $ do 
+                ins <-  minstant
+		return ( reed "Instant", toEx ins )
        rept = maybeToList $ do
 	        rpt <- mreport
 		return ( reed "Report", toEx rpt )
-       set  = okno ++ rest ++ inpt ++ rept 
+       set  = okno ++ rest ++ inpt ++ inst ++ rept 
 
    when ( not $ null set ) $ do
        squery conn $ Query 

@@ -16,6 +16,7 @@ bank :: P.Type -> IO String
 bank p = do
 
     ( pid , minfile  ) <- Inter.Store.store Inter.Store.Input p 
+    ( _ , minstfile  ) <- Inter.Store.store Inter.Store.Instant p 
     
     mrepfile <- case P.mresult p of
         Just x | x /= Pending -> do 
@@ -23,7 +24,9 @@ bank p = do
 	    return $ mrepfile
         _ -> return Nothing
 
-    bepunkteStudentDB (P.ident p) (P.anr p) (P.mresult p) (P.highscore p)
+    bepunkteStudentDB (P.ident p) (P.anr p) 
+         ( minstfile )
+         (P.mresult p) (P.highscore p)
          ( minfile ) ( mrepfile )
 
     case P.mresult p of

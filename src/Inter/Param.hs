@@ -25,6 +25,7 @@ data Type =
 	  , conf :: Config
 	  , remark :: Remark
 
+          , minstant :: Maybe String
           , input    :: Maybe String
           , mresult    :: Maybe Wert
           , report    :: Maybe Text.Html.Html
@@ -72,6 +73,7 @@ empty  = Param { makers = []
               , conf =  error "Param.empty.conf"
 	      , remark = error "Param.empty.remark"
 
+              , minstant = Nothing
               , input  = Nothing
 	      , report = Nothing
 	      , mresult = Nothing
