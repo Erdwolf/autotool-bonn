@@ -7,6 +7,8 @@ module PCP.Compressed where
 import PCP.Type
 import PCP.DFS
 
+import PCP.Reach
+
 import Autolib.Schichten
 import Autolib.Util.Splits
 import Autolib.Sets
@@ -14,6 +16,7 @@ import Autolib.ToDoc
 import Autolib.Util.Hide
 
 import Control.Monad
+import Data.Ratio
 
 m :: Int
 m = 3
@@ -21,7 +24,7 @@ m = 3
 down :: Int -> Int
 down x = x `mod` m
 
-type SRS c = [([c],[c])]
+
 
 inverse :: SRS c -> SRS c
 inverse srs = do
@@ -69,13 +72,19 @@ layers srs top bot = do
 
 topdown conf = do
     let start = init conf ; end = tail conf
+    let srs = inverse $ expand conf
     w <- fore conf start
     w' <- equivs w
+ 
+    let ns = numbers srs (w', end)
+    guard $ and $ do
+         n <- ns ; return $ 1 == denominator n
+
     (w'', Hide hist) <- bfs -- dfs 
-	   ( next ( inverse $ expand conf)) (w', Hide [] )
+	   ( next srs) (w', Hide [] )
     guard $ w'' == end
     (w0, Hide fute) <-  bfs -- dfs 
-	   ( next ( inverse $ expand conf)) (w, Hide [] )
+	   ( next srs ) (w, Hide [] )
     guard $ w0 == start
     return ( start : fute, reverse $ w'' : hist)
 
