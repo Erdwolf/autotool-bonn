@@ -9,8 +9,9 @@ import Text.XML.HaXml.Haskell2Xml
 data Record = Record { name :: String
 		     , vorname :: String
 		     , email :: String
-		     -- , punkte :: [ (String, Int) ] -- Aufgabe, Anzahl
+		     , punkte :: [ (String, Int) ] -- Aufgabe, Anzahl
 		     }
+    deriving Show
 
 {-! for Record derive : Haskell2Xml !-}
 
@@ -18,17 +19,19 @@ data Record = Record { name :: String
 instance Haskell2Xml Record where
     toHType v =
 	Defined "Record" []
-		[Constr "Record" [] [toHType aa,toHType ab,toHType ac]]
+		[Constr "Record" [] [toHType aa,toHType ab,toHType ac,toHType ad]]
       where
-	(Record aa ab ac) = v
+	(Record aa ab ac ad) = v
     fromContents (CElem (Elem constr [] cs):etc)
 	| "Record" `isPrefixOf` constr =
-	    (\(aa,cs00)-> (\(ab,cs01)-> (\(ac,_)-> (Record aa ab ac, etc))
+	    (\(aa,cs00)-> (\(ab,cs01)-> (\(ac,cs02)-> (\(ad,
+							 _)-> (Record aa ab ac ad, etc))
+						      (fromContents cs02))
 					(fromContents cs01))
 			  (fromContents cs00))
 	    (fromContents cs)
-    toContents v@(Record aa ab ac) =
+    toContents v@(Record aa ab ac ad) =
 	[mkElemC (showConstr 0 (toHType v)) (concat [toContents aa,
-						     toContents ab,toContents ac])]
+						     toContents ab,toContents ac,toContents ad])]
 
 --  Imported from other files :-

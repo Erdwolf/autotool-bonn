@@ -21,11 +21,13 @@ req1 =
 		   , base = "BK03"
 		   , entry = Entry { ident = "foobar"
 				   , password = "12345"
-				   , contents = Contents 
+				   , contents = Just
+				              $ Contents 
 				              $ toContents
 				              $ Record { name = "Foo"
 						       , vorname = "Bar"
-						       , punkte = 42
+						       , email = "foo@bar"
+						       , punkte = [("A", 2)]
 						       }
 				   }
 		   }
@@ -35,22 +37,22 @@ req2 =
 		   , base = "BK03"
 		   , entry = Entry { ident = "foobar"
 				   , password = "12345"
-				   , contents = Contents
-				              $ toContents ()
+				   , contents = Nothing
 				   }
 		   }
 
 main = do
     Posix.installHandler Posix.sigPIPE Posix.Ignore Nothing
 
-    res1 <- action "theo1" port req1
-    hPutStrLn stderr $ render ( text "answer:"
-        $$ document ( toXml res1 ))
+    OK e1 <- action "theo1" port req1
+    let c1 = fmap fromCon $ contents e1 :: Maybe Record
+    print c1
 
+    OK e2 <- action "theo1" port req2
+    let c2 = fmap fromCon $ contents e2 :: Maybe Record
+    print c2
 
-    res2 <- action "theo1" port req2
-    hPutStrLn stderr $ render ( text "answer:"
-        $$ document ( toXml res2 ))
+	  
 
 
 action :: String -> Int -> Request -> IO Response

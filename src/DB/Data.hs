@@ -25,7 +25,7 @@ instance Haskell2Xml Contents where
 
 data Entry = Entry { ident :: String
 		   , password :: String
-		   , contents :: Contents
+		   , contents :: Maybe Contents
 		   }
 
 {-! for Entry derive : Haskell2Xml !-}
