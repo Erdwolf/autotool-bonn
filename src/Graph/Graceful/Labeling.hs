@@ -12,7 +12,10 @@
 --
 -- Autor: Alexander Kiel
 -- Version: 25.05.2002
+
 --------------------------------------------------------------------------------
+
+-- geändert: ToDoc Labeling joe@informatik.uni-leipzig.de
 
 
 module Graceful.Labeling
@@ -39,7 +42,8 @@ import Sort
 
 newtype Labeling knoten = Labeling
 	( FiniteMap knoten Integer
-	) deriving (Show, Read)
+	) deriving ( {- Show, -} Read)
+
 
 emptyLabeling :: Labeling knoten
 emptyLabeling = Labeling emptyFM
@@ -92,7 +96,8 @@ labelDiff label1 label2 = abs (label1 - label2)
 -- ToDoc Implementation für Labeling
 --------------------------------------------------------------------------------
 
-instance (ToDoc knoten, ToDoc (FiniteMap knoten Integer))
-	=> ToDoc (Labeling knoten) where
-	toDoc (Labeling fmap) =
-		text "Labeling" <+> (toDoc fmap)
+instance ToDoc knoten => ToDoc ( Labeling knoten ) where
+    toDoc ( Labeling fm ) = text "mkLabeling" <+> toDoc ( fmToList fm )
+instance  ToDoc knoten => Show (  Labeling knoten ) where
+    show = render . toDoc
+
