@@ -7,7 +7,7 @@ module Machine.Acceptor.Type where
 import Informed
 import ToDoc
 import Reader
-import Reporter
+import Reporter hiding ( output )
 import Machine.Class
 
 data Acceptor = Acceptor
