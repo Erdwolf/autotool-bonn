@@ -23,7 +23,7 @@ import System
 data PCProblem = PCProblem deriving Show
 
 -- Indexfolge
-type Folge = [ Int ]
+type Folge = [ Integer ]
 
 -- data Folge = Folge [Int] deriving (Show, Read)
 -- instance ToDoc (Folge) where
@@ -40,7 +40,7 @@ instance (ToDoc PCP, Show PCP, Read PCP
     => Problem PCProblem PCP Folge where
 
     validiere PCProblem (PCP  pcp) folge = 
-        let range = mkSet [ 1 .. length pcp ]
+        let range = mkSet [ 1 .. fromIntegral $ length pcp ]
 	    aussen = filter ( \ i -> not (elementOf i range) ) folge
 	in  if null folge 
 	    then ( False, text "Die Lösungsfolge darf nicht leer sein." )
@@ -76,10 +76,10 @@ instance (ToDoc PCP, Show PCP, Read PCP
 	  return (dateiName ++ ".html","html",ExitSuccess)
 
 
-lr :: PCP -> [ Int ] -> ( String, String )
+lr :: PCP -> Folge -> ( String, String )
 lr (PCP pcp) folge = 
-    let links  = do k <- folge ; let { (l,r) = pcp !! (k+1) } ; l
-	rechts = do k <- folge ; let { (l,r) = pcp !! (k+1) } ; r
+    let links  = do k <- folge ; let { (l,r) = pcp !! fromIntegral (k+1) } ; l
+	rechts = do k <- folge ; let { (l,r) = pcp !! fromIntegral (k+1) } ; r
     in	( links, rechts )
 
 common :: Eq a => [a] -> [a] -> [a]
