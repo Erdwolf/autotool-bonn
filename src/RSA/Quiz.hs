@@ -19,8 +19,9 @@ import Faktor.Certify ( powmod )
 import Autolib.Util.Zufall
 import Autolib.Util.Wort
 import Autolib.Util.Seed
-import Autolib.Util.Datei
-import Autolib.Util.Cache
+
+import Util.Datei
+import Util.Cache
 
 import Random
 

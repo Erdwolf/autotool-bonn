@@ -1,6 +1,6 @@
-module Autolib.Util.Datei 
+module Util.Datei 
 
--- -- $Id$
+--  $Id$
 
  (  schreiben
   , anhaengen
@@ -70,7 +70,7 @@ internalize cs =
 
 home_dir :: IO FilePath
 home_dir = do
-	    return Util.Datei.Base
+	    return Util.Datei.Base.base
 
 sanity :: Datei -> IO ()
 -- mit großer vorsicht: über das argument von Get.cgi

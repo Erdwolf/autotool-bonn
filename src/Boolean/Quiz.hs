@@ -14,9 +14,10 @@ import Autolib.TES.Position
 import Autolib.Util.Zufall
 import Autolib.Util.Wort
 import Autolib.Util.Seed
-import Autolib.Util.Datei
-import Autolib.Util.Cache
 import Autolib.Sets
+
+import Util.Datei
+import Util.Cache
 
 import Inter.Types
 
@@ -60,7 +61,7 @@ quiz auf ver par =
                    x <- cache (  Datei { pfad = [ "autotool", "cache"
                                            , auf, ver
                                            ]
-                                  , Autolib.Util.Datei.name = key
+                                  , Util.Datei.name = key
                                   , extension = "cache"
                                   }
                          ) ( roll par )

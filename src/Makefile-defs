@@ -1,3 +1,7 @@
+###################################################################
+# TODO (Alf): das folgende noch nötig?
+###################################################################
+
 #
 # enthält absolute Pfadangaben --> erlaube Überschreibung durch andere Makefiles
 # (besonders aus anderen Verzeichnissen), dazu z.B. in ./control/Makefile
@@ -15,6 +19,7 @@ endif
 # erlaube überschreibung, s.o
 ifndef DIRS
 # DIRS = util:wash:control:bridge:challenger:ws03/aus:
+DIRS = control
 endif
 
 #################################################################

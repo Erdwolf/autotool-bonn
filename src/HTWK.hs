@@ -1,4 +1,4 @@
-module Inter.Boiler where
+module HTWK ( boiler ) where
 
 --   $Id$
 

@@ -26,11 +26,19 @@ rescore :
 		Inter/Rescore.hs -o Inter/Rescore
 
 #########################################################################
+# tags
+#########################################################################
 
 tags :
 	rm -f TAGS && \
 	find . \( -name "*.hs" -o -name "*.hs.drift" \) \
 	 -print -exec etags -a {} \;
+
+
+#######################################################################
+# haddock
+# note: HADDOCK will be set by configure in config.mk
+#######################################################################
 
 HADDOCK_DIRS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
 	Reporter Turing Dot Challenger Inter Boxing Machine Language \
@@ -46,7 +54,6 @@ HADDOCK_DESC = /usr/local/share/ghc-6.2/html/libraries
 
 HADDOCK_FILES = $(wildcard *.hs)
 HADDOCK_OUTPUT = $(PUB)/autotool/haddock
-HADDOCK = haddock
 HADDOCK_OPTS = -v \
 --html \
 --source=http://theo1.informatik.uni-leipzig.de/cgi-bin/cvsweb/autotool/ \
@@ -63,6 +70,7 @@ haddock :
 
 ###############################################################################
 # for drift 
+# note: AUTODRIFT will be set by configure in config.mk
 ###############################################################################
 
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))

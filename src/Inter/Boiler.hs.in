@@ -1,11 +1,12 @@
-module Inter.Boiler where
+-- -*- mode: haskell -*-
+
+module Inter.Boiler ( boiler ) where
 
 -- $Id$
 
-undefined
+import @SCHOOL@
 
--- dieses Modul steht jetzt in $HOME/autotool/{uni,htwk}/Boiler.hs
--- der richtige Suchpfad wird in $HOME/autotool/Makefile.{uni,htwk} eingestellt
+
 
 
 

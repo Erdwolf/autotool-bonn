@@ -10,7 +10,7 @@ import qualified Inter.Param as P
 import qualified  Autolib.Reporter.Result
 
 import qualified Inter.Store
-import  Autolib.Util.Datei
+import Util.Datei
 
 bank :: P.Type -> Maybe Int -> IO String
 bank p res = do

@@ -2,7 +2,7 @@ module Inter.Store where
 
 -- -- $Id$
 
-import  Autolib.Util.Datei
+import Util.Datei
 import qualified System.Posix
 import qualified Inter.Param as P
 import Data.Maybe

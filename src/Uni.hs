@@ -1,4 +1,4 @@
-module Inter.Boiler ( boiler ) where
+module Uni ( boiler ) where
 
 --   $Id$
 

@@ -15,8 +15,9 @@ import Faktor.Prim
 
 import Autolib.Util.Wort
 import Autolib.Util.Seed
-import Autolib.Util.Datei
-import Autolib.Util.Cache
+
+import Util.Datei
+import Util.Cache
 
 import Inter.Types
 

@@ -1,8 +1,8 @@
-module Autolib.Util.Cache where
+module Util.Cache where
 
 --  $Id$
 
-import Autolib.Util.Datei
+import Util.Datei
 import Autolib.Util.Debug
 
 import Control.Monad ( when )
