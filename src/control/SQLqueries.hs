@@ -210,6 +210,26 @@ getAllVorlesungenDB =
        disconnect conn 
        return inh
 
+-- Vnr -> [ Mnr ]
+teilnehmer :: String -> IO [ String ]
+teilnehmer vnr = do
+       conn <- myconnect
+       state <- query conn 
+               ( unwords
+                 [ "SELECT student.mnr"
+                 , "FROM   student, stud_grp, gruppe"
+                 , unwords [ "WHERE gruppe.vnr = ", filterQuots vnr ]
+                 , "AND stud_grp.gnr = gruppe.gnr"
+                 , "AND student.snr = stud_grp.snr"
+                 , ";"
+                 ] )
+       inh <- collectRows ( \ state -> do
+                            a <- getFieldValue state "mnr"
+                            return a
+                          ) state
+       disconnect conn 
+       return inh
+
 --
 -- Liefer Vorlesungen von Matrikelnr.
 --

@@ -7,11 +7,24 @@ import Scorer.Einsendung
 import Scorer.Aufgabe
 import Scorer.Util
 import Data.FiniteMap
+import Data.Set
 import Util.Sort
+import Control.Monad ( guard )
+
+import qualified SQLqueries
 
 emit :: String -> DataFM -> IO ()
--- druckt Auswertung für alle Aufgaben einer vorlesung
-emit vl fm = do
+-- ^ druckt Auswertung für alle Aufgaben einer Vorlesung
+emit vl fm0 = do
+
+    mnrs <- SQLqueries.teilnehmer vl
+    let smnrs = mkSet $ map read mnrs
+    let fm = mapFM ( \ key val -> do
+		  e <- val
+		  guard $ matrikel e `elementOf` smnrs
+		  return e
+	      ) fm0
+
     putStrLn $ unlines
 	     [ "", ""
 	     ,  unwords [ "Auswertung für Lehrveranstaltung", vl, ":" ] 
@@ -36,7 +49,7 @@ realize es = take scoreItems -- genau 10 stück
 	   $ es
     
 single :: ( String, [ Einsendung ] ) -> IO ()
--- druckt Auswertung einer Aufgabe
+-- ^ druckt Auswertung einer Aufgabe
 single ( auf, es ) = do
     let best = head es
 	header = unwords [ "Aufgabe" , auf
@@ -61,9 +74,9 @@ totalize fm = do
 					, stretch 10 $ show m 
 					]
 
+-- | gesamtliste der highscore
 collect :: DataFM 
-	 ->  [ (Int, Int) ] -- ( Matrikel, Punkt )
--- gesamtliste der highscore
+	 ->  [ (Int, Int) ] -- ^ ( Matrikel, Punkt )
 collect fm = take scoreItems
 	   $  sortBy ( \ (m, p) -> negate p ) -- größten zuerst
 	    $ fmToList
