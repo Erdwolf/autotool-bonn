@@ -3,6 +3,7 @@ module Inter.Collector where
 import Inter.Types
 
 import qualified Blank
+import qualified Upload
 import qualified NFA.Analyse
 import qualified NFA.Synthese
 import qualified PCProblem.Quiz
@@ -27,6 +28,7 @@ import qualified Type.Quiz
 
 makers :: [ Make ]
 makers = [ Blank.make
+	 , Upload.make
 	 , NFA.Analyse.make
 	 , NFA.Synthese.make
 	 , PCProblem.Quiz.make_quiz

@@ -279,7 +279,7 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
             plain "Datei-Upload:"
             up <- file "up" undefined
 	    fsub  <- submit "fsub" "submit"
-	    return up
+	    return $ if fsub then up else Nothing
 
     cs <- case esol of
              Just cs -> return cs
