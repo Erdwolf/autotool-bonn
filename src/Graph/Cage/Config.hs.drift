@@ -1,0 +1,24 @@
+-- -*- mode: haskell -*-
+
+module Graph.Cage.Config where
+
+import Inter.Types
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Config = Config 
+	    { girth :: Int -- ^ at least
+             , chi :: Int -- ^ at least
+	     }
+     deriving ( Typeable )
+
+{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+
+rc :: Config
+rc = Config { girth = 4
+	, chi = 4
+	}
