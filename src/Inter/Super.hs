@@ -38,8 +38,9 @@ import qualified Control.Stud_Aufg as SA
 import qualified Control.Student.Type as S
 import qualified Control.Vorlesung as V
 
-import Autolib.Reporter.Type
+import Autolib.Reporter.Type hiding ( wrap )
 import Autolib.ToDoc
+import qualified Autolib.Output as O
 import Autolib.Reader
 import Autolib.Util.Sort
 import Autolib.FiniteMap
@@ -54,8 +55,9 @@ import qualified Control.Exception
 import Text.Html ( Html, primHtml )
 
 main :: IO ()
-main = Inter.CGI.execute "Super.cgi" 
-     $ iface Inter.Collector.makers
+main = Inter.CGI.execute "Super.cgi" $ do
+    wrap $ iface Inter.Collector.makers
+    footer
 
 iface :: [ Make ] -> Form IO ()
 iface mks = do
@@ -113,9 +115,25 @@ iface mks = do
     -- bewertung in DB (für Stud-Variante)
     when ( not tutor ) $ punkte stud' auf' ( cs, res, com )
     -- when ( not tutor ) $ statistik stud' aufs
+
     return ()
 
 -------------------------------------------------------------------------
+
+footer = do
+    hr ; h3 "Informationen zum autotool"
+    let entry name url =
+            O.Beside ( O.Text name ) ( O.Link url )
+    embed $ output
+          $ O.Itemize
+	      [ entry "home: " 
+		      "http://141.57.11.163/auto/"
+	      , entry "bugs (bekannte ansehen und neue melden): " 
+		      "http://141.57.11.163/cgi-bin/bugzilla/buglist.cgi?value-0-0-0=autotool"
+	      , entry "scores: " 
+		      "http://www.imn.htwk-leipzig.de/~autotool/scores"
+	      ]
+    hr
 
 -- | bestimme aufgaben-typ (maker)
 -- für tutor: wählbar
@@ -239,12 +257,11 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
     g <- io $ gen var vnr manr k
     let ( Just i  , com :: Doc ) = export g
         ini  = initial  (problem var) i
-        -- desc = describe (problem var) i
-    ( _ , desc :: Html ) <- io $ run $ report (problem var) i
     br
     parameter_table auf
+
     h3 "Aufgabenstellung"
-    html desc
+    embed $ report (problem var) i
 
     hr ---------------------------------------------------------
 
@@ -272,11 +289,11 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 			html $ primHtml h
                     Nothing -> plain "(keine)"
 	        blank
+		hr
         _ -> return ()
 
-    hr ---------------------------------------------------------
+    ---------------------------------------------------------
     h3 "Neue Einsendung"
-
 
     -- das vorige mal bei eingabefeld oder upload?
     epeek <- look "subsol"
@@ -285,14 +302,14 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
     esol <- if isJust fpeek
        then do 
           -- voriges mal file gewählt, also textarea nicht anzeigen
-          wef <- submit "wef" "Eingabefeld" 
+          wef <- submit "wef" "Text-Eingabefeld" 
           when wef $ blank
           return Nothing
        else do
-          plain "Eingabefeld:"
+          plain "Text-Eingabefeld:"
 	  ex   <- submit "subex" "Beispiel laden"
 	  prev <- submit "subprev" "vorige Einsendung laden"
-	  esub  <- submit "subsol" "Abschicken"
+	  esub  <- submit "subsol" "Textfeld absenden"
 	  br
 	  when ( ex || prev ) blank
 
@@ -302,9 +319,9 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
                       `Control.Exception.catch` \ _ -> return b0
 	      else return b0
           sol <- textarea "sol" def
-          br
           return sol
-    plain "oder" 
+
+    br ; plain "oder " 
 
     fsol <- if isJust epeek
         then do
@@ -313,9 +330,9 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
             when wup $ blank
             return Nothing
         else do
-            plain "Datei hochladen:"
+            plain "Datei auswählen:"
             up <- file "up" undefined
-	    fsub  <- submit "fsub" "submit"
+	    fsub  <- submit "fsub" "Datei absenden"
 	    return $ if fsub then up else Nothing
 
     cs <- case esol of
@@ -324,10 +341,8 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 		  Just cs -> return cs
 		  Nothing -> mzero
 
-    hr
-    h3 "Neue Bewertung"
-    -- let (res, com :: Html) = export $ evaluate p i cs
-    (res, com :: Html) <- io $ run $ evaluate p i cs
+    hr ; h3 "Neue Bewertung"
+    let (res, com :: Html) = export $ evaluate p i cs
     html com
     return ( cs, fromMaybe No res, com )
 
@@ -355,11 +370,10 @@ parameter_table auf = do
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
 punkte stud auf ( cs, res, com ) = do
-     hr
+     hr ; h3 "Eintrag ins Logfile"
      let p = ( mkpar stud auf )  
 	   { P.input = cs, P.report = com, P.result = res }
      msg <- io $ bank p
-     h3 "Eintrag ins Logfile:"
      pre msg
      return ()
 
@@ -386,16 +400,21 @@ statistik stud aufs = do
 	return $ do
             sas <- SA.get_snr_anr (S.snr stud) (A.anr auf) 
             let okno = case sas of
-		     [    ] ->  ( Oks 0, Nos 0 )
-		     [ sa ] ->  ( SA.ok sa, SA.no sa )
+		     [    ] ->  ( Oks 0, Nos 0 , Nothing )
+		     [ sa ] ->  ( SA.ok sa, SA.no sa, SA.result sa )
 	    return ( auf, okno )
     -- vorige aufgabe holen
     mvor <- look "vor"
     -- daten anzeigen
     let dat = do
             open btable
+            open row
+            plain "Aufgabe" ; plain "Status" ; plain "Highscore"
+            plain "von" ; plain "bis"
+            plain "vorige Bewertung" ; plain "Gesamt-Wertungen"
+            close -- row
             clicks <- sequence $ do 
-                ( auf, (ok, no) ) <- score
+                ( auf, ( ok, no, mres ) ) <- score
                 let name = toString $ A.name  auf
                 return $ do
             	    open row
@@ -405,16 +424,18 @@ statistik stud aufs = do
 				   then "green"
 				   else "red"
 			      else "black"
-                    plain name
-                    farbe col $ toString $ A.status auf
-            	    farbe col $ show ok 
-            	    farbe col $ show no
                     click <- if A.current auf
-                       then do submit name "go"
+                       then do submit name name
             	       else do plain name ; return False
+                    farbe col $ toString $ A.status auf
+                    farbe col $ toString $ A.highscore auf
                     farbe col $ toString $ A.von auf
                     farbe col $ toString $ A.bis auf
-            	    close
+		    farbe col $ case mres of
+		        Nothing -> ""
+			Just res -> show res
+            	    farbe col $ show ( ok , no )
+            	    close -- row
                     return [ ( click, auf ) | click || mvor == Just name ]
             close
             return clicks
@@ -424,7 +445,7 @@ statistik stud aufs = do
 	    guard $ A.status auf == Mandatory
 	    return ( 1 :: Int )
 	done = sum $ do 
-            ( auf, (ok, no) ) <- score
+            ( auf, (ok, no, mres) ) <- score
 	    guard $ A.status auf == Mandatory
 	    guard $ ok > Oks 0
 	    return ( 1 :: Int )
