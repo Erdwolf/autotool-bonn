@@ -7,9 +7,6 @@ include Makefile-defs
 
 CGIBIN = $(PUB)/cgi-bin
 
-# FIXME: make configurable
-WWW = /var/www
-
 ###############################################################################
 
 IPROGS = Super
@@ -55,7 +52,7 @@ HAXML_DESC = /usr/local/share/ghc-6.2/html/libraries/HaXml
 AUTOLIB_LINK = http://141.57.11.163/auto/lib/haddock
 AUTOLIB_DESC = /usr/local/share/ghc-6.2/html/libraries/AutoLib
 
-HADDOCK_OUTPUT = $(WWW)/auto/tool/haddock
+HADDOCK_OUTPUT = $(PUB)/auto/tool/haddock
 HADDOCK_OPTS = -v \
 --html \
 --title=auto/tool \
