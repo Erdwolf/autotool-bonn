@@ -1,0 +1,19 @@
+-- -*- mode: haskell -*-
+
+module PCProblem.Data where
+
+import ToDoc
+import Reader
+
+import Set
+import Letters
+
+data PCP = PCP [(String, String)]
+
+instance Letters PCP Char where
+    letters ( PCP uvs ) = mkSet $ do (u, v) <- uvs ; u ++ v
+
+{-! for PCP derive: ToDoc, Reader !-}
+
+instance Show PCP where show = render . toDoc
+instance Read PCP where readsPrec = parsec_readsPrec
