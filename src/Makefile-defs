@@ -113,6 +113,7 @@ all:
 
 cvs-update:
 	cvs update -d 2>&1 | tee cvs.log
+	make drift
 
 cvs-update-log: 
 	cat cvs.log | grep -E '^[A-Z] '
