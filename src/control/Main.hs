@@ -35,15 +35,24 @@ msgPasswort = do
 --	ttxt $ "Als Passwort sind nur Worte aus deutschen Buchstaben [a-ZA-ZäöüÄÖÜß] und Zahlen [0-9] erlaubt."
 
 -- Einstieg: loginPage 
+-- folge Seiten
+-- a) registerPage
+-- b) checkLoginPage 
 loginPage mat F0  = 
-	standardQuery "Willkommen zum Autotool." $ do 
+	standardQuery "Willkommen." $ do 
 		table $ do 
 			attr "width" "600"
 			hrrow
+			th3 "Hier können Sie Sich in die Übungsgruppen von Logik oder Berechenbarkeit/Komplexität einschreiben."
+			spacerow
+			ttxt "Dazu müssen Sie sich Neuanmelden und dann eine Gruppe wählen."
+			spacerow
+			spacerow
 			ttxt $ concat 
-					 [ "Wenn Sie bereits angemeldet sind Matrikelnr. und Passwort eingeben," 
-					 , "ansonsten können Sie sich neuanmelden." 
+					 [ "Wenn Sie bereits angemeldet sind, Matrikelnr. und Passwort eingeben." 
+--					 , "ansonsten können Sie sich neuanmelden." 
 					 ]
+			ttxt $ "Dann können Sie Ihre Daten ändern/ansehen."
 			spacerow
 			matF <- promptedInput		"Matrikelnr:"	$ (fieldSIZE 30) ## ( fieldVALUE mat )
 			pwdF <- promptedPassword	"Passwort:"		(fieldSIZE 30)
@@ -51,19 +60,19 @@ loginPage mat F0  =
 			smallSubButton (F2 matF pwdF)	checkLoginPage	"Login" 
 			smallSubButton F0				(registerPage "" "" "" "") "Neuanmeldung"
 
+
 -- Neuanmeldung 								  
 registerPage vnm nme mat eml F0 =
-	standardQuery "Neuammeldung" $ do
+	standardQuery "Willkommen zur Neuammeldung" $ do
 		table $ do	
 			attr "width" "600"	
 			hrrow
-			th3 "Willkommen zur Autotool Anmeldung."
+			th3 "Nach der Anmeldung können Sie die Vorlesung/Übungsgruppe auswählen."
 			spacerow
 			ttxt "Bitte achten Sie auf die korrekte Angabe von Matrikelnummer und Email-Adresse."
 			spacerow
 			ttxt "Nur von dieser Adresse kommende Emails werden vom Autotool akzeptiert."
-			spacerow
-			ttxt "Nach der Anmeldung können Sie die Vorlesung auswählen."
+			ttxt $ "Notieren Sie bitte Ihr Passwort." 
 			spacerow
 			vnmF <- promptedInput	"Vorname"		$ (fieldSIZE 30) ## (fieldVALUE vnm )
 			nmeF <- promptedInput	"Name"			$ (fieldSIZE 30) ## (fieldVALUE nme )
@@ -112,20 +121,20 @@ registeredPage (F6 vnmF nmeF matF emlF ps1F ps2F) =
 					 th3 "Vielen Dank. Alle Angaben wurden übernommen. "
 					 msgKontrollEmail
 					 hrrow
-					 smallSubButton F0 (studStatusPage mat) "Weiter"
+					 smallSubButton F0 (changeGrpPage mat) "Weiter"
 				else do
 					 ttxt "Bitte überprüfen Sie Ihre Angaben:"
 					 spacerow
-					 mapM_ ( \x -> ttxt x) [  msg | ( ok , msg ) <- checks , not ok ]
+					 mapM_ (ttxt) [  msg | ( ok , msg ) <- checks , not ok ]
 					 hrrow
 					 smallSubButton F0 (registerPage vnm nme mat eml) "Zurück"
 
 -- EndPage
 endPage F0 = 
-	standardQuery "Autoan - Ende" $ 
+	standardQuery "Ende" $ 
 		table $ do 	
 			hrrow
-			th3 "Vielen Dank für die Benutzung von Autoan. Und schönen Tag noch."
+			th3 "Vielen Dank für die Benutzung. Und schönen Tag noch."
 			hrrow
 
 
@@ -154,8 +163,11 @@ studStatusPage mat F0 =
 	do 
 	  inh		<- io $ checkPasswdMNrDB Nothing mat
 	  result	<- io $ studAufgDB mat
-	  vorl		<- io $ studVorlDB mat
-	  standardQuery "Autotool Übersicht" $ 
+	  (h,grps)	<- io $ getAllGruppenDB 
+	  stdgrp    <- io $ getGruppenStudDB mat
+	  let	grp = [ v ++ ", " ++  g ++ ", " ++ r |  (gnr , [v,g,r]) <- grps , gnr `elem` stdgrp ]
+--	  vorl		<- io $ studVorlDB mat
+	  standardQuery "Übersicht" $ 
 		let ( vorname , name , email , status ) = ( inh !! 0 ) in	
 		do 
 			hrline
@@ -168,8 +180,7 @@ studStatusPage mat F0 =
 				tableRow2 (text "Matrikelnr.") (text mat)
 				tableRow2 (text "Email-Adresse") (text email)
 				tableRow2 (text "Anmeldestatus") (text status)
- 				tableRow2 (text "Vorlesungen") (text $ if (length vorl) > 0  then ( foldr1 kommas vorl  ) else "keine" )
-
+ 				tableRow2 (text "Vorlesung/Gruppe") $ text $ if null grp then "keine" else show grp
 			if ( length (snd result)) > 0 
 			   then do { h3 $ text "Ergebnisse" ; ( showAsTable result ) }
 			   else do { h3 $ text "keine Ergebnisse" } 
@@ -179,8 +190,7 @@ studStatusPage mat F0 =
 			h3 $ text "Hier können Sie :"
 			table $ 
 				do 
-				   smallSubButton F0 (addVorlesungPage mat vorl)	"eine Vorlesung hinzufügen" 
-				   smallSubButton F0 (delVorlesungPage mat vorl)	"eine Vorlesung entfernen"
+				   smallSubButton F0 (changeGrpPage mat)			"Vorlesung/Übungsgruppe auswählen/ändern"
 				   smallspacerow
 				   smallSubButton F0 (changeEmailPage mat email)	"die Email-Adresse ändern"
 				   smallSubButton F0 (changePasswortPage mat)		"das Passwort ändern"
@@ -217,8 +227,9 @@ addVorlesungPage mat vorl F0 = do
 addedVorlesungPage mat (F1 addVlF) = do 
 	let addVl = value $ addVlF 
 	io $ insertStudVorlDB mat addVl
-	(h, grps)<- io $ getGruppenDB addVl
-	studgrps <- io $ getGruppenStudDB mat addVl
+	(h, grps)<- io $ getFreeGruppenDB
+--TODO addvl argument in getGruppenStudDB
+	studgrps <- io $ getGruppenStudDB mat 
 	let mglgrp = if null studgrps then []
 				 else
 				 [ ( gnr , g ++ " " ++ r ) 
@@ -241,25 +252,50 @@ addedVorlesungPage mat (F1 addVlF) = do
 					ttxt "Sie besuchen bereits ein Übungsgruppe der Vorlesung."
 			   hrrow
 			   smallSubButton F0 (studStatusPage mat) "Weiter"
-			   else
+			   else -- auswahl der mgl. übungsgrpen
 				do
 				th3  "Jetzt müssen Sie eine Übungsgruppe auswählen. "
 				ttxt "Es werden nur Übungsgruppen die noch nicht voll sind angezeigt."
 				let show' = show . snd
 				addgrpF <- tr $ td $ selectSingle show' Nothing mglgrp empty
 				hrrow
-				smallSubButton (F1 addgrpF) (addedGrpPage mat) "Weiter"
+--				smallSubButton (F1 addgrpF) (addedGrpPage mat) "Weiter"
 			--			
 
-addedGrpPage mat (F1 addgrpF) = do 
-	let (grp,desc) = value $ addgrpF
--- 	io $ removeStudVorlDB mat addVl
-	standardQuery "Übungsgruppe ausgewählt." $ 
+-- TODO gruppen wechseln nach Bepunktung verhindern
+changeGrpPage mat F0 = do
+	  (h,freegrps)	<- io $ getFreeGruppenDB 
+	  (h,allgrps)   <- io $ getAllGruppenDB
+	  stdgrp		<- io $ getGruppenStudDB mat
+	  let	
+		posgrp       = [ (gnr ,v ++ ", " ++  g ++ ", " ++ r) |  (gnr , [v,g,r,c,m]) <- freegrps , not $ gnr `elem` stdgrp ]
+		currentgrps	 = [ (gnr ,v ++ ", " ++  g ++ ", " ++ r) |  (gnr , [v,g,r]) <- allgrps , gnr `elem` stdgrp ] 	  
+		thrd (_,_,x) = x
+	  standardQuery "Übungsgruppe ändern" $ 
+			table $ 
+				  do
+				  th3  "Bitte  wählen Sie Ihre Übungsgruppe. "
+				  ttxt $ "Aktuelle Übungsgruppe: " ++ if null currentgrps then "keine" else show $ Prelude.map snd currentgrps
+				  let { show' = show . snd }
+				  if null posgrp 
+					 then ttxt "Leider sind alle Gruppen voll."	>> hrrow >> smallSubButton F0 (studStatusPage mat) "Weiter"
+					 else 
+					 do
+					 ttxt "Es werden nur Übungsgruppen die noch nicht voll sind angezeigt."
+					 grpF <- tr $ td $ selectSingle show' Nothing posgrp empty
+					 hrrow
+					 smallSubButton (F1 grpF) (changedGrpPage mat) "Weiter"			
+					 smallSubButton F0 (studStatusPage mat) "Zurück"
+
+changedGrpPage mat (F1 grpF) = do 
+	let (grp,desc) =value $ grpF
+	io $ changeStudGrpDB mat grp   
+	standardQuery "Neue Übungsgruppe ausgewählt." $ 
 		do	
 		table $ do
 			attr "width" "600"
 			hrrow
-			tr $ td $ text $ "Gruppe " ++ desc ++" ausgewählt."
+			ttxt $ "Gruppe " ++ desc ++" ausgewählt."
 			hrrow
 			smallSubButton F0 (studStatusPage mat) "Weiter"	
 

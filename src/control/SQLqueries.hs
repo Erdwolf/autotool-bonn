@@ -325,12 +325,9 @@ removeStudVorlDB mat vorl =
 -- Übungsgruppen
 -- liefert alle freien Gruppen einer (vl=) Vorlesung 
 -- oder (vl="") aller Vorlesung
-getGruppenDB vl = 
+getFreeGruppenDB = 
 	do 
 	   conn <- connect "localhost" "autoan" "test" "test"
-	   let where' = if length vl > 0 
-					then "vorlesung.Name = " ++ "\"" ++ filterQuots vl ++ "\"" 
-					else "vorlesung.VNr = gruppe.VNr"
 	   stat <- query conn $ 
 			"SELECT \n" 
 			++ "gruppe.GNr AS GNr, "
@@ -342,7 +339,7 @@ getGruppenDB vl =
 			++ "\nFROM \n"
 			++ "autoan.gruppe LEFT JOIN autoan.stud_grp USING (GNr) ," 
 		    ++ "vorlesung" ++ " "
-			++ "\nWHERE \n" ++ where' ++" "
+			++ "\nWHERE \n" ++" gruppe.VNr = vorlesung.VNr "   ++" "
 			++ "\nGROUP BY \n" ++ "Gruppen "
 			++ "\nHAVING \n"	++ "studentCount" ++ " < " ++ " studentMax " ++ " " 
 			++ "\nORDER BY \n" ++ "Vorlesungen, Gruppen " ++ ";"
@@ -351,29 +348,53 @@ getGruppenDB vl =
 							v <- getFieldValue state "Vorlesungen"
 							g <- getFieldValue state "Gruppen"
 							r <- getFieldValue state "Referent"
-							c <- getFieldValue state "studentCount"
 							m <- getFieldValue state "studentMax"
+							c <- getFieldValue state "studentCount"
 							return ( k :: Int ,
 									 [ v :: String 
 									 , g :: String                                           
 									 , r :: String 
-									 , c :: String 
-									 , m :: String ]
+									 , m :: String 
+									 , c :: String ]
 								   )
 						  ) stat
 	   disconnect conn 
 	   return ( showColTypes stat, inh )
 
-getGruppenStudDB mat vl =
+getAllGruppenDB = do
+	conn <- connect "localhost" "autoan" "test" "test"
+	stat <- query conn $ 
+			"SELECT \n" 
+			++ "gruppe.GNr AS GNr, "
+			++ "vorlesung.Name AS Vorlesungen," 
+			++ "gruppe.Name AS Gruppen," 
+		    ++ "gruppe.Referent AS Referent "
+			++ "\nFROM vorlesung , gruppe "
+		    ++ "\nWHERE vorlesung.VNr = gruppe.VNr " 
+		    ++ "\nORDER BY Vorlesungen,Gruppen,Referent " ++ "\n"
+	inh <- collectRows ( \ state -> do
+							k <- getFieldValue state "GNr"
+							v <- getFieldValue state "Vorlesungen"
+							g <- getFieldValue state "Gruppen"
+							r <- getFieldValue state "Referent"
+							return ( k :: Int ,
+									 [ v :: String 
+									 , g :: String                                           
+									 , r :: String 
+									 ]
+								   )
+						  ) stat
+	disconnect conn 
+	return ( showColTypes stat, inh )
+
+getGruppenStudDB mat =
 	do 
 	conn <- connect "localhost" "autoan" "test" "test"
 	stat <- query conn
 			( "SELECT stud_grp.GNr as GNr" ++ " \n" 
-		   ++ "FROM stud_grp, student, vorlesung, stud_vorl" ++ " \n" 
+		   ++ "FROM stud_grp, student" ++ " \n" 
 		   ++ "WHERE stud_grp.SNr = student.SNr" ++ " \n"
-		   ++ "AND student.SNr = stud_vorl.SNr" ++ " \n"
 		   ++ "AND student.MNr = " ++"\"" ++ filterQuots mat ++ "\"" 
-		   ++ "AND vorlesung.Name = " ++"\"" ++ filterQuots vl ++ "\"" 
 		   ++ ";" )
 	inh  <- collectRows ( \ state -> do
 						  g <- getFieldValue state "GNr"
@@ -381,6 +402,31 @@ getGruppenStudDB mat vl =
 						) stat
 	disconnect conn 
 	return inh
+
+getSNrFromMatDB mat = do
+   conn <- connect "localhost" "autoan" "test" "test"
+   stat <- query conn $ "SELECT student.SNr AS SNr FROM student WHERE student.MNr =" ++ "\"" ++ filterQuots mat ++ "\""
+   inh  <- collectRows ( \ state -> do
+						 snr <- getFieldValue state "SNr"
+						 return ( snr :: String)
+					   ) stat
+   disconnect conn	
+   return inh
+
+changeStudGrpDB mat grp = 
+	do
+	snrh <- getSNrFromMatDB mat
+	if null snrh 
+	  then return ()
+	  else  
+	  do {
+		 ; conn <- connect "localhost" "autoan" "test" "test"
+		 ; stat <- query conn $ "DELETE FROM autoan.stud_grp" ++ " " ++ "WHERE stud_grp.SNr = \"" ++ filterQuots (snrh!!0) ++ "\" " ++ ";"
+	     ; stat <- query conn $ "INSERT INTO autoan.stud_grp (SNr,GNr) VALUES (" ++ filterQuots (snrh!!0) ++ "," 
+							++ filterQuots (show grp) ++");"
+		 ; disconnect conn 
+		 ; return ()
+		 }
 
 -- ================================================================================
 checkAdminNamePasswortDB :: String -> String -> IO Bool

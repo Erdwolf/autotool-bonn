@@ -36,6 +36,8 @@ clean:
 	$(RM) *.hi
 	$(RM) $(TARGET)
 
+install-cgi:
+	su -c "cp -f /home/alf/autotool/control/autoan.cgi /usr/lib/cgi-bin/autoan.cgi"
 #%.o: %.hs
 #	$(HMAKE) $(HCFLAGS) -c $< -o $@
 
