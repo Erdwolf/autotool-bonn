@@ -31,9 +31,26 @@ check soll n = do
 	       , text "Die Rechung des Netzes ist:"
 	       , nest 4 $ toDoc $ toBild ( n , xss )
 	       ]
-    mapM_ verify $ Util.Wort.alle [ 0, 1 ] soll
+    mapM_ verify $ testing soll
     inform $ text "Das Netz hat alle möglichen Eingaben korrekt geordnet."
     return ()
+
+testing :: Int -> [State]
+testing soll = do
+    w <- Util.Wort.alle [ 0, 1 ] soll
+    -- es gilt ja der satz: 
+    -- alle 0-1-folgen sortiert <=> überhaupt alle folgen sortiert.
+    -- also generiere ich 0-1-folgen (weil das weniger sind)
+    -- aber um die studenten nicht unnötig aufzuregen,
+    -- rechne ich es in folgen aus lauter verschiedenen elementen um
+    return $ umrech w    
+
+umrech :: [ Int ] -> [ Int ]
+-- das ist eine schöne übungsaufgabe
+umrech w = um w 1 (length w) where
+    um [] _ _ = []
+    um (0 : xs) low high = low  : um xs (succ low) high
+    um (1 : xs) low high = high : um xs low (pred high)
 
 is_increasing :: Ord a => [a] -> Bool
 is_increasing xs = and $ do
