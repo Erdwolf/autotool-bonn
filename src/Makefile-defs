@@ -35,7 +35,7 @@ endif
 ########################################################################
 ifeq ($(shell hostname), nfa)
 EXTRA_PACKS = -package hsql
-DEFINES = -DSPACE=1
+DEFINES = -DHOME=1
 GHC = ghc-6.0
 endif
 
@@ -89,7 +89,7 @@ all:
 #########################################################################
 
 # build haskell-cgis, we need hsql stuff too 
-%.cgi : %.hs
+%.cgi : do %.hs
 	$(GHC_COMMAND)  $(EXTRA_PACKS)  $*.hs -o $@
 
 

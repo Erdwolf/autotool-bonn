@@ -33,7 +33,7 @@ DP = /usr/local/lib/hugs:$(HOME)/autotool/util
 all : drift face
 
 control : 
-	(cd control && make autoan.cgi )
+	( cd control && make autoan.cgi )
 
 # $(DIRS):
 # 	$(MAKE) -C $@
@@ -43,9 +43,6 @@ tags :
 	| xargs etags
 
 ###############################################################################
-
-SRS/Matchbox : do
-	$(GHC_COMMAND)  $@.hs -o $@
 
 matchbox : do
 	$(GHC_COMMAND)  \
@@ -81,15 +78,22 @@ INTER_FACE_CGI=$(INTER_FACE_DIR)/$(subst .hs,.cgi,$(INTER_FACE))
 INTER_FACE_TARGET=root@theo1:/usr/lib/cgi-bin/Face.cgi
 
 face : $(INTER_FACE_CGI) 
-	cp $< $(CGIBIN)/
+	cp $(INTER_FACE_CGI) $(CGIBIN)/
 
 
 install-face : $(INTER_FACE_CGI)
-	scp $< $(INTER_FACE_TARGET)
+	scp $(INTER_FACE_CGI)  $(INTER_FACE_TARGET)
 
 
 ghci-face:
 	$(GHCI_COMMAND)  $(EXTRA_PACKS)  $(INTER_FACE_WITH_PATH)
+
+Inter/Streamer : do
+	$(GHC_COMMAND)  $@.hs -o $@
+
+stream : Inter/Streamer
+
+
 
 
 .PHONY : do
