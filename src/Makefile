@@ -92,6 +92,7 @@ loop :
 
 # install source archive and executable
 release : do
+	cvs commit -m release-$(shell date -I)
 	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXEC)
 	bzip2 -v --force --best  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXEC)
 	tar -cvjf $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_ARCHIVE) \
