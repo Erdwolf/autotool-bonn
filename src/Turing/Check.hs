@@ -53,7 +53,7 @@ check m = do
 	       $ reject $ text "Endzustand" <+> toDoc z
 		    <+> text "gehört nicht zur Zustandsmenge"
       mapM_ ce $ setToList $ endzustandsmenge m
-      inform $ text "Das ist wirklich eine nichtdeterministische Turingmaschine."
+      inform $ text "Das ist wirklich eine Turingmaschine."
 
 deterministisch :: TUM y z
       => Turing y z 
@@ -64,7 +64,7 @@ deterministisch m = do
 	    guard $ cardinality s > 1
 	    return r
     case mehr of
-	    [] -> inform $ text "diese Maschinen ist deterministisch"
+	    [] -> inform $ text "diese Maschine ist deterministisch"
 	    rs -> do
 		  inform $ text "diese Regeln sind nicht deterministisch:"
 		  reject $ toDoc rs

@@ -50,7 +50,9 @@ tm2 = do
            { F.fun_info = text "verdoppeln??"
            , F.pairs = testing
            , F.cut = 10000
-           , F.check = \ m -> return () -- alles OK ?? TODO: det
+           , F.check = \ m -> do
+	         check m
+	         deterministisch m
            , F.start = Turing.Example.student -- ??
            }
     return $ FI.computer "TM" "2" it
@@ -65,7 +67,9 @@ clock3 = do
 	   , C.fun_info = text "\\ n -> n + 1"
 	   , C.args = [ 2 .. 10 ] ++ [ 12 , 14 .. 20 ]
 	   , C.cut = 30
-	   , C.check = \ m -> return () -- alles OK ?? TODO: det
+	   , C.check = \ m -> do
+	         check m
+	         deterministisch m
 	   , C.start = Turing.Example.student
 	   }
     return $ CI.clock "TM" "3" it
