@@ -23,8 +23,14 @@ import Text.ParserCombinators.Parsec.Expr
 
 import Mysqlconnect
 
+#ifdef HSQL14
+import Database.HSQL.MySQL hiding ( query, collectRows )
+import qualified Database.HSQL.MySQL
+#else
 import Database.MySQL.HSQL hiding ( query, collectRows )
 import qualified Database.MySQL.HSQL
+#endif
+
 import Control.Monad ( when )
 
 -------------------------------------------------------------------------------
@@ -37,13 +43,21 @@ squery con scom = query con (show scom)
 query :: Connection -> String -> IO Statement
 query con com = do
     logged com
+#ifdef HSQL14
+    Database.HSQL.MySQL.query con com
+#else
     Database.MySQL.HSQL.query con com
+#endif
             `catchSql` \ e -> do 
                    logged $ "query: " ++ (show e) 
 		   error $ "SQLqueries.error in query:" ++ (show e) 
 
 collectRows fun stat = do
+#ifdef HSQL14
+    i <- Database.HSQL.MySQL.collectRows fun stat
+#else
     i <- Database.MySQL.HSQL.collectRows fun stat
+#endif
             `catchSql` \ e -> do 
                    logged $ "collectRows: " ++ (show e) 
 		   error $ "SQLqueries.error in collectRows: " ++ (show e) 

@@ -62,9 +62,15 @@ import qualified Control.Exception
 import Text.Html ( Html, primHtml )
 
 main :: IO ()
-main = Inter.CGI.execute "Super.cgi" $ do
-    wrap $ iface Inter.Collector.makers
-    footer
+main = do
+
+    e <- doesFileExist "link.scores"
+    scores <- if e then readFile "link.scores" >>= return . head . lines
+              else return "http://www.imn.htwk-leipzig.de/~autotool/scores"
+
+    Inter.CGI.execute "Super.cgi" $ do
+     wrap $ iface Inter.Collector.makers
+     footer scores
 
 iface :: [ Make ] -> Form IO ()
 iface mks = do
@@ -651,20 +657,17 @@ tutor_statistik vnr auf = do
 
 -----------------------------------------------------------------------------
 
-footer = do
+footer scores = do
     hr ; h3 "Informationen zum autotool"
     let entry name url =
             O.Beside ( O.Text name ) ( O.Link url )
+
     embed $ output
           $ O.Itemize
 	      [ entry "home: " 
 		      "http://dfa.imn.htwk-leipzig.de/auto/"
 	      , entry "bugs (bekannte ansehen und neue melden): " 
 		      "http://dfa.imn.htwk-leipzig.de/cgi-bin/bugzilla/buglist.cgi?value-0-0-0=autotool"
-	      , entry "scores: " 
-		      "http://www.imn.htwk-leipzig.de/~autotool/scores"
+	      , entry "scores: " scores
 	      ]
     hr
-
-
-

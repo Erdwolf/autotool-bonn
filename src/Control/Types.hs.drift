@@ -27,7 +27,13 @@ import Control.SQL
 import Inter.Crypt
 import Data.Char ( toLower )
 import Data.Maybe ( fromMaybe )
+
+#ifdef HSQL14
+import Database.HSQL.MySQL
+import Database.HSQL.Types
+#else
 import Database.MySQL.HSQL
+#endif
 
 import qualified Exception
 import Data.Typeable
