@@ -1,6 +1,7 @@
 # must override to get it relativ to this dir
-DIRS = ../wash
-EXTRA_PACKS = -package-conf "../autotool.pkg"
+
+RELATIV_TO_MAIN_DIR=..
+DIRS = $(RELATIV_TO_MAIN_DIR)/wash
 
 include ../Makefile-defs
 
@@ -13,11 +14,9 @@ clean:
 
 # empty commands, just for the completation
 
-autoan.cgi: ;
+autoan.cgi: %.cgi : %.hs
 
-autoadmin.cgi: ;
-
-showgruppen.cgi: ;
+autoadmin.cgi showgruppen.cgi: %.cgi : %.hs
 
 #########################################################################
 # mysql 

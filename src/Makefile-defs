@@ -1,16 +1,38 @@
 ########################################################################
-# ugly ugly ugly : system-spezifische teile des makefiles
+# defaults
 ########################################################################
 
-#defaults
 GHC = ghc
 
-# is absolute --> allow overide
+# System spezifische Einstellung
+
+#
+# enthält absolute Pfadangaben --> erlaube Überschreibung durch andere Makefiles
+# (besonders aus anderen Verzeichnissen), dazu z.B. in ./control/Makefile
+#
+# RELATIV_TO_MAIN_DIR=..
+# DIRS = $(RELATIV_TO_MAIN_DIR)/wash
+# include ../Makefile-defs, 
+# 
+# 
+ifndef RELATIV_TO_MAIN_DIR
+RELATIV_TO_MAIN_DIR =.
+endif
+
+
 ifndef EXTRA_PACKS
-EXTRA_PACKS = -package-conf "autotool.pkg"
+EXTRA_PACKS = -package-conf $(RELATIV_TO_MAIN_DIR)/autotool.pkg -package hsql 
 endif
 DEFINES = -DHOME=1
 
+# erlaube überschreibung, s.o
+ifndef DIRS
+DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau:ws03/aus
+endif
+
+########################################################################
+# ugly ugly ugly : system-spezifische teile des makefiles
+########################################################################
 ifeq ($(shell hostname), nfa)
 EXTRA_PACKS = -package hsql
 DEFINES = -DSPACE=1
@@ -39,9 +61,6 @@ endif
 # ghc / ghci : setup
 ########################################################################
 
-ifndef DIRS
-DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau:ws03/aus
-endif
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
