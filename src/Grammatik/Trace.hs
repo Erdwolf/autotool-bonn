@@ -12,8 +12,8 @@ type Track = [ String ]
 type Tracks = [[ String ]]
 
 nachfolger :: Int -> Grammatik -> String -> Set String
-nachfolger b g u = mkSet $ take b $ do
-    vss <- schichten ( schritt Nothing g ) u
+nachfolger b g u = mkSet $ do
+    vss <- take b $ schichten ( schritt Nothing g ) u
     v <- setToList vss
     return v
 
@@ -62,13 +62,18 @@ trace b ( g, vs ) ts = do
     inform $ toDoc vs
     newline
 
+    inform $ text "In den Ableitungen dürfen Sie jeweils maximal"
+	   <+> toDoc b
+	   <+> text "Einzelschritte zusammenfassen."
+    newline
+
     inform $ text "Sie haben diese (verkürzten) Ableitungen eingesandt:"
     inform $ toDoc ts
     newline
 
-    complete (g, vs) ts
     starts (g, vs) ts
     mapM_ ( jumps b g ) ts
+    complete (g, vs) ts
 
     return 0
 

@@ -28,8 +28,8 @@ gen s b g u =
 		  rest <- gen (s-1) b g v
 		  return $ u : rest
 
-generate :: Int -> Int -> Int -> Grammatik -> IO (Set String)
-generate words steps width g = do
+generate :: Int -> Int -> Grammatik -> IO [ String ]
+generate steps width g = do
     ws0 <- mapM ( \ s ->  gens s width g ) [ 1 .. steps ]
-    return $ mkSet $ take words $ map last $ ws0
+    return $ map last $ ws0
 

@@ -5,13 +5,14 @@ module Language.Type
 
 where
 
+import Util.Uniq
+import Util.Wort
 
-import Wort
 import ToDoc
 import Set
 import Monad (guard)
 import Random
-import Uniq
+
 
 data Language = Language
 	      { abbreviation :: String
