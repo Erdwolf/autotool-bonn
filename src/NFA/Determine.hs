@@ -2,7 +2,7 @@ module NFA.Determine where
 
 -- vom NFA zum DFA
 
--- -- $Id$
+--  $Id$
 
 import NFA.Type
 import NFA.Eq
@@ -84,7 +84,8 @@ data Conf = Conf
          , nea_size :: Int
          , min_dea_size :: Int
          , max_dea_size :: Int
-		 , mustmini :: Bool
+	 , mustmini :: Bool
+	 , randomizer :: Int
          }
     deriving ( Eq, Ord, Read, Show )
 
@@ -111,7 +112,7 @@ determine auf ver conf =
         , key = \ matrikel -> do 
           return matrikel
         , gen = \ key -> do
-          seed $ read key
+          seed $ randomizer conf * read key
           ( i, _, b ) <- cache (  Datei { pfad = [ "autotool", "cache"
                                               , auf, ver
                                               ]
