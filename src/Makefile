@@ -5,9 +5,7 @@
 
 # DIRS = $(BINDIR) $(EXERCISEDIRS)
 
-# neu: fa/ nicht mehr im pfad (steht jetzt alles in NFA.*)
-
-DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben
+DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
@@ -25,7 +23,8 @@ OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
 
 GHC = ghc-6.0 # -pgmc gcc-2.95
 
-WARN =  -Werror -dcore-lint
+# WARN =  -Werror -dcore-lint
+WARN = -dcore-lint
 
 GHC_COMMAND = $(GHC) --make $(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) -i$(DIRS)
 

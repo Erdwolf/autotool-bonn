@@ -23,7 +23,9 @@ import qualified Challenger
 import Inter.Types
 import qualified Exception
 
+-- hier sind die aufgaben drin:
 import Inter.Boiler
+
 import qualified Posix
 
 main :: IO ()

@@ -20,6 +20,8 @@ import qualified FUN.QUIZ
 import qualified PCP.QUIZ
 import qualified SAT.QUIZ
 
+import qualified JVM.TIMES
+
 import qualified Demo.L
 
 -- hier steht ALLES machbare drin
@@ -43,6 +45,8 @@ boiler = sequence $
        -- , fmap Variant $ FUN.PRIM.generate
        , fmap Variant $ FUN.FIB.generate
        , fmap Variant $ FUN.QUIZ.generate
+
+       , fmap Variant $ JVM.TIMES.generate
 
        ]
        ++ Demo.L.generates
