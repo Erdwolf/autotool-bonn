@@ -20,6 +20,7 @@ PACKS = -package text -package data \
 HPACKS = $(PACKS) \
 	-package HToolkit 
 
+
 OPT = -O2
 GHC = ghc
 
