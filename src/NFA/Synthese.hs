@@ -65,6 +65,10 @@ synthese auf ver i =
 	, version = ver
 	, key = \ matrikel -> do 
 	      return ""
+        -- TODO: diese kommentare sollten eigentlich
+	-- eine methode  describe :: p i -> Doc  von Challenger.Partial sein.
+	-- dazu muß man einigen code umstellen
+	-- aber es sollte danach viel besser aussehen
 	, gen = \ key -> return $ do
 	      inform $ vcat
 	             [     text "Finden Sie einen"
