@@ -26,9 +26,8 @@ import qualified Type.Check
 import qualified Type.Quiz
 import qualified Palindrom.Plain
 
--- import qualified NFA.Analyse
--- import qualified NFA.Synthese
 import qualified NFA.Convert
+import qualified NFA.Equiv.Challenger
 import qualified Exp.Convert
 
 makers :: [ Make ]
@@ -59,12 +58,12 @@ makers = [ Blank.make
 	 , Type.Quiz.make
 	 , Palindrom.Plain.make
 
---	 , NFA.Analyse.make
---	 , NFA.Synthese.make
 	 , NFA.Convert.make
 	 , NFA.Convert.qmake
 	 , Exp.Convert.make
 	 , Exp.Convert.qmake
+	 , NFA.Equiv.Challenger.make
+	 , NFA.Equiv.Challenger.qmake
 	 ]
 
 

@@ -1,6 +1,6 @@
-module Autolib.NFA.Equiv.Core where
+module NFA.Equiv.Core where
 
--- -- $Id$
+--  $Id$
 
 import Autolib.NFA
 
@@ -8,10 +8,10 @@ import Autolib.Reporter
 import Autolib.ToDoc
 import Autolib.Util.Fix
 
-import Data.Set
+import Autolib.Set
 import Autolib.FiniteMap
 import Data.List (partition, tails)
-import Maybe (fromMaybe,maybeToList)
+import Data.Maybe (fromMaybe,maybeToList)
 
 
 type Klassen s = Set (Set s)
@@ -35,8 +35,8 @@ toKlassen fm = mkSet $ eltsFM $ addListToFM_C union emptyFM $ do
 
 ----------------------------------------------------------------------
 
+-- | verfeinert äquivalenzklassen
 refine :: Ord s => (s -> s -> Bool) -> Klassen s -> Klassen s
--- verfeinert äquivalenzklassen
 refine eq xss = mkSet $ do xs <- setToList xss 
 			   split eq $ setToList xs 
 
@@ -47,8 +47,8 @@ split eq (x : xs) =
     in	mkSet (x : yeah) : split eq noh
 
 
+-- | wer hier vorkommt, ist nicht äquivalent
 mkTafel :: (Ord c, Ord s) => [ Trenner c s ] -> Set (s,s) 
--- wer hier vorkommt, ist nicht äquivalent
 mkTafel ts = mkSet $ do
     (p,q,c) <- ts
     [(p,q),(q,p)]
@@ -73,9 +73,9 @@ compact a xss =
 
 ----------------------------------------------------------------------
 
+-- | das berechnet alle
 trenner :: NFAC c s
         => Set c -> NFA c s -> Klassen s -> [ Trenner c s ]
--- das berechnet alle
 trenner sigma a xss = do
     let fm = toMappe xss
     xs <- setToList xss
@@ -135,26 +135,27 @@ check_trenners a fm ts = mapM_ (check_trenner a fm) ts
 
 ----------------------------------------------------------------------
 
+-- | prüfe einen schritt
 schritt :: NFAC c s
 	=> Set c -> NFA c s 
 	-> Klassen s  -> (Int, [ Trenner c s ])
 	-> Reporter ( Klassen s )
--- prüfe einen schritt
 schritt sigma a xss (k, ts) = do
     let fm = toMappe xss
     inform $ text $ unwords [ "Schritt", show k ]
-    inform $ text "Die Äquivalenzklassen sind:" <+> toDoc xss
-    inform $ text "Ich prüfe Ihre trennenden Tupel:" <+> toDoc ts
+    nested 4 $ do
+        inform $ text "Die Äquivalenzklassen sind:" <+> toDoc xss
+        inform $ text "Ich prüfe Ihre trennenden Tupel:" <+> toDoc ts
 
-    inform $ text "... sind alle Tupel korrekt?"
-    check_trenners a fm ts
+        inform $ text "sind alle Tupel korrekt?"
+        nested 4 $ check_trenners a fm ts
 
-    inform $ text "... sind alle für diesen Schritt nötigen Tupel vorhanden?"
-    let ts' = trenner sigma a xss
-    if isEmptySet (mkTafel ts' `minusSet` mkTafel ts)
-       then do inform $ text "Ja." 
-	       return $ anwende xss ts
-       else do reject $ text "Nein. Sie müssen noch mehr Zustände trennen."
+        inform $ text "sind alle für diesen Schritt nötigen Tupel vorhanden?"
+        let ts' = trenner sigma a xss
+        if isEmptySet (mkTafel ts' `minusSet` mkTafel ts)
+            then do inform $ text "Ja." 
+	            return $ anwende xss ts
+            else do reject $ text "Nein. Sie müssen noch mehr Zustände trennen."
 
 ----------------------------------------------------------------------------
 

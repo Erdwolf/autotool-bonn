@@ -295,7 +295,8 @@ fix_instant vnr mks stud auf sa = case SA.instant sa of
                 plain "Aufgabenstellung nicht auffindbar"
                 return Nothing
             Just ( Make doc fun ex ) -> do
-                ( _, _, com ) <- make_instant vnr stud fun auf
+                ( _, _, com ) <- make_instant 
+		    vnr ( Just $ A.anr auf ) stud fun auf
                 let p = mkpar stud auf
                     d = Inter.Store.location Inter.Store.Instant
                            p "latest" False
@@ -372,13 +373,13 @@ show_previous edit vnr mks stud auf sa0 = do
 			     )
 
 
-make_instant vnr stud fun auf = do
+make_instant vnr manr stud fun auf = do
     let conf = read $ toString $ A.config auf
         var = fun  conf
         p = problem var
     let mat = S.mnr stud
     k <- io $ key var $ toString mat 
-    g <- io $ gen var vnr ( Just $ A.anr auf ) k -- ?
+    g <- io $ gen var vnr manr k 
     let ( Just i  , _ :: Html ) = export g
     ( _, icom :: Html) <- io $ run $ report p i
     return ( p, i, icom )
@@ -392,7 +393,7 @@ data Method = Textarea | Upload
 solution vnr manr stud 
         ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
-    ( p, i, icom ) <- make_instant vnr stud fun auf
+    ( p, i, icom ) <- make_instant vnr manr stud fun auf
 
     let past = mkpar stud auf
 
