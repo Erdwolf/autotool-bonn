@@ -5,8 +5,8 @@ module Fun.State where
 import Fun.Type
 import Fun.Cache
 
-import Reader
-import ToDoc hiding ( empty )
+import Autolib.Reader
+import Autolib.ToDoc hiding ( empty )
 
 import Machine.History
 
@@ -27,10 +27,6 @@ instance Eq State where
     x == y = essence x == essence y
 instance Ord State where 
     x `compare` y = essence x `compare` essence y
-
-
-instance Show State where
-    show = render . toDoc
 
 instance ToDoc State where
     toDocPrec d (State aa ab ac ad ae) = docParen (d >= 10)

@@ -7,10 +7,11 @@ module Fun.Create where
 import Fun.Type
 import Fun.Table
 
-import Util.Zufall
-import Array
-import Data.Set
+import Autolib.Util.Zufall
+import Data.Array
+import Autolib.Set
 
+-- | create (randomly) k-ary primitive recirsive function of size s
 create :: Int -> Int -> IO Fun
 create k s | s < 3 = do
   -- print ("create (klein)", k, s)

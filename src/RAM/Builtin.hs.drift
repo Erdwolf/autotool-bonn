@@ -9,10 +9,10 @@ module RAM.Builtin
 
 where
 
-import ToDoc
-import Reader
-import Array
-import Data.Set
+import Autolib.ToDoc
+import Autolib.Reader
+import Data.Array
+import Autolib.Set
 
 data Builtin = Copy 
              | Plus  | Minus
@@ -27,13 +27,10 @@ data Builtin = Copy
 none :: Set Builtin
 none = mkSet [ ]
 
+-- | ohne Suc !
 every :: Set Builtin
--- ohne Suc !
 every = mkSet [ Copy .. Pre ]
 
-
-instance Show Builtin where show = render . toDoc
-instance Read Builtin where readsPrec = parsec_readsPrec
 
 -- | Tabellen Eintrag (arity, meaning)
 type Entry =  ( Int 
@@ -60,9 +57,9 @@ table = array ( Copy, Pre )
               ]
 
 
-decode :: Integer -> ( Integer, Integer )
--- bijektive Kodierung von N^2 <-> N
+-- | bijektive Kodierung von N^2 <-> N
 -- gegeben durch (x,y) <-> 2^x * (2*y + 1)
+decode :: Integer -> ( Integer, Integer )
 decode n = if odd n 
            then ( 0, n `div` 2 ) -- wird abgerundet 
            else let ( x, y ) = decode ( n `div` 2 )

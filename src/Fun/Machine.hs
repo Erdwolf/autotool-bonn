@@ -10,8 +10,8 @@ import Fun.Step
 
 import qualified Fun.Cache
 
-import Data.Set
-import Size
+import Autolib.Set
+import Autolib.Size
 
 instance Compute Fun State where
     next p s = mkSet $ step s

@@ -35,16 +35,16 @@ import qualified RAM.Builtin
 
 import Inter.Types
 import Challenger.Partial
-import Informed
+import Autolib.Informed
 
 
-import Util.Datei
-import Util.Cache
-import Util.Seed
+-- import Autolib.Datei
+-- import Autolib.Cache
+-- import Autolib.Seed
 
-import Array
-import Reporter
-import ToDoc
+import Data.Array
+import Autolib.Reporter
+import Autolib.ToDoc
 
 
 instance Partial Quiz Tafel Fun where

@@ -20,8 +20,8 @@ import Fun.State
 
 import Fun.Examples -- for testing
 
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 import Data.Array
 
 

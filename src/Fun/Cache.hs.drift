@@ -14,29 +14,32 @@ where
 
 import Prelude hiding ( lookup )
 
-import Data.FiniteMap
-import ReadFM
+import Autolib.FiniteMap
 
-import ToDoc hiding ( empty )
-import Reader
+import Autolib.ToDoc hiding ( empty )
+import Autolib.Reader
 
-data Ord k => Cache k e = Cache ( FiniteMap k e )
+class (  Ord k
+     , Reader (FiniteMap k e)
+     , ToDoc (FiniteMap k e)
+     ) => CacheC k e
+
+instance (  Ord k
+     , Reader (FiniteMap k e)
+     , ToDoc (FiniteMap k e)
+     ) => CacheC k e
+
+data CacheC k e
+	=> Cache k e = Cache ( FiniteMap k e )
 
 {-! for Cache derive : Reader, ToDoc !-}
 
-instance (Ord k, ToDoc k, ToDoc e) => Show (Cache k e) where
-    show = render . toDoc
-
-instance (Ord k, Reader k, Reader e) => Read (Cache k e) where
-    readsPrec = parsec_readsPrec
-
-
-empty :: Ord k => Cache k e
+empty :: CacheC k e => Cache k e
 empty = Cache emptyFM
 
-find :: Ord k => Cache k e -> k -> Maybe e
+find :: CacheC k e => Cache k e -> k -> Maybe e
 find (Cache c) k = lookupFM c k
 
-insert :: Ord k => Cache k e -> k -> e -> Cache k e
+insert :: CacheC k e => Cache k e -> k -> e -> Cache k e
 insert (Cache c) k e = Cache (addToFM c k e)
 

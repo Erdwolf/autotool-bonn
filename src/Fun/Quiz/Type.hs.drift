@@ -4,10 +4,10 @@ module Fun.Quiz.Type where
 
 --   $Id$
 
-import Reader
-import ToDoc
+import Autolib.Reader
+import Autolib.ToDoc
 
 
-data Quiz = Quiz deriving ( Eq, Ord, Show, Read )
+data Quiz = Quiz deriving ( Eq, Ord )
 
 {-! for Quiz derive : Reader, ToDoc !-}

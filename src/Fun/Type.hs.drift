@@ -10,9 +10,9 @@ where
 
 --   $Id$
 
-import ToDoc
-import Reader
-import Size
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Size
 
 import qualified RAM.Builtin
 
@@ -62,19 +62,7 @@ instance Reader Mark -- ohne implementierung
 
 {-! for Fun derive : ToDoc, Reader !-}
 
-instance Show Fun where
-    show = render . toDoc
-
-instance Read Fun where
-    readsPrec = parsec_readsPrec
-
 {-! for Exp derive : ToDoc, Reader !-}
-
-instance Show Exp where
-    show = render . toDoc
-
-instance Read Exp where
-    readsPrec = parsec_readsPrec
 
 
 

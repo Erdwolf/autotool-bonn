@@ -5,9 +5,9 @@ module Fun.Check where
 import Fun.Type
 import qualified RAM.Builtin
 
-import Reporter
-import ToDoc
-import Sets
+import Autolib.Reporter
+import Autolib.ToDoc
+import Autolib.Set
 
 check_builtins :: Set Builtin -> Fun -> Reporter ()
 check_builtins allowed f = do
