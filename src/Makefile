@@ -56,13 +56,19 @@ HADDOCK_DIRS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
 	ws03 util 
 # control? challenger?
 
-HADDOCK_FILES = *.hs
+HADDOCK_LIBS = base haskell98 parsec unix network readline
+HADDOCK_LINK = http://www.haskell.org/ghc/docs/6.2/html/libraries
+HADDOCK_DESC = /usr/local/share/ghc-6.2/html/libraries
+
+HADDOCK_FILES = $(wildcard *.hs)
 HADDOCK_OUTPUT = $(PUB)/autotool/haddock
 HADDOCK = haddock
 HADDOCK_OPTS = -v \
 --html \
 --source=http://theo1.informatik.uni-leipzig.de/cgi-bin/cvsweb/autotool/ \
---read-interface=http://www.haskell.org/ghc/docs/6.2/html/libraries/base,/usr/local/share/ghc-6.2/html/libraries/base/base.haddock 
+$(foreach lib,$(HADDOCK_LIBS), \
+--read-interface=$(HADDOCK_LINK)/$(lib),$(HADDOCK_DESC)/$(lib)/$(lib).haddock)
+
 
 
 haddock : 

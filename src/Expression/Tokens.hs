@@ -2,9 +2,9 @@
 
 module Expression.Tokens where
 
-import Parsec
-import ParsecLanguage
-import qualified ParsecToken as P
+import Text.ParserCombinators.Parsec
+import Text.ParserCombinators.Parsec.Language
+import qualified Text.ParserCombinators.Parsec.Token as P
 
 me            = P.makeTokenParser meDef
 
