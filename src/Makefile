@@ -17,15 +17,16 @@ FLAGS = -fallow-overlapping-instances \
 PACKS = -package text -package data \
 	-package posix -package network 
 
-HPACKS = $(PACKS) \
-	-package HToolkit 
+EXTRA_PACKS = -package HToolkit 
 
 
-OPT = -O2 -fvia-C -funbox-strict-fields # -fdicts-strict
+OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict -fdicts-strict
 # PROF = -prof -auto-all -auto-dicts
+WARN =  -Werror -dcore-lint
 GHC = ghc-6.0 -pgmc gcc-2.95
 # GHC = ghc-5.04 -pgmc gcc-2.95
 
+GHC_COMMAND = $(GHC) --make $(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) -i$(DIRS)
 
 PUB =  $(HOME)/public_html
 
@@ -69,18 +70,18 @@ tags :
 ###############################################################################
 
 SRS/Matchbox : do
-	$(GHC) --make $(PROF) $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $@.hs -o $@
+	$(GHC_COMMAND)  $@.hs -o $@
 
 matchbox : do
-	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) \
+	$(GHC_COMMAND)  \
 		SRS/Closure/Terminator.hs -o $(CGIDIR)/Terminator.cgi
-	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) \
+	$(GHC_COMMAND)  \
 		SRS/Deleting/Demo.hs -o $(CGIDIR)/Demo.cgi
 	cp $(HTMLS) $(CGIDIR)/
 
 
 %.cgi : do
-	$(GHC) --make $(OPT) $(HPACKS) $(FLAGS) -i$(DIRS) $*.hs -o $@
+	$(GHC_COMMAND)  $(EXTRA_PACKS)  $*.hs -o $@
 
 
 
