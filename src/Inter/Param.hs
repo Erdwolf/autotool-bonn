@@ -18,6 +18,9 @@ data Type =
 		   , snr :: String
 			 -- configured
 		   , variants :: [ Variant ]
+	           , input_width :: Int
+	                -- generated
+	           , variante :: Variant
 		   }
 
 empty :: Type
@@ -27,5 +30,8 @@ empty = Param { matrikel = ""
 			  , variant  = ""
 			  , input    = ""
 			  , snr 	 = ""
+		          , input_width = 70
 			  , variants = []
+			  , variante = error "empty.variante"
 			  }
+
