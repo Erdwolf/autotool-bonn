@@ -18,21 +18,18 @@ import Inter.Evaluate
 import qualified Inter.Param as P
 import qualified Challenger
 
-import qualified SAT.SAT
-import qualified TM.Steps
+import qualified LOOP.SQRT
 
 import Inter.Types
 import qualified Exception
 
 
-variants :: [ Variant ]
-variants = [ Variant SAT.SAT.var ]
 
 main :: IO ()
 main = do
-     steps <- TM.Steps.variantsIO 
+     sqrt <- LOOP.SQRT.generate
      wrapper $ \ env -> 
-	 iface ( variants ++ steps ) env
+	 iface [ Variant sqrt ] env
 	 `Exception.catch` \ err -> return $ p << pre << primHtml ( show err )
 
 ------------------------------------------------------------------------
@@ -95,8 +92,7 @@ page par msg =
 preface par = unordList 
 	    [ txtf "matrikel" ( P.matrikel par )
 	    , pwdf "passwort" ( P.passwort par )
-	    , txtf "problem" ( P.problem par )
-	    , txtf "variant" ( P.variant par )
+	    , txtf "aufgabe" ( P.problem par )
 	    ]
 
 txtf name cont = p << name  +++ textfield name ! [ value cont ]

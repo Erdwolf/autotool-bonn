@@ -1,0 +1,36 @@
+-- -*- mode: haskell -*-
+
+module Machine.Numerical.Type where
+
+-- $Id$
+
+import Informed
+import ToDoc
+import Reader
+import Reporter
+
+data Computer = Computer
+
+{-! for Computer derive : Show, Read, ToDoc, Reader !-}
+
+data Type m = 
+     Make { fun :: [ Integer ] -> Integer -- zu berechnende funktion
+	      , fun_info :: Doc	      -- funktions-name/-erklärung
+	      , args :: [[ Integer ]]	      -- argumente zum testen
+	    , cut :: Int -- höchstens soviele schritte
+	    , check :: m -> Reporter () -- sonstige Bedingungen an Maschine
+	    , start :: m -- damit soll der student anfangen
+	      }
+
+instance Informed ( Type m ) where
+     info = fun_info
+
+instance ToDoc ( Type m ) where
+     toDoc = info
+instance Show ( Type m ) where
+     show = render . toDoc
+
+instance Reader ( Type m ) where
+     reader = error "Machine.Numerical.Type.reader"
+instance Read ( Type m ) where
+     readsPrec p = error "Machine.Numerical.Type.readsPrec"

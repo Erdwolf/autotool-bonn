@@ -27,10 +27,20 @@ data Var p i b =
 instance ( Show p ) => ToDoc ( Var p i b ) where
     toDoc = text . show
 
+class ( Show p 
+	   , Show i
+	   , Show b, ToDoc b, Reader b , Size b
+	   , Partial p i b
+	   ) => V p i b -- ohne methoden
+instance ( Show p 
+	   , Show i
+	   , Show b, ToDoc b, Reader b , Size b
+	   , Partial p i b
+	   ) => V p i b 
+
+
 data Variant = forall p i b 
-         . ( Show p , Reader b , Size b
-	   , Problem p i b , Partial p i b
-	   )
+         . V p i b
 	 => Variant ( Var p i b )
 
 instance ToDoc Variant where 

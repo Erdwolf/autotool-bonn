@@ -13,8 +13,7 @@ get :: Env  -> P.Type
 -- default: leerer string
 get env =  P.empty { P.matrikel = item env "matrikel"
 		   , P.passwort = read $ item env "passwort"
-		   , P.problem  = item env "problem"
-		   , P.variant  = item env "variant"
+		   , P.problem  = item env "aufgabe"
 		   , P.input    = item env "input"
 		   }
 

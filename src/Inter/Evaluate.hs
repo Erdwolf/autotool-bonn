@@ -13,14 +13,16 @@ import Size
 import Reader
 import ToDoc
 
-evaluate :: ( Reader b, Size b
-	    , Challenger.Problem p i b
+evaluate :: ( Reader b, Size b, ToDoc b
+	    -- , Challenger.Problem p i b
 	    , Challenger.Partial p i b
 	    )
  	    => p -> i -> P.Type -> Reporter Int
 evaluate p i par =
     case parse reader "input" $ P.input par of
-         Left e -> reject $ errmsg (P.input_width par) e $ P.input par
+         Left e -> do
+	       inform $ text "Syntaxfehler:"
+	       reject $ errmsg (P.input_width par) e $ P.input par
 	 Right b -> do
 	       inform $ text "gelesen:" <+> toDoc b
 	       inform $ text "partiell korrekt?"

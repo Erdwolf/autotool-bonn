@@ -12,7 +12,7 @@ import Sets
 builtins :: Set Builtin -> Program -> Reporter ()
 builtins allowed p = do
     inform $ text "erlaubt sind diese Builtin-Prozeduren:"
-	   <+> toDoc allowed
+    inform $ nest 4 $ toDoc allowed
     let used = do
 	    b @ ( Builtin {} ) <- flatten p
 	    return b

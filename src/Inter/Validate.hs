@@ -20,10 +20,8 @@ validate par = do
 		      vv <- P.variants par
 		      case vv of 
 			  Variant v -> do
-			      guard $ P.problem par 
-				      == show ( Inter.Types.problem v )
  			      guard $ P.variant par  
-				      ==        Inter.Types.variant v
+				      ==        Inter.Types.aufgabe v
  			      return vv
 	      case vvs of
 		   [ vv ] -> return $ Right $ par { P.snr = snr

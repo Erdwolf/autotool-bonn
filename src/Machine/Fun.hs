@@ -4,6 +4,7 @@ module Machine.Fun
 
 ( fun_test
 , numerical_test
+, numerical_test'
 )
 
 where
@@ -13,6 +14,7 @@ import Machine.Vorrechnen
 import Machine.Akzeptieren
 import Machine.History
 
+import qualified Machine.Numerical.Type as N
 
 import Monad (guard)
 import Reporter hiding ( output )
@@ -21,6 +23,12 @@ import Reader
 import FiniteMap
 import Set
 import Size
+
+numerical_test' ::  ( Numerical dat, Machine m dat conf )
+	        => N.Type m
+		-> m
+		-> Reporter Int
+numerical_test' i m = numerical_test ( N.cut i ) ( N.args i ) ( N.fun i ) m
 
 numerical_test :: ( Numerical dat, Machine m dat conf )
 	 => Int
