@@ -94,6 +94,9 @@ matchbox : do
 checker : do
 	$(GHC_COMMAND) \
 		SRS/Checker.hs -o SRS/Checker
+self : do
+	$(GHC_COMMAND) \
+		SRS/Self.hs -o SRS/Self
 loop :
 	$(GHC_COMMAND)  \
 		Exp/Loop.hs -o Exp/Loop
