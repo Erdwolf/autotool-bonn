@@ -78,9 +78,10 @@ texti txt attrs = tr $ do
 
 -- falls neue eingabe der lösung
 
-evaluator par0 (ATB snr anr bew hl) ( F1 txtF ) = do
+evaluator par0 bep@(ATB snr anr bew hl) ( F1 txtF ) = do
     io $ bepunkteStudentDB snr anr bew hl
-    computer $ par0 { P.input = value txtF }
+    computer (par0 { P.input = value txtF }) bep
+    
 evaluator par0 _ (F1 _)= 
     standardQuery "Fehler" $ CGI.text "evaluator"    
 
@@ -96,12 +97,12 @@ settings par0 (F4 matF pwdF proF varF) =
 	   mbsnr <- io $ loginDB (P.matrikel par) (show (P.passwort par))
 	   case mbsnr of 
 			Nothing  -> standardQuery "Login" $ CGI.text $ "Fehlgeschlagen!"
-			Just snr -> computer $ par { P.snr = snr }
+			Just snr -> computer (par { P.snr = snr }) ATBEmpty
 
 
 
 -- rechnet alles aus
-computer par = 
+computer par bep = 
     let
 	vvs :: [ Variant ]
         vvs = do
@@ -112,13 +113,13 @@ computer par =
 	           guard $ P.variant par  ==        Inter.Types.variant v
 	           return vv
     in case vvs of
-         [ vv ] -> handler par vv 
+         [ vv ] -> handler par vv bep
          _      -> error_handler par $ preface par
 
 
 -- wenn kontrolleur gefunden,
 -- dann instanz und nullte lösung berechnen
-handler par0  (Variant v ) =  do  
+handler par0  (Variant v ) bep=  do  
 	-- mgl. Aufgaben aus DB für snr aus DB
 	-- und Aufgaben Number ermittlen
   mglAufgaben <- io $ mglAufgabenDB (P.snr par0)
@@ -136,8 +137,13 @@ handler par0  (Variant v ) =  do
 
     -- Zeige Ergebnisse dieser Aufgabe
     ergtabl @ (header , ergs) <- lift $ unsafe_io $ studAufgDB (P.matrikel par0)
-    showAsTable ergtabl
-
+    let erg = [ e | e@[_,S  t,S s,_,_] <- ergs
+	      , (P.problem par0) == t
+	      , (P.variant par0) == s
+	      ]
+ 	
+    
+    
     -- TODO: die folgenden Zeilen mit Cache !
     k <- lift $ unsafe_io $ key v ( P.matrikel par0 )
     inst <- lift $ unsafe_io $ washer $ gen v ( P.matrikel par0 )
@@ -151,7 +157,8 @@ handler par0  (Variant v ) =  do
     let par = if null $ P.input par0
 	      then par0 { P.input = show $ Challenger.initial p i }
 	      else par0
-
+    if null erg then CGI.empty else showAsTable (header,erg)
+    CGI.text $ show bep
     hr CGI.empty
     h2 $ CGI.text "neuer Lösungs-Versuch"    
     txtF <- table $ tr $ do
@@ -160,7 +167,7 @@ handler par0  (Variant v ) =  do
 		   $  attr "rows" ( show $ height + 2 )
 		   ## attr "cols" ( show input_width )
 	return txtF
---        td $ ssb ( F1 txtF ) ( evaluator par ) "Compute"
+    --        td $ ssb ( F1 txtF ) ( evaluator par ) "Compute"
     hr CGI.empty
     h2 $ CGI.text "voriger Lösungs-Versuch"
 
@@ -178,8 +185,8 @@ handler par0  (Variant v ) =  do
 		  let s = size b
 		  CGI.p $ CGI.text $ "Größe der Lösung: " ++ show s
 		  -- TODO: ermittle Low/High von DB
---		  lift $ unsafe_io 
---		       $ bepunkteStudentDB snr anr (Helper.Ok s) $ read hlstr
+		  --		  lift $ unsafe_io 
+		  --		       $ bepunkteStudentDB snr anr (Helper.Ok s) $ read hlstr
 		  return $ ATB snr anr (Helper.Ok s) $ read hlstr
 	       else do 
 	           CGI.p $ CGI.text "Nein."
@@ -191,7 +198,7 @@ handler par0  (Variant v ) =  do
 	   h3 $ CGI.text "Syntaxfehler"
 	   CGI.pre $ CGI.text $ render $ errmsg e $ P.input par
 	   return ATBEmpty 
---	return bep
+		  --	return bep
     ssb ( F1 txtF ) ( evaluator par bep ) "Compute"
     hr CGI.empty       
 
