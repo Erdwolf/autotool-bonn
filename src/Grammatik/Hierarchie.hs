@@ -7,6 +7,7 @@ module Grammatik.Hierarchie
 , typ1
 , typ2
 , typ3
+, immergut
 
 , monoton
 , kontextsensitiv
@@ -227,11 +228,11 @@ verboten f msg d = do
 
 final :: String -> Reporter () -> Reporter ()
 final msg r = do
-      inform $ text "Ist das eine" <+> text msg <> text "?"
+      inform $ text "Ist das eine"  <+> text msg <> text "?"
       f <- wrap r
       when ( isNothing f ) $ reject 
 	     $ text "Das ist keine" <+> text msg <> text "."
-      inform $ text "Das ist eine" <+> text msg <> text "."
+      inform $ text "Das ist eine"  <+> text msg <> text "."
 
 ----------------------------------------------------------------------------
 
@@ -244,3 +245,4 @@ typ2 g = final "Typ-2-Grammatik"
 typ3 g = final "Typ-3-Grammatik"
        $ sequence_ [ typ0 g, kontextfrei g, linear g, rechtslinear g ]
 
+immergut g = return ()

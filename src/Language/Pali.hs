@@ -1,13 +1,16 @@
 -- $Header$
 
-module Pali 
+module Language.Pali 
 
 ( pali
 , nopali
 )
 
 -- $Log$
--- Revision 1.1  2002-11-08 16:43:23  joe
+-- Revision 1.2  2002-12-17 15:17:58  joe
+-- grammatik -> Grammatik.
+--
+-- Revision 1.1  2002/11/08 16:43:23  joe
 -- language -> Language
 -- pump -> Pump.REG (neu)
 -- aufgaben dazu
@@ -22,9 +25,11 @@ module Pali
 
 where
 
-import Language
+import Language.Type
+import Util.Wort
+
 import Set
-import Wort
+
 
 pali :: Language
 pali = Language
