@@ -30,35 +30,51 @@ import Grammatik.DPL_CYK
 import Size
 import Set
 import Wort
-
+import Util.Zufall
 
 import List (partition, nub, sortBy)
 import FilterBound
 
 import ToDoc
 import Random
+import Util.Seed
 
 import Reporter
 
 cf_check :: Language 
-	 -> ( Grammatik -> Reporter () )
-	 -> Int -> Int -> Int
-	 -> ( Grammatik, Tracks ) 
-	 -> IO ( Reporter Int )
-cf_check l typ w n t ( g, ts ) = do
+	 -> ( Grammatik -> Reporter () ) -- form-test (z. b. greibach)
+	 -> Int -- anzahl der samples
+	 -> Int -- minimale länge der samples
+	 -> [Int] -- längen der demo-wörter (für trace)
+	 -> Int -- schrittweite für trace
+	 -> String -- matrikelnummer
+	 -> ( Grammatik, Tracks ) -- einsendung
+	 -> IO String
+cf_check l typ w n ds t mat ( g, ts ) = do
+
+    seed $ read mat
+
     here   <- samples      l w n
     there  <- anti_samples l w n
     let (yeah, noh) = partition (contains l) $ nub $ here ++ there
-    return $ cf_yeah_noh ( toDoc l ) yeah noh typ t ( g, ts )
+
+    let handle d = do
+	    ws <- samples l d d
+	    eins ws
+    demos  <- mapM handle ds
+
+    reporter $ cf_yeah_noh ( toDoc l ) yeah noh typ (mkSet demos) t ( g, ts )
 
 
 cf_yeah_noh :: Doc 
-	    -> [ String ] -> [ String ] 
-	    -> ( Grammatik -> Reporter () )
-	    -> Int
-	    -> ( Grammatik, Tracks ) 
+	    -> [ String ] -- soll produzieren
+	    -> [ String ] -- soll nicht produzieren
+	    -> ( Grammatik -> Reporter () ) -- typ
+	    -> Set String  -- soll demonstrieren
+	    -> Int -- schrittweite für trace
+	    -> ( Grammatik, Tracks )  -- eingabe
 	    -> Reporter Int
-cf_yeah_noh doc yeah0 noh0 typ t gts @ ( g, ts ) = do
+cf_yeah_noh doc yeah0 noh0 typ demos t gts @ ( g, ts ) = do
     inform $ text "Gesucht sind Grammatik und Beispiel-Ableitungen für" <+> doc
     inform $ text "Sie haben eingesandt:" <+> toDoc gts
 
@@ -68,8 +84,7 @@ cf_yeah_noh doc yeah0 noh0 typ t gts @ ( g, ts ) = do
     let arrange = sortBy (\ x y -> compare (length x, x) (length y, y))
     let [ yeah, noh ] = map arrange [ yeah0, noh0 ]
 
-    let demo = mkSet $ take 2 yeah -- FIXME: arbitrary constant
-    trace t ( g, demo ) ts 
+    trace t ( g, demos ) ts 
 
     -- wenn wir hier ankommen, sind die ableitungen OK
 
