@@ -17,46 +17,24 @@ get env = get_with env P.example
 
 get_with :: Env -> P.Type -> P.Type
 get_with env def = 
-{-
-    let input' = 
-             if (item env "change") == "change" 
-				|| (item env "Beispiel") == "Beispiel"
-             then ""
-             else item env "input"
-		in
--}
-    if null $ item env "click"
+    if null $ item env "Click"
      then def
      else 
-        -- let wahl = item env "wahl" in 
-        -- auswahl in combobox
-        -- if head ( item env "wahl")  == '-'
-        --  then -- ja
-          P.empty { P.matrikel = item env "matrikel" 
-                  , P.passwort = read $ item env "passwort"
-                  , P.problem  = item env "problem"
-                  , P.aufgabe  = item env "aufgabe"
-                  , P.version  = item env "version"
-                  , P.input    = item env "input"
-		  , P.click    = read $ item env "submit"
-                  }
-{-
-          else -- nein, dann lies eingabefelder aus
-          
-          let 
-          { pav = words $ map mySub wahl ;
-            mySub ':' = ' ' ;
-            mySub '-' = ' ' ;
-            mySub x@_   = x ;
-          }
-          in      P.empty { P.matrikel = item env "matrikel" 
-                              , P.passwort = read $ item env "passwort"
-                              , P.problem  = pav !! 0
-                              , P.aufgabe  = pav !! 1
-                              , P.version  = pav !! 2
-                              , P.input    = input' ---item env "input"
-                              }
--}
+        let 
+            mySub ':' = ' ' 
+            mySub '-' = ' ' 
+            mySub x@_   = x 
+	    pav = if item env "Click" == "Change"
+	          then words $ map mySub $ item env "Wahl" 
+		  else map ( item env ) [ "Problem", "Aufgabe", "Version" ]
+        in P.empty { P.matrikel = item env "Matrikel" 
+                   , P.passwort = read $ item env "Passwort"
+                   , P.problem  = pav !! 0
+                   , P.aufgabe  = pav !! 1
+                   , P.version  = pav !! 2
+                   , P.input    = item env "Input"
+		   , P.click    = read $ item env "Click"
+                   }
 
 item :: Env -> String -> String
 -- default: leerer string

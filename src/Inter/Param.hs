@@ -22,6 +22,7 @@ data Type =
           , aufgabe  :: String -- major
           , version  :: String -- minor
           , input    :: String
+	  , wahl :: String -- vorige aufgabe
 	  , click    :: Click
             -- after login key for DB
           , ident :: String
@@ -49,6 +50,7 @@ empty = Param { matrikel = ""
               , version = ""
               , passwort = Passwort.empty
               , input    = ""
+	      , wahl = ""
 	      , click = Example
               , ident    = ""
               , input_width = 80

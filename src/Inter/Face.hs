@@ -18,7 +18,7 @@ module Main where
 --  keine komplexe Zustandsfolge wie bei wash,
 --  sondern jedesmal kompletter Neustart. 
 --  (siehe ../doc/haskell-wash.txt)
---  Gedaechtniss ist Parameter s.u.
+--  Gedaechtnis ist Parameter s.u.
 --
 -- Autoren: Johannes Waldmann, Alf Richter
 --
@@ -130,7 +130,7 @@ iface variants env = do
      -- nein, fehler (=msg) : entweder passwort falsch 
      -- oder ungültige Aufgabe (-> zeige mögliche)
      Left msg -> do
-          return $ page par0{ P.variants = variants }  ( msg +++ motd )
+          return $ page par0 { P.variants = variants }  ( msg +++ motd )
 
      -- ja,
      Right par1 -> case P.variante par1 of
@@ -191,16 +191,20 @@ iface variants env = do
 			   p << bold << ( "Hier Lösung eingeben:" )
 
 			   +++ textarea ( primHtml $ P.input par2  ) 
-					! [ name "input"
+					! [ name "Input"
 					  , rows $ show $ height + 2
 					  , cols $ show $ P.input_width par2
 					  ]
 			   +++ br 
-			   +++ submit "submit" ( show Submit   ) +++ " " 
-			   +++ submit "submit" ( show Previous ) +++ " " 
-			   +++ submit "submit" ( show Example  ) +++ " " 
+			   +++ submit "Click" ( show Submit   ) +++ " " 
+			   +++ submit "Click" ( show Previous ) +++ " " 
+			   +++ submit "Click" ( show Example  ) +++ " " 
 
-			   +++ reset  "submit" ( show Reset    ) 
+			   +++ reset  "Click" ( show Reset    ) 
+
+                           +++ hidden "Problem" ( P.problem par2 ) 
+                           +++ hidden "Aufgabe" ( P.aufgabe par2 ) 
+                           +++ hidden "Version" ( P.version par2 ) 
 
 
           return $ page par2 
@@ -219,42 +223,25 @@ page par msg =
 	heading = h2 << "Autotool CGI Inter.Face"
 	pref = preface par 
 	var = varselector par 
-	sub = submit "submit" ( show Change )
 	chg = primHtml "  Achtung, verwirft Lösung!!"
     in  header << thetitle << "Inter.Face"
             +++ body ( form ( foldr1 (+++) 
-			       [ heading , hr , pref , sub , chg , hr , msg ] )
+			       [ heading , hr , pref , hr , msg ] )
 				   ! [ Text.Html.action "Face.cgi"
 				 , method "POST" ]
 		 )
          
-preface par = 
-	let var = varselector par in
-    table << 
-	  aboves [ besides $  
-   	   txtf' "10" "Matrikel" ( P.matrikel par )
-   	   ++ pwdf "Passwort" ( P.passwort par )
-   	 , besides $ var 
-
-{-
-++ [ td ! [ colspan 2 ] << "Bitte hier wählen ODER unten eingeben." ]
--- 		 , besides [ td << h4 << stringToHtml "Quick Start" ]
-   	 , besides $  
-   	      txtf' "10" "problem" ( P.problem par )
-   	   ++ txtf' "5" "aufgabe" ( P.aufgabe par )
-   	   ++ txtf' "5" "version" ( P.version par )
--}
-   	 ]
-
+preface par = table << aboves 
+     [ besides
+	$ txtf' "10" "Matrikel" ( P.matrikel par )
+   	++ pwdf "Passwort" ( P.passwort par )
+   	++ varselector par 
+	++ [ td << submit "Click" ( show Change ) ]
+     ]
+       
 varselector par =
-    let 
-    vars = map primHtml 
-	 $ "--" : map show ( P.variants par )
-    in
-    [ td << "Aufgabe "  ,  td << menu "wahl" vars ]
-
--- obsolete:
--- docToHtml = stringToHtml.render.toDoc
+    let vars = map primHtml  $ "--" : map show ( P.variants par )
+    in  [ td << "Aufgabe "  ,  td << menu "Wahl" vars ]
 
 txtf name cont = 
     [ td << name , td << textfield name ! [ value cont ] ]
