@@ -15,7 +15,7 @@ DIRS = $(LOCAL)$(COMMON)
 
 ifeq ($(shell hostname), nfa)
 EXTRA_PACKS = -package hsql
-DEFINES = -DHOME=1
+DEFINES = -DSPACE=1
 GHC = ghc-6.0
 endif
 

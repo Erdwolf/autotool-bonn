@@ -29,8 +29,9 @@ bank p res = do
 		     , "\n"
 		     ]
 
-    let logcgi = Datei	{ pfad = [ "autotool", "log" ], name = "CGI"
-			, relativzahl = error "Inter.Bank.relativzahl"
+    let logcgi = Datei	{ pfad = [ "autotool", "log" ]
+			, name = "CGI"
+			, extension = ""
 			}
     anhaengen logcgi msg
 

@@ -88,8 +88,8 @@ make auf ver gene =
 	               (  Datei { pfad = [ "autotool", "cache"
 			   , auf, ver
 			     ]
-		          , name = key ++ ".cache" 
-		          , relativzahl = error "PCProblem.Quiz.relativzahl"
+		          , name = key
+			  , extension = "cache" 
   		          }
        	                ) ( gene key )
 	           return $ do

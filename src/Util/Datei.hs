@@ -8,11 +8,11 @@ module Util.Datei
   , anhaengen
   , lesen
   , dirlesen
-  , relativieren
+  , dirgehen
   , erzeugeVerzeichnisse
   , home
   , Datei (..)
-  , inner
+  , inner, outer, internalize
   , perm
   )
   where
@@ -21,6 +21,7 @@ import List (inits, intersperse)
 import Directory
 import Monad (guard, when)
 import System (getEnv, system)
+import Char (isAlphaNum)
 import qualified Posix
 import qualified Exception
 
@@ -36,14 +37,44 @@ import qualified Exception
 
 data Datei = Datei{ pfad :: [String]
                   , name :: String
-                  , relativzahl :: Int
+                  , extension :: String
                   }
 
 instance Show Datei where
     show d = "$HOME/" ++ inner d
 
-inner :: Datei -> String -- ohne $HOME-prefix
-inner d =  concat $ intersperse "/" (pfad d ++ [name d])
+namex d = name d 
+       ++ if null (extension d) then "" else "." ++ extension d
+
+-- ohne $HOME-prefix
+inner :: Datei -> String 
+inner d =  concat 
+	$ intersperse "/" 
+	$ pfad d ++ [ namex d ]
+
+outer :: Datei -> String
+-- das kann als arg. für CGI verwendet werden:
+outer d =  concat 
+	$ intersperse "," 
+	$ pfad d ++ [namex d ]
+-- dann darf im filenamen natürlich kein komma stehen
+
+
+    
+cutter :: Char -> String -> [ String ]
+cutter x cs = words $ map trans cs
+    where trans c = if c == x then ' ' else c
+
+internalize :: String -> Datei
+internalize cs = 
+    let ws = cutter ',' cs :: [ String ]
+	(f, e) = case cutter '.' $ last ws of
+            [ f    ] -> ( f, "" )
+	    [ f, e ] -> ( f, e  )
+    in  Datei { pfad = init ws
+	      , name = f
+	      , extension = e
+	      }
 
 home_dir :: IO FilePath
 home_dir = do
@@ -63,9 +94,20 @@ home_dir = do
 #endif
 #endif
 
+sanity :: Datei -> IO ()
+-- mit großer vorsicht: über das argument von Get.cgi
+-- könnte jemand von außen files zu lesen probieren.
+-- inklusive aller tricks mit "../.." usw.
+-- deswegen vor jedem zugriff testen
+sanity d = 
+    when ( not $ all isAlphaNum
+	       $ concat $ pfad d ++ [ name d , extension d ] 
+	 ) $ error "strange zeichen in dateiname"
+
 
 home :: Datei -> IO FilePath
 home d = do
+    sanity d
     prefix <- home_dir
     return $ prefix ++ "/" ++ inner d
 
@@ -82,6 +124,12 @@ schreiben d inhalt = do
     writeFile h inhalt
     perm "go+r" h
     return ()
+
+dirgehen :: Datei -> IO ()
+dirgehen d = do
+    createDir d
+    h <- home $ d { name = "", extension = "" }
+    Posix.changeWorkingDirectory h
 
 perm :: String -> FilePath -> IO ()
 perm flags f = do
@@ -101,16 +149,12 @@ dirlesen d  = do
 
 ----------------------------------------------------------------------------
 
-
-relativieren :: Datei -> String
-relativieren d = concat $ intersperse "/" ((drop (relativzahl d) (pfad d)) ++ [name d])
-    
-
 erzeugeVerzeichnisse :: Datei -> IO ()
 erzeugeVerzeichnisse = createDir
 
 createDir :: Datei -> IO ()
 createDir d = do
+    sanity d
     h <- home_dir
     sequence_ $ do
         prefix <- inits $ h : pfad d

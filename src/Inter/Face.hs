@@ -132,10 +132,15 @@ iface variants env = do
           -- herstellen und anzeigen
           k <- key  v $ P.matrikel par1
           generator <- gen v k
+	  -- TODO: das com sollte eigentlich leer sein
+	  -- (Beschreibung ist jetzt in report/describe)
           let ( Just i, com :: Doc ) = export generator
 
+          ( _ , desc :: Html ) <- run $ do
+		  -- set default dir
+	          Challenger.report (problem v) i
           let inst =   h3 << "Aufgabenstellung"
-		   +++ p  << pre << render ( Challenger.describe (problem v) i )
+		   +++ p  <<  desc
           
           -- Beispiel Eingabe holen  
           let b0 = Challenger.initial ( problem v ) i
@@ -154,8 +159,13 @@ iface variants env = do
           let isFirstRun = null ( P.input par1 ) -- P.input par2  /= show b0
 
           -- eingabe bewerten ( echter Reporter )
-          let ( res :: Maybe Int , com :: Doc ) 
-				  = export $ evaluate ( problem v ) i par2
+	  
+          -- neu (11. 11. 03): IO-Aktion ausführen
+          ( res :: Maybe Int , com :: Doc ) 
+	      <- run $ do
+		  -- TODO: set default dir
+	          evaluate ( problem v ) i par2
+
           let ans = 
 				  if isFirstRun
 				  then noHtml
@@ -173,7 +183,7 @@ iface variants env = do
 					  return $ p << "Eintrag ins Logfile:" +++ p << pre << msg
 
 
-		  -- Höhe der Eingabe-Form berechen
+		  -- Höhe der Eingabe-Form berechnen
           let height = length $ filter ( == '\n' ) $ P.input par2
 
 		  -- bewertung ausgeben, bzw. zur Lösungseingabe auffordern
@@ -232,11 +242,13 @@ preface par =
 
 varselector par =
     let 
-    vars = [ stringToHtml "-" ] ++ (  map docToHtml ( P.variants par ))
+    vars = map primHtml 
+	 $ "--" : map show ( P.variants par )
     in
     [ td << "nr "  ,  td << menu "wahl" vars ]
 
-docToHtml = stringToHtml.render.toDoc
+-- obsolete:
+-- docToHtml = stringToHtml.render.toDoc
 
 txtf name cont = 
     [ td << name , td << textfield name ! [ value cont ] ]

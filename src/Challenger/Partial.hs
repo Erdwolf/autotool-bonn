@@ -11,7 +11,10 @@ class Partial p i b | p i -> b , p b -> i where
       -- die nur von p allein abhängt (dann muß man i nicht erst erzegen
       -- und kann trotzdem schon was ausgeben)
       describe :: p -> i -> Doc
-      -- describe p i = "Partial.describe not implemented"
+
+      -- falls wir auch rechnen wollen (z. b. Bilder malen)
+      report   :: p -> i -> Reporter ()
+      report p i = inform $ describe p i -- default
 
       -- ein sinnvoller startpunkt für die lösung
       initial :: p -> i -> b

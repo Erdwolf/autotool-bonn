@@ -37,8 +37,8 @@ make auf ver conf =
           seed $ read key
           ( i, b ) <- cache 
                  (  Datei { pfad = [ "autotool", "cache" , auf, ver ]
-                          , name = key ++ ".cache"
-                          , relativzahl = error "Exp.Quiz.relativzahl"
+                          , name = key
+			  , extension = "cache"
                           }
                  ) ( Exp.Some.nontrivial ( alpha conf ) ( exp_size conf ) )
           return $ do

@@ -115,8 +115,8 @@ determine auf ver conf =
           ( i, _, b ) <- cache (  Datei { pfad = [ "autotool", "cache"
                                               , auf, ver
                                               ]
-                                     , name = key ++ ".cache"
-                                     , relativzahl = error "NFA.Determine.relativzahl"
+                                     , name = key
+				     , extension = "cache"
                                      }
                             ) ( throw conf )
           return $ do

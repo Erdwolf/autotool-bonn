@@ -80,6 +80,9 @@ INTER_FACE_TARGET=root@theo1:/usr/lib/cgi-bin/Face.cgi
 face : $(INTER_FACE_CGI) 
 	cp $(INTER_FACE_CGI) $(CGIBIN)/
 
+get : Inter/Get.cgi
+	cp $< $(CGIBIN)/
+
 
 install-face : $(INTER_FACE_CGI)
 	scp $(INTER_FACE_CGI)  $(INTER_FACE_TARGET)

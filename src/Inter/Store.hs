@@ -21,8 +21,8 @@ store p mres = do
 			    , P.matrikel p
 			    , if flag then "OK" else "NO"
 			    ]
-                   , name = pid ++ ".input" 
-		   , relativzahl = error "Inter.Store.relativzahl"
+                   , name = pid
+		   , extension = "input" 
 		   }
     schreiben d $ P.input p
     return $ pid
