@@ -13,7 +13,8 @@ cache d action =
     catch ( do debug $ "lies cache-file " ++ show d ++ " ... "
 	       cs <- lesen d
 	       debug $ "OK"
-	       return $ read cs
+               let a = read cs
+	       a `seq` return a -- ??
 	  ) 
 	  ( \ _ -> do 
 		debug $ "nicht vorhanden, schreibe cache ... "
