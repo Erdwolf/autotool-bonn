@@ -8,6 +8,7 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 CPPFLAGS = @CPPFLAGS@
 HADDOCK = @HADDOCK@
+HSQL = @HSQL@
 AUTODRIFT = @AUTODRIFT@
 WWW = @WWW@
 CGI = @CGI@

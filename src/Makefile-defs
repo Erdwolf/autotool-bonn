@@ -39,7 +39,11 @@ OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
 WARN =  -Werror -dcore-lint
 
 # für HSQL version 1.4
-# DEFINES = -cpp -DHSQL14
+ifeq ($(HSQL),"1.4")
+	DEFINES = -cpp -DHSQL14
+else
+	DEFINES = -cpp
+endif
 
 GHC_COMMAND = $(GHC) --make \
 	$(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) $(DEFINES) -i$(DIRS)
