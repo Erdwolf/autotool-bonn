@@ -15,7 +15,10 @@
 --Beweis ist Belegung b, die Formel f erfüllt.
 --     => ein Datenstruktur
 -- *****************************************************************
-module SAT.SAT where
+module SAT.SAT
+( SAT (..)
+, Variable, Literal, Klausel, Formel, Belegung
+) where
 
 import FiniteMap
 import ReadFM
