@@ -22,6 +22,7 @@ main =
 
 -- Msg. die mehrmals auftauchen
 msgKontrollEmail = do
+	th3 $ "Achtung: Der Email-Checker ist noch nicht aktiv. Zeitraum wird entsprechend vergroessert."
 	ttxt $ "Eine Kontroll-Email wird Ihn zugesandt, " ++ 
 			 "diese muss innerhalb einer Woche beantwortet werden. " ++
 			 "In Ihrer Antwort muss die zugesandte Kontrollzahl " ++ 
@@ -159,12 +160,16 @@ checkLoginPage (F2 matF pwdF) =
 		 else 
 			do studStatusPage mat F0
 
+-- TODO: mglNextAufgabenDB [ ] vom SNr abhaengen lasse
 studStatusPage mat F0 = 
 	do 
+	  snr 		<- io $ getSNrFromMatDB mat 
+	  mglAufgs  	<- io $ mglNextAufgabenDB (snr!!0) 
+	  let mglAufgs2 = ( tail (fst mglAufgs) , Prelude.map tail (snd mglAufgs))
 	  inh		<- io $ checkPasswdMNrDB Nothing mat
 	  result	<- io $ studAufgDB mat
 	  (h,grps)	<- io $ getAllGruppenDB 
-	  stdgrp    <- io $ getGruppenStudDB mat
+	  stdgrp    	<- io $ getGruppenStudDB mat
 	  let	grp = [ v ++ ", " ++  g ++ ", " ++ r |  (gnr , [v,g,r]) <- grps , gnr `elem` stdgrp ]
 --	  vorl		<- io $ studVorlDB mat
 	  standardQuery "Übersicht" $ 
@@ -185,6 +190,9 @@ studStatusPage mat F0 =
 			if ( length (snd result)) > 0 
 			   then do { h3 $ text "Ergebnisse" ; ( showAsTable result ) }
 			   else do { h3 $ text "keine Ergebnisse" } 
+			spacerow
+			th3 "Moegliche Aufgaben:"
+			showAsTable2 mglAufgs2
 
 			-- --------------------------------------------------
 			hrline

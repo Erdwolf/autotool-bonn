@@ -23,15 +23,24 @@ main =
 showGruppenPage F0 = do
 	  (h,freegrps)	<- io $ getFreeGruppenDB 
 	  (h,allgrps)   <- io $ getAllGruppenDB
-	  let	{ 	    allgrps'		= [  v ++ ", " ++  g ++ ", " ++ r |  (gnr , [v,g,r]) <- allgrps , not ( gnr `elem` ( Prelude.map fst freegrps' ))]
-			;		freegrps'    = [ (gnr , c ++ "/" ++ m ++ " " ++ v ++ ", " ++  g ++ ", " ++ r) |  (gnr , [v,g,r,m,c]) <- freegrps ]
-			}
-	  standardQuery "Übungsgruppe ändern" $ 
+	  mglAufgs  <- io $ mglNextAufgabenDB []
+	  let	{allgrps'= [  v ++ ", " ++  g ++ ", " ++ r 
+			   |  (gnr , [v,g,r]) <- allgrps , not ( gnr `elem` ( Prelude.map fst freegrps ))
+			   ]
+		;freegrps'= [ (gnr , c ++ "/" ++ m ++ " " ++ v ++ ", " ++  g ++ ", " ++ r) 
+			    |  (gnr , [v,g,r,m,c]) <- freegrps , length m < 5
+			    ]
+		}
+	  standardQuery "Uebungsgruppen Uebersicht" $ 
 			table $ do
 				th3 "Freie Gruppen"
 				mapM_ ttxt (Prelude.map snd freegrps' )
 				spacerow
 				th3 "Volle Gruppen"
 				mapM_ ttxt allgrps'
-				hrrow
+				spacerow
+				th3 "Mgl. Aufgaben"
+				showAsTable2 mglAufgs
+				hrrow 
 				smallSubButton F0 showGruppenPage "Update"			
+				
