@@ -16,18 +16,23 @@ import Size
 instance Compute Fun State where
     next p s = mkSet $ step s
     accepting p s = null $ step s -- ??
+    depth p s = schritt s
 
-instance InOut Fun [ Integer ] State where
+instance In Fun [ Integer ] State where
     input  p m = State { todo = [App p $ map Zahl m]
 		       , stack = []
 		       , schritt = 0
 		       , past = [] 
 		       , cache = Fun.Cache.empty
 		       }
+
+instance Out Fun [ Integer ] State where
     output p s = stack s
 
-instance Numerical [ Integer ] where
+instance Encode [ Integer ] where
     encode = id
+
+instance Decode [ Integer ] where
     decode [x] = x
 
 
