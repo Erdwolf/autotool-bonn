@@ -56,34 +56,23 @@ iface mks = do
     open btable
     ( stud, vnr, tutor ) <- Inter.Login.form
     let snr = S.snr stud
+    when ( not tutor ) $ close -- table
 
-    -- das sind alle aufgaben
+    -- das sind alle aufgaben 
     aufs <- io $ A.get $ Just vnr
     let opts = do
              auf <- aufs
-	     -- student darf nur aktuelle sehen
-	     guard $ tutor || A.current auf
              return ( toString $ A.name auf , Just $ auf )
-
-    -- siehe funktion statistik ganz unten:
-    -- studen könnte dort neue aufgabe wählen
-    go <- look "go" 
-    case go of 
-	 Just aufgabe -> do
-	      write "Lanr" aufgabe
-	      write "Sanr" "submit"
-	 Nothing -> return ()
 
     ( mauf, del ) <- 
         if tutor
 	   then selector_edit_delete "anr" "Aufgabe" 0 
                    $ ( "(neue Aufgabe)", Nothing ) : opts
            else do 
-		( mauf, _ ) <- selector_submit_click 
-			"anr" "Aufgabe" Nothing $ opts
-                return ( mauf, False )
+		auf <- statistik stud aufs
+                return ( Just auf, False )
+
     let manr = fmap A.anr mauf
-    close -- table
     
     when del $ do
         Just anr <- return manr
@@ -109,7 +98,7 @@ iface mks = do
     ( cs, res ) <- solution vnr manr stud' mk auf' 
     -- bewertung in DB (für Stud-Variante)
     when ( not tutor ) $ punkte stud' auf' ( cs, res )
-    when ( not tutor ) $ statistik stud' aufs
+    -- when ( not tutor ) $ statistik stud' aufs
     return ()
 
 -------------------------------------------------------------------------
@@ -262,23 +251,25 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
     return ( cs, res )
 
 parameter_table auf = do
-    open btable
-    sequence_ $ do 
-        ( name, thing ) <- 
-	    [ ( "Status", toString $ A.status auf )
-	    , ( "von", toString $ A.von auf )
-	    , ( "bis", toString $ A.bis auf )
-	    , ( "Highscore", toString $ A.highscore auf )
-	    ]
-        return $ do
-	    open row 
-	    plain name
-	    plain thing
-	    close 
-    close
-    br
-    plain "Hinweise"
-    pre $ toString $ A.remark auf 
+    h3 $ unwords [ "Aufgabe", toString $ A.name auf ]
+    let tab = do
+            open btable
+            sequence_ $ do 
+              ( name, thing ) <- 
+            	    [ ( "Status", toString $ A.status auf )
+            	    , ( "von", toString $ A.von auf )
+            	    , ( "bis", toString $ A.bis auf )
+            	    , ( "Highscore", toString $ A.highscore auf )
+            	    ]
+              return $ do
+            	    open row 
+            	    plain name
+            	    plain thing
+            	    close 
+            close -- table
+    let hin = above ( plain "Hinweise" )
+	            ( pre $ toString $ A.remark auf )
+    beside tab hin
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
@@ -303,7 +294,7 @@ mkpar stud auf = P.empty
 -- | statistik anzeigen 
 statistik stud aufs = do
     hr 
-    h3 "Punktestand"
+    h3 "Punktestand und Aufgaben-Auswahl"
     -- daten holen
     score <- io $ sequence $ do
         auf <- aufs
@@ -313,23 +304,35 @@ statistik stud aufs = do
 		     [    ] ->  ( Oks 0, Nos 0 )
 		     [ sa ] ->  ( SA.ok sa, SA.no sa )
 	    return ( auf, okno )
+    -- vorige aufgabe holen
+    mvor <- look "vor"
     -- daten anzeigen
-    open btable
-    sequence_ $ do 
-        ( auf, (ok, no) ) <- score
-        return $ do
-	    open row
-            -- der click wird ganz oben explizit gelesen
-            if A.current auf
-               then do submit "go" ( toString $ A.name  auf ) ; return ()
-	       else plain $ toString $ A.name auf
-	    -- TODO: falls current und mandatory und ok == 0, dann rot
-            -- und andere sinnvolle farben
-            plain $ toString $ A.status auf
-	    plain $ show ok 
-	    plain $ show no
-	    close
-    close
+    let dat = do
+            open btable
+            clicks <- sequence $ do 
+                ( auf, (ok, no) ) <- score
+                let name = toString $ A.name  auf
+                return $ do
+            	    open row
+                    let col = if A.current auf
+			         && Mandatory == A.status auf
+			      then if ok > Oks 0
+				   then "green"
+				   else "red"
+			      else "black"
+                    plain name
+                    farbe col $ toString $ A.status auf
+            	    farbe col $ show ok 
+            	    farbe col $ show no
+                    click <- if A.current auf
+                       then do submit name "go"
+            	       else do plain name ; return False
+                    farbe col $ toString $ A.von auf
+                    farbe col $ toString $ A.bis auf
+            	    close
+                    return [ ( click, auf ) | click || mvor == Just name ]
+            close
+            return clicks
     -- auswerten
     let goal = sum $ do 
             ( auf, okno ) <- score
@@ -341,11 +344,46 @@ statistik stud aufs = do
 	    guard $ ok > Oks 0
 	    return ( 1 :: Int )
         percent = ( 100 * done ) `div` goal
-    -- anzeigen
-    when ( goal > 0 ) $ do
-	 plain $ unwords [ "Von", show goal, "Pflicht-Aufgaben" ]
-         br
-	 plain $ unwords [ "haben Sie bis jetzt", show done, "erledigt." ]
-         br
-	 plain $ unwords [ "Das sind", show percent, "Prozent." ]
-    
+        -- anzeigen
+        aus = when ( goal > 0 ) $ do
+	    plain $ unwords 
+                  [ "Von", show goal, "Pflicht-Aufgaben" 
+		  , "haben Sie bis jetzt", show done, "erledigt."
+		  , "Das sind", show percent, "Prozent." 
+		  ]
+
+    clicks <- dat ; br ; aus
+
+    let ( cli, uncli ) = partition fst $ concat clicks
+        clicked = map snd cli
+        unclicked = map snd uncli
+    auf <- case clicked of
+        [ auf ] -> do
+            -- plain "neue aufgabe, gedächtnis löschen"
+	    blank 
+            return auf
+        _ -> case unclicked of
+	      [ auf ] -> do
+		   -- plain "alte aufgabe, weiter"
+		   return auf 
+              _ -> do
+		   -- plain "gar keine aufgabe, stop"
+                   mzero 
+    hidden "vor" $ toString $ A.name auf
+    return auf
+
+----------------------------------------------------------------------------
+ 
+beside l r = do
+    open table
+    open row
+    l
+    r
+    close
+    close
+
+above t b = do
+    open table
+    open row ; t ; close
+    open row ; b ; close
+    close
