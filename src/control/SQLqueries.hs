@@ -17,9 +17,12 @@ where
 
 --   $Id$
 
+import Inter.Crypt
+
 import Database.MySQL.HSQL
 import IO
-import Char -- toLower
+import Data.Char ( toLower )
+import Control.Monad ( guard )
 
 import Helper
 
@@ -72,11 +75,13 @@ studAufgDB mat =
        return ( showColTypes stat, inh )
 
 
+
+
 -- | Neuen Studenten einfügen
 -- TODO: EMail-Ueberpruefung
 insertNewStudentDB :: String -> String -> String -> String -> String -> IO ()
-insertNewStudentDB vnm nme mat eml ps1 =
-    do
+insertNewStudentDB vnm nme mat eml ps1 =    do
+    cps1 <- encrypt ps1
     conn <- myconnect 
     stat <- query conn
             ( concat
@@ -87,7 +92,7 @@ insertNewStudentDB vnm nme mat eml ps1 =
               , "\"" , filterQuots nme , "\" , "
               , "\"" , filterQuots mat , "\" , "
               , "\"" , filterQuots eml , "\" , "
-              , "\"" , quoteQuots ps1 , "\" )"
+              , "\"" , quoteQuots cps1 , "\" )"
               , ";"
               ] )
     disconnect conn
@@ -104,18 +109,16 @@ checkPasswdMNrDB :: Maybe String -> String -> IO [ ( String , String , String , 
 checkPasswdMNrDB maybePass mnr =
     do
        conn <- myconnect
-       stat <- query conn
+       state <- query conn
                ( concat
                  [ "SELECT student.MNr AS MNr, \n"
                  , "student.Vorname AS Vorname, \n"
                  , "student.Name AS Name, \n"
                  , "student.Email AS Email, \n"
+		 , "student.Passwort AS Passwort, \n"
                  , "student.Status AS Status \n"
                  , "FROM    student \n"
                  , "WHERE   student.MNr = \"" ++ (filterQuots mnr)++ "\" "
-                 , case maybePass of
-                   Just pass    -> "AND student.Passwort = \"" ++ (quoteQuots pass)++ "\" "
-                   Nothing      -> ""
                  , ";"
                  ] )
        inh <- collectRows ( \ state -> do
@@ -123,17 +126,23 @@ checkPasswdMNrDB maybePass mnr =
                             b <- getFieldValue state "Name"
                             c <- getFieldValue state "Email"
                             d <- getFieldValue state "Status"
-                            return (  a,  b , c , d )
-                          ) stat
+                            e <- getFieldValue state "Passwort"
+                            return (  a,  b , c , d , e )
+                ) state
        disconnect conn
-       return inh
+       
+       return $ do
+           (a, b, c, d, e) <- inh
+           guard $ case maybePass of
+                 Nothing   -> True
+		 Just pass -> Inter.Crypt.compare pass e
+	   return ( a, b, c, d )
 
 -- |
 -- Login des Studenten Version 2
 --
 -- Input:   Matrikelnr., Passwort
 -- Output:  IO Just SNr zurück, wenn (mnr,pass) in DB
--- TODO: passwort verschlüsselt speichern
 --
 loginDB :: String -> String -> IO (Maybe String)
 -- loginDB "" "" = return $ Nothing
@@ -146,16 +155,21 @@ loginDB mnr pass =
                  , "SNr \n"
                  , "FROM    student \n"
                  , "WHERE   student.MNr = \"" ++ (filterQuots mnr)++ "\" "
-                 , "AND student.Passwort = \"" ++ (quoteQuots pass)++ "\" "
+                 -- , "AND student.Passwort = \"" ++ (quoteQuots pass)++ "\" "
                  , ";"
                  ] )
-       inh <- collectRows ( \ state -> do
+       inhs <- collectRows ( \ state -> do
                             a <- getFieldValue state "SNr"
-                            return (a :: String)
+                            p <- getFieldValue state "Passwort"
+                            return (a :: String, p)
                           ) stat
        disconnect conn
-       return $ if null inh then Nothing else Just $ inh !! 0
 
+       return $ case inhs of
+           [ (a, p) ] -> do
+		 guard $  Inter.Crypt.compare p pass
+		 return a
+           _ -> Nothing
 
 -- | 
 -- Existiert mat oder email in DB?
@@ -321,11 +335,13 @@ updateEmailDB mat email =
 updatePasswortDB :: String -> String -> IO ()
 updatePasswortDB mat pass =
     do
+       cpass <- Inter.Crypt.encrypt pass
+
        conn <- myconnect
        stat <- query conn 
                ( concat 
                  [ "UPDATE student "
-                 , "SET Passwort= \"" , quoteQuots pass , "\" "
+                 , "SET Passwort= \"" , quoteQuots cpass , "\" "
                  , "WHERE   student.MNr = \"" , filterQuots mat , "\" "
                  , ";"
                  ] )
@@ -806,6 +822,8 @@ findStudDB vnm nme mat eml vrl= do
 -- Output:  IO ()
 --
 updateStudDB oldmat mat vnm nme eml pas = do
+   cpas <- Inter.Crypt.encrypt pas
+
    conn <- myconnect
    stat <- query conn
            ( concat 
@@ -815,7 +833,7 @@ updateStudDB oldmat mat vnm nme eml pas = do
              , "student.Vorname = \""   ++ quoteQuots vnm ++ "\", " 
              , "student.Name = \""      ++ quoteQuots nme ++ "\", "
              , "student.Email = \""     ++ quoteQuots eml ++ "\", "
-             , "student.Passwort = \""  ++ quoteQuots pas ++ "\" "
+             , "student.Passwort = \""  ++ quoteQuots cpas ++ "\" "
              , "WHERE student.MNr = \"" ++ quoteQuots oldmat ++ "\" "
              ] )
    disconnect conn 

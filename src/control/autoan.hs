@@ -1,9 +1,10 @@
 module Main where
 
+import Wash.HTMLMonad 
+import Wash.CGI
+
 import IO
-import HTMLMonad 
-import CGI
-import Char -- toLower
+import Data.Char -- toLower
 
 import System -- system
 

@@ -117,12 +117,14 @@ core ( var :: Var p i b ) env = do
 
 page par contents = 
     let 
-	heading = h2 << "Autotool-Super-Interface:"
+	heading = h2 << "Autotool-Super-Interface"
 		+++ primHtml "Aufgaben konfigurieren und testen"
+	helper = h3 << "(debug) CGI parameters"
+		+++ pre << show (toDoc $ env par)
 	pref = preface par 
     in  header << thetitle << "Super.cgi"
             +++ body ( form ( foldr1 (+++) 
-			      $ [ heading , hr , pref , hr ] ++ contents )
+			      $ [ heading , hr , helper, hr, pref , hr ] ++ contents )
 				   ! [ Text.Html.action "Super.cgi" , method "POST" ]
 		 )
          
