@@ -2,6 +2,7 @@ module Shift.Meta
 
 ( Meta (..)
 , meta
+, mf
 )
 
 where
@@ -14,7 +15,7 @@ import ToDoc
 import Shift.Type
 import Shift.Verify
 
-import Shift.Computer (find, zustands_folge)
+import Shift.Computer (find, ffind, zustands_folge, next0)
 
 import Reporter
 
@@ -22,6 +23,20 @@ vector :: Meta -> Int -> Pins
 vector me k = do
     (x, d) <- zip (start me) (diff me)
     return $ x + k * d
+
+
+mf :: Meta -> Reporter Int
+mf me = do
+   let its = take 5 $ do 
+	    k <- [ 0 .. ] 
+	    let ps = vector me k
+	    let p = fst $ find $ zustands_folge ps
+	    let m = maximum $ 0 : ps
+	    let p = ffind (next0 m ps) $ replicate m True
+	    return (ps, p)
+   mapM_ ( inform . toDoc ) its
+   delta 0 $ map snd its   
+
 
 meta :: Int -> Meta -> Reporter Int 
 meta limit me = do

@@ -59,3 +59,6 @@ me = Meta { start = [1,2,3]
 	  , diff  = [0,2,2]
 	  , qps = do  n <- [ 1 .. 10 ] ; return ( 0, 4*n )
 	  }
+
+
+

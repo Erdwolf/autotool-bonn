@@ -16,6 +16,15 @@ import List (sort)
 import Util.Zufall
 import Util.Faktor
 
+instance Show [Bool] where
+    show = map ( \ x -> if x then '+' else '-' ) 
+
+smp :: Show a => [a] -> IO ()
+smp = sequence_ . map print
+
+--------------------------------------------------------------
+
+
 next0 :: Int -> Pins -> [Bool] -> [Bool]
 -- wegen effizienz wird length ps nicht immer ausgerechnet
 next0 m ps xs = take m
@@ -44,9 +53,12 @@ find xs =
 		    Nothing -> handle ( addToFM cache x k ) rest
     in	handle emptyFM $ zip [0..] xs
 
+-------------------------------------------------------------------
 
 
 
+
+-------------------------------------------------------------------
 
 
 
@@ -88,7 +100,9 @@ suche n k = do
 
     let handle top ( ps : rest ) = do
 
-	    let (q, p) = find $ zustands_folge ps
+	    let s = maximum ( 0 : ps )
+	    let p = ffind (next0 s ps) $ replicate s True
+	    let q = -1
 
 	    -- hiernach wird optimiert
 	    let m = p

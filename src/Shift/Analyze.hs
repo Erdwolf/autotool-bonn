@@ -16,13 +16,7 @@ import List ( inits, tails )
 
 type State = [ Bool ]
 
-instance Show State where
-   show xs = do x <- xs ; if x then "+" else "-"
-
 type STI = (State, Int)
-
-smp :: Show a => [a] -> IO ()
-smp = sequence_ . map print
 
 hamming :: State -> State -> Int
 -- anzahl verschiedener positionen
