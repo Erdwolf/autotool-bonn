@@ -2,11 +2,11 @@ module Inter.Param where
 
 --   $Id$
 
-import qualified Passwort -- control
+import qualified Control.Passwort 
 
 import Inter.Types ( Variant )
 import Inter.Click
-import SQLqueries ( ATHighLow )
+import Control.Queries ( ATHighLow )
 
 
 --

@@ -5,7 +5,7 @@ module Inter.Env where
 -- liest parameter-Werte aus CGI-Env
 
 import qualified Inter.Param as P
-import qualified Passwort
+import qualified Control.Passwort
 
 import Inter.Click
 

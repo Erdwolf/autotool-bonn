@@ -1,5 +1,5 @@
--- | to edit the problem configuration
--- and to check a sample solution
+-- | edit the problem configuration
+-- and check a sample solution
 
 --  $Id$
 
@@ -55,6 +55,9 @@ main = wrapper $ \ e ->
 
 iface :: Par -> IO Html
 iface par = do
+
+    
+
     
     let presenter = h3 << "all Makers and their types:" 
 	    +++ p << pre << show ( present $ makers par )
