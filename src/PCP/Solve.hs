@@ -12,6 +12,7 @@ import Autolib.ToDoc
 import Control.Monad
 import Data.Maybe
 
+import PCP.DFS
 import PCP.Type
 import PCP.Examples
 
@@ -67,11 +68,3 @@ next ( _, diff, Hide pairs, Hide is ) = mkSet $ do
 
 -------------------------------------------------------
 
-dfs :: Ord a => (a -> Set a) -> a -> [a]
-dfs next x0 = 
-    let dfs' (x : todo) done = x : 
-           let now = union done $ unitSet x
-               neu = minusSet (next x) now
-           in  dfs' (setToList neu ++ todo) now
-        dfs' [] done = []
-    in  dfs' [x0] emptySet

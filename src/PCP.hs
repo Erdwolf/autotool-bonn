@@ -1,12 +1,19 @@
 {-# OPTIONS -fallow-overlapping-instances #-}
 
-import PCP.Top
+import PCP.Compressed
+
+import Autolib.ToDoc
 
 import System
 import IO
 
 main = do
-    [ f ] <- getArgs
-    mapM_ printf $ find $ read f
+
+    ws <- getArgs
+    mapM_ (printf. toDoc) 
+        $ take 1
+	$ topdown
+	$ map read ws
 
 printf x = do print x ; hFlush stdout
+
