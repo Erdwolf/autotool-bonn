@@ -10,6 +10,7 @@ import qualified Boolean.Quiz
 import qualified Sortier.Netz.Check 
 import qualified JVM.Make
 import qualified Graph.Selfcom
+import qualified Graph.Nachbar
 
 makers :: [ Make ]
 makers = [ NFA.Analyse.make
@@ -21,5 +22,6 @@ makers = [ NFA.Analyse.make
 	 , Sortier.Netz.Check.make
 	 , JVM.Make.make
 	 , Graph.Selfcom.make
+	 , Graph.Nachbar.make
 	 ]
 
