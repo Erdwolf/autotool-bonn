@@ -1,5 +1,3 @@
--- -*- mode: haskell -*-
-
 {-# OPTIONS -fallow-overlapping-instances #-}
 
 -- | expressions that describe linear family

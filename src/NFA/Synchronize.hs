@@ -118,6 +118,90 @@ f6 = Sizecase { fixed = [ ( 2,1 ), ( 3,2 ), ( 4,1 ) ]
 
 ----------------------------------------------------------------------------
 
+-- | all partitions, i. e. non-decreasing lists of positive numbers
+-- with fixed sum
+-- (TODO: move to Autolib)
+partitions :: Int -> [[Int]]
+partitions n = partitions_above n 1
+
+-- | partitions with minimum for elements
+partitions_above :: Int -> Int -> [[Int]]
+partitions_above n k 
+	    | n == 0 = return []
+	    | n >= k = do
+                i <- [ k .. n ]
+		is <- partitions_above (n-i) i
+		return $ i : is
+            | otherwise = mzero
+
+
+-- | all permutations that are disjoint sums of notrivial cycles
+-- irregardless of element numbers
+cycles :: Int -> [[Int]]
+cycles n = do
+    ( gs :: [[Int]] ) <- groups [0 .. pred n]
+    return $ concat $ map rotate gs
+
+-- | split in groups
+groups :: [a] -> [[[a]]]
+groups xs = do
+    let n = length xs
+    ps <- partitions_above n 2
+    let handle :: [Int ] -> [a] -> [[a]]
+        handle [] pool = []
+        handle (p : ps) pool = 
+            let (pre, post) = splitAt p pool
+            in  pre : handle ps post
+    return $ handle ps xs
+
+combined :: Int -> [[[Int]]]
+combined n = do
+    fs <- drop 1 $ reverse $ groups [0 .. n-1]
+    let f = concat $ map rotate fs
+
+    top <- [ 2 .. 4 ]
+    -- (gs, _) <- permuted_groups [0 .. top-1]
+
+    -- choose some elements to make a circle
+    ( gs, rest ) <- choose top [0 .. n-1]
+
+    -- pick outside the circle
+    ( [x], that ) <- choose 1 rest
+    -- pick one target (from the circle
+    y <- gs
+
+    let g = eltsFM $ listToFM 
+	  $ zip gs (rotate gs) ++ [(x,y)] ++ zip that that
+
+    return [f, g ]
+
+-- | groups, with attention to numbers
+permuted_groups :: [a] -> [([[a]],[a])]
+permuted_groups xs = do
+    let n = length xs
+    ps <- partitions_above n 2
+    let handle :: [Int] -> [a] -> [([[a]], [a])]
+        handle [] pool = return ( [], pool )
+        handle (p : ps) pool = do
+	    ( yeah, noh ) <- choose p pool
+            ( ys, ns ) <- handle ps noh
+	    return ( yeah : ys, ns )
+    handle ps xs
+
+-- | pick exactly k elements from xs
+choose :: Int -> [a] -> [([a],[a])]
+choose k xs 
+   | k == 0         = return ([], xs)
+   | k == length xs = return (xs, [])
+   | k >  length xs = mzero
+   | otherwise = 
+        do (yeah, noh ) <- choose k (tail xs)
+           return (yeah, head xs : noh)
+     ++ do (yeah, noh ) <- choose (pred k) (tail xs)
+	   return (head xs : yeah, noh )
+
+----------------------------------------------------------------------------
+
 -- | build automaton from transition tables given as lists
 make :: [[Int]] -> NFA Char Int
 make xss = a where 
@@ -173,11 +257,14 @@ lexi xy =
    and $ do z <- isos xy ; return $ xy <= z
 
 
+rotate :: [a] -> [a]
+rotate (x : xs) = xs ++ [x]
+
 -- | letter a is doubly cyclic perm
 -- letter b is *no* perm
 -- double_circle :: Int -> Int -> [ NFA Char Int ]
 double_circle f g = do
-    let rotate (x : xs) = xs ++ [x]
+    let 
         n = f+g
         xs = rotate [0 .. f-1] ++ rotate [f .. n-1]
 
@@ -196,15 +283,20 @@ double_circle f g = do
 
 dorun f g = do
    print $ "double circle" ++ show (f, g)
-   runit $ do
-       trip @ (l, m, w) <- ups $ do
-	   m <-  double_circle f g 
-           let ws = shosyn $ make m 
-           guard ( not ( null ws)) 
-           let w = head ws 
-           return ( length w, m, w)
-       return $ make m
+   runit $ walk $ double_circle f g 
 
+dorunrun n = do
+   print $ "circles/single circle" ++ show n
+   runit $ walk $ combined n
+
+walk confs = do
+    (l, m, w) <- ups $ do
+        m <- confs
+        let ws = shosyn $ make m 
+        guard ( not ( null ws)) 
+        let w = head ws 
+        return ( length w, m, w)
+    return $ make m
 
 
 ups [] = []
