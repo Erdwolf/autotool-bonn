@@ -1,7 +1,8 @@
 module Robots.Type 
 
 ( module Robots.Data
-, mkKonfig
+, module Robots.Konfig 
+, module Robots.Move
 )
 
 where

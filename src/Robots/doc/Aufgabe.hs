@@ -10,5 +10,7 @@ student = Aufgabe
 		  , Robot { name = "D", position = ( 2,-1), ziel = Nothing }
 		  , Robot { name = "E", position = (-1,-2), ziel = Just (0,0) }
 		  ]
-	, beweis = [ ( "B", W ) ]
+        , beweis = [("B", W), ("C", W), ("B", S), ("A", O), ("A", S),
+                   ("B", O), ("E", N), ("B", W), ("D", W), ("B", N), 
+		   ("E", O), ("E", N)]
 	}

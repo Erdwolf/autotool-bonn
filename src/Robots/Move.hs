@@ -10,15 +10,6 @@ import List (sortBy)
 import Monad ( foldM )
 import Boc
 
-remove :: String -> Konfig -> Konfig
--- fort damit (into outer space)
-remove n ( Konfig k ) = Konfig $ delFromFM k n
-
-move :: (String, Position) -> Konfig -> Konfig
--- auf neue position
-move (n, p) ( Konfig k ) = Konfig $ addToFM k n 
-	      $ let r = fromMaybe ( error "Robots.Move.move" ) ( lookupFM k n )
-		in  r { position = p }
 
 offset :: Richtung -> ( Integer, Integer )
 offset N = ( 0, 1 )
@@ -49,11 +40,14 @@ slide k p d =
 	     (qx, qy) : rest -> Just (qx-dx, qy-dy)
 
 execute :: Konfig -> Zug -> Maybe Konfig
-execute k ( n, d ) = do
+execute k z @ ( n, d ) = do
     r <- look k n
-    return $ case slide k ( position r ) d of
-	 Nothing -> remove n      k
-	 Just p  -> move   (n, p) k
+    case slide k ( position r ) d of
+	 Nothing -> case ziel r of
+			 Nothing -> return $ addZug z $ remove n k  
+			 -- Roboter mit Ziel darf nicht verschwinden
+			 Just z  -> Nothing  
+	 Just p  -> return $ addZug z $ move   (n, p) k
 	
 executes :: Konfig -> [ Zug ] -> Boc
 executes k [] = 

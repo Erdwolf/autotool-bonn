@@ -33,7 +33,10 @@ instance Iso Robot where iso = (==)
 
 
 data Richtung = N | O | S | W 
-     deriving ( Eq, Ord, Show, Read )
+     deriving ( Eq, Ord, Show, Read, Enum, Bounded )
+
+richtungen :: [ Richtung ]
+richtungen = [ minBound .. maxBound ]
 
 instance ToDoc Richtung where toDoc = text . show
 
