@@ -108,14 +108,17 @@ determine auf ver conf =
                                      }
                             ) ( throw conf )
           return $ do
-            let minitxt = if (mustmini conf) then " minimierten" else ""
+            let minitxt = 
+	          if (mustmini conf) 
+	          then " minimierten, vollständigen" 
+	          else ""
             inform $ vcat
-          			[ text "Gegeben ist der Automat"
-					, nest 4 $ toDoc i
-					, text $ "Finden Sie einen dazu äquivalenten" 
-					  ++ minitxt
-					  ++ " deterministischen Automaten!"
-					]
+		[ text "Gegeben ist der Automat"
+		, nest 4 $ toDoc i
+		, text $ "Finden Sie einen dazu äquivalenten" 
+			  ++ minitxt
+			  ++ " deterministischen Automaten!"
+		]
             return $ DI { nea = i
                        , alphabet = alpha conf
                        , dea = b -- merken uns auch einen zielautomat
