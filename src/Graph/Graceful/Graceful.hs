@@ -7,7 +7,7 @@
 --
 --
 -- Autor: Alexander Kiel
--- Version: 26.05.2002 - 3
+-- Version: 28.05.2002 - 1
 -------------------------------------------------------------------------------
 
 module Graceful.Graceful
@@ -83,7 +83,7 @@ instanzTrans :: ShowText knoten => GVTrans knoten
 instanzTrans = GVTrans
 	{ getGVProg = Neato
 	, getGVFormat = "png"
-	, isGVDirected = True
+	, isGVDirected = False
 	, getGVNID = showText		-- Graphviz Knoten ID ist einfach show knoten
 	, getGVNName = showText		-- Knotenname auch
 	, getGVNLabel = Nothing
@@ -99,7 +99,7 @@ getBeweisTrans :: (ShowText knoten, Ord knoten)
 getBeweisTrans labeling = GVTrans
 	{ getGVProg = Neato
 	, getGVFormat = "png"
-	, isGVDirected = True
+	, isGVDirected = False
 	, getGVNID = showText
 	, getGVNName = showText
 	, getGVNLabel = Just (getNLabel labeling)
