@@ -14,6 +14,7 @@ import Autolib.NFA.Ops
 import Autolib.NFA.Link
 import Autolib.NFA.Basic
 import Autolib.NFA.Shortest
+import Autolib.NFA.Trim
 
 import Autolib.NFA.Dot
 import qualified Autolib.NFA.Compact 
@@ -25,6 +26,7 @@ import Autolib.Symbol
 import Autolib.Util.Wort ( alle )
 import Autolib.Util.Splits
 import Autolib.Util.Sort
+import Autolib.Util.Size
 import Autolib.Exp.Type 
 
 import Autolib.Reporter
@@ -35,6 +37,84 @@ import Control.Monad ( guard )
 import Data.Array
 import Data.List ( intersperse )
 import qualified Text.Html
+
+import NFA.Funk
+import Random
+
+----------------------------------------------------------------------------
+
+funki :: Funk -- ^ control expression
+     -> Int  -- ^ modulus
+     -> Int  -- ^ argument
+     -> (Int, Int) -- ^ target of a and b
+funki f m k = 
+    let paired fun (x, y) = (fun x, fun y)
+	shift k e = case e of
+	      Absolute a -> a
+	      Relative r -> k + r
+	big = length $ fixed f
+    in    paired ( `mod` m )
+        $ if k < big
+ 	  then fixed f !! k
+ 	  else paired ( shift k ) ( linear f )
+
+unzip2 :: [(a,b)] -> ([a], [b])
+unzip2 xys = ( map fst xys, map snd xys )
+
+funk :: Funk -- ^ control expression
+     -> Int  -- ^ modulus
+     -> ([Int],[Int])
+funk f m = unzip2
+	 $ do k <- [0 .. pred m] ; return $ funki f m k
+
+haus :: Funk -- ^ control expression
+     -> (Int, Int) -- ^ bounds
+     -> [[Int]] -- ^ list of lengths of min sync words
+haus f bnd = 
+    let eval m = map length
+	       $ shosyn
+	       $ auto
+	       $ funk f m
+    in  mapM eval $ range bnd
+
+auto = make
+     . ( \ (xs, ys) -> [xs, ys] )
+
+ein :: Int -> IO Funk
+ein g = do
+    let zahl = randomRIO (-g, g)
+        beide act = do 
+		  x <- act
+	          y <- act
+	          return (x, y)
+        entry = do f <- randomRIO (False, True)
+                   d <- zahl
+		   return $ ( if f then Absolute else Relative ) d
+    fs <- sequence $ replicate g $ beide zahl
+    li <- beide entry
+    return $ Sizecase { fixed = fs , linear = li }
+
+looks :: Int -> Int -> IO ()
+looks g top = do
+    e <- ein g
+    case haus e (g, 10) of
+         hs : _ -> do
+               let s = last hs
+               when ( s > top ) $ do
+	           print $ toDoc ( hs, e )
+                   looks g s
+	       looks g top
+         _ ->  looks g top
+
+f1 = Sizecase { fixed = [ ( -2, -3 ), ( -2, 1 ), ( -2, -1 ) ]
+           , linear = ( Relative (-1), Relative (-1) )
+           }
+
+
+f6 = Sizecase { fixed = [ ( 2,1 ), ( 3,2 ), ( 4,1 ) ]
+           , linear = ( Relative 2, Relative 0 )
+           }
+
 
 ----------------------------------------------------------------------------
 
@@ -91,13 +171,49 @@ lexi xy =
    -- the following is (quadratically ?) inefficient
    -- xy == minimum (isos xy)
    and $ do z <- isos xy ; return $ xy <= z
-    
+
+
+-- | letter a is doubly cyclic perm
+-- letter b is *no* perm
+-- double_circle :: Int -> Int -> [ NFA Char Int ]
+double_circle f g = do
+    let rotate (x : xs) = xs ++ [x]
+        n = f+g
+        xs = rotate [0 .. f-1] ++ rotate [f .. n-1]
+
+
+    -- no permutation: cannot be a mapping onto
+    top <- [1 .. n-1]
+    ys <- alle [0 .. top] n
+    guard $ maximum ys == top
+    guard $ n > cardinality (mkSet ys)
+
+    let zs = do 
+	     (i,y) <- zip [0..] ys
+	     return $ (i+y) `mod` n
+
+    return [xs, zs]
+
+dorun f g = do
+   print $ "double circle" ++ show (f, g)
+   runit $ do
+       trip @ (l, m, w) <- ups $ do
+	   m <-  double_circle f g 
+           let ws = shosyn $ make m 
+           guard ( not ( null ws)) 
+           let w = head ws 
+           return ( length w, m, w)
+       return $ make m
+
+
+
+ups [] = []
+ups (x : xs) = x : ups (filter (>= x) xs)
 
 -- | list of all automata with two letters, n states
 -- where first one is permutaion
 -- second one is no permuation
 genau :: Int -> [ NFA Char Int ]
-{-# inline genau #-}
 genau n = do
 
     -- no permutation: cannot be a mapping onto
@@ -110,35 +226,46 @@ genau n = do
 
     -- should be permutation (mapping onto)
     xs <- perms [0 .. n-1] 
-
     -- only if smallest from iso class
     guard $ lexi (xs, ys)
 
+    -- xs <- alle [0 .. n-1] n
+    -- guard $ n > cardinality (mkSet xs)
+
+    -- should not be synchronizing for letter a alone
+    -- let a = make [xs]
+    -- guard $ null $ shosyn a
+
+    -- only if a lex b (because of symmetry)
+    -- guard $ xs <= ys	  
+
     return $ make [xs, ys]
 
-extreme :: Int -> [ ( String, NFA Char Int ) ]
+extreme :: Int -> [ NFA Char Int ]
 extreme n = do
     a <- genau n
     w <- shosyn a
     guard $ length w == ( n - 1 ) ^ 2 
-    return (w, a)
+    return a
 
+run n = runit $ extreme n
 
-run :: Int -> IO ()
-run n = sequence_ $ do 
-    it @ (i, (w, a)) <- zip [0 :: Int ..] $ extreme n
+runit :: [ NFA Char Int ] -> IO ()
+runit auts = sequence_ $ do 
+    it @ (i, a) <- zip [0 :: Int ..] $ auts
     return $ do
         ( _ , out :: Text.Html.Html ) <- Autolib.Reporter.run $ handle it
         let fname = concat 
 		  $ intersperse "-"
-		  $ [ "auto", show n, show i ]
+		  $ [ "auto", show $ size a, show i ]
 	writeFile ( fname ++ ".html" ) $ show out
 
-handle it @ (i, (w, a)) = do
+handle it @ (i, a) = do
+    let ws = take 5 $ syn a
     inform $ vcat
-	   [ text "synch:" <+> toDoc w
-	   , text "length:" <+> toDoc (length w)
-	   , text "aut:" <+> toDoc a
+	   [ text "synch:" <+> toDoc ws
+	   , text "lengths:" <+> toDoc (map length ws)
+	   -- , text "aut:" <+> toDoc a
 	   ]
     dotty "dot" a
     sequence_ $ do
@@ -175,6 +302,13 @@ tighten a =
 	      else x
     in  statemap h a
 
+-- | 
+issyn :: NFAC c a
+      => NFA c a 
+      -> Bool
+issyn a = not $ null $ syn a
+
+
 -- | return at most one sync word (the shortest one)
 shosyn :: NFAC c a
        => NFA c a
@@ -185,7 +319,7 @@ shosyn = take 1 . syn
 syn ::  NFAC c a
        => NFA c a
        -> [[ c ]]
-syn = accepted . synchro
+syn = some_shortest . trim . normalize . synchro
 
 
 ----------------------------------------------------------------------------
