@@ -32,29 +32,29 @@ instance ToDoc Z where
     toDocPrec d (F) = text "F"
 
 instance Reader Z where
-    readerPrec d =
-	       (do my_reserved "A0"
-		   return (A0))
-	       <|>
-	       (do my_reserved "A1"
-		   return (A1))
-	       <|>
-	       (do my_reserved "A2"
-		   return (A2))
-	       <|>
-	       (do my_reserved "B"
-		   return (B))
-	       <|>
-	       (do my_reserved "C"
-		   return (C))
-	       <|>
-	       (do my_reserved "D"
-		   return (D))
-	       <|>
-	       (do my_reserved "E"
-		   return (E))
-	       <|>
-	       (do my_reserved "F"
-		   return (F))
+    readerPrec d = readerParen (d > 9)
+	       ((do my_reserved "A0"
+		    return (A0))
+		<|>
+		(do my_reserved "A1"
+		    return (A1))
+		<|>
+		(do my_reserved "A2"
+		    return (A2))
+		<|>
+		(do my_reserved "B"
+		    return (B))
+		<|>
+		(do my_reserved "C"
+		    return (C))
+		<|>
+		(do my_reserved "D"
+		    return (D))
+		<|>
+		(do my_reserved "E"
+		    return (E))
+		<|>
+		(do my_reserved "F"
+		    return (F)))
 
 --  Imported from other files :-
