@@ -16,19 +16,19 @@ import Set
 
 
 
-nachfolger :: (Ord x, Ord y, Ord z)
+nachfolger :: NPDAC x y z
 	   => NPDA x y z -> Konfiguration x y z -> [ Konfiguration x y z ]
 nachfolger a k = concat $ map setToList $
     schichten (folgekonfigurationen a   ) k
 
-sinnvoll ::  (Ord x, Ord y, Ord z) 
+sinnvoll ::  NPDAC x y z
 	 => Konfiguration x y z -> Bool
 sinnvoll k =
     length (keller k) <= 2 * length (eingabe k) + 3
 
 
 folgekonfigurationen 
-    :: (Ord x, Ord y, Ord z)
+    :: NPDAC x y z
     => NPDA x y z -> Konfiguration x y z 
     -> Set (Konfiguration x y z)
 folgekonfigurationen a k 
