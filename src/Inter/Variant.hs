@@ -77,9 +77,13 @@ texti txt attrs = tr $ do
 ----------------------------------------------------------------------
 
 -- falls neue eingabe der lösung
-evaluator par0 ( F1 txtF ) = 
+
+evaluator par0 (ATB snr anr bew hl) ( F1 txtF ) = do
+    io $ bepunkteStudentDB snr anr bew hl
     computer $ par0 { P.input = value txtF }
-    
+evaluator par0 _ (F1 _)= 
+    standardQuery "Fehler" $ CGI.text "evaluator"    
+
 -- falls neue settings
 settings par0 (F4 matF pwdF proF varF) = 
 	let par = par0 { P.matrikel = value matF 
@@ -150,17 +154,17 @@ handler par0  (Variant v ) =  do
 
     hr CGI.empty
     h2 $ CGI.text "neuer Lösungs-Versuch"    
-    makeForm $ table $ tr $ do
+    txtF <- table $ tr $ do
         let height = length $ filter ( == '\n' ) $ P.input par
 	txtF <- td $ makeTextarea ( P.input par ) 
 		   $  attr "rows" ( show $ height + 2 )
 		   ## attr "cols" ( show input_width )
-        td $ ssb ( F1 txtF ) ( evaluator par ) "Compute"
-
+	return txtF
+--        td $ ssb ( F1 txtF ) ( evaluator par ) "Compute"
     hr CGI.empty
     h2 $ CGI.text "voriger Lösungs-Versuch"
 
-    case parse reader "input"$ P.input par of
+    bep <- case parse reader "input" $ P.input par of
         Right b -> do
 	    CGI.pre $ CGI.text $ P.input par
             h3 $ CGI.text "partielle Korrektheit"
@@ -168,23 +172,29 @@ handler par0  (Variant v ) =  do
             h3 $ CGI.text "totale Korrektheit"
             tc <- CGI.p $ Reporter.Wash.embed $ Challenger.total   p i b
             h3 $ CGI.text $ "Aufgabe gelöst?"
-	    if ( isJust pc && isJust tc )
+	    bep <- if ( isJust pc && isJust tc )
 	       then do
 	          CGI.p $ CGI.text $ "Ja."
 		  let s = size b
 		  CGI.p $ CGI.text $ "Größe der Lösung: " ++ show s
 		  -- TODO: ermittle Low/High von DB
-		  lift $ unsafe_io 
-		       $ bepunkteStudentDB snr anr (Helper.Ok s) $ read hlstr
-	       else do
-	          CGI.p $ CGI.text "Nein."
-		  lift $ unsafe_io 
-			   $ bepunkteStudentDB snr anr (Helper.No ) $ read hlstr
-        Left e -> do
-	    h3 $ CGI.text "Syntaxfehler"
-	    CGI.pre $ CGI.text $ render $ errmsg e $ P.input par
+--		  lift $ unsafe_io 
+--		       $ bepunkteStudentDB snr anr (Helper.Ok s) $ read hlstr
+		  return $ ATB snr anr (Helper.Ok s) $ read hlstr
+	       else do 
+	           CGI.p $ CGI.text "Nein."
+		   return $ ATB snr anr (Helper.No) $ read hlstr 
+		  --		  lift $ unsafe_io 
+		  --			   $ bepunkteStudentDB snr anr (Helper.No ) $ read hlstr
+	    return bep
+        Left e -> do 
+	   h3 $ CGI.text "Syntaxfehler"
+	   CGI.pre $ CGI.text $ render $ errmsg e $ P.input par
+	   return ATBEmpty 
+--	return bep
+    ssb ( F1 txtF ) ( evaluator par bep ) "Compute"
+    hr CGI.empty       
 
-    hr CGI.empty
 
 ---------------------------------------------------------------------------
 

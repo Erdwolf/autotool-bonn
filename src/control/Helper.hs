@@ -14,8 +14,13 @@ data StrOrInt = S String | I Int deriving ( Show , Read )
 data ATBewertung = No | Ok Int deriving ( Show, Read )
 
 data ATHighLow = High | Low | Keine 
+
 instance Show ATHighLow where
     show High = "high" ; show Low = "low" ; show Keine = "keine"
+
+data ATBepunkte = ATBEmpty | ATB String String ATBewertung ATHighLow
+		  deriving ( Show, Read )
+
 instance Read ATHighLow where
     readsPrec p cs = do
        ( this, rest ) <- lex cs
