@@ -28,6 +28,8 @@ data Type
      | Power Int
      | NoPower Int
      | Vielfache Int
+
+     | Komplement Type
    deriving ( Eq, Ord, Typeable )
 
 {-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
