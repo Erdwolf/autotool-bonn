@@ -26,3 +26,8 @@ quoteQuots (x:xs) = y ++ quoteQuots xs
 	y = if x `elem` ['\'','\"','\\','`'] 
 		then '\\':(x:[])
 		else x:[]
+
+showFreeDB i =
+    mapM_ putStrLn 
+	      [ (show s) ++ "/" ++(show m) ++ " "++(show gnr) ++ " " ++ g ++ " " ++ n ++ " "++ r
+		| (gnr,[g,n,r,m,s])<- snd i]
