@@ -35,6 +35,7 @@ quiz auf ver par =
 					   , auf, ver
 					   ]
 				  , name = key ++ ".cache" 
+				  ,relativzahl = error "SAT.QUIZ.relativzahl"
 				  }
 			 ) ( hgen2 par )
 	           return $ do
