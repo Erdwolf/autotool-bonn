@@ -13,28 +13,34 @@
 --
 -- 2.  
 --
--- * EXAMPLE SESSION, FUER SERIE 6
--- 
--- halbautomatisch mittels
--- > make ghci-schriftl 
+-- * EXAMPLE SESSION, FUER SERIE 7
 --
 -- ** Autotool-Punkte
--- 	- Regexp serie 6 = [(...,...)...] anlegen
--- 	p <- getAutoPunkteDB 6 		-- punkte passen zum regexp aus db holen
+-- 
+--	> cd ~/autotool/control
+--	> make ghci-schriftl
+-- 	- Regexp serie 7 = [(...,...)...] anlegen
+-- 	p <- getAutoPunkteDB 7 		-- punkte passen zum regexp aus db holen
 -- 	print p 			-- ausgabe zur kontrolle
 -- 	foldr1 min $ [ x | (_,x) <- p ] -- maximum der punkte checken
 -- 	foldr1 max $ [ x | (_,x) <- p ] -- minimum der punkte checken
--- 	fillAutInDB [6] 		-- punkte in die punkte tabelle einspielen
+-- 	fillAutInDB [7] 		-- punkte in die punkte tabelle einspielen
+-- - ghci verlassen (ctrl-d)
 --
 -- ** Schriftl.-Punkte
---	- cp <path>/edu/ws03/as/serie6/serie6.dat <path>/autotool/control/serie5-schriftl.dat
---	ls <- opendat 6 	-- punkte laden
+--	> cd ~/edu 
+--      > cvs update -d
+--	> cp ~/edu/ws03/as/serie7/serie7.dat ~/autotool/control/serie7-schriftl.dat
+--	> cd ~/autotool/control
+--	> make ghci-schriftl
+--	ls <- opendat 7 	-- punkte laden
 --	fndup ls 		-- sind duplikate verhanden? true -> abbruch !!!
 --	print ls 		-- anzeigen
---	fillDatInDB [6]		-- punkte in punkte tabelle einspielen
+--	fillDatInDB [7]		-- punkte in punkte tabelle einspielen
 -- - ghci verlassen (ctrl-d)
 --
 -- ** Report erstellen
+--	> cd ~/autotool/control
 --	> make Schriftl.cgi
 --	> Schriftl.cgi > report.html
 -- 	> perl -0777 -i~ -pe 's,<input.*?>,,sg' report.html  
@@ -101,11 +107,18 @@ serie 3 = [("S","Drei|Reg1|Reg2"),("A","Zwei|Drei|Aba")]
 serie 4 = [("G","ComPali|Gleich|Dyck"),("P","Drei|Dyck")]
 serie 5 = [("G","IJK|ComDyck"),("Ein","Dyck|Gleich"),("CNF","ComPali")]
 serie 6 = [("P","Gleich|Power2"),("CFG","QuizCNF"),("NPDA","OGleich|Dyck")]
+serie 7 = [("P","ComPower2"),("NPDA","Gleich")
+	  ,("NPDAdet","Dyck|Gleich"),("D","2"),("NPDA","Quiz")]
+
+
 
 -----------------------------------------------------------------
 -- VORSICHT HACK:  D-1 (anr=15) wird dpl. gezaehlt
 -----------------------------------------------------------------
 
+--
+-- let match only whole words in sql-regexp
+-- 
 protectRegexp xs = [(x, "^(" ++ y ++ ")$") | (x,y) <- xs ]
 
 -- make ghci-schrifl
