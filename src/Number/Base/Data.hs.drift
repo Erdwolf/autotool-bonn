@@ -20,7 +20,7 @@ zehn = 10
 instance ToDoc Ziffer where
     toDoc (Ziffer z) =
         if (0 <= z) && (z < zehn) then toDoc z
-        else if fromEnum 'Z' - fromEnum 'A' <= z - zehn
+        else if z - zehn <= fromEnum 'Z' - fromEnum 'A' 
              then Autolib.ToDoc.char $ toEnum $ fromEnum 'A' + (z - zehn)
              else error $ "cannot convert digit to character: " ++ show z
 
