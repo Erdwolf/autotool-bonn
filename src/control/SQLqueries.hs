@@ -545,8 +545,7 @@ changeStudGrpDB mat grp =
 -- Output: IO ()
 --
 bepunkteStudentDB :: String -> String -> ATBewertung -> ATHighLow -> IO ()
--- admins werden nicht eingetragen
-bepunkteStudentDB snr anr bewert highlow | read snr < 1024 = return ()
+bepunkteStudentDB snr anr bewert highlow = return ()
 
 bepunkteStudentDB snr anr bewert highlow = do
    conn <- myconnect
