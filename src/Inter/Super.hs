@@ -42,7 +42,7 @@ iface :: [ Make ] -> Form IO ()
 iface mks = do
 
     vors <- io $ Control.Vorlesung.get
-    vnr <- selector "vnr" "wähle Vorlesung" 0 $ do
+    vnr <- require $ selector "vnr" "wähle Vorlesung" 0 $ do
         vor <- vors
         return ( show $ Control.Vorlesung.name vor
 	       , Control.Vorlesung.vnr vor 
@@ -52,7 +52,7 @@ iface mks = do
     -- sondern nur die mit passender VNr
     aufs <- io $ Control.Aufgabe.get  
     br
-    manr  <- selector "anr" "bearbeite Aufgabe" 0 
+    manr  <- require $ selector "anr" "bearbeite Aufgabe" 0 
       $ ( "(neue Aufgabe)", Nothing ) : do
         auf <- aufs
         guard $ Control.Aufgabe.vnr auf == vnr
@@ -64,22 +64,20 @@ iface mks = do
     pre $ "Vorlesung gewählt : " ++ show vnr
     pre $ "Aufgabe gewählt : " ++ show manr
 
-    mk <- selector "mk" "wähle Aufgabentyp" 0 $ do
+    mk <- require $ selector "mk" "wähle Aufgabentyp" 0 $ do
         mk <- mks
 	return ( show mk, mk )
 
     case mk of 
         Make doc fun ex -> do
-            mconf <- editor "conf" "konfiguriere" ex
-            sconf <- submit "sconf" "submit"
-
+            ( mconf , sconf ) <- editor_submit "conf" "Konfiguration" ex
             case mconf of
                  Nothing -> return ()
                  Just conf -> do
                       let var :: Var p i b = fun conf
                           p = problem var
                       m0 <- io $ randomRIO (0, 999999 :: Int) 
-                      mat <- textfield "mat" $ show m0
+                      mat <- with ( show m0 ) $ textfield "mat" ( show m0 )
                       k <- io $ key var mat -- some key
                       g <- io $ gen var k
                       let ( Just i , com :: Doc ) = export g
@@ -87,11 +85,18 @@ iface mks = do
                           ini = initial (problem var) i
                       h3 "Aufgabenstellung"
                       pre $ show desc
-                      mb <- editor "b" "Lösung" ini
-                      bconf <- submit "bconf" "submit"
+                      ( mb, sb ) <- editor_submit "b" "Lösung" ini
                       case mb of
 			   Nothing -> return ()
                            Just b -> do
       	                       let (res, com :: Doc) = export $ evaluate' p i b
                                pre $ show com
 
+
+editor_submit :: ( ToDoc a, Reader a, Monad m )
+	      => Tag -> String -> a 
+	      -> Form m ( Maybe a , Bool )
+editor_submit tag title ex = do
+    mconf <- editor ("E" ++ tag) title ex
+    sconf <- submit ("S" ++ tag) "submit"
+    return ( mconf , sconf )
