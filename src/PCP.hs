@@ -11,10 +11,10 @@ import System
 import IO
 
 main = runit
-      $ Param { alpha = "01"
+      $ Param { alpha = "0123"
 	      , paare = 4
-	      , breite = 4
-	      , nah = 1
+	      , breite = 6
+	      , nah = 0
 	      , fern = 100
-	      , viel = 3000
+	      , viel = 10000
 	      }

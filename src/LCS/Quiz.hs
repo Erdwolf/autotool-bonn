@@ -3,6 +3,7 @@ module LCS.Quiz where
 --  $Id$
 
 import LCS.Code
+import LCS.Data
 import LCS.Instance
 
 import Inter.Types
@@ -40,7 +41,7 @@ huge = Config
 	}
 
 
-roll :: Eq a 
+roll :: InstanceC a
      => Config a 
      -> IO ( Instance a )
 roll conf = do
@@ -59,7 +60,7 @@ roll conf = do
             ) 
      return $ Instance { left = xs, right = ys, sharp = exactly conf }
 
-quiz :: ( Eq a, Read a, Show a )
+quiz :: InstanceC a
      => Config a
      -> Var LCS (Instance a) [a]
 quiz conf = 

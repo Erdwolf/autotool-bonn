@@ -3,6 +3,7 @@ module LCS.Instance where
 --  $Id$
 
 import LCS.Code
+import LCS.Data
 import Challenger.Partial
 import Inter.Types
 
@@ -14,14 +15,7 @@ import Autolib.Reporter
 
 data LCS = LCS deriving ( Eq, Ord, Show, Read, Typeable )
 
-data Instance a =
-     Instance { left :: [a]
-	      , right :: [a]
-	      , sharp :: Bool
-	      }
-     deriving ( Read, Show, Typeable )
-
-instance ( Eq a, ToDoc [a], Size [a] ) => Partial LCS ( Instance a ) [a] where
+instance ( InstanceC a, Eq a, Size [a] ) => Partial LCS ( Instance a ) [a] where
 
     describe LCS i =
         vcat [ fsep [ text "Bestimmen Sie eine"  
@@ -67,7 +61,8 @@ instance ( Eq a, ToDoc [a], Size [a] ) => Partial LCS ( Instance a ) [a] where
 
     measure LCS i zs = length zs
 
-fixed :: String 
+fixed :: InstanceC a
+      => String 
       -> Bool
       -> ( [a],[a] ) 
       -> Var LCS (Instance a) [a]

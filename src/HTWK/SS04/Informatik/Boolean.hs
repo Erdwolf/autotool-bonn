@@ -23,10 +23,15 @@ inner_make bi =
 	   }
 
 makers :: [ Make ]
-makers =  [ Make inner_make ]
+makers =  [ Make "Boolesche Ausdrücke"
+	         inner_make 
+                 (configs0 !! 0) -- example
+	  ]
 
 configs :: [ Dynamic ]
-configs = map toDyn
+configs = map toDyn configs0
+
+configs0 =
     [ BI { tag = "A"
       	, formula = read "x == (y == z)"
       	, operators = read "mkSet [ false, true, !, ||, && ]"

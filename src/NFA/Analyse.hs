@@ -1,8 +1,17 @@
-module NFA.Analyse where
+-- | vom Automaten zum regulären Ausdruck
 
--- vom Automaten zum regulären Ausdruck
+module NFA.Analyse 
+
+( module NFA.Analyse
+, module NFA.AI
+)
+
+where
+
 
 --  $Id$
+
+import NFA.AI
 
 import Autolib.Exp
 import Autolib.Exp.Inter
@@ -23,11 +32,6 @@ import Data.Typeable
 
 data Analyse = Analyse deriving ( Eq, Ord, Show, Read, Typeable )
 
-data AI = AI { name :: String -- abkürzung
-	     , automat :: NFA Char Int   
-	     , alphabet :: Set Char
-	     }
-    deriving ( Show, Typeable )
 
 instance C.Partial  Analyse AI Exp
   where

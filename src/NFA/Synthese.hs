@@ -1,8 +1,16 @@
-module NFA.Synthese where
+module NFA.Synthese 
+
+( module NFA.Synthese
+, module NFA.SI
+)
+
+where
 
 -- vom regulären Ausdruck zum Automaten
 
 -- -- $Id$
+
+import NFA.SI
 
 import Autolib.Exp
 import Autolib.Exp.Inter
@@ -24,17 +32,10 @@ import qualified Challenger as C
 
 data Synthese = Synthese deriving ( Eq, Ord, Show, Read )
 
-data SI = SI { name :: String -- abkürzung
-	     , ausdruck :: Exp   
-	     , alphabet :: Set Char
-	     , beschreibung :: Maybe Doc -- falls Nothing, dann ausdruck
-	     , deterministisch :: Bool      -- soll deterministisch sein?
-	     }
-    deriving ( Show )
 
 besch :: SI -> Doc
 besch i = case beschreibung i 
-			      of Just d -> d
+			      of Just d -> text d
 			         Nothing -> toDoc $ ausdruck i
 
 

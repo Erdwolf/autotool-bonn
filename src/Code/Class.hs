@@ -16,7 +16,7 @@ data Encode a b = Encode ( Coder a b ) deriving ( Typeable )
 instance Show ( Encode a b ) where
     show ( Encode c ) = "Encode"
 
-instance ( ToDoc [a], Eq b, Size b ) 
+instance ( ToDoc [a], ToDoc b, Eq b, Size b ) 
 	 => Partial ( Encode a b ) [a] b where
 
     describe ( Encode p ) i = vcat    
@@ -40,7 +40,7 @@ data Decode a b = Decode ( Coder a b )  deriving ( Typeable )
 instance Show ( Decode a b ) where
     show (Decode c) = "Decode"
 
-instance ( ToDoc b, Eq b , Size [a] )
+instance ( ToDoc b, Eq b , ToDoc [a], Size [a] )
 	 => Partial ( Decode a b ) b [ a ] where
 
     describe ( Decode p ) i = vcat

@@ -1,0 +1,23 @@
+--  -*- mode: haskell -*-
+
+module NFA.SI where
+
+import Autolib.Exp
+import Autolib.Sets
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+
+data SI = SI { name :: String -- abkürzung
+	     , ausdruck :: Exp   
+	     , alphabet :: Set Char
+	     , beschreibung :: Maybe String -- falls Nothing, dann ausdruck
+	     , deterministisch :: Bool      -- soll deterministisch sein?
+	     }
+          deriving ( Typeable )
+
+{-! for SI derive: ToDoc, Reader !-}
+
+instance  Show SI where show = render . toDoc
+instance  Read SI where readsPrec = parsec_readsPrec

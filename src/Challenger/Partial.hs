@@ -8,7 +8,8 @@ import Autolib.ToDoc
 import Autolib.Size
 
 -- | Klasse: Partial
-class Size b => Partial p i b | p i -> b , p b -> i where
+class ( Show p, ToDoc i, ToDoc b , Size b )
+    => Partial p i b | p i -> b , p b -> i where
 
       -- | Beschreibung der Aufgabe herstellen
       --

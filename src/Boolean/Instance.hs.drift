@@ -15,19 +15,25 @@ import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.ToDoc
+import Autolib.Reader
 import Autolib.Reporter
 import Autolib.Sets
 
 data Boolean = Boolean deriving ( Eq, Ord, Show, Read, Typeable )
+
+instance ToDoc Boolean where toDoc = text . show
 
 data BI =
      BI { tag :: String
         , formula :: Exp
 	, operators :: Set Op
 	}
-     deriving ( Show, Typeable )
+     deriving ( Typeable )
 
-{-! for BI derive: Haskell2Xml !-}
+{-! for BI derive: Haskell2Xml, ToDoc, Reader !-}
+
+instance Show BI where show = render . toDoc
+instance Read BI where readsPrec = parsec_readsPrec
 
 instance Partial Boolean BI Exp where
 

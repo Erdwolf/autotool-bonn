@@ -8,13 +8,17 @@ import Data.Dynamic
 import Data.Maybe
 
 import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Informed
 import Text.XML.HaXml.Haskell2Xml
 
 data Make = forall conf p i b 
           . ( V p i b 
-	    , Typeable conf, Haskell2Xml conf
+	    , Typeable conf, Haskell2Xml conf, ToDoc conf, Show conf, Reader conf
 	    )
-	  => Make (conf -> Var p i b)
+	  => Make String -- ^ description
+		  (conf -> Var p i b) -- ^ maker function
+                  conf -- ^ example
 
 get_boiler :: [ Make ] 
 	   -> [ Dynamic ]
@@ -23,7 +27,7 @@ get_boiler makers configs = do
     dyn <- configs
     maker <- makers
     case maker of
-        Make ( fun :: conf -> Var p i b ) -> do
+        Make doc ( fun :: conf -> Var p i b ) ex -> do
 	    it <- maybeToList ( fromDynamic dyn :: Maybe conf )
 	    return $ Variant $ fun it
 
@@ -32,14 +36,15 @@ present :: [ Make ] -> Doc
 present makers = hcat $ do
     maker <- makers
     case maker of
-        Make ( fun :: fun ) -> return $ text $ show $ toDoc $ typeOf fun
+        Make doc ( fun :: fun ) ex -> return $ text $ show 
+	       $ hsep [ text doc, comma, toDoc $ typeOf fun ]
 
 cpresent :: [ Make ] -> [ Dynamic ] -> Doc
 cpresent makers configs = hcat $ do
     dyn <- configs
     maker <- makers
     case maker of
-        Make ( fun :: conf -> Var p i b ) -> do
+        Make doc ( fun :: conf -> Var p i b ) ex -> do
 	    it <- maybeToList ( fromDynamic dyn :: Maybe conf )
 	    return $ text $ showXml it
 

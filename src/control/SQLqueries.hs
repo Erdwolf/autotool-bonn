@@ -1,3 +1,11 @@
+-- | TODO:
+-- Schluessel zum Studenten nur noch SNr nicht mehr Mat
+-- Email-Validierung
+
+-- ========================================
+-- DB Helper
+
+
 module SQLqueries 
 
 ( module SQLqueries
@@ -18,14 +26,7 @@ import Helper
 import Mysqlconnect 
 
 
--- TODO:
--- Schluessel zum Studenten nur noch SNr nicht mehr Mat
--- Email-Validierung
-
--- ========================================
--- DB Helper
-
--- Header extrahieren aus SQL
+-- | Header extrahieren aus SQL
 showColTypes :: Statement -> [ String ]
 showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
 
@@ -35,7 +36,7 @@ showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
 -- DB Funktionen
 --  ------------------------------------------------------------------------------
 
--- liefert bewertete Aufgaben von mat aus DB,
+-- | liefert bewertete Aufgaben von mat aus DB,
 -- TODO: mat = [] sollte auch StudentMNr als Spalte zurückliefern
 studAufgDB :: String -> IO ( [ String ] , [ [ StrOrInt ] ])
 studAufgDB mat =
@@ -71,8 +72,8 @@ studAufgDB mat =
        return ( showColTypes stat, inh )
 
 
--- Neuen Student einfügen
--- TODO EMail-Ueberpruefung
+-- | Neuen Studenten einfügen
+-- TODO: EMail-Ueberpruefung
 insertNewStudentDB :: String -> String -> String -> String -> String -> IO ()
 insertNewStudentDB vnm nme mat eml ps1 =
     do
@@ -93,7 +94,7 @@ insertNewStudentDB vnm nme mat eml ps1 =
     return ()
 
 
---
+-- |
 -- Login des Studenten Version 1
 --
 -- Passt mnr <-> passwort 
@@ -127,11 +128,12 @@ checkPasswdMNrDB maybePass mnr =
        disconnect conn
        return inh
 
---
+-- |
 -- Login des Studenten Version 2
 --
 -- Input:   Matrikelnr., Passwort
 -- Output:  IO Just SNr zurück, wenn (mnr,pass) in DB
+-- TODO: passwort verschlüsselt speichern
 --
 loginDB :: String -> String -> IO (Maybe String)
 -- loginDB "" "" = return $ Nothing
@@ -155,7 +157,7 @@ loginDB mnr pass =
        return $ if null inh then Nothing else Just $ inh !! 0
 
 
--- 
+-- | 
 -- Existiert mat oder email in DB?
 -- 
 -- Benutzt bei Registrierung als Vorabcheck auf Duplikate in Mnr, Email
@@ -188,7 +190,7 @@ duplMatOrEmailDB mat eml =
        return mORe
 
 
---
+-- |
 -- Liefert alle mgl. Vorlesungen 
 --
 -- Input:
@@ -211,7 +213,7 @@ getAllVorlesungenDB =
        disconnect conn 
        return inh
 
--- Vnr -> [ Mnr ]
+-- | Vnr -> [ Mnr ]
 teilnehmer :: String -> IO [ String ]
 teilnehmer vnr = do
        conn <- myconnect
@@ -231,7 +233,7 @@ teilnehmer vnr = do
        disconnect conn 
        return inh
 
---
+-- |
 -- Liefer Vorlesungen von Matrikelnr.
 --
 -- Input:   Matrikelnr
@@ -258,7 +260,7 @@ studVorlDB mnr =
        disconnect conn 
        return inh
 
---
+-- |
 -- Liefert bepunktete Vorlesungen von Matrikelnr.
 --
 -- Input:   Matrikelnr.
@@ -286,7 +288,7 @@ getVorlesungWithPointsDB mnr =
        disconnect conn 
        return inh
 
---
+-- |
 -- Modifiziert Email-Adresse von Matrikelnr.
 --
 -- Input:   Matrikelnr., Email-Adresse
@@ -310,7 +312,7 @@ updateEmailDB mat email =
        disconnect conn 
        return ()
 
---
+-- |
 -- Modifiziert Passwort von Matrikelnr.
 --
 -- Input:   Matrikelnr., Passwort
@@ -330,7 +332,7 @@ updatePasswortDB mat pass =
        disconnect conn 
        return ()
 
--- Vorlesung hinzufügen 
+-- | Vorlesung hinzufügen 
 insertStudVorlDB :: String -> String -> IO ()
 insertStudVorlDB mat vorl =
     do
@@ -359,7 +361,7 @@ insertStudVorlDB mat vorl =
        disconnect conn 
        return ()
 
--- Vorlesung entfernen
+-- | Vorlesung entfernen
 removeStudVorlDB :: String -> String -> IO ()
 removeStudVorlDB mat vorl =
     do
@@ -427,7 +429,7 @@ removeStudVorlDB mat vorl =
                           --        f'          = foldr1 (kommas) f
 
 
--- Übungsgruppen
+-- | Übungsgruppen
 -- liefert alle freien Gruppen
 getFreeGruppenDB =
     do
@@ -535,8 +537,9 @@ changeStudGrpDB mat grp =
          ; return ()
          }
 
--- ================================================================================
--- fürs AUTOTOOL
+-----------------------------------------------------------------------------------------
+
+-- | fürs AUTOTOOL
 
 --
 -- erhöht von Student, für Aufgabe (Ok,Size) / No 
@@ -613,7 +616,7 @@ bepunkteStudentDB snr anr bewert highlow = do
 
 
 
--- liefert (jetzt!)  mgl. Aufgaben für Student
+-- | liefert (jetzt!)  mgl. Aufgaben für Student
 -- [ ( ANr, Name , Subject , Path , Highscore ) ]
 
 -- feature: wenn nr < 1000 (d. h. admin), dann nicht nach zeit fragen
@@ -652,7 +655,7 @@ mglAufgabenDB' isAdmin snr =
     disconnect conn
     return inh
 
--- liefert (nun und demnaechst mgl). Aufgaben für Student/alle Student (snr=[])
+-- | liefert (nun und demnaechst mgl). Aufgaben für Student/alle Student (snr=[])
 -- ( [header ... ] , [ ( ANr, Name , Subject , Path , Highscore , Von , Bis ) ] )
 mglNextAufgabenDB :: String -> IO ( [String],[[String]])
 mglNextAufgabenDB snr = do
@@ -698,7 +701,7 @@ mglNextAufgabenDB snr = do
 -- ADMIN
 
 
--- 
+-- | 
 -- Login des Admins
 -- 
 -- Input:   Name, Passwort
@@ -746,7 +749,7 @@ failDB nme pas = do
        let loginok = length inh > 0
        return loginok
 
---
+-- |
 -- Liefert Studenten-Daten die auf Vorname,Name,Matrikel,Email und Vorlesung passen.
 --
 -- Hinweis: Und-Verknuepfung, wobei leere (="") Parameter ignoriert werden.
@@ -796,7 +799,7 @@ findStudDB vnm nme mat eml vrl= do
        disconnect conn 
        return (  showColTypes stat, inh )
 
---
+-- |
 -- Modifiziert vom Student Matrikel,Vorname,Name,Email,Passwort
 --
 -- Input:   AlteMatrikelnr., NeueMatrikelnr., Vorname,Name,Email,Passwort
@@ -818,7 +821,7 @@ updateStudDB oldmat mat vnm nme eml pas = do
    disconnect conn 
    return ()
 
---
+-- |
 -- Liefert vom Studenten: Vorname,Name,Email,Status,Passwort
 --
 -- Input: Matrikelnr.
@@ -849,7 +852,7 @@ getStudentDB mnr = do
     disconnect conn 
     return inh
 
---
+-- |
 -- Liefert Email und Passwort von Matrikelnr
 --
 -- Input:   Matrikelnr
@@ -876,7 +879,7 @@ getEmailPasswortDB mnr = do
     return inh
 
 
---
+-- |
 -- input: email-adresse
 -- output: ( Id, Matrikel )
 --
@@ -907,7 +910,7 @@ getIdMat email = do
 
 
 -- ================================================================================
--- Auswertung
+-- | Auswertung
 -- z.T. halbautomatisch!
 
 --
@@ -945,7 +948,7 @@ getSerienPunkteDB mnr =
                      ]
 
 
--- liefert Serien Punkte von allen Studenten
+-- | liefert Serien Punkte von allen Studenten
 --
 getAllSerienPunkteDB :: IO [(String,String,String,String)]
 getAllSerienPunkteDB =
@@ -977,7 +980,7 @@ getAllSerienPunkteDB =
 
 
 
--- Erweiterungen für den ScorerDB
+-- | Erweiterungen für den ScorerDB
 getHighscoreCandidatesDB =
     do
     { let { sqlstr = foldr1 (\x y -> x ++ " " ++ y) 
@@ -1011,18 +1014,20 @@ getHighscoreCandidatesDB =
 
 ---------------------------------------------------------------------------
 
-{-
-TODO: 
-sowas gehört in ein extra modul
-und sollte für jede SQL-tabelle existieren
-(d. h. alle komponenten enthalten, und instance SQLBind ?)
--}
+-- | TODO: 
+-- sowas gehört in ein extra modul
+-- und sollte für jede SQL-tabelle existieren
+-- (d. h. alle komponenten enthalten, und instance SQLBind ?)
 
 data Aufgabe  =
      Aufgabe { aufgabe :: String
-	       , direction :: ATHighLow
-	       , vorlesung :: String
-	       }
+	     , vorlesung :: String
+	     , direction :: ATHighLow
+	     , von :: String -- ^ Time
+	     , bis :: String -- ^ Time
+             , typ :: String -- ^ Blob
+	     , config :: String -- ^ Blob
+	     }
      deriving ( Eq, Ord, Show, Read )
 
 getHighscoreAufgabeTypesDB :: IO [ Aufgabe ]
@@ -1031,24 +1036,36 @@ getHighscoreAufgabeTypesDB =
     { let { sqlstr = unwords
               [ "SELECT "
               , " CONCAT(aufgabe.Name,\"-\",aufgabe.Subject ) as aufg"
-              , ", Highscore "
+              , ", Highscore"
 	      , ", VNr"
-              , "FROM   aufgabe "
+	      , ", Von"
+	      , ", Bis"
+	      , ", Type"
+	      , ", Config"
+              , "FROM aufgabe"
               , "ORDER BY aufg"
               , ";" 
               ]  
         }
     ; conn <- myconnect
     ; stat <- query conn $ sqlstr
-    ;  inh  <- collectRows (\ state ->
+    ; inh  <- collectRows (\ state ->
                          do
-                                a <- getFieldValue state "aufg"
-                                b <- getFieldValue state "Highscore"
-				c <- getFieldValue state "VNr"
+                                g_aufgabe <- getFieldValue state "aufg"
+                                g_highscore <- getFieldValue state "Highscore"
+				g_vnr <- getFieldValue state "VNr"
+                                g_von <- getFieldValue state "Von"
+                                g_bis <- getFieldValue state "Bis"
+                                g_type <- getFieldValue state "Type"
+                                g_config <- getFieldValue state "Config"
 
-                                return $ Aufgabe { aufgabe = a
-						   , direction = read b
-						   , vorlesung = c
+                                return $ Aufgabe { aufgabe = g_aufgabe
+						   , direction = read g_highscore
+						   , vorlesung = g_vnr
+						   , von = g_von
+						   , bis = g_bis
+						   , typ = g_type
+						   , config = g_config
 						   }
                         ) stat
     ; return inh

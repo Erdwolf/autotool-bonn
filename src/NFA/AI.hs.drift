@@ -1,0 +1,21 @@
+--  -*- mode: haskell -*-
+
+module NFA.AI where
+
+import Autolib.NFA.Type
+import Autolib.Sets
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+
+data AI = AI { name :: String -- abkürzung
+	     , automat :: NFA Char Int   
+	     , alphabet :: Set Char
+	     }
+    deriving ( Typeable )
+
+{-! for AI derive: ToDoc, Reader !-}
+
+instance  Show AI where show = render . toDoc
+instance  Read AI where readsPrec = parsec_readsPrec

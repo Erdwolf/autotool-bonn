@@ -5,14 +5,15 @@ include Makefile-defs
 
 # for autotool: ########################################################
 
-# TODO: configure
-
-PUB =  $(HOME)/public_html
 CGIBIN = $(PUB)/cgi-bin
 
 ###############################################################################
 
-all : drift face
+
+PROGS = Face Super
+CGIS = $(patsubst %,Inter/%.cgi,$(PROGS))
+
+all : drift $(CGIS)
 
 control : 
 	( cd control && make autoan.cgi )
@@ -39,8 +40,6 @@ tags :
 # haddock
 # note: HADDOCK will be set by configure in config.mk
 #######################################################################
-
-PUB = /var/www
 
 GHC_LIBS = base haskell98 parsec unix network readline
 GHC_LINK = http://www.haskell.org/ghc/docs/6.2/html/libraries
@@ -90,17 +89,14 @@ drift-clean :
 # cgi Inter/Face
 ###############################################################################
 
-INTER_FACE_DIR=Inter
-INTER_FACE=Face.hs
-INTER_FACE_WITH_PATH=$(INTER_FACE_DIR)/$(INTER_FACE)
-INTER_FACE_CGI=$(INTER_FACE_DIR)/$(subst .hs,.cgi,$(INTER_FACE))
-INTER_FACE_TARGET=root@theo1:/usr/lib/cgi-bin/Face.cgi
 
-face : $(INTER_FACE_CGI) 
-	cp $(INTER_FACE_CGI) $(CGIBIN)/
+install : $(CGIS)
+	cp $(CGIS) $(CGIBIN)/
 
-get : Inter/Get.cgi
-	cp $< $(CGIBIN)/
+
+
+
+
 
 
 install-face : $(INTER_FACE_CGI)

@@ -53,26 +53,27 @@ expands :: Int -> PCP -> [Pick] -> PCP
 expands k p icks = foldl (expand k) p icks
 
 -- | (infinite) list of shortest solutions (if any)
-sols :: Param -> PCP -> [Pick] -> [ [Folge] ]
-sols conf p icks = do
+sols :: Param -> PCP -> [Pick] -> [ Folge ]
+sols conf p icks = map head
+                 $ takeWhile (not . null) 
+                 $ do
     k <- [ 1 .. ]
     let p' = expands k p icks 
     return $ take 1 $ solutions (viel conf) (fern conf) p'
 
 picker :: Param -> PCP -> IO ()
 picker conf p = do
-    n <- eins [1 .. 4]
+    n <- eins [1 .. 3]
     icks <- picks p n
-    let ss = take 8 $ sols conf p icks
-    let ok = all (not . null) ss
-        xs = map (length . head) ss
-    if not ok
-       then putStr ". "
+    let (ss, ts) = splitAt 10 $ sols conf p icks
+        xs = map length ss
+    if null ts
+       then putStr "-"
        else do
-	        let j = judge $ drop 2 xs
-                    l = length j
-	        putStr j
-                when (l > 2) $ do
+           let j = judge $ drop 5 xs
+               l = length j
+           putStr $ show l
+           when (l > 3) $ do
                      putStrLn $ "\nlevel " ++ show l
                      print $ toDoc (p, icks, ss, xs)
     hFlush stdout
@@ -91,7 +92,7 @@ diff xs = zipWith (-) (tail xs) xs
 thrower :: Param -> IO ()
 thrower conf = do
     (p, _) <- generator conf
-    sequence_ $ replicate 20 $ picker conf p
+    sequence_ $ replicate 10 $ picker conf p
  
 runit :: Param -> IO ()
 runit conf = sequence_ 
