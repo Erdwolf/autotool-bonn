@@ -7,8 +7,10 @@ import Autolib.NFA.Det
 import Autolib.NFA.Minimize
 import Autolib.NFA.Normalize
 import Autolib.NFA.Minus
+import Autolib.NFA.Shuffle
 import Autolib.NFA.Ops
 import Autolib.NFA.Basic
+import Autolib.NFA.Shortest
 
 import Autolib.NFA.Dot
 
@@ -16,9 +18,8 @@ import Autolib.ToDoc
 import Autolib.Letters
 import Autolib.Symbol
 
--- input: complete and deterministic automaton
+-- | input: complete and deterministic automaton
 -- output: automaton that accepts all synchronizing words
-
 
 synchro :: NFAC c a 
 	=> NFA c a
@@ -29,7 +30,7 @@ synchro a =
 		   $ states b
 	  }
 
--- factor-minimal words
+-- | factor-minimal words
 facmin :: NFAC c a 
        => NFA c a
        -> NFA c Int
@@ -41,12 +42,24 @@ facmin a =
 	      $ Autolib.NFA.Ops.union ( dot sig s ) 
 				     ( dot s sig ) )
 
--- "bad" examples
+-- | minimal words w.r.t. embedding
+-- (by Kruskal's theorem, this is a finite set)
+-- hint: get list of these words with 'NFA.Shortest.accepted'
+embmin :: NFAC c a
+       => NFA c a
+       -> NFA c Int
+embmin a = 
+    let s = minimize $ normalize a
+	sig = sigma $ setToList $ letters s
+        sigplus = dot sig ( star sig )
+    in  minus s ( minimize $ normalize $ shuffle s sigplus )
+
+-- | "bad" examples
 
 bad :: Int -> NFA Char Int
-bad n = informed (funni "bad" [ toDoc n ] )
-      $ NFA
-      { states = mkSet [ 0 .. pred n ]
+bad n = NFA
+      { nfa_info = funni "bad" [ toDoc n ]  
+      , states = mkSet [ 0 .. pred n ]
       , starts = emptySet
       , finals = emptySet
       , trans  = collect $
