@@ -41,12 +41,14 @@ data Op a = Op { name  :: String
 	     , precedence :: Maybe Int
 	     , assoc :: Assoc
 	     , inter :: [a] -> a
+             , prefix :: Bool
 	     }
     deriving ( Typeable )
 
 -- | for parsing
 class Ops a where
       ops :: [ Op a ]
+      funs :: [ Op a ]
 
 -- | xml-darstellung ist einfach ein string (show\/read)
 instance Ops a => Container (Op a) String where
@@ -70,7 +72,9 @@ instance Ops a => ToDoc (Op a) where
 
 instance Ops a => Reader (Op a) where
     readerPrec p = choice $
-       let ( nulls, sonst ) =  partition ( \ op -> 0 == arity op ) ops
+       let ( nulls, sonst ) =  
+               partition ( \ op -> 0 == arity op ) ops
+               -- FIXME: handling of funs
            table = makeTokenParser $ emptyDef
 		   { commentLine = "" 
 		   , commentStart = ""
@@ -86,7 +90,8 @@ instance Ops a => Reader (Op a) where
 			  return op
 
 instance Ops a => Reader ( Exp a ) where
-    readerPrec p = I.treader $ I.Config { I.reserved_symbols = ops
-                                     , I.allow_new_symbols = False
-                                     }
+    readerPrec p = I.treader 
+                 $ I.Config { I.reserved_operator_symbols = ops
+                            , I.allow_new_symbols = False
+                            }
 
