@@ -348,25 +348,8 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
 parameter_table auf = do
     h3 $ unwords [ "Aufgabe", toString $ A.name auf ]
-    let tab = do
-            open btable
-            sequence_ $ do 
-              ( name, thing ) <- 
-            	    [ ( "Status", toString $ A.status auf )
-            	    , ( "von", toString $ A.von auf )
-            	    , ( "bis", toString $ A.bis auf )
-            	    , ( "Highscore", toString $ A.highscore auf )
-            	    ]
-              return $ do
-            	    open row 
-            	    plain name
-            	    plain thing
-            	    close 
-            close -- table
-    let hin = above ( plain "Hinweise" )
+    above ( plain "Hinweise" )
 	            ( pre $ toString $ A.remark auf )
-    -- beside tab hin
-    hin
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
