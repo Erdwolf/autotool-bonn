@@ -39,6 +39,7 @@ import qualified JVM.NUMAT
 import qualified Sortier.Netz.Check
 import qualified PCP.Quiz
 import qualified Hanoi
+import qualified Java.Sort
 
 -- vorführen:
 
@@ -76,4 +77,4 @@ boiler = sequence $
        ++ PCP.Quiz.generates
        ++ Hanoi.generates
        ++ Demo.L.generates
-
+	++ Java.Sort.generates

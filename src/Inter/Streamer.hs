@@ -54,17 +54,18 @@ handler variants ( h, rhost, rport ) = do
     let id = read first
     print id ; hFlush stdout
 
-    rest <- hGetContents h -- hoffentlich sehen wir was
     let par = P.empty { P.problem = I.problem id
 		       , P.aufgabe = I.aufgabe id
 		       , P.version = I.version id
 		       , P.matrikel = I.matrikel id
 		       , P.passwort = read $ I.passwort id
-		       , P.input = rest
+		       -- , P.input = rest
 		       , P.variants = variants
 		       } 
 
     res <- validate par
+
+
 
     case res of
      Left _ -> do
@@ -77,10 +78,24 @@ handler variants ( h, rhost, rport ) = do
           let ( Just i, com :: Doc ) = export generator
 	  hPutStrLn h $ show i -- Kommentar wird ignoriert
 	  hFlush h
+
+          block <- hGetBlock h 
+	  
+	  par <- return $ par { P.input = unlines $ block }
+
           let ( res :: Maybe Int , com :: Doc ) 
                  = export $ evaluate ( problem v ) i par
 	  msg <- bank par res 
 	  hPutStrLn h $ msg
 	  hPutStrLn h $ render com
+
+hGetBlock :: Handle -> IO [ String ]
+-- bis zu leerzeile lesen
+hGetBlock h = do
+    l <- hGetLine h
+    if null l 
+	then return []
+	else do ls <- hGetBlock h
+	        return $ l : ls
 
 
