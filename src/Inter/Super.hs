@@ -241,30 +241,51 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
     hr ---------------------------------------------------------
     h3 "Lösung"
 
-    plain "Eingabefeld:"
-    ex   <- submit "subex" "example"
-    prev <- submit "subprev" "previous"
-    esub  <- submit "subsol" "submit"
-    br
-    when ( ex || prev ) blank
+    -- das vorige mal bei eingabefeld oder upload?
+    epeek <- look "subsol"
+    fpeek <- look "fsub"
 
-    let b0 = render $ toDoc ini 
-    def <- io $ if prev 
-	   then Inter.Store.latest (mkpar stud auf)
+    esol <- if isJust fpeek
+       then do 
+          -- voriges mal file gewählt, also textarea nicht anzeigen
+          wef <- submit "wef" "Eingabefeld" 
+          when wef $ blank
+          return Nothing
+       else do
+          plain "Eingabefeld:"
+	  ex   <- submit "subex" "example"
+	  prev <- submit "subprev" "previous"
+	  esub  <- submit "subsol" "submit"
+	  br
+	  when ( ex || prev ) blank
+
+          let b0 = render $ toDoc ini 
+	  def <- io $ if prev 
+	      then Inter.Store.latest (mkpar stud auf)
                       `Control.Exception.catch` \ _ -> return b0
-	   else return b0
-    sol <- textarea "sol" def
-    br
-    plain "oder Datei-Upload (note: currently broken):"
-    up <- file "up" undefined
-    fsub  <- submit "fsub" "submit"
-    br
+	      else return b0
+          sol <- textarea "sol" def
+          br
+          return sol
+    plain "oder" 
 
-    cs <- if esub
-          then do Just cs <- return sol ; return cs
-	  else if fsub
-	       then do Just cs <- return up ; return cs
-	       else mzero
+    fsol <- if isJust epeek
+        then do
+	    -- voriges mal textfeld gewählt, also file-dialog nicht anzeigen
+            wup <- submit "wup" "Datei-Upload"
+            when wup $ blank
+            return Nothing
+        else do
+            plain "Datei-Upload:"
+            up <- file "up" undefined
+	    fsub  <- submit "fsub" "submit"
+	    return up
+
+    cs <- case esol of
+             Just cs -> return cs
+	     Nothing -> case fsol of
+		  Just cs -> return cs
+		  Nothing -> mzero
 
     hr
     h3 "Bewertung"
