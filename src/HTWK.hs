@@ -14,6 +14,4 @@ boiler = sequence
        -- der erste ist der default-wert!
        $  []
        ++ Inter.CASE.aufgaben
-       
-
 
