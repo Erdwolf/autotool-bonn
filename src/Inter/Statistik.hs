@@ -87,7 +87,7 @@ resultate vnr only_mandatory = do
 	anrs = smap snd keys
 
     h3 "Einsendungen (Ok/No)"
-    open btable
+    open sbtable
     open row
     plain "MNr" ; plain "Vorname" ; plain "Name"
     sequence_ $ do
