@@ -65,11 +65,17 @@ labeled :: ( Ix c )
 	=> SRS c
         -> Relation.Type Int Int
 	-> [ ( Model c Int , SRS (Aged c) ) ]
-labeled srs rel = do
+labeled (srs :: SRS c) rel = do
     m <- models srs rel
-    let srs' = labeled_srs m srs
+    let srs' = labeled_srs m srs :: SRS (Aged c)
+    -- TODO: add decreasing rules
     guard $ not $ contains_a_copy srs srs'
     let e = essential srs'
+    guard $ letters e == ( letters srs' :: Set (Aged c))
+
+    -- mal sehen
+    -- guard $ length e < length srs'
+
     return ( m, e )
 
 ex =  [("ab","a2b"),("ba","b1a")]
