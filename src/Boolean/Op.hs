@@ -5,7 +5,7 @@ module Boolean.Op where
 import Reader 
 import ToDoc
 import Hash
-
+import Util.Size
 
 import qualified TES.Symbol
 import qualified TES.Parsec
@@ -27,6 +27,7 @@ data Op = Op { name  :: String
 instance Eq Op where o == p = name o == name p
 instance Ord Op where compare o p = compare (name o) (name p)
 instance Hash Op where hash = hash . name
+instance Size Op where size = const 1
 
 instance TES.Symbol.Symbol Op where
     arity = arity
