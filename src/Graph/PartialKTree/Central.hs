@@ -43,13 +43,30 @@ instance CC a
 
     initial p (g, k) = lknoten g
 
-    partial p (g, k) xs = 
-        assert ( mkSet xs == knoten g )
-	       $ text "kommen alle Knoten vor?"
+    partial p (g, k) xs = do
+        -- auch partielle lösungen sollen kommentiert werden
+        let rest = knoten g `minusSet` mkSet xs
+	ys <- if isEmptySet rest
+	      then return []
+	      else do 
+		 inform $ vcat 
+		        [ text "Diese Knoten des Graphen fehlen in Ihrer Liste"
+			, text "und werden deswegen am Ende angefügt:"
+			, nest 4 $ toDoc rest
+			]
+		 return $ setToList rest
+	cliques (polish g, k) ( xs ++ ys )
+	return ()
 
     total p (g, k) xs = do
-	cliques (g, k) xs
+        assert ( mkSet xs == knoten g )
+	       $ text "kommen alle Knoten vor?"
 	return ()
+
+polish g = g { show_labels = True
+	     , layout_program = Dot
+	     , layout_hints = [ "-Nshape=plaintext" ]
+	     }
 
 ------------------------------------------------------------------
 
@@ -65,11 +82,7 @@ instance Generator PartialKTree Config ( (Graph Int, Int), [ Int ] ) where
     generator p conf key = do
         ( g, scheme ) <- roll ( width conf ) [ 1 .. nodes conf ]
 	g <- remove_kanten (nodes conf `div` 2) g
-	let h = g { show_labels = True
-		  , layout_program = Dot
-		  , layout_hints = [ ]
-		  }
-	return (( h, width conf ), scheme )
+	return (( polish g, width conf ), scheme )
 
 instance Project PartialKTree ( (Graph Int, Int), [ Int ] ) ( Graph Int, Int ) where
     project p (( g, k ) , scheme) = (g, k)

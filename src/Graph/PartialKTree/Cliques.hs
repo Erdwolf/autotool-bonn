@@ -34,7 +34,7 @@ cliques (g, k) xs | ist_clique g = do
     return $ s - 1
 
 cliques (g, k) ( x : xs ) = do
-    peng $ g { show_labels = True , layout_hints = [ "-Nshape=plaintext" ] }
+    peng g
     inform $ text "nächster Knoten:" <+> toDoc x
     let n = nachbarn g x
     inform $ text "hat Nachbarn:" <+> toDoc n
@@ -43,7 +43,7 @@ cliques (g, k) ( x : xs ) = do
     let c = no_fixed_layout $ clique n
         neu = kanten c `minusSet` kanten g
     inform $ text "neue Kanten:" <+> toDoc neu
-    let h = union0 c ( restrict ( mkSet xs ) g )
+    let h = union0 ( restrict ( mkSet xs ) g ) c
     r <- cliques ( h, k ) xs
     return $ max r ( cardinality n ) 
     
