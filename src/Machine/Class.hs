@@ -14,10 +14,15 @@ class ( ToDoc m, Size m
       , Compute m conf
       ) => Machine m dat conf
 
-class InOut m dat conf | m dat -> conf  where
-    -- startkonf. herstellen
+class Numerical dat where
+    -- berechnet eine mehrstellige zahlfunktion
+    encode :: [ Integer ] -> dat
+    decode :: dat -> Integer
+
+class InOut m dat conf | m -> dat, m -> conf  where
+    -- startkonf. herstellen (tupel von args)
     input  :: m -> dat -> conf
-    -- endkonf. lesen
+    -- endkonf. lesen (ein einziges arg)
     output :: m -> conf -> dat
 
 class Ord conf => Compute m conf where

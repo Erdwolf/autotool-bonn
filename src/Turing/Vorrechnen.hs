@@ -15,7 +15,8 @@ import ToDoc
 vorrechnen :: TUM y z
 	   => Turing y z -> [y]
 	   -> Reporter ()
-vorrechnen a xs = vorrechnen_cut 10 a xs
+vorrechnen a xs = do
+    vorrechnen_cut 10 a xs
 
 vorrechnen_cut :: TUM y z
 	   => Int 
@@ -40,7 +41,9 @@ vorrechnen_cut cut a xs = do
 vorrechnens :: TUM y z
 	   => Turing y z -> [[y]]
 	   -> Reporter ()
-vorrechnens a = mapM_ (vorrechnen a)
+vorrechnens a xss = do
+    inform $ text "rechnen für eingaben" <+> toDoc xss
+    mapM_ (vorrechnen a) xss
 
 
 

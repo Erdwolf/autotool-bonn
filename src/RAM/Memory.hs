@@ -8,6 +8,9 @@ import OrdFM
 
 type Memory = FiniteMap Var Integer
 
+make :: [ ( Var, Integer ) ] -> Memory
+make = listToFM
+
 get :: Memory -> Var -> Integer
 get m v = lookupWithDefaultFM m 0 v
 

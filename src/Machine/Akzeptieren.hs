@@ -8,7 +8,7 @@ import Machine.Class
 import Machine.Vorrechnen
 
 import Monad (guard)
-import Reporter
+import Reporter hiding ( output )
 import ToDoc
 
 akzeptierend

@@ -8,7 +8,7 @@ import Machine.Class
 
 import Set
 import Schichten
-import Reporter
+import Reporter hiding ( output )
 import ToDoc
 
 vorrechnen :: Machine m dat conf
