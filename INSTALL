@@ -3,8 +3,8 @@ Prerequisites:
 * ghc-6.2 ( http://www.haskell.org/ghc/ )
 * HaXml-1.12 ( http://www.cs.york.ac.uk/fp/HaXml/ )
 * hsql-1.2 ( is part of http://htoolkit.sourceforge.net/ )
-* auto-drift ( http://141.57.11.163/auto/drift/ )
-* auto-lib ( http://141.57.11.163/auto/lib/ )
+* auto-drift ( http://141.57.11.163/auto/ )
+* auto-lib ( http://141.57.11.163/auto/ )
 
 Installation:
 
