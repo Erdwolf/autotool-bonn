@@ -9,15 +9,14 @@ import Control.Gruppe.Typ
 import Prelude hiding ( all )
 
 qq =  Select 
-     $ map reed [ "gruppe.VNr as VNr" 
+     $ map reed [ "gruppe.GNr as GNr" 
+		, "gruppe.VNr as VNr" 
 		, "gruppe.Name as Name"
-		, "gruppe.EinschreibVon as Von"
-		, "gruppe.EinschreibBis as Bis"
-	        , "NOW() < gruppe.EinschreibVon as Early"
-		, "NOW() > gruppe.EinschreibBis as Late"
+		, "gruppe.MaxStudents as MaxStudents"
+		, "gruppe.Referent as Referent"
 		] 
 
--- | get alle gruppeen aus DB
+-- | get alle gruppen aus DB
 -- TODO: implementiere filter
 get :: IO [ Gruppe ]
 get = do
@@ -35,50 +34,21 @@ get_this vnr = do
         ]
     common stat
 
-get_tutored :: SNr -> IO [ Gruppe ]
-get_tutored snr = do
-    conn <- myconnect
-    stat <- squery conn $ Query qq
-        [ From $ map reed [ "tutor", "gruppe" ] 
-	, Where $ ands
-	        [ equals ( toEx snr ) ( reed "tutor.SNr" ) 
-		, equals ( reed "tutor.VNr" ) ( reed "gruppe.VNr" )
-		]
-	]
-    common stat
-
-get_attended :: SNr -> IO [ Gruppe ]
-get_attended snr = do
-    conn <- myconnect
-    stat <- squery conn $ Query qq
-        [ From $ map reed [ "stud_grp", "gruppe", "gruppe" ] 
-	, Where $ ands
-	        [ equals ( toEx snr ) ( reed "stud_grp.SNr" ) 
-		, equals ( reed "stud_grp.GNr" ) ( reed "gruppe.GNr" )
-		, equals ( reed "gruppe.VNr" ) ( reed "gruppe.VNr" )
-		]
-	]
-    common stat
-
-
-
 common = collectRows $ \ state -> do
+    	g_gnr <- getFieldValue state "GNr"
     	g_vnr <- getFieldValue state "VNr"
         g_name <- getFieldValue state "Name"
-        g_von <- getFieldValue state "Von"
-        g_bis <- getFieldValue state "Bis"
-	g_early <- getFieldValue state "Early"
-	g_late <- getFieldValue state "Late"
-        return $ Gruppe { vnr = g_vnr
-			 , name = g_name
-			  , einschreibVon = g_von
-			  , einschreibBis = g_bis
-			  , einschreib = timer g_early g_late
-    			   }
+	g_maxStudents <- getFieldValue state "MaxStudents"
+	g_referent <- getFieldValue state "Referent"
+        return $ Gruppe { gnr = g_gnr
+			, vnr = g_vnr
+			, name = g_name
+			, maxStudents = g_maxStudents
+			, referent = g_referent
+    			}
 
-
-teilnehmer :: VNr -> IO [ ( SNr, (MNr, Name, Name) ) ]
-teilnehmer vnr = do
+teilnehmer :: GNr -> IO [ ( SNr, (MNr, Name, Name) ) ]
+teilnehmer gnr = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "student.SNr as SNr" 
@@ -89,9 +59,8 @@ teilnehmer vnr = do
 	)
         [ From $ map reed [ "student", "stud_grp", "gruppe" ] 
 	, Where $ ands
-	        [ equals ( toEx vnr )  ( reed "gruppe.VNr" )
+	        [ equals ( toEx gnr )  ( reed "gruppe.GNr" )
 		, equals ( reed "gruppe.GNr" ) ( reed "stud_grp.GNr" )
-		, equals ( reed "stud_grp.SNr" ) ( reed "student.SNr" )
 		]
 	]
     res <- collectRows ( \ state -> do
@@ -105,34 +74,35 @@ teilnehmer vnr = do
     return res
 
 -- | put into table:
--- do not evaluate Gruppe.vnr (it may be undefined!)
--- instead use first argument: Just vnr -> update, Nothing -> insert
-put :: Maybe VNr
+-- do not evaluate Gruppe.gnr (it may be undefined!)
+-- instead use first argument: Just gnr -> update, Nothing -> insert
+put :: Maybe GNr
     -> Gruppe
     -> IO ()
-put mvnr vor = do
+put mgnr gruppe = do
     conn <- myconnect 
-    let common = [ ( reed "VNr", toEx $ vnr vor )
-		 , ( reed "Name", toEx $ name vor )
-		 , ( reed "EinschreibVon", toEx $ einschreibVon vor )
-		 , ( reed "EinschreibBis", toEx $ einschreibBis vor )
+    let common = [ ( reed "VNr", toEx $ vnr gruppe )
+		 , ( reed "Name", toEx $ name gruppe )
+		 , ( reed "Referent", toEx $ referent gruppe )
+		 , ( reed "MaxStudents", toEx $ maxStudents gruppe )
 		 ]
-    case mvnr of
+    case mgnr of
 	 Nothing -> squery conn $ Query
             ( Insert (reed "gruppe") common ) 
 	    [ ]
-         Just vnr -> squery conn $ Query
+         Just gnr -> squery conn $ Query
             ( Update (reed "gruppe") common ) 
-	    [ Where $ equals ( reed "gruppe.VNr" ) ( toEx vnr ) ]
+	    [ Where $ equals ( reed "gruppe.GNr" ) ( toEx gnr ) ]
     disconnect conn
 
 -- | delete
-delete :: VNr
+delete :: GNr
     -> IO ()
-delete vnr = do
+delete gnr = do
     conn <- myconnect 
     squery conn $ Query
         ( Delete ( reed "gruppe" ) )
-	[ Where $ equals ( reed "gruppe.VNr" ) ( toEx vnr ) ]
+	[ Where $ equals ( reed "gruppe.GNr" ) ( toEx gnr ) ]
     disconnect conn
+
 

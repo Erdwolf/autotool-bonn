@@ -4,25 +4,23 @@ module SAT.Types where
 
 --   $Id$
 
-import Data.FiniteMap
-import ToDoc
-import Reader
-import ReadFM
-import Sets
+import Autolib.FiniteMap
+import Autolib.Set
+import Autolib.ToDoc
+import Autolib.Reader
 
 import Data.Typeable
-import TypeableFM
 
--- Bemerkungen: 
+
+-- | Bemerkungen: 
 -- 1. Aussagenlogische Formel in konjunktiver Normalform (KNF):
 -- Literal = Variable oder nonVariableVariable
 -- Klausel= Literal || Literal ||...|| Literal 	
 -- KNF = Klausel && Klausel && ... && Klausel
 
-
 data SAT = SAT deriving ( Show, Typeable )
 
--- Elementare Def.
+-- | Elementare Def.
 data Literal = Pos Variable | Neg Variable
     deriving ( Eq, Ord, Typeable)
 
@@ -34,11 +32,8 @@ opposite ( Neg v ) = Pos v
 
 {-! for Literal derive : ToDoc, Reader !-}
 
-instance Show Literal where show = render . toDoc
-instance Read Literal where readsPrec = parsec_readsPrec
 
--- Klausel = Tripeln von Literalen
--- type Klausel = (Literal,Literal,Literal)
+-- | Klausel = Tripeln von Literalen
 
 data Klausel = Or [ Literal ] deriving ( Eq, Ord , Typeable)
 
@@ -47,11 +42,8 @@ literale (Or lits) = lits
 
 {-! for Klausel derive : ToDoc, Reader !-}
 
-instance Show Klausel where show = render . toDoc
-instance Read Klausel where readsPrec = parsec_readsPrec
 
--- Formeln in 3KNF = Liste von Klauseln
--- type Formel = [Klausel]
+-- | Formeln in 3KNF = Liste von Klauseln
 data Formel = And [Klausel] deriving ( Typeable )
 
 klauseln :: Formel -> [ Klausel ]
@@ -59,17 +51,11 @@ klauseln (And cls) = cls
 
 {-! for Formel derive : ToDoc, Reader !-}
 
-instance Show Formel where show = render . toDoc
-instance Read Formel where readsPrec = parsec_readsPrec
 
--- Variable = String
 type Variable = String 
 
--- Belegung = Variable -> B00l
+
 type Belegung = FiniteMap Variable Bool
--- type Map = [(Literal,Literal)]
-
-
 
 variablen :: Formel -> Set Variable
 variablen (And cls) = mkSet $ do

@@ -34,6 +34,8 @@ import qualified Exp.Convert
 import qualified Grammatik.CF.Interface
 import qualified NPDA.Inter
 
+import qualified SAT.SAT
+
 makers :: [ Make ]
 makers = [ Blank.make
 	 , Upload.make
@@ -71,6 +73,8 @@ makers = [ Blank.make
 
          , Grammatik.CF.Interface.make
 	 , NPDA.Inter.make
+
+         , SAT.SAT.make
 	 ]
 
 

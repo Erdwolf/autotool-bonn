@@ -1,5 +1,5 @@
 
---| Korrekturfunktion für 3SAT
+-- | Korrekturfunktion für 3SAT
 -- 
 -- Autor: Mohammad Esad-Djou
 -- bss98aou@studserv.uni-leipzig.de
@@ -22,36 +22,30 @@ module SAT.SAT
 ( SAT (..)
 , Variable, Literal (..)
 , Klausel, Formel, Belegung
-, module Data.FiniteMap
+, module Autolib.FiniteMap
 
 )
 
 where
 
-import Data.FiniteMap
-import ReadFM
+import Autolib.FiniteMap
 
 import Challenger.Partial
 
-import ToDoc
+import Autolib.ToDoc
 import Control.Monad (guard)
-import Sets
-import System
+import Autolib.Set
+
+-- import System
 
 -- import Step
 -- import Interactive.Type
 -- import qualified Component as C
-import Reporter
-import Maybe
-
--- ???
-import Number
-import Iso
+import Autolib.Reporter
+import Data.Maybe
 
 import SAT.Types
 import SAT.Wert
--- import SAT.Inter -- ersetzt durch Quiz
-
 
 ---------------------------------------------------------------------------
 
