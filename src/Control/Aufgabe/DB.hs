@@ -11,10 +11,21 @@ import Prelude hiding ( all )
 
 -- | get alle aufgaben aus DB
 -- TODO: implementiere filter
+get_this :: ANr -> IO [ Aufgabe ]
+get_this anr = select_where [ equals ( reed "aufgabe.ANr" ) ( toEx anr ) ]
+
 get :: Maybe VNr 
     -> Bool
     -> IO [ Aufgabe ]
-get mvnr only_current = do
+get mvnr only_current = select_where $
+	        [ equals ( reed "aufgabe.VNr" ) ( toEx vnr ) 
+		| vnr <- maybeToList mvnr
+		] 
+	     ++ [ reed "NOW() BETWEEN ( Von AND Bis )" 
+		| only_current 
+		]
+
+select_where wh = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "ANr", "VNr", "Name"
@@ -23,15 +34,13 @@ get mvnr only_current = do
 			    ]
 	) $
         [ From $ map reed [ "aufgabe" ] 
-        , Where $ ands $
-	        [ equals ( reed "aufgabe.VNr" ) ( toEx vnr ) 
-		| vnr <- maybeToList mvnr
-		] 
-	     ++ [ reed "NOW() BETWEEN ( Von AND Bis )" 
-		| only_current 
-		]
+        , Where $ ands wh
         ]
-    inh  <- collectRows (\ state -> do
+    res <- common stat
+    disconnect conn
+    return res
+
+common = collectRows $ \ state -> do
         g_anr <- getFieldValue state "ANr"
     	g_vnr <- getFieldValue state "VNr"
         g_name <- getFieldValue state "Name"
@@ -52,8 +61,7 @@ get mvnr only_current = do
     			   , config = g_config
     			   , remark = g_remark
     			   }
-                    ) stat
-    return inh
+
 
 -- | put into table:
 -- do not evaluate Aufgabe.anr (it may be undefined!)
@@ -72,7 +80,7 @@ put manr auf = do
 		 , ( reed "Von", toEx $ von auf )
 		 , ( reed "Bis", toEx $ bis auf )
 		 ]
-    stat <- case manr of
+    case manr of
 	 Nothing -> squery conn $ Query
             ( Insert (reed "aufgabe") common ) 
 	    [ ]
@@ -86,10 +94,11 @@ delete :: ANr
     -> IO ()
 delete anr = do
     conn <- myconnect 
-    stat <- squery conn $ Query
+    squery conn $ Query
         ( Delete ( reed "aufgabe" ) )
 	[ Where $ equals ( reed "aufgabe.ANr" ) ( toEx anr ) ]
-    return ()
+    disconnect conn
+
 
 
 

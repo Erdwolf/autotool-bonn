@@ -9,6 +9,9 @@ import Scorer.Util
 
 import Control.Types
 import Control.Vorlesung.DB
+import Control.Aufgabe.DB
+import qualified Control.Vorlesung.Typ as V
+import qualified Control.Aufgabe.Typ as A
 
 import Autolib.FiniteMap
 import Autolib.Set
@@ -20,9 +23,13 @@ import System.IO ( hFlush, stdout )
 
 -- | druckt Auswertung für alle Aufgaben einer Vorlesung
 emit :: VNr -> DataFM -> IO ()
-emit vl fm0 = do
+emit vnr fm0 = do
+    vs <- Control.Vorlesung.DB.get_this vnr
+    let name = case vs of
+          [v] -> toString $ V.name v 
+          _   -> show vnr
 
-    mnrs <- Control.Vorlesung.DB.teilnehmer vl
+    mnrs <- Control.Vorlesung.DB.teilnehmer vnr
     let smnrs = mkSet $ mnrs
     let fm = mapFM ( \ key val -> do
 		  e <- val
@@ -32,7 +39,7 @@ emit vl fm0 = do
 
     putStrLn $ unlines
 	     [ "", ""
-	     ,  unwords [ "Auswertung für Lehrveranstaltung", show vl, ":" ] 
+	     ,  unwords [ "Auswertung für Lehrveranstaltung", name, ":" ] 
 	     ]
 
     mapM_ single $ fmToList fm
@@ -57,9 +64,13 @@ realize es = take scoreItems -- genau 10 stück
     
 -- | druckt Auswertung einer Aufgabe
 single :: ( ANr, [ Einsendung ] ) -> IO ()
-single arg @( auf, es ) = do
+single arg @( anr, es ) = do
+    aufs <- Control.Aufgabe.DB.get_this anr
+    let name = case aufs of
+          [a] -> toString $ A.name a 
+          _   -> show anr
     let header = unwords 
-	       [ "Aufgabe" , show auf
+	       [ "Aufgabe" , name
 	       , unwords $ if null es then [] else
 	         [ "( beste bekannte Lösung", show (size $ head es), ")" ]
 	       ]

@@ -18,6 +18,16 @@ get = do
         [ From $ map reed [ "vorlesung" ] ]
     common stat
 
+get_this :: VNr -> IO [ Vorlesung ]
+get_this vnr = do
+    conn <- myconnect
+    stat <- squery conn $ Query
+        ( Select $ map reed [ "VNr", "Name" ] )
+        [ From $ map reed [ "vorlesung" ] 
+        , Where $ equals ( reed "vorlesung.VNr" ) ( toEx vnr )
+        ]
+    common stat
+
 get_tutored :: SNr -> IO [ Vorlesung ]
 get_tutored snr = do
     conn <- myconnect

@@ -302,7 +302,8 @@ changeGrpPage mat F0 = do
           (h,allgrps)   <- io $ getAllGruppenDB
           stdgrp        <- io $ getGruppenStudDB mat
           let   
-                posgrp =  filter ( \ (g,_) -> not $ g `elem` stdgrp ) freegrps
+                posgrp = --  filter ( \ (g,_) -> not $ g `elem` stdgrp ) 
+	                   freegrps
                 currentgrps = filter ( \ (g,_) -> g `elem` stdgrp ) allgrps
                 thrd (_,_,x) = x
           let { show' = show . snd }

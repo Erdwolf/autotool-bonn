@@ -32,11 +32,11 @@ data Einsendung = Einsendung
 instance Show Einsendung where
     show i = unwords 
         [ spaci 4 $ abs $ size i
-		, spaci 8 $ matrikel i
+	, spaci 12 $ matrikel i
 	,    (nulli 2 $ (date i) !! 2) ++ "."
 		  ++ (nulli 2 $ (date i) !! 1) ++ "."
 		  ++ (nulli 4 $ (date i) !! 0) 
-		,    (nulli 2 $ (date i) !! 3) ++ ":"
+	,    (nulli 2 $ (date i) !! 3) ++ ":"
 		  ++ (nulli 2 $ (date i) !! 4) ++ ":"
 		  ++ (nulli 2 $ (date i) !! 5)
 		]
@@ -62,9 +62,9 @@ instance Read Einsendung where
             field n	 = head . drop (n-1)
             mySub x | x == ':'  = ' '
             		  | otherwise = x
+            wl      = words line
             line'   = dropWhile (/=")") wl
             date'   = takeWhile (/="(") wl
-            wl      = words line
             aufg    = field 6 line'
             ( v , '-' : a ) = span (/= '-') aufg
 	    ok	    = field 8 line'

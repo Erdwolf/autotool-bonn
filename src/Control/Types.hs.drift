@@ -24,6 +24,7 @@ import System.Time
 import Control.SQL
 import Inter.Crypt
 import Data.Char ( toLower )
+import Data.Maybe ( fromMaybe )
 import Database.MySQL.HSQL
 
 import qualified Exception
@@ -72,9 +73,11 @@ data HiLo = Keine | High | Low
 instance Show HiLo where show = render . toDoc
 instance Read HiLo where readsPrec = parsec_readsPrec
 instance SqlBind HiLo where 
-    fromSqlValue _ s = Just $ case parse (parse_complete reader) "string" s of
-        Right x -> x
-	Left e -> Keine
+    fromSqlValue _ s = Just 
+        $ fromMaybe Keine 
+	$ lookup (map toLower s)
+        $ do h <- [ minBound .. maxBound ]
+             return ( map toLower $ show h, h )
     toSqlValue w = show w
 
 instance ToEx HiLo where
