@@ -28,7 +28,7 @@ import Network.CGI
 import Text.Html hiding ( text  )
 
 -- Pretty-Printer Erweiturng
-import ToDoc (Doc, render, toDoc)
+import ToDoc (Doc, render, toDoc, text)
 
 -- Aufgaben Bewertungsprotokoll
 import Reporter
@@ -88,12 +88,11 @@ import Informed
 
 main :: IO ()
 main = do
-
      vs <- boiler
-     wrapper $ \ env -> ( do
-	 let msg =  p << pre << primHtml "timer expired"
-	 timed 10 msg $ iface vs env
-       ) `Exception.catch` \ err -> return $ p << pre << primHtml ( show err )
+     wrapper $ \ env ->  
+         iface vs env
+             `Exception.catch` \ err -> 
+                 return $ p << pre << primHtml ( show err )
 
 ------------------------------------------------------------------------
 
@@ -166,9 +165,10 @@ iface variants env = do
 	  
           -- neu (11. 11. 03): IO-Aktion ausführen
           ( res :: Maybe Int , com :: Doc ) 
-	      <- run $ do
-		  -- TODO: set default dir
-	          evaluate ( problem v ) i par2
+	      <- timed 15 ( Nothing, text "timer expired" ) $
+                     run $ do
+	  	         -- TODO: set default dir
+	                 evaluate ( problem v ) i par2
 
           let ans = 
 		  if isFirstRun
