@@ -17,9 +17,10 @@ cache d action = Control.Exception.catch
 	       debug $ "OK"
                let a = read cs
 	       -- the following forces evaluation of a ?
-	       when ( 0 == length ( show a )) $ do
+	       when ( show a /= cs ) $ do
 	            let msg = "cannot parse cache contents"
-	            debug msg ; fail msg
+	            debug msg 
+                    error msg
 	       return a 
 	  ) 
 	  ( \ _ -> do 
