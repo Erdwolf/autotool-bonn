@@ -14,7 +14,10 @@ module Col.DreiCol
 import Graph.Type
 import Graph.Util
 import Graph.Viz
-import Graph.Valid
+
+import qualified Graph.Valid
+import qualified Graph.Labeling
+
 import Challenger
 
 import ToDoc
@@ -26,15 +29,9 @@ import Monad ( guard ) -- old style
 data DreiCol = DreiCol deriving Show
 
 -- Färbung als Abbildung : Knotemengen -> Zahlen
-type Faerbung a = FiniteMap a Integer
+type Faerbung a = Graph.Labeling.Labeling a Integer
 
 
-symdiff :: Ord a => Set a -> Set a -> (Set a , Set a)
-symdiff xs ys = ( minusSet xs ys, minusSet ys xs )
-
-the :: Maybe a -> a
-the (Just x) = x
-the Nothing = error "Faerbung.the"
 
 instance ( ToDoc (Graph a) , Show (Graph a) , Read (Graph a)
 	, ToDoc (Faerbung a),Show (Faerbung a), Read (Faerbung a)
@@ -50,26 +47,23 @@ instance ( ToDoc (Graph a) , Show (Graph a) , Read (Graph a)
 	getGraphviz graph (getBeweisTrans loesung) dateiName
 
     validiere DreiCol g f =
-         valid g        
+	 let ft1 @ (f1, t1) = Graph.Valid.valid g        
+	     ft2 @ (f2, t2) = Graph.Labeling.valid g f       
+	 in  ( f1 && f2 , t1 <+> t2 )
 
     verifiziere DreiCol g f =
-        let domain = mkSet $ keysFM f
+        let 
 	    range  = mkSet $ eltsFM f
 	    erlaubt = mkSet [ 1 .. 3 ]
 	    fehlfarben = minusSet range erlaubt
-
-	    (here, there) = symdiff (knoten g) domain
 	    same = do k <- setToList $ kanten g
 		      let x = von k; y = nach k
-		      guard $ the (lookupFM f x) == the (lookupFM f y)
+		      guard $  Graph.Labeling.the (lookupFM f x) 
+			    == Graph.Labeling.the (lookupFM f y)
 		      return k
-	
-	in  if not $ isEmptySet here
-	    then ( False, text "Diese Knoten sind nicht gefärbt:"
-				  <+> toDoc here )
-	    else if not $ isEmptySet there
-	    then ( False, text "Das sind gar keine Knoten des Graphen:"
-				  <+> toDoc there )
+	    ft @ ( flag, txt ) = Graph.Labeling.valid g f	
+
+	in  if not flag then ft
 	    else if not $ isEmptySet fehlfarben
 	    then ( False, fsep [ text "Erlaubt sind nur die Farben:" 
 				      <+> toDoc erlaubt
@@ -119,7 +113,7 @@ getBeweisTrans loesung = GVTrans
 
 -- sucht zu einem Knoten die Farbe entsprechend der Klasse
 getNColor :: Ord knoten => Faerbung knoten -> knoten -> GVColor
-getNColor f knoten = getColor (the $ lookupFM f knoten)
+getNColor f knoten = getColor (Graph.Labeling.the $ lookupFM f knoten)
 
 -- gibt eine Farbe zu einem Index einer Klasse zurück
 -- sind erst mal nur 8 Farben - sollte aber reichen
