@@ -64,6 +64,7 @@ nodes t = do
     return $ Autolib.Dot.Node.blank
            { Autolib.Dot.Node.ident = show i
            , Autolib.Dot.Node.label = return $ tricky $ show f
+           , Autolib.Dot.Node.shape = return "plaintext"
            }  
 
 edges :: Show a 
