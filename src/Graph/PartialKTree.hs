@@ -1,7 +1,7 @@
 module Graph.PartialKTree 
 
 ( make
--- , make_quiz 
+, qmake
 )
 
 where

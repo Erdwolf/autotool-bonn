@@ -90,6 +90,7 @@ makers = [ Blank.make
 
          , Graph.TreeWidth.make
          , Graph.PartialKTree.make
+         , Graph.PartialKTree.qmake
 	 ]
 
 

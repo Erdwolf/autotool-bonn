@@ -3,6 +3,8 @@ module Graph.PartialKTree.Central where
 --  $Id$
 
 import Graph.PartialKTree.Cliques
+import Graph.PartialKTree.Config
+import Graph.PartialKTree.Quiz
 
 import Graph.Util
 import Autolib.Graph
@@ -11,6 +13,7 @@ import Autolib.Graph.Basic
 import Autolib.Graph.Ops
 
 import Inter.Types
+import Inter.Quiz
 import Autolib.Size
 import Autolib.Set
 import qualified Challenger as C
@@ -48,6 +51,8 @@ instance CC a
 	cliques (g, k) xs
 	return ()
 
+------------------------------------------------------------------
+
 make :: Make
 make = 
     let k = 4 :: Int
@@ -56,3 +61,20 @@ make =
 
 ------------------------------------------------------------------
 
+instance Generator PartialKTree Config ( (Graph Int, Int), [ Int ] ) where 
+    generator p conf key = do
+        ( g, scheme ) <- roll ( width conf ) [ 1 .. nodes conf ]
+	g <- remove_kanten (nodes conf `div` 2) g
+	let h = g { show_labels = True
+		  , layout_program = Dot
+		  , layout_hints = [ ]
+		  }
+	return (( h, width conf ), scheme )
+
+instance Project PartialKTree ( (Graph Int, Int), [ Int ] ) ( Graph Int, Int ) where
+    project p (( g, k ) , scheme) = (g, k)
+
+qmake :: Make
+qmake = quiz PartialKTree example
+
+    
