@@ -1,0 +1,6 @@
+This is a library of Haskell modules
+mainly related to finite word and tree automata.
+It is used in the programs 'Autotool' and 'Matchbox'.
+
+
+

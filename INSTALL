@@ -1,0 +1,14 @@
+Prerequisites:
+
+* ghc-6.2 ( http://www.haskell.org/ghc/ )
+* HaXml-1.12 ( http://www.cs.york.ac.uk/fp/HaXml/ )
+* auto-drift ( http://141.57.11.163/auto/drift/ )
+
+Installation:
+
+./configure
+make
+sudo make install
+
+The library will be installed as a ghc package
+(There is no executable.)
