@@ -24,7 +24,9 @@ import Reader
 type Exp = Term Identifier Op
 
 instance Reader Exp where
-    readerPrec p = treader ops False
+    readerPrec p = treader $ Config { reserved_symbols = ops
+				    , allow_new_symbols = False
+				    }
 
 instance Read Exp where
     readsPrec = parsec_readsPrec

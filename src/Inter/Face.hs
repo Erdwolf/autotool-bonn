@@ -1,9 +1,4 @@
-module Main where
-
--- -- $Id$
-
---
--- Inhalt:
+-- | Inhalt:
 --
 -- einfaches cgi-Interface zum Autotool.
 --
@@ -21,7 +16,11 @@ module Main where
 --  Gedaechtnis ist Parameter s.u.
 --
 -- Autoren: Johannes Waldmann, Alf Richter
---
+
+module Main where
+
+--  $Id$
+
 
 -- Standard CGI,HTML lib
 import Network.CGI

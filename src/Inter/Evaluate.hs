@@ -19,11 +19,11 @@ evaluate :: ( Reader b, Size b, ToDoc b
 	    )
  	    => p -> i -> P.Type -> Reporter Int
 evaluate p i par =
-    case parse reader "input" $ P.input par of
+    case parse (parse_complete reader) "input" $ P.input par of
          Left e -> do
 	       inform $ text "Syntaxfehler:"
 	       reject $ errmsg (P.input_width par) e $ P.input par
-	 Right b -> do
+	 Right b  -> do
 	       inform $ text "gelesen:" <+> toDoc b
 	       inform $ text "partiell korrekt?"
 	       pa <- Challenger.partial p i b
