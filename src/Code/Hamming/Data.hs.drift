@@ -14,8 +14,8 @@ import Prelude hiding ( length )
 import Code.Huffman.LR
 
 import Data.Typeable
-import Reader
-import ToDoc
+import Autolib.Reader
+import Autolib.ToDoc
 
 -- | damit übernimmt der parser die prüfung darauf,
 -- daß nur zwei buchstaben verwendet werden

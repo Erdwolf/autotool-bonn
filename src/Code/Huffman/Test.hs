@@ -12,10 +12,10 @@ import Code.Huffman.LR
 import Code.Huffman.Make
 import Code.Measure
 
-import Util.Sort
+import Autolib.Util.Sort
 import Data.FiniteMap
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 
 
 isoptimalprefix ::  ( ToDoc [b], ToDoc [a], ToDoc a, Ord a, Eq b )

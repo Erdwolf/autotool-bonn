@@ -8,11 +8,11 @@ import Code.Class
 import Inter.Types
 
 import Random
-import Util.Wort
-import ToDoc
-import Reader
-import Util.Size
-import Util.Seed
+import Autolib.Util.Wort
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Util.Size
+import Autolib.Util.Seed
 
 import Data.Typeable
 

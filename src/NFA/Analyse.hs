@@ -1,4 +1,4 @@
-module Autolib.NFA.Analyse where
+module NFA.Analyse where
 
 -- vom Automaten zum regulären Ausdruck
 
@@ -12,14 +12,14 @@ import Autolib.NFA.Eq
 import Autolib.Exp.Example
 import Autolib.Exp.Einfach
 
-import Autolib.Inter.Types
+import Inter.Types
 
 import Autolib.Sets
 import Autolib.ToDoc
 import Autolib.Reporter
 
 import qualified Challenger as C
-import Autolib.Data.Typeable
+import Data.Typeable
 
 data Analyse = Analyse deriving ( Eq, Ord, Show, Read, Typeable )
 
@@ -39,7 +39,7 @@ instance C.Partial  Analyse AI Exp
 		     , text "beschreibt."
 		     ]
 
-    initial p i   = Exp.Example.example (alphabet i)
+    initial p i   = Autolib.Exp.Example.example (alphabet i)
 
     partial p i b = do
         ist_einfach b

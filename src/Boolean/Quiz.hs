@@ -60,7 +60,7 @@ quiz auf ver par =
                    x <- cache (  Datei { pfad = [ "autotool", "cache"
                                            , auf, ver
                                            ]
-                                  , Util.Datei.name = key
+                                  , Autolib.Util.Datei.name = key
                                   , extension = "cache"
                                   }
                          ) ( roll par )

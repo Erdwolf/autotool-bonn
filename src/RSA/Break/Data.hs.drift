@@ -2,8 +2,8 @@
 
 module RSA.Break.Data where
 
-import Reader
-import ToDoc
+import Autolib.Reader
+import Autolib.ToDoc
 import Data.Typeable
 
 data Config =

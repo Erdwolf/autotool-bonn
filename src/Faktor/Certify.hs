@@ -3,11 +3,11 @@ module Faktor.Certify where
 --  $Id$
 
 import Faktor.Prim
-import ToDoc
+import Autolib.ToDoc
 
-import Util.Wort
-import Util.Zufall
-import Ana
+import Autolib.Util.Wort
+import Autolib.Util.Zufall
+import Autolib.Ana
 import Control.Monad ( guard )
 import Data.Maybe
 

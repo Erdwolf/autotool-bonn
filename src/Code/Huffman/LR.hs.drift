@@ -4,8 +4,8 @@ module Code.Huffman.LR where
 
 -- $Id$
 
-import ToDoc
-import Reader
+import Autolib.ToDoc
+import Autolib.Reader
 
 import Code.Type
 

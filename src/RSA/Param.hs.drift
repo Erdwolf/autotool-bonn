@@ -4,11 +4,11 @@ module RSA.Param where
 
 --   $Id$
 
-import Reader
-import ToDoc
+import Autolib.Reader
+import Autolib.ToDoc
 
 import Data.Typeable
-import Sets
+import Autolib.Sets
 
 data Param = 
      Param { von :: Int

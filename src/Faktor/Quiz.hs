@@ -13,10 +13,10 @@ import Faktor.Param
 import Faktor.Faktor
 import Faktor.Prim
 
-import Util.Wort
-import Util.Seed
-import Util.Datei
-import Util.Cache
+import Autolib.Util.Wort
+import Autolib.Util.Seed
+import Autolib.Util.Datei
+import Autolib.Util.Cache
 
 import Inter.Types
 

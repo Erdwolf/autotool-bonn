@@ -5,8 +5,8 @@ module Code.Hamming.Check where
 
 import Code.Hamming.Data 
 
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 
 import Data.List ( tails )
 import Control.Monad ( guard )

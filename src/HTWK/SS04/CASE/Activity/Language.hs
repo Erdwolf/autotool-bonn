@@ -3,8 +3,9 @@ module HTWK.SS04.CASE.Activity.Language where
 --   $Id$
 
 import NFA.Synthese
-import Sets
-import ToDoc
+
+import Autolib.Sets
+import Autolib.ToDoc
 
 languages :: [ SI ]
 languages =  [ l1, l2, l3, l4, l5 ]

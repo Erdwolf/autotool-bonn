@@ -10,8 +10,8 @@ import Code.Huffman.Test
 
 import Challenger.Partial
 import Data.Typeable
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 
 
 data Huffman = Huffman deriving ( Eq, Ord, Show, Read, Typeable )

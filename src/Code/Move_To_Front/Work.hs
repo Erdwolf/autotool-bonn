@@ -2,8 +2,8 @@ module Code.Move_To_Front.Work where
 
 --  $Id$
 
-import Sets
-import Util.Splits
+import Autolib.Sets
+import Autolib.Util.Splits
 
 import Data.List
 import Control.Monad

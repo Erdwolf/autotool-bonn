@@ -2,7 +2,7 @@ module Code.Burrows_Wheeler.Work where
 
 --  $Id$
 
-import Util.Sort
+import Autolib.Util.Sort
 
 bw :: Ord a => [a] -> ( [a], Int )
 bw xs =

@@ -7,13 +7,13 @@ import LCS.Instance
 
 import Inter.Types
 
-import Sets
+import Autolib.Sets
 import Random
-import Util.Wort
-import Util.Datei
-import Util.Cache
-import Util.Seed
-import Util.Zufall
+import Autolib.Util.Wort
+import Autolib.Util.Datei
+import Autolib.Util.Cache
+import Autolib.Util.Seed
+import Autolib.Util.Zufall
 
 data Config a =
      Config { alphabet :: Set a

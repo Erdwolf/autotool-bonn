@@ -7,8 +7,8 @@ import Code.Hamming.Check
 
 import Challenger.Partial
 import Data.Typeable
-import ToDoc
-import Reporter
+import Autolib.ToDoc
+import Autolib.Reporter
 
 data Hamming = Hamming
     deriving (Eq, Ord, Show, Read, Typeable)

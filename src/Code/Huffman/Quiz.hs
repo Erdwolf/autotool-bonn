@@ -13,10 +13,10 @@ import Code.Type
 import Code.Huffman.Partial
 import Code.Huffman.Throw
 
-import Util.Seed
+import Autolib.Util.Seed
 import Inter.Types
-import Reader
-import ToDoc
+import Autolib.Reader
+import Autolib.ToDoc
 
 import Data.Typeable
 

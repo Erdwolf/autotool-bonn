@@ -1,4 +1,4 @@
-module Autolib.NFA.Synthese where
+module NFA.Synthese where
 
 -- vom regulären Ausdruck zum Automaten
 
@@ -13,7 +13,7 @@ import qualified Autolib.NFA.Example
 import qualified Autolib.NFA.Check
 import Autolib.NFA.Restrict
 
-import Autolib.Inter.Types
+import Inter.Types
 
 import Autolib.Sets
 import Autolib.ToDoc
@@ -50,7 +50,7 @@ instance C.Partial  Synthese SI ( NFA Char Int )
 	, text "akzeptiert."
 	]
 
-    initial p i   = NFA.Example.example_sigma $ alphabet i
+    initial p i   = Autolib.NFA.Example.example_sigma $ alphabet i
 
     partial p i b = do
         restrict_states b
@@ -62,7 +62,7 @@ instance C.Partial  Synthese SI ( NFA Char Int )
 		 ( informed ( text "Sprache Ihres Automaten" )  b    )
 
 	assert f $ text "Stimmen die Sprachen überein?"
-        when (  deterministisch i ) $ NFA.Check.deterministisch b
+        when (  deterministisch i ) $ Autolib.NFA.Check.deterministisch b
         return () 
 
 synthese :: String -- aufgabe (major)

@@ -38,7 +38,7 @@ logline time pid p res = unwords [ time
 		      , "cgi-" ++ P.matrikel p
 		     , "(", P.matrikel p, ")"
 		      , P.subject p , ":"
-		     , Reporter.Result.result_string res
+		     , Autolib.Reporter.Result.result_string res
 		     , "\n"
 		     ]
 

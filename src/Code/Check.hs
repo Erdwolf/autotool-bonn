@@ -3,14 +3,14 @@ module Code.Check where
 --  $Id$
 
 import Code.Type
-import ToDoc
-import Sets
+import Autolib.ToDoc
+import Autolib.Sets
 import Data.FiniteMap
 import Data.List
 import Control.Monad
-import qualified Reporter.Checker as C
-import qualified Reporter.Subset
-import Reporter
+import qualified Autolib.Reporter.Checker as C
+import qualified Autolib.Reporter.Subset
+import Autolib.Reporter
 
 istotal :: ( ToDoc [b], ToDoc [a], ToDoc a, Ord a )
       => Set a
@@ -21,7 +21,7 @@ istotal xs code = do
 	   [ text "ist", toDoc code, text "vollständig"
 	   , text "für", toDoc xs, text "?"
 	   ]
-    nested 4 $ Reporter.Subset.check 
+    nested 4 $ Autolib.Reporter.Subset.check 
 	     ( text "zu codierende Buchstaben" , xs )
 	     ( text "tatsächlich codierte Buchstaben", mkSet $ keysFM code )
 

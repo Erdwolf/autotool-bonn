@@ -7,7 +7,7 @@ import Autolib.ToDoc
 import Autolib.Hash
 import Autolib.Util.Size
 
-import qualified TES.Symbol
+import qualified Autolib.Symbol
 import qualified TES.Parsec
 
 
@@ -45,7 +45,7 @@ instance Ord Op where compare o p = compare (name o) (name p)
 instance Hash Op where hash = hash . name
 instance Size Op where size = const 1
 
-instance TES.Symbol.Symbol Op where
+instance Autolib.Symbol.Symbol Op where
     arity = arity
     set_arity a x = x { arity = a }
     precedence = precedence

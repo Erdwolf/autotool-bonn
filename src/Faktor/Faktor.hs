@@ -11,9 +11,9 @@ module Faktor.Faktor (
 --  $Id$
 
 import Challenger.Partial
-import ToDoc
-import Reporter
-import Ana
+import Autolib.ToDoc
+import Autolib.Reporter
+import Autolib.Ana
 import Data.Typeable
 
 -- import Number

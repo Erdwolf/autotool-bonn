@@ -4,11 +4,10 @@ module Boolean.Eval where
 
 import Boolean.Data
 import Boolean.Op ( inter )
-import Data.FiniteMap
-import Util.Wort
 
 import Data.FiniteMap
-import Sets
+import Autolib.Util.Wort
+import Autolib.Sets
 
 type Belegung v = FiniteMap v Bool
 

@@ -2,14 +2,16 @@ module HTWK.SS04.CASE.Activity.Analyse where
 
 --   $Id$
 
-import Exp
-import Exp.Inter
-import NFA
-import ToDoc 
+import Autolib.Exp
+import Autolib.Exp.Inter
+import Autolib.NFA
+import Autolib.ToDoc 
 
-import Sets
+import Autolib.Sets
+
 import qualified NFA.Synthese as S
 import NFA.Analyse 
+
 import Inter.Types
 
 import qualified HTWK.SS04.CASE.Activity.Language as L

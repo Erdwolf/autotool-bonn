@@ -8,9 +8,9 @@ import Inter.Types
 
 import Data.Typeable
 
-import ToDoc
-import Size
-import Reporter
+import Autolib.ToDoc
+import Autolib.Size
+import Autolib.Reporter
 
 data LCS = LCS deriving ( Eq, Ord, Show, Read, Typeable )
 

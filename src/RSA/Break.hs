@@ -10,9 +10,9 @@ import Faktor.Certify ( powmod )
 import Data.Typeable
 
 import Challenger.Partial
-import ToDoc
-import Reporter
-import Ana
+import Autolib.ToDoc
+import Autolib.Reporter
+import Autolib.Ana
 
 data Break = Break deriving ( Show, Typeable )
 

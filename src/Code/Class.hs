@@ -5,9 +5,9 @@ module Code.Class where
 import Code.Type
 
 import Challenger.Partial
-import ToDoc
-import Size
-import Reporter
+import Autolib.ToDoc
+import Autolib.Size
+import Autolib.Reporter
 
 import Data.Typeable
 

@@ -51,10 +51,10 @@ instance Partial Boolean BI Exp where
 	       , nest 4 $ draw b
 	       , text ""
 	       ]
-        Reporter.Subset.check
+        Autolib.Reporter.Subset.check
 	    ( parens $ text "benutzte Operatoren" , syms b )
 	    ( parens $ text "erlaubte Operatoren" , operators i )
-	Reporter.Subset.check
+	Autolib.Reporter.Subset.check
 	    ( parens $ text "benutzte Variablen" , vars b )
 	    ( parens $ text "Variablen der Aufgabenstellung",vars $ formula i )
 

@@ -5,7 +5,7 @@ module Code.Burrows_Wheeler where
 import qualified Code.Type as T
 import Code.Burrows_Wheeler.Work
 
-import ToDoc
+import Autolib.ToDoc
 
 coder :: Ord a
       => T.Coder a ( [a], Int )

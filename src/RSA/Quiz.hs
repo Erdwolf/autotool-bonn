@@ -16,11 +16,11 @@ import RSA.Break.Data
 import Faktor.Prim
 import Faktor.Certify ( powmod )
 
-import Util.Zufall
-import Util.Wort
-import Util.Seed
-import Util.Datei
-import Util.Cache
+import Autolib.Util.Zufall
+import Autolib.Util.Wort
+import Autolib.Util.Seed
+import Autolib.Util.Datei
+import Autolib.Util.Cache
 
 import Random
 

@@ -7,7 +7,7 @@ import qualified Code.Type as T
 import Code.Move_To_Front.Work
 import Code.Move_To_Front.Data
 
-import ToDoc
+import Autolib.ToDoc
 
 coder :: Ord a
       => T.Coder a ( Coding [a] )
