@@ -68,6 +68,9 @@ drift : $(DRIFT)
 drift-clean :
 	rm -v ` find . -name "*.drift" -print | sed s/.drift$$// `
 
+drift-commit : drift-clean drift
+	cvs commit -m drift-commit $(DRIFT)
+
 cgi : $(CGIS)
 	cp $(CGIS) $(CGIINDEX) $(CGIDIR)
 
