@@ -3,7 +3,7 @@
 module Inter.Login where
 
 import Inter.CGI
-import Control.Types ( VNr )
+import Control.Types ( VNr, toString )
 
 import qualified Control.Vorlesung as V
 import qualified Control.Student.CGI
@@ -25,7 +25,7 @@ form = do
 
     vnr <- selector_submit "vnr" "Vorlesung" 0 $ do
         vor <- vors
-        return ( show $ V.name vor , V.vnr vor )
+        return ( toString $ V.name vor , V.vnr vor )
 
     return ( stud, vnr, tutor )
 

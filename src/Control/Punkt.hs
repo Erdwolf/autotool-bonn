@@ -40,6 +40,8 @@ loginDB mnr pass =
 		 return s
            _ -> Nothing
 
+set :: SNr -> ANr -> Wert -> IO ()
+set snr anr wert = bepunkteStudentDB snr anr wert Keine
 
 -- | erhöht von Student, für Aufgabe (Ok,Size) \/ No 
 --
@@ -81,9 +83,9 @@ bepunkteStudentDB snr anr bewert highlow = do
    squery conn $ Query 
 	   ( Update ( reed "stud_aufg" )
 	            ( case bewert of
-                         No -> [ ( reed "No" , reed "No + 1" )
-			       ]
-	                 Ok s -> [ ( reed "Ok" , reed "Ok + 1" )
+                         Reset -> [ ( reed "Ok", reed "0" ) ]
+                         No    -> [ ( reed "No", reed "No + 1" ) ]
+	                 Ok s  -> [ ( reed "Ok" , reed "Ok + 1" )
                                -- FIXME (see historic code below): 
                                -- , ( reed "Size" , EInteger s )
                                -- , ( reed "Scoretime" , reed "NOW()" )

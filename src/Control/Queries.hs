@@ -39,11 +39,11 @@ studAufgDB :: Maybe MNr -> IO ( [ String ] , [ [ StrOrInt ] ])
 studAufgDB mat = wrapped "studAufgDB" $ do
        conn <- myconnect 
        stat <- squery conn $
-            Query ( Select (      [ reed "vorlesung.Name AS Vorlesung" 
-				  , reed "aufgabe.Name AS Name"
-				  , reed "aufgabe.Typ AS Typ"
-				  , reed "stud_aufg.Ok AS Ok"
-				  , reed "stud_aufg.No AS No"
+            Query ( Select (      [ reed "vorlesung.Name as Vorlesung" 
+				  , reed "aufgabe.Name as Name"
+				  , reed "aufgabe.Typ as Typ"
+				  , reed "stud_aufg.Ok as Ok"
+				  , reed "stud_aufg.No as No"
 				  ] 
 			   )
 		  )
@@ -107,12 +107,12 @@ checkPasswdMNrDB :: Maybe String
 checkPasswdMNrDB maybePass mat = wrapped "checkPasswdMNrDB" $ do
        conn <- myconnect
        state <- squery conn $ Query 
-               ( Select $      [ reed "student.MNr AS MNr"
-			       , reed "student.Vorname AS Vorname"
-			       , reed "student.Name AS Name"
-			       , reed "student.Email AS Email"
-			       , reed "student.Passwort AS Passwort"
-			       , reed "student.Status AS Status"
+               ( Select $      [ reed "student.MNr as MNr"
+			       , reed "student.Vorname as Vorname"
+			       , reed "student.Name as Name"
+			       , reed "student.Email as Email"
+			       , reed "student.Passwort as Passwort"
+			       , reed "student.Status as Status"
 			       ] 
 	       )
 	       [ From [ reed "student" ]
@@ -197,7 +197,7 @@ getVorlesungWithPointsDB :: MNr -> IO [ String ]
 getVorlesungWithPointsDB mnr = wrapped "getVorlesungWithPointsDB" $ do 
        conn <- myconnect
        stat <- squery conn $ Query
-               ( Select $ [ reed "vorlesung.Name AS Vorlesung" ] ) 
+               ( Select $ [ reed "vorlesung.Name as Vorlesung" ] ) 
 	       [ From $ map reed [ "vorlesung", "stud_aufg" , "student" , "aufgabe" ]
 	       , Where $ ands [ reed "student.SNr = stud_aufg.SNr"
 			      , equals (reed "student.MNr") (toEx mnr)
@@ -256,13 +256,13 @@ getFreeGruppenDB = wrapped "getFreeGruppenDB" $ do
        conn <- myconnect
        stat <- query conn $
             "SELECT \n"
-            ++ "gruppe.GNr AS GNr, "
-            ++ "vorlesung.Name AS Vorlesungen,"
-            ++ "gruppe.Name AS Gruppen,"
-            ++ "gruppe.Referent AS Referent, "
+            ++ "gruppe.GNr as GNr, "
+            ++ "vorlesung.Name as Vorlesungen,"
+            ++ "gruppe.Name as Gruppen,"
+            ++ "gruppe.Referent as Referent, "
             -- Maximum, Aktuelle Anzahl pro Gruppe
-            ++ "gruppe.MaxStudents AS studentMax, "
-            ++ "COUNT(SNr) AS studentCount" ++ " "
+            ++ "gruppe.MaxStudents as studentMax, "
+            ++ "COUNT(SNr) as studentCount" ++ " "
             ++ "\nFROM gruppe \n"
 
             -- verbinde gruppe mit stud_grp über GNr
@@ -299,10 +299,10 @@ getAllGruppenDB = wrapped "getAllGruppenDB" $ do
     conn <- myconnect
     state <- query conn $
             "SELECT \n"
-            ++ "gruppe.GNr AS GNr, "
-            ++ "vorlesung.Name AS Vorlesungen,"
-            ++ "gruppe.Name AS Gruppen,"
-            ++ "gruppe.Referent AS Referent "
+            ++ "gruppe.GNr as GNr, "
+            ++ "vorlesung.Name as Vorlesungen,"
+            ++ "gruppe.Name as Gruppen,"
+            ++ "gruppe.Referent as Referent "
             ++ "\nFROM vorlesung , gruppe "
             ++ "\nWHERE vorlesung.VNr = gruppe.VNr "
             ++ "\nORDER BY Vorlesungen,Gruppen,Referent "
@@ -329,7 +329,7 @@ getGruppenStudDB ( mat :: MNr ) =
   wrapped ( "getAllGruppenDB " ++ show mat ) $   do
     conn <- myconnect
     stat <- squery conn $ Query 
-            ( Select $      [ reed "stud_grp.GNr AS GNr" ] )
+            ( Select $      [ reed "stud_grp.GNr as GNr" ] )
             [ From $ map reed [ "stud_grp", "student" ]
             , Where $ ands
 	            [ equals (reed "stud_grp.SNr") (reed "student.SNr")
@@ -348,7 +348,7 @@ getSNrFromMatDB ( mat :: MNr ) =
   wrapped ( "getSNrFromMatDB: start collecting for " ++ show mat ) $ do
     conn <- myconnect
     stat <- squery conn $ Query 
-             ( Select $      [ reed "student.SNr AS SNr" ] )
+             ( Select $      [ reed "student.SNr as SNr" ] )
              [ From [ reed "student" ]
 	     , Where $ equals ( reed "student.MNr" ) ( toEx mat )
 	     ]
@@ -375,7 +375,7 @@ changeStudGrpDB' mnr gnr =
          conn <- myconnect
          stat <- squery conn $ Query
 	     ( Delete $ reed "stud_grp"  )
-	     [ Using $ map reed [ "stud_grp", "gruppe AS g1", "gruppe AS g2" ]
+	     [ Using $ map reed [ "stud_grp", "gruppe as g1", "gruppe as g2" ]
              , Where $ ands
 	          [ equals ( reed "stud_grp.SNr" ) ( toEx snr )
                   , equals ( reed "stud_grp.GNr" ) ( reed "g1.GNr" )
@@ -433,7 +433,7 @@ mglAufgabenDB' isAdmin snr =
 	    ( Select $ do 
 	         col <- cols
                  let long = Id [ "aufgabe", col ] ; short = Id [ col ]
-                 return $ Bind long (Just short)
+                 return $ Bind ( EId long ) ( Just short )
 	    )
             [ From $ map reed [ "aufgabe", "gruppe" , "stud_grp" ]
 	    , Where $ ands $
@@ -475,7 +475,7 @@ mglNextAufgabenDB_old snr =
     conn <- myconnect
     stat <- query conn
             ( concat
-              [ "SELECT aufgabe.ANr, aufgabe.Typ AS Typ, aufgabe.Name AS Name, aufgabe.Highscore \n"
+              [ "SELECT aufgabe.ANr, aufgabe.Typ as Typ, aufgabe.Name as Name, aufgabe.Highscore \n"
               , ", DATE_FORMAT( aufgabe.Von , \"%H:%i %a %d. %b %Y\") as Von " 
               , ", DATE_FORMAT( aufgabe.Bis , \"%H:%i %a %d. %b %Y\") as Bis\n"
               , "FROM aufgabe "
@@ -515,11 +515,11 @@ mglNextAufgabenDB :: SNr -> IO ( [String],[[StrOrInt]])
 mglNextAufgabenDB snr = wrapped "mglNextAufgabenDB" $ do
        conn <- myconnect 
        stat <- squery conn $
-            Query ( Select (      [ reed "vorlesung.Name AS Vorlesung" 
-				  , reed "aufgabe.Name AS Name"
-				  , reed "aufgabe.Typ AS Typ"
-				  , reed "aufgabe.Von AS Von"
-				  , reed "aufgabe.Bis AS Bis"
+            Query ( Select (      [ reed "vorlesung.Name as Vorlesung" 
+				  , reed "aufgabe.Name as Name"
+				  , reed "aufgabe.Typ as Typ"
+				  , reed "aufgabe.Von as Von"
+				  , reed "aufgabe.Bis as Bis"
 				  ] 
 			   )
 		  )

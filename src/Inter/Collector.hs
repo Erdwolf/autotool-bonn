@@ -2,6 +2,7 @@ module Inter.Collector where
 
 import Inter.Types
 
+import qualified Blank
 import qualified NFA.Analyse
 import qualified NFA.Synthese
 import qualified PCProblem.Quiz
@@ -21,7 +22,8 @@ import qualified Collatz.Plain
 import qualified Collatz.Inverse
 
 makers :: [ Make ]
-makers = [ NFA.Analyse.make
+makers = [ Blank.make
+	 , NFA.Analyse.make
 	 , NFA.Synthese.make
 	 , PCProblem.Quiz.make_quiz
 	 , PCProblem.Quiz.make_fixed

@@ -112,13 +112,15 @@ instance ToString Status where
 
 -------------------------------------------------------------
 
-data Wert = No | Ok Integer deriving ( Eq, Ord, Typeable )
+data Wert = Reset | No | Ok Integer deriving ( Eq, Ord, Typeable )
 
 {-! for Wert derive : Reader, ToDoc, Haskell2Xml !-}
 
+{-
 instance SqlBind Wert where
     fromSqlValue _ _ = error "undefined"
     toSqlValue _ = error "undefined"
+-}
 
 -------------------------------------------------------------
 

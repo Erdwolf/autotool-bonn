@@ -15,7 +15,7 @@ import qualified Inter.Param as P
 
 import Control.Types 
     ( toString, fromCGI, Name, Remark, HiLo (..), Status (..)
-    , Oks (..), Nos (..), Time 
+    , Oks (..), Nos (..), Time , Wert (..), MNr, SNr
     )
 
 
@@ -27,6 +27,8 @@ import Inter.Types
 
 import Control.Student.CGI
 import Control.Vorlesung.DB
+import qualified Control.Punkt
+import qualified Control.Stud_Aufg.DB
 
 import qualified Control.Aufgabe as A
 import qualified Control.Stud_Aufg as SA
@@ -36,11 +38,13 @@ import qualified Control.Vorlesung as V
 import Autolib.Reporter.Type
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Util.Sort
+import Autolib.FiniteMap
 
 import Random
 import Data.Typeable
 import Data.Maybe
-import Data.List
+import Data.List ( partition )
 import Control.Monad
 import qualified Control.Exception
 
@@ -53,6 +57,7 @@ main = Inter.CGI.execute "Super.cgi"
 iface :: [ Make ] -> Form IO ()
 iface mks = do
 
+    h3 "Login und Auswahl der Vorlesung"
     open btable
     ( stud, vnr, tutor ) <- Inter.Login.form
     let snr = S.snr stud
@@ -66,11 +71,17 @@ iface mks = do
 
     ( mauf, del ) <- 
         if tutor
-	   then selector_edit_delete "anr" "Aufgabe" 0 
+	   then do 
+	        selector_edit_delete "anr" "Aufgabe" 0 
                    $ ( "(neue Aufgabe)", Nothing ) : opts
            else do 
 		auf <- statistik stud aufs
                 return ( Just auf, False )
+    when tutor $ close -- btable ??
+
+    case mauf of
+         Just auf | tutor -> tutor_statistik vnr auf
+         _ -> return ()
 
     let manr = fmap A.anr mauf
     
@@ -173,7 +184,7 @@ edit_aufgabe mk mauf vnr manr type_click = do
 	    close -- table
 				   
             br
-	    up <- submit "update" "update data base"
+	    up <- submit "update" "update data base: aufgabe"
             let auf' = A.Aufgabe 
 		               { A.anr = error "Super.anr" -- intentionally
 			       , A.vnr = vnr
@@ -291,7 +302,10 @@ mkpar stud auf = P.empty
 	    , P.ident = S.snr stud
             }
 
--- | statistik anzeigen 
+------------------------------------------------------------------------
+
+-- | für Student: statistik aller seiner Aufgaben anzeigen, 
+-- mit aufgabenauswahl
 statistik stud aufs = do
     hr 
     h3 "Punktestand und Aufgaben-Auswahl"
@@ -372,18 +386,62 @@ statistik stud aufs = do
     hidden "vor" $ toString $ A.name auf
     return auf
 
-----------------------------------------------------------------------------
- 
-beside l r = do
-    open table
-    open row
-    l
-    r
-    close
-    close
+--------------------------------------------------------------------------
 
-above t b = do
-    open table
-    open row ; t ; close
-    open row ; b ; close
-    close
+data Entry = Entry
+	   { snr :: SNr
+	   , mnr :: MNr
+	   , vorname :: Name
+	   , name :: Name
+	   , oks :: Oks
+	   , nos :: Nos
+	   }
+
+-- | für Tutor: statistik aller einsendungen zu dieser Aufgabe
+-- mit Möglichkeit, Bewertungen zu ändern
+
+tutor_statistik vnr auf = do
+    hr
+    t <- io $ Control.Vorlesung.DB.teilnehmer vnr
+    saufs <- io $ Control.Stud_Aufg.DB.get_anr $ A.anr auf
+    let fm = listToFM $ do
+            sauf <- saufs
+	    return ( SA.snr sauf , ( SA.ok sauf, SA.no sauf ) )
+    let entries = do
+	    ( s, ( m, v, n ) ) <- t
+            let ( ok, no ) = lookupWithDefaultFM fm ( Oks 0, Nos 0 ) s
+	    return $ Entry 
+		   { snr = s, mnr = m 
+		   , vorname = v, name = n
+		   , oks = ok, nos = no
+		   }
+    h3 "Statistik für diese Aufgabe"
+    open btable
+    actions <- sequence $ do
+        e <- sortBy name entries
+        return $ do
+	    open row
+	    plain $ toString $ name e 
+	    plain $ toString $ vorname e 
+	    plain $ toString $ mnr e
+            let status = oks e > Oks 0
+            let checkname = "st" ++ ( toString $ mnr e ) 
+            check <- checkbox status checkname ""
+            let actions = do
+		guard $ check /= status 
+                return $ case check of
+		    True -> Control.Punkt.set 
+			      ( snr e ) ( A.anr auf ) ( Ok 0 )
+		    False -> Control.Punkt.set 
+			      ( snr e ) ( A.anr auf ) Reset
+
+            close -- row
+            return $ sequence actions
+    close -- btable
+    sub <- submit "update" "update data base: stud_aufg ..."
+    when sub $ do
+        io $ sequence_ actions
+	plain "... done (refresh picture)"
+    return ()
+
+

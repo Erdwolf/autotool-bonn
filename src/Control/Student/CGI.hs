@@ -14,14 +14,24 @@ import Autolib.Util.Zufall
 
 login :: Form IO Student
 login = do
+    open row
     click    <- submit    "loglog" "Login:"
+
+    open table
+    open row
     plain "Matrikel:"
     Just mnr <- textfield "logmnr" ""
+    close
+    open row
     plain "Passwort:"
     Just pwd <- password  "logpwd" ""
+    close -- row
+    close -- table
+
     when click blank
     [ stud ] <- io $ Control.Student.DB.get $ fromCGI mnr
     guard $ Inter.Crypt.compare ( passwort stud ) pwd
+    close -- row
     return stud
 
 edit :: Student -> Form IO ()
