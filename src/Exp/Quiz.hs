@@ -2,9 +2,9 @@ module Autolib.Exp.Quiz where
 
 -- -- $Id$
 
-import qualified Exp.Some
+import qualified Autolib.Exp.Some
 import Autolib.NFA.Type
-import qualified NFA.Synthese as S
+import qualified Autolib.NFA.Synthese as S
 
 import Autolib.Util.Seed
 import Autolib.Util.Datei

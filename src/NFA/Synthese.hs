@@ -9,8 +9,8 @@ import Autolib.Exp.Inter
 
 import Autolib.NFA.Type
 import Autolib.NFA.Eq
-import qualified NFA.Example
-import qualified NFA.Check
+import qualified Autolib.NFA.Example
+import qualified Autolib.NFA.Check
 import Autolib.NFA.Restrict
 
 import Autolib.Inter.Types

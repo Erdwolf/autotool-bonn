@@ -6,8 +6,8 @@ module Autolib.NFA.Determine where
 
 import Autolib.NFA.Type
 import Autolib.NFA.Eq
-import qualified NFA.Example
-import qualified NFA.Check
+import qualified Autolib.NFA.Example
+import qualified Autolib.NFA.Check
 import Autolib.NFA.Restrict
 import Autolib.NFA.Some
 import Autolib.NFA.Minimize
