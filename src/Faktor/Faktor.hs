@@ -11,11 +11,17 @@ module Faktor.Faktor (
 
 import Challenger
 import ToDoc
+import Number
+import Iso
 
 import System
 
 
 data Faktor = Faktor deriving Show
+
+instance Number Integer Integer where number = id
+
+
 
 instance Problem Faktor Integer ( Integer, Integer ) where
 
