@@ -48,7 +48,7 @@ instance ( ToDoc z, Ord z, Show z )
 	    uns = do let p = startzustand a
 		     return $ Dot.Node.blank
 			   { Dot.Node.ident = "U" ++ show ( num p )
-			   , Dot.Node.style = Just "invis"
+			   , Dot.Node.node_style = Just "invis"
 			   }
     
 	    -- tatsächliche zustandsübergänge
