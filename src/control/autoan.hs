@@ -24,7 +24,7 @@ main =
 
 -- Msg. die mehrmals auftauchen
 msgKontrollEmail = do
-	th3 $ "Achtung: Der Email-Checker ist noch nicht aktiv. Zeitraum wird entsprechend vergroessert."
+	th3 $ "Achtung: Der Email-Checker ist noch nicht aktiv. D.h. autotool funktioniert bis auf weiteres ohne Email-Check!"
 	ttxt $ "Eine Kontroll-Email wird Ihn zugesandt, " ++ 
 			 "diese muss innerhalb einer Woche beantwortet werden. " ++
 			 "In Ihrer Antwort muss die zugesandte Kontrollzahl " ++ 
@@ -37,10 +37,12 @@ msgPasswort = do
 	empty
 --	ttxt $ "Als Passwort sind nur Worte aus deutschen Buchstaben [a-ZA-ZäöüÄÖÜß] und Zahlen [0-9] erlaubt."
 
--- Einstieg: loginPage 
--- Folgeseiten
--- a) registerPage
--- b) checkLoginPage 
+-- ---------
+-- Einstiegseite
+-- mit folgen Moeglichkeiten
+-- a) Neuanmeldung: 		registerPage 
+-- b) Normaler Login: 		checkLoginPage
+-- c) Passwort zu mailen: 	mailPasswdPage  
 loginPage mat F0  = 
 	standardQuery "Willkommen." $ do 
 		table $ do 
@@ -53,42 +55,52 @@ loginPage mat F0  =
 			spacerow
 			ttxt $ concat 
 					 [ "Wenn Sie bereits angemeldet sind, Matrikelnr. und Passwort eingeben." 
---					 , "ansonsten können Sie sich neuanmelden." 
 					 ]
 			ttxt $ "Dann können Sie Ihre Daten ändern/ansehen."
 			spacerow
 			matF <- promptedInput		"Matrikelnr:"	$ (fieldSIZE 30) ## ( fieldVALUE mat )
 			pwdF <- promptedPassword	"Passwort:"		(fieldSIZE 30)
 			hrrow
+			-- a)
 			smallSubButton (F2 matF pwdF)	checkLoginPage	"Login" 
+			-- b)
 			smallSubButton F0	       		(registerPage "" "" "" "") "Neuanmeldung"
+			-- c)
 			smallSubButton (F1 matF) 		mailPasswdPage  "Passwort zuschicken, dazu bitte Matrikelnr. angeben."
 
+-- ------------- 
+-- Passwort Mail senden an Email-Adresse mit dieser Matrikelnummer,
+-- ansonsten Fehler.
+--
 mailPasswdPage (F1 matF) = 
     do    
     	let mat = unNonEmpty ( value matF )
     	mayEP  <- io $ getEmailPasswortDB mat		
+		  
 	if null mayEP 
 	   then 
 	   	return ()	
 	   else 
 	   	do
-		let [(email,pwd)] = mayEP
-	   	io $ system $ unwords [ "echo", "Ihr Passwort fuer Autotool: " ++ pwd, "|" , "elm", "-s", "\"Autotool-Passwort\"", email ]
+		let [(email,pass)] = mayEP
+	   	io $ system $ unwords [ "echo", "Ihr Passwort fuer Autotool: " ++ pass, "|" , "elm", "-s", "\"Autotool-Passwort\"", email ]
 		return ()
-		     -- return ec
-
         standardQuery "Passwort vergessen." $ 
 		table $ do 
 			case mayEP of
 			  [] 		-> ttxt $ "Fehler: Matrikelnummer: " ++ mat ++ " unbekannt!"
-			  [(email,pwd)]	-> ttxt $ "Ihr Passwort wurde Ihnen zugesandt." 
+			  [(email,pass)]	-> ttxt $ "Ihr Passwort wurde Ihnen zugesandt." 
 			hrrow
 			smallSubButton F0 (loginPage mat) "Zurueck."
 
 
 
--- Neuanmeldung 								  
+-- ----------------
+-- Neuanmeldung, Eingabe der persoenlichen Daten mit folgender Validierung (registerPage). 
+-- 
+-- Hinweis,
+-- beim ersten Aufruf alle Parameter mit Leeren-Strings, sonst mit bereits eingegeben Werten.
+--
 registerPage vnm nme mat eml F0 =
 	standardQuery "Willkommen zur Neuammeldung" $ do
 		table $ do	
@@ -113,7 +125,12 @@ registerPage vnm nme mat eml F0 =
 			smallSubButton (F6 vnmF nmeF matF emlF ps1F ps2F) registeredPage "Anmelden"
 			smallSubButton F0 endPage "Ende"
 
--- Überprüfung der angegeben Daten
+--
+-- Überprüfung der Registration
+--
+-- Bei Fehler (siehe Variable checks) 
+-- Aufruf der registeredPage (a) mit bereits eingegeben Werten fuer Korrektur, 
+-- sonst normal weiter mit der Gruppenauswahl (b).
 registeredPage (F6 vnmF nmeF matF emlF ps1F ps2F) = 
 	let 
 		vnm = unNonEmpty		( value vnmF )
@@ -127,8 +144,9 @@ registeredPage (F6 vnmF nmeF matF emlF ps1F ps2F) =
 	do 
 	-- suche nach dupletten von email or mat
 	( matDup , emlDup ) <- io $ duplMatOrEmailDB mat eml
+	-- Diese Tests muessen alle bestanden werden um Registration abzuschliessen.
 	let { checks = [ ( ps1 == ps2			, "Passwort und Passwort Wiederholung nicht identisch.")
- -- Q: kann mat hier nicht direkt checken?					 
+			 -- Q: Warum kann mat hier nicht direkt checken?					 
 				   , ( matok				, "Die Matrikelnummer muss größer 1024 sein.")
 				   , ( length vnm > 1		, "Der Vorname muss mindestens 2 Buchstaben lang sein.") 
 				   , ( length nme > 1		, "Der Name muss mindestens 2 Buchstaben lang sein.") 
@@ -137,26 +155,27 @@ registeredPage (F6 vnmF nmeF matF emlF ps1F ps2F) =
 				   ]
 		; allok = and [ fst c | c <- checks ]
 		}
-
+	-- Wenn Test ok: Student in DB eintragen
 	if allok then io $ insertNewStudentDB vnm nme mat eml ps1 else return ()
 	standardQuery "Neuanmeldung" $ do
 		table $ do
 			attr "width" "600"	
 			hrrow
 			if allok 
-				then do
+				then do -- (b) Erfolgreich
 					 th3 "Vielen Dank. Alle Angaben wurden übernommen. "
 					 msgKontrollEmail
 					 hrrow
 					 smallSubButton F0 (changeGrpPage mat) "Weiter"
-				else do
+				else do -- (a) Ausgabe der nicht bestanden Tests
 					 ttxt "Bitte überprüfen Sie Ihre Angaben:"
 					 spacerow
 					 mapM_ (ttxt) [  msg | ( ok , msg ) <- checks , not ok ]
 					 hrrow
 					 smallSubButton F0 (registerPage vnm nme mat eml) "Zurück"
 
--- EndPage
+-- ----------------
+-- Endseite 
 endPage F0 = 
 	standardQuery "Ende" $ 
 		table $ do 	
@@ -165,7 +184,8 @@ endPage F0 =
 			hrrow
 
 
--- Überpüfung der passwort,matrikel paares, bei Erfolg Student-Status anzeigne
+-- ----------------
+-- Überpüfung der passwort,matrikel paares, bei Erfolg Student-Status anzeigen
 checkLoginPage (F2 matF pwdF) =
   let 
 		mat  = unNonEmpty ( value matF )
@@ -179,27 +199,52 @@ checkLoginPage (F2 matF pwdF) =
 					hrrow		
 					th3 "Passwort und Matrikelnummer stimmen nicht überein!" 
 					hrrow
-					smallSubButton F0 (loginPage mat) "Login wiederholen"
-					smallSubButton F0 (registerPage "" "" "" "")   "Neuanmeldung"
-					smallSubButton F0 endPage		 "Ende"
+					smallSubButton F0 (loginPage mat) 				"Login wiederholen"
+					smallSubButton F0 (registerPage "" "" "" "")   	"Neuanmeldung"
+					smallSubButton F0 endPage		 				"Ende"
 
 		 else 
 			do studStatusPage mat F0
 
+--
+-- Hauptseite fuer den Studenten
+--
+-- Mit folgenden Informationen 
+-- a) Vorname, Name, Matrikelnr, Email-Adresse, Email-Check-Status, 
+--    Gruppen/Vorlesungen des Studenten
+-- b) momentan mgl. Aufgaben
+-- c) Bepunktung der Aufgaben
+--
+-- und Aenderungs Moeglichkeiten 
+-- d) Gruppenmitgliedschaft:	changeGrpPage
+-- e) Email-Adresse:			changeEmailPage
+-- f) Passwort:					changePasswortPage
+--
+-- und (Zucker)
+-- g) Aktualisieren der Ansicht: studStatusPage
+-- h) Beendigung von autonan:	 endPage
+--
 -- TODO: mglNextAufgabenDB [ ] vom SNr abhaengen lasse
 studStatusPage mat F0 = 
 	do 
-	  snr 		<- io $ getSNrFromMatDB mat 
-	  mglAufgs  	<- io $ mglNextAufgabenDB (snr!!0) 
-	  let mglAufgs2 = ( tail (fst mglAufgs) , Prelude.map tail (snd mglAufgs))
-	  inh		<- io $ checkPasswdMNrDB Nothing mat
-	  result	<- io $ studAufgDB mat
-	  (h,grps)	<- io $ getAllGruppenDB 
+	  snr 			<- io $ getSNrFromMatDB mat 
+	  -- a) Persoenliche Daten aus DB holen 
+	  inh			<- io $ checkPasswdMNrDB Nothing mat
+	  let ( vorname , name , email , status ) = ( inh !! 0 )	
+	  -- Student ist Mitglied in folgenden Gruppen:
+	  -- 	Alle-Gruppen minus Students-Gruppen, warum so kompliziert?
+	  -- 	stdgrp ist Liste von Gruppennummern, grps enthaelt zusaetzlich 
+	  -- 	Vorlesungsname, Gruppenname und Referent.
+	  (h,grps)		<- io $ getAllGruppenDB 
 	  stdgrp    	<- io $ getGruppenStudDB mat
 	  let	grp = [ v ++ ", " ++  g ++ ", " ++ r |  (gnr , [v,g,r]) <- grps , gnr `elem` stdgrp ]
---	  vorl		<- io $ studVorlDB mat
+	  -- b) Mgl. Aufgaben aus DB holen, und erste Spalte entfernen 
+	  mglAufgs  	<- io $ mglNextAufgabenDB (snr!!0) 
+	  let mglAufgs2 = ( tail (fst mglAufgs) , Prelude.map tail (snd mglAufgs))
+	  -- c) Bepunkte Aufgaben holen
+	  result		<- io $ studAufgDB mat
+
 	  standardQuery "Übersicht" $ 
-		let ( vorname , name , email , status ) = ( inh !! 0 ) in	
 		do 
 			hrline
 			h3 $ text "Anmeldungsdaten"
@@ -208,15 +253,18 @@ studStatusPage mat F0 =
  				attr "cellspacing" "2" 
 				attr "cellpadding" "5"
 				th3 "ACHTUNG: die Email-Ueberpruefung ist noch nicht aktiv."
-				tableRow2 (text "Name") ( text ( vorname ++ ", " ++ name ++ " " ) )
-				tableRow2 (text "Matrikelnr.") (text mat)
-				tableRow2 (text "Email-Adresse") (text email)
-				tableRow2 (text "Anmeldestatus") (text status)
+				-- (a)
+				tableRow2 (text "Name") 			( text ( vorname ++ ", " ++ name ++ " " ) )
+				tableRow2 (text "Matrikelnr.") 		( text mat )
+				tableRow2 (text "Email-Adresse")	( text email )
+				tableRow2 (text "Anmeldestatus") 	( text status )
  				tableRow2 (text "Vorlesung/Gruppe") $ text $ if null grp then "keine" else show grp
+				-- (c)
 			if ( length (snd result)) > 0 
 			   then do { h3 $ text "Ergebnisse" ; ( showAsTable result ) }
 			   else do { h3 $ text "keine Ergebnisse" } 
 			spacerow
+			-- (b)
 			th3 "Moegliche Aufgaben:"
 			showAsTable2 mglAufgs2
 
@@ -234,6 +282,7 @@ studStatusPage mat F0 =
 				   smallspacerow
 				   smallSubButton F0 endPage						"beenden"
 
+-- -----------------
 -- Vorlesung hinzufügen
 addVorlesungPage mat vorl F0 = do
 	vls <- io getAllVorlesungenDB
@@ -263,7 +312,7 @@ addedVorlesungPage mat (F1 addVlF) = do
 	let addVl = value $ addVlF 
 	io $ insertStudVorlDB mat addVl
 	(h, grps)<- io $ getFreeGruppenDB
---TODO addvl argument in getGruppenStudDB
+-- TODO addvl argument in getGruppenStudDB
 	studgrps <- io $ getGruppenStudDB mat 
 	let mglgrp = if null studgrps then []
 				 else
@@ -377,8 +426,6 @@ deledVorlesungPage mat mglVl (F1 addVlF) = do
 			hrrow
 			smallSubButton F0 (studStatusPage mat) "Weiter"	
 
--- Gruppen add
-
 -- Email - Änderung
 changeEmailPage mat email F0 =
 	standardQuery "Änderung der Email-Adresse" $ do
@@ -431,7 +478,6 @@ changePasswortPage mat F0 =
 			smallSubButton (F2 passwortF passwort2F) (changedPasswortPage mat) "Ändern"  
 			smallSubButton F0 (studStatusPage mat) "Zurück"
 	
-
 changedPasswortPage mat (F2 passwortF passwort2F) = 
 	let 
 		passwort  = unNonEmpty $ value passwortF
