@@ -4,8 +4,8 @@ module Uni.SS04 where
 
 import Inter.Types
 
-import qualified Uni.SS04.Serie1
-import qualified Uni.SS04.Serie2
+--import qualified Uni.SS04.Serie1
+--import qualified Uni.SS04.Serie2
 import qualified Uni.SS04.Serie3
 
 
@@ -15,8 +15,7 @@ import qualified Uni.SS04.Serie3
 boiler :: IO [ Variant ]
 boiler = sequence -- der erste ist der default-wert!       
        $  []
-
 --       ++ Uni.SS04.Serie1.generate
-       ++ Uni.SS04.Serie2.generate
+--       ++ Uni.SS04.Serie2.generate
        ++ Uni.SS04.Serie3.generate
 
