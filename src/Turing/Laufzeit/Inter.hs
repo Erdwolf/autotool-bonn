@@ -22,4 +22,5 @@ step v l =
 	      inform $ text "Konstruieren Sie eine Turingmaschine"
 	      inform $ text "mit Laufzeitfunktion" <+> info l
 	      return l
+	, gen_i = \ matrikel -> l
 	}

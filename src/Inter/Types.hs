@@ -20,6 +20,7 @@ data Var p i =
 	     , variant :: String
 	     , key :: Matrikel -> IO Key
 	     , gen :: Matrikel -> Reporter i
+	     , gen_i :: Key -> i
 	     }
      deriving Show
 

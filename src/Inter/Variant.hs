@@ -51,7 +51,8 @@ preface :: P.Type -> WithHTML CGI ()
 -- das gibts beim ersten aufruf
 preface par = do
     h2 $ CGI.text "Einstellungen:"
-    makeForm $ table $ tr $ do
+    {- makeForm $ -} 
+    table $ tr $ do
         (matF, pwdF) <- td $ table $ do
             matF <- texti "Matrikelnr:" 
         	    $ (fieldSIZE 30) ## ( fieldVALUE $ P.matrikel par )
@@ -127,6 +128,13 @@ handler par0  (Variant v ) bep=  do
 			, (P.problem par0) == name 
 			, (P.variant par0) == subj
 			]
+
+  k    <- io $ key v ( P.matrikel par0 )
+  -- inst <- io $ washer $ gen v ( P.matrikel par0 )
+  let i = gen_i v ( P.matrikel par0 )
+
+
+
   if null ahs 
    then standardQuery "Fehler" $ CGI.text "keine Variante des Students"
    else standardQuery "Computer" $ do
@@ -145,12 +153,11 @@ handler par0  (Variant v ) bep=  do
     
     
     -- TODO: die folgenden Zeilen mit Cache !
-    k <- lift $ unsafe_io $ key v ( P.matrikel par0 )
-    inst <- lift $ unsafe_io $ washer $ gen v ( P.matrikel par0 )
 
     hr CGI.empty
     h2 $ CGI.text $ "Die Aufgaben-Instanz: Nr." ++ anr
-    Just i <- inst
+
+    CGI.pre $ CGI.text $ show i
 
     let p = Inter.Types.problem v
 
@@ -197,7 +204,7 @@ handler par0  (Variant v ) bep=  do
         Left e -> do 
 	   h3 $ CGI.text "Syntaxfehler"
 	   CGI.pre $ CGI.text $ render $ errmsg e $ P.input par
-	   return ATBEmpty 
+	   return $ ATB snr anr (Helper.No) $ read hlstr
 		  --	return bep
     ssb ( F1 txtF ) ( evaluator par bep ) "Compute"
     hr CGI.empty       
