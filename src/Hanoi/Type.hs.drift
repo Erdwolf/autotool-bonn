@@ -1,0 +1,33 @@
+-- -*- mode: haskell -*-
+
+module Hanoi.Type where
+
+-- $Id$
+
+import Data.FiniteMap
+import ToDoc
+import Reader
+import Util.Size
+
+type Scheibe = Integer
+
+data Turm = A | B | C | D
+    deriving ( Eq, Ord, Enum )
+
+type Hof = FiniteMap Turm [ Scheibe ]
+
+type Zug = ( Turm, Turm )
+
+instance Size Zug where size _ = 1
+
+{-! for Turm derive: Reader, ToDoc !-}
+
+instance Show Turm where
+    show = render . toDoc
+
+instance Read Turm where
+    readsPrec = parsec_readsPrec
+
+
+
+
