@@ -82,14 +82,15 @@ instance Generator CFG P.Config I.Config where
           here   <- samples      l n w
           there  <- anti_samples l n w
           let (yeahs, nohs) = partition (contains l) 
-			    $ nub 
-			    $ klein ++ here ++ there
+		    $ nub 
+		    $ filter ( \ w -> length w <= P.max_sample_length c )
+		    $ klein ++ here ++ there
 
           return $ I.Config 
 		 { I.lang = P.lang c
 		 , I.properties  = P.properties c
-		 , I.yeah = I.Long yeahs
-		 , I.noh  = I.Long nohs
+		 , I.yeah = I.Long $ map I.Long yeahs
+		 , I.noh  = I.Long $ map I.Long nohs
                  }
 
 make :: Make

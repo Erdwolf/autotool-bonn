@@ -46,7 +46,9 @@ cf_yeah_noh c g = do
     check ( inter $ lang c ) ws
 
     let arrange = sortBy length
-    let [ yeahs, nohs ] = map arrange [ unLong $ yeah c, unLong $ noh c ]
+        unl :: Long (Long a) -> [[a]]
+        unl = map unLong . unLong 
+    let [ yeahs, nohs ] = map arrange [ unl $ yeah c, unl $ noh c ]
 
     -- erstmal keine ableitungen:
     -- trace t ( g, demos ) ts 
