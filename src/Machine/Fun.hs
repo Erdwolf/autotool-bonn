@@ -58,8 +58,8 @@ fun_test :: ( Machine m dat conf , Out m dat conf )
 fun_test cut pairs m = do
     let fm = listToFM pairs
     let check ein conf = do
-            let aus = Machine.Class.output m conf
-		Just wanted = lookupFM fm ein
+	    aus <- Machine.Class.output_reporter m conf
+            let Just wanted = lookupFM fm ein
 		res = wanted == aus
 	    inform $ vcat [ text "wird die geforderte Endkonfiguration"
 			    <+> toDoc wanted <+> text "erreicht?"
@@ -114,7 +114,8 @@ re :: ( ToDoc e, Machine m dat conf, Out m dat conf )
 
 re cut m encode check ein = do
     let s = encode ein
-    let aks = akzeptierend_oder_ohne_nachfolger cut m $ s
+    c <- input_reporter m s
+    let aks = akzeptierend_oder_ohne_nachfolger cut m $ c
 	ks = filter ( isEmptySet . next m ) aks
     when ( null ks )
 	 $ reject $ vcat [ vcat [ text  "Bei Eingabe", toDoc ein 

@@ -12,7 +12,9 @@ import Turing.Type
 import Turing.Konfiguration
 import Turing.Nachfolger ( folgekonfigurationen )
 
+import Reporter
 import qualified Reporter.Checker
+import qualified Reporter.Subset
 import Data.Set
 import Size
 import ToDoc
@@ -23,7 +25,13 @@ instance TUM y z => Compute ( Turing y z ) ( Konfiguration y z ) where
     depth m k = schritt k
 
 instance TUM y z => In  ( Turing y z ) [ y ] ( Konfiguration y z ) where
-    input  m ys = start_konfiguration m ys
+    input_reporter  m ys = do
+        silent $ do
+	    inform $ text "Die Eingabe ist:" <+> toDoc ys
+	    Reporter.Subset.check 
+	        ( text "benutzte Eingabezeichen" , mkSet ys )
+	        ( text "Eingabealphabet Ihrer Maschine", eingabealphabet m )
+        return $ start_konfiguration m ys
 
 instance TUM y z => Out  ( Turing y z ) [ y ] ( Konfiguration y z ) where
     output m k = bandinhalt m k

@@ -15,17 +15,17 @@ import Data.Set
 
 akzeptierend
     :: Machine m dat conf
-    => Int -> m -> dat -> [ conf ]
-akzeptierend cut m xs = do
-    k <- akzeptierend_oder_ohne_nachfolger cut m xs
+    => Int -> m -> conf -> [ conf ]
+akzeptierend cut m c = do
+    k <- akzeptierend_oder_ohne_nachfolger cut m c
     guard $ accepting m k
     return k
 
 akzeptierend_oder_ohne_nachfolger
     :: Machine m dat conf
-    => Int -> m -> dat -> [ conf ]
-akzeptierend_oder_ohne_nachfolger cut m xs = do
-    k <- take cut $ nachfolger m $ input m xs
+    => Int -> m -> conf -> [ conf ]
+akzeptierend_oder_ohne_nachfolger cut m c = do
+    k <- take cut $ nachfolger m $ c
     guard  $ isEmptySet $ next m $ k
     return k
 
@@ -40,7 +40,8 @@ check_item ::   ( Machine m dat conf, ToDoc dat )
 	      -> Int -> m -> dat
 	      -> Reporter ()
 check_item acc cut m x = nested 4 $ do
-     let ks = akzeptierend_oder_ohne_nachfolger cut m x
+     let ks = akzeptierend_oder_ohne_nachfolger cut m 
+	    $ input m x
 	 as = filter ( accepting m ) ks
 	 logs = if null as then ks else as
 	 ok = acc == not (null as)

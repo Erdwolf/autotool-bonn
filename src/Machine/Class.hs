@@ -2,8 +2,9 @@ module Machine.Class where
 
 --   $Id$
 
-import Data.Set
+import Sets
 import Schichten
+import Reporter hiding ( output )
 import ToDoc
 import Size
 
@@ -29,7 +30,11 @@ instance ( ToDoc m, Size m
 
 class In m dat conf | m -> dat, m -> conf where -- strong dependencies ??
     -- | startkonf. herstellen (tupel von args)
+    input_reporter  :: m -> dat -> Reporter conf
+    input_reporter m dat = return $ input m dat
+    -- | obsolete
     input  :: m -> dat -> conf
+    input = error "Machine.Class.input method is obsolete"
 
 class Ord conf => Compute m conf where
     -- | alle direkten nachfolger ( nichtdeterministisch )
@@ -47,7 +52,9 @@ nachfolger a k = concat $ map setToList $
 class Out m dat conf  | m -> dat, m -> conf where
     -- | endkonf. lesen (ein einziges arg)
     output :: m -> conf -> dat
-
+    output = error "Machine.Class.output method is obsolete"
+    output_reporter :: m -> conf -> Reporter dat
+    output_reporter m conf = return $ output m conf
 
 class ( In m dat conf, Out m dat conf )
       => InOut m dat conf   | m -> dat, m -> conf

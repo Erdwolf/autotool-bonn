@@ -29,7 +29,8 @@ vorrechnen_cut' anz cut a xs = do
 		  , text "erreicht die Maschine unter anderem"
 		  , text "folgende Konfigurationen:"
 		  ]
-    let ks = take cut $ nachfolger a $ input a xs
+    c <- input_reporter a xs
+    let ks = take cut $ nachfolger a c
 	stepping = length ks `div` anz
     let is = [ 1, anz + 1 .. length ks ]
     inform $ vcat $ do
@@ -46,12 +47,12 @@ vorrechnen_cut cut a xs = do
 		  , text "erreicht die Maschine unter anderem"
 		  , text "folgende Konfigurationen:"
                   ]
+    c <- input_reporter a xs
     inform $ nest 4 $ vcat $ do
         (i, ks) <- zip [0 :: Int .. ] 
 		$ take cut
 		$ map setToList 
-		$ schichten ( next a )
-		$ input a xs
+		$ schichten ( next a ) c
 	return  $ vcat $ do k <- ks; return $ toDoc k 
 
     
