@@ -5,7 +5,7 @@
 
 # DIRS = $(BINDIR) $(EXERCISEDIRS)
 
-DIRS = util
+DIRS = util:fa
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
@@ -17,7 +17,11 @@ PACKS = -package text -package data \
 OPT = -O2
 GHC = ghc
 
-BINS = DB/Server.bin DB/Client.bin
+BINS = DB/Server.bin DB/Client.bin DB/CGI.cgi
+
+# location of DB script
+
+WWW = $(HOME)/public_html/db
 
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
 
@@ -30,8 +34,8 @@ DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
 all : $(BINS)
 
 
-$(DIRS):
-	$(MAKE) -C $@
+# $(DIRS):
+# 	$(MAKE) -C $@
 
 tags :
 	find . -name "*.hs" -print | xargs etags
@@ -42,10 +46,18 @@ tags :
 %.bin : do
 	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $*.hs -o $@
 
+
+%.cgi : do
+	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $*.hs -o $@
+
 %.hs : %.hs.drift
 	DERIVEPATH=  DrIFT $< > $@
 
 drift : $(DRIFT) 
+
+www : DB/CGI.cgi
+	cp DB/CGI.cgi DB/index.html $(WWW)/
+
 
 .PHONY : do
 
