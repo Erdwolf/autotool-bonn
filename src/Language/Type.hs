@@ -73,10 +73,13 @@ samples :: Language
 	-> Int -- ^ mindestens so lang (n)
 	-> IO [ String ]
 samples l c n | c > 0 = do
+
     let m = truncate $ sqrt $ fromIntegral c    
     here <- sample l m n 
+
     let d = 1 -- d <- randomRIO (1, 3)
-    there <- samples l (c - length here) (n + d)
+    there <- samples l (c - length here - if null here then 1 else 0) 
+		       (n + if null here then d  else m )
     return $ uniq $ here ++ there
 samples l c n = return []
 

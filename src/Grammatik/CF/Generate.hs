@@ -16,6 +16,7 @@ import Util.Zufall
 import Sets
 import Reporter
 import Data.List ( inits )
+import Data.Maybe ( isJust )
 
 
 data Config = Config
@@ -46,6 +47,13 @@ expl = Config
    , min_length_lhs = 1
    , max_length_lhs = 3
    }
+
+-- | solange rollen bis erfolg
+throw :: Config -> IO G.Grammatik
+throw conf = do
+    Just g <- repeat_until ( roll conf ) 
+			   ( \ mg -> isJust mg ) 
+    return g
 
 -- | solange Regeln hinzufügen, bis condition wahr.
 roll :: Config -> IO ( Maybe G.Grammatik )

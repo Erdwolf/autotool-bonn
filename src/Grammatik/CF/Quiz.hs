@@ -47,16 +47,10 @@ quiz conf =
                                      , name = key
                                      , extension = "cache"
                                      }
-                            ) ( throw conf )
+                            ) ( G.throw $ generate conf )
 	  c <- mach conf g
 	  return $ return c
 	}
-
-throw :: Config -> IO Grammatik
-throw conf = do
-    Just g <- repeat_until ( G.roll $ generate conf ) 
-			   ( \ mg -> isJust mg ) 
-    return g
 
 mach :: Config -> Grammatik -> IO I.Config 
 mach conf g = do

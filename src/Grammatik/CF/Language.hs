@@ -24,17 +24,16 @@ make nam g =
 	   , alphabet = terminale g
 	   , contains = akzeptor g 
 	   , sample = \ c n -> do
-	       let ws = take (c * c)
-		      $ create g (n+1)
+	       let ws = take (c * c) $ create g (n+1)
 	       if null ws 
-	   	 then return []
-	   	 else do
+	          then return []
+	   	  else do
 	   	     us <- sequence $ replicate c $ eins ws
 	   	     return $ uniq us
 	   , anti_sample = \ c n -> do
 	        ws <- sample l c n
-		us <- edits ws
-		return $ filter ( not . contains l ) us
+		us <- mapM edits $ concat $ replicate 1 ws
+		return $ take c $ filter ( not . contains l ) us
 	   }
      in  l
 

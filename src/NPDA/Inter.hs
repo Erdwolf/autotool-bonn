@@ -3,6 +3,7 @@ module NPDA.Inter where
 --   $Id$
 
 import NPDA.Type
+import NPDA.Beispiel
 import qualified Machine.Acceptor.Type as A
 import qualified Machine.Acceptor.Inter
 
@@ -22,6 +23,16 @@ data Config =
 	    , cut :: Int -- soviele Schritte (der Maschine)
 	    , start :: NPDA Char Char Int
 	    }
+
+example l = Config
+	    { lang = l
+	    , max_length = 10 -- Wörter höchstens so lang
+	    , max_num = 100 -- höchstes so viele
+	    , check = C.wahr
+	    , cut = 30 -- soviele Schritte (der Maschine)
+	    , start = anbn
+	    }
+
 
 make :: Config 
      -> Var A.Acceptor 
