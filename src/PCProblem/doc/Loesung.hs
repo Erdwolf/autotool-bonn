@@ -3,7 +3,7 @@
 import Challenger
 import PCProblem.PCProblem
 
-student = Aufgabe { problem = PCProblem
+student = Loesung { problem = PCProblem
 		  , ident = Ident { aufgabe = 1 }
 		  , beweis = bsp_folge
 		  }
