@@ -29,7 +29,7 @@ zeige conf g = do
     let abss = ableitungen conf g
 
     inform $ text "Ich zeige Ihnen einige Ableitungen:"
-    inform $ nest 4 $ vcat $ do 
+    inform $ nest 4 $ vcat $ take 10 $ do 
 	       abs <- drop ( max_depth conf `div` 2 ) abss
 	       ab  <- setToList abs
 	       return $ toDoc ab
