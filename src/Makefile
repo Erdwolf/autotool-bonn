@@ -52,9 +52,10 @@ tags :
 
 HADDOCK_DIRS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
 	Reporter Turing Dot Challenger Inter Boxing Machine Language \
-	SRS Baum NFTA Exp Graph GVKnoten Util Scorer \
-	ws03 util 
-# TES?
+	Boolean \
+	SRS TES Baum NFTA Exp Graph GVKnoten Util Scorer \
+	ws03 util control 
+
 # control? challenger?
 
 HADDOCK_LIBS = base haskell98 parsec unix network readline

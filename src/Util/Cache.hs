@@ -1,6 +1,6 @@
 module Util.Cache where
 
--- -- $Id$
+--  $Id$
 
 import Util.Datei
 import Util.Debug
@@ -8,9 +8,9 @@ import Util.Debug
 import Control.Monad ( when )
 import qualified Control.Exception 
 
-cache :: (Show a, Read a) => Datei -> IO a -> IO a
--- falls schon vorhanden, dann lesen
+-- | falls schon vorhanden, dann lesen
 -- sonst erzeugen und schreiben
+cache :: (Show a, Read a) => Datei -> IO a -> IO a
 cache d action = Control.Exception.catch
           ( do debug $ "lies cache-file " ++ show d ++ " ... "
 	       cs <- lesen d

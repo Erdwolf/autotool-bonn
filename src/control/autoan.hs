@@ -305,7 +305,8 @@ studStatusPage mat F0 =
 		    hrline
 		    where  lin (a,b) = tr $ do { td $ text a; td $ text b  }
 			   summe = sum . Prelude.map readsnd
-			   readsnd :: (String,String) -> Int = read . snd
+			   readsnd :: (String,String) -> Int 
+			   readsnd = read . snd
 
 -- -----------------
 --  TODO: alt nicht mehr benutzt

@@ -1,50 +1,52 @@
---
+-- |
 -- Autor:	Alf Richter
 -- File: 	Schriftl.hs
 -- Funktion: 	halbautomatische Erstellung einer 
 -- 		serienweisen Punkteuebersicht
---
---
--- 0.   Zuordnung von Serie -> Autotoolsubject
---	serie i :: Serie -> SQL-REGEXP
---
--- 1. 	Serienweise Extraktion der Autotoolpunkte
---	getAutoPunkteDB i :: Serie -> [(mnr,autotool-punkte)]
---
--- 2.  
---
--- * EXAMPLE SESSION, FUER SERIE 7
---
--- ** Autotool-Punkte
--- 
---	> cd ~/autotool/control
---	> make ghci-schriftl
--- 	- Regexp serie 7 = [(...,...)...] anlegen
--- 	p <- getAutoPunkteDB 7 		-- punkte passen zum regexp aus db holen
--- 	print p 			-- ausgabe zur kontrolle
--- 	foldr1 min $ [ x | (_,x) <- p ] -- maximum der punkte checken
--- 	foldr1 max $ [ x | (_,x) <- p ] -- minimum der punkte checken
--- 	fillAutInDB [7] 		-- punkte in die punkte tabelle einspielen
--- - ghci verlassen (ctrl-d)
---
--- ** Schriftl.-Punkte
---	> cd ~/edu 
---      > cvs update -d
---	> cp ~/edu/ws03/as/serie7/serie7.dat ~/autotool/control/serie7-schriftl.dat
---	> cd ~/autotool/control
---	> make ghci-schriftl
---	ls <- opendat 7 	-- punkte laden
---	fndup ls 		-- sind duplikate verhanden? true -> abbruch !!!
---	print ls 		-- anzeigen
---	fillDatInDB [7]		-- punkte in punkte tabelle einspielen
--- - ghci verlassen (ctrl-d)
---
--- ** Report erstellen
---	> cd ~/autotool/control
---	> make Schriftl.cgi
---	> Schriftl.cgi > report.html
--- 	> perl -0777 -i~ -pe 's,<input.*?>,,sg' report.html  
---	> links report.html
+
+-- (0)   Zuordnung von Serie -> Autotoolsubject
+--	'serie i :: Serie -> SQL-REGEXP'
+
+-- (1) 	Serienweise Extraktion der Autotoolpunkte
+--	'getAutoPunkteDB i :: Serie -> [(mnr,autotool-punkte)]'
+
+--  EXAMPLE SESSION FUER SERIE 7
+
+--  Autotool-Punkte
+
+-- >	cd ~/autotool/control
+-- >	make ghci-schriftl
+-- > 	- Regexp serie 7 = [(...,...)...] anlegen
+-- > 	p <- getAutoPunkteDB 7 		-- punkte passen zum regexp aus db holen
+-- > 	print p 			-- ausgabe zur kontrolle
+-- > 	foldr1 min $ [ x | (_,x) <- p ] -- maximum der punkte checken
+-- > 	foldr1 max $ [ x | (_,x) <- p ] -- minimum der punkte checken
+-- > 	fillAutInDB [7] 		-- punkte in die punkte tabelle einspielen
+-- >      ghci verlassen (ctrl-d)
+
+
+--  Schriftl.-Punkte
+
+-- >	cd ~/edu 
+-- >      cvs update -d
+-- >	cp ~/edu/ws03/as/serie7/serie7.dat ~/autotool/control/serie7-schriftl.dat
+-- >	cd ~/autotool/control
+-- >	make ghci-schriftl
+-- >	ls <- opendat 7 	-- punkte laden
+-- >	fndup ls 		-- sind duplikate verhanden? true -> abbruch !!!
+-- >	print ls 		-- anzeigen
+-- >	fillDatInDB [7]		-- punkte in punkte tabelle einspielen
+-- >  ghci verlassen (ctrl-d)
+
+
+--  Report erstellen
+
+-- >	cd ~/autotool/control
+-- >	make Schriftl.cgi
+-- >	Schriftl.cgi > report.html
+-- > 	perl -0777 -i~ -pe 's,<input.*?>,,sg' report.html  
+-- >	links report.html
+
 
 module Main where
 
@@ -318,7 +320,8 @@ startPage =
 	      mapM_ sline $ P.map (unp2 maxpt len) $ cumsum $ zip (getpts daten) [1..]
 
       where sline xs      = tr $ sequence $ P.map (\s -> td $ text s) xs
-	    getpts xs :: [Int]    = P.map (read.(!!0)) xs -- nur die punkte
+	    getpts xs 
+		      = P.map (read.(!!0)) xs :: [ Int ] -- nur die punkte
 	    cumsum (x:xs) = f x xs 
 	    f a (b:xs)    = if (fst a) /= (fst b) then a : f b xs else f b xs ; f a [] = [a]
 	    unp1 (a,b) = [show a, show b]

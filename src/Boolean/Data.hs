@@ -1,4 +1,4 @@
--- | Boolean expressions, in Java/C syntax
+-- | Boolean expressions, in Java\/C syntax
 
 module Boolean.Data 
 
