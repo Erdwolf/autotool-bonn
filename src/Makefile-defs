@@ -27,7 +27,7 @@ DEFINES = -DHOME=1
 
 # erlaube überschreibung, s.o
 ifndef DIRS
-DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau:ws03/aus
+DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau:ws03/aus:ws03/informatik
 endif
 
 ########################################################################
