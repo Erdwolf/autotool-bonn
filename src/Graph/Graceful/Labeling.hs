@@ -42,7 +42,7 @@ import Sort
 
 newtype Labeling knoten = Labeling
 	( FiniteMap knoten Integer
-	) deriving ( {- Show, -} Read)
+	) -- deriving ( Show, Read) -- siehe unten
 
 
 emptyLabeling :: Labeling knoten
@@ -101,3 +101,14 @@ instance ToDoc knoten => ToDoc ( Labeling knoten ) where
 instance  ToDoc knoten => Show (  Labeling knoten ) where
     show = render . toDoc
 
+instance (Ord knoten, Read knoten) => Read ( Labeling knoten ) where
+    readsPrec p cs = do
+        ( l, cs ) <- lex cs
+	if l == "Labeling" then do
+	     -- daß das jemals funkionierte ... now deprecated!
+	     ( fm, cs ) <- reads cs
+	     return ( Labeling fm, cs )
+	 else if l == "mkLabeling" then do
+	      ( pairs, cs ) <- reads cs
+	      return ( mkLabeling pairs, cs )
+	 else []
