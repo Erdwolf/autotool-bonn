@@ -110,4 +110,5 @@ makers = [ Blank.make
 	 , Graph.Circle.Plain.make
 
          , Number.Base.Central.make_fixed
+         , Number.Base.Central.make_quiz
 	 ]
