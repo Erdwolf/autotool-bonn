@@ -14,7 +14,10 @@ import List (partition)
 import Monad (guard)
 
 -- $Log$
--- Revision 1.2  2003-06-04 08:04:14  joe
+-- Revision 1.1  2003-11-25 08:21:09  joe
+-- moved CF-related files into subdir
+--
+-- Revision 1.2  2003/06/04 08:04:14  joe
 -- TES (für WST-contest)
 --
 -- Revision 1.1  2002/12/17 15:17:58  joe

@@ -13,7 +13,10 @@ module Grammatik.CYK_Tables
 where
 
 -- $Log$
--- Revision 1.1  2002-12-17 15:17:58  joe
+-- Revision 1.1  2003-11-25 08:21:09  joe
+-- moved CF-related files into subdir
+--
+-- Revision 1.1  2002/12/17 15:17:58  joe
 -- grammatik -> Grammatik.
 --
 -- Revision 1.1.1.1  2002/05/24 10:46:47  challenger
