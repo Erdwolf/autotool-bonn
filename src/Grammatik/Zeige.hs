@@ -12,7 +12,7 @@ import Grammatik.Ableitung
 
 import Grammatik.Reduziert
 
-import Set
+import Data.Set
 
 import Util.Wort
 

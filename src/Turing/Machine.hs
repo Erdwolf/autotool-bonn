@@ -1,6 +1,6 @@
 module Turing.Machine where
 
--- -- $Id$
+--   $Id$
 
 import Machine.Class
 import Machine.Akzeptieren
@@ -11,7 +11,7 @@ import Turing.Type
 import Turing.Konfiguration
 import Turing.Nachfolger ( folgekonfigurationen )
 
-import Set
+import Data.Set
 import Size
 
 

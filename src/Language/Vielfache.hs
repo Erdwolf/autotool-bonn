@@ -7,7 +7,7 @@ where
 import Language.Type
 import Language.Zahl
 
-import Set
+import Data.Set
 import Random
 import Char
 

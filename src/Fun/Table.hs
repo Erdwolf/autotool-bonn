@@ -1,6 +1,6 @@
 module Fun.Table where
 
--- -- $Id$
+--   $Id$
 
 -- berechnen von vielen funktionswerten
 -- optimiert: mit durchgehender cache-benutzung

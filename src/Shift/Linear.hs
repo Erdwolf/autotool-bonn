@@ -6,13 +6,13 @@ import Shift.Iterate
 import Shift.For
 
 import ToDoc
-import Monad ( guard, mzero )
+import Control.Monad ( guard, mzero )
 import Maybe
-import List ( inits, tails )
+import Data.List ( inits, tails )
 import Util.Sort
 import Util.Uniq
-import Set
-import FiniteMap
+import Data.Set
+import Data.FiniteMap
 
 --------------------------------------------------------------
 

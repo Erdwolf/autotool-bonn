@@ -4,7 +4,7 @@ module SAT.Beispiel where
 
 import SAT.Types
 
-import FiniteMap
+import Data.FiniteMap
 
 --belegtest = 
 -------------------------------------------------

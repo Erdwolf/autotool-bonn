@@ -1,6 +1,6 @@
 module NPDA.Test
 
--- -- $Id$
+--   $Id$
 
 ( Config (..), Mod (..)
 , test
@@ -17,7 +17,7 @@ import NPDA.Akzeptieren
 import NPDA.Vorrechnen
 
 import Reporter
-import Monad (guard)
+import Control.Monad (guard)
 import ToDoc
 import Size
 

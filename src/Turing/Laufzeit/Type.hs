@@ -1,6 +1,6 @@
 module Turing.Laufzeit.Type where
 
--- -- $Id$
+--   $Id$
 
 import Turing.Type (TM)
 

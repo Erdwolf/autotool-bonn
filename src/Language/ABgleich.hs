@@ -4,8 +4,8 @@ module Language.ABgleich ( abgleich ) where
 
 import Language.Type
 
-import Set
-import Monad ( guard )
+import Data.Set
+import Control.Monad ( guard )
 import Random
 
 abgleich :: Language

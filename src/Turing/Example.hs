@@ -1,6 +1,6 @@
 module Turing.Example where
 
--- -- $Id$
+--   $Id$
 
 import Turing
 

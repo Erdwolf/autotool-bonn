@@ -13,8 +13,8 @@ where
 
 -- Sprachen von Lukasiewicz, Dyck
 
-import Set
-import List ( mapAccumL, nub )
+import Data.Set
+import Data.List ( mapAccumL, nub )
 import Random
 
 import Util.Wort

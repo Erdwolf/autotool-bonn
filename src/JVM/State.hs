@@ -1,6 +1,6 @@
 module JVM.State where
 
--- -- $Id$
+--   $Id$
 
 import JVM.Type
 import JVM.Memory

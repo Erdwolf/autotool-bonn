@@ -6,9 +6,9 @@ import Robots.Hull
 import Schichten
 
 import Maybe
-import Set
+import Data.Set
 import ToDoc
-import Monad ( guard )
+import Control.Monad ( guard )
 
 
 nachfolger :: Konfig -> [ Konfig ]

@@ -31,9 +31,9 @@ import Reporter
 import ToDoc
 
 import Util.Splits
-import Monad (guard)
-import List (partition)
-import Set
+import Control.Monad (guard)
+import Data.List (partition)
+import Data.Set
 import FilterSet
 import Maybe
 

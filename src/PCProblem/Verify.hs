@@ -11,10 +11,10 @@ import Challenger
 import Reporter
 
 import ToDoc
-import Set
+import Data.Set
 import System
 
-import List (isPrefixOf)
+import Data.List (isPrefixOf)
 
 
 instance (ToDoc PCP, Show PCP, Read PCP

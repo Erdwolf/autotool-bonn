@@ -6,8 +6,8 @@ module Spielbaum.Wort where
 import Spielbaum.Next
 import ToDoc
 
-import List (inits, tails)
-import Monad (guard)
+import Data.List (inits, tails)
+import Control.Monad (guard)
 
 data Regel a = 
      Regel { from :: [a]

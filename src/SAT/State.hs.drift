@@ -2,7 +2,7 @@
 
 module SAT.State where
 
--- -- $Id$
+--   $Id$
 
 import SAT.Types
 
@@ -11,7 +11,7 @@ import Reader
 
 import Sets
 import qualified Relation
-import FiniteMap
+import Data.FiniteMap
 
 data State = 
      State { assignment :: Belegung -- erfüllend

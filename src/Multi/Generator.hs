@@ -1,6 +1,6 @@
 module Multi.Generator where
 
--- -- $Id$
+--   $Id$
 
 import Multi.Paths
 

@@ -2,9 +2,9 @@
 
 module SAT.Types where
 
--- -- $Id$
+--   $Id$
 
-import FiniteMap
+import Data.FiniteMap
 import ToDoc
 import Reader
 import ReadFM

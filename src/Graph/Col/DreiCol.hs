@@ -21,10 +21,10 @@ import qualified Graph.Labeling
 import Challenger
 
 import ToDoc
-import Set
-import FiniteMap
+import Data.Set
+import Data.FiniteMap
 import Sort
-import Monad ( guard ) -- old style
+import Control.Monad ( guard ) -- old style
 
 data DreiCol = DreiCol deriving Show
 

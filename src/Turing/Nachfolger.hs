@@ -1,6 +1,6 @@
 module Turing.Nachfolger 
 
--- -- $Id$
+--   $Id$
 
 ( nachfolger
 , folgekonfigurationen -- brauchen wir nicht?

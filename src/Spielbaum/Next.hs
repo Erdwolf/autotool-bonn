@@ -10,8 +10,8 @@ import Schichten
 import Graph.Type
 import Graph.Viz
 
-import Set
-import FiniteMap
+import Data.Set
+import Data.FiniteMap
 import Maybe
 
 ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 module JVM.Step where
 
--- -- $Id$
+--   $Id$
 
 import JVM.Type
 import JVM.Memory

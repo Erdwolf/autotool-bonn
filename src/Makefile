@@ -46,18 +46,21 @@ rescore :
 #########################################################################
 
 tags :
-	( find . -name "*hs" -print && find . -name "*drift" -print ) \
-	| xargs etags
+	rm TAGS && \
+	find . \( -name "*.hs" -o -name "*.hs.drift" \) \
+	 -print -exec etags -a {} \;
 
 HADDOCK_INPUTS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
 	Reporter Turing Dot Challenger Inter Boxing Machine Language \
-	SRS Exp \
+	SRS Exp Graph GVKnoten \
 	ws03 util Util
-HADDOCK_OUTPUT = haddock
+HADDOCK_OUTPUT = $(PUB)/autotool/haddock
 HADDOCK = haddock
 HADDOCK_OPTS = -v \
--h \
--s 'http://theo1.informatik.uni-leipzig.de/cgi-bin/cvsweb/autotool/'
+--html \
+--source='http://theo1.informatik.uni-leipzig.de/cgi-bin/cvsweb/autotool/' \
+--read-interface=http://www.haskell.org/ghc/docs/6.2/html/libraries/base,/usr/local/share/ghc-6.2/html/libraries/base/base.haddock 
+
 
 haddock : 
 	( ls *.hs && find $(HADDOCK_INPUTS) -name "*.hs" -not -name "Datei.hs" -print ) \

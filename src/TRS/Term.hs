@@ -6,7 +6,7 @@ module TRS.Term
 
 where
 
--- -- $Id$
+--   $Id$
 
 import Data.Tree
 

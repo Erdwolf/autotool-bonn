@@ -6,17 +6,17 @@ import Shift.Type
 import Shift.Iterate
 import Shift.Enum
 
-import FiniteMap
-import Monad ( guard, when, foldM )
+import Data.FiniteMap
+import Control.Monad ( guard, when, foldM )
 import Random ( randomRIO )
 import IO
 import System
-import List (sort)
+import Data.List (sort)
 
 import Util.Zufall
 import Util.Faktor
 
-import List ( group )
+import Data.List ( group )
 
 instance Show [Bool] where
     show = map ( \ x -> if x then '+' else '-' ) 

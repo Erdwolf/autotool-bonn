@@ -1,6 +1,6 @@
 module Inter.Variant where
 
--- -- $Id$
+--   $Id$
 
 import Inter.Types
 import Inter.Error
@@ -30,7 +30,7 @@ import SQLqueries
 import Helper
 
 import Maybe (isJust)
-import Monad ( guard )
+import Control.Monad ( guard )
 
 -- damit die versteckte history nicht zu lang wird:
 -- neues konzept, student muss immer zurueck 
@@ -95,7 +95,7 @@ chooseTypPage par0 (F2 matF pwdF) =
 
 ----------------------------------------------------------------------
 
--- -- rechnet alles aus
+--   rechnet alles aus
 -- computer par bep = 
 --     let
 -- 	vvs :: [ Variant ]

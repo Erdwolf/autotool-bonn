@@ -4,8 +4,8 @@ import Shift.Type
 import Shift.Computer
 import Shift.Repeater
 
-import List ( group, inits, tails )
-import Monad ( guard )
+import Data.List ( group, inits, tails )
+import Control.Monad ( guard )
 
 ps k = [ 2*k, 3*k, 5*k+1, 7*k+1 ]
 

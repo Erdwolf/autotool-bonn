@@ -1,6 +1,6 @@
 module Multi.Config where
 
--- -- $Id$
+--   $Id$
 
 import Util.Datei
 

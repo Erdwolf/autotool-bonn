@@ -7,9 +7,9 @@ module Shift.Break
 
 where
 
-import Monad
+import Control.Monad
 import Array
-import Set
+import Data.Set
 import Bits
 import Int
 import ToDoc

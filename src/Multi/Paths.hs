@@ -1,6 +1,6 @@
 module Multi.Paths where
 
--- -- $Id$
+--   $Id$
 
 import Dot.Dot
 import Util.Datei

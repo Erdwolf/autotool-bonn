@@ -15,10 +15,10 @@ where
 
 import Robots.Data
 
-import List (partition)
-import Monad ( guard )
+import Data.List (partition)
+import Control.Monad ( guard )
 import Maybe ( isJust, maybeToList, fromMaybe )
-import FiniteMap
+import Data.FiniteMap
 import Sets
 
 

@@ -1,6 +1,6 @@
 module Inter.Validate where
 
--- -- $Id$
+--   $Id$
 
 import Inter.Types
 import qualified Inter.Param as P
@@ -11,7 +11,7 @@ import qualified Inter.Param as S
 import Text.Html
 import SQLqueries
 
-import Monad ( guard )
+import Control.Monad ( guard )
 import ToDoc
 
 validate :: P.Type -> IO ( Either Html P.Type )

@@ -1,9 +1,9 @@
 module RAM.Memory where
 
--- -- $Id$
+--   $Id$
 
 import RAM.Type
-import FiniteMap
+import Data.FiniteMap
 import OrdFM
 
 type Memory = FiniteMap Var Integer

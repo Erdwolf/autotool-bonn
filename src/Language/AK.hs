@@ -16,10 +16,10 @@ import Language.Mutate
 import Util.Wort
 import Util.Zufall
 
-import Set
+import Data.Set
 import Random
-import List (intersperse)
-import Monad ( guard )
+import Data.List (intersperse)
+import Control.Monad ( guard )
 import Maybe (isJust)
 
 form :: [Char] -> Language

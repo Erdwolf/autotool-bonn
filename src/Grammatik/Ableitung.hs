@@ -1,7 +1,7 @@
 module Grammatik.Ableitung where
 
-import Monad (guard)
-import Set
+import Control.Monad (guard)
+import Data.Set
 import Schichten
 import ToDoc
 

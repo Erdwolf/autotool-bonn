@@ -1,6 +1,6 @@
 module Main where
 
--- -- $Id$
+--   $Id$
 
 import Network.CGI
 import Text.Html hiding ( text  )

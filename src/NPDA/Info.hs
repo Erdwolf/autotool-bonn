@@ -1,13 +1,13 @@
 module NPDA.Info where
 
--- -- $Id$
+--   $Id$
 
 import NPDA.Type
 import NPDA.Konfiguration
 
 import NPDA.Vorganger
 
-import Monad (guard)
+import Control.Monad (guard)
 
 mit_leerem_keller_akzeptierte_eingaben
     :: (Ord x, Ord y, Ord z)

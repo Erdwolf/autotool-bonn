@@ -7,7 +7,7 @@ import Language.Type
 import Util.Zufall
 import Util.Edit
 
-import List ( nub, partition )
+import Data.List ( nub, partition )
 
 mutate :: Language -> Language
 mutate l = 

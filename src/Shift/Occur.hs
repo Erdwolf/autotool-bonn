@@ -4,10 +4,10 @@ import Shift.Type
 import Shift.Computer
 import Shift.Common ( up )
 
-import Set
-import FiniteMap
-import List (inits, tails)
-import Monad (guard)
+import Data.Set
+import Data.FiniteMap
+import Data.List (inits, tails)
+import Control.Monad (guard)
 import ToDoc
 
 type Item a = ( Int, [a], Maybe Int )

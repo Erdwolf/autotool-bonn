@@ -25,7 +25,7 @@ import Challenger.Partial
 import Reporter
 import ToDoc
 
-import List (partition, nub)
+import Data.List (partition, nub)
 
 data CFG = CFG deriving ( Eq, Ord, Show, Read )
 

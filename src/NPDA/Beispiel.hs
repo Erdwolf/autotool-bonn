@@ -1,6 +1,6 @@
 module NPDA.Beispiel where
 
--- -- $Id$
+--   $Id$
 
 -- Skript Seite 56
 
@@ -8,7 +8,7 @@ import NPDA.Type
 import NPDA.Dot
 
 -- import Akzeptieren
-import Set
+import Data.Set
 import ToDoc
 
 -- import Seite56

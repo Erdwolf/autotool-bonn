@@ -4,7 +4,7 @@ import DB.Protocol
 import DB.Config
 import DB.Util
 
-import FiniteMap
+import Data.FiniteMap
 
 import Text.XML.HaXml.Haskell2Xml
 import Text.XML.HaXml.Pretty

@@ -17,7 +17,7 @@ import Language.Type
 import Reporter
 import Size
 import ToDoc
-import List (partition)
+import Data.List (partition)
 
 check :: Language
       -> Config

@@ -1,6 +1,6 @@
 module Term.CLS where
 
--- -- $Id$
+--   $Id$
 
 -- untersuche, ob CL(S) rückwärts change-bounded ist
 -- falls ja, dann wäre das ein argument für REG-erhaltung
@@ -11,8 +11,8 @@ import Term.Match
 import Term.Change
 
 import ToDoc
-import FiniteMap
-import Monad ( when )
+import Data.FiniteMap
+import Control.Monad ( when )
 
 type STerm = Term Char
 

@@ -2,7 +2,7 @@
 
 module SAT.Param where
 
--- -- $Id$
+--   $Id$
 
 import SAT.Types
 

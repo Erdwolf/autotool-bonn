@@ -2,7 +2,7 @@
 
 module Pump.REG.Type where
 
--- -- $Id$
+--   $Id$
 
 
 
@@ -13,7 +13,7 @@ import ToDoc
 
 
 import Util.Splits
-import Monad (guard)
+import Control.Monad (guard)
 
 
 data Zerlegung = Zerlegung

@@ -2,7 +2,7 @@ module Main where
 
 import Prelude as P
 import Char
-import List
+import Data.List
 import Numeric
 
 
@@ -27,7 +27,7 @@ fillDatInDB xs = do
 
 -- ================================================================================
 -- Autotool Punkte
--- ---
+--  -
 -- Main
 
 --serie 1: TM-{SUCC,EXPO,STEP[12]} 4 pkte / schrift: TM-BIN 6 pkte

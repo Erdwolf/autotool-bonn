@@ -1,12 +1,12 @@
 module Helper where
 
--- -- $Id$
+--   $Id$
 
 import Prelude
 import qualified Prelude ( map )
 
 import Char ( toLower )
-import Monad ( mzero )
+import Control.Monad ( mzero )
 
 
 data StrOrInt = S String | I Int deriving ( Show , Read )

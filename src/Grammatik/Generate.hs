@@ -10,7 +10,7 @@ import Grammatik.Type
 import Grammatik.Trace
 
 import Util.Zufall
-import Set
+import Data.Set
 import Reporter
 
 gens :: Int -> Int -> Grammatik -> IO Track

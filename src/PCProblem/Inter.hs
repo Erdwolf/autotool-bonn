@@ -10,7 +10,7 @@ import Interactive.Type
 import Component hiding ( join )
 import Reporter
 import ToDoc
-import List (isPrefixOf)
+import Data.List (isPrefixOf)
 
 -----------------------------------------------------------------------
 

@@ -3,13 +3,13 @@
 
 module Turing.Beaver where
 
--- -- $Id$
+--   $Id$
 
 import Turing
 import qualified NFA as N
 import qualified Turing.Dot
 
-import Monad ( guard )
+import Control.Monad ( guard )
 
 
 --| examples (Marxen/Buntrock), see above web site

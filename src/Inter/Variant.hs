@@ -1,6 +1,6 @@
 module Inter.Variant where
 
--- -- $Id$
+--   $Id$
 
 import Inter.Types
 import Inter.Error
@@ -30,7 +30,7 @@ import SQLqueries
 import Helper
 
 import Maybe (isJust)
-import Monad ( guard )
+import Control.Monad ( guard )
 
 input_width :: Int
 -- for textarea

@@ -12,7 +12,7 @@ where
 import Language.Type
 import Util.Wort
 
-import Set
+import Data.Set
 import Random
 
 pali :: Language

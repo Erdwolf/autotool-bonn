@@ -17,9 +17,9 @@ module Util.Datei
   )
   where
 
-import List (inits, intersperse)
+import Data.List (inits, intersperse)
 import Directory
-import Monad (guard, when)
+import Control.Monad (guard, when)
 import System (getEnv, system)
 import Char (isAlphaNum)
 import qualified Posix

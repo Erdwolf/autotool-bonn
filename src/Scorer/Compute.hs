@@ -1,6 +1,6 @@
 module Scorer.Compute where
 
--- -- $Id$
+--   $Id$
 
 import Scorer.Aufgabe
 import Scorer.Einsendung

@@ -12,7 +12,7 @@ import HTMLshortcuts
 import SQLqueries
 import Helper
 
--- --
+--  
 -- TODO 
 -- SQL-Exception fangen
 -- Seiten Struktur rausziehen: stdpage ttl bdy menu
@@ -37,7 +37,7 @@ msgPasswort = do
 	empty
 --	ttxt $ "Als Passwort sind nur Worte aus deutschen Buchstaben [a-ZA-ZäöüÄÖÜß] und Zahlen [0-9] erlaubt."
 
--- ---------
+--  -------
 -- Einstiegseite
 -- mit folgen Moeglichkeiten
 -- a) Neuanmeldung: 		registerPage 
@@ -78,7 +78,7 @@ loginPage mat F0  = do
 			smallSubButton F0	       		(registerPage "" "" "" "") "Neuanmeldung"
 
 
--- ------------- 
+--  ----------- 
 -- Passwort Mail senden an Email-Adresse mit dieser Matrikelnummer,
 -- ansonsten Fehler.
 --
@@ -105,7 +105,7 @@ mailPasswdPage (F1 matF) =
 
 
 
--- ----------------
+--  --------------
 -- Neuanmeldung, Eingabe der persoenlichen Daten mit folgender Validierung (registerPage). 
 -- 
 -- Hinweis,
@@ -184,7 +184,7 @@ registeredPage (F6 vnmF nmeF matF emlF ps1F ps2F) =
 					 hrrow
 					 smallSubButton F0 (registerPage vnm nme mat eml) "Zurück"
 
--- ----------------
+--  --------------
 -- Endseite 
 endPage F0 = 
 	standardQuery "Ende" $ 
@@ -194,7 +194,7 @@ endPage F0 =
 			hrrow
 
 
--- ----------------
+--  --------------
 -- Überpüfung der passwort,matrikel paares, bei Erfolg Student-Status anzeigen
 checkLoginPage (F2 matF pwdF) =
   let 
@@ -280,7 +280,7 @@ studStatusPage mat F0 =
 			if null (snd mglAufgs2) 
 			   then tr $ td $ text "zur Zeit keine."
  			   else showAsTable2 mglAufgs2
-			-- --------------------------------------------------
+			--  ------------------------------------------------
 			hrline
 			h3 $ text "Hier können Sie :"
 			table $ 
@@ -302,7 +302,7 @@ studStatusPage mat F0 =
 		    hrline
 		    where  lin (a,b) = tr $ do { td $ text a; td $ text b  }
 
--- -----------------
+--  ---------------
 -- TODO: alt nicht mehr benutzt
 -- Vorlesung hinzufügen 
 addVorlesungPage mat vorl F0 = do

@@ -16,7 +16,7 @@ import Util.Seed
 
 import Array
 import Reporter
-import List (isPrefixOf)
+import Data.List (isPrefixOf)
 import ToDoc
 import Informed
 

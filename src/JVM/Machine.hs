@@ -1,6 +1,6 @@
 module JVM.Machine where
 
--- -- $Id$
+--   $Id$
 
 import Machine.Class
 
@@ -9,7 +9,7 @@ import JVM.Memory
 import JVM.State
 import JVM.Step
 
-import Set
+import Data.Set
 import Size
 import Data.Array
 

@@ -2,16 +2,16 @@ module Machine.Akzeptieren
 
 where
 
--- -- $Id$
+--   $Id$
 
 import Machine.Class
 -- import Machine.Vorrechnen
 import Machine.History
 
-import Monad (guard)
+import Control.Monad (guard)
 import Reporter hiding ( output )
 import ToDoc
-import Set
+import Data.Set
 
 akzeptierend
     :: Machine m dat conf

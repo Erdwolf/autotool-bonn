@@ -16,7 +16,7 @@ import Util.Wort
 import Random
 import Letters
 import Maybe
-import Set
+import Data.Set
 
 gen :: Param -> IO PCP
 gen g = do

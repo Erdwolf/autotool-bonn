@@ -7,9 +7,9 @@ where
 import Language.Type
 import Language.Zahl
 
-import Set
+import Data.Set
 import Random
-import Monad ( guard )
+import Control.Monad ( guard )
 import Char
 
 alpha = [ '0' .. '9' ]

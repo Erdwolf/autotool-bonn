@@ -5,7 +5,7 @@ module PCProblem.Data where
 import ToDoc
 import Reader
 
-import Set
+import Data.Set
 import Letters
 
 data PCP = PCP [(String, String)]

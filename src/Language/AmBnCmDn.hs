@@ -3,8 +3,8 @@ module AmBnCmDn (ambncmdn) where
 -- -- $Id$
 
 import Language
-import Set
-import Monad ( guard )
+import Data.Set
+import Control.Monad ( guard )
 
 ambncmdn :: Language
 ambncmdn = Language 

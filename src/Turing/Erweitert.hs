@@ -1,6 +1,6 @@
 module Turing.Erweitert where
 
--- -- $Id$
+--   $Id$
 
 import Turing.Type
 import Reporter

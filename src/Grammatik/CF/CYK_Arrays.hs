@@ -18,7 +18,7 @@ where
 import Grammatik.CF.Chomsky
 import qualified Grammatik.CF.CYK_Tables as C
 
-import FiniteMap
+import Data.FiniteMap
 import Simple_Set
 import qualified Set as S
 

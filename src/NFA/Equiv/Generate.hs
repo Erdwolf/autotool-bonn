@@ -20,7 +20,7 @@ import Util.Cache
 import Util.Seed
 import Util.Datei
 
-import Set
+import Data.Set
 import Size
 import ToDoc
 import Reporter

@@ -4,7 +4,7 @@ import Graph.Graph
 import Spielbaum.Type
 import Spielbaum.Wort
 
-import Monad(guard)
+import Control.Monad(guard)
 
 -- map2 :: (a -> b -> c) -> [a] -> b -> [c]
 map2 :: (a -> [b] -> c) -> [a] -> [b] -> [c]

@@ -1,6 +1,6 @@
 module RAM.Machine where
 
--- -- $Id$
+--   $Id$
 
 import Machine.Class
 
@@ -9,7 +9,7 @@ import RAM.Memory
 import RAM.State
 import RAM.Step
 
-import Set
+import Data.Set
 import Size
 
 instance Compute Program State where

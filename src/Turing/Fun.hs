@@ -1,6 +1,6 @@
 module Turing.Fun
 
--- -- $Id$
+--   $Id$
 
 ( fun_test
 )
@@ -14,7 +14,7 @@ import Turing.Akzeptieren (akzeptierend)
 import Turing.Vorrechnen
 
 
-import Monad (guard)
+import Control.Monad (guard)
 import Reporter
 import ToDoc
 import Reader

@@ -1,7 +1,7 @@
 module Shift.Enum where
 
-import List ( tails )
-import Monad ( guard )
+import Data.List ( tails )
+import Control.Monad ( guard )
 
 subsets :: Int -> [a] -> [[a]]
 subsets 0 xs = return []

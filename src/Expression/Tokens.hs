@@ -1,4 +1,4 @@
--- -- $Id$
+--   $Id$
 
 module Expression.Tokens where
 

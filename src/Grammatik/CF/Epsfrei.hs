@@ -6,12 +6,15 @@ module Grammatik.CF.Epsfrei where
 import Grammatik.Type
 
 import Fix
-import Set
+import Data.Set
 
-import Monad (guard)
+import Control.Monad (guard)
 
 -- $Log$
--- Revision 1.3  2003-12-17 21:34:45  joe
+-- Revision 1.4  2003-12-18 13:10:07  joe
+-- kosmetik fuer haddock
+--
+-- Revision 1.3  2003/12/17 21:34:45  joe
 -- changed CVS tags in files to allow haddock documentation
 --
 -- Revision 1.2  2003/11/25 09:49:49  joe

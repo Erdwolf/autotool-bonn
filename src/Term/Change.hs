@@ -1,6 +1,6 @@
 module Term.Change where
 
--- -- $Id$
+--   $Id$
 
 import Term.Type
 import Term.Match
@@ -9,9 +9,9 @@ import Term.Match
 
 import Maybe
 import Schichten
-import Set
-import FiniteMap
-import Monad
+import Data.Set
+import Data.FiniteMap
+import Control.Monad
 
 age :: (Int, a) -> Int
 age = fst

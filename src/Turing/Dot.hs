@@ -1,5 +1,5 @@
 -- convert to NFA for displaying
--- -- $Id$
+--   $Id$
 
 module Turing.Dot where
 
@@ -34,7 +34,7 @@ instance Show  [ Triple Char ] where
 instance ( N.NFAC (Triple Char) z , N.NFAC [Triple Char] z , TUM Char z ) 
     => ToDot ( Turing Char z ) where
     toDot tm = toDot 
-	     -- -- $ parallel_compact 
+	     --   $ parallel_compact 
 	     $ convert tm
     toDotOptions tm = "-Grankdir=LR"
 

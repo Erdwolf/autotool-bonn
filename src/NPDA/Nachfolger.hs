@@ -1,6 +1,6 @@
 module NPDA.Nachfolger 
 
--- -- $Id$
+--   $Id$
 
 ( nachfolger
 , folgekonfigurationen -- brauchen wir nicht?
@@ -12,7 +12,7 @@ import NPDA.Type
 import NPDA.Konfiguration
 
 import Schichten
-import Set
+import Data.Set
 
 
 

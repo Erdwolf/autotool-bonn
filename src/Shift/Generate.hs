@@ -14,8 +14,8 @@ import Util.Zufall
 
 import IO
 
-import List ( inits, tails, sort )
-import Monad ( guard, when, foldM )
+import Data.List ( inits, tails, sort )
+import Control.Monad ( guard, when, foldM )
 
 type Pool = [(Pins, Int)]
 

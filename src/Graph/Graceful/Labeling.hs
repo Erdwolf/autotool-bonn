@@ -34,7 +34,7 @@ module Graceful.Labeling
 	where
 
 import Graph.Graph
-import FiniteMap
+import Data.FiniteMap
 import ToDoc
 import Maybe
 import ReadFM

@@ -1,6 +1,6 @@
 module Fun 
 
--- -- $Id$
+--   $Id$
 
 ( module Fun.Type
 , module RAM.Builtin

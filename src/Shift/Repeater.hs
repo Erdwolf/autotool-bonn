@@ -8,8 +8,8 @@ module Shift.Repeater
 ) where
 
 -- import Util
-import List
-import Monad ( guard )
+import Data.List
+import Control.Monad ( guard )
 
 nths :: Int -> [a] -> [a]
 -- take xs!!0, xs!!n, xs!!(2n), ..

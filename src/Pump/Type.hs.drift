@@ -2,7 +2,7 @@
 
 module Pump.Type where
 
--- -- $Id$
+--   $Id$
 
 import ToDoc
 import Reader

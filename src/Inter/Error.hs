@@ -1,6 +1,6 @@
 module Inter.Error where
 
--- -- $Id$
+--   $Id$
 
 import qualified Inter.Param as P
 import qualified Inter.Types as T

@@ -1,16 +1,16 @@
 module NPDA.Det
 
--- -- $Id$
+--   $Id$
 
 where
 
 import NPDA.Type
 import NPDA.Sane
 
-import Monad (guard)
+import Control.Monad (guard)
 import Reporter
 import qualified Reporter.Checker  as C
-import Set
+import Data.Set
 import ToDoc
 
 check :: NPDAC x y z => C.Type ( NPDA x y z )

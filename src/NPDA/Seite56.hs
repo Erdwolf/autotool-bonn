@@ -1,6 +1,6 @@
 module Seite56 where
 
--- -- $Id$
+--   $Id$
 
 import NPDA
 import NPDATest

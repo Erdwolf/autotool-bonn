@@ -9,9 +9,9 @@ where
 
 
 import Language
-import Set
-import FiniteMap
-import Monad ( guard )
+import Data.Set
+import Data.FiniteMap
+import Control.Monad ( guard )
 
 
 gleich :: String -> Language

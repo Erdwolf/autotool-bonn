@@ -9,8 +9,8 @@ import Util.Uniq
 import Util.Wort
 
 import ToDoc
-import Set
-import Monad (guard)
+import Data.Set
+import Control.Monad (guard)
 import Random
 
 

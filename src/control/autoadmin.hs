@@ -12,7 +12,7 @@ import Helper
 import Exception
 -- EX
 import Database.MySQL.HSQL 
--- --
+--  
 -- TODO 
 -- SQL-Exception fangen
 -- Seiten Struktur rausziehen: stdpage ttl bdy menu
@@ -63,7 +63,7 @@ checkLoginPage (F2 lgnF pwdF) =
 -- 					th3 "Passwort und Matrikelnummer stimmen nicht überein!" 
 -- 					hrrow
 -- 					smallSubButton F0 (loginPage lgn) "Login wiederholen"
--- --					smallSubButton F0 endPage		 "Ende"
+--  					smallSubButton F0 endPage		 "Ende"
 
 -- 		 else 
 -- 			do 

@@ -6,8 +6,8 @@ import PCProblem.Type
 import PCProblem.Konfig
 
 import Schichten ( bfs )
-import Set
-import Monad ( guard )
+import Data.Set
+import Control.Monad ( guard )
 
 start :: PCP -> Konfig
 start i = Konfig 

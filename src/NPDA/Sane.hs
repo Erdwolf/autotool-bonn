@@ -1,6 +1,6 @@
 module NPDA.Sane where
 
--- -- $Id$
+--   $Id$
 
 import NPDA.Type
 import Reporter

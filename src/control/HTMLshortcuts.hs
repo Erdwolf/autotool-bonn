@@ -1,6 +1,6 @@
 module HTMLshortcuts where
 
--- -- $Id$
+--   $Id$
 
 import Prelude hiding ( span, head, div, map )
 import qualified Prelude
@@ -16,7 +16,7 @@ import Char -- toLower
 import Helper
 
 
--- --------------------------------------------------------------------------------
+--  ------------------------------------------------------------------------------
 -- Helper InputFields
 promptedInput txt attrs =
 	tr $ do 

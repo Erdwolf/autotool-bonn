@@ -14,9 +14,9 @@ where
 
 import  Grammatik.CF.Chomsky
 
-import FiniteMap
+import Data.FiniteMap
 import Simple_Set
--- import Set
+-- import Data.Set
 
 import Array
 

@@ -4,7 +4,7 @@ module Pump.CF
 
 ( Zerlegung (..)
 , Pump (..)
-, module FiniteMap
+, module Data.FiniteMap
 )
 
 where
@@ -15,7 +15,7 @@ import Pump.Type
 import Pump.CF.Type
 
 import Util.Splits
-import FiniteMap
+import Data.FiniteMap
 import Reporter
 import ToDoc
 

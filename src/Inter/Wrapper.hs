@@ -1,6 +1,6 @@
 module Inter.Wrapper where
 
--- -- $Id$
+--   $Id$
 
 import qualified Inter.Types as T
 import qualified Challenger  as C

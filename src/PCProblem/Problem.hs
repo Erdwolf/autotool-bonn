@@ -11,7 +11,7 @@ module PCProblem.PCProblem (
     ,verifiziere
     ) where
 
-import FiniteMap
+import Data.FiniteMap
 import PCP.Type
 
 import Challenger
@@ -21,10 +21,10 @@ import Interactive.Type
 import Component
 
 import ToDoc
-import Set
+import Data.Set
 import System
 
-import List (isPrefixOf)
+import Data.List (isPrefixOf)
 
 
 data PCProblem = PCProblem deriving Show

@@ -6,9 +6,9 @@ import Language.Type
 
 import Util.Wort
 import Util.Zufall
-import Monad (guard)
+import Control.Monad (guard)
 
-import Set
+import Data.Set
 import Random
 
 cee :: Char -> Language -> Language

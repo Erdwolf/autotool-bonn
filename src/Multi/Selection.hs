@@ -1,6 +1,6 @@
 module Multi.Selection where
 
--- -- $Id$
+--   $Id$
 
 import Multi.Config
 import Multi.Paths
@@ -11,7 +11,7 @@ import Util.Datei
 import Types -- wash
 import qualified Posix
 
-import Monad ( guard )
+import Control.Monad ( guard )
 
 data Item = 
      Item { picture :: FilePath -- ohne dir

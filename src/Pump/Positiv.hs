@@ -15,9 +15,9 @@ import Size
 import Control.Monad ( guard )
 
 import Reporter
-import FiniteMap
-import Set
-import List ( sort, nub )
+import Data.FiniteMap
+import Data.Set
+import Data.List ( sort, nub )
 import Maybe ( isNothing )
 
 positiv :: Pumping z

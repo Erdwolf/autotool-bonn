@@ -3,7 +3,7 @@ module Shift.For where
 -- -- $Id$
 
 import ToDoc
-import Monad ( guard )
+import Control.Monad ( guard )
 
 -- this is only used for printing
 data Prog a = For { var :: String

@@ -14,7 +14,7 @@ import Robots.Konfig
 import Robots.Move
 import Robots.Nice
 
-import FiniteMap
+import Data.FiniteMap
 import ReadFM
 
 

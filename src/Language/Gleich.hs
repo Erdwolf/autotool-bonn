@@ -23,7 +23,7 @@ import Util.Edit
 import Util.Uniq
 
 import Sets
-import List (intersperse, nub, group, sort)
+import Data.List (intersperse, nub, group, sort)
 import Random
 import Control.Monad
 

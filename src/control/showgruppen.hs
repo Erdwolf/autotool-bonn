@@ -10,7 +10,7 @@ import HTMLshortcuts
 import SQLqueries
 import Helper
 
--- --
+--  
 -- TODO 
 -- SQL-Exception fangen
 -- Seiten Struktur rausziehen: stdpage ttl bdy menu

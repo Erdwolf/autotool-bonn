@@ -1,6 +1,6 @@
 module Challenger.Problem where
 
--- -- $Id$
+--   $Id$
 
 
 import Reporter

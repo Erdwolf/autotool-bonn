@@ -3,9 +3,9 @@ module Language.ABCdiff (abcdiff) where
 -- -- $Id$
 
 import Language
-import Set
-import Monad ( guard )
-import List ( sort, nub )
+import Data.Set
+import Control.Monad ( guard )
+import Data.List ( sort, nub )
 import Random
 
 abcdiff :: Language

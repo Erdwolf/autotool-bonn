@@ -2,12 +2,12 @@ module Machine.Vorrechnen
 
 where
 
--- -- $Id$
+--   $Id$
 
 import Machine.Class
 import Machine.History
 
-import Set
+import Data.Set
 import Schichten
 import Reporter hiding ( output )
 import ToDoc

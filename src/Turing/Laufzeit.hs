@@ -6,7 +6,7 @@ module Turing.Laufzeit
 
 where
 
--- -- $Id$
+--   $Id$
 
 import Turing
 import Turing.Akzeptieren

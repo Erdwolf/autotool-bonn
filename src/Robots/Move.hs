@@ -6,11 +6,11 @@ import Robots.Data
 import Robots.Konfig
 import Robots.Nice
 
-import Set
-import FiniteMap
+import Data.Set
+import Data.FiniteMap
 import Maybe
-import List (sortBy)
-import Monad ( foldM )
+import Data.List (sortBy)
+import Control.Monad ( foldM )
 
 import Reporter
 import ToDoc

@@ -16,7 +16,7 @@ where
 import Control.Monad (guard)
 
 import Fix
-import Set
+import Data.Set
 import Grammatik
 
 -- jede Variable der linken seite nennen wir produktiv,

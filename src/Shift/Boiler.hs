@@ -5,7 +5,7 @@ import Shift.Computer
 import Shift.Break
 
 import Bits
-import List ( group )
+import Data.List ( group )
 import ToDoc
 
 

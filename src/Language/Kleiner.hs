@@ -8,9 +8,9 @@ module Kleiner
 where
 
 import Language
-import Set
-import FiniteMap
-import List (intersperse, nub, sort)
+import Data.Set
+import Data.FiniteMap
+import Data.List (intersperse, nub, sort)
 import Random
 import Genau
 

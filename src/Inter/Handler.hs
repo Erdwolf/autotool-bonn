@@ -1,6 +1,6 @@
 module Inter.Handler where
 
--- -- $Id$
+--   $Id$
 
 import Reporter
 

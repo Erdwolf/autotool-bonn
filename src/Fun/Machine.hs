@@ -1,6 +1,6 @@
 module Fun.Machine where
 
--- -- $Id$
+--   $Id$
 
 import Machine.Class
 
@@ -10,7 +10,7 @@ import Fun.Step
 
 import qualified Fun.Cache
 
-import Set
+import Data.Set
 import Size
 
 instance Compute Fun State where

@@ -2,14 +2,14 @@ module Turing.Akzeptieren
 
 where
 
--- -- $Id$
+--   $Id$
 
 import Turing
 import Turing.Konfiguration
 import Turing.Nachfolger
 import Turing.Vorrechnen
 
-import Monad (guard)
+import Control.Monad (guard)
 import Reporter
 import ToDoc
 

@@ -6,7 +6,7 @@ module NPDA
 
 where
 
--- -- $Id$
+--   $Id$
 
 import NPDA.Type
 import NPDA.Dot

@@ -2,9 +2,9 @@ module Shift.Common
 
 where
 
-import Monad ( guard )
-import List (inits, tails)
-import FiniteMap
+import Control.Monad ( guard )
+import Data.List (inits, tails)
+import Data.FiniteMap
 
 -- common :: Eq a => [a] -> [(Int, Int, Int)]
 common xs = do

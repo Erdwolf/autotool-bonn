@@ -2,7 +2,7 @@
 
 module Fun.Cache 
 
--- -- $Id$
+--   $Id$
 
 ( Cache -- abstrakt
 , empty
@@ -14,7 +14,7 @@ where
 
 import Prelude hiding ( lookup )
 
-import FiniteMap
+import Data.FiniteMap
 import ReadFM
 
 import ToDoc hiding ( empty )

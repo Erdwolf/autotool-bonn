@@ -4,8 +4,8 @@ module Language.AnBnCn (anbncn) where
 
 import Language.Type
 
-import Set
-import Monad ( guard )
+import Data.Set
+import Control.Monad ( guard )
 
 anbncn :: Language
 anbncn = Language 

@@ -1,6 +1,6 @@
 module Fun.Quiz where
 
--- -- $Id$
+--   $Id$
 
 import Fun.Quiz.Type
 import Fun.Type

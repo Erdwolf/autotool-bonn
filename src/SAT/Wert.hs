@@ -3,8 +3,8 @@ module SAT.Wert where
 -- -- $Id$
 
 import SAT.Types
-import FiniteMap
-import Monad ( mzero )
+import Data.FiniteMap
+import Control.Monad ( mzero )
 
 class Wert a where 
       wert :: a -> Belegung -> Maybe Bool

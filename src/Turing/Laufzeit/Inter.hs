@@ -1,6 +1,6 @@
 module Turing.Laufzeit.Inter where
 
--- -- $Id$
+--   $Id$
 
 import Turing.Type
 import Turing.Laufzeit.Type

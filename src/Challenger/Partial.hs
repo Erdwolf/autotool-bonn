@@ -1,6 +1,6 @@
 module Challenger.Partial where
 
--- -- $Id$
+--   $Id$
 
 import Reporter
 import ToDoc

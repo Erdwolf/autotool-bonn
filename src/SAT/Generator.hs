@@ -11,9 +11,9 @@ import Random
 import Util.Zufall
 import Util.Sort
 import qualified Relation
-import Set
-import FiniteMap
-import Monad ( guard )
+import Data.Set
+import Data.FiniteMap
+import Control.Monad ( guard )
 import Maybe
 
 -- algorithm "hgen2" (c) Edward A Hirsch

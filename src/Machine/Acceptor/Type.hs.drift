@@ -2,7 +2,7 @@
 
 module Machine.Acceptor.Type where
 
--- -- $Id$
+--   $Id$
 
 import Informed
 import ToDoc

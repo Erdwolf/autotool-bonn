@@ -1,6 +1,6 @@
 module Language 
 
--- -- $Id$
+--   $Id$
 
 ( module Language.Type 
 )

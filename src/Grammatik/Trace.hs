@@ -5,7 +5,7 @@ import Grammatik.Ableitung
 import Schichten
 
 import Reporter
-import Set
+import Data.Set
 import ToDoc
 
 type Track = [ String ]

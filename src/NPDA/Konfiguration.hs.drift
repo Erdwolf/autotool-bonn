@@ -2,7 +2,7 @@
 
 module NPDA.Konfiguration where
 
--- -- $Id$
+--   $Id$
 
 import NPDA.Type
 

@@ -1,13 +1,13 @@
 module Term.Rewrite where
 
--- -- $Id$
+--   $Id$
 
 import Term.Type
 import Term.Match
 
 import Maybe
 import Schichten
-import Set
+import Data.Set
 
 
 next :: TRS a -> Term a -> [ Term a ]

@@ -3,7 +3,7 @@
 module NPDA.Type
 
 -- nicht-deterministischer Kellerautomat
--- -- $Id$
+--   $Id$
 
 ( module NPDA.Type
 , module Sets
@@ -14,7 +14,7 @@ where
 
 
 import Sets
-import FiniteMap
+import Data.FiniteMap
 import Schichten
 import Size
 

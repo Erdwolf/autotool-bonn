@@ -1,10 +1,10 @@
 module TRS.Position where
 
--- -- $Id$
+--   $Id$
 
 import TRS.Term
 
-import Monad ( guard )
+import Control.Monad ( guard )
 import Maybe ( fromMaybe )
 
 type Position = [ Int ]

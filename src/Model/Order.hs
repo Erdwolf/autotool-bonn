@@ -1,6 +1,6 @@
 module Model.Order where
 
--- -- $Id$
+--   $Id$
 
 import qualified Relation
 

@@ -1,6 +1,6 @@
 module Inter.Motd where
 
--- -- $Id$
+--   $Id$
 
 import Text.Html hiding ( text  )
 import qualified Exception

@@ -1,6 +1,6 @@
 module Machine.Fun
 
--- -- $Id$
+--   $Id$
 
 ( fun_test
 , numerical_test
@@ -16,12 +16,12 @@ import Machine.History
 
 import qualified Machine.Numerical.Type as N
 
-import Monad (guard)
+import Control.Monad (guard)
 import Reporter hiding ( output )
 import ToDoc
 import Reader
-import FiniteMap
-import Set
+import Data.FiniteMap
+import Data.Set
 import Size
 
 numerical_test' ::  ( Numerical dat, Machine m dat conf, Out m dat conf )

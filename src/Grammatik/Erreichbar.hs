@@ -9,7 +9,7 @@ where
 
 import Control.Monad (guard)
 
-import Set
+import Data.Set
 import Fix
 import Grammatik.Type
 

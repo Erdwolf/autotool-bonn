@@ -29,10 +29,10 @@ import qualified Graph.Labeling
 
 import Challenger
 import ToDoc
-import Set
+import Data.Set
 import Sort
 import Maybe
-import FiniteMap
+import Data.FiniteMap
 
 data Graceful = Graceful deriving Show
 

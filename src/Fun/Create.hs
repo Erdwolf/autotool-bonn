@@ -1,6 +1,6 @@
 module Fun.Create where
 
--- -- $Id$
+--   $Id$
 
 -- erzeuge eine k-stellige funktion bestimmter größe
 
@@ -9,7 +9,7 @@ import Fun.Table
 
 import Util.Zufall
 import Array
-import Set
+import Data.Set
 
 create :: Int -> Int -> IO Fun
 create k s | s < 3 = do

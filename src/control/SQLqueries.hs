@@ -7,7 +7,7 @@ module SQLqueries
 
 where
 
--- -- $Id$
+--   $Id$
 
 import Database.MySQL.HSQL
 import IO
@@ -31,9 +31,9 @@ showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
 
 
 
--- --------------------------------------------------------------------------------
+--  ------------------------------------------------------------------------------
 -- DB Funktionen
--- --------------------------------------------------------------------------------
+--  ------------------------------------------------------------------------------
 
 -- liefert bewertete Aufgaben von mat aus DB,
 -- TODO: mat = [] sollte auch StudentMNr als Spalte zurückliefern
@@ -382,7 +382,7 @@ removeStudVorlDB mat vorl =
                --   , ["gruppe","vorlesung","stud_grp"]
                --   )
                -- 
-               -- -- verknüpfen
+               --   verknüpfen
                   -- getGruppenDB_WHERE_EQ =
                   --    [ ("gruppe.GNr","stud_grp.GNr")
                           --    , ("gruppe.VNr","vorlesung.VNr")

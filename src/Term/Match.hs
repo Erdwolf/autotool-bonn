@@ -1,11 +1,11 @@
 module Term.Match where
 
--- -- $Id$
+--   $Id$
 
 import Term.Type
 
-import FiniteMap
-import Monad ( guard, mzero )
+import Data.FiniteMap
+import Control.Monad ( guard, mzero )
 
 
 apply :: Substitution (Term a) -> VTerm a -> Term a

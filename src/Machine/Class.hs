@@ -1,8 +1,8 @@
 module Machine.Class where
 
--- -- $Id$
+--   $Id$
 
-import Set
+import Data.Set
 import Schichten
 import ToDoc
 import Size

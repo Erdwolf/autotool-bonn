@@ -5,7 +5,7 @@ module DB.Data where
 -- das wird serverseitig benutzt
 -- der server weiß nichts über den inhalt der XML-dokumente
 
-import FiniteMap
+import Data.FiniteMap
 
 import Text.XML.HaXml.Types
 import Text.XML.HaXml.Haskell2Xml

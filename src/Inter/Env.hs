@@ -1,6 +1,6 @@
 module Inter.Env where
 
--- -- $Id$
+--   $Id$
 
 -- liest parameter-Werte aus CGI-Env
 

@@ -1,6 +1,6 @@
 module Fun.Examples where
 
--- -- $Id$
+--   $Id$
 
 import Fun.Type
 

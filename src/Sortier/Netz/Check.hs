@@ -1,6 +1,6 @@
 module Sortier.Netz.Check where
 
--- -- $Id$
+--   $Id$
 
 import Sortier.Netz.Type
 import Sortier.Netz.Rechnung
@@ -9,7 +9,7 @@ import Sortier.Netz.Bild
 import Util.Bild
 
 import qualified Util.Wort ( alle )
-import List ( tails)
+import Data.List ( tails)
 
 import Reporter
 import ToDoc

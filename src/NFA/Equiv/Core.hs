@@ -8,9 +8,9 @@ import Reporter
 import ToDoc
 import Util.Fix
 
-import Set
-import FiniteMap
-import List (partition, tails)
+import Data.Set
+import Data.FiniteMap
+import Data.List (partition, tails)
 import Maybe (fromMaybe,maybeToList)
 
 

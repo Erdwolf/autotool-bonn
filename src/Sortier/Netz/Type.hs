@@ -1,6 +1,6 @@
 module Sortier.Netz.Type where
 
--- -- $Id$
+--   $Id$
 
 import ToDoc
 import Reader

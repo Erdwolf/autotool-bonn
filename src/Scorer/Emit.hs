@@ -1,6 +1,6 @@
 module Scorer.Emit where
 
--- -- $Id$
+--   $Id$
 
 import Scorer.Config
 import Scorer.Einsendung

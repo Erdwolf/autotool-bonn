@@ -1,6 +1,6 @@
 module Sortier.Netz.Example where
 
--- -- $Id$
+--   $Id$
 
 import Sortier.Netz.Type
 

@@ -1,6 +1,6 @@
 module Model.SRS where
 
--- -- $Id$
+--   $Id$
 
 -- semantic labeling into a finite domain
 
@@ -19,7 +19,7 @@ import qualified Relation
 import Data.Array
 import Size
 import Sets
-import Monad ( guard )
+import Control.Monad ( guard )
 
 type Function a b = Array a b
 

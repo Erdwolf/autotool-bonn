@@ -14,7 +14,7 @@ import Pump.Negativ
 
 import Language.Type
 import Util.Seed
-import List (nub, sort)
+import Data.List (nub, sort)
 import Reporter
 
 central :: Pumping z 

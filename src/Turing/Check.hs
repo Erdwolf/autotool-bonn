@@ -1,13 +1,13 @@
 module Turing.Check where
 
--- -- $Id$
+--   $Id$
 
 import Turing.Type
 
 import Reporter
 import ToDoc
 
-import Monad ( guard )
+import Control.Monad ( guard )
 
 check :: TUM y z
       => Turing y z -> Reporter ()

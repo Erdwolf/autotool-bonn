@@ -1,6 +1,6 @@
 module JVM.Memory where
 
--- -- $Id$
+--   $Id$
 
 import JVM.Type
 import Data.FiniteMap

@@ -3,8 +3,8 @@
 module AnBn (anbn) where
 
 import Language
-import Set
-import Monad ( guard )
+import Data.Set
+import Control.Monad ( guard )
 
 anbn :: Language
 anbn = Language 

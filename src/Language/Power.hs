@@ -11,9 +11,9 @@ where
 
 import Language.Type
 
-import Set
+import Data.Set
 import Util.Wort
-import List (nub)
+import Data.List (nub)
 
 
 power :: Int -> Language

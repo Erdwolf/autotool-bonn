@@ -1,6 +1,6 @@
 module RAM.State where
 
--- -- $Id$
+--   $Id$
 
 import RAM.Type
 import RAM.Memory

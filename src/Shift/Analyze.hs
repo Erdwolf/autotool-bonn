@@ -9,13 +9,13 @@ import Shift.Common
 
 import Util.Uniq
 
-import Monad ( guard )
+import Control.Monad ( guard )
 
 
-import FiniteMap
-import Set
+import Data.FiniteMap
+import Data.Set
 import Maybe
-import List ( inits, tails, group )
+import Data.List ( inits, tails, group )
 
 type State = [ Bool ]
 

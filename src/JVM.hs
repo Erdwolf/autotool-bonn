@@ -6,7 +6,7 @@ module JVM
 
 where
 
--- -- $Id$
+--   $Id$
 
 import JVM.Type
 import JVM.Machine

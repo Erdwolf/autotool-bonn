@@ -13,10 +13,10 @@ import Language.Type
 
 import ToDoc
 import Reporter
-import Monad (guard)
-import FiniteMap
+import Control.Monad (guard)
+import Data.FiniteMap
 import Maybe ( isNothing )
-import List ( nub, sort )
+import Data.List ( nub, sort )
 
 import Size
 

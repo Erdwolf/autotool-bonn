@@ -32,9 +32,7 @@ endif
 
 # erlaube überschreibung, s.o
 ifndef DIRS
-DIRS = uni:\
-wash:control:bridge:challenger:\
-ws03/aus:
+DIRS = util:wash:control:bridge:challenger:ws03/aus:
 endif
 
 ########################################################################

@@ -28,13 +28,13 @@ module SAT.SAT
 
 where
 
-import FiniteMap
+import Data.FiniteMap
 import ReadFM
 
 import Challenger.Partial
 
 import ToDoc
-import Monad (guard)
+import Control.Monad (guard)
 import Sets
 import System
 

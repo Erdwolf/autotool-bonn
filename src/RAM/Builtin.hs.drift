@@ -12,7 +12,7 @@ where
 import ToDoc
 import Reader
 import Array
-import Set
+import Data.Set
 
 data Builtin = Copy 
 	     | Plus  | Minus

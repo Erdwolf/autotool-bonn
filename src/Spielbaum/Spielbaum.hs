@@ -10,8 +10,8 @@ import Spielbaum.Test            -- some test functions
 import Spielbaum.Next            
 import Spielbaum.Wort
 
-import List (inits, tails)
-import Monad (guard)
+import Data.List (inits, tails)
+import Control.Monad (guard)
 
 -- erzeugt folgende Liste:  [ ( Knoten , Nachfolgerliste (Knoten) ) ]
 order_nodes :: Graph ( Wort Char ) -> [ ( String , [ String ] ) ]

@@ -1,6 +1,6 @@
 module Scorer.Config where
 
--- -- $Id$
+--   $Id$
 
 scoreItems :: Int
 scoreItems  = length scorePoints

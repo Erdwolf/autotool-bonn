@@ -1,4 +1,4 @@
--- -- $Id$
+--   $Id$
 
 module NPDA.Dot
 
@@ -15,8 +15,8 @@ import qualified Dot.Node
 import qualified Dot.Edge
 
 import ToDoc
-import Set
-import FiniteMap
+import Data.Set
+import Data.FiniteMap
 import Maybe
 
 -- zustände werden mit [0 .. ] durchnumeriert

@@ -1,6 +1,6 @@
 module Inter.Boiler where
 
--- -- $Id$
+--   $Id$
 
 import Inter.Types
 

@@ -6,7 +6,7 @@ where
 
 import Language.Type
 
-import Set
+import Data.Set
 import Random
 
 alpha = "abc"

@@ -9,8 +9,8 @@ module WWRW
 where
 
 
-import Set
-import List ( nub )
+import Data.Set
+import Data.List ( nub )
 import Random
 
 import Wort

@@ -1,6 +1,6 @@
 module NPDA.Vorganger 
 
--- -- $Id$
+--   $Id$
 
 ( vorganger
 , vorganger_konfigurationen -- brauchen wir nicht?
@@ -11,7 +11,7 @@ where
 import NPDA.Type
 import NPDA.Konfiguration
 
-import Monad (guard)
+import Control.Monad (guard)
 import Schichten
 
 

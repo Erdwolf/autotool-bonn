@@ -5,12 +5,12 @@ module Grammatik.CF.Kettenfrei where
 import Grammatik.Type
 
 import Fix
-import Set
-import FiniteMap
+import Data.Set
+import Data.FiniteMap
 import qualified Relation
 
-import List (partition)
-import Monad (guard)
+import Data.List (partition)
+import Control.Monad (guard)
 
 kettenfrei :: Grammatik -> Grammatik
 -- eingabe: kontextfreie Grammatik G1

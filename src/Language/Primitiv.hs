@@ -3,7 +3,7 @@
 module Primitiv where
 
 import Language
-import Set
+import Data.Set
 import Power
 
 prim :: Language

@@ -6,7 +6,7 @@ module Scorer.Einsendung
 
 where
 
--- -- $Id$
+--   $Id$
 
 {- so sehen die dinger aus:
 

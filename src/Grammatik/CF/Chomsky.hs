@@ -6,9 +6,9 @@ import qualified Grammatik.Type as G
 
 import Sets
 
-import FiniteMap
-import Monad (guard)
-import List (nub)
+import Data.FiniteMap
+import Control.Monad (guard)
+import Data.List (nub)
 import ToDoc
 import Size
 import Fix

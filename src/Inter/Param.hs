@@ -1,6 +1,6 @@
 module Inter.Param where
 
--- -- $Id$
+--   $Id$
 
 import qualified Passwort -- control
 
