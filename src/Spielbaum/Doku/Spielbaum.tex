@@ -1,0 +1,1184 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{amstex, amssymb}
+\usepackage[dvips]{graphicx}
+\usepackage{epsfig}
+\begin{document}
+
+\section{Aufgabenbeschreibung}
+
+\subsection{Thema}
+
+\begin{itemize}
+\item grobe Einordnung: Termersetzungssysteme, Spieltheorie
+\item genauere Einordnung: Umsetzung einer Klasse von
+  Termersetzungsspielen
+\end{itemize}
+
+\bigskip
+
+Die zu bearbeitende Klasse von Spielen besteht aus einem Paar, dessen
+erste Komponente der Spielplatz ist, und dessen zweite Komponente die
+Regeln sind. Ziel des Spiels ist es zu gewinnen, das bedeutet in
+diesem Spiel auf dem gegebenen Spielplatz (ein beliebiger String) eine
+Regel so anzuwenden, dass der Gegner keine Regel mehr anwenden kann,
+d.h. nicht mehr ziehen kann, und damit verloren hat.
+
+Der Spielplatz ist ein beliebig langer String aus beliebigen Zeichen,
+die Regeln bestehen aus einer Menge von Tupeln der Form:
+\begin{center}
+( zu ersetzender String , einzusetzender String )
+\end{center}
+
+Beispiel:
+
+\begin{center}
+\begin{tabular}[h]{|c|c|}
+\hline
+Spielplatz: & 011 \\\hline
+Regeln: & 01 $\rightarrow$ 10 \\
+ & 1 $\rightarrow$ 2 \\\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[htpb]
+\begin{center}
+\epsfig{figure=sample_011.ps, height=5.0cm, angle=0}
+\caption{Spielbaum mit möglichen Spielzügen}
+\end{center}
+\end{figure}
+
+Bei der Interpretation dieses speziellen Spiels als Autofahren haben
+die Regeln folgende Bedeutung:
+\begin{enumerate}
+\item Beliebiges Auto (``1'') kann nach links fahren, wenn dort Platz
+  (``0'') ist (Regel: 01 $\rightarrow$ 10)
+\item Beliebiges Auto (``1'') kann zerstört werden (``2'') (Regel: 1
+  $\rightarrow$ 2)
+\end{enumerate}
+
+\subsection{Bearbeiter}
+
+\begin{tabular}[h]{ll}
+Name & Stephan Heidner \\
+Matrikelnummer & 8573572 \\
+Immatrikulation & 1999 $\rightarrow$ 7. Semester \\
+Studiengang & Diplom-Informatik \\
+\end{tabular}
+ 
+\bigskip
+
+\subsection{Aufgabenstellung}
+
+Ziel ist es, bei Eingabe des Startworts und der Regelmenge das Bild des
+Spielbaums zu erhalten. Dabei sollen folgende Ausgabemöglichkeiten
+berücksichtigt werden:
+\begin{itemize}
+\item Ausgabe des Spielbaums mit Bewertung der Knoten nach
+  gewonnen/ver\-loren
+\item Ausgabe des Spielbaums mit Bewertung der Spielposition nach Grundy-Werten
+\item Ausgabe des Spielbaums ohne Spielposition, d.h. nur mit
+  Grundy-Werten bzw. Gewinn/Verlustposition
+\end{itemize}
+
+\bigskip
+
+\subsection{Ziele und Anwendungen}
+
+\begin{itemize}
+\item {\sc Hauptziel:} Es soll jeweils der Spielbaum als Grafik
+  erzeugt werden. Dabei soll durch Angabe von Optionen die obige
+  Aufgabenstellung gelöst werden. 
+\item Weiteres {\it eventuell erreichbar}es Ziel ist die Anbindung an
+  den Spiele-Server, damit das Spielen gegen einen Gegner ermöglicht
+  wird.
+\item Das Spiel als OpenGL-Version soll alleine gegen den Rechner
+  gespielt werden können (OpenGL-Projekt).
+\end{itemize}
+
+\begin{itemize}
+\item {\sc Anwendung:} Die Verwendung der Baum-Grafiken ist bereits
+  in Vorlesungen erfolgt
+\item Eventuell hilfreich für theoretische Probleme, wie Spielbaum mit
+  möglichst hohem Grundy-Wert erzeugen (, um zu zeigen, dass die
+  Grundy-Werte unbeschränkt wachsen).
+\end{itemize}
+
+\newpage
+
+\section{Inhaltliche Beschreibung}
+
+\subsection{Sachverhaltsbeschreibung}
+
+Termersetzungssysteme (TRS) können als eine Erweiterung der
+kombinatorischen Logik mit Mustervergleich aufgefasst werden. Da in
+TRS auch nichtdeterministische Ersetzungsmöglichkeiten bestehen, ist
+die Ausdrucksfähigkeit größer als die der kombinatorischen Logik oder
+des Lambda-Kalküls. TRS bilden eine natürliche Beschreibungsbasis für
+formale Spezifikation von Software, für den Entwurf und die Berechnung
+funktionaler Programme. Die theoretischen Grundlagen von TRS gehen auf
+Thue zurück.
+
+\subsubsection{Syntaktischer Aufbau}
+
+Sei eine Menge von Variablen \underline{Var} und eine Menge von
+Konstanten \underline{Const} gegeben. Dann ist die Menge der Terme
+definiert durch:
+\newline 
+\begin{quote}
+\underline{Term} = \underline{Var} | \underline{Const} | (
+\underline{Const} \{ \underline{Term} \}$^+$ )
+\end{quote}
+\newline
+wobei \{ \underline{Term} \}$^+$ eine nichtleere Folge
+von Termen ist, deren Länge durch die Arität des Konstantensymbols
+festgelegt ist.
+\bigskip
+\newline
+\underline{Var}(t) = Variablenmenge von t $\in$ \underline{Term}
+\bigskip
+\newline
+t heißt \underline{geschlossen}, falls \underline{Var}(t) =
+$\varnothing$, sonst heißt t \underline{offen}.
+\bigskip
+\newline
+Terme lassen sich als Bäume darstellen. Dabei stehen Variable nur an
+den Blättern. Die Anzahl der Verzweigung eines Knotens hängt von der
+Arität des dem Knoten zugeordneten Konstantensymbols ab.
+\bigskip
+\newline
+\underline{Definition} {\sc Teilterm:} $t'$ heißt \underline{Teilterm}
+von $t (t' \leq t)$ gdw. $t'$ Teilzeichenreihe von $t$ und $t = t'$
+oder $t'$ Argumentterm von $t$. Der Baum zu $t'$ ist dann Unterbaum
+des Baumes zu $t$. $t'$ heißt echter Teilterm $t' < t$ gdw. $t'\leq t$
+und $t'\neq t$. 
+\bigskip
+\newline
+\underline{Definition} {\sc Regel:} Ein Termpaar $l_i \rightarrow r_i$ mit
+$l_i, r_i \in$ \underline{Term}, $l_i \notin Var$, $Var(r_i)
+\subseteq Var(l_i)$ heißt eine \underline{Regel}. Die linke Seite
+einer Regel kann keine Variable sein und durch dei rechte Seite werden
+keine neuen Variablen eingeführt, die nicht schon auf der linken Seite
+auftreten.
+\bigskip
+\newline
+\underline{Definition} {\sc Termersetzungssystem:} Eine nichtleere
+endliche Menge TRS = \{ $l_i \rightarrow r_i  |  i \in I_{endl} $\} heißt
+\underline{Termersetzungssystem} (TRS). $l_i \in$ \underline{Const} \{
+\underline{Term} \}$^+$ heißen linke Seiten, $r_i$ rechte Seiten des
+TRS. Die Regeln können dann auch in Baumnotation dargestellt werden.
+
+\subsubsection{Termersetzung}
+
+Für die Ersetzung eines Termes unter Zuhilfenahme der Regeln eines TRS
+wird weiterhin eingeführt:
+\bigskip
+\newline
+\underline{Definition} {\sc Instanz:} $\sigma (t)$ heißt
+\underline{Instanz} von $t$ gdw. für jedes $ x \in Var(t)$ ein
+geschlossener Term $t_x$ exisitiert mit $\sigma (t) = t$ (schreibe: 
+$x//t_x$ ). 
+\begin{itemize}
+\item \underline{Inst}(t) = \{ $t' | t' = \sigma (t)$ \}
+bezeichne die Menge aller Instanzen von t.
+\item $t'$ \underline{matcht} $t$ gdw. es exisitiert eine Instanz
+  $\sigma (t)$ von $t$ mit $t' \equiv \sigma (t)$ (syntaktisch gleich).
+\item $t'$ heißt \underline{Redex} von $t$ bzgl. TRS gdw. $t$
+  geschlossen, $t'$ ist Teilterm von t und es existiert eine Regel $(
+  l \rightarrow r) \in$ TRS mit $t'$ matcht l.
+\end{itemize}
+\bigskip
+\newline
+\underline{Definition} {\sc Reduktion:} $t'$ heißt
+TRS-\underline{Reduktion} (Reduktionsschritt) von t, notiert durch $t
+\Rightarrow t'$ gdw. ein Redex $t''$ von $t$ bzgl. TRS mit der linken
+Seite $l$ einer Regel $(l \rightarrow r) \in $ TRS matcht und $ t
+t''/\sigma(r) = t'$. (In $t$ wird $t''$ durch eine Instanz der rechten
+Seite der Regel ersetzt.)
+\bigskip
+\newline
+Bei der TRS-Reduktion sind einige Besonderheiten zu beachten:
+\begin{enumerate}
+\item Die Redexeigenschaft ist von den Regeln im TRS abhängig. (Im
+  Lambda-Kalkül ist dieses nur von dem betrachteten Lambda-Ausdruck
+  abhängig.)
+\item Definitionsregeln für Funktionen mit mehreren Argumenten können
+  zur Reduktion nur verwendet werden, wenn alle Argumentterme matchen.
+\item Bei Termreduktion treten keine Namenskonflikte auf. (Der
+  Initialterm ist geschlossen. Es werden keine freien Variablen
+  eingeführt.) 
+\end{enumerate}
+\bigskip
+\newline
+\underline{Definition} {\sc Normalformen:} 
+\begin{itemize}
+\item $t_2$ heißt \underline{Redukt} von $t_1$ gdw. $t_1 \Rightarrow^*
+  t_2$ mit $\Rightarrow^*$ als reflexiv-transitive Hülle der
+  TRS-Reduktionsrelation $\Rightarrow$.
+\item $t$ ist in TRS-\underline{Normalform} gdw. es existiert kein $t'
+  \leq t$ wobei $t'$ Redex bezüglich TRS ist.
+\item $t$ hat \underline{Normalform} gdw. es existiert ein $t'$ in
+  TRS-Normalform und $ t \Rightarrow^* t'$ ($t'$ ist TRS-Redukt von
+  $t$).
+\item $t$ ist in \underline{Kopf-Normalform} gdw. $t$ ist selbst kein
+  Redex und kann auch bei Reduktion seiner Argumente kein Redex
+  werden.
+\item $t'$ \underline{matcht partiell} $t$ gdw. $t' = Const$ $t_1^'$
+  $...$ $t_n^'$, $t = Const$ $t_1 ... t_n$ und jeder $t_i^'$ matcht
+  partiell $t_i$.
+\item $t$ ist in \underline{strenger} Kopf-Normalform gdw. keine linke
+  Regelseite des TRS $t$ partiell matcht.
+\end{itemize}
+
+\subsubsection{Eigenschaften von TRS}
+
+Im folgenden werden einige Eigenschaften von TRS charakterisiert, die
+u.a. Einfluss auf die zu konstruierende Normalform haben:
+\bigskip
+\newline
+{\sc Mehrdeutigkeit:} 
+\begin{itemize}
+\item Regeln $l_i \rightarrow r_i$ heißen \underline{total
+  überlappend} gdw. $Inst(l_1) \cap Inst(l_2) \neq \varnothing$.
+\item Regeln $l_i \rightarrow r_i$ heißen \underline{partiell
+  überlappend} gdw. $Inst(l_1) \cap Inst(l_2) \neq \varnothing$ und
+  $l'_2 < l_2$.
+\item Total oder partiell überlappende Regeln heißen
+  \underline{kritische} Paare.
+\item Das TRS heißt \underline{mehrdeutig} (nichtdeterministisch)
+  gdw. es existieren total überlappende Regeln.
+\item Das TRS heißt \underline{partiell mehrdeutig} gdw. es existieren
+  partiell überlappende Regeln.
+\end{itemize}
+\bigskip
+\newline
+{\sc Nichtlinearität:} 
+\begin{itemize}
+\item Eine Regel $(l \rightarrow r)$ heißt
+  \underline{nicht-linkslinear}, falls in l dieselbe Variable mehrfach
+  als Argument auftritt.
+\item Ein TRS heißt \underline{nicht-linkslinear} (vergleichend),
+  falls nicht-lineare Regeln existieren.
+\end{itemize}
+
+Die Nichtlinearität eines TRS induziert bei Reduktion einen Test auf
+syntaktische Äquivalenz, die semantische Äquivalenz ist nicht
+entscheidbar.
+\bigskip
+\newline
+{\sc Konfluenz, Orthogonalität:} 
+
+\begin{itemize}
+\item Ein TRS heißt \underline{konfluent} (Church-Rosser-Eigenschaft),
+  wenn zu allen Reduktionsfolgen $ t \Rightarrow^* t_1, t
+  \Rightarrow^* t_2$ stets ein $t_3$ existiert mit $t_1 \Rightarrow^*
+  t_3 und t_2 \Righarrow^* t_3$.
+\item Ein TRS heißt \underline{orthogonal} gdw. das TRS eindeutig
+  (d.h. nicht mehrdeutig) und linkslinear ist.
+\end{itemize}
+
+Eigenschaften:
+\begin{itemize}
+\item Für konfluente Termersetzungssysteme ist die gegebenenfalls
+  existierende Normalform eindeutig bestimmt.
+\item Orthogonale Termersetzungssysteme sind auch konfluent.
+\end{itemize}
+
+Orthogonale Termersetzungssysteme garantieren die Eindeutigkeit der
+Normalform aber nicht deren Existenz. Das Auffinden der Normalform ist
+abhängig von der gewählten Reduktionsfolge. Für bestimmte Typen von
+Termersetzungssystemen existieren normalisierende Strategien.
+
+\subsubsection{Reduktionsstrategien}
+
+Reduktionsstrategien bestimmen die Auswahl von Redex und Regel zur
+Reduktion eines Termes. Eine Reduktionsstrategie heißt:
+\begin{itemize}
+\item \underline{deterministisch}, wenn stets nur eine Regel und ein
+  Redex ausgewählt werden kann.
+\item \underline{nicht-deterministisch}, wenn mehr als ein Redex oder
+  eine Regel zur Auswahl steht.
+\item \underline{parallel}, wenn mehrere Redexe in beliebiger Ordnung
+  anwendbar sind.
+\end{itemize}
+
+Ein Reduktionsprozess mit fester Reduktionsstrategie heißt {\bf
+  Reducer}. Solch ein Reducer heißt:
+\begin{itemize}
+\item \underline{normalisierend}, wenn er für jeden Term mit
+  Normalform mit dieser Normalform terminiert
+\item \underline{parallel}, wenn er parallele Strategien anwendet
+\item \underline{nicht-deterministisch}, wenn er eine
+  nicht-deterministische Strategie verfolgt (z.B. auch überlappende
+  Regeln anwendet).
+\end{itemize}
+
+Ein Redex heißt \underline{unentbehrlich (notwendig)}, falls er in
+allen zur Normalform führenden Reduktionsfolgen reduziert werden muss.
+
+\subsection{Modellierung}
+
+Die behandelte Klasse von Termersetzungssystemen enthält generell
+keine Variablen in den Regeln. Es gibt im allgemeinen keine Normalform
+für einen Term. Es kann jedoch für einen Term mehrere verschiedene
+Vorgänger geben. Da es nur eine einzige Operation (Verkettung von
+Worten) gibt, braucht die Operation per Vereinbarung nicht in jedem
+Knoten explizit benannt zu werden. Die aus einem Eingabewort und einem
+TRS entstehende Struktur ist kein Baum (mehrere mögliche Vorgänger),
+sondern ein Graph. Die Modellierung von Graphen, sowie deren
+graphische Darstellung exisitiert bereits im autotool, so dass ich
+diesen Teil mit verwendet habe.
+
+Bei der Lösung der Aufgabe sind mehrere Datenstrukturen entstanden. In
+der Reihefolge der Verwendung sind das die Regel, das Wort, die
+Struktur Next, der GV-Datentyp und das SpielbaumLabel.
+\bigskip
+\newline
+Die Struktur {\bf Regel} besteht aus einem ``from''-Teil und einem
+``to''-Teil. Ziel ist es, die jeweilge linke und rechte Seite einer
+einzelnen Termersetzungsregel aufzunehmen. Die Struktur Regel hat den
+allgemeinen Typ a, die Elemente einer Regel sind dann Listen vom Typ
+a, d.h. zum Beispiel eine Regel vom Typ Char besteht aus einem
+from-String und einem to-String. 
+{\tt 
+\begin{quote}
+\begin{tabular}[h]{ll}
+data Regel a = Regel &\{ from :: [a] \\
+ & , to :: [a] \\
+ & \} \\
+\end{tabular}
+\end{quote}
+}
+\bigskip
+\newline
+Die Struktur {\bf Wort} besteht aus einem Inhalt-Teil und einem
+Regel-Teil. Der Inhalt repräsentiert das Startwort in dem TRS und der
+Regel-Teil repräsentiert das eigentliche TRS. Die Struktur Wort hat
+den allgemeinen Typ a, der Inhalt ist dann eine Liste vom Typ a, die
+Regeln sind eine Liste der Struktur ``Regel a''. Ein Wort vom Typ Char
+besteht dann aus einem Start-String und einer Liste von
+Teilstring-Ersetzungsregeln. 
+{\tt 
+\begin{quote}
+\begin{tabular}[h]{ll}
+data Wort a = Wort &\{ inhalt :: [a] \\
+ & , regeln  :: [ Regel a ] \\
+ & \} \\
+\end{tabular}
+\end{quote}
+}
+\bigskip
+\newline
+Die Struktur {\bf Next} vom allgemeinen Typ a besteht aus dem Element a und
+einer Liste von a's. Diese Struktur wird dazu benutzt, die Nachfolger
+eines Wortes aufzunehmen. Das einzelne Element vom Typ a ist dabei das
+Startwort mit Inhalt und Regeln, in der Liste vom Typ a stehen dann
+alle in einem Schritt (einer Regelanwendung) erreichbaren Nachfolger
+des Startwortes. Alle Nachfolger bestehen wieder aus einem Wort,
+d.h. Inhalt und Regeln.
+{\tt 
+\begin{quote}
+\begin{tabular}[h]{ll}
+class &Next a where \\
+ & next :: a -> [ a ]\\
+\end{tabular}
+\end{quote}
+}
+\bigskip
+\newline
+Der {\bf GV-Datentyp} ist eine Aufzählung der Elemente diesen
+Typs. Hier gibt es genau zwei Elemente, ``G'' wie ``gewonnen'' und
+``V'' wie ``verloren''. Diese Elemente repräsentieren den Wert der
+Spielposition in einem Spiel. Dabei wird der Spielbaum als Spiel
+zwischen zwei Personen interpretiert. Die Person, die nicht mehr
+ziehen kann (keine Regel aus dem TRS anwenden kann) hat verloren. Kann 
+eine Person auf eine Position ziehen, in der der andere Spieler
+verloren hat, so befindet sich diese Person auf einer
+``gewonnen''-Position. 
+{\tt 
+\begin{quote}
+\begin{tabular}[h]{ll}
+data GV = & G | V \\
+ & deriving (Show, Eq, Ord)\\
+\end{tabular}
+\end{quote}
+}
+\bigskip
+\newline
+Das {\bf SpielbaumLabel} repräsentiert die eigentliche Spielposition
+und besteht daher aus einem String, der die aktuelle Spielposition
+darstellt, aus dem GV-Wert, der die Spielposition nach gewonnen
+bzw. verloren bewertet, und aus dem Grundy-Wert, der etwas über die
+Grundy-Werte der Nachfolger (der aktuellen Spielposition) aussagt.
+{\tt 
+\begin{quote}
+\begin{tabular}[h]{ll}
+data SpielbaumLabel & = SpielbaumLabel\\
+ & \{ label  :: String\\
+ & , gv     :: GV \\
+ & , grundy :: Int \\
+ & \} deriving (Show, Eq, Ord) \\
+\end{tabular}
+\end{quote}
+}
+\bigskip
+\newline
+
+\subsection{Algorithmenbeschreibung}
+\bigskip
+\newline
+Die Erzeugung des Spielbaums besteht im wesentlichen aus zwei
+Schritten. Im ersten Schritt wird der eigentliche Graph erzeugt, im
+zweiten Schritt wird dieser Graph dann bewertet.
+\bigskip
+\newline
+Die Erzeugung des Graphen hatte ich wirklich äußerst ineffizient umgesetzt (siehe
+{\tt \~/autotool/autobahn/Original.hs}), und zwar folgendermaßen: Ich nehme
+die erste Regel und versuche sie anzuwenden. Dazu bilde ich alle
+Präfixe und Suffixe des Startwortes. Wenn unter den Präfixen eines
+dabei ist, dass den from-Teil einer Regel enthält, wende ich diese
+Regel an und gebe das Startwort und das neue Wort zurück. Dabei musste
+ich immer wieder alle Regeln und alle neu entstandenen Wörter
+zerlegen, und diese Zerlegungen wiederholt zerlegen. 
+\bigskip
+\newline
+Der
+``Algorithmus'' war derartig ineffizient, dass Startwörter mit 5
+Zeichen bereits zu viel Speicher verwendet haben und das Programm
+abbrechen musste ({\tt ``garbage collection failed''}).
+\bigskip
+\newline
+Da inzwischen das Programm benutzt und benötigt wurde, hat
+Dr. Waldmann die Next-Struktur gebaut. Daraus werden dann alle
+Ein-Schritt-Nachfolger (in wirklich nur einem Schritt) erzeugt, und
+nachdem die neuen Knoten und Kanten im Graph gespeichert sind, mit der
+Menge der vorhandenen Knoten vereinigt. 
+\bigskip
+\newline
+Diese Implementation entspricht dann tatsächlich der gedanklichen
+Vorgehensweise: In einem Schritt werden alle in einem Schritt
+möglichen Nachfolger erzeugt. Auf diese Nachfolger wird dann so lange
+der erste Schritt angewendet, bis keine neuen Nachfolger mehr
+entstehen. (Diese Umsetzung befindet sich in der Funktion {\tt spielbaum} in
+Datei {\tt autotool/Spielbaum/Next.hs}, die Nachfolger werden im Modul
+{\tt autotool/util/Schichten.hs} erzeugt). 
+\bigskip
+\newline
+Der dabei entstehende Graph ist vom Typ Wort Char, d.h. in {\it jedem}
+Knoten des Graphen steht nicht nur die aktuelle Spielposition, sondern
+auch noch ein Mal {\it alle} Regeln. 
+\bigskip
+\newline
+Im zweiten Schritt erfolgt die Bewertung des im ersten Schritt
+entstandenen Graphen. Als erstes lese ich aus dem Graphen die Liste
+aller Knoten und deren direkte Nachfolger und speichere diese als 
+{\tt 
+\begin{quote}
+order\_nodes :: Graph (Wort Char) -> [(String, [ String ])]
+\end{quote}
+}
+d.h. als Liste von Tupeln, deren erste Komponente der Knoten-Name und
+deren zweite Komponente die Namen der direkten Nachfolger sind. Dazu
+wird die Menge der Knoten des Graph zu einer Liste gemacht, und aus
+jedem Knoten dieser Liste wird der Inhalt (=Spielposition)
+ausgelesen. Per {\tt map}-Funktion wird dann pro Knoten die
+Nachfolger-Liste ermittelt.
+\bigskip
+\newpage
+Aus der Liste, die von {\tt order\_nodes} geliefert wird, berechne ich
+bereits die SpielbaumLabel. Dazu gibt es
+{\tt 
+\begin{quote}
+\begin{tabular}[h]{ll}
+rename\_nodes :: &[(String, [String])] -> [SpielbaumLabel]\\
+ &-> [SpielbaumLabel]\\
+\end{tabular}
+\end{quote}
+}
+Anfänglich ist der zweite Parameter der Funktion die leere Liste,
+d.h. es gibt noch keine SpielbaumLabel. Wenn von einem Knoten aus der
+ersten Liste jedoch alle Nachfolger bereits in der
+SpielbaumLabel-Liste enthalten sind, kann ich Grundy-Wert und GV-Wert
+berechnen, diesen Knoten aus der ersten Liste streichen und das neue
+SpielbaumLabel übernehmen. 
+\bigskip
+\newline
+Da es passieren kann, dass noch nicht alle
+Nachfolger eines Knotens in der SpielbaumLabel-Liste enthalten sind,
+verschiebe ich die Berechnung diesen Labels nach hinten, und berechne
+erst die anderen SpielbaumLabel aus der Knoten-Liste. Diese
+Vorgehensweise hat den Vorteil, dass nur linear viel Speicherplatz im
+Verhältnis zu der Anzahl der Knoten des Graphen benötigt
+wird. ``Rückgabe'' dieser Funktion ist die vollständige Liste aller
+SpielbaumLabel, die zum Startwort und den Regeln erzeugt werden.
+\bigskip
+\newline
+Im letzten Schritt werden dann noch die Kanten erzeugt. Zu diesem
+Zeitpunkt ist die Liste der SpielbaumLabel vorhanden, die Liste aus
+{\tt rename\_nodes} wird ebenfalls noch ein Mal verwendet. In
+\begin{tt}
+\begin{quote}
+\begin{tabular}{ll}
+getEdges :: &[ ( String , [ String ] ) ] -> [ SpielbaumLabel ] \\
+ & -> [ Kante SpielbaumLabel ] \\
+\end{tabular}
+\end{quote}
+\end{tt}
+wird diese Liste zusammengebaut. Dabei wird wieder eine {\tt
+  map}-ähnliche (selbst definierte) Funktion verwendet, um für jeden
+  Knoten die Nachfolger zu finden, und das Tupel (Knoten, Nachfolger)
+  als Kante zurückzugeben.
+\bigskip
+\newline
+Ich halte die Funktionen in {\tt Trans.hs} noch für
+erklärungsbedürftig. Dort wird aus dem Graphen (beliebigen Typs) eine
+Struktur GVTrans erzeugt, aus der das GraphViz-Tool (ein bereits
+fertiges Software-Packet) ein Bild des Graphen malt. Dabei steht in
+{\tt getGVNName} der String, der dann in dem Bild auch in dem Knoten
+des Graphen steht. In {\tt getGVNID} wird die ID des Knotens benötigt.
+\bigskip
+\newline
+So lange, wie der Graph nur aus Integer besteht, braucht die ID nicht
+getrennt erzeugt zu werden. Auch {\it nur} Strings sind als ID
+erlaubt. Ich verwende jedoch ein Mischung aus beidem. Deshalb ändere
+ich für die ID eine Funktion ({\tt create\_label\_id}), die aus
+Buchstaben einfach Nullen macht. 
+\bigskip
+\newline
+Das Label wird in {\tt create\_labels}
+aus dem SpielbaumLabel und der Anzeige-Option zusammengesetzt. Die
+Funktion {\tt create\_GVNLabel} ist nötig, weil die Funktion {\tt
+  ShowText} im Modul {\tt Graph.Viz} aus Escape-Sequenzen
+Zeichenketten macht (und ich das rückgängig machen möchte).
+
+\subsection{Anwendungsbeispiele}
+
+\subsubsection{positive Anwendungsbeispiele}
+
+Zu den positiven Beispielen würde ich zählen, was ich aber durchaus
+auch bei richtiger Meldung revidieren würde:
+
+\begin{figure}[ht]
+\begin{minipage}{45mm}
+\center
+\leavemode
+\epsfxsize = 45mm
+\epsffile{011.ps}
+\caption{01 10 1 2 011}
+\end{minipage}
+\begin{minipage}{45mm}
+\center
+\leavemode
+\epsfxsize = 45mm
+\epsffile{0101.ps}
+\caption{01 10 1 ``'' 0101}
+\end{minipage}
+\begin{minipage}{25mm}
+\center
+\leavemode
+\epsfxsize = 25mm
+\epsffile{123rr.ps}
+\caption{-rr 31 12 2 3 1 2 123}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[htpb]
+\begin{center}
+\epsfig{figure=012345678rr.ps, height=3.3cm, angle=0}
+\caption{-rr 01 10 23 32 45 54 67 76 012345678}
+\end{center}
+\end{figure}
+
+\begin{figure}[htpb]
+\begin{center}
+\epsfig{figure=0111l.ps, height=8cm, angle=0}
+\caption{-l 01 10 1 2 0111}
+\end{center}
+\end{figure}
+
+\begin{figure}[htpb]
+\begin{center}
+\epsfig{figure=001001no.ps, height=8cm, angle=0}
+\caption{-no 001 010 10 02 001001}
+\end{center}
+\end{figure}
+
+\subsubsection{Negative Beispiele}
+
+\begin{enumerate}
+\item test -l 01 10 1 2 0101010101 \newline
+dot: warning, canvas size (56278,1528) exceeds PDF limit (3240)
+\newline 
+(suggest setting a bounding box size, see dot(1)) \newline
+Ausgabe ist in Datei: 0101010101l.ps \newline
+Fehler: Datei ist einfach zu groß zum (ordentlich) darstellen
+\item 
+\begin{figure}[htpb]
+\begin{center}
+\epsfig{figure=010101l.ps, width=10.5cm, angle=0}
+\caption{Graph ist zwar richtig, aber kein Sinn erkennbar}
+\end{center}
+\end{figure}
+\item Beispiele, in denen die Berechnung abbricht: \newline
+test -l 01 10 1 2 0111001001001 \newline
+Stack space overflow: current size 1048576 bytes. \newline
+Use `+RTS -Ksize' to increase it. \newline
+\item (Platz für weitere negative Beispiele)
+\end{enumerate}
+\bigskip
+\end{enumerate}
+\bigskip
+\end{enumerate}
+\bigskip
+\end{enumerate}
+\bigskip
+\end{enumerate}
+\bigskip
+\end{enumerate}
+\bigskip
+\end{enumerate}
+\bigskip
+\newline
+
+Ich bin der Meinung, dass die Beispiele zwar gewisse Grenzen erkennen
+lassen, aber um grafisch ein paar Beispiele ordentlich zu
+veranschaulichen, genügt das Programm. Die Graphen sind sachlich
+korrekt, und mit ausreichend Speicher lassen sich auch extrem große
+Graphen darstellen.
+\newpage
+
+\section{Softwarebeschreibung}
+
+\subsection{Spezifikation}
+
+Als Spezifikation betrachte ich einfach die Aufgabenstellung. Ziel ist
+es also, bei Eingabe des Startworts und der Regelmenge das Bild des
+Spielbaums zu erhalten. Dabei sollen folgende
+Formatierungsmöglichkeiten des eigentlichen Labels gegeben sein:
+\begin{enumerate}
+\item nur Spielposition anzeigen
+\item nur Grundy-Wert anzeigen
+\item nur GV-Wert anzeigen
+\item gar nichts anzeigen (leerer zugehöriger Spielbaum)
+\item Spielposition, Grundy-Wert, GV-Wert anzeigen
+\item Spielposition, GV-Wert anzeigen
+\item Spielposition, Grundy-Wert anzeigen
+\item GV-Wert, Grundy-Wert anzeigen
+\end{enumerate}
+
+\subsection{Entwurf}
+
+Im Main-Modul sollen implementiert werden:
+\begin{enumerate}
+\item Aufruf des Programms
+\item Auslesen der übergebenen Parameter
+\item Hilfe / Fehlermeldungen
+\end{enumerate}
+\bigskip
+\newline
+Weiterhin erscheint eine Trennung sinnvoll in:
+\begin{itemize}
+\item Datenstrukturen $\rightarrow$ Type
+\item Erzeugung des Spielbaums $\rightarrow$ Next
+\item Bewertung des Spielbaums $\rightarrow$ Spielbaum
+\item Transformation in eine Graphviz-lesbare Struktur $\rightarrow$
+  Trans
+\item Hilfs- und Testfunktionen $\rightarrow$ Util, Test
+\end{itemize}
+\subsection{Implementierung}
+
+\subsubsection{Main.hs}
+
+{\tt main :: IO ()}
+\begin{enumerate}
+\item Abrufen der übergebenen Parameter
+\item weniger als 3 übergebene Parameter? -> info
+\item ungerade Anzahl Parameter? -> Option auslesen, Graph erzeugen
+\item gerade Anzahl Parameter? -> Graph erzeugen
+\item bei erfolgreicher Ausführung Erfolgsmeldung, sonst Fehlermeldung
+\end{enumerate}
+\newline
+{\tt info :: IO ()}
+\begin{enumerate}
+\item Ausgabe einer Benutzungshilfe
+\end{enumerate}
+
+\subsubsection{Next.hs}
+
+{\tt class Next}
+\begin{itemize}
+\item Erläutert unter ``verwendete Datentypen''
+\end{itemize}
+\newline
+{\tt spielbaum :: (Ord a, Next a) => a -> Graph a }
+\begin{itemize}
+\item Parameter: Wort :: a
+\end{itemize}\begin{enumerate}
+\item Schichtenweise Berechnung der Nachfolger der Knoten
+\item Kanten werden durch Next geliefert
+\end{enumerate}
+\newline
+{\tt paint :: (Show a, ShowText a, Next a, Ord a) => String -> a -> IO()}
+\begin{itemize}
+\item Parameter: Datei-Name fname und Wort w
+\end{itemize}
+\begin{enumerate}
+\item Spielbaum erzeugen
+\item Knoten durchnumerieren
+\item GraphViz aufrufen (Bild des Graphen malen)
+\end{enumerate}
+\newline
+{\tt instanzTrans :: ShowText knoten => (knoten -> Int) -> GVTrans
+  knoten}
+\begin{itemize}
+\item Parameter: Funktion, die Knoten auf Grundy-Werte abbildet
+\end{itemize}
+\begin{enumerate}
+\item Graph in GVTrans-Struktur umwandeln
+\end{enumerate}
+
+\subsubsection{Spielbaum.hs}
+
+{\tt order\_nodes :: Graph ( Wort Char ) -> [ ( String , [ String ] ) ]}
+\begin{itemize}
+\item Parameter: Graph ( Wort Char )
+\end{itemize}
+\begin{enumerate}
+\item Knotenliste erzeugen
+\item Spielposition (inhalt) aus jedem Knoten (map) auslesen
+\item Nachfolgerliste pro Knoten erzeugen (map3) und dann aus der
+  Nachfolgerliste eine Liste von Strings machen (inhalt auslesen)
+\item Liste mit Knoten und Nachfolgerliste zusammenbauen (zip)
+\end{enumerate}
+\newline
+{\tt renameNodes :: [(String, [String])] -> [SpielbaumLabel] -> [SpielbaumLabel]}
+\begin{itemize}
+\item Parameter: Liste von Paaren ( Knoten, Nachfolgerliste )
+\item Parameter: Liste von SpielbaumLabeln (anfänglich leer)
+\end{itemize}
+\begin{enumerate}
+\item wenn Nachfolgerliste == [], dann neues SpielbaumLabel mit
+  Spielposition, Verloren und Grundy = 0 zurückgeben
+\item wenn Label berechenbar, d.h. alle label der Nachfolgerliste sind
+  bereits in der Liste von SpielbaumLabeln, dann berechnet das Label
+\begin{itemize}
+\item Wenn in den Nachfolgern mindestens einer mit V ist, dann G
+\item Grundy-Wert berechnen (Funktion: mex)
+\end{itemize}
+\item wenn Label nicht berechenbar, dann füge es an die Liste der zu
+  berechnenden Labels hinten an und berechne das nächste Label
+\item Termination? Muss terminieren, da die Funktion nur dann nicht
+  terminiert, wenn ein Label nicht berechenbar ist. Worst case wäre
+  eine Liste, die pro Durchlauf nur ein Label berechnen kann, aber
+  selbst dann muss die Funktion terminieren, weil pro Durchlauf
+  mindestens ein Label berechenbar ist (sonst kein DAG (directed
+  acyclic graph))
+\end{enumerate}
+\newline
+{\tt getEdges :: [(String, [String])] -> [SpielbaumLabel] -> [Kante
+    SpielbaumLabel]} 
+\begin{itemize}
+\item Parameter: Liste aus Tupeln (Knoten, Nachfolgerliste(Knoten))
+\item Parameter: Knotenliste des Spielbaum-Graphen
+\end{itemize}
+\begin{enumerate}
+\item wenn keine Kante mehr berechnet werden muss, dann [] zurückgeben
+\item sonst: map der Funktion right\_label (finde aus der Knotenliste
+  den richtigen Knoten) auf die Liste der Nachfolger des
+  Knoten. Rückgabe ist eine Liste von SpielbaumLabeln.
+\item Pro Element der Rückgabeliste wird eine Kante zum aktuellen
+  Spielbaumlabel erzeugt (help) und in der Kantenliste zurückgegeben.
+\end{enumerate}
+\newline
+{\tt returnGameTree :: Wort Char -> Graph SpielbaumLabel}
+\begin{itemize}
+\item Parameter: Das Wort, mit dem gespielt wird, d.h. Startwort und
+  zugehörige Regeln
+\end{itemize}
+\begin{enumerate}
+\item (unbewerteten) Spielbaum erzeugen
+\item Knoten- und deren Nachfolgerliste erzeugen (order\_nodes) 
+\item Knotenliste daraus erzeugen (renameNodes)
+\item Kantenliste aus Knotenliste erzeugen (getEdges)
+\end{enumerate}
+\newline
+{\tt buildTree :: [ String ] -> String -> IO (String, GVFormat, ExitCode)}
+\begin{itemize}
+\item Parameter: [ String ] = Regeln und Startwort
+\item Parameter: String = Optionen
+\end{itemize}
+\begin{enumerate}
+\item Parameter in ein ``Wort'' pressen
+\item Datei-Name der Ausgabedatei erzeugen
+\item SpielbaumLabel-Baum aus dem Wort erzeugen
+\item Transformationsanweisungen übergeben (myTrans + option)
+\item Datei-Name übergeben
+\end{enumerate}
+\newline
+{\tt mex :: [ Int ] -> Int }
+\begin{itemize}
+\item Parameter: Liste von Integers (Grundy-Werte der Nachfolger)
+\end{itemize}
+\begin{enumerate}
+\item Berechnet (filtert) Grundy-Wert eines Knotens
+\end{enumerate}
+\newline
+{\tt right\_label :: String -> [ SpielbaumLabel ] -> SpielbaumLabel}
+\begin{itemize}
+\item Parameter: String = Knotenlabel, das gesucht werden soll
+\item Parameter: Liste = Label-Liste, in der gesucht werden soll
+\end{itemize}
+\begin{enumerate}
+\item wenn die Suchliste leer ist {\tt undefined}, weil dann Fehler
+  (jedes Label muss gefunden werden, da Graph vollständig berechnet)
+\item wenn String und SpielbaumLabel übereinstimmen, dann gibt Label
+  zurück
+\item sonst suche im Rest der Liste
+\end{enumerate}
+\newline
+{\tt is\_in :: String -> [ SpielbaumLabel ] -> Bool}
+\begin{itemize}
+\item Parameter: String = Knotenlabel, das gesucht werden soll
+\item Parameter: Liste = Label-Liste, in der gesucht werden soll
+\end{itemize}
+\begin{enumerate}
+\item wenn Liste leer, dann nicht enthalten
+\item wenn String = Label des ersten Elementes der Liste, dann
+  enthalten
+\item sonst suche im Rest der Liste
+\end{enumerate}
+\subsubsection{Test.hs}
+{\tt a\_wort :: Wort Char}
+\begin{itemize}
+\item das Wort zum ``Autobahn''-Spiel
+\end{itemize}
+{\tt b\_wort :: Wort Char}
+\begin{itemize}
+\item ein Wort mit $\varepsilon$
+\end{itemize}
+{\tt c\_wort :: Wort Char}
+\begin{itemize}
+\item ein Wort mit nur einer Regel
+\end{itemize}
+\subsubsection{Trans.hs}
+{\tt myTrans :: String -> GVTrans SpielbaumLabel}
+\begin{itemize}
+\item Parameter: Option zum formatieren des (Anzeige-) Labels
+\end{itemize}
+\begin{enumerate}
+\item Transformieren des Graph SpielbaumLabel in eine für das GraphViz
+  lesbare (String-) Struktur
+\item die meisten Formatierungsmöglichkeiten des Graphviz bleiben
+  dabei ungenutzt
+\end{enumerate}
+\newline
+{\tt create\_GVNID :: String -> String}
+\begin{itemize}
+\item Parameter: zu formatierender String
+\end{itemize}
+\begin{enumerate}
+\item Im String werden alle nicht-numerischen Zeichen durch Nullen
+  ersetzt. Dies ist zwar nicht ungefährlich, weil notfalls Label
+  zusammengeworfen werden, aber falls das gebraucht werden sollte,
+  könnte man auch die Buchstaben durch ihren ASCII-Code ersetzen und
+  diese Gefahr ausschalten.
+\end{enumerate}
+\newline
+{\tt create\_GVNLabel :: String -> String}
+\begin{itemize}
+\item Parameter: zu formatierender String
+\end{itemize}
+\begin{enumerate}
+\item alle Escape-Sequenzen werden durch das ShowText des Graph.Viz
+  ``geshowt'' und müssen dann wieder in richtiges Format gewandelt
+  werden. 
+\end{enumerate}
+\newline
+{\tt create\_labels :: String -> SpielbaumLabel -> String} 
+\begin{itemize}
+\item Parameter: String = Formatierungsanweisungen für das
+  SpielbaumLabel
+\item Parameter: SpielbaumLabel
+\end{itemize}
+\begin{enumerate}
+\item zeige je nach angegebener Option die gewünschten Dinge des
+  SpielbaumLabels
+\end{enumerate}
+\newline
+\begin{tt}
+\begin{tabular}[h]{ll}
+\multicolumn{2}{l}{data GV = G | V  deriving (Show, Eq, Ord)}\\
+data SpielbaumLabel &= SpielbaumLabel\\
+&{ label  :: String\\
+&, gv     :: GV\\
+&, grundy :: Int\\        
+&} deriving (Show, Eq, Ord)\\
+\end{tabular}
+\end{tt}
+\begin{itemize}
+\item bereits unter ``Datentypen'' ausführlich erläutert
+\end{itemize}
+\subsubsection{Util.hs}
+
+{\tt map2 :: (a -> [b] -> c) -> [a] -> [b] -> [c]}
+\begin{itemize}
+\item Parameter: Funktion, die auf die Elemente der Liste von a
+  angewendet wird, die aber [b] als weiteren Parameter benötigt
+\end{itemize}
+\begin{enumerate}
+\item solange noch Elemente in der Liste von a's ist, wende die
+  Funktion an, sonst abbrechen
+\end{enumerate}
+\newline
+{\tt map3 :: (Graph a -> a -> [a]) -> Graph a -> [a] -> [[a]]} 
+\begin{itemize}
+\item Parameter: Funktion, die auf die Liste der a's angewendet wird,
+  die aber Graph a als weiteren Parameter benötigt
+\end{itemize}
+\begin{enumerate}
+\item solange noch Elemente in der Liste von a's wende die Funktion
+  an, sonst abbrechen
+\end{enumerate}
+\newline
+{\tt showSpielbaumLabel :: SpielbaumLabel -> String}
+\begin{itemize}
+\item Parameter: SpielbaumLabel
+\end{itemize}
+\begin{enumerate}
+\item tut genau das: zeige das SpielbaumLabel an (als String)
+\end{enumerate}
+\newline
+{\tt showGraphSpielbaumLabel :: Graph SpielbaumLabel -> Graph String} 
+\begin{itemize}
+\item Parameter: Graph SpielbaumLabel
+\end{itemize}
+\begin{enumerate}
+\item zeige Graph SpielbaumLabel (Graph String kann angezeigt werden)
+\end{enumerate}
+\newline
+{\tt showEdges :: [Kante SpielbaumLabel] -> String} 
+\begin{itemize}
+\item Parameter: Liste von Kanten von SpielbaumLabeln
+\end{itemize}
+\begin{enumerate}
+\item zeige diese Liste, indem jedes Label jeder Kante gezeigt und
+  entsprechend lesbar formatiert werden
+\end{enumerate}
+\newline
+{\tt showWort :: Wort Char -> IO ()} 
+\begin{itemize}
+\item Parameter: Wort Char
+\end{itemize}
+\begin{enumerate}
+\item map: wende showRegel auf alle Regeln des Wortes an
+\item foldr1: ``falte'' (++) zwischen die String-Liste, damit als
+  Ergebnis ein einiger String entsteht
+\end{enumerate}
+\newline
+{\tt showRegel :: Regel Char -> String} 
+\begin{itemize}
+\item Parameter: Regel Char
+\end{itemize}
+\begin{enumerate}
+\item zeige diese Regel (als String) an
+\end{enumerate}
+\newline
+{\tt showNodeChildren :: Graph ( Wort Char ) -> [[Wort Char]]}
+\begin{itemize}
+\item Parameter: Graph ( Wort Char )
+\end{itemize}
+\begin{enumerate}
+\item Vorstufe der Liste (die auf ähnliche Art und Weise) in {\tt
+  order\_nodes} verwendet wird
+\item zeigt pro Knoten im Graph die Kinder an (als Liste von Wort)
+\end{enumerate}
+\newline
+{\tt childs :: Eq a => Graph a -> a -> [ a ]}
+\begin{itemize}
+\item Parameter: Graph
+\item Parameter: Knoten aus dem Graph
+\end{itemize}
+\begin{enumerate}
+\item Liste der Kinder anzeigen
+\item wenn in der Kanteliste eine Kante {\it von} dem Knoten weggeht,
+  dann wird der Knoten zu dem die Kante geht zurückgeliefert
+\item diese Funktion sollte in Graph.Util bereits funktionieren, dort
+  wird aber die Liste der Vorgänger {\it und} Nachfolger geliefert.
+\end{enumerate}
+\newline
+{\tt qSort :: [ Int ] -> [ Int ]}
+\begin{itemize}
+\item Parameter: Liste von Integern, die sortiert werden sollen
+\end{itemize}
+\begin{enumerate}
+\item direkte Umsetzung des Suchverfahrens Quicksort, so wie man
+  Quicksort mal irgendwann hat erklärt bekommen
+\end{enumerate}
+\subsubsection{Wort.hs}
+Dieses Modul ist nur kopiert (Autor:
+{\tt joe@informatik.uni-leipzig.de}). Es ist deswegen übernommen, weil in
+{\tt autotool/util} bereits ein anderes {\tt Wort.hs} existiert.
+\bigskip
+\newline
+{\tt 
+\begin{tabular}[h]{ll}
+data Regel a = Regel &\{ from :: [a] \\
+ & , to :: [a] \\
+ & \} \\
+\end{tabular}
+}
+\newline
+{\tt 
+\begin{tabular}[h]{ll}
+data Wort a = Wort &\{ inhalt :: [a] \\
+ & , regeln  :: [ Regel a ] \\
+ & \} \\
+\end{tabular}
+}
+\begin{itemize}
+\item siehe Erläuterung der Datentypen
+\end{itemize}
+\newline
+{\tt instance ToDoc \* => ToDoc (..) where ..}
+\begin{itemize}
+\item Parameter: Die Instanz, die anzeigt werden soll
+\end{itemize}
+\begin{enumerate}
+\item es wird der Datentyp so lange zerlegt und gerendert, bis die
+  elementaren Bestandteile angezeigt werden können. Das Rendern bringt
+  dann die Bestandteile in eine gut lesbare Form.
+\end{enumerate}
+
+\subsection{Klassen- / Oberflächenstruktur}
+
+\subsection{Beispielanwendung}
+
+Positive und negative Beispielanwendungen habe ich meiner Meinung nach
+ausführlich genug unter Anwendungsbeispiele (Punkt 2.4.) behandelt.
+
+\section{Ergebnisbeschreibung}
+
+\subsection{Produkt, Grenzen, Erweiterungsmöglichkeiten}
+
+Das entstandene Produkt ist dem Verwendungszweck, der sicherlich nicht
+umfangreicher gefasst werden kann, als ein paar einfach Grundzüge der
+Term(String)-Ersetzungsspiele zu veranschaulichen, angemessen. Die
+erzeugten Graphen sind inhaltlich richtig und können wunschgemäß
+entsprechend formatiert werden.
+\bigskip
+\newline
+Die Grenzen des Produkts sind bei der Berechnung größerer Graphen
+schnell gefunden: Die Graphen werden einfach zu umfangreich, um sie
+auf die Art und Weise zu berechnen, wie es in der Implementierung
+vorgenommen ist. Mit entsprechender Erweiterung des zur Verfügung
+stehenden Speicherplatzes könnte hier Abhilfe geschaffen werden. Das
+ändert aber nichts an der Tatsache, dass auf den Bildern nicht mehr
+viel erkennbar ist. Diese werden dann einfach unübersichtlich.
+\bigskip
+\newline
+Zu den Erweiterungsmöglichkeiten zählt sicherlich, das Maximum der
+Grundy-Werte zu ermitteln, bzw. wenn es mehrere gibt das zuerst
+erreichte hervorzuheben. Dafür eignet sich die graphische Darstellung
+allerdings kaum noch. Um die Graphiken weiter zu verbessern, könnte
+man noch Farbe ins Spiel bringen, um z.B. die G/V-Werte nicht als
+Label schreiben zu müssen. Da auch die Grundy-Werte in den von mir
+gefundenen Beispielen 3 nicht überschritten haben, könnte man Ringe um
+die Label legen, statt den Grundy-Wert explizit ins Label zu
+schreiben. 
+\bigskip
+\newline
+Als interessante Erweiterung würde ich die Umsetzung des Spiels als
+auf dem Spiele-Server spielbares Spiel (gegen
+menschlichen/Computer-Gegner) betrachten. Soweit ich weiß, ist das
+bereits in Arbeit.
+\bigskip
+\newline
+Auch (hoffentlich) interessant wird die Umsetzung als OpenGL-spielbare
+Variante, das ist ebenfalls in Arbeit. Die vollständige Berechnung des
+Spielbaumes dürfte dort aber nicht in Frage kommen, weil die
+Berechnung der Bäume erstens zu lange dauert, und zweitens der Graph
+dann nicht veranschaulicht werden kann (in einem zweiten Fenster soll
+dies geschehen).
+
+\subsection{Hard- und Software-Voraussetzungen}
+
+Zu den Hardware-Voraussetzungen gehört nichts außergewöhnliches. Ein
+bisschen RAM sind für schnellere Berechnung hilfreich, zur Erzeugung
+halbwegs lesbarer Graphiken (nicht größer als A3) reichte mein Pentium
+II (nicht viel RAM) ohne Probleme.
+
+Zu den Software-Voraussetzungen habe ich ein README-File erzeugt, weil
+ich dort anfänglich Probleme hatte. Man sollte zum Compilieren
+mindestens ein GHC haben, bei mir habe zusätzlich gefehlt:
+\begin{itemize}
+\item readline
+\item lex/flex
+\item hugs
+\end{itemize}
+\begin{enumerate}
+\item READLINE:  Hugs arbeitet wie jede andere Shell. Mit <PFEIL-HOCH>
+   kann man die zuletzt genutzen Kommandos wieder benutzen. Wenn man
+   dieses Feature in Hugs benutzen will, muss man bei der Installation
+   das entsprechend mit angeben:\newline
+"./configure --with-readline"\newline
+Falls das readline-Paket nicht vorhanden sein sollte (wie bei mir),
+   findet man es unter {\tt http://www.rpmfind.net/}
+\item DOT / NEATO / GRAPHVIZ:  Falls das Programm nicht funktionieren
+   sollte, d.h. falls "dot" oder "neato" unbekannte Kommandos sind,
+   muss man zuerst das GraphViz-Tool installieren. Auch dieses Paket
+   findet man (falls es nicht in der Linux-Distribution vorhanden ist)
+   unter {\tt http://www.rpmfind.net}
+\item TRUETYPEFONTS: Falls man das Ausgabeformat der Bilder auf
+  z.B. ``.png'' ändert, und eine Fehlermeldung über nicht vorhandene
+  truetypefonts erhält, gibt es ein Kommando ``fetchmstfonts'' (als
+  Admin), dass diese Fonts automatisch installiert.
+\item SPIELBAUM: {\it ``*.hs not found''}\newline
+Es werden eine ganze Menge Dateien importiert, wenn man das
+Spielbaum-Modul im Hugs startet. Am einfachsten funktioniert das ganze
+Importieren, wenn man im Verzeichnis {\tt autotool} mit dem Aufruf
+{\tt hugs -98 +o -Putil: Spielbaum/Main.hs} startet.
+\end{enumerate}
+\bigskip
+\newline
+Diese Installations-Anleitungen (und die zugehörigen Fehlermeldungen)
+habe ich in der README noch ein Mal aufgelistet.
+
+\subsection{Zusammenfassung}
+
+Das Projekt als solches war sehr interessant, funktionales
+Programmieren macht durchaus auch richtig Spass (nachdem man ein paar
+``hübsche'' Prelude-Funktionen wie map und foldr kennt und verstanden
+hat). Erweiterungen für Haskell gibt es in alle Richtigungen, so dass
+Haskell auch für Datenbank-Anwendungen, OpenGL, ... verwendet werden
+kann. 
+
+Das Ergebnis ist sicherlich an einigen Stellen noch
+verbesserungswürdig, so könnte man fast alle show-Funktionen der
+{\tt Util.hs} automatisieren, wenn man {\sc ToDoc} verwendet. Auch die Funktionen
+{\tt map2} und {\tt map3} können eingespart werden. Wenn man den eigentlich
+verwendeten Typ genau ansieht, reicht map aus, dazu müssen jedoch
+andere Funktionen (umfangreich) geändert werden.
+
+\subsection{Literatur}
+
+Simon Thompson \newline
+Haskell - The Craft of Functional Programming \newline
+Addison-Wesley, 1999
+\bigskip
+\newline
+Prof. Dr. Sigmar Gerber, Dipl.-Inf. Michael Hartwig \newline
+Skript zur Vorlesung Funktionale Programmierung I \newline
+http://www.informatik.uni-leipzig.de/theo/ \newline
+
+\subsection{Fertigstellungsdatum}
+
+26.11.2002 - Programm (Code)
+\newline
+  .11.2002 - Dokumentation
+
+\subsection{Code und Text auf Datenträger}
+
+abgegeben am ...11.2002 bei ...
+
+\end{document}
