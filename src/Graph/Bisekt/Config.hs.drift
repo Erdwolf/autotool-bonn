@@ -1,0 +1,26 @@
+-- -*- mode: haskell -*-
+
+-- $Id$
+
+module Graph.Bisekt.Config where
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Config = Config 
+	    { nodes        :: Int -- ^ knoten insgesamt
+	    , edges        :: Int -- ^ kanten ohne bisektierende kanten
+	    , edges_bisect :: Int -- ^ bisektierende kanten
+	    }
+     deriving ( Typeable )
+
+{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+
+rc :: Config
+rc = Config { nodes        = 10
+	    , edges        = 30
+	    , edges_bisect = 5
+	    }

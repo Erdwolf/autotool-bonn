@@ -48,6 +48,9 @@ import qualified Graph.Bi.Plain
 import qualified Graph.Circle.Quiz
 import qualified Graph.Circle.Plain
 
+import qualified Graph.Bisekt.Plain
+import qualified Graph.Bisekt.Quiz
+
 import qualified Number.Base.Central
 
 makers :: [ Make ]
@@ -106,8 +109,12 @@ makers = [ Blank.make
 
 	 , Graph.Bi.Quiz.make
 	 , Graph.Bi.Plain.make
+
 	 , Graph.Circle.Quiz.make
 	 , Graph.Circle.Plain.make
+
+	 , Graph.Bisekt.Plain.make
+	 , Graph.Bisekt.Quiz.make
 
          , Number.Base.Central.make_fixed
          , Number.Base.Central.make_quiz
