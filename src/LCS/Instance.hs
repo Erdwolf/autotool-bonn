@@ -22,7 +22,7 @@ import Autolib.Reporter
 data LCS = LCS deriving ( Show, Typeable )
 
 instance ( InstanceC a ) 
-    => Partial LCS ( Instance a ) [a] where
+    => Partial LCS ( Instance a ) [ a ] where
 
     describe LCS i =
         vcat [ fsep [ text "Bestimmen Sie eine"  
