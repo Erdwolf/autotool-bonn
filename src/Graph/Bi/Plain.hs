@@ -5,16 +5,11 @@ module Graph.Bi.Plain where
 import Graph.Util
 import Graph.Bi.Proof
 
-
 import Autolib.Dot ( peng, Layout_Program (..) )
 
 import Inter.Types
-import Autolib.ToDoc
-import Autolib.Hash
-import Autolib.Size
 import Autolib.Set
 import qualified Challenger as C
-
 import qualified Autolib.Reporter.Set
 import Data.Typeable
 
@@ -25,14 +20,14 @@ instance ( GraphC a, Show a )
 
     report _ g = do
         inform $ vcat
-	       [ text "Gesucht ist eine Knotenmenge, die beweist, daß der Graph"
+	       [ text "Gesucht ist eine Knotenmenge M, die beweist, daß der Graph"
 	       , nest 4 $ toDoc g
 	       ]
 	peng $ g { layout_program = Circo
 		 , layout_hints = [ "-Nshape=ellipse" , "-Gsize=\"5,5\"" ]
 		 }
         inform $ vcat
-	       [ text "bipartit ist."
+	       [ text "bipartit ist, also jede Kante des Graphen zwischen Knoten aus M und V(G)\\M verläuft."
 	       ]
 
     initial _ g = let n = cardinality $ knoten g
@@ -42,8 +37,8 @@ instance ( GraphC a, Show a )
 						             (v:_) -> v
 
     partial _ g v = do
-        let s1 = ( text "Knotenmenge des Graphen" , knoten g )
-	    s2 = ( text "Knotenmenge in Ihrer Lösung" , v )
+        let s1 = ( text "Knotenmenge V(G) des Graphen" , knoten g )
+	    s2 = ( text "Knotenmenge M in Ihrer Lösung" , v )
 	Autolib.Reporter.Set.non_empty s2
 	Autolib.Reporter.Set.proper_subset s2 s1
     
@@ -52,7 +47,7 @@ instance ( GraphC a, Show a )
         let es_norm = select (kanten g) v
 	let es_quer = select (kanten g) v_quer
 
-        inform $ vcat [ text "Das Komplement Ihrer Lösung ist:" 
+        inform $ vcat [ text "Das Komplement V(G)\\M Ihrer Lösung ist:" 
 		      , nest 4 $ toDoc v_quer
 		      ]
 
@@ -74,3 +69,10 @@ instance ( GraphC a, Show a )
 instance ( GraphC a, Show a )
     => C.Measure Bi (Graph a) (Set a) where
     measure _ _ = fromIntegral . cardinality
+
+-------------------------------------------------------------------------------
+
+make :: Make
+make = direct Bi $ mkGraph (mkSet ns) (mkSet es)
+    where ns = [ 1..9 ] :: [Int]
+	  es = do i <- [1..8] ; return $ kante i 9 :: [Kante Int]

@@ -4,16 +4,13 @@ module Graph.Bi.Quiz where
 
 import Autolib.Graph.Type
 import Autolib.Util.Zufall ( eins , genau )
+import Autolib.Set
+
 import Graph.Bi.Plain
 import Graph.Bi.Config
 
 import Inter.Quiz
 import Inter.Types
-import System.Random
-import Control.Monad
-
-import Autolib.Graph.Type
-import Autolib.Set
 
 instance Generator Bi Config ( Graph Int , Set Int ) where
     generator _ conf key = do

@@ -44,6 +44,9 @@ import qualified Graph.TreeWidth
 import qualified Graph.PartialKTree
 
 import qualified Graph.Bi.Quiz
+import qualified Graph.Bi.Plain
+import qualified Graph.Circle.Quiz
+import qualified Graph.Circle.Plain
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -100,6 +103,7 @@ makers = [ Blank.make
          , Faktor.Faktor.make_quiz
 
 	 , Graph.Bi.Quiz.make
+	 , Graph.Bi.Plain.make
+	 , Graph.Circle.Quiz.make
+	 , Graph.Circle.Plain.make
 	 ]
-
-
