@@ -21,6 +21,7 @@ data Config a b =
 	    , length_range :: ( Int, Int )
 	    , coder :: Coder a b
 	    }
+     deriving ( Typeable )
 
 throw :: ( Typeable a, Typeable b )
       => Config a b -> IO [a]

@@ -10,6 +10,8 @@ where
 --  $Id$
 
 import Data.FiniteMap
+
+import Data.Typeable
 import TypeableFM
 
 import Sets
@@ -23,6 +25,7 @@ data Coder a b =
 	   , decode :: b -> Maybe [a]
 	   , decode_hint :: b -> [a]
 	   }
+     deriving ( Typeable )
 
 type Frequency a = FiniteMap a Int
 

@@ -14,13 +14,14 @@ import Challenger.Partial
 import ToDoc
 import Reporter
 import Ana
+import Data.Typeable
 
 -- import Number
 -- import Iso
 -- import System
 
 
-data Faktor = Faktor deriving Show
+data Faktor = Faktor deriving ( Show, Typeable )
 
 -- instance Number Integer Integer where number = id
 

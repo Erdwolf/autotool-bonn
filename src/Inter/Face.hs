@@ -117,6 +117,9 @@ iface variants env = do
 
     logged "start" $ return ()
 
+    let pres = h3 << "(experimental:) Makers" 
+	    +++ p << pre << show ( present B.makers )
+
     -- alle Inputs aus Env. holen
     let par0 = case head variants of 
         -- erste Variante ist Default Variante
@@ -204,7 +207,7 @@ iface variants env = do
 			   p << bold << ( "Hier Lösung eingeben:" )
 
 			   +++ p << "(experimentell) Typ der Eingabe:"
-			   +++ p << pre << show (typeOf b0)
+			   +++ p << pre << show (toDoc $ typeOf b0)
 
 			   +++ textarea ( primHtml $ P.input par2  ) 
 					! [ name "Input"
@@ -225,7 +228,8 @@ iface variants env = do
 
 
           return $ page par2 
-		 $   inst -- aufgabenstellung (immer)
+		 $   pres -- experimentell (makers)
+		 +++ inst -- aufgabenstellung (immer)
 		 +++ motd -- message vom tage (immer)
 		 +++ log  -- logfile entry (nur bei submit)
 		 +++ status -- antwort OK bzw. Textarea für neue lösg (immer)

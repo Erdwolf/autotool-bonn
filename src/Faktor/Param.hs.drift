@@ -6,7 +6,7 @@ module Faktor.Param where
 
 import Reader
 import ToDoc
-
+import Data.Typeable
 import Sets
 
 data Param = 
@@ -14,6 +14,7 @@ data Param =
 	   , bis :: Int
 	   , anzahl :: Int
 	   }
+     deriving ( Typeable )
 
 p :: Param
 p = Param { von = 100

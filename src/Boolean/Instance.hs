@@ -15,7 +15,7 @@ import ToDoc
 import Reporter
 import Sets
 
-data Boolean = Boolean deriving ( Eq, Ord, Show, Read )
+data Boolean = Boolean deriving ( Eq, Ord, Show, Read, Typeable )
 
 data BI =
      BI { tag :: String

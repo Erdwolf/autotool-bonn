@@ -36,6 +36,8 @@ data Var p i b =
 
 
 	     }
+      deriving Typeable
+
 --     deriving Show
 
 -- instance ( Show p ) => ToDoc ( Var p i b ) where
@@ -45,13 +47,13 @@ class ( Show p
 	   , Show i
 	   , Show b, ToDoc b, Reader b , Size b
 	   , Partial p i b
-	, Typeable b
+	, Typeable p, Typeable i, Typeable b
 	   ) => V p i b -- ohne methoden
 instance ( Show p 
 	   , Show i
 	   , Show b, ToDoc b, Reader b , Size b
 	   , Partial p i b
-	, Typeable b
+	, Typeable p, Typeable i, Typeable b
 	   ) => V p i b 
 
 

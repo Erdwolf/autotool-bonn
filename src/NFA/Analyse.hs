@@ -2,7 +2,7 @@ module NFA.Analyse where
 
 -- vom Automaten zum regulären Ausdruck
 
--- -- $Id$
+--  $Id$
 
 import Exp
 import Exp.Inter
@@ -19,15 +19,15 @@ import ToDoc
 import Reporter
 
 import qualified Challenger as C
+import Data.Typeable
 
-
-data Analyse = Analyse deriving ( Eq, Ord, Show, Read )
+data Analyse = Analyse deriving ( Eq, Ord, Show, Read, Typeable )
 
 data AI = AI { name :: String -- abkürzung
 	     , automat :: NFA Char Int   
 	     , alphabet :: Set Char
 	     }
-    deriving ( Show )
+    deriving ( Show, Typeable )
 
 instance C.Partial  Analyse AI Exp
   where

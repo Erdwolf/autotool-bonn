@@ -13,6 +13,7 @@ where
 import Prelude hiding ( length )
 import Code.Huffman.LR
 
+import Data.Typeable
 import Reader
 import ToDoc
 
@@ -36,7 +37,7 @@ data Config =
 	    , distance :: ( Goal, Int )
 	    , optimize :: String
 	    }
-     deriving ( Eq, Ord )
+     deriving ( Eq, Ord, Typeable )
 
 attributes = [ (length, "Länge"), (size, "Größe"), (distance, "Weite") ]
 

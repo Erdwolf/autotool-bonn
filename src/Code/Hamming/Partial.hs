@@ -6,12 +6,12 @@ import Code.Hamming.Data
 import Code.Hamming.Check
 
 import Challenger.Partial
-
+import Data.Typeable
 import ToDoc
 import Reporter
 
 data Hamming = Hamming
-    deriving (Eq, Ord, Show, Read)
+    deriving (Eq, Ord, Show, Read, Typeable)
 
 instance Partial Hamming Config Code where
 

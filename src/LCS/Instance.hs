@@ -6,18 +6,20 @@ import LCS.Code
 import Challenger.Partial
 import Inter.Types
 
+import Data.Typeable
+
 import ToDoc
 import Size
 import Reporter
 
-data LCS = LCS deriving ( Eq, Ord, Show, Read )
+data LCS = LCS deriving ( Eq, Ord, Show, Read, Typeable )
 
 data Instance a =
      Instance { left :: [a]
 	      , right :: [a]
 	      , sharp :: Bool
 	      }
-     deriving ( Read, Show )
+     deriving ( Read, Show, Typeable )
 
 instance ( Eq a, ToDoc [a], Size [a] ) => Partial LCS ( Instance a ) [a] where
 

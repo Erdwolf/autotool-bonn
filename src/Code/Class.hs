@@ -9,9 +9,9 @@ import ToDoc
 import Size
 import Reporter
 
+import Data.Typeable
 
-
-data Encode a b = Encode ( Coder a b )
+data Encode a b = Encode ( Coder a b ) deriving ( Typeable )
 
 instance Show ( Encode a b ) where
     show ( Encode c ) = "Encode"
@@ -35,7 +35,7 @@ instance ( ToDoc [a], Eq b, Size b )
 	   else reject $ text "Die Antwort ist nicht korrekt."
 
 
-data Decode a b = Decode ( Coder a b ) 
+data Decode a b = Decode ( Coder a b )  deriving ( Typeable )
 
 instance Show ( Decode a b ) where
     show (Decode c) = "Decode"

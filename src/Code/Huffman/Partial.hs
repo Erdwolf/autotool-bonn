@@ -9,11 +9,12 @@ import Code.Huffman.LR
 import Code.Huffman.Test
 
 import Challenger.Partial
+import Data.Typeable
 import Reporter
 import ToDoc
 
 
-data Huffman = Huffman deriving ( Eq, Ord, Show, Read )
+data Huffman = Huffman deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance ( ToDoc a, ToDoc [a], Ord a, ToDoc [ (a, [ LR ] )] ) 
 	 => Partial Huffman ( Frequency a ) ( Code a LR ) where

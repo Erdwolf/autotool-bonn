@@ -4,11 +4,13 @@ module RSA.Break.Data where
 
 import Reader
 import ToDoc
+import Data.Typeable
 
 data Config =
      Config { public_key :: ( Integer, Integer )
             , message :: Integer
 	    }
+     deriving ( Typeable )
 
 {-! for Config derive: Reader, ToDoc !-}
 

@@ -24,11 +24,12 @@ get_boiler makers configs = do
 	    it <- maybeToList ( fromDynamic dyn :: Maybe conf )
 	    return $ Variant $ fun it
 
+-- | für den tutor: präsentiert liste der bekannten maker-typen
 present :: [ Make ] -> Doc
-present makers = vcat $ do
+present makers = hcat $ do
     maker <- makers
     case maker of
-        Make ( fun :: fun ) -> text $ show $ typeOf fun
+        Make ( fun :: fun ) -> return $ text $ show $ toDoc $ typeOf fun
 
 		   
     

@@ -7,12 +7,14 @@ import RSA.Euclid
 import Faktor.Prim
 import Faktor.Certify ( powmod )
 
+import Data.Typeable
+
 import Challenger.Partial
 import ToDoc
 import Reporter
 import Ana
 
-data Break = Break deriving Show
+data Break = Break deriving ( Show, Typeable )
 
 instance Partial Break Config Integer where
 
