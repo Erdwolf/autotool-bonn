@@ -72,7 +72,7 @@ samples :: Language
 	-> IO [ String ]
 samples l c n | c > 0 = do
 
-    let m = truncate $ sqrt $ fromIntegral c    
+    let m = truncate $ sqrt $ fromIntegral c :: Int
     here <- sample l m n 
 
     let d = 1 -- d <- randomRIO (1, 3)
