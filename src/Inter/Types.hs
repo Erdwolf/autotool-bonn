@@ -7,7 +7,8 @@ import Reporter
 import Challenger.Problem
 import Challenger.Partial
 
-import ShowFunctions
+-- import ShowFunctions
+
 import ToDoc
 import Reader
 import Size
@@ -33,10 +34,10 @@ data Var p i b =
 
 
 	     }
-     deriving Show
+--     deriving Show
 
-instance ( Show p ) => ToDoc ( Var p i b ) where
-    toDoc = text . show
+-- instance ( Show p ) => ToDoc ( Var p i b ) where
+--    toDoc = text . show
 
 class ( Show p 
 	   , Show i

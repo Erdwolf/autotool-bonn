@@ -7,6 +7,8 @@ module Inter.Env where
 import qualified Inter.Param as P
 import qualified Passwort
 
+import Inter.Click
+
 type Env = [(String, String)]
 
 get :: Env  -> P.Type
@@ -15,26 +17,30 @@ get env = get_with env P.example
 
 get_with :: Env -> P.Type -> P.Type
 get_with env def = 
+{-
     let input' = 
              if (item env "change") == "change" 
 				|| (item env "Beispiel") == "Beispiel"
              then ""
              else item env "input"
 		in
-    if null $ item env "matrikel"
+-}
+    if null $ item env "click"
      then def
      else 
-        let wahl = item env "wahl" in 
+        -- let wahl = item env "wahl" in 
         -- auswahl in combobox
-        if head ( item env "wahl")  == '-'
-          then -- ja
+        -- if head ( item env "wahl")  == '-'
+        --  then -- ja
           P.empty { P.matrikel = item env "matrikel" 
                   , P.passwort = read $ item env "passwort"
                   , P.problem  = item env "problem"
                   , P.aufgabe  = item env "aufgabe"
                   , P.version  = item env "version"
-                  , P.input    = input' --item env "input"
+                  , P.input    = item env "input"
+		  , P.click    = read $ item env "submit"
                   }
+{-
           else -- nein, dann lies eingabefelder aus
           
           let 
@@ -50,6 +56,7 @@ get_with env def =
                               , P.version  = pav !! 2
                               , P.input    = input' ---item env "input"
                               }
+-}
 
 item :: Env -> String -> String
 -- default: leerer string

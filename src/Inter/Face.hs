@@ -59,6 +59,7 @@ import Inter.Evaluate
 --
 import Inter.Bank
 import Inter.Store ( latest )
+import Inter.Click
 
 --
 -- der Monster-Parameter darin sind alle wesentlichen Daten
@@ -152,72 +153,62 @@ iface variants env = do
           -- Beispiel Eingabe holen  
           let b0 = Challenger.initial ( problem v ) i
 
-          ein <- case item env "submit" of
-	      "example"  -> return $ show b0
-	      ""         -> return $ show b0
-	      "submit"   -> return $ P.input par1
-	      "previous" -> latest par1 
+	  -- nur bei Submit wird textarea übernommen.
+          ein <- case P.click par1 of
+	      Submit   -> return $ P.input par1
+	      Previous -> latest par1 
 		  `Exception.catch` \ _ -> return ( show b0 )
-
+	      _  -> return $ show b0
 
           -- Eingabe.Form füllen entweder mit
           let par2 = par1 { P.input = ein }
 
-          -- FIXED BUG: "Falsch Buchung zum Anfang" 
-		  -- bin gerade dabei...
-          let isFirstRun = null ( P.input par1 ) -- P.input par2  /= show b0
+	  ( res , ans, log ) <- 
+	      if ( P.click par1 == Submit )
+	      -- nur dann erfolgt berechnung und ausgabe der bewertung
+	      then do  
+		   -- neu (11. 11. 03): IO-Aktion ausführen
+		   ( res :: Maybe Int , com :: Doc ) 
+		       <- timed_run patience ( reject $ text "timer expired" ) 
+		          $ do -- TODO: set default dir
+			       evaluate ( problem v ) i par2
+		   let ans = p << "Das Korrekturprogramm sagt:"
+			 +++ p << pre << render com 
+	            -- bewertung in datenbank und file
+		   msg <- bank par2 res 
+		   let log = p << "Eintrag ins Logfile:" +++ p << pre << msg
+		   return ( res , ans , log )
+	      else return ( Nothing , noHtml, noHtml )
 
-          -- eingabe bewerten ( echter Reporter )
-	  
-          -- neu (11. 11. 03): IO-Aktion ausführen
-          ( res :: Maybe Int , com :: Doc ) 
-	      <- timed_run patience ( reject $ text "timer expired" ) $ do
-	  	         -- TODO: set default dir
-	                 evaluate ( problem v ) i par2
-
-          let ans = 
-		  if isFirstRun
-		  then noHtml
-		  else
-		      p << "Das Korrekturprogramm sagt:"
-					+++ p << pre << render com 
-
-
-          -- bewertung in datenbank und file
-          log <- if isFirstRun 
-	      then return noHtml
-              else do 
-		  msg <- bank par2 res 
-		  return $ p << "Eintrag ins Logfile:" +++ p << pre << msg
-
-
-		  -- Höhe der Eingabe-Form berechnen
+	  -- Höhe der Eingabe-Form berechnen
           let height = length $ filter ( == '\n' ) $ P.input par2
 
-		  -- bewertung ausgeben, bzw. zur Lösungseingabe auffordern
+	  -- bewertung ausgeben, bzw. zur Lösungseingabe auffordern
           let status = case res of
 		   Just s -> 
 			   p << bold << ( "Korrekte Lösung, Size: " ++ show s )
 		   Nothing -> 
-			   p << bold << ( 
-					 if isFirstRun 
-					 then "Hier Lösung eingeben:"
-					 else "Lösung ist nicht korrekt. Nochmal:" 
+			   p << bold << ( "Hier Lösung eingeben:" )
 
-					 )
 			   +++ textarea ( primHtml $ P.input par2  ) 
 					! [ name "input"
 					  , rows $ show $ height + 2
 					  , cols $ show $ P.input_width par2
 					  ]
 			   +++ br 
-			   +++ submit "submit" "submit" +++ " " 
-			   +++ submit "submit" "previous" +++ " " 
-			   +++ reset  "submit" "reset" +++ " " 
-			   +++ submit "submit" "example"
+			   +++ submit "submit" ( show Submit   ) +++ " " 
+			   +++ submit "submit" ( show Previous ) +++ " " 
+			   +++ submit "submit" ( show Example  ) +++ " " 
+
+			   +++ reset  "submit" ( show Reset    ) 
 
 
-          return $ page par2 $ inst +++ motd +++ log +++ status +++ ans
+          return $ page par2 
+		 $   inst -- aufgabenstellung (immer)
+		 +++ motd -- message vom tage (immer)
+		 +++ log  -- logfile entry (nur bei submit)
+		 +++ status -- antwort OK bzw. Textarea für neue lösg (immer)
+		 +++ ans  -- korrektur-log (nur bei submit)
 
 ------------------------------------------------------------------------
 --
@@ -228,7 +219,7 @@ page par msg =
 	heading = h2 << "Autotool CGI Inter.Face"
 	pref = preface par 
 	var = varselector par 
-	sub = submit "change" "change" 
+	sub = submit "submit" ( show Change )
 	chg = primHtml "  Achtung, verwirft Lösung!!"
     in  header << thetitle << "Inter.Face"
             +++ body ( form ( foldr1 (+++) 
@@ -241,15 +232,18 @@ preface par =
 	let var = varselector par in
     table << 
 	  aboves [ besides $  
-   	   txtf' "10" "matrikel" ( P.matrikel par )
-   	   ++ pwdf "passwort" ( P.passwort par )
-   	 , besides $ var ++ [ td ! [ colspan 2 ] 
-			      << "Bitte hier wählen ODER unten eingeben." ]
+   	   txtf' "10" "Matrikel" ( P.matrikel par )
+   	   ++ pwdf "Passwort" ( P.passwort par )
+   	 , besides $ var 
+
+{-
+++ [ td ! [ colspan 2 ] << "Bitte hier wählen ODER unten eingeben." ]
 -- 		 , besides [ td << h4 << stringToHtml "Quick Start" ]
    	 , besides $  
    	      txtf' "10" "problem" ( P.problem par )
    	   ++ txtf' "5" "aufgabe" ( P.aufgabe par )
    	   ++ txtf' "5" "version" ( P.version par )
+-}
    	 ]
 
 varselector par =
@@ -257,7 +251,7 @@ varselector par =
     vars = map primHtml 
 	 $ "--" : map show ( P.variants par )
     in
-    [ td << "nr "  ,  td << menu "wahl" vars ]
+    [ td << "Aufgabe "  ,  td << menu "wahl" vars ]
 
 -- obsolete:
 -- docToHtml = stringToHtml.render.toDoc

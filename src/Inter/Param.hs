@@ -5,6 +5,7 @@ module Inter.Param where
 import qualified Passwort -- control
 
 import Inter.Types ( Variant )
+import Inter.Click
 import SQLqueries ( ATHighLow )
 
 
@@ -21,6 +22,7 @@ data Type =
           , aufgabe  :: String -- major
           , version  :: String -- minor
           , input    :: String
+	  , click    :: Click
             -- after login key for DB
           , ident :: String
           , highscore :: ATHighLow
@@ -47,6 +49,7 @@ empty = Param { matrikel = ""
               , version = ""
               , passwort = Passwort.empty
               , input    = ""
+	      , click = Example
               , ident    = ""
               , input_width = 80
               , variants = []
