@@ -10,6 +10,8 @@ where
 import Grammatik.Type
 import Grammatik.Ableitung
 
+import Grammatik.Reduziert
+
 import Set
 
 import Util.Wort
@@ -34,16 +36,26 @@ zeige conf g = do
 	       ab  <- setToList abs
 	       return $ toDoc ab
     newline
-	   
-    let terms = do abs <- abss
+	
+    let rg = reduktion g -- nur erreichbare und produktive, 
+	                 -- damit das tool nicht sinnlos rumrechnet
+
+    inform $ text "DEBUG: reduziert:" <+> toDoc rg
+    if ( not $ startsymbol rg `elementOf` nichtterminale rg )
+       then do
+	    inform $ text "Es sind keine Terminalwörter ableitbar."
+	    return []
+       else do
+            let rabss = ableitungen conf rg
+		terms = do 
+		   abs <- rabss
 		   ab <- setToList abs
 		   let w = car ab
 		   guard $ all (`elementOf` terminale g) w
 		   return w
-    inform $ text "Einige ableitbare Wörter aus Terminalzeichen sind:"
-    inform $ nest 4 $ toDoc $ take 20 terms
-    newline
-
-    return terms
+	    inform $ text "Einige (in wenigen Schritten) ableitbare Termnialwörter sind:"
+	    inform $ nest 4 $ toDoc $ take 20 terms
+	    newline
+	    return terms
 
 
