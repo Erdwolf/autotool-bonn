@@ -74,14 +74,15 @@ iface mks = do
              auf <- aufs
              return ( toString $ A.name auf , Just $ auf )
 
-    ( mauf, del ) <- 
+    ( action, mauf, del ) <- 
         if tutor
 	   then do 
-	        selector_edit_delete "anr" "Aufgabe" 0 
+	        ( mauf, del ) <- selector_edit_delete "anr" "Aufgabe" 0 
                    $ ( "(neue Aufgabe)", Nothing ) : opts
+                return ( Solve, mauf, del )
            else do 
-		auf <- statistik stud aufs
-                return ( Just auf, False )
+		( action, auf ) <- statistik stud aufs
+                return ( action, Just auf, False )
     when tutor $ close -- btable ??
 
     case mauf of
@@ -110,30 +111,19 @@ iface mks = do
 		  Just auf -> do
                       return auf
     stud' <- get_stud tutor stud
-    hr
-    ( cs, res, com ) <- solution vnr manr stud' mk auf' 
-    -- bewertung in DB (für Stud-Variante)
-    when ( not tutor ) $ punkte stud' auf' ( cs, res, com )
-    -- when ( not tutor ) $ statistik stud' aufs
+
+    case action of
+        Solve -> do
+            ( cs, res, com ) <- solution vnr manr stud' mk auf' 
+            -- bewertung in DB (für Stud-Variante)
+	    when ( not tutor ) $ punkte stud' auf' ( cs, res, com )
+	    -- when ( not tutor ) $ statistik stud' aufs
+	Review -> do
+	    show_previous stud' auf'
 
     return ()
 
 -------------------------------------------------------------------------
-
-footer = do
-    hr ; h3 "Informationen zum autotool"
-    let entry name url =
-            O.Beside ( O.Text name ) ( O.Link url )
-    embed $ output
-          $ O.Itemize
-	      [ entry "home: " 
-		      "http://141.57.11.163/auto/"
-	      , entry "bugs (bekannte ansehen und neue melden): " 
-		      "http://141.57.11.163/cgi-bin/bugzilla/buglist.cgi?value-0-0-0=autotool"
-	      , entry "scores: " 
-		      "http://www.imn.htwk-leipzig.de/~autotool/scores"
-	      ]
-    hr
 
 -- | bestimme aufgaben-typ (maker)
 -- für tutor: wählbar
@@ -241,11 +231,41 @@ get_stud tutor stud =
 	 return stud
 
 
+show_previous stud auf = do
+
+    hr ---------------------------------------------------------
+
+    -- kann sein, daß S.anr  error  ergibt (für tutor)
+    sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
+                   `Control.Exception.catch` \ any -> return []
+    case sas of
+        [ sa ] -> do
+            h3 "Vorige Einsendung und Bewertung zu dieser Aufgabe"
+	    -- pre $ show sa
+            br ; plain "Einsendung:"
+	    case SA.input sa of
+	        Just file -> do
+	            cs <- io $ logged "Super.view" 
+	    	         $ readFile $ toString file
+	    	    pre cs
+                Nothing -> plain "(keine)"
+            plain "Bewertung:"
+	    case SA.report sa of
+	        Just file -> do
+	            h <- io $ readFile $ toString file
+	    	    html $ primHtml h
+                Nothing -> plain "(keine)"
+	    blank
+	    hr
+        _ -> return ()
+
+
 
 -- | eingabe und bewertung der lösung
 -- für tutor zum ausprobieren
 -- für student echt
-solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+solution vnr manr stud 
+         ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
     let conf = read $ toString $ A.config auf
         var = fun  conf
@@ -262,35 +282,6 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
     h3 "Aufgabenstellung"
     embed $ report (problem var) i
-
-    hr ---------------------------------------------------------
-
-    -- kann sein, daß S.anr  error  ergibt (für tutor)
-    sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
-                   `Control.Exception.catch` \ any -> return []
-    case sas of
-        [ sa ] -> do
-            h3 "Vorige Einsendung"
-	    plain "(und Bewertung) zu dieser Aufgabe"
-            view <- submit "view" "anzeigen"
-            when view $ do
-	        -- pre $ show sa
-                br ; plain "Einsendung:"
-		case SA.input sa of
-		    Just file -> do
-		        cs <- io $ logged "Super.view" 
-			         $ readFile $ toString file
-			pre cs
-                    Nothing -> plain "(keine)"
-                plain "Bewertung:"
-		case SA.report sa of
-		    Just file -> do
-		        h <- io $ readFile $ toString file
-			html $ primHtml h
-                    Nothing -> plain "(keine)"
-	        blank
-		hr
-        _ -> return ()
 
     ---------------------------------------------------------
     h3 "Neue Einsendung"
@@ -373,6 +364,10 @@ mkpar stud auf = P.empty
 
 ------------------------------------------------------------------------
 
+data Action = Solve  -- ^ neue Lösung bearbeiten
+	    | Review -- ^ alte Lösung + Bewertung ansehen
+     deriving Show
+
 -- | für Student: statistik aller seiner Aufgaben anzeigen, 
 -- mit aufgabenauswahl
 statistik stud aufs = do
@@ -408,19 +403,24 @@ statistik stud aufs = do
 				   then "green"
 				   else "red"
 			      else "black"
-                    click <- if A.current auf
-                       then do submit name name
+                    click_solve <- if A.current auf
+                       then do submit ( "solve-" ++ name )  name
             	       else do plain name ; return False
                     farbe col $ toString $ A.status auf
                     farbe col $ toString $ A.highscore auf
                     farbe col $ toString $ A.von auf
                     farbe col $ toString $ A.bis auf
-		    farbe col $ case mres of
-		        Nothing -> ""
-			Just res -> show res
+		    click_review <- case mres of
+			Just res -> submit ( "review-" ++ name ) ( show res )
+		        Nothing -> do plain "" ; return False
             	    farbe col $ show ( ok , no )
             	    close -- row
-                    return [ ( click, auf ) | click || mvor == Just name ]
+                    return $ [ ( click_solve, ( Solve, auf ) )
+			     | click_solve || mvor == Just name 
+			     ]
+		          ++ [ ( click_review, ( Review, auf ) )
+			     | click_review 
+			     ]
             close
             return clicks
     -- auswerten
@@ -447,20 +447,20 @@ statistik stud aufs = do
     let ( cli, uncli ) = partition fst $ concat clicks
         clicked = map snd cli
         unclicked = map snd uncli
-    auf <- case clicked of
-        [ auf ] -> do
+    ( action, auf ) <- case clicked of
+        [ aauf ] -> do
             -- plain "neue aufgabe, gedächtnis löschen"
 	    blank 
-            return auf
+            return aauf
         _ -> case unclicked of
-	      [ auf ] -> do
+	      [ aauf ] -> do
 		   -- plain "alte aufgabe, weiter"
-		   return auf 
+		   return aauf 
               _ -> do
 		   -- plain "gar keine aufgabe, stop"
                    mzero 
     hidden "vor" $ toString $ A.name auf
-    return auf
+    return ( action , auf )
 
 --------------------------------------------------------------------------
 
@@ -475,6 +475,9 @@ data Entry = Entry
 
 -- | für Tutor: statistik aller einsendungen zu dieser Aufgabe
 -- mit Möglichkeit, Bewertungen zu ändern
+
+-- FIXME: bewertung ändern soll durch explizite neu-korrektur geschehen,
+-- so daß Student auch eine Begründung sieht
 
 tutor_statistik vnr auf = do
     hr
@@ -523,5 +526,23 @@ tutor_statistik vnr auf = do
         io $ sequence_ actions
 	plain "... done (refresh picture)"
     return ()
+
+-----------------------------------------------------------------------------
+
+footer = do
+    hr ; h3 "Informationen zum autotool"
+    let entry name url =
+            O.Beside ( O.Text name ) ( O.Link url )
+    embed $ output
+          $ O.Itemize
+	      [ entry "home: " 
+		      "http://141.57.11.163/auto/"
+	      , entry "bugs (bekannte ansehen und neue melden): " 
+		      "http://141.57.11.163/cgi-bin/bugzilla/buglist.cgi?value-0-0-0=autotool"
+	      , entry "scores: " 
+		      "http://www.imn.htwk-leipzig.de/~autotool/scores"
+	      ]
+    hr
+
 
 
