@@ -9,14 +9,18 @@ import Time
 import qualified Inter.Param as P
 import qualified Reporter.Result
 
+import qualified Inter.Store
+
 bank :: P.Type -> Maybe Int -> IO String
 bank p res = do
     let it = case res of Just s -> Ok s ; Nothing -> No
     bepunkteStudentDB (P.ident p) (P.anr p) it (P.highscore p)
 
+    pid <- Inter.Store.store p res
+
     time <- zeit
     let msg = unwords [ time
-		      , "(",  "cgi", ")"
+		      , "(",  pid, ")"
 		      , "cgi-" ++ P.matrikel p
 		     , "(", P.matrikel p, ")"
 		      , P.subject p , ":"

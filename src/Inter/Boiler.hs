@@ -17,12 +17,13 @@ import qualified FUN.TIMES
 import qualified FUN.FIB
 import qualified FUN.QUIZ
 
+import qualified Demo.L
 
 -- hier steht ALLES machbare drin
 -- in der datenbank steht dann, zu welcher zeit es erlaubt ist.
 
 boiler :: IO [ Variant ]
-boiler = sequence 
+boiler = sequence $
        [ fmap Variant $ TM.FACTOR.generate
 
        , fmap Variant $ LOOP.SQRT.generate
@@ -37,4 +38,5 @@ boiler = sequence
        , fmap Variant $ FUN.QUIZ.generate
 
        ]
+       ++ Demo.L.generates
 
