@@ -1,0 +1,29 @@
+-- -*- mode: haskell -*-
+
+module Control.Aufgabe.Typ where
+
+import Control.Types
+
+import Autolib.Reader
+import Autolib.ToDoc
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Aufgabe  =
+     Aufgabe { aufgabe :: ANr
+	     , vorlesung :: VNr
+	     , direction :: HiLo
+	     , von :: ClockTime
+	     , bis :: ClockTime
+             , typ :: Typ
+	     , config :: Config
+	     , remark :: Remark
+	     }
+     deriving ( Eq, Ord, Typeable )
+
+{-! for Aufgabe derive: Reader, ToDoc, Haskell2Xml !-}
+
+instance Show Aufgabe where show = render . toDoc
+instance Read Aufgabe where readsPrec = parsec_readsPrec
+

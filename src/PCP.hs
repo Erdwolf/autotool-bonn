@@ -4,6 +4,8 @@
 -- command line arguments:
 -- depth, width, instance
 
+module Main where
+
 import PCProblem.Family
 import PCProblem.Param
 

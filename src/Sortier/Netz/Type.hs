@@ -2,10 +2,14 @@ module Sortier.Netz.Type where
 
 --   $Id$
 
-import ToDoc
-import Reader
-import Size
+import Sortier.Netz.Xml
 
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Size
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 type Comp = (Int, Int)
 type Comps = [ Comp ]
@@ -18,7 +22,7 @@ data Netz = Netz
 	  , high :: Int
 	  , comps :: Comps
 	  }
-    deriving ( Eq, Ord )
+    deriving ( Eq, Ord, Typeable )
 
 mkNetz :: [(Int, Int)] -> Netz
 mkNetz xys = 
@@ -45,6 +49,12 @@ instance ToDoc Netz where
 instance Show Netz where
     show = render . toDoc
 
+instance Haskell2Xml Netz where
+    toContents s = toContents $ XmlNetz $ comps s
+    fromContents cs =
+        let ( XmlNetz x, rest ) = fromContents cs
+        in  ( mkNetz x, rest )
+    toHType (_ :: Netz) = toHType (undefined :: XmlNetz) -- ??
 
 
 

@@ -102,7 +102,7 @@ instance Reason CreditCardNumber where
 -- 
 data CreditCardExp = CreditCardExp { cceMonth :: Int, cceYear :: Int }
 
-instance Read CreditCardExp where -- ##/##
+instance Read CreditCardExp where --  ##/##
   readsPrec i str = 
     g $ dropWhile isSpace str
     where

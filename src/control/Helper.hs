@@ -11,24 +11,9 @@ import Control.Monad ( mzero )
 
 data StrOrInt = S String | I Int deriving ( Show , Read )
 
-data ATBewertung = No | Ok Int deriving ( Show, Read )
-
-data ATHighLow = High | Low | Keine deriving ( Eq, Ord ) 
-
-instance Show ATHighLow where
-    show High = "high" ; show Low = "low" ; show Keine = "keine"
 
 data ATBepunkte = ATBEmpty | ATB String String ATBewertung ATHighLow
 		  deriving ( Show, Read )
-
-instance Read ATHighLow where
-    readsPrec p cs = do
-       ( this, rest ) <- lex cs
-       it <- case map toLower this of
-            "high" -> return High
-            "low"  -> return Low
-            _ -> return Keine
-       return ( it, rest )
 
 
 space a b	= a ++ " " ++ b

@@ -21,13 +21,14 @@ type Matrikel = String
 
 type Key = String
 
+-- | Make name (maker function) example
 data Make = forall conf p i b 
           . ( V p i b 
 	    , Typeable conf, Haskell2Xml conf, ToDoc conf, Show conf, Reader conf
 	    )
-	  => Make String -- ^ description
-		  (conf -> Var p i b) -- ^ maker function
-                  conf -- ^ example
+	  => Make String --  description
+		  (conf -> Var p i b) --  maker function
+                  conf --  example
 
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)

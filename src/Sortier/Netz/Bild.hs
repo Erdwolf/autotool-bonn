@@ -4,7 +4,7 @@ module Sortier.Netz.Bild where
 
 import Sortier.Netz.Type
 import Sortier.Netz.Example
-import Util.Bild
+import Autolib.Util.Bild
 import Data.Array
 
 levelled :: Netz -> [ ( Comp, Int, Int ) ]

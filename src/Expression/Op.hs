@@ -39,7 +39,7 @@ data Op a = Op { name  :: String
 class Ops a where
       ops :: [ Op a ]
 
--- | xml-darstellung ist einfach ein string (show/read)
+-- | xml-darstellung ist einfach ein string (show\/read)
 instance Ops a => Haskell2Xml (Op a) where
     toContents   = toContents . show
     fromContents cs = 

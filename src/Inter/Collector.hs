@@ -7,6 +7,7 @@ import qualified NFA.Synthese
 import qualified PCProblem.Quiz
 import qualified Boolean.Instance
 import qualified Boolean.Quiz
+import qualified Sortier.Netz.Check
 
 makers :: [ Make ]
 makers = [ NFA.Analyse.make
@@ -15,4 +16,5 @@ makers = [ NFA.Analyse.make
 	 , PCProblem.Quiz.make_fixed
 	 , Boolean.Instance.make
 	 , Boolean.Quiz.make
+	 , Sortier.Netz.Check.make
 	 ]

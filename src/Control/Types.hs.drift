@@ -1,0 +1,167 @@
+-- -*- mode: haskell -*-
+
+module Control.Types 
+
+( HiLo, Wert
+, MNr, SNr, ANr, GNr, VNr -- abstrakt
+, ClockTime
+, Typ, Config, Remark
+, Ok, No
+)
+
+where
+
+--  $Id$
+
+import Autolib.Reader
+import Autolib.ToDoc
+
+import System.Time
+import Database.MySQL.HSQL
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+-------------------------------------------------------------
+
+data HiLo = High | Low | Keine deriving ( Eq, Ord, Typeable )
+
+{-! for Hilo derive : Reader, ToDoc, Haskell2Xml !-}
+
+instance Show HiLo where show = render . toDoc
+instance Read HiLo where readsPrec = parsec_readsPrec
+instance SqlBind HiLo where 
+    fromSqlValue SqlEnum s = read s
+    toSqlValue w = show w
+
+data Wert = No | Ok Int deriving ( Eq, Ord, Typeable )
+
+{-! for Wert derive : Reader, ToDoc, Haskell2Xml !-}
+
+instance Show Wert where show = render . toDoc
+instance Read Wert where readsPrec = parsec_readsPrec
+instance SqlBind Wert where
+    fromSqlValue _ _ = error "undefined"
+    toSqlValue _ = error "undefined"
+
+-------------------------------------------------------------
+
+-- | Matrikel-Nummer
+-- FIXME: sollte das lieber ein String sein? School fehlt auch noch.
+data MNr = MNr Int deriving ( Eq, Ord, Typeable )
+
+{-! for MNr derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show MNr where show = render . toDoc
+instance Read MNr where readsPrec = parsec_readsPrec
+instance SqlBind MNr where 
+    fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
+    toSqlValue (MNr i) = toSqlValue i
+
+-- | Aufgaben-Typ
+data Typ = Typ String deriving ( Eq, Ord, Typeable )
+
+{-! for Typ derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show Typ where show = render . toDoc
+instance Read Typ where readsPrec = parsec_readsPrec
+instance SqlBind Typ where 
+    fromSqlValue ty s = fmap Typ $ fromSqlValue ty s
+    toSqlValue (Typ cs) = toSqlValue cs
+
+-- | Aufgaben-Config
+data Config = Config String deriving ( Eq, Ord, Typeable )
+
+{-! for Config derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show Config where show = render . toDoc
+instance Read Config where readsPrec = parsec_readsPrec
+instance SqlBind Config where 
+    fromSqlValue ty s = fmap Config $ fromSqlValue ty s
+    toSqlValue (Config cs) = toSqlValue cs
+
+-- | Aufgaben-Remark
+data Remark = Remark String deriving ( Eq, Ord, Typeable )
+
+{-! for Remark derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show Remark where show = render . toDoc
+instance Read Remark where readsPrec = parsec_readsPrec
+instance SqlBind Remark where 
+    fromSqlValue ty s = fmap Remark $ fromSqlValue ty s
+    toSqlValue (Remark cs) = toSqlValue cs
+
+-------------------------------------------------------------
+
+-- | Studenten-Nummer
+data SNr = SNr Int deriving ( Eq, Ord, Typeable )
+
+{-! for SNr derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show SNr where show = render . toDoc
+instance Read SNr where readsPrec = parsec_readsPrec
+instance SqlBind SNr where 
+    fromSqlValue ty s = fmap SNr $ fromSqlValue ty s
+    toSqlValue (SNr i) = toSqlValue i
+
+-- | Aufgaben-Nummer
+
+data ANr = ANr Int deriving ( Eq, Ord, Typeable )
+
+{-! for ANr derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show ANr where show = render . toDoc
+instance Read ANr where readsPrec = parsec_readsPrec
+instance SqlBind ANr where 
+    fromSqlValue ty s = fmap ANr $ fromSqlValue ty s
+    toSqlValue (ANr i) = toSqlValue i
+
+-- | Gruppen-Nummer
+
+data GNr = GNr Int deriving ( Eq, Ord, Typeable )
+
+{-! for GNr derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show GNr where show = render . toDoc
+instance Read GNr where readsPrec = parsec_readsPrec
+instance SqlBind GNr where 
+    fromSqlValue ty s = fmap GNr $ fromSqlValue ty s
+    toSqlValue (GNr i) = toSqlValue i
+
+-- | Vorlesungs-Nummer
+
+data VNr = VNr Int deriving ( Eq, Ord, Typeable )
+
+{-! for VNr derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show VNr where show = render . toDoc
+instance Read VNr where readsPrec = parsec_readsPrec
+instance SqlBind VNr where 
+    fromSqlValue ty s = fmap VNr $ fromSqlValue ty s
+    toSqlValue (VNr i) = toSqlValue i
+
+-- | OK-Bewertung (Anzahl)
+
+data Ok = Ok Int deriving ( Eq, Ord, Typeable )
+
+{-! for Ok derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show Ok where show = render . toDoc
+instance Read Ok where readsPrec = parsec_readsPrec
+instance SqlBind Ok where 
+    fromSqlValue ty s = fmap Ok $ fromSqlValue ty s
+    toSqlValue (Ok i) = toSqlValue i
+
+-- | No-Bewertung (Anzahl)
+
+data No = No Int deriving ( Eq, Ord, Typeable )
+
+{-! for No derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show No where show = render . toDoc
+instance Read No where readsPrec = parsec_readsPrec
+instance SqlBind No where 
+    fromSqlValue ty s = fmap No $ fromSqlValue ty s
+    toSqlValue (No i) = toSqlValue i
+
+-------------------------------------------------------------

@@ -47,7 +47,7 @@ main = wrapper $ \ e ->
 		     -- sort of a bit of a hack:
 		     , env = case lookup click e of
 		          Nothing -> e
-		          Just "Change" -> filter ( \ (i,v)-> i==maker ) e
+		          Just "Change" -> filter ( \ (i,v)-> i == maker ) e
 		     } ) 
              `Control.Exception.catch` \ err -> 
                  return $ p << pre << primHtml ( show err )

@@ -1,0 +1,22 @@
+-- -*- mode: haskell -*-
+
+module Control.Student.Typ where
+
+import Control.Types
+
+import Autolib.Reader
+import Autolib.ToDoc
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Student =
+     Student {
+	     }
+     deriving ( Eq, Ord, Typeable )
+
+{-! for Student derive: Reader, ToDoc, Haskell2Xml !-}
+
+instance Show Student where show = render . toDoc
+instance Read Student where readsPrec = parsec_readsPrec
+

@@ -6,16 +6,17 @@ import Sortier.Netz.Type
 import Sortier.Netz.Rechnung
 import Sortier.Netz.Example
 import Sortier.Netz.Bild
-import Util.Bild
+import Autolib.Util.Bild
 
-import qualified Util.Wort ( alle )
+import qualified Autolib.Util.Wort ( alle )
 import Data.List ( tails)
+import Data.Typeable
 
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 import qualified Challenger as C
 import Inter.Types
-import Size
+import Autolib.Size
 
 
 check :: Int -> Netz -> Reporter ()
@@ -37,7 +38,7 @@ check soll n = do
 
 testing :: Int -> [State]
 testing soll = do
-    w <- Util.Wort.alle [ 0, 1 ] soll
+    w <- Autolib.Util.Wort.alle [ 0, 1 ] soll
     -- es gilt ja der satz: 
     -- alle 0-1-folgen sortiert <=> überhaupt alle folgen sortiert.
     -- also generiere ich 0-1-folgen (weil das weniger sind)
@@ -57,8 +58,7 @@ is_increasing xs = and $ do
     x : y : rest <- tails xs
     return $ x <= y
 
-data Sortier = Sortier deriving ( Eq, Ord, Show, Read )
-
+data Sortier = Sortier deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance C.Partial Sortier Int Netz where
 
@@ -103,3 +103,5 @@ generates = do
     w <- [ 4 .. 9 ]
     return $ return $ Variant $ synthese "Netz" ( show w ) w
 
+make :: Make
+make = direct Sortier (5 :: Int)
