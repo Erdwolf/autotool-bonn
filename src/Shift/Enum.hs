@@ -1,7 +1,7 @@
 module Shift.Enum where
 
 subsets :: Int -> [a] -> [[a]]
-subsets k xs | k < 0 = []
+subsets k xs | k > length xs = []
 subsets 0 xs = [[]]
 subsets k (x : xs) 
     =  subsets k xs
