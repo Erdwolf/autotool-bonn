@@ -61,7 +61,7 @@ table = array ( Copy, Pre )
 decode :: Integer -> ( Integer, Integer )
 -- zerlege in 2^x * (2*y + 1)
 decode n = if odd n 
-	   then ( 0, n )
+	   then ( 0, n `div` 2 -- wird abgerundet )
 	   else let ( x, y ) = decode ( n `div` 2 )
 		in  ( succ x, y )
 
