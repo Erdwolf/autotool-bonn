@@ -17,9 +17,9 @@ import Inter.Quiz
 import Data.List ( intersperse )
 import Data.Array ( range )
 
-import Random
+import System.Random
 import IO
-import IORef
+import Data.IORef
 
 -- | erzeugt eine konfiguration mit n robots,
 -- alle im bereich (-w, -w) .. (+w, +w)

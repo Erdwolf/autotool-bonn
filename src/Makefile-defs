@@ -32,11 +32,11 @@ FLAGS = -fallow-overlapping-instances \
 # PACKS = -package text -package data -package posix -package network 
 # PACKS = -package Autolib
 
-OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
+OPT = -O2 -fvia-C -funbox-strict-fields # -fnumbers-strict # -fdicts-strict
 
 # PROF = -prof -auto-all -auto-dicts
 
-WARN =  -Werror -dcore-lint
+# WARN =  -Werror -dcore-lint
 
 # für HSQL version 1.4
 ifeq ($(HSQL),1.4)

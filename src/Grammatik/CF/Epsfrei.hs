@@ -6,7 +6,7 @@ module Grammatik.CF.Epsfrei where
 import Grammatik.Type
 import Grammatik.CF.Nullable
 
-import Data.Set
+import Autolib.Set
 
 import Control.Monad (guard)
 

@@ -9,6 +9,7 @@ import Autolib.Dot
 import Autolib.Hash
 import Autolib.ToDoc
 
+
 class ToTree baum where
       toTree :: Show a => baum a -> Tree String
 
@@ -33,7 +34,14 @@ mirror ( Node f args ) = Node f ( map mirror args )
 
 form :: ( ToTree baum, Show a ) 
      => baum a -> Doc
-form = vcat . map text . lines . drawTree . mirror . fmap toDoc . toTree
+form = vcat . map text . lines . drawTree . mirror 
+     . fmap 
+#if (__GLASGOW_HASKELL__ < 604)
+            toDoc 
+#else
+            ( render . toDoc )
+#endif
+     . toTree
 
 
 

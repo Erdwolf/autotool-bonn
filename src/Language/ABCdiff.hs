@@ -3,10 +3,10 @@ module Language.ABCdiff (abcdiff) where
 -- -- $Id$
 
 import Language
-import Data.Set
+import Autolib.Set
 import Control.Monad ( guard )
 import Data.List ( sort, nub )
-import Random
+import System.Random
 
 abcdiff :: Language
 abcdiff = Language 

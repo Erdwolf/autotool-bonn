@@ -1,6 +1,12 @@
+#if (__GLASGOW_HASKELL__ >= 604)
+{-# OPTIONS -fallow-incoherent-instances #-}
+#endif
+
 module Graph.Bisekt.Plain where
 
 --  $Id$
+
+import Graph.Bisekt.Data
 
 import Graph.Util
 
@@ -19,7 +25,7 @@ import Data.Typeable
 data Bisect = Bisect deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance ( GraphC a, Show a )
-    => C.Partial Bisect (Int,Graph a) (Set (Kante a),Set a,Set a) where
+    => C.Partial Bisect (Int,Graph a) (Solution a) where
 
     report _ (_,g) = do
         inform $ vcat $ map text
@@ -38,9 +44,12 @@ instance ( GraphC a, Show a )
 	let ks = head $ drop w $ teilmengen (pred w) (kanten g)
             n = cardinality (knoten g)
 	    ns = head $ drop (div n 2) $ teilmengen (div n 2) (knoten g)
-        in ( ks , ns , knoten g `minusSet` ns )
+        in Solution { schnittkanten = ks 
+		    , knoten1 = ns 
+		    , knoten2 = knoten g `minusSet` ns 
+		    }
 
-    partial _ (_,g) (ks,l,r) = do
+    partial _ (_,g) (Solution { schnittkanten =ks, knoten1=l,knoten2=r} ) = do
 
         inform $ text "Unterscheiden sich die Knotenanzahlen höchstens um 1?"
 
@@ -60,7 +69,7 @@ instance ( GraphC a, Show a )
 
 	Autolib.Reporter.Set.partition [sl,sr] sk
     
-    total _ (_,g) (ks,l,r) = do
+    total _ (_,g) (Solution { schnittkanten =ks, knoten1=l,knoten2=r})  = do
 
         let u = unlinks g $ setToList ks
 
@@ -94,14 +103,16 @@ instance ( GraphC a, Show a )
 
 
 instance ( GraphC a, Show a )
-    => C.Measure Bisect (Int,Graph a) (Set (Kante a),Set a,Set a) where
-    measure _ _ (ks,_,_) = fromIntegral $ cardinality ks
+    => C.Measure Bisect (Int,Graph a) (Solution a) where
+    measure _ _ s = fromIntegral $ cardinality $ schnittkanten s
 
+{-
 instance ( Ord a , ToDoc a, ToDoc [a] , Reader a , Reader [a] ) 
     => Container (Set (Kante a),Set a,Set a) String where
     label _ = "(Kantenmenge,Knotenmenge,Knotenmenge)"
     pack = show
     unpack = read
+-}
 
 -------------------------------------------------------------------------------
 

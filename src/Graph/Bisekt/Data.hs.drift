@@ -1,0 +1,20 @@
+-- -*- mode: haskell -*-
+
+module Graph.Bisekt.Data where
+
+import Graph.Util
+import Autolib.Set
+import Autolib.ToDoc
+import Autolib.Reader
+import Text.XML.HaXml.Haskell2Xml
+import Data.Typeable
+
+data ( Haskell2Xml a,  Reader [a], ToDoc [a], Ord a ) => Solution a = 
+     Solution { schnittkanten :: Set (Kante a)
+	      , knoten1 :: Set a
+	      , knoten2 :: Set a
+	      }
+    deriving ( Eq, Ord, Typeable )
+
+{-! for Solution derive: Reader, ToDoc, Haskell2Xml !-}
+

@@ -35,7 +35,7 @@ import Database.HSQL.Types
 import Database.MySQL.HSQL
 #endif
 
-import qualified Exception
+import qualified Control.Exception
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
@@ -89,9 +89,11 @@ timer False False = Current
 
 -------------------------------------------------------------
 
+#ifdef HSQL12
 instance SqlBind Bool where
     fromSqlValue _ s = return $ "0" /= s
     toSqlValue f = show $ fromEnum f
+#endif
 
 -------------------------------------------------------------
 

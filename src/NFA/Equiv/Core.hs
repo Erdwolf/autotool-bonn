@@ -1,3 +1,7 @@
+#if (__GLASGOW_HASKELL__ >= 604)
+{-# OPTIONS -fallow-incoherent-instances #-}
+#endif
+
 module NFA.Equiv.Core where
 
 --  $Id$
