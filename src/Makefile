@@ -33,7 +33,7 @@ CGIS = SRS/Deleting/Demo.cgi \
 
 HTMLS = SRS/Interface/*.html
 
-CGIDIR = $(PUB)/bounded
+CGIDIR = /var/www/matchbox
 
 
 # for face: ########################################################
@@ -67,7 +67,7 @@ tags :
 SRS/Matchbox : do
 	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $@.hs -o $@
 
-bounded : do
+matchbox : do
 	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) \
 		SRS/Closure/Terminator.hs -o $(CGIDIR)/Terminator.cgi
 	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) \
