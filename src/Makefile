@@ -90,9 +90,22 @@ MATCHBOX_DOWNLOAD = $(CGIDIR)/download
 MATCHBOX_ARCHIVE = Matchbox-src-$(shell date -I).tar.bz2
 MATCHBOX_EXE = Matchbox-exe-$(shell date -I)
 
-matchbox : do
+SRS/Config/Build.hs : do
+	( echo module SRS.Config.Build where ; \
+	  echo date  = \"$(shell date)\" ; \
+	  echo uname = \"'$(shell uname -a)'\" ) > $@
+
+SRS/Config/Release.hs : do
+	( echo module SRS.Config.Release where ; \
+	  echo date  = \"$(shell date)\" ; \
+	  echo uname = \"'$(shell uname -a)'\" ) > $@
+
+.PHONY : SRS/Config/Build.hs SRS/Config/Release.hs
+
+matchbox : SRS/Config/Build.hs
 	$(GHC_COMMAND) \
 		SRS/Matchbox.hs -o SRS/Matchbox
+
 checker : do
 	$(GHC_COMMAND) \
 		SRS/Checker.hs -o SRS/Checker
@@ -104,7 +117,11 @@ loop :
 		Exp/Loop.hs -o Exp/Loop
 
 # install source archive and executable
-release : do
+release : SRS/Config/Build.hs SRS/Config/Release.hs
+	( echo "module SRS.Config.Release where" ; \
+	  echo "date = \"$(shell date)\" ; \
+	  echo "uname = \"$(shell uname)\" ) \
+		> SRS/Config/Release.hs
 	cvs commit -m release-$(shell date -I)
 	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXE)
 	bzip2 -v --force --best  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXE)
