@@ -4,8 +4,7 @@ import Inter.Types
 
 import qualified Blank
 import qualified Upload
-import qualified NFA.Analyse
-import qualified NFA.Synthese
+
 import qualified PCProblem.Quiz
 import qualified Boolean.Instance
 import qualified Boolean.Quiz
@@ -26,14 +25,15 @@ import qualified Hanoi.Quiz
 import qualified Type.Check
 import qualified Type.Quiz
 import qualified Palindrom.Plain
+
+-- import qualified NFA.Analyse
+-- import qualified NFA.Synthese
 import qualified NFA.Convert
 import qualified Exp.Convert
 
 makers :: [ Make ]
 makers = [ Blank.make
 	 , Upload.make
-	 , NFA.Analyse.make
-	 , NFA.Synthese.make
 	 , PCProblem.Quiz.make_quiz
 	 , PCProblem.Quiz.make_fixed
 	 , Boolean.Instance.make
@@ -58,6 +58,9 @@ makers = [ Blank.make
 	 , Type.Check.make
 	 , Type.Quiz.make
 	 , Palindrom.Plain.make
+
+--	 , NFA.Analyse.make
+--	 , NFA.Synthese.make
 	 , NFA.Convert.make
 	 , NFA.Convert.qmake
 	 , Exp.Convert.make
