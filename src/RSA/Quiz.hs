@@ -1,44 +1,62 @@
-module Faktor.Quiz 
+module RSA.Quiz 
 
 ( make
 , fixed
 , Param (..)
+, Config (..)
 )
 
 where
 
 --  $Id$
 
-import Faktor.Param
-import Faktor.Faktor
+import RSA.Param
+import RSA.Break
+import RSA.Break.Data
 import Faktor.Prim
+import Faktor.Certify ( powmod )
 
+import Util.Zufall
 import Util.Wort
 import Util.Seed
 import Util.Datei
 import Util.Cache
 
+import Random
+
 import Inter.Types
 
-roll :: Param -> IO Integer
+roll :: Param -> IO Config
 roll p = do
     let ps = dropWhile ( < fromIntegral ( von p ) ) 
 	   $ takeWhile ( < fromIntegral ( bis p ) ) 
-	   $ primes ( 317 :: Integer )
-    w <- someIO ps ( anzahl p )
-    return $ product w
+	   $ primes ( 100 :: Integer )
+    [p, q] <- someIO ps 2
+    let n = p * q
+    let phi = pred p * pred q
+    d <- coprime phi
+    x <- coprime n
+    return $ Config
+	   { public_key = ( d, n )
+	   , message = powmod x d n
+	   }
+
+coprime :: Integer -> IO Integer
+coprime n = randomRIO (1, n-1)
+    `repeat_until` \ x -> 1 == gcd x n
+ 
 
 make :: Param -> IO Variant
 make p = return 
        $ Variant
-       $ quiz "Faktor" "Quiz" p
+       $ quiz "Break" "Quiz" p
 
 quiz :: String -- Aufgabe
      -> String -- Version
      -> Param
-     -> Var Faktor Integer (Integer, Integer)
+     -> Var Break Config Integer
 quiz auf ver par =
-         Var { problem = Faktor
+         Var { problem = Break
              , aufgabe = auf
              , version = ver
              , key = \ mat -> return mat
@@ -56,10 +74,10 @@ quiz auf ver par =
 
 fixed :: String 
       -> String
-      -> Integer
+      -> Config
       -> IO Variant
 fixed auf ver x = return $ Variant 
-       $ Var { problem = Faktor
+       $ Var { problem = Break
              , aufgabe = auf
              , version = ver
              , key = \ mat -> return mat

@@ -1,0 +1,26 @@
+-- -*- mode: haskell -*-
+
+module RSA.Param where
+
+--   $Id$
+
+import Reader
+import ToDoc
+
+import Sets
+
+data Param = 
+     Param { von :: Int
+	   , bis :: Int
+	   }
+
+p :: Param
+p = Param { von = 50
+	  , bis = 70
+	  }
+
+{-! for Param derive: ToDoc, Reader !-}
+
+instance Show Param where show = render . toDoc
+instance Read Param where readsPrec = parsec_readsPrec
+

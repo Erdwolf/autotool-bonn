@@ -3,6 +3,7 @@ module HTWK.SS04.Informatik.Boolean where
 --  $Id$
 
 import Boolean.Instance
+import qualified Boolean.Quiz
 
 import Inter.Types
 
@@ -30,7 +31,7 @@ generates =
 		, formula = read "(p == q) && (q != r) || (p != s)"
 		, operators = read "mkSet [ false, true, !, ||, && ]"
 		}
-
+    , Boolean.Quiz.make 5
     ]
 
      

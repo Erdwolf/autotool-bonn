@@ -39,8 +39,8 @@ instance Partial Faktor Integer ( Integer, Integer ) where
 	in  (unbased b ys, unbased b zs)
 
     partial Faktor x (y, z) = do
-           assert (x > 1) $ text "Die Zahl soll > 1 sein."
-	   assert (y > 1 && z > 1) $ text "Jeder Faktor soll > sein."
+           -- assert (x > 1) $ text "Die Zahl soll > 1 sein."
+	   assert (y > 1 && z > 1) $ text "Beide Zahlen sollen > 1 sein."
 
     total Faktor x (y, z) = do
         let yz = y * z  

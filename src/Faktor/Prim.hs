@@ -2,6 +2,13 @@ module Faktor.Prim where
 
 --  $Id$
 
+smallish :: [ Integer ]
+smallish = primes 10
+
+mediumish :: [ Integer ]
+mediumish = primes 100
+
+
 -- | list of prime numbers up to q*q
 primes :: Integral b 
        => b -> [ b ]
@@ -15,7 +22,7 @@ primes q = 2 : sieve [ 3, 5 .. q * q - 1 ] where
 -- but: return Nothing if no factorisation was found
 
 factor :: Integer -> Maybe [ (Integer, Int) ]
-factor x = trial ( primes 317 ) x
+factor x = trial mediumish x
 
 trial :: [ Integer ] 
       -> Integer 
