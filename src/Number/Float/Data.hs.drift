@@ -4,12 +4,15 @@ module Number.Float.Data where
 
 import Prelude hiding ( exponent )
 import qualified Number.Base.Data as B
+import Number.Base.Data ( Wert, wert, Wert_at, wert_at ) 
 
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
+import Ratio
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
+
 
 -------------------------------------------------------------------
 
@@ -17,6 +20,10 @@ data Signed a = Signed { negative :: Bool
                        , contents :: a
                        }
     deriving ( Typeable )
+
+instance ( Num b, Wert_at a b ) => Wert_at (Signed a) b where
+    wert_at b s = ( if negative s then negate else id ) 
+           $ wert_at b $ contents s
 
 instance Size a => Size (Signed a) where 
     size s = size (contents s)
@@ -42,6 +49,9 @@ data Natural = Natural
 	     }
      deriving Typeable
 
+instance Wert_at Natural Integer where
+    wert_at b n = wert_at b $ ziffern n
+
 instance Size Natural where
     size n = length $ ziffern n
 
@@ -63,6 +73,13 @@ data Fixed = Fixed
 	   , post :: Natural
 	   }
      deriving ( Typeable )
+
+instance Wert_at Fixed Rational where
+    wert_at b f = 
+        let we, wo :: Integer
+            we = wert_at b $ pre f
+            wo = wert_at b $ post f
+        in  fromIntegral we + wo % fromIntegral b ^ (length $ ziffern $ post f)
 
 instance Size Fixed where
     size f = size (pre f) + size (post f)
@@ -88,6 +105,24 @@ data Zahl = Zahl
           , exponent :: Signed Natural
           }
     deriving ( Typeable )
+
+example :: Zahl
+example = Zahl
+        { basis = 2
+        , mantisse = read "1.01"
+        , exponent = read "-10"
+        }
+
+instance Wert Zahl Rational where
+    wert z = 
+        let b :: Int
+            b = basis z
+            wm :: Rational
+            wm = wert_at b $ mantisse z
+            we :: Integer
+            we = wert_at b $ exponent z
+        in  wm *  fromIntegral b ^^ we
+
 
 instance Size Zahl where
     size z = size ( mantisse z ) + size ( exponent z )

@@ -43,3 +43,18 @@ data Zahl = Zahl { basis :: Int
     deriving ( Eq, Ord, Typeable )
 
 {-! for Zahl derive: Reader, ToDoc, Haskell2Xml !-}
+
+-------------------------------------------------------------------
+
+class Num b => Wert a b where 
+    wert :: a -> b
+
+class Num b => Wert_at a b where 
+    wert_at :: Int -> a -> b
+
+instance Wert_at [ Ziffer ] Integer where
+    wert_at b zs = 
+        foldl ( \ x (Ziffer y) -> fromIntegral b * x + fromIntegral y ) 0 zs
+
+instance Wert Zahl Integer where
+  wert z = wert_at (basis z) (ziffern z)

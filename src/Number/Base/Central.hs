@@ -45,14 +45,10 @@ instance Partial Convert (Zahl, Int) Zahl where
                     $ text "falsch für:" <+> toDoc (Ziffer i)
 
     total Convert (z, b) x = do
-         assert ( wert z == wert x )
+         assert ( (wert z :: Integer) == (wert x :: Integer) )
                 $ text "die Bedeutung der Zahlen sollen übereinstimmen."
 
 
-wert :: Zahl -> Integer
-wert z = 
-    foldl ( \ x (Ziffer y) -> fromIntegral (basis z) * x + fromIntegral y ) 
-          0 $ ziffern z
 
 express :: Int -> Integer -> Zahl
 express b z = 
