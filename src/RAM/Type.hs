@@ -6,6 +6,8 @@ module RAM.Type where
 
 -- $Id$
 
+import RAM.Builtin
+
 import ToDoc
 import Reader
 import Size
@@ -16,6 +18,7 @@ data Statement = Inc Var
 	 | Dec Var
 	 | Loop Var Program
 	 | While Var Program
+	 | Builtin { name :: Builtin, res :: Var, args :: [ Var ] }
     deriving ( Eq, Ord )
 
 type Program = [ Statement ]
@@ -26,6 +29,13 @@ instance Size Statement where
     size ( Loop v p ) = succ $ size p
     size ( While v p ) = succ $ size p
     size _ = 1
+
+flatten :: Program -> Program
+flatten ps = do
+    p <- ps
+    p : case p of Loop v q -> flatten q
+		  While v q -> flatten q
+		  _ -> []
 
 {-! for Statement derive: ToDoc, Reader !-}
 
@@ -45,6 +55,11 @@ instance ToDoc Statement where
 	      (text "Loop" <+> fsep [toDocPrec 0 aa, toDocPrec 0 ab])
     toDocPrec d (While aa ab) = docParen (d >= 10)
 	      (text "While" <+> fsep [toDocPrec 0 aa, toDocPrec 0 ab])
+    toDocPrec d (Builtin aa ab ac) = docParen (d >= 10)
+	      (text "Builtin" <+> dutch_record
+	       [text "name" <+> equals <+> toDocPrec 0 aa,
+		text "res" <+> equals <+> toDocPrec 0 ab,
+		text "args" <+> equals <+> toDocPrec 0 ac])
 
 instance Reader Statement where
     readerPrec d =
@@ -69,5 +84,20 @@ instance Reader Statement where
 		   aa <- readerPrec 0
 		   ab <- readerPrec 0
 		   return (While aa ab))
+	       <|>
+	       readerParen (d > 9)
+	       (do my_reserved "Builtin"
+		   my_braces ((do my_reserved "name"
+				  my_equals
+				  aa <- readerPrec 0
+				  my_comma
+				  my_reserved "res"
+				  my_equals
+				  ab <- readerPrec 0
+				  my_comma
+				  my_reserved "args"
+				  my_equals
+				  ac <- readerPrec 0
+				  return (Builtin aa ab ac))))
 
 --  Imported from other files :-
