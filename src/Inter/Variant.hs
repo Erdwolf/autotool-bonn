@@ -1,4 +1,6 @@
-obsolete module Inter.Variant where
+module Inter.Variant {-# DEPRECATED #-}
+
+where
 
 --   $Id$
 

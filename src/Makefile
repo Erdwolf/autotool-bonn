@@ -50,10 +50,11 @@ tags :
 	find . \( -name "*.hs" -o -name "*.hs.drift" \) \
 	 -print -exec etags -a {} \;
 
-HADDOCK_INPUTS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
+HADDOCK_DIRS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
 	Reporter Turing Dot Challenger Inter Boxing Machine Language \
-	SRS Exp Graph GVKnoten Util Scorer \
-	ws03 util challenger control
+	SRS TES NFTA Exp Graph GVKnoten Util Scorer \
+	ws03 util control
+HADDOCK_FILES = *.hs
 HADDOCK_OUTPUT = $(PUB)/autotool/haddock
 HADDOCK = haddock
 HADDOCK_OPTS = -v \
@@ -63,7 +64,7 @@ HADDOCK_OPTS = -v \
 
 
 haddock : 
-	( ls *.hs && find $(HADDOCK_INPUTS) -name "*.hs" -not -name "Datei.hs" -print ) \
+	( ls $(HADDOCK_FILES) && find $(HADDOCK_DIRS) -name "*.hs" -not -name "Datei.hs" -print ) \
 	| xargs $(HADDOCK) $(HADDOCK_OPTS) -o $(HADDOCK_OUTPUT)
 
 .PHONY : haddock
