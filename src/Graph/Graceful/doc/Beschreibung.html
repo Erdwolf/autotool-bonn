@@ -1,15 +1,23 @@
-Bei Graceful geht es darum, f&uuml;r einen Graphen ein graceful (sch&ouml;nes,
-h&uuml;bsches) Labeling zu finden. Ein Labeling ist eine Abbildung von der
-Menge der Knoten in die Menge der nat&uuml;rlichen Zahlen.<br>
-Ein Labeling ist graceful, wenn gilt:
-<ul>
- <li>Das kleinste Label ist die Zahl 0.</li>
- <li>Das gr&ouml;te Label ist die Zahl e, wobei e die Anzahl der Kanten ist</li>
- <li>Wenn sich das Label einer Kante als Absolutwert der Differenz der beiden
-  durch die Kante verbundenen Knoten definiert,
-  <ul>
-   <li>muss das kleinste Label die Zahl 1 sein und</li>
-   <li>die Menge der Label dicht gegen&uuml;ber den nat&uuml;rlichen Zahlen sein.</li>
-  </ul>
- </li> 
+<TABLE BORDERS>
+<CAPTION>Graceful: Graceful labelings</CAPTION>
+<TR><TD>Instanz</TD>
+    <TD>G :: Graph s</TD>
+    <TD>Ein Graph G</TD>
+</TR>
+<TR><TD>Beweis</TD>
+    <TD>f :: FiniteMap (knoten g) [ 0 .. cardinality (kanten g)]</TD>
+    <TD>ein graceful labeling</TD>
+</TR>
+</TABLE>
+Eine Knotenbewertung f heißt <EM>graceful</EM>, 
+wenn sie diese Bedingungen erfüllt:
+<UL>
+<LI>Das kleinste Label ist die Zahl 0.</li>
+<li>Das gr&ouml;te Label ist die Zahl e, wobei e die Anzahl der Kanten ist</li>
+<LI>Das Labeling f ist injektiv (keine Zahl kommt mehrfach vor)</LI>
+<li>Für die Multi-Menge M aller Kantendifferenzen 
+   { abs (f(x) - f(y)) : kante x y  in  kanten g } gilt:
+   M = { 1 .. e }. </LI>
 </ul>
+Bemerkung: man vermutet, daß jeder Baum ein graceful labeling besitzt.
+Bis heute ist jedoch kein Beweis bekannt - ein Gegenbeispiel aber auch nicht.
