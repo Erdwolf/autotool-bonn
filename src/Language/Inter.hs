@@ -46,4 +46,5 @@ inter l = case l of
     Power i -> power i
     NoPower i -> nopower i
 --    Vielfache i -> vielfache i
+    Komplement l -> komplement ( inter l )
 

@@ -21,11 +21,11 @@ import Autolib.ToDoc
 import Control.Monad (guard)
 import Autolib.Set
 
-einschraenkung :: Set Char -> Grammatik -> Grammatik
--- behalte nur die variablen aus qs
+-- | behalte nur die variablen aus qs
 -- lˆsche alle regeln, die andere variablen benutzen
+einschraenkung :: Set Char -> Grammatik -> Grammatik
 einschraenkung qs g =
-  g { nichtterminale = sfilter (`elementOf` qs) ( nichtterminale g )
+  g { variablen = sfilter (`elementOf` qs) ( variablen g )
           -- `union` ( unitSet $ startsymbol g ) -- das muﬂ bleiben?
     , regeln = mkSet $ do 
 	          rule @ ( lhs, rhs ) <- rules g

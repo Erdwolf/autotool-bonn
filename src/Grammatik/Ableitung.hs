@@ -24,8 +24,9 @@ config = Config
        , max_width = 1000
        }
 
+-- | trick: ableitung steht hierin falschrum
 data Ableitung = Ableitung [ String ]
-     -- trick: ableitung steht hierin falschrum
+
 
 instance Eq Ableitung where 
     a == b = car a == car b

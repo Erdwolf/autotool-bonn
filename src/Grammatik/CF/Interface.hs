@@ -34,12 +34,11 @@ instance Partial CFG I.Config Grammatik where
 
     describe p i = vcat
 	   [ text "Gesucht ist eine kontextfreie Grammatik für die Sprache"
-	   -- , nest 4 $ text $ abbreviation $ I.lang i
-	   -- , text "über dem Alphabet" <+> toDoc ( alphabet $ I.lang i )
-           , nest 4 $ toDoc i
+           , nest 4 $ toDoc $ inter $ I.lang i
+	   , text "über dem Alphabet" <+> toDoc ( alphabet $ inter $ I.lang i )
 	   , text ""
 	   , text "Zu dieser Sprache gehören unter anderem die Wörter:"
-	   , nest 4 $ toDoc $ take 10 $ I.yeah i
+	   , nest 4 $ toDoc $ take 10 $ I.unLong $ I.yeah i
 	   , text ""
 	   , text "Die Grammatik soll diese Eigenschaften haben:"
            , nest 4 $ toDoc $ I.properties i
@@ -47,8 +46,8 @@ instance Partial CFG I.Config Grammatik where
 
     initial  p i = Grammatik 
 	   { terminale = alphabet $ inter $ I.lang i
-	   , nichtterminale = mkSet "ST"
-	   , startsymbol = 'S'
+	   , variablen = mkSet "ST"
+	   , start = 'S'
 	   , regeln = mkSet $
                  let a : b : rest = setToList $ alphabet $ inter $ I.lang i
 	         in  [ ( "S", [ 'T', a, 'S' ] ) , ("S", ""), ( "T", [ b, b ] ) ]
@@ -86,8 +85,8 @@ instance Generator CFG P.Config I.Config where
           return $ I.Config 
 		 { I.lang = P.lang c
 		 , I.properties  = P.properties c
-		 , I.yeah = yeahs
-		 , I.noh  = nohs
+		 , I.yeah = I.Long yeahs
+		 , I.noh  = I.Long nohs
                  }
 
 make :: Make

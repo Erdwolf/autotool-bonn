@@ -47,7 +47,7 @@ cf_yeah_noh c g = do
     check ( inter $ lang c ) conf g
 
     let arrange = sortBy length
-    let [ yeahs, nohs ] = map arrange [ yeah c, noh c ]
+    let [ yeahs, nohs ] = map arrange [ unLong $ yeah c, unLong $ noh c ]
 
     -- erstmal keine ableitungen:
     -- trace t ( g, demos ) ts 

@@ -3,7 +3,7 @@
 module Grammatik.Property where
 
 import Grammatik.Type
-import Grammatik.Eindeutig
+import Grammatik.CF.Eindeutig
 import Grammatik.Hierarchie
 import Autolib.Reporter.Type
 import qualified Autolib.Reporter.Checker as C
@@ -14,7 +14,7 @@ import Text.XML.HaXml.Haskell2Xml
 
 import Data.Typeable
 
-data Property = Eindeutig
+data Property = Eindeutig Int
 	      | Typ Int
 	      | Monoton
 	      | Kontextsensitiv
@@ -32,8 +32,6 @@ data Property = Eindeutig
 
 check :: Property -> Grammatik -> Reporter ()
 check p = C.run $ case p of
-    -- TODO: needs config
-    -- Eindeutig -> eindeutig
 
     Typ 0 -> typ0
     Typ 1 -> typ1
@@ -49,4 +47,5 @@ check p = C.run $ case p of
     Kettenfrei -> kettenfrei
     Chomsky_Normal -> chomsky
     Greibach_Normal -> greibach
+    Eindeutig i -> eindeutig i
 
