@@ -12,7 +12,7 @@ import Monad ( guard )
 import FiniteMap
 import Set
 import Maybe
-import List ( inits, tails )
+import List ( inits, tails, group )
 
 type State = [ Bool ]
 

@@ -1,4 +1,11 @@
-module Shift.Repeater ( repeater, clipper, nths ) where
+module Shift.Repeater 
+
+-- $Id$
+
+( repeater
+, clipper, clips
+, nths 
+) where
 
 -- import Util
 import List
@@ -23,6 +30,13 @@ cutter w =
     in	if i > 1 then (i, u) : cutter rest
 		 else (1, [head w]) : cutter (tail w)
 
+
+clips :: (a -> Bool) -> [a] -> [[a]]
+clips p [] = []
+clips p xs = 
+    let (pre, midpost) = span p xs
+        (mid, post) = span (not . p) midpost
+    in pre : mid : clips p post
 
 clipper :: Eq a => a -> [a] -> [[a]]
 clipper c [] = []
