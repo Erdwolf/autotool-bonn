@@ -38,6 +38,7 @@ import ToDoc ( text )
 
 aufgaben = [ funFib , funFak 
            , funTeilbar 
+           , funTeilbar2 
            , funPrim
            ]
 
