@@ -1,12 +1,15 @@
-module Turing_Test
-
+module Turing_Test obsolete
+ 
 ( test
 )
 
 where
 
 -- $Log$
--- Revision 1.1  2003-04-14 05:47:20  joe
+-- Revision 1.2  2003-04-17 06:43:59  joe
+-- Auswertng entfernt
+--
+-- Revision 1.1  2003/04/14 05:47:20  joe
 -- drift/todoc/reader
 --
 -- Revision 1.1.1.1  2002/05/24 10:46:48  challenger

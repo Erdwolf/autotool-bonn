@@ -7,39 +7,52 @@ import Turing.Akzeptieren
 import Turing.Vorrechnen
 import Turing.Konfiguration
 
-import Monad (guard)
-import Right
-import Wrong
-import Auswertung
+import Reporter
 
 test :: TUM Char z
      => (Int -> Int) -> [ Int ]
      -> Turing Char z 
-     -> IO String
+     -> Reporter Int
 
 test f args m = do
-    putStrLn $ "Ihre Turingmaschine ist"
-    putStrLn $ show m
+    inform $ text "Ihre Turingmaschine ist"
+    inform $ toDoc m
 
-    muss (check m) $ do
+    check m
+    deterministisch m
 
-	putStrLn $ "ich teste die Laufzeit für die Eingabelängen " ++ show args
-	let falsch = do 
-		x <- args
-		let t = f x
-		let ein = take  x $ repeat 'A'
-		let ks = akzeptierend (t+1) m ein
-		case ks of
-			[] -> return ( ein, "erreicht innerhalb der ersten " ++ show t ++ " Schritte keinen Endzustand." )
-			ks -> do k <- ks
-				 guard $ nummer k /= t
-				 return ( ein, "hält bereits im Schritt " ++ show (nummer k) ++ ", Laufzeit soll aber " ++ show t ++ " sein." )
-	case  falsch of
-	    [] -> do putStrLn $ "alle Laufzeiten sind korrekt"
-		     right
-	    wms -> do putStrLn $ unlines $ "diese Eingaben/Laufzeiten sind falsch:"
-					 : map show wms
+    inform $ text $ "ich teste die Laufzeit für die Eingabelängen" 
+	     <+> toDoc args
 
-		      vorrechnens m $ take 3 $ map fst falsch
-		      wrong
+    let falsch = do 
+	  x <- args
+	  let t = f x
+	  let ein = take  x $ repeat 'A' -- fixiertes eingabe-alphabet
+	  let ks = akzeptierend (t+1) m ein
+	  case ks of
+		[] -> return 
+		    ( ein
+		    , fsep [ text "erreicht innerhalb der ersten"
+			   , toDoc t, text "Schritte"
+			   , text "keinen Endzustand." 
+		    )
+		ks -> do k <- ks
+			 guard $ nummer k /= t
+			 return ( ein
+				, fsep [ text "hält bereits im Schritt"
+				       , toDoc (nummer k), text ","
+				       , text "Laufzeit soll aber" 
+				       , toDoc t, text "sein." 
+				)
+
+    case  falsch of
+        [] -> do 
+		  inform $ text $ "alle Laufzeiten sind korrekt"
+        wms -> do 
+	    inform $ vcat [ text $ "diese Eingaben/Laufzeiten sind falsch:"
+			  , toDoc wms
+			  ]
+	    vorrechnens m $ take 3 $ map fst falsch
+            reject empty
+
 
