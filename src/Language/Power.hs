@@ -1,6 +1,6 @@
---- $Header$
+--- $Id$
 
-module Power 
+module Language.Power 
 
 ( power
 , nopower
@@ -9,10 +9,12 @@ module Power
 
 where
 
-import Language
+import Language.Type
+
 import Set
-import Wort
+import Util.Wort
 import List (nub)
+
 
 power :: Int -> Language
 power k = Language

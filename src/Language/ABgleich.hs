@@ -1,9 +1,12 @@
 -- $Header$
 
-module ABgleich ( abgleich ) where
+module Language.ABgleich ( abgleich ) where
 
 -- $Log$
--- Revision 1.1  2002-11-08 16:43:23  joe
+-- Revision 1.2  2003-01-13 14:34:19  joe
+-- neue modulnamen (wg. pump-aufgaben)
+--
+-- Revision 1.1  2002/11/08 16:43:23  joe
 -- language -> Language
 -- pump -> Pump.REG (neu)
 -- aufgaben dazu
@@ -18,7 +21,8 @@ module ABgleich ( abgleich ) where
 -- lang/*
 --
 
-import Language
+import Language.Type
+
 import Set
 import Monad ( guard )
 import Random
