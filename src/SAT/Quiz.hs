@@ -34,16 +34,11 @@ quiz auf ver par =
 	           ( f, b ) <- cache (  Datei { pfad = [ "autotool", "cache"
 					   , auf, ver
 					   ]
-				  , name = key ++ ".cache" 
-				  ,relativzahl = error "SAT.QUIZ.relativzahl"
+				  , name = key
+				  , extension = "cache" 
 				  }
 			 ) ( hgen2 par )
-	           return $ do
-	               inform $ vcat
-	                  [ text "Finden Sie eine erfüllende Belegung für diese Formel:"
-			  , nest 4 $ toDoc f
-			  ]
-	               return f
+	           return $ return f
 	     }
 
 

@@ -1,5 +1,5 @@
 
--- Korrekturfunktion für 3SAT
+-- | Korrekturfunktion für 3SAT
 -- 
 -- Autor: Mohammad Esad-Djou
 -- bss98aou@studserv.uni-leipzig.de
@@ -22,7 +22,7 @@ module SAT.SAT
 ( SAT (..)
 , Variable, Literal (..)
 , Klausel, Formel, Belegung
-, module FiniteMap
+, module Data.FiniteMap
 
 )
 
@@ -56,6 +56,11 @@ import SAT.Wert
 ---------------------------------------------------------------------------
 
 instance Partial SAT Formel Belegung where
+
+    describe SAT f = vcat
+        [ text "finden Sie eine erfüllende Belegung für die Formel"
+	, nest 4 $ toDoc f
+	]
 
     initial SAT f = 
         let v : vs = setToList $ variablen f
