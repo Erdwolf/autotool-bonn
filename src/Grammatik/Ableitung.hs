@@ -17,6 +17,12 @@ data Config = Config
 	   }
     deriving ( Read, Show )
 
+config :: Config -- als default benutzbar
+config = Config
+       { max_length = 10
+       , max_depth = 10
+       , max_width = 1000
+       }
 
 data Ableitung = Ableitung [ String ]
      -- trick: ableitung steht hierin falschrum

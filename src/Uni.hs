@@ -18,12 +18,13 @@ boiler = sequence -- der erste ist der default-wert!
        $  []
 	  -- Serie 5 (?)
        ++ Syntax.Grammatik.grammatiken5
+
 	  -- Serie 4:
-       ++ Syntax.Grammatik.grammatiken
-       ++ Syntax.Pumping.pumping
+       -- ++ Syntax.Grammatik.grammatiken
+       -- ++ Syntax.Pumping.pumping
 	  -- Serie (davor)
-       ++ Syntax.Analyse.generates
-       ++ Syntax.Synthese.generates
+       -- ++ Syntax.Analyse.generates
+       -- ++ Syntax.Synthese.generates
 
 
 

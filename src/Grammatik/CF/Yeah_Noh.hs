@@ -13,6 +13,8 @@ import qualified Grammatik.CF.Chomsky as C
 import Grammatik.CF.Epsfrei
 import Grammatik.CF.Kettenfrei
 
+import Grammatik.Reduziert
+
 import FilterBound
 import Util.Sort
 import ToDoc
@@ -40,7 +42,7 @@ cf_yeah_noh c g = do
 	  , A.max_depth = 7
 	  , A.max_width = 100
 	  } 
-    check ( lang c) conf g
+    check ( lang c ) conf g
 
     let arrange = sortBy length
     let [ yeahs, nohs ] = map arrange [ yeah c, noh c ]
@@ -49,7 +51,13 @@ cf_yeah_noh c g = do
     -- trace t ( g, demos ) ts 
     -- wenn wir hier ankommen, sind die ableitungen OK
 
-    let ch = C.chomsky $ kettenfrei $ epsfrei $ g
+    let ch = C.chomsky 
+	   $ kettenfrei 
+	   $ epsfrei 
+	   $ reduktion -- x-perry-mental
+	   $ g 
+    -- inform $ text "DEBUG: chomsky nf" <+> toDoc ch
+
     let snip = take 5 -- ??
 
     inform $ vcat

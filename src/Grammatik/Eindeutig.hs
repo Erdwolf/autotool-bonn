@@ -8,7 +8,7 @@ where
 import Grammatik.Type
 import Grammatik.Ableitung
 import Grammatik.Links_Ableitung
-import Grammatik.CF.Reduziert
+import Grammatik.Reduziert
 import qualified Grammatik.Checker as C
 
 import Reporter

@@ -40,11 +40,11 @@ einschraenkung qs g =
 
 reduktion :: Grammatik -> Grammatik
 reduktion g = let
-    e = erreichbar g
-    eg = einschraenkung e g
-    p = produktiv eg
-    pg = einschraenkung p eg
-  in   pg
+    p = produktiv g
+    pg = einschraenkung p g
+    e = erreichbar pg
+    eg = einschraenkung e pg
+  in   eg
 
 reduziert :: Grammatik -> Reporter ()
 reduziert g = do

@@ -40,7 +40,8 @@ zeige conf g = do
     let rg = reduktion g -- nur erreichbare und produktive, 
 	                 -- damit das tool nicht sinnlos rumrechnet
 
-    inform $ text "DEBUG: reduziert:" <+> toDoc rg
+    -- inform $ text "DEBUG: reduziert:" <+> toDoc rg
+
     if ( not $ startsymbol rg `elementOf` nichtterminale rg )
        then do
 	    inform $ text "Es sind keine Terminalwörter ableitbar."
@@ -53,7 +54,7 @@ zeige conf g = do
 		   let w = car ab
 		   guard $ all (`elementOf` terminale g) w
 		   return w
-	    inform $ text "Einige (in wenigen Schritten) ableitbare Termnialwörter sind:"
+	    inform $ text "Einige (in wenigen Schritten) ableitbare Terminalwörter sind:"
 	    inform $ nest 4 $ toDoc $ take 20 terms
 	    newline
 	    return terms
