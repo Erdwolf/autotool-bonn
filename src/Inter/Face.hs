@@ -44,7 +44,12 @@ iface :: [ Variant ] -> [(String, String)] -> IO Html
 iface variants env = do
 
     -- alle inputs holen
-    let par0 = Inter.Env.get env
+    let par0 = case last variants of 
+	          Inter.Types.Variant def -> ( Inter.Env.get env )
+		       { P.problem = show ( Inter.Types.problem def )
+		       , P.aufgabe = Inter.Types.aufgabe def
+		       , P.version = Inter.Types.version def
+		       }
 
     -- gültigkeit prüfen, aufg.-instanz generieren
     -- das ist eine IO-Aktion 
