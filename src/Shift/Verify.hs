@@ -10,6 +10,9 @@ import ToDoc
 
 verify :: Int -> Shift -> Reporter Int
 verify limit sh = do
+    inform $ text "Ich verifiziere" <+> toDoc sh
+    newline
+
     let ps = pins sh
     let q = vorperiode sh
     let p = periode sh
@@ -54,6 +57,7 @@ verify limit sh = do
 		 $ reject $ text "also war" <+> toDoc p
 			  <+> text "nicht die kürzeste Periode."
 	
+    newline
     return p
 
     

@@ -1,4 +1,10 @@
-module Shift.Check where
+module Shift.Check 
+
+( check
+, Shift (..)
+)
+
+where
 
 import Shift.Type
 import Shift.Computer
