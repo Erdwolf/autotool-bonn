@@ -1,7 +1,9 @@
-import NFA.Synchronize
+import NFA.Gen
+import NFA.Genetic
 import System
 
 main = do
     [ n ] <- getArgs
-    dorunrun $ read n
+    this <- evolve $ conf $ read n
+    print this
 

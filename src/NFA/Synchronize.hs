@@ -346,13 +346,13 @@ runit :: [ NFA Char Int ] -> IO ()
 runit auts = sequence_ $ do 
     it @ (i, a) <- zip [0 :: Int ..] $ auts
     return $ do
-        ( _ , out :: Text.Html.Html ) <- Autolib.Reporter.run $ handle it
+        ( _ , out :: Text.Html.Html ) <- Autolib.Reporter.run $ handle a
         let fname = concat 
 		  $ intersperse "-"
 		  $ [ "auto", show $ size a, show i ]
 	writeFile ( fname ++ ".html" ) $ show out
 
-handle it @ (i, a) = do
+handle a = do
     let ws = take 5 $ syn a
     inform $ vcat
 	   [ text "synch:" <+> toDoc ws
