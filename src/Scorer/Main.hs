@@ -12,11 +12,7 @@ main :: IO ()
 main = do
     t <- zeit    
     putStrLn $ heading $ "autotool -- Top Ten Scores, Stand von: " ++ t
-
     vls <- Scorer.Aufgabe.get
-
-    -- print vls 
-
     mapM_ compute $ fmToList vls
 
 
