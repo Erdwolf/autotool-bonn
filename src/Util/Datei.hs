@@ -5,6 +5,7 @@ module Util.Datei
 (  schreiben, mschreiben
 , anhaengen
 , lesen
+, loeschen
 , existiert
 , dirlesen
 , dirgehen
@@ -97,6 +98,11 @@ anhaengen d inhalt = do
     createDir d
     h <- home d
     appendFile h inhalt
+
+loeschen :: Datei -> IO ()
+loeschen d  = do
+    h <- home d
+    removeFile h
 
 schreiben :: Datei -> String -> IO FilePath
 schreiben d inhalt = do

@@ -46,7 +46,7 @@ import Autolib.Reader
 import Autolib.Util.Sort
 import Autolib.FiniteMap
 
-import qualified Util.Datei
+import qualified Util.Datei as D
 import Debug
 
 import System.Random
@@ -141,6 +141,15 @@ iface mks = do
 	View -> do
 	    find_previous False vnr mks stud' auf'
             return ()
+        Clear_Cache -> 
+            io $ D.loeschen ( D.Datei { D.pfad = [ "autotool", "cache"
+				   , toString vnr
+				   , fromMaybe "none" $ fmap toString manr
+				   ]
+			  , D.name = toString $ S.mnr stud' 
+			  , D.extension = "cache"
+			  } )
+                `catch` \ any -> return ()
 
     return ()
 
@@ -268,7 +277,7 @@ fix_input vnr mks stud auf sa = case  SA.input sa of
        let p = mkpar stud auf
            d = Inter.Store.location Inter.Store.Input 
                     p "latest" False
-       file <- Util.Datei.home d
+       file <- D.home d
        ex <- System.Directory.doesFileExist file
        let inf = fromCGI file
        if ex 
@@ -300,7 +309,7 @@ fix_instant vnr mks stud auf sa = case SA.instant sa of
                 let p = mkpar stud auf
                     d = Inter.Store.location Inter.Store.Instant
                            p "latest" False
-                file <- io $ Util.Datei.schreiben d $ show com
+                file <- io $ D.schreiben d $ show com
                 let inst = fromCGI file
                 io $ Control.Punkt.bepunkteStudentDB 
                          (P.ident p) (P.anr p) 
@@ -484,6 +493,7 @@ vorbei = do
 data Action = Solve  -- ^ neue Lösung bearbeiten
 	    | View -- ^ alte Lösung + Bewertung ansehen
 	    | Edit -- ^ alte Lösung + Bewertung ändern
+            | Clear_Cache
 	    | Statistics 
 	    | Config
             | Delete 
@@ -624,6 +634,7 @@ tutor_statistik vnr auf = do
 		Just w  -> do
 		    click ( "View", ( View, sauf, stud ))
 		    click ( "Edit",  ( Edit, sauf, stud ))
+		    click ( "Clear_Cache",  ( Clear_Cache, sauf, stud ))
             close -- row
     close -- btable
     end -- mutex
