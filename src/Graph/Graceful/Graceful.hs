@@ -7,17 +7,18 @@
 --
 --
 -- Autor: Alexander Kiel
--- Version: 11.05.2002
+-- Version: 26.05.2002 - 3
 -------------------------------------------------------------------------------
 
 module Graceful.Graceful
 	( Graceful
-        , module Graceful.Labeling
-	, module Graph.Type
+	, module Graph.Graph
+	, module Graceful.Labeling
 	, validiere
 	, verifiziere
 	, getInstanz
 	, getBeweis
+	, getDiffList
 	) 
     where
 
@@ -26,6 +27,8 @@ import Graph.Type
 import Graph.Util
 import Graph.Viz
 import Challenger
+import ToDoc
+import Set
 import Sort
 import Maybe
 import FiniteMap
@@ -40,7 +43,7 @@ data Graceful = Graceful deriving Show
 --     beliebigem Knotentyp a auf  
 
 instance
-	( Ord knoten, Show knoten, ToDoc knoten
+	( Ord knoten, Show knoten, ShowText knoten, ToDoc knoten
 	, ToDoc (Graph knoten), Show (Graph knoten), Read (Graph knoten)
 	, ToDoc (Labeling knoten), Show (Labeling knoten), Read (Labeling knoten)
 	)
@@ -48,61 +51,67 @@ instance
 
 
 	validiere Graceful graph labeling =
-		testeAlles (text "Der Graph ist valid.") (
+		testeAlles (text "Der Graph ist valid.")
 			[ kantenPassenZuKnotenTest $ kantenPassenZuKnoten graph
 			, ( isZusammen graph
 			  , text "Der Graph ist nicht zusammenhängend."
 			  )
-			])
+			]
     
 	verifiziere Graceful graph labeling =
 		testeAlles (text "Die Lösung ist richtig.") (
-			[ isAnzKnotenEqLengthLabeling graph labeling
+			[ isLabelingAbbildungVonKnoten graph labeling
 			, isSmallestLabelNull labeling
+			, isBiggestLabelAnzKanten graph labeling
+			, isLabelingEineindeutig labeling
 			, isDiffListTight $ sort $ getDiffList graph labeling
 			])
 
 	getInstanz Graceful graph labeling dateiName =
 		-- mehr muss hier keiner machen, der Graphviz nutzt
-		getGraphviz graph getInstanzTrans dateiName "gif"
+		getGraphviz graph instanzTrans dateiName
 	
 	getBeweis Graceful graph labeling dateiName =
-		getGraphviz graph (getBeweisTrans labeling) dateiName "gif"	
+		getGraphviz graph (getBeweisTrans labeling) dateiName
 		
 -------------------------------------------------------------------------------
 -- hier folgen Transformationen
 -------------------------------------------------------------------------------
 
 -- ganz einfache Transformation
-getInstanzTrans :: Show knoten => GVTrans knoten
-getInstanzTrans = GVTrans
-	{ getGVNID = show		-- Graphviz Knoten ID ist einfach show knoten
-	, getGVNName = show		-- Knotenname auch
+instanzTrans :: ShowText knoten => GVTrans knoten
+instanzTrans = GVTrans
+	{ getGVProg = Neato
+	, getGVFormat = "png"
+	, isGVDirected = True
+	, getGVNID = showText		-- Graphviz Knoten ID ist einfach show knoten
+	, getGVNName = showText		-- Knotenname auch
 	, getGVNLabel = Nothing
 	, getGVNColor = Nothing
 	, getGVNXAtts = Nothing
-	, isGVEDirected = (\x -> False)	--alle Kanten ungerichtet
 	, getGVELabel = Nothing
 	, getGVEXAtts = Nothing
 	}
 
 -- um Label erweiterte Transformation
-getBeweisTrans :: (Show knoten, Ord knoten)
+getBeweisTrans :: (ShowText knoten, Ord knoten)
 	=> (Labeling knoten) -> (GVTrans knoten)
 getBeweisTrans labeling = GVTrans
-	{ getGVNID = show
-	, getGVNName = show
+	{ getGVProg = Neato
+	, getGVFormat = "png"
+	, isGVDirected = True
+	, getGVNID = showText
+	, getGVNName = showText
 	, getGVNLabel = Just (getNLabel labeling)
 	, getGVNColor = Nothing
 	, getGVNXAtts = Nothing
-	, isGVEDirected = (\x -> False)
 	, getGVELabel = Just (getELabel labeling)
 	, getGVEXAtts = Nothing
 	}
 
 -- Knotenlabel ist Graceful spezifisch
 getNLabel :: Ord a => (Labeling a) -> a -> GVLabel
-getNLabel labeling knoten = '(' : shows (getLabel labeling knoten) ")"
+getNLabel labeling knoten = show (getLabel labeling knoten)
 
 -- Kantenlabel ist Graceful spezifisch
 getELabel :: Ord a => (Labeling a) -> (Kante a) -> GVLabel
@@ -121,29 +130,45 @@ kantenPassenZuKnotenTest (bool, Just knoten) =
 	  text "zeigen, den es im Graph nicht gibt."
     ) 
 
-isAnzKnotenEqLengthLabeling :: (Graph a) -> (Labeling a) -> (Bool, Doc)
-isAnzKnotenEqLengthLabeling graph labeling =
-    ( (anzKnoten graph == sizeL labeling)
-    , text "Anzahl der Knoten stimmt nicht mit der Anzahl der Labels überein."
-    )
+isLabelingAbbildungVonKnoten :: Ord knoten 
+	=> Graph knoten -> Labeling knoten -> (Bool, Doc)
+isLabelingAbbildungVonKnoten graph labeling =
+	( knoten graph == knotenSet labeling
+	, text "Das Labeling ist keine Abbildung von der Menge der Knoten"
+	)
+	
+isLabelingEineindeutig :: Ord knoten => Labeling knoten -> (Bool, Doc)
+isLabelingEineindeutig labeling =
+	( sizeL labeling == (cardinality $ labelSet labeling)
+	, text "Das Labeling ist keine eineindeutige Abbildung"
+	)
+
 
 -- die Labels müssen mit der Zahl 0 anfangen
-isSmallestLabelNull :: (Labeling a) -> (Bool, Doc)
+isSmallestLabelNull :: Labeling knoten -> (Bool, Doc)
 isSmallestLabelNull labeling =
     ( (==) 0 $ head $ getSortedLabelList labeling
-    , text "Das erste Label muss 0 sein."
+    , text "Das kleinste Label muss 0 sein."
     )
+
+isBiggestLabelAnzKanten :: Graph knoten -> Labeling knoten -> (Bool, Doc)
+isBiggestLabelAnzKanten graph labeling =
+	( (==)
+		(cardinality $ kanten graph)
+		(fromInteger $ last $ getSortedLabelList labeling)
+	, text
+		( "Das gößte Label muss mit der Anzahl der Kanten ("
+		++show (cardinality (kanten graph)) ++ ") übereinstimmen."
+		)
+	)
 
 isDiffListTight :: [Integer] -> (Bool, Doc)
 isDiffListTight diffList =
     ( isListTight diffList 1
-    , text "Die Menge der Labels ist nicht dicht gegenüber den natürlichen Zahlen."
-    )
-
-isLabelingGraceful :: (Graph a) -> (Labeling a) -> (Bool, Doc)
-isLabelingGraceful graph labeling =
-    ( False
-    , text ""
+    , text
+		( "Die Menge der Differenzen ist nicht dicht gegenüber den "
+		++"natürlichen Zahlen."
+		)
     )
 
 -------------------------------------------------------------------------------
@@ -154,9 +179,7 @@ isLabelingGraceful graph labeling =
 -- die Elemente der Liste sind nicht geordnet
 getDiffList :: (Ord knoten) => (Graph knoten) -> (Labeling knoten) -> [Integer]
 getDiffList graph labeling =
-	[ abs((getLabel labeling (von kante)) - (getLabel labeling (nach kante)))
-	| kante <- setToList(kanten graph)
-	]
+	[getDiff labeling kante | kante <- setToList(kanten graph)]
 
 -- führt alle Tests durch und gibt entweder:
 --   die Ausgabe (Bool, Doc) des ersten nicht bestanden Tests zurück
@@ -173,66 +196,5 @@ getFirstError positivDoc es = head es
 -- Anfangswert dich ist
 -- ist die Liste muss sortiert sein!
 isListTight :: [Integer] -> Integer -> Bool
-isListTight [] _ = True
 isListTight (x:xs) y = if x == y then isListTight xs (y+1) else False
-
--------------------------------------------------------------------------------
--- Graphviz Implementierungen
--------------------------------------------------------------------------------
-
--- erzeugt die gesammte Ausgabe für Graphviz
-showGracefulGraph :: (Show knoten, Ord knoten)
-	=> Graph knoten -> Labeling knoten -> String
-showGracefulGraph graph labeling =
-	( "graph G {\n"
-	++"\tedge [len=1];\n"
-    ++showsGracefulKanten (setToList (kanten graph)) labeling ""
-    ++"}\n"
-    )
-
--- die folgenden Funktionen arbeiten wie shows
--- damit die Komplexität linear beleibt
--- siehe Docu
-
--- erzeugt alle Kanten
-showsGracefulKanten :: (Show knoten, Ord knoten)
-	=> [Kante knoten] -> Labeling knoten -> ShowS
-showsGracefulKanten (kante:[]) labeling = showsGracefulKante kante labeling
-showsGracefulKanten (kante:kanten) labeling =
-	showsGracefulKante kante labeling .
-	showsGracefulKanten kanten labeling  
-
--- erzeugt eine Kante mit Differenz als Label
-showsGracefulKante :: (Show knoten, Ord knoten)
-	=> Kante knoten -> Labeling knoten -> ShowS
-showsGracefulKante kante labeling =
-	("\t" ++) .
-	shows (showsKnoten labeling (von kante) "") .
-	(" -- " ++) . 
-	shows (showsKnoten labeling (nach kante) "") .
-	(" [label=" ++) .
-	shows (getDiff labeling kante) .
-	("];\n" ++)
-    
-{-
-showsKante :: Show knoten
-	=> Kante knoten -> Maybe knotenLabel -> Maybe kantenLabel -> ShowS
-showsKante kante Nothing Nothing =
-	("\t" ++) . shows (showsKnoten (von kante) Nothing "") .
-    shows (showsKnoten (nach kante) Nothing "") . (";\n" ++)
-showsKante kante (Just knotenlabel) Nothing =
-	("\t" ++) . shows (showsKnoten (von kante) (fromJust knotenlabel) "") .
-    shows (showsKnoten (nach kante) Nothing "") . (";\n" ++)
--}
-
--- erzeugt einen Knoten in der Form "Knotenname (Label)"
-showsKnoten :: (Show knoten, Ord knoten) => Labeling knoten -> knoten -> ShowS
-showsKnoten labeling knoten =
-	shows knoten . ('(':) . shows (getLabel labeling knoten) . (')':)
-
---showsKnoten :: (Show knoten, Show label) => knoten -> Maybe label -> ShowS
---showsKnoten knoten Nothing = shows knoten
---showsKnoten knoten label =
---	shows knoten . ('(':) . shows (fromJust label) . (')':)
-
-
+isListTight [] _ = True

@@ -17,6 +17,7 @@ import PCP.Type
 import Challenger
 import ToDoc
 import Set
+import System
 
 
 data PCProblem = PCProblem deriving Show
@@ -26,8 +27,13 @@ instance (ToDoc [a]) => ToDoc (Folge a) where
 	toDoc (Folge flg) = text "Loesung: " <+> toDoc flg
 
 
+-- Erzeugen der Instanz fuer die Klasse Problem 
+-- Problem: PCProblem
+-- Instanz: PCP [(a,(String,String))]
+-- Beweis: Folge 
+
 instance (ToDoc (PCP a), Show (PCP a), Read (PCP a), Iso (PCP a)
-         , ToDoc (Folge a), Show (Folge a), Read (Folge a), Ord a, ToDoc a)
+         , ToDoc (Folge a), Show (Folge a), Read (Folge a), Ord a, ToDoc a, Show a)
     => Problem PCProblem (PCP a) (Folge a) where
 
     validiere PCProblem ((PCP pcp)) (folge @ (Folge fol)) = 
@@ -37,6 +43,36 @@ instance (ToDoc (PCP a), Show (PCP a), Read (PCP a), Iso (PCP a)
         
     verifiziere PCProblem (PCP pcp) lsg = (pcpTest (listToFM pcp) lsg "" "")
 
+    -- Erzeugt HTML-File zur Visualisierung
+    getInstanz PCProblem (PCP pcp) folge dateiName =
+	do 
+	writeFile (dateiName ++ ".html") ("<br><table borders><caption>PCP-Instanz</caption>" ++ (erzInstanz pcp) ++ "</table>")
+	return (dateiName ++ ".html","html",ExitSuccess)
+        
+    -- Erzeugt HTML-File zur Visualisierung
+    getBeweis PCProblem (PCP pcp) (fol @ (Folge folge)) dateiName =
+	do 
+	writeFile (dateiName ++ ".html") ("L&ouml;sungsfolge: " ++ show folge ++ "\n<br>" ++ (erzBeweis (listToFM pcp) fol ""))
+	return (dateiName ++ ".html","html",ExitSuccess)
+
+
+-- erzeugt den Ausgabestring fuer die HTML Ausgabe der PCP-Instanz
+erzInstanz :: (Show a) => [(a,(String,String))] -> String
+erzInstanz [] = ""
+erzInstanz (x:xs) = 
+	let
+	(a,(str1,str2)) = x
+	in "<tr><td>" ++ str1 ++ "</td><td>" ++ show a ++ "</td><td>" ++ str2 ++ "</td></tr>\n" ++ (erzInstanz xs)
+	
+
+-- erzeugt den AusgabeString fuer die HTML Ausgabe des Beweises 
+erzBeweis :: (Ord a) => FiniteMap a (String,String) -> Folge a -> String -> String
+erzBeweis pcp (Folge []) str1 = "L&ouml;sungsketten: " ++ str1 ++ "<br>\n"
+erzBeweis pcp (Folge (x:xs)) str1 =
+	let
+	(add1,add2) = (lookupWithDefaultFM pcp (error "PCProblems.erzBeweis") x)
+	in
+	    erzBeweis pcp (Folge xs) (str1 ++ add1)
 
 
 
@@ -64,7 +100,7 @@ folgeIsInPcP pcp (Folge (x:xs)) = if (elemFM x pcp) then (folgeIsInPcP pcp (Folg
 
 --Beispielstrukturen
 bsp_pcp =PCP([('A',("001","0")),
-        		 ('B',("10","011")),
+        	('B',("10","011")),
                  ('C',("01","001"))
                 ])
 

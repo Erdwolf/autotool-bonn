@@ -11,14 +11,19 @@
 -- festen Typ Integer gesetzt.
 --
 -- Autor: Alexander Kiel
--- Version: 22.05.2002
+-- Version: 25.05.2002
 --------------------------------------------------------------------------------
 
 
 module Graceful.Labeling
 	( Labeling
+	, emptyLabeling
+	, unitLabeling
 	, mkLabeling
 	, sizeL
+	, lToList
+	, knotenSet
+	, labelSet
 	, getSortedLabelList
 	, getLabel
 	, getDiff
@@ -32,10 +37,15 @@ import Maybe
 import ReadFM
 import Sort
 
-data Labeling knoten = Labeling
+newtype Labeling knoten = Labeling
 	( FiniteMap knoten Integer
 	) deriving (Show, Read)
 
+emptyLabeling :: Labeling knoten
+emptyLabeling = Labeling emptyFM
+
+unitLabeling :: (knoten, Integer) -> Labeling knoten
+unitLabeling (knoten, int) = Labeling (unitFM knoten int)
 
 -- konstruiert ein Labeling aus einer Liste von Tupeln (knoten, Integer)
 -- die letzte Abbildung von einem Knoten auf ein Label gewinnt
@@ -46,11 +56,19 @@ mkLabeling liste = Labeling (listToFM liste)
 sizeL :: Labeling knoten -> Int
 sizeL (Labeling fmap) = sizeFM fmap 
 
+lToList :: Labeling knoten -> [(knoten, Integer)]
+lToList (Labeling fmap) = fmToList fmap
+
+knotenSet :: Ord knoten => Labeling knoten -> Set knoten
+knotenSet labeling = mkSet [knoten | (knoten, label) <- lToList labeling]
+
+labelSet :: Ord knoten => Labeling knoten -> Set Integer
+labelSet labeling = mkSet [label | (knoten, label) <- lToList labeling]
+
 -- gibt die Label der Knoten in einer geordneten Liste mit dem kleinten Label
 -- zuerst zurück
 getSortedLabelList :: Labeling knoten -> [Integer]
-getSortedLabelList (Labeling fmap) =
-	sort $ eltsFM fmap
+getSortedLabelList (Labeling fmap) = sort $ eltsFM fmap
 
 -- gibt das Label eines Knotens zurück
 -- gibt -1 zurück, falls Label nicht gefunden wurde

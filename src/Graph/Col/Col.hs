@@ -1,3 +1,7 @@
+-- autor m.lindemeyer
+-- stinfwww.infomatik.uni-leipzig.de/~psy99hvr
+-- (8484955)
+
 module Col.Col 
 --(Col,validiere, verifiziere) 
 	where
@@ -39,15 +43,18 @@ instance (ToDoc (Graph a), Show (Graph a), Read (Graph a), Iso (Graph a)
     verifiziere Col g (Ergeb lsg) = colTest g lsg
 
 
-
+------------------------------------------------------------------------------------------------------------
 --Probe, ob Knoten der Loesung mit Knoten des Graphen uebereinstimmen
 colTest :: (ToDoc a, Ord a) => Graph a -> [[a]] -> (Bool,Doc)
 colTest g b = 
   if not((sort(knotenliste g))==(sort(concat b)))
-    then (False, text "Nicht alle oder zuviele Knoten sind in Deiner Loesung enthalten. Probiers nochmal")
+    then (False, text "Nicht alle oder zuviele Knoten sind in der Loesung enthalten.")
     else if ([]==(klassenTest g b))
-        then (True, text "Herzlichen Glueckwunsch, Deine Faerbung ist korrekt.")
-        else (False, text "Deine Faerbung ist unkorrekt! Mindestens ein Knotenpaar ist in einer Klasse.")
+        then (True, text "Herzlichen Glueckwunsch, die Faerbung ist korrekt.")
+        else (False, text "Die Faerbung ist unkorrekt! Mindestens ein Knotenpaar ist in einer Klasse.")
+
+
+------------------------------------------------------------------------------------------------------------
 --eigentliche Colorisierungs-Testfunktion
 klassenTest :: (ToDoc a, Ord a, Eq a) => Graph a -> [[a]] -> [Int]
 klassenTest g li = do
@@ -56,7 +63,8 @@ klassenTest g li = do
                   guard $ not $ elem y (concat(listeohnex li x))
                   return 0
 
---aus einer liste einer liste wird eine liste geloescht^
+------------------------------------------------------------------------------------------------------------
+--aus einer liste einer liste wird eine liste geloescht
 listeohnex :: Eq a => [[a]] -> a -> [[a]]
 listeohnex a b = do
                   z <- a
@@ -70,7 +78,7 @@ func1 z b = do
             guard $ not $ y==b
             return y
 
---
+--beispielgraphen
 bsp_Cgraph = Graph {
     knoten = mkSet [1, 2, 3, 4, 5],
     kanten = mkSet [kante 1 2, kante 2 3, kante 3 4, kante 4 5, kante 3 5, kante 1 5]
