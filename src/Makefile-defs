@@ -59,7 +59,7 @@ EXTRA_PACKS = -package-conf $(RELATIV_TO_MAIN_DIR)/autotool.pkg -package hsql
 endif
 
 ifndef DEFINES
-DEFINES = -DHOME=1
+#DEFINES = -DHOME=1
 endif
 
 # erlaube überschreibung, s.o
@@ -69,7 +69,6 @@ endif
 
 ########################################################################
 # ugly ugly ugly : system-spezifische teile des makefiles
-
 
 ########################################################################
 # ghc / ghci : setup

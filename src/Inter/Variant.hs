@@ -153,8 +153,6 @@ handler par0  (Variant v ) bep=  do
 	      , (P.problem par0) == t
 	      , (P.variant par0) == s
 	      ]
- 	
-    
     
     -- TODO: die folgenden Zeilen mit Cache !
 
