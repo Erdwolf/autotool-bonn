@@ -24,7 +24,8 @@ import qualified Challenger as C
 
 data Synthese = Synthese deriving ( Eq, Ord, Show, Read )
 
-data SI = SI { ausdruck :: Exp   
+data SI = SI { name :: String -- abkürzung
+	     , ausdruck :: Exp   
 	     , alphabet :: Set Char
 	     , beschreibung :: Maybe Doc -- falls Nothing, dann ausdruck
 	     , deterministisch :: Bool      -- soll deterministisch sein?
