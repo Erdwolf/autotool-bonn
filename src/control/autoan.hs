@@ -23,15 +23,15 @@ main =
 
 
 -- Msg. die mehrmals auftauchen
-msgKontrollEmail = do
-	th3 $ "Achtung: Der Email-Checker ist noch nicht aktiv. D.h. autotool funktioniert bis auf weiteres ohne Email-Check!"
-	ttxt $ "Eine Kontroll-Email wird Ihn zugesandt, " ++ 
-			 "diese muss innerhalb einer Woche beantwortet werden. " ++
-			 "In Ihrer Antwort muss die zugesandte Kontrollzahl " ++ 
-			 "im Subject (Betreff) stehen (z.B. \"Re: 1233456\"). " 
-	smallspacerow
-	ttxt $ "Erst danach können Sie mit dem Autotool arbeiten. " ++
-			 "Den Anmeldestatus können Sie auf Ihrer Autotool-Übersicht Seite sehen."
+msgKontrollEmail = do empty
+-- 	th3 $ "Achtung: Der Email-Checker ist noch nicht aktiv. D.h. autotool funktioniert bis auf weiteres ohne Email-Check!"
+-- 	ttxt $ "Eine Kontroll-Email wird Ihn zugesandt, " ++ 
+-- 			 "diese muss innerhalb einer Woche beantwortet werden. " ++
+-- 			 "In Ihrer Antwort muss die zugesandte Kontrollzahl " ++ 
+-- 			 "im Subject (Betreff) stehen (z.B. \"Re: 1233456\"). " 
+-- 	smallspacerow
+-- 	ttxt $ "Erst danach können Sie mit dem Autotool arbeiten. " ++
+-- 			 "Den Anmeldestatus können Sie auf Ihrer Autotool-Übersicht Seite sehen."
 
 msgPasswort = do 
 	empty
@@ -43,18 +43,20 @@ msgPasswort = do
 -- a) Neuanmeldung: 		registerPage 
 -- b) Normaler Login: 		checkLoginPage
 -- c) Passwort zu mailen: 	mailPasswdPage  
-loginPage mat F0  = 
+loginPage mat F0  = do
+	mglVorlesungen <- io getAllVorlesungenDB			
+	-- Vorlesungen zusammen kleben also [a,b,c] -> "a, b, c"
+	let { kleber a "" = a -- ignoriere leere Vorlesung ""
+		; kleber a b = a ++ ", " ++ b
+		; vorlesungen = foldr1 kleber mglVorlesungen }
 	standardQuery "Willkommen." $ do 
 		table $ do 
 			attr "width" "600"
 			hrrow
-			th3 "Hier können Sie Sich in die Übungsgruppen von Logik oder Berechenbarkeit/Komplexität einschreiben."
+			th3 "Login"
 			spacerow
-			ttxt "AKTUELL: Gesamtergebnisse (schriftl+autotool) Berechenb./Kompl. SS03"
-			spacerow
-			ttxt "Dazu müssen Sie Sich neuanmelden und dann eine Gruppe wählen."
-			spacerow
-			spacerow
+--			ttxt "AKTUELL: Gesamtergebnisse (schriftl+autotool) Berechenb./Kompl. SS03"
+--			spacerow
 			ttxt $ concat 
 					 [ "Wenn Sie bereits angemeldet sind, Matrikelnr. und Passwort eingeben." 
 					 ]
@@ -62,13 +64,19 @@ loginPage mat F0  =
 			spacerow
 			matF <- promptedInput		"Matrikelnr:"	$ (fieldSIZE 30) ## ( fieldVALUE mat )
 			pwdF <- promptedPassword	"Passwort:"		(fieldSIZE 30)
-			hrrow
 			-- a)
 			smallSubButton (F2 matF pwdF)	checkLoginPage	"Login" 
-			-- b)
-			smallSubButton F0	       		(registerPage "" "" "" "") "Neuanmeldung"
 			-- c)
 			smallSubButton (F1 matF) 		mailPasswdPage  "Passwort zuschicken, dazu bitte Matrikelnr. angeben."
+
+			hrrow
+			th3 $ "Hier können Sie Sich in die Übungsgruppen von " ++ vorlesungen ++ " einschreiben."
+			spacerow
+			ttxt "Dazu müssen Sie Sich neuanmelden und dann eine Gruppe wählen."
+			spacerow
+			-- b)
+			smallSubButton F0	       		(registerPage "" "" "" "") "Neuanmeldung"
+
 
 -- ------------- 
 -- Passwort Mail senden an Email-Adresse mit dieser Matrikelnummer,
@@ -254,7 +262,7 @@ studStatusPage mat F0 =
 				do 
  				attr "cellspacing" "2" 
 				attr "cellpadding" "5"
-				th3 "ACHTUNG: die Email-Ueberpruefung ist noch nicht aktiv."
+				--th3 "ACHTUNG: die Email-Ueberpruefung ist noch nicht aktiv."
 				-- (a)
 				tableRow2 (text "Name") 			( text ( vorname ++ ", " ++ name ++ " " ) )
 				tableRow2 (text "Matrikelnr.") 		( text mat )
@@ -295,7 +303,8 @@ studStatusPage mat F0 =
 		    where  lin (a,b) = tr $ do { td $ text a; td $ text b  }
 
 -- -----------------
--- Vorlesung hinzufügen
+-- TODO: alt nicht mehr benutzt
+-- Vorlesung hinzufügen 
 addVorlesungPage mat vorl F0 = do
 	vls <- io getAllVorlesungenDB
 	standardQuery "Vorlesung hinzufügen" $ 
