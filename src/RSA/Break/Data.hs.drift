@@ -1,0 +1,18 @@
+-- -*- mode: haskell -*-
+
+module RSA.Break.Data where
+
+import Reader
+import ToDoc
+
+data Config =
+     Config { public_key :: ( Integer, Integer )
+            , message :: Integer
+	    }
+
+{-! for Config derive: Reader, ToDoc !-}
+
+instance Show Config where show = render . toDoc
+instance Read Config where readsPrec = parsec_readsPrec
+
+
