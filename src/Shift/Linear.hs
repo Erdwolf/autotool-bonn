@@ -156,7 +156,7 @@ diffs k0 w xs = do
     ( a : b : rest ) <- return $ cuts k ys
     guard $ not $ null a
     ba <- maybeToList $ minusses b a
-    -- guard  $ all small ba
+    guard  $ all small ba
     -- cb <- maybeToList $ minusses c b
     -- guard $ ba == cb
     return $ ba

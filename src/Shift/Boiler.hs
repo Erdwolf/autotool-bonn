@@ -14,11 +14,11 @@ ak k = [2*k,3*k,5*k+1,7*k+1]
 
 ch f = if f then '+' else '-'
 
-ex k = map ( \ g -> Repeat { start = [ Item $ ch $ head g ]
+itemize = map ( \ g -> Repeat { start = [ Item $ ch $ head g ]
 			   , diff  = [ DZero ]
 			   , count = length g
 			   }
-	   ) $ group $ folge $ ak k
+	   ) . group 
 
 brk :: Break -> [ Linear () ]
 brk ms = map ( \ n -> Repeat { start = [ Item () ], diff = [ DZero ]
@@ -26,6 +26,7 @@ brk ms = map ( \ n -> Repeat { start = [ Item () ], diff = [ DZero ]
 			     } )
        $ grundy ms
 
-mainf a b c = smp $ worker False a $ take b $ brk c
+-- mainf a b c = smp $ worker False a $ take b $ brk c
+mainf a b c d = smp $ worker a b $ take c $ itemize $ folge d
 
 
