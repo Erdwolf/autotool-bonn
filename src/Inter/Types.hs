@@ -45,7 +45,7 @@ data Variant = forall p i b
 
 instance ToDoc Variant where 
     toDoc ( Variant v ) = -- text "Variant" -- <+> parens ( toDoc v )
-        text $ show ( problem v) ++ "-" ++  variant v
+        text $ show ( problem v) ++ "/" ++  variant v
 
 instance Show Variant where
     show = render . toDoc

@@ -19,6 +19,9 @@ import qualified Inter.Param as P
 import qualified Challenger
 
 import qualified LOOP.SQRT
+import qualified LOOP.TIMES
+import qualified LOOP.PRIM
+import qualified LOOP.FIB
 
 import Inter.Types
 import qualified Exception
@@ -28,8 +31,15 @@ import qualified Exception
 main :: IO ()
 main = do
      sqrt <- LOOP.SQRT.generate
+     times <- LOOP.TIMES.generate
+     prim <- LOOP.PRIM.generate
+     fib <- LOOP.FIB.generate
      wrapper $ \ env -> 
-	 iface [ Variant sqrt ] env
+	 iface [ Variant sqrt 
+	       , Variant times
+	       , Variant prim
+	       , Variant fib
+	       ] env
 	 `Exception.catch` \ err -> return $ p << pre << primHtml ( show err )
 
 ------------------------------------------------------------------------
@@ -89,11 +99,15 @@ page par msg =
 			, method "POST" ]
 		      )
 	     
-preface par = unordList 
-	    [ txtf "matrikel" ( P.matrikel par )
-	    , pwdf "passwort" ( P.passwort par )
-	    , txtf "aufgabe" ( P.problem par )
+preface par = table << 
+    aboves [ besides $  txtf "matrikel" ( P.matrikel par )
+		     ++ pwdf "passwort" ( P.passwort par )
+		     
+	    , besides $  txtf "problem" ( P.problem par )
+		     ++ txtf "aufgabe" ( P.aufgabe par )
 	    ]
 
-txtf name cont = p << name  +++ textfield name ! [ value cont ]
-pwdf name cont = p << name  +++ password name ! [ value $ show  cont ]
+txtf name cont = 
+    [ td << name , td << textfield name ! [ value cont ] ]
+pwdf name cont = 
+    [ td << name , td << password name ! [ value $ show  cont ] ]

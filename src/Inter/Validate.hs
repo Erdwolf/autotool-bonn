@@ -20,16 +20,18 @@ validate par = do
 		      vv <- P.variants par
 		      case vv of 
 			  Variant v -> do
- 			      guard $ P.variant par  
-				      ==        Inter.Types.aufgabe v
+ 			      guard $ P.problem par  
+				      == show ( Inter.Types.problem v )
+ 			      guard $ P.aufgabe par  
+				      ==        Inter.Types.variant v
  			      return vv
 	      case vvs of
 		   [ vv ] -> return $ Right $ par { P.snr = snr
 						  , P.variante = vv
 						  }
 		   _      -> return $ Left 
-		                    $ p << "mögliche Aufgaben:"
-				    +++ p << show ( P.variants par )
+		                    $ p << "mögliche Probleme/Aufgaben:"
+				    +++ pre << show ( P.variants par )
 
 
 

@@ -11,7 +11,8 @@ data Type =
      Param { -- user input
              matrikel :: String
 	   , passwort :: Passwort.Type
-	   , aufgabe  :: String
+	   , problem  :: String
+           , aufgabe  :: String
      	   , input    :: String
            -- after login key for DB
 	   , snr :: String
@@ -25,6 +26,7 @@ data Type =
 empty :: Type
 empty = Param { matrikel = ""
 			  , passwort = Passwort.empty
+			  , problem  = ""
 			  , aufgabe  = ""
 			  , input    = ""
 			  , snr 	 = ""
