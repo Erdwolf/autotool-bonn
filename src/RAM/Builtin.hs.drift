@@ -17,6 +17,7 @@ import Set
 data Builtin = Copy 
 	     | Plus  | Minus
 	     | Times | Div | Mod
+	     | Paar  | Links | Rechts
 	     | Suc   | Pre
      deriving ( Eq, Ord, Enum, Ix )
 
@@ -28,7 +29,7 @@ none = mkSet [ ]
 
 every :: Set Builtin
 -- ohne Suc !
-every = mkSet [ Copy .. Mod ]
+every = mkSet [ Copy .. Pre ]
 
 
 instance Show Builtin where show = render . toDoc
@@ -47,10 +48,22 @@ table = array ( Copy, Pre )
 	      , ( Times, ( 2, \ [x, y] -> x * y ) )
 	      , ( Div  , ( 2, \ [x, y] -> if y == 0 then 0 else x `div` y ) )
 	      , ( Mod  , ( 2, \ [x, y] -> if y == 0 then 0 else x `mod` y ) )
+
+	      , ( Paar , ( 2, \ [x, y] -> 2^x * (2*y + 1) ) )
+	      , ( Links, ( 1, \ [x]    -> let (l,r) = decode x in l ) )
+	      , ( Rechts, ( 1, \ [x]    -> let (l,r) = decode x in l ) )
+
 	      , ( Suc , ( 1, \ [x   ] -> succ x ) )
 	      , ( Pre , ( 1, \ [x   ] -> max 0 $ pred x ) )
 	      ]
 
+
+decode :: Integer -> ( Integer, Integer )
+-- zerlege in 2^x * (2*y + 1)
+decode n = if odd n 
+	   then ( 0, n )
+	   else let ( x, y ) = decode ( n `div` 2 )
+		in  ( succ x, y )
 
 get :: Builtin -> Entry
 get b = table ! b
