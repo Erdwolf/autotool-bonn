@@ -5,20 +5,40 @@ module Main where
 --
 -- Inhalt:
 --
--- einfaches cgi-Interface zum Autotool, 
--- keine komplexe Zustandsfolge wie bei wash,
--- sondern jedesmal kompletter Neustart. 
--- Gedaechtniss ist Parameter s.u.
+-- einfaches cgi-Interface zum Autotool.
 --
+-- Allgemein:
+--  bei jedem CGI-aufruf werden: 
+--  - die login-daten neu geprüft, 
+--  - die instanz neu erzeugt,
+--  - die lösung bewertet, 
+--  - und eine textarea für die eingabe
+--    des nächsten versuchs generiert.
+--
+--  keine komplexe Zustandsfolge wie bei wash,
+--  sondern jedesmal kompletter Neustart. 
+--  (siehe ../doc/haskell-wash.txt)
+--  Gedaechtniss ist Parameter s.u.
+--
+-- Autoren: Johannes Waldmann, Alf Richter
+--
+
+-- Standard CGI,HTML lib
 import Network.CGI
 import Text.Html hiding ( text  )
+
+-- Pretty-Printer Erweiturng
 import ToDoc (Doc, render, toDoc)
 
+-- Aufgaben Bewertungsprotokoll
 import Reporter
 import qualified Output
 import qualified Output.Html
 
+--
 -- CGI Env-Variabeln in Parameter umwandeln
+-- Akutellen Zustand berechen.
+--
 import Inter.Env
 
 --
@@ -32,6 +52,11 @@ import Inter.Env
 import Inter.Validate
 
 import Inter.Evaluate
+
+--
+-- Bewertung einer Lösung in der (Daten)Bank sichern
+-- und ins Logs schreiben.
+--
 import Inter.Bank
 
 --
@@ -49,7 +74,9 @@ import qualified Challenger
 import Inter.Types
 import qualified Exception
 
+--
 -- hier sind die aufgaben drin:
+--
 import Inter.Boiler
 
 import qualified Posix
