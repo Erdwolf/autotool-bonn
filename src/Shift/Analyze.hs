@@ -7,7 +7,10 @@ import Shift.Computer
 import Shift.Repeater
 import Shift.Common
 
+import Util.Uniq
+
 import Monad ( guard )
+
 
 import FiniteMap
 import Set
@@ -17,6 +20,8 @@ import List ( inits, tails, group )
 type State = [ Bool ]
 
 type STI = (State, Int)
+
+
 
 hamming :: State -> State -> Int
 -- anzahl verschiedener positionen

@@ -3,7 +3,7 @@ module Shift.Computer where
 -- $Id$
 
 import Shift.Type
-
+import Shift.Iterate
 import Shift.Enum
 
 import FiniteMap
@@ -26,7 +26,7 @@ smp = sequence_ . map print
 
 
 next0 :: Int -> Pins -> [Bool] -> [Bool]
--- wegen effizienz wird length ps nicht immer ausgerechnet
+-- wegen effizienz wird maximum ps nicht immer ausgerechnet
 next0 m ps xs = take m
 		$ not ( and $ do p <- ps ; return $ xs !! (p - 1) )
 		: xs
@@ -38,7 +38,7 @@ zustands_folge :: Pins -> [[ Bool ]]
 zustands_folge ps = 
     let m = maximum (0 : ps)
 	start = replicate m True 
-    in  tail $ iterate (next0 m ps) $ start
+    in  tail $ iterate_strict (next0 m ps) $ start
 
 folge :: Pins -> [ Bool ]
 folge = map head . zustands_folge
@@ -61,14 +61,15 @@ find xs =
 -------------------------------------------------------------------
 
 
+{-# SPECIALIZE find :: ([Bool] -> [Bool]) -> [Bool] -> Int #-}
 
 ffind :: Eq a => (a -> a) -> a -> Int
 -- etwas more tricky:
 -- vergleicht die folgen  f x0, f f x0, ..., f^k x0
 --                   und  f f x0, f f f f x0, ..., f^{2k} x0
 ffind next x0 =
-    let slow = iterate next x0
-	fast = iterate (next . next) x0
+    let slow = iterate_strict next x0
+	fast = iterate_strict (next . next) x0
 	link = tail $ zip3 [0..] slow fast
 
 	-- c ist das kleinste c mit f^c x0 == f^{2c} x0
@@ -76,7 +77,7 @@ ffind next x0 =
 
 	-- bestimme das erste vorkommen von x danach 
 	-- (ergibt kleinste periodenlänge)
-	d = head $ do (i, y) <- tail $ zip [0..] $ iterate next x
+	d = head $ do (i, y) <- tail $ zip [0..] $ iterate_strict next x
 		      guard $ y == x
 		      return i
     in	d

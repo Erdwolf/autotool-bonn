@@ -8,6 +8,7 @@ import Shift.Type
 import Shift.Computer
 import Shift.Meta
 import Shift.Enum
+import Shift.Iterate
 
 import Util.Zufall
 
@@ -95,7 +96,7 @@ update [] x = [x | x /= 0]
 update (d : ds) x = x : update ds (x - d)
 	
 predict :: [Int] -> [Int]
-predict ds = tail $ map head $ iterate next ds
+predict ds = tail $ map head $ iterate_strict next ds
     where next [d] = [d]
 	  next (d : ds) = 
 	      let es = next ds

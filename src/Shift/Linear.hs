@@ -2,6 +2,8 @@ module Shift.Linear where
 
 -- $Id$
 
+import Shift.Iterate
+
 import ToDoc
 import Monad ( guard, mzero )
 import Maybe
@@ -62,7 +64,7 @@ unfolder ls = do l <- ls ; unfold l
 
 repeater :: Linear a -> [[ Linear a ]]
 -- produce infinite list, not recursively unfolded
-repeater x =  iterate (flip plusses (diff x)) (start x)
+repeater x =  iterate_strict (flip plusses (diff x)) (start x)
 
 plusses :: [Linear a] -> [Diff] -> [Linear a]
 plusses xs ds = 

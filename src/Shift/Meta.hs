@@ -54,8 +54,8 @@ delta deg ps = do
     inform $ fsep [ text "Betrachte die", toDoc deg <> text "-te"
 		  , text "Differenzenfolge", toDoc ps
 		  ]
-    when ( null ps )
-         $ reject $ text "Die Folge ist zu kurz,"
+    when ( length ps < deg )
+         $ reject $ text "Diese Folge ist zu kurz,"
 		    <+> text "ich kann das Wachstum nicht bestimmen."
 
     if ( all (== 0) ps )
