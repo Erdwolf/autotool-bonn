@@ -14,17 +14,27 @@ generates :: [ IO Variant ]
 generates = 
     [ H.make $ H.Config 
 	     { H.alphabet = mkSet [ 'a' .. 'i' ]
-	     , H.range    = ( 5, 15 )
+	     , H.range    = ( 1, 50 )
 	     }
     , C.enc  $ C.Config
 	     { C.coder    = Code.Move_To_Front.coder
 	     , C.alphabet = mkSet [ 'a' .. 'e' ]
-	     , C.length_range = ( 10, 15 )
+	     , C.length_range = ( 10, 13 )
+	     }
+    , C.dec  $ C.Config
+	     { C.coder    = Code.Move_To_Front.coder
+	     , C.alphabet = mkSet [ 'b' .. 'e' ]
+	     , C.length_range = ( 11, 14 )
+	     }
+    , C.enc  $ C.Config
+	     { C.coder    = Code.Burrows_Wheeler.coder
+	     , C.alphabet = mkSet [ 'a' .. 'c' ]
+	     , C.length_range = ( 12, 13 )
 	     }
     , C.dec  $ C.Config
 	     { C.coder    = Code.Burrows_Wheeler.coder
 	     , C.alphabet = mkSet [ 'a' .. 'f' ]
-	     , C.length_range = ( 12, 15 )
+	     , C.length_range = ( 11, 14 )
 	     }
     ]
 

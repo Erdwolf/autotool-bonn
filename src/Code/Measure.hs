@@ -10,8 +10,8 @@ measure :: Ord a
 	-> Code a b
 	-> Int
 measure freq code = sum $ do
-    x <- keysFM freq
+    ( x, c ) <- fmToList freq
     let cs = lookupWithDefaultFM code ( error "Code.Measure" ) x
-    return $ length cs
+    return $ length cs * c
 
 
