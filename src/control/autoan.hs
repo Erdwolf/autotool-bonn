@@ -3,6 +3,7 @@ module Main where
 import Wash.HTMLMonad 
 import Wash.CGI hiding ( io )
 import qualified Wash.CGI
+import qualified Wash.CGIMonad
 
 import IO
 import Data.Char ( toLower )
@@ -30,6 +31,8 @@ main =  run [] ( loginPage "" F0 ) --mainCGI
      `Exception.catch` \ ex -> putStrLn $ "\n\n" ++ show ex 
 
 
+io :: (Show a, Read a) =>
+               IO a -> Wash.CGIMonad.CGI a
 io = Wash.CGI.io
 
 
