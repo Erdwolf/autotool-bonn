@@ -33,7 +33,7 @@ make ( defcon :: Con.Config c m ) =
 	          { problem = N.Computer
 		  , tag = t
 		  , key = \ matrikel -> return matrikel
-		  , gen = \ key -> fnum conf key 
+		  , gen = \ vnr manr key -> fnum conf key 
 		  }
 	    ) defcon
 

@@ -36,9 +36,14 @@ form k zs =
 	    , beweis = zs
 	    }
 
+-- | nimmt eine konfiguration und setzt bei einem roboter
+-- das ziel auf (0,0)
+somes :: Config -> [ Config ]
 somes k = do
     ( pre, x : post ) <- splits $ robots k
     return $ make $ pre ++ [ x { ziel = Just (0,0) } ] ++ post
+
+----------------------------------------------------------------------------
 
 action :: IORef Int -> Int -> Integer -> IO ()
 action top n w = do

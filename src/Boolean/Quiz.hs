@@ -6,6 +6,7 @@ import Boolean.Op
 import Boolean.Instance
 
 import Autolib.TES.Type
+import qualified Autolib.TES.Binu as B
 import qualified Autolib.TES.Enum as E
 import Autolib.TES.Identifier
 import Autolib.TES.Position
@@ -19,18 +20,12 @@ import Util.Datei
 import Util.Cache
 
 import Inter.Types
+import Inter.Quiz
 
-conf :: E.Binu ( Op Bool )
-conf = E.Binu
-     { E.binary  = [ read "&&", read "||", read "<", read "==" ]
-     , E.unary   = [ ]
-     , E.nullary = [ read "true", read "false" ]
-     }
-
-roll :: Int -> IO ( Term Identifier ( Op Bool ))
-roll i = do
+roll :: BIC -> IO ( Term Identifier ( Op Bool ))
+roll bic = do
     -- throw term
-    t <- E.choose conf i
+    t <- E.choose ( operators_in_instance bic ) ( formula_size bic )
     -- insert negation
     p <- eins $ pos t
     let s = poke t ( p, Node (read "!") [ peek t p ] )
@@ -41,38 +36,25 @@ roll i = do
     let r = pokes s qvs
     return r
 
-
-qmake :: Int -> IO Inter.Types.Variant
-qmake p = return 
-       $ Inter.Types.Variant
-       $ quiz "Boolean" "Quiz" p
-
-
 make :: Make
-make = Make "Boolean-Quiz"
-            ( \ i -> quiz "Boolean" "Quiz" i )
-	    5
+make = quiz Boolean 
+     $ BIC { formula_size = 5
+	   , operators_in_instance = B.Binu
+                { B.binary  = [ read "&&", read "||", read "<", read "==" ]
+		, B.unary   = [ ]
+		, B.nullary = [ read "true", read "false" ]
+		}
+	   , operators_in_solution = read "mkSet [ !, ||, && ]" 
+	   }
 
-quiz :: String -- Aufgabe
-     -> String -- Version
-     -> Int
-     -> Inter.Types.Var Boolean BI ( Exp Bool )
-quiz auf ver par =
-    Inter.Types.Var { problem = Boolean
-             , tag = auf ++ "-" ++ ver
-             , key = \ mat -> return mat
-             , gen = \ key -> do
-                   seed $ read key
-                   x <- cache (  Datei { pfad = [ "autotool", "cache"
-                                           , auf, ver
-                                           ]
-                                  , Util.Datei.name = key
-                                  , extension = "cache"
-                                  }
-                         ) ( roll par )
-                   return $ return 
-			  $ BI { formula = x
-		      , operators = read "mkSet [ !, ||, && ]" 
-			       }
-	      }
+instance Generator Boolean BIC BI where
+   generator p conf key = do
+       x <- roll conf
+       return $ BI { formula = x
+		   , operators = operators_in_solution conf
+		   }
+
+instance Project Boolean BI BI where
+   project p bi = bi
+
 

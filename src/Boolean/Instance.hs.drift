@@ -5,6 +5,7 @@ module Boolean.Instance where
 --  $Id$
 
 import Boolean.Op
+import qualified Autolib.TES.Binu as B
 import qualified Boolean.Equiv
 
 import Challenger.Partial
@@ -31,6 +32,15 @@ data BI =
      deriving ( Typeable )
 
 {-! for BI derive: Haskell2Xml, ToDoc, Reader !-}
+
+data BIC =
+     BIC { formula_size :: Int
+	 , operators_in_instance :: B.Binu ( Op Bool )
+	 , operators_in_solution :: Set ( Op Bool )
+	 }
+     deriving ( Typeable )
+
+{-! for BIC derive: Haskell2Xml, ToDoc, Reader !-}
 
 instance Partial Boolean BI ( Exp Bool ) where
 

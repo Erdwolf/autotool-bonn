@@ -83,24 +83,5 @@ instance C.Partial Sortier Int Netz where
 	     [ text "Das sind zuviele Komparatoren."
 	     ]
 
-
-synthese :: String -- aufgabe (major)
-         -> String -- aufgabe (minor)
-         -> Int
-         -> Var  Sortier Int Netz
-synthese auf ver i =
-    Var { problem = Sortier
-        , tag = auf ++ "-" ++ ver
-        , key = \ matrikel -> do
-              return ""
-        , gen = \ key -> return $ do
-	      return i
-        }
-
-generates :: [ IO Variant ]
-generates = do 
-    w <- [ 4 .. 9 ]
-    return $ return $ Variant $ synthese "Netz" ( show w ) w
-
 make :: Make
 make = direct Sortier (5 :: Int)

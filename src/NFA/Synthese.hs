@@ -1,3 +1,6 @@
+-- | vom regulären Ausdruck zum Automaten
+--  $Id$
+
 module NFA.Synthese 
 
 ( module NFA.Synthese
@@ -5,10 +8,6 @@ module NFA.Synthese
 )
 
 where
-
--- vom regulären Ausdruck zum Automaten
-
--- -- $Id$
 
 import NFA.SI
 
@@ -65,19 +64,6 @@ instance C.Partial  Synthese SI ( NFA Char Int )
 	assert f $ text "Stimmen die Sprachen überein?"
         when (  deterministisch i ) $ Autolib.NFA.Check.deterministisch b
         return () 
-
-synthese :: String -- aufgabe (major)
-	 -> String -- aufgabe (minor)
-	 -> SI
-	 -> Var  Synthese SI ( NFA Char Int )
-synthese auf ver i = 
-    Var { problem = Synthese
-	, tag = auf ++ "-" ++ ver
-	, key = \ matrikel -> do 
-	      return ""
-	, gen = \ key -> return $ do
-	      return i
-	}
 
 make :: Make
 make = direct Synthese NFA.SI.example

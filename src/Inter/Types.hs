@@ -7,7 +7,7 @@ import Autolib.Reporter
 import Challenger.Problem
 import Challenger.Partial
 
--- import ShowFunctions
+import Control.Types
 
 import  Autolib.ToDoc
 import  Autolib.Reader
@@ -34,8 +34,6 @@ data Make = forall conf p i b
 
 instance ToDoc Make 
     where toDoc ( Make doc fun ex ) = text doc
-instance Show Make
-    where show = render . toDoc
 
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)
@@ -48,7 +46,7 @@ direct p i = Make
 	     ( \ i -> Var { problem = p
 		   , tag = show p ++ "-Direct"
 		   , key = \ mat -> return mat
-		   , gen = \ key -> return $ return i
+		   , gen = \ vnr manr key -> return $ return i
 		   }
 	     )
              i
@@ -57,6 +55,7 @@ data Var p i b =
          Var { problem :: p 
 	     -- | das ist der unique bezeichner 
 	     -- (den der benutzer in auswahlliste sieht)
+	     -- gar nicht mehr wahr!
 	     , tag :: String
 	     -- | erzeugt cached version der instanz (o. ä.)
 	     , key :: Matrikel -> IO Key
@@ -66,9 +65,7 @@ data Var p i b =
 	     -- das würfeln soll schweigend gehen,
 	     -- wenn es etwas zu sagen gibt,
 	     -- dann soll es mit (informed) drangeschrieben werden.
-	     , gen :: Key -> IO ( Reporter i )
-
-
+	     , gen :: VNr -> Maybe ANr -> Key -> IO ( Reporter i )
 	     }
       deriving Typeable
 

@@ -8,11 +8,8 @@ import PCProblem.Generator
 
 
 import Inter.Types
+import Inter.Quiz
 import Challenger.Partial
-
-import Util.Datei
-import Util.Cache
-import Autolib.Util.Seed
 
 import Data.Array
 import Autolib.Reporter
@@ -69,45 +66,12 @@ instance Partial PCProblem PCP Folge where
           assert ( us == vs )
 	         $ text "Sind die Zeichenketten gleich?"
 
+--------------------------------------------------------------------------
 
-make :: String -- Aufgabe
-     -> String -- Version
-     -> ( Key -> IO PCP )
-     -> Var PCProblem PCP Folge
-make auf ver gene =  
-         Var { problem = PCProblem
-	     , tag = auf ++ "-" ++ ver
-	     -- erzeugt cached version der instanz (o. ä.)
-	     -- key :: Matrikel -> IO Key
-	     , key = \ mat -> return mat
-	     -- holt tatsächliche instanz
-	     -- gen :: Key -> IO ( Reporter i )
-	     , gen = \ key -> do
-                   p <- cache 
-	               (  Datei { pfad = [ "autotool", "cache"
-			   , auf, ver
-			     ]
-		          , name = key
-			  , extension = "cache" 
-  		          }
-       	                ) ( gene key )
-	           return $ do
-	               return p
-	     }
-
-quiz :: Param -> Key -> IO PCP
-quiz par = \ key -> do
-     seed $ read key
-     (p, f) <- generator par
-     return p
 
 make_quiz :: Make
-make_quiz = Make "PCP-Quiz"
-    ( \ par -> make "PCP" "Quiz" $ quiz par )
+make_quiz = quiz PCProblem
     PCProblem.Param.g
-
-fixed :: PCP -> Key -> IO PCP
-fixed pcp = \ key -> return pcp
 
 make_fixed :: Make
 make_fixed = direct PCProblem 

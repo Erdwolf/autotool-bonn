@@ -89,7 +89,7 @@ iface mks = do
                       return auf
     stud' <- get_stud tutor stud
     hr
-    ( cs, res ) <- solution stud' mk auf' 
+    ( cs, res ) <- solution vnr manr stud' mk auf' 
     -- bewertung in DB (für Stud-Variante)
     when ( not tutor ) $ punkte stud' auf' ( cs, res )
     return ()
@@ -193,14 +193,14 @@ get_stud tutor stud =
 -- | eingabe und bewertung der lösung
 -- für tutor zum ausprobieren
 -- für student echt
-solution stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
     let conf = read $ toString $ A.config auf
         var = fun  conf
         p = problem var
     let mat = S.mnr stud
     k <- io $ key var $ toString mat 
-    g <- io $ gen var k
+    g <- io $ gen var vnr manr k
     let ( Just i  , com :: Doc ) = export g
         ini  = initial  (problem var) i
         -- desc = describe (problem var) i

@@ -19,6 +19,8 @@ import Random
 import Data.Maybe
 import Autolib.Set
 
+import Inter.Quiz
+
 gen :: Param -> IO PCP
 gen g = do
     uvs <- sequence $ do 
@@ -54,14 +56,17 @@ triviale_instanz i @ ( PCP uvs ) = or $ do
 count :: Eq a => a -> [a] -> Int
 count x = length . filter ( == x ) 
 
-generator :: Param -> IO ( PCP, Folge )
--- erzeuge studentenfreundliche lösbare instanzen
-generator g = do
-    ( i, Just f ) <- sol g `repeat_until` \ ( p, mf ) -> 
-        not ( triviale_instanz p ) && 
-        case mf of
-	     Nothing -> False
-	     Just f  -> nah g <= length f && length f <= fern g
-    return ( i, f )
+instance Generator PCProblem Param ( PCP, Folge ) where
+   generator p conf key = do
+       ( i, Just f ) <- sol g `repeat_until` \ ( p, mf ) -> 
+           not ( triviale_instanz p ) && 
+           case mf of
+	       Nothing -> False
+	       Just f  -> nah g <= length f && length f <= fern g
+       return ( i, f )
+
+instance Project PCProblem ( PCP, Folge ) PCP where
+   project p ( i, f ) = i
+
 
 

@@ -1,5 +1,5 @@
 -- | vom Automaten zum regulären Ausdruck
-
+--  $Id$
 module NFA.Analyse 
 
 ( module NFA.Analyse
@@ -7,9 +7,6 @@ module NFA.Analyse
 )
 
 where
-
-
---  $Id$
 
 import NFA.AI
 
@@ -56,19 +53,6 @@ instance C.Partial  Analyse AI Exp
 
 	assert f $ text "Stimmen die Sprachen überein?"
         return () 
-
-analyse :: String -- aufgabe (major)
-	 -> String -- aufgabe (minor)
-	 -> AI
-	 -> Var  Analyse AI Exp
-analyse auf ver i = 
-    Var { problem = Analyse
-	, tag = auf ++ "-" ++ ver
-	, key = \ matrikel -> do 
-	      return ""
-	, gen = \ key -> return $ do
-	      return i
-	}
 
 make :: Make
 make = direct Analyse NFA.AI.example

@@ -96,7 +96,7 @@ instance GraphC a  => Hash ( Pin a ) where
 
 instance ( GraphC a, Show a ) => ToDot ( Pin a ) where
     toDot ( Pin g f ) = toDot $ pin g f 
-    toDotProgram _ = "neato" 
+    toDotProgram _ = Neato
     toDotOptions _ = unwords [ "-s" ]
 
 pin :: GraphC a

@@ -1,7 +1,7 @@
+-- | drei-färbung (mit würfeln) 
 -- autor m.lindemeyer
 -- stinfwww.informatik.uni-leipzig.de/~psy99hvr
 -- (8484955)
-
 -- patches: joe@informatik.uni-leipzig.de
 
 module Col.DreiCol
@@ -28,7 +28,7 @@ import Control.Monad ( guard ) -- old style
 
 data DreiCol = DreiCol deriving Show
 
--- Färbung als Abbildung : Knotemengen -> Zahlen
+-- | Färbung als Abbildung : Knotemengen -> Zahlen
 type Faerbung a = Graph.Labeling.Labeling a Integer
 
 
