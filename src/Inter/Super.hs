@@ -98,12 +98,15 @@ core ( var :: Var p i b ) env = do
 	   , besides [ td << "Description", td << pre << show desc ]
 	   , besides [ td << "Initial", td << pre << show ( toDoc ini ) ]
 	   ]
-    
+
+
+    let desc = pre << ( show $ describe p i )
     log <- editor "solution" ini env $ \ b -> do
-	   let (res, com :: Doc) = export $ evaluate' p i b
+	   let (res, com :: Doc) = export $ do
+		    evaluate' p i b
            return $ pre << show com
 
-    return $ header +++ belly +++ log
+    return $ header +++ belly +++ desc +++ log
 
 ---------------------------------------------------------------------------------
 
