@@ -118,9 +118,14 @@ drift-clean :
 drift-commit : drift-clean drift
 	cvs commit -m drift-commit $(DRIFT)
 
-
-face : Inter/Face.cgi
+INTER_FACE=Inter/Face.cgi
+INTER_FACE_TARGETDIR=root@theo1:/usr/lib/cgi-bin/Face.cgi
+face : $(INTER_FACE) 
 	cp $< $(CGIBIN)/
+
+
+install-face : $(INTER_FACE)
+	scp $< $(INTER_FACE_TARGETDIR)
 
 .PHONY : do
 
@@ -137,3 +142,15 @@ objclean:
 
 clean: objclean
 #	$(call forall,$@)
+
+
+
+
+cvs-update:
+	cvs update -d 2>&1 | tee cvs.log
+
+cvs-update-log: 
+	cat cvs.log | grep -E '^[A-Z] '
+
+cvs-status:
+	cvs status 2>&1 | grep "File:" | grep -v "Up-to-date"
