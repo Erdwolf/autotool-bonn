@@ -59,7 +59,7 @@ instance Problem Robots
 -- erzeugt den Ausgabestring fuer die HTML Ausgabe der Instanz
 erzInstanz :: Konfig -> String
 erzInstanz rs =
-    "<tr><td><PRE>" ++ nice rs ++ "</PRE></td></tr>"	
+    "<tr><td><PRE>" ++ show (nice rs) ++ "</PRE></td></tr>"	
 
 -- erzeugt den AusgabeString fuer die HTML Ausgabe des Beweises 
 erzBeweis :: [Zug] -> String
