@@ -43,8 +43,10 @@ inter :: PCP
       -> IO (  Listener ( Select Int ) -> ( Component, Listener Folge ))
 inter (PCP pcp) = do
 
-    let top = ( mkLabel "leer" ) { ident = Ident "top" }
-        -- mid = ( mkLabel "leer" ) { ident = Ident "mid" }
+    let 
+	top0 = ( mkLabel "oberes Wort:" ) { ident = Ident "top0" }
+        top = ( mkLabel "leer" ) { ident = Ident "top" }
+	bot0 = ( mkLabel "unteres Wort:" ) { ident = Ident "bot0" }
         bot = ( mkLabel "leer" ) { ident = Ident "bot" }
 
         topword m = do x <- m; fst (pcp !! fromIntegral (x-1))
@@ -52,12 +54,12 @@ inter (PCP pcp) = do
 
         set = splits
 	    [ translate ( \ m -> [ Text $ topword m ] ) $ changeL top
-	    -- , translate ( \ m -> [ Text $ show m    ] ) $ changeL mid
 	    , translate ( \ m -> [ Text $ botword m ] ) $ changeL bot
 	    ]
 
         kname k = Ident $ "P" ++ show k
 
+	pairs0 = ( mkLabel "Wählen Sie:" ) { ident = Ident "pairs0" }
         pairs listener = do
            (k, (l,r)) <- zip [1 ..] pcp
 	   return $ ( mkButton ( l ++ "/" ++ r ) )
@@ -65,10 +67,10 @@ inter (PCP pcp) = do
 		    , action = emit (Pick k) $ listener 
 		    }
 
-    return $ \ listener -> ( above ( row $ pairs listener )
-			           ( column [ top
-					    -- , mid
-					    , bot ] )
+    return $ \ listener -> ( grid [ pairs0 : pairs listener 
+			          , [ top0, top ]
+				  , [ bot0, bot ] 
+				  ]
 			   , set 
 			   )
 
