@@ -2,15 +2,22 @@ module Model.SRS where
 
 -- $Id$
 
+-- semantic labeling into a finite domain
+
+-- ideas communicated by Hans Zantema
+-- implementation by Johannes Waldmann
+
 -- brute force search
--- for all (exact) models of an SRS
+-- for all (monotonic quasi-) models of an SRS
 
 import Letters
 import SRS.Type
 import SRS.Aged ( Aged (..) )
 import qualified SRS.Aged ( combine )
 
+import qualified Relation
 import Data.Array
+import Size
 import Sets
 import Monad ( guard )
 
@@ -25,12 +32,24 @@ combine f g = array (bounds f) $ do
     return (x, g ! y)
 
 functions :: Ix a 
-	  => (a, a) -> [ Function a a ]
+	  =>  Relation.Type a a
+	  -> [ Function a a ]
 -- restriction: only for consecutive letters
-functions bnd = do
-    let xs = range bnd
+functions rel = do
+    let xs = setToList $ Relation.source rel
+        bnd = (minimum xs, maximum xs) -- used only for indexing in arrays
+        
     ys <- lists (length xs) xs
-    return $ listArray bnd ys
+    let f = listArray bnd ys
+    guard $ is_monotonic rel f
+    return f
+
+is_monotonic :: Ix a
+	     => Relation.Type a a -> Function a a 
+             -> Bool
+is_monotonic rel f = and $ do
+    (x, y) <- Relation.pairs rel
+    return $ Relation.holds rel (f ! x) (f ! y)
 
 identity :: Ix a 
 	 => (a, a) -> Function a a
@@ -44,13 +63,48 @@ type Model c a = Array c ( Function a a )
 
 labeled :: ( Ix c )
 	=> SRS c
-	-> Int
+        -> Relation.Type Int Int
 	-> [ ( Model c Int , SRS (Aged c) ) ]
-labeled srs n = do
-    m <- models srs n
+labeled srs rel = do
+    m <- models srs rel
     let srs' = labeled_srs m srs
     guard $ not $ contains_a_copy srs srs'
-    return ( m, srs' )
+    let e = essential srs'
+    return ( m, e )
+
+ex =  [("ab","a2b"),("ba","b1a")]
+
+
+
+essential :: Ord c => SRS c -> SRS c
+-- remove rules that have a weight decreasing letter
+essential srs = do
+    let cs = non_rising_letters srs
+    lr <- srs
+    guard $ not $ falling cs lr
+    return lr
+
+falling nr lr = or $ do
+    c <- nr
+    return $ 0 > diff c lr
+
+non_rising_letters srs = do
+    c <- setToList $ letters srs
+    guard $ not $ rising srs c
+    return c
+
+rising :: Eq c => SRS c -> c -> Bool
+rising srs c = or $ do
+    lr <- srs
+    return $ 0 < diff c lr 
+
+diff :: Eq c => c -> Rule c -> Int
+-- if < 0, then letter vanishes (weight decreases)
+diff c (l, r) = count c r - count c l
+
+count :: Eq c => c -> [c] -> Int
+count c w = length $ filter ( == c ) w
+
 
 form ( srs' :: SRS (Aged Char) ) = unwords
 	  $ do (l, r) <- srs'
@@ -69,11 +123,10 @@ contains_a_copy ( srs :: SRS c ) ( srs' :: SRS (Aged c ) ) = or $ do
     
 models :: ( Ix c )
        => SRS c 
-       -> Int   -- intended size
+       -> Relation.Type Int Int  -- intended domain
        -> [ Model c Int ]
-models srs n = do
-
-    let funs  = functions (1, n)
+models srs rel = do
+    let funs  = functions rel
 
     let alpha = setToList $ letters srs
 	c = length alpha
@@ -84,17 +137,18 @@ models srs n = do
 
     guard $ not $ trivial m
 
-    guard $ check m srs
+    guard $ check rel m srs
     return m
 
 trivial :: ( Ix c , Ix a )
 	 => Model c a -> Bool
-trivial m =  all constant ( elems m )
+trivial m =  constant ( elems m )
 	  || all identic  ( elems m )
 
 constant :: Ix a
-	 => Function a a -> Bool
-constant f = 1 >= ( cardinality $ mkSet $ elems f )
+	 => [ Function a a ] -> Bool
+-- alle den gleichen wert?
+constant fs = 1 >= ( cardinality $ mkSet $ concat $ map elems fs )
 
 identic :: Ix a 
         => Function a a -> Bool
@@ -102,12 +156,16 @@ identic f = indices f == elems f
 
 
 check :: (Ix a, Ix c) 
-      => Model c a -> SRS c -> Bool
-check m srs = all ( check_rule m ) srs
+      => Relation.Type a a -> Model c a -> SRS c -> Bool
+check rel m srs = all ( check_rule rel m ) srs
 
 check_rule :: ( Ix a, Ix c ) 
-	   => Model c a  -> Rule c -> Bool
-check_rule m (l, r) = inter m l == inter m r
+	   => Relation.Type a a -> Model c a  -> Rule c -> Bool
+check_rule rel m (l, r) = and $ do
+    let ir = inter m r
+	il = inter m l
+    x <-  indices ir
+    return $ Relation.holds rel (ir ! x) (il ! x)
 
 inter :: ( Ix a, Ix c ) 
       => Model c a -> [c] -> Function a a
