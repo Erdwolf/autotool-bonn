@@ -9,7 +9,7 @@ import Machine.Class
 import qualified Challenger as C
 
 import Inter.Types
-import Reporter
+import Reporter hiding ( output )
 import ToDoc
 import Informed
 
