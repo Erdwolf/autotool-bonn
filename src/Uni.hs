@@ -11,7 +11,6 @@ import Inter.Types
 -- import qualified Syntax.Pumping
 
 -- import Serie6
-
 import qualified Uni.SS04.Serie1
 import qualified Uni.SS04.Serie2
 
@@ -22,7 +21,7 @@ boiler :: IO [ Variant ]
 boiler = sequence -- der erste ist der default-wert!       
        $  []
 
-       ++ Uni.SS04.Serie1.generate
+--       ++ Uni.SS04.Serie1.generate
        ++ Uni.SS04.Serie2.generate
 
 
