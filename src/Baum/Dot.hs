@@ -23,7 +23,7 @@ import Control.Monad.State
 
 instance ( Show a ) => ToDot ( Tree a ) where
     toDotProgram t = Dot
-    toDotOptions t = unwords [ "-Gordering=out" ]
+    toDotOptions t = unwords [ "-Gordering=out", "-Gnodesep=0" ]
 
     toDot t = 
 	let it = number t
