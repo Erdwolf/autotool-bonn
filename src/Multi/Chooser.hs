@@ -8,18 +8,29 @@ import Multi.Selection
 import CGI hiding ( span, map, div, head, name )
 import qualified CGI
 
+import qualified Persistent2 as P
+
 import Util.Datei
 import Random
 
 chooser :: Config -> IO ()
 chooser conf = do
     its <- selection conf
-    run [] $ choose_page conf its F0
+    runWithHook [] (gen its) $ choose_page conf F0
 
-choose_page :: Config -> [ Item ] -> F0 b -> CGI () 
-choose_page conf its F0 = standardQuery "Choose" $ do
-    radios <- items its
-    submit (FL radios ) (answer_page its) empty
+persil = "Choose"
+
+gen its _ = do
+    P.init persil its
+    return ()
+
+choose_page :: Config -> F0 b -> CGI () 
+choose_page conf F0 = do
+    Just hdl <- P.init persil undefined
+    Just its <- P.get hdl
+    standardQuery "Choose" $ do
+        radios <- items its
+        submit (FL radios ) (answer_page its) empty
 
 answer_page :: HasValue a => [Item] -> FL (a Int) VALID -> CGI ()
 answer_page its (FL radios) = standardQuery "Answer" $ do

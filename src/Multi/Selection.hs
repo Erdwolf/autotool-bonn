@@ -8,6 +8,8 @@ import Multi.Paths
 import Util.Zufall
 import Util.Datei
 
+import Types -- wash
+
 import Monad ( guard )
 
 data Item = 
@@ -15,6 +17,13 @@ data Item =
 	  , alternatives :: [ String ] -- vorschläge
 	  , solution :: Int -- der isses (zähl. beginnt bei 0)
 	  }
+     deriving ( Read, Show )
+
+instance Types Item where
+    ty _ = ty ( undefined :: FilePath
+	      , undefined :: [ String ]
+	      , undefined :: Int
+	      )
 
 selection :: Config -> IO [ Item ]
 selection conf = do
