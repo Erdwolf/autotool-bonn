@@ -1,0 +1,28 @@
+-- -*- mode: haskell -*-
+
+module NFA.Property where
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+import Autolib.Set
+import Autolib.NFA
+
+
+data NFAC c Int => Property c = Min_Size Int
+	      | Max_Size Int
+	      | Alphabet ( Set c )
+	      | Deterministic
+	      | Minimal
+	      | Complete
+	      | Trim -- no useless states
+     deriving ( Typeable )
+
+{-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
+
+example :: [ Property Char ]
+example = [ Min_Size 4 , Max_Size 6
+	  , Alphabet $ mkSet "abc"
+	  ]

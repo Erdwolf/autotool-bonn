@@ -1,0 +1,22 @@
+-- -*- mode: haskell -*-
+
+module Convert.Type where
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+import qualified Convert.Input
+import qualified Convert.Wanted
+
+
+data Convert =
+     Convert { name :: Maybe String -- if Nothing, use (show input)
+             , input :: Convert.Input.Input
+             , wanted :: Convert.Wanted.Wanted Char
+	     }
+    deriving ( Typeable )
+
+{-! for Convert derive: Reader, ToDoc, Haskell2Xml !-}
+
