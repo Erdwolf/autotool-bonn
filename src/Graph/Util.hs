@@ -117,20 +117,21 @@ no_fixed_layout g = g { graph_layout = emptyFM
 
 -- | radius und durchmesser in einem rutsch
 
-rad_diam :: Ord a => Graph a -> (Int,Int)
+rad_diam :: Ord a => Graph a -> Maybe (Int,Int)
+rad_diam g | not $ isZusammen g = Nothing
 rad_diam g = let suc = nachbarn g
 		 ls = map ( pred . length . schichten suc ) $ lknoten g
-             in ( minimum ls , maximum ls )
+             in Just ( minimum ls , maximum ls )
 
 -- | radius
 
-rad :: Ord a => Graph a -> Int
-rad = fst . rad_diam
+rad :: Ord a => Graph a -> Maybe Int
+rad g = rad_diam g >>= return . fst
 
 -- | durchmesser
 
-diam :: Ord a => Graph a -> Int
-diam = snd . rad_diam
+diam :: Ord a => Graph a -> Maybe Int
+diam g = rad_diam g >>= return . snd
 
 -------------------------------------------------------------------------------
 
