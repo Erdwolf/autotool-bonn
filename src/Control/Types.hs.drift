@@ -6,7 +6,8 @@ module Control.Types
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
 , Typ, Config, Remark
-, Ok, No
+, Oks, Nos
+, fromCGI
 )
 
 where
@@ -17,6 +18,7 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import System.Time
+import Control.SQL
 import Database.MySQL.HSQL
 
 import Data.Typeable
@@ -24,15 +26,21 @@ import Text.XML.HaXml.Haskell2Xml
 
 -------------------------------------------------------------
 
+class FromCGI a where fromCGI :: String -> a
+
+-------------------------------------------------------------
+
 data HiLo = High | Low | Keine deriving ( Eq, Ord, Typeable )
 
-{-! for Hilo derive : Reader, ToDoc, Haskell2Xml !-}
+{-! for HiLo derive : Reader, ToDoc, Haskell2Xml !-}
 
 instance Show HiLo where show = render . toDoc
 instance Read HiLo where readsPrec = parsec_readsPrec
 instance SqlBind HiLo where 
-    fromSqlValue SqlEnum s = read s
+    fromSqlValue SqlENUM s = read s
     toSqlValue w = show w
+instance ToEx HiLo where
+    toEx x = EString $ show x
 
 data Wert = No | Ok Int deriving ( Eq, Ord, Typeable )
 
@@ -57,6 +65,10 @@ instance Read MNr where readsPrec = parsec_readsPrec
 instance SqlBind MNr where 
     fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
     toSqlValue (MNr i) = toSqlValue i
+instance ToEx MNr where
+    toEx x = EString $ show x
+instance FromCGI MNr where
+    fromCGI cs = MNr $ read cs -- FIXME: error checking
 
 -- | Aufgaben-Typ
 data Typ = Typ String deriving ( Eq, Ord, Typeable )
@@ -68,6 +80,8 @@ instance Read Typ where readsPrec = parsec_readsPrec
 instance SqlBind Typ where 
     fromSqlValue ty s = fmap Typ $ fromSqlValue ty s
     toSqlValue (Typ cs) = toSqlValue cs
+instance ToEx Typ where
+    toEx x = EString $ show x
 
 -- | Aufgaben-Config
 data Config = Config String deriving ( Eq, Ord, Typeable )
@@ -104,6 +118,9 @@ instance SqlBind SNr where
     fromSqlValue ty s = fmap SNr $ fromSqlValue ty s
     toSqlValue (SNr i) = toSqlValue i
 
+instance ToEx SNr where
+    toEx x = EString $ show x
+
 -- | Aufgaben-Nummer
 
 data ANr = ANr Int deriving ( Eq, Ord, Typeable )
@@ -115,6 +132,8 @@ instance Read ANr where readsPrec = parsec_readsPrec
 instance SqlBind ANr where 
     fromSqlValue ty s = fmap ANr $ fromSqlValue ty s
     toSqlValue (ANr i) = toSqlValue i
+instance ToEx ANr where
+    toEx x = EString $ show x
 
 -- | Gruppen-Nummer
 
@@ -127,6 +146,8 @@ instance Read GNr where readsPrec = parsec_readsPrec
 instance SqlBind GNr where 
     fromSqlValue ty s = fmap GNr $ fromSqlValue ty s
     toSqlValue (GNr i) = toSqlValue i
+instance ToEx GNr where
+    toEx x = EString $ show x
 
 -- | Vorlesungs-Nummer
 
@@ -139,29 +160,32 @@ instance Read VNr where readsPrec = parsec_readsPrec
 instance SqlBind VNr where 
     fromSqlValue ty s = fmap VNr $ fromSqlValue ty s
     toSqlValue (VNr i) = toSqlValue i
+instance ToEx VNr where
+    toEx x = EString $ show x
 
 -- | OK-Bewertung (Anzahl)
 
-data Ok = Ok Int deriving ( Eq, Ord, Typeable )
+data Oks = Oks Int deriving ( Eq, Ord, Typeable )
 
-{-! for Ok derive: ToDoc, Reader, Haskell2Xml !-}
+{-! for Oks derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Ok where show = render . toDoc
-instance Read Ok where readsPrec = parsec_readsPrec
-instance SqlBind Ok where 
-    fromSqlValue ty s = fmap Ok $ fromSqlValue ty s
-    toSqlValue (Ok i) = toSqlValue i
+instance Show Oks where show = render . toDoc
+instance Read Oks where readsPrec = parsec_readsPrec
+instance SqlBind Oks where 
+    fromSqlValue ty s = fmap Oks $ fromSqlValue ty s
+    toSqlValue (Oks i) = toSqlValue i
 
 -- | No-Bewertung (Anzahl)
 
-data No = No Int deriving ( Eq, Ord, Typeable )
+data Nos = Nos Int deriving ( Eq, Ord, Typeable )
 
-{-! for No derive: ToDoc, Reader, Haskell2Xml !-}
+{-! for Nos derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show No where show = render . toDoc
-instance Read No where readsPrec = parsec_readsPrec
-instance SqlBind No where 
-    fromSqlValue ty s = fmap No $ fromSqlValue ty s
-    toSqlValue (No i) = toSqlValue i
+instance Show Nos where show = render . toDoc
+instance Read Nos where readsPrec = parsec_readsPrec
+instance SqlBind Nos where 
+    fromSqlValue ty s = fmap Nos $ fromSqlValue ty s
+    toSqlValue (Nos i) = toSqlValue i
 
 -------------------------------------------------------------
+
