@@ -51,6 +51,12 @@ smallSubButton2 subParm subAktion str tdd =
 		 where td1 = ( submit subParm subAktion (fieldVALUE ">>")) >> text ( "  " ++ str )
 
 
+mytable body = table $ do
+		attr "border" "1"
+ 		attr "cellspacing" "2" 
+		attr "cellpadding" "5"
+		body
+
 -- 
 showAsTable :: ( [ String ] , [ [ StrOrInt ] ]) -> WithHTML CGI ()
 showAsTable inh = 
@@ -84,6 +90,9 @@ showAsTable2 inh =
 -- table row shortcuts
 tableRow2 d1 d2 =
 	tr $ ( td d1 ) >> ( td d2 )  
+tableRow3 [d1,d2,d3] = 
+--	tr $ sequence_ $ map td [ d1,  d2,  d3 ]
+	tr $ sequence_ $ [ td d1, td d2, td d3  ]
 
 hrline :: WithHTML CGI ()
 hrline = table $ (attr "width" "600" ) >> tr ( td ( hr empty ) )

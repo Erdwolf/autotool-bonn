@@ -5,6 +5,7 @@ module RSA.Break.Data where
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 data Config =
      Config { public_key :: ( Integer, Integer )
@@ -12,7 +13,7 @@ data Config =
 	    }
      deriving ( Typeable )
 
-{-! for Config derive: Reader, ToDoc !-}
+{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance Show Config where show = render . toDoc
 instance Read Config where readsPrec = parsec_readsPrec

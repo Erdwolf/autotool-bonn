@@ -42,12 +42,12 @@ roll i = do
     let r = pokes s qvs
     return r
 
-{-
-make :: Int -> IO Inter.Types.Variant
-make p = return 
+
+qmake :: Int -> IO Inter.Types.Variant
+qmake p = return 
        $ Inter.Types.Variant
        $ quiz "Boolean" "Quiz" p
--}
+
 
 make :: Make
 make = Make "Boolean-Quiz"

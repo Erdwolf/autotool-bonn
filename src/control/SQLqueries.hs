@@ -19,7 +19,9 @@ where
 
 import Inter.Crypt
 
-import Database.MySQL.HSQL
+import Database.MySQL.HSQL hiding ( query, collectRows )
+import qualified Database.MySQL.HSQL 
+
 import IO
 import Data.Char ( toLower )
 import Control.Monad ( guard )
@@ -28,6 +30,28 @@ import Helper
 
 import Mysqlconnect 
 
+-- | excessive logging
+query con com = do
+    logged com
+    Database.MySQL.HSQL.query con com
+            `catchSql` \ e -> do 
+                   logged $ "query: " ++ (show e) 
+		   error $ "SQLqueries.error in query:" ++ (show e) 
+
+collectRows fun stat = do
+    i <- Database.MySQL.HSQL.collectRows fun stat
+            `catchSql` \ e -> do 
+                   logged $ "collectRows: " ++ (show e) 
+		   error $ "SQLqueries.error in collectRows: " ++ (show e) 
+    logged ( show i )
+    return i
+
+logfile = "/tmp/HSQL.log"
+logged cs = do
+    appendFile logfile cs
+    appendFile logfile strich 
+
+strich = "\n--------------------------------\n"
 
 -- | Header extrahieren aus SQL
 showColTypes :: Statement -> [ String ]
@@ -152,7 +176,7 @@ loginDB mnr pass =
        stat <- query conn
                ( concat
                  [ "SELECT "
-                 , "SNr \n"
+                 , "SNr, Passwort \n"
                  , "FROM    student \n"
                  , "WHERE   student.MNr = \"" ++ (filterQuots mnr)++ "\" "
                  -- , "AND student.Passwort = \"" ++ (quoteQuots pass)++ "\" "
@@ -377,6 +401,7 @@ insertStudVorlDB mat vorl =
        disconnect conn 
        return ()
 
+{-
 -- | Vorlesung entfernen
 removeStudVorlDB :: String -> String -> IO ()
 removeStudVorlDB mat vorl =
@@ -406,6 +431,7 @@ removeStudVorlDB mat vorl =
                  ] )
        disconnect conn 
        return ()
+-}
 
 -- TEST: Select 
 -- getGruppenDB_SELECT_AS =
@@ -459,12 +485,15 @@ getFreeGruppenDB =
             -- Maximum, Aktuelle Anzahl pro Gruppe
             ++ "gruppe.MaxStudents AS studentMax, "
             ++ "COUNT(SNr) AS studentCount" ++ " "
-            ++ "\nFROM \n"
+            ++ "\nFROM gruppe \n"
+
             -- verbinde gruppe mit stud_grp über GNr
-            ++ "gruppe LEFT JOIN stud_grp USING (GNr) ,"
-            ++ "vorlesung" ++ " "
+            ++ " LEFT JOIN stud_grp USING (GNr) "
+
+            ++ ", vorlesung" ++ " "
             ++ "\nWHERE \n" ++" gruppe.VNr = vorlesung.VNr "   ++" "
             ++ "\nGROUP BY \n" ++ "GNr "
+
             -- nur nicht volle gruppen.
             ++ "\nHAVING \n"   ++ "studentCount" ++ " < " ++ " studentMax " ++ " "
             ++ "\nORDER BY \n" ++ "Vorlesungen, Gruppen " ++ ";"
@@ -475,7 +504,7 @@ getFreeGruppenDB =
                             r <- getFieldValue state "Referent"
                             m <- getFieldValue state "studentMax"
                             c <- getFieldValue state "studentCount"
-                            return ( k :: Int ,
+                            return ( read k :: Int ,
                                      [ v :: String
                                      , g :: String
                                      , r :: String
@@ -488,7 +517,7 @@ getFreeGruppenDB =
 
 getAllGruppenDB = do
     conn <- myconnect
-    stat <- query conn $
+    state <- query conn $
             "SELECT \n"
             ++ "gruppe.GNr AS GNr, "
             ++ "vorlesung.Name AS Vorlesungen,"
@@ -496,21 +525,24 @@ getAllGruppenDB = do
             ++ "gruppe.Referent AS Referent "
             ++ "\nFROM vorlesung , gruppe "
             ++ "\nWHERE vorlesung.VNr = gruppe.VNr "
-            ++ "\nORDER BY Vorlesungen,Gruppen,Referent " ++ "\n"
-    inh <- collectRows ( \ state -> do
-                            k <- getFieldValue state "GNr"
-                            v <- getFieldValue state "Vorlesungen"
-                            g <- getFieldValue state "Gruppen"
-                            r <- getFieldValue state "Referent"
-                            return ( k :: Int ,
-                                     [ v :: String
-                                     , g :: String
-                                     , r :: String
+            ++ "\nORDER BY Vorlesungen,Gruppen,Referent "
+	    ++ " ;"
+    logged "getAllGruppenDB: start collecting"
+    inh <- collectRows ( \ s -> do
+                            k <- getFieldValue s "GNr"
+                            v <- getFieldValue s "Vorlesungen"
+                            g <- getFieldValue s "Gruppen"
+                            r <- getFieldValue s "Referent"
+                            return ( read k :: Int
+                                   , [  v :: String
+                                     ,  g :: String
+                                     ,  r :: String
                                      ]
                                    )
-                          ) stat
+                          ) state
+    logged "getAllGruppenDB: end collecting"
     disconnect conn
-    return ( showColTypes stat, inh )
+    return ( showColTypes state, inh )
 
 getGruppenStudDB mat =
     do
@@ -523,7 +555,7 @@ getGruppenStudDB mat =
            ++ ";" )
     inh  <- collectRows ( \ state -> do
                           g <- getFieldValue state "GNr"
-                          return (g :: Int)
+                          return (read g :: Int)
                         ) stat
     disconnect conn 
     return inh
@@ -538,17 +570,39 @@ getSNrFromMatDB mat = do
    disconnect conn  
    return inh
 
-changeStudGrpDB mat grp = 
-    do
+-- | if student ist bereits in gruppe zu gleicher vorlesung,
+-- then diese ändern, else gruppe hinzufügen
+changeStudGrpDB mat grp =     do
     snrh <- getSNrFromMatDB mat
     if null snrh 
       then return ()
       else  
       do {
          ; conn <- myconnect
-         ; stat <- query conn $ "DELETE FROM stud_grp" ++ " " ++ "WHERE stud_grp.SNr = \"" ++ filterQuots (snrh!!0) ++ "\" " ++ ";"
+         ; stat <- query conn $ "DELETE FROM stud_grp USING stud_grp, gruppe AS g1, gruppe AS g2 "
+	       ++ "WHERE stud_grp.SNr = \"" ++ filterQuots (snrh!!0) ++ "\" " 
+               ++ "AND stud_grp.GNr = g1.GNr "
+	       ++ "AND g2.GNR = " ++ filterQuots (show grp) ++ " "
+	       ++ "AND g1.VNr = g2.VNr "
+	       ++ ";"
          ; stat <- query conn $ "INSERT INTO stud_grp (SNr,GNr) VALUES (" ++ filterQuots (snrh!!0) ++ "," 
                             ++ filterQuots (show grp) ++");"
+         ; disconnect conn 
+         ; return ()
+         }
+
+
+leaveStudGrpDB mat grp =     do
+    snrh <- getSNrFromMatDB mat
+    if null snrh 
+      then return ()
+      else  
+      do {
+         ; conn <- myconnect
+         ; stat <- query conn $ "DELETE FROM stud_grp  "
+	       ++ "WHERE stud_grp.SNr = \"" ++ filterQuots (snrh!!0) ++ "\" " 
+               ++ "AND stud_grp.GNr = " ++ filterQuots (show grp) ++ " "
+	       ++ ";"
          ; disconnect conn 
          ; return ()
          }
@@ -637,11 +691,11 @@ bepunkteStudentDB snr anr bewert highlow = do
 
 -- feature: wenn nr < 1000 (d. h. admin), dann nicht nach zeit fragen
 
-mglAufgabenDB :: String -> IO [(String, String, String, String,String)]
+mglAufgabenDB :: String -> IO [( String, String, String, String,String)]
 mglAufgabenDB snr = mglAufgabenDB' False snr 
 
 mglAufgabenDB' :: Bool -> String 
-           -> IO [(String, String, String, String,String)]
+           -> IO [( String, String, String, String,String)]
 mglAufgabenDB' isAdmin snr = 
 	do
     let timed = if isAdmin 
@@ -1090,5 +1144,7 @@ getHighscoreAufgabeTypesDB =
                         ) stat
     ; return inh
     }
+
+----------------------------------------------------------------------------
 
 

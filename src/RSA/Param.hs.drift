@@ -8,6 +8,7 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 import Autolib.Set
 
 data Param = 
@@ -21,7 +22,7 @@ p = Param { von = 50
 	  , bis = 70
 	  }
 
-{-! for Param derive: ToDoc, Reader !-}
+{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance Show Param where show = render . toDoc
 instance Read Param where readsPrec = parsec_readsPrec

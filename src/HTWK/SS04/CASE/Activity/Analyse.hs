@@ -10,7 +10,7 @@ import Autolib.ToDoc
 import Autolib.Set
 
 import qualified NFA.Synthese as S
-import NFA.Analyse 
+import NFA.Analyse hiding ( make )
 
 import Inter.Types
 
@@ -21,7 +21,6 @@ convert si =
 	     , automat = informed ( toDoc $ S.ausdruck si ) 
 	               $ inter (std_sigma (setToList $ S.alphabet si))
 	               $ S.ausdruck si
-	     , NFA.Analyse.alphabet = S.alphabet si
 	     }
 
 make ai = return 

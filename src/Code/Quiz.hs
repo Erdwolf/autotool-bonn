@@ -15,6 +15,7 @@ import Autolib.Util.Size
 import Autolib.Util.Seed
 
 import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 data Config a b =
      Config { alphabet :: Set a
@@ -31,9 +32,10 @@ throw conf = do
     return w
 
 
-enc :: ( Ord a, Show a, ToDoc [a]
+enc :: ( Ord a, Show a, ToDoc [a], Reader [a]
        , Show b, ToDoc b, Reader b , Size b, Eq b
        , Typeable a , Typeable b
+       , Haskell2Xml a, Haskell2Xml b
        )
      => Config a b
      -> IO Variant
@@ -51,6 +53,7 @@ enc conf = return $ Variant
 dec :: ( Ord a, Show a, ToDoc [a], Reader [a], Size a
        , Show b, ToDoc b, Reader b , Size b, Eq b
        , Typeable a, Typeable b
+       , Haskell2Xml a, Haskell2Xml b
        )
      => Config a b
      -> IO Variant

@@ -10,7 +10,7 @@ import qualified Inter.Param as P
 import qualified Inter.Param as S 
 
 import Text.Html
-import SQLqueries
+import SQLqueries hiding ( logged )
 
 import Control.Monad ( guard )
 import Autolib.ToDoc

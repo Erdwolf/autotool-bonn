@@ -6,13 +6,14 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 data Coding a = Coding { queue  :: a
 		       , output :: [ Int ]
 		       }
      deriving ( Eq, Ord, Typeable )
 
-{-! for Coding derive: Reader, ToDoc !-}
+{-! for Coding derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance ( ToDoc a  ) => Show ( Coding a ) where
     show = render . toDoc
