@@ -33,7 +33,8 @@ data Language = Language
 	      }
 
 komplement :: Language -> Language
-komplement l = l { abbreviation = "Komplement von " ++ abbreviation l
+komplement l = l { nametag = "Com" ++ nametag l
+		 , abbreviation = "Komplement von " ++ abbreviation l
 		 , contains = not . contains l
 		 , sample = anti_sample l
 		 , anti_sample = sample l

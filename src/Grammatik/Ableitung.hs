@@ -34,6 +34,9 @@ car (Ableitung xs) = head xs
 cdr  :: Ableitung -> Ableitung
 cdr (Ableitung xs) = Ableitung $ tail xs
 
+cadr :: Ableitung -> String
+cadr = car . cdr
+
 cons :: String -> Ableitung -> Ableitung
 cons x (Ableitung ys) = Ableitung (x : ys)
 

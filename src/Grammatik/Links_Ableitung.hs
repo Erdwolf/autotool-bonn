@@ -3,11 +3,10 @@ module Grammatik.Links_Ableitung where
 -- $Id$
 
 import Grammatik.Type
-
--- import Mehrdeutig
 import Grammatik.Ableitung
 
 import Schichten
+import Util.BFS
 import Util.Mehrfache
 import Util.Wort
 
@@ -53,7 +52,16 @@ alle_links_ableitungen schranke g = do
     return w
 
 mehrdeutige_links_ableitungen 
-    ::  Maybe Int -> Grammatik -> [ [Ableitung] ]
+    ::  Maybe Int -> Grammatik -> [ (Ableitung, Ableitung) ]
 mehrdeutige_links_ableitungen schranke g =
-    mehrfacheBy car $ links_ableitungen schranke g
+    --    mehrfacheBy car $ links_ableitungen schranke g
+    meetings ( setToList . links_schritt schranke g )
+	     ( cons [ startsymbol g ] nil )
 
+g :: Grammatik
+g = Grammatik 
+    { terminale = mkSet "ab"
+    , nichtterminale = mkSet "S" 
+    , startsymbol = 'S'
+    , regeln = mkSet [ ( "S", ""), ( "S", "aSbS") , ( "S", "bSaS")]
+    }
