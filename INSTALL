@@ -2,13 +2,19 @@ Prerequisites:
 
 * ghc-6.2 ( http://www.haskell.org/ghc/ )
 * HaXml-1.12 ( http://www.cs.york.ac.uk/fp/HaXml/ )
+* hsql-1.2 ( is part of http://htoolkit.sourceforge.net/ )
 * auto-drift ( http://141.57.11.163/auto/drift/ )
+* auto-lib ( http://141.57.11.163/auto/lib/ )
 
 Installation:
 
-./configure
+./configure --with-base=/space --with-school=HTWK
+cd src
 make
-sudo make install
+make install
 
-The library will be installed as a ghc package
-(There is no executable.)
+The program is a CGI executable.
+
+Warning: The installed program won't work as is.
+You need additional configuration for the database access.
+
