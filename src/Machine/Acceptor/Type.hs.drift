@@ -4,35 +4,40 @@ module Machine.Acceptor.Type where
 
 --   $Id$
 
-import Informed
-import ToDoc
-import Reader
-import qualified Reporter.Checker as C
-import Reporter hiding ( output )
+import Autolib.Informed
+import Autolib.ToDoc
+import Autolib.Reader
+import qualified Autolib.Reporter.Checker as C
+import Autolib.Reporter hiding ( output )
+
 import Machine.Class
+
 import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 data Acceptor = Acceptor deriving Typeable
 
-{-! for Acceptor derive : Show, Read, ToDoc, Reader !-}
+{-! for Acceptor derive : ToDoc, Reader, Haskell2Xml !-}
 
-data Type m dat = 
-     Make { machine_info :: Doc
-	  , data_info :: Doc
-	  , yeah :: [ dat ] -- sollen akzeptiert werden
-	  , noh :: [ dat ] -- dürfen nicht akzeptiert werden
-	    , cut :: Int -- höchstens soviele schritte
-	    , check :: C.Type m -- sonstige Bedingungen an Maschine
-	    , start :: m -- damit soll der student anfangen
+class ( Reader [dat], ToDoc [dat], Reader [prop], ToDoc [prop]  ) 
+      => Class dat prop 
+
+instance ( Reader [dat], ToDoc [dat], Reader [prop] , ToDoc [prop]   ) 
+      => Class dat prop 
+
+instance Reader Doc where 
+    reader = do cs <- reader ; return $ text cs
+
+data Class dat prop => Type m dat prop = 
+     Make { machine_desc :: Doc
+	  , data_desc :: Doc
+	  , yeah :: [ dat ] -- ^ sollen akzeptiert werden
+	  , noh :: [ dat ] -- ^ dürfen nicht akzeptiert werden
+	    , cut :: Int -- ^ höchstens soviele schritte
+	    , properties :: [ prop ] -- ^ sonstige Bedingungen an Maschine
+	    , start :: m -- ^ damit soll der student anfangen
 	      }
      deriving ( Typeable )
 
-instance ToDoc ( Type m dat  ) where
-     toDoc = info
-instance Show ( Type m dat  ) where
-     show = render . toDoc
+{-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
 
-instance Reader ( Type m dat  ) where
-     reader = error "Machine.Acceptor.Type.reader"
-instance Read ( Type m dat  ) where
-     readsPrec p = error "Machine.Acceptor.Type.readsPrec"

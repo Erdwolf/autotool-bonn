@@ -24,12 +24,15 @@ import qualified Hanoi.Semantik
 import qualified Hanoi.Quiz
 import qualified Type.Check
 import qualified Type.Quiz
+-- import qualified Object.Check
+-- import qualified Object.Quiz
 import qualified Palindrom.Plain
 
 import qualified NFA.Convert
 import qualified NFA.Equiv.Challenger
 import qualified Exp.Convert
 import qualified Grammatik.CF.Interface
+import qualified NPDA.Inter
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -67,6 +70,7 @@ makers = [ Blank.make
 	 , NFA.Equiv.Challenger.qmake
 
          , Grammatik.CF.Interface.make
+	 , NPDA.Inter.make
 	 ]
 
 

@@ -4,6 +4,7 @@ module Challenger.Partial
 ( Wert (..)
 , Measure (..)
 , Partial (..)
+, Roller (..)
 )
 
 where
@@ -78,4 +79,15 @@ class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
 	  return $ case mres of
 	       Nothing -> No
 	       Just () -> Ok $ measure p i b
+
+---------------------------------------------------------------------
+
+-- | falls man erstmal etwas ausrechnen (z. b. würfeln) will
+class Roller i i' | i -> i' where
+      roller :: i -> IO i'
+
+instance Roller i i where
+      roller = return
+
+
  

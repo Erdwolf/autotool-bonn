@@ -1,4 +1,4 @@
-module Autolib.NPDA.Nachfolger 
+module NPDA.Nachfolger 
 
 --   $Id$
 
@@ -8,8 +8,8 @@ module Autolib.NPDA.Nachfolger
 
 where
 
-import Autolib.NPDA.Type
-import Autolib.NPDA.Konfiguration
+import NPDA.Type
+import NPDA.Konfiguration
 
 import Autolib.Schichten
 import Autolib.Set
@@ -39,8 +39,9 @@ epsilon_schritte a k =
     case keller k of
         [] -> emptySet -- Keller leer, nichts geht mehr
 	(y : ys) -> mkSet $ do
-	   (z', y') <- setToList $ lookupset (tafel a) (Nothing, zustand k, y)
-	   return $ Konfiguration { eingabe = eingabe k
+	   (z', y') <- setToList $ lookupset (transitionen a) (Nothing, zustand k, y)
+	   return $ Konfiguration { schritt = succ $ schritt k
+				  , eingabe = eingabe k
 				  , zustand = z'
 				  , keller  = y' ++ ys
 				  , link    = Just k
@@ -51,8 +52,9 @@ einer_schritte a k = case keller k of
 	 (y : ys) -> case eingabe k of
 	  [] -> emptySet -- Eingabe leer, nichts geht mehr
 	  (x : xs) -> mkSet $ do
-	    (z', y') <- setToList $ lookupset (tafel a) (Just x, zustand k, y)
-	    return $ Konfiguration { eingabe = xs
+	    (z', y') <- setToList $ lookupset (transitionen a) (Just x, zustand k, y)
+	    return $ Konfiguration { schritt = succ $ schritt k
+				   , eingabe = xs
 				   , zustand = z'
 				   , keller  = y' ++ ys
 				   , link    = Just k

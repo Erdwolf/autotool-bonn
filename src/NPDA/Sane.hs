@@ -1,8 +1,8 @@
-module Autolib.NPDA.Sane where
+module NPDA.Sane where
 
 --   $Id$
 
-import Autolib.NPDA.Type
+import NPDA.Type
 import Autolib.Reporter
 import qualified Autolib.Reporter.Checker as C
 import Autolib.ToDoc
@@ -70,7 +70,7 @@ sane a = do
 	        [ z, z' ]
 
     mapM_ check_rule $ do
-          (mxzy,zys) <- fmToList $ tafel a
+          (mxzy,zys) <- fmToList $ transitionen a
           (zy') <- setToList zys
 	  return (mxzy,zy')
 

@@ -1,42 +1,48 @@
 -- -*- mode: haskell -*-
 
-module Autolib.NPDA.Type
+module NPDA.Type
 
 -- nicht-deterministischer Kellerautomat
 --   $Id$
 
-( module Autolib.NPDA.Type
+( module NPDA.Type
 , module Autolib.Set
 , module Autolib.FiniteMap
 )
 
 where
 
-
 import Autolib.Set
-import Autolib..FiniteMap
+import Autolib.FiniteMap
 import Autolib.Schichten
 import Autolib.Size
 
 import Autolib.ToDoc
 import Autolib.Reader
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 import Data.Maybe
 import Autolib.Reporter
 
-class ( Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z )
-    => RTO z
-instance ( Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z )
-    => RTO z
-
+class ( Read z, Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z 
+      , Haskell2Xml z
+      )
       
+    => RTO z
+instance ( Read z, Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z 
+      , Haskell2Xml z
+	 )
+    => RTO z
+
 data RTO z => Modus z = Leerer_Keller | Zustand (Set z) 
+    deriving ( Typeable )
 
-{-! for Modus derive: Reader, ToDoc !-}
+{-! for Modus derive: Reader, ToDoc, Haskell2Xml !-}
 
-class ( RTO x, RTO y, RTO z ) 
+class ( RTO x, RTO y, RTO z )
     => NPDAC x y z
-instance ( RTO x, RTO y, RTO z ) 
+instance ( RTO x, RTO y, RTO z )
     => NPDAC x y z
 
 data NPDAC x y z => NPDA x y z = 
@@ -48,25 +54,31 @@ data NPDAC x y z => NPDA x y z =
 	  , akzeptiert	     :: Modus z
 	  , transitionen     :: FiniteMap (Maybe x, z, y) (Set (z, [y]))
 	  }
+     deriving ( Typeable )
 
-{-! for NPDA derive: Reader, ToDoc !-}
+instance Container (x, z, y) (x, (z, y)) where
+    label _ = "Triple"
+    pack (x, y, z) = (x, (y, z))
+    unpack (x, (y, z)) = (x, y, z)
+
+{-! for NPDA derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance NPDAC x y z => Size (NPDA x y z) where
-    size a = length $ unCollect' $ tafel a
+    size a = length $ unCollect' $ transitionen a
 
 ------------------------------------------------------------------------
 
 -- | specialized instances used for finite automata (testing)
 instance  ( NPDAC x y z )
-      => ToDoc (FiniteMap (Maybe x, z, y) (Set (z, [y])) where
+      => ToDoc (FiniteMap (Maybe x, z, y) (Set (z, [y]))) where
     toDocPrec p fm = docParen (p >= fcp)
                    $ text "collect" <+> toDocPrec fcp (unCollect' fm)
 
 instance  ( NPDAC x y z )
-        => Reader (FiniteMap (Maybe x, z, y) (Set (z, [y])) where
+        => Reader (FiniteMap (Maybe x, z, y) (Set (z, [y]))) where
     reader = default_reader <|> do
         my_reserved "collect"
-        xys <- reader
+        xys <- reader :: Parser  [ (Maybe x, z, y, z, [y]) ]
         return $ collect' xys
 
 -- | collect transition function from list of quintuples
@@ -81,7 +93,7 @@ collect' pxqs = addListToFM_C union emptyFM $ do
 unCollect' :: NPDAC x y z
 	   => FiniteMap (Maybe x, z, y) (Set (z, [y])) 
 	   -> [ (Maybe x, z, y, z, [y]) ] 
-unCollect fm = do
+unCollect' fm = do
     ( (mx, z, y), qs ) <- fmToList fm
     ( z', ys ) <- setToList qs
     return ( mx, z, y, z', ys )

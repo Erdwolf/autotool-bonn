@@ -8,38 +8,38 @@ import NPDA.Type
 import NPDA.Dot
 
 -- import Akzeptieren
-import Data.Set
-import ToDoc
+import Autolib.Set
+import Autolib.ToDoc
 
 -- import Seite56
 
 anbn :: NPDA Char Char Int
 anbn = NPDA 
      { eingabealphabet = mkSet "ab"
-     , kelleralphabet = mkSet "XA" , zustandsmenge = mkSet [ 0, 1, 2]
+     , kelleralphabet = mkSet "XA" , zustandsmenge = mkSet [ 0, 1 ]
      , startzustand = 0 , startsymbol = 'X' , akzeptiert = Leerer_Keller
-     , tafel = listToFM [ ( ( Just 'a', 0 , 'X'), mkSet [ ( 0, "AX")])
+     , transitionen = listToFM [ ( ( Just 'a', 0 , 'X'), mkSet [ ( 0, "AX")])
 			, ( ( Just 'a', 0 , 'A'), mkSet [ ( 0, "AA")])
-                        , ( ( Just 'b', 0 , 'A'), mkSet [ ( 2, "") ])
-                        , ( ( Just 'b', 2 , 'A'), mkSet [ ( 2, "") ])
+                        , ( ( Just 'b', 0 , 'A'), mkSet [ ( 1, "") ])
+                        , ( ( Just 'b', 1 , 'A'), mkSet [ ( 1, "") ])
 			]
      }
 
--- der Automat soll { w w^R  |  w  in  {a, b}* }
+-- | der Automat soll { w w^R  |  w  in  {a, b}* }
 -- durch leeren Keller akzeptieren
 
 student :: NPDA Char Char Int
 student = NPDA { eingabealphabet = mkSet "ab"
 	       , kelleralphabet  = mkSet "ABC"
 	       , zustandsmenge	 = mkSet [ 2, 3 ]
-	       , tafel = t
+	       , transitionen = t
 	       , startzustand	 = 2
 	       , startsymbol	 = 'A'
 	       , akzeptiert	 = Leerer_Keller
 	       }
 
 
--- die Tabelle direkt aus dem Skript abgeschrieben
+-- | die Tabelle direkt aus dem Skript abgeschrieben
 
 t = listToFM [ -- Spalte 1 (Z 2, x = '0')
 	       ( ( Just 'a' , 2, 'A'), mkSet [ ( 2, "BA") ] )

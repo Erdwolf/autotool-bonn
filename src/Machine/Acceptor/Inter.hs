@@ -5,15 +5,17 @@ module Machine.Acceptor.Inter where
 import qualified Machine.Acceptor.Type as A
 import Machine.Akzeptieren
 import Machine.Class
+import Condition
 
 import qualified Challenger as C
 
 import Inter.Types
-import Reporter hiding ( output )
-import Reporter.Checker
-import ToDoc
-import Informed
+import Autolib.Reporter hiding ( output )
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Informed
 
+{-
 acceptor :: ( Machine m dat conf )
          => String		-- aufgabe (major)
 	 -> String -- version ( minor )
@@ -31,17 +33,20 @@ acceptor auf ver num =
 	               <+> text "akzeptiert!"
 	      return num
 	}
+-}
 
-
-instance ( Machine m dat conf , ToDoc [ dat ] ) 
-         => C.Partial A.Acceptor ( A.Type m dat ) m where
+instance ( Condition prop m , Reader m,  Machine m dat conf 
+	 , ToDoc [ dat ], ToDoc [prop]  , ToDoc prop
+	 , Reader [ dat ], Reader [prop]  , Reader prop
+	 ) 
+         => C.Partial A.Acceptor ( A.Type m dat prop ) m where
     describe p i  = vcat
-	          [ text "Gesucht ist ein" <+> A.machine_info i 
-		  , text "für die Sprache" <+> A.data_info i
-		  , Reporter.Checker.condition ( A.check i )
+	          [ text "Gesucht ist ein" <+> A.machine_desc i 
+		  , text "für die Sprache" <+> A.data_desc i
+		  , text "mit diesen Eigenschaften" <+> toDoc (A.properties i)
 		  ]
     initial p i   = A.start i
-    partial p i b = Reporter.Checker.investigate ( A.check i ) b
+    partial p i b = investigate ( A.properties i ) b
     total   p i b = do
         positiv_liste (A.cut i) b $ A.yeah i
         negativ_liste (A.cut i) b $ A.noh  i

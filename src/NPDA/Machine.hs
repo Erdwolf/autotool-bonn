@@ -35,6 +35,7 @@ instance NPDAC x y z
 
 instance NPDAC x y z 
 	 => Compute ( NPDA x y z ) ( Konfiguration x y z ) where
+    depth m k = schritt k
     next m k = folgekonfigurationen m k
     accepting m k = null ( eingabe k ) 
 	&& case akzeptiert m of

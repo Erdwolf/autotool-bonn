@@ -1,6 +1,6 @@
-module Autolib.NPDA 
+module NPDA 
 
-( module Autolib.NPDA.Type
+( module NPDA.Type
 , module Autolib.Dot.Dot -- damit display exportiert wird
 )
 
@@ -8,6 +8,8 @@ where
 
 --   $Id$
 
-import Autolib.NPDA.Type
-import Autolib.NPDA.Dot
+import NPDA.Type
+import NPDA.Dot
+import NPDA.Det
+import NPDA.Machine
 import Autolib.Dot.Dot

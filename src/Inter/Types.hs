@@ -76,6 +76,7 @@ class ( Show p, Typeable p
       , Partial p i b
       ) => V p i b -- ohne methoden
 instance ( Show p, Typeable p
+      , Roller i i
       , Show i, Typeable i, ToDoc i
       -- , Haskell2Xml i, Reader i, Read i
       , Show b, Typeable b, Haskell2Xml b, ToDoc b, Reader b 

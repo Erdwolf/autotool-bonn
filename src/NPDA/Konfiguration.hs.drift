@@ -1,17 +1,18 @@
 -- -*- mode: haskell -*-
 
-module Autolib.NPDA.Konfiguration where
+module NPDA.Konfiguration where
 
 --   $Id$
 
-import Autolib.NPDA.Type
+import NPDA.Type
 
 import Autolib.ToDoc
 import Autolib.Set
 
 
 data Konfiguration x y z = 
-     Konfiguration { eingabe :: [ x ]
+     Konfiguration { schritt :: Int
+		   , eingabe :: [ x ]
 		   , zustand :: z
 		   , keller  :: [ y ]
 		   , link :: Maybe (Konfiguration x y z)
@@ -19,7 +20,8 @@ data Konfiguration x y z =
 
 instance NPDAC x y z => ToDoc (Konfiguration x y z) where
     toDoc k = text "Konfiguration" <+> dutch_record
-        [ text "eingabe" <+> equals <+> toDoc (eingabe k) 
+        [ text "schritt" <+> equals <+> toDoc (schritt k) 
+	, text "eingabe" <+> equals <+> toDoc (eingabe k) 
 	, text "zustand" <+> equals <+> toDoc (zustand k) 
 	, text "keller"  <+> equals <+> toDoc (keller  k) 
 	] 
@@ -47,7 +49,8 @@ links k = k : case link k of
 start_konfiguration :: NPDAC x y z 
 		    => NPDA x y z -> [x] -> Konfiguration x y z
 start_konfiguration a xs = 
-    Konfiguration { eingabe = xs
+    Konfiguration { schritt = 0
+		  , eingabe = xs
 		  , zustand = startzustand a
 		  , keller = [ startsymbol a ]
 		  , link = Nothing
@@ -57,7 +60,8 @@ leere_keller_konfigurationen :: NPDAC x y z
 	     => NPDA x y z -> Set (Konfiguration x y z)
 leere_keller_konfigurationen a = mkSet $ do
     z <- setToList $ zustandsmenge a
-    return $ Konfiguration { eingabe = []
+    return $ Konfiguration { schritt = 0 -- ??
+			   , eingabe = []
 			   , keller = []
 			   , zustand = z
 			   , link = Nothing

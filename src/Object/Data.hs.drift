@@ -13,10 +13,21 @@ import Autolib.Xml
 import Autolib.Hash
 import Autolib.Size
 
-import Text.XML.HaXml.Haskell2Xml
+import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 import Data.Typeable
 
 ----------------------------------------------------------------------------
+
+data Name = Name Identifier 
+     deriving ( Eq, Ord, Typeable )
+
+instance Hash Name where hash (Name t) = hash t
+
+instance ToDoc Name where toDoc (Name t) = toDoc t
+instance Reader Name where 
+     reader = do t <- reader; return $ Name t
+
+{-! for Name derive: Haskell2Xml !-}
 
 instance Container Identifier String where
      label _ = "Identifier"
@@ -25,22 +36,33 @@ instance Container Identifier String where
 
 ----------------------------------------------------------------------------
 
-data Type = Type Identifier 
-     deriving ( Eq, Ord, Typeable )
+data Expression = Reference Name
+		| Dot  Expression Name
+		| Call Expression [ Expression ]
+    deriving ( Eq, Ord, Typeable )
 
-instance Hash Type where hash (Type t) = hash t
+instance ToDoc Expression where
+    toDoc ( Reference i ) = toDoc i
+    toDoc ( Dot x i ) = toDoc x <> text "." <> toDoc i
+    toDoc ( Call f args ) = toDoc f <+> dutch_tuple ( map toDoc args )
 
-instance ToDoc Type where toDoc (Type t) = toDoc t
-instance Reader Type where 
-     reader = do t <- reader; return $ Type t
+instance Reader Expression where
+    reader = do
+       i <- reader 
+       dcs <- many dc
+       return $ foldr (.) id ( reverse dcs ) $ Reference i
 
-{-! for Type derive: Haskell2Xml !-}
+dc =   do my_dot ; i <- reader ; return $ \ x -> Dot x i
+   <|> my_parens ( do xs <- my_commaSep reader ; return $ \ f -> Call f xs )
+
+-- FIXME
+{- ! for Expresssion derive: Haskell2Xml !-}
 
 ----------------------------------------------------------------------------
 
 data Variable = 
-     Variable { vname :: Identifier
-	      , vtype :: Type
+     Variable { vtype :: Name
+	      , vname :: Name
 	      }
      deriving ( Eq, Ord, Typeable )
 
@@ -57,9 +79,9 @@ instance Reader Variable where
 ----------------------------------------------------------------------------
 
 data Method = 
-     Method { fname :: Identifier
-	      , arguments :: [ Type ] 
-	      , result :: Type
+     Method { fname :: Name
+	      , arguments :: [ Name ] 
+	      , result :: Name
 	      }
      deriving ( Eq, Ord, Typeable )
 
@@ -70,8 +92,7 @@ supply = do
 
 instance ToDoc Method where
     -- vorsicht: alte syntax ist im cache -- na und?
-    toDoc f = hsep [ text "static"
-		   , toDoc ( result f )
+    toDoc f = hsep [ toDoc ( result f )
 		   , toDoc ( fname f )
 		   , dutch_tuple $ do
 		         ( t, z ) <- zip ( arguments f ) supply
@@ -80,7 +101,6 @@ instance ToDoc Method where
 
 instance Reader Method where
     reader = do
-        my_reserved "static"
         r <- reader -- result type
 	n <- reader -- method name
         ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma  -- parameters
@@ -95,8 +115,8 @@ instance Reader Method where
 ----------------------------------------------------------------------------
 
 data Class =
-     Class { name :: Identifier
-           , extends :: Maybe Identifier
+     Class { name :: Name
+           , extends :: Maybe Name
 	   , declarations :: [ Declaration ]
 	   }
   deriving ( Typeable )
@@ -106,11 +126,16 @@ instance Size Class where
 
 
 instance ToDoc Class where
-    toDoc c = text "class" 
+    toDoc c = vcat 
+      [	    text "class" 
+	<+> toDoc ( name c )
         <+> case extends c of 
 	       Nothing -> empty 
 	       Just i  -> text "extends" <+> toDoc i
-        <+> braces ( nest 4 $ vcat $ map toDoc $ declarations c )
+        <+> text "{"
+      , nest 4 $ vcat $ map toDoc $ declarations c
+      , text "}"
+      ]
  
 instance Reader Class where
     reader = do
@@ -208,23 +233,3 @@ instance Reader Member where
 
 {-! for Member derive: Haskell2Xml !-}
 
-
-data Conf = Conf { max_arity :: Int
-		 , types :: [ Type ]
-		 , min_symbols :: Int
-		 , max_symbols :: Int
-		 , min_size :: Int
-		 , max_size :: Int
-		 }
-    deriving ( Typeable )
-
-conf :: Conf
-conf = Conf { max_arity = 3
-	    , types = read "[ int, boolean, char, String, Foo, Bar ]"
-	    , min_symbols = 4
-	    , max_symbols = 10
-	    , min_size = 5
-	    , max_size = 10
-	    }
-
-{-! for Conf derive: ToDoc, Reader, Haskell2Xml !-}

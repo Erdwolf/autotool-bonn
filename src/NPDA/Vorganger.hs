@@ -1,4 +1,4 @@
-module Autolib.NPDA.Vorganger 
+module NPDA.Vorganger 
 
 --   $Id$
 
@@ -8,8 +8,8 @@ module Autolib.NPDA.Vorganger
 
 where
 
-import Autolib.NPDA.Type
-import Autolib.NPDA.Konfiguration
+import NPDA.Type
+import NPDA.Konfiguration
 
 import Control.Monad (guard)
 import Autolib.Schichten
