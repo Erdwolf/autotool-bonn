@@ -338,7 +338,7 @@ commonGrpPage name action  mat (F1 grpF) = do
         io $ logged $ "commonGrpPage.name  " ++ name
         let v @ (grp :: GNr ,desc) = value $ grpF
         io $ logged $ "commonGrpPage.v  " ++ show v
-        -- io $ action mat grp   
+        io $ action mat grp   
         let msg = unwords [ "Übungsgruppe" , show desc, name ]
         standardQuery msg $ table $ do
                         attr "width" "600"
