@@ -10,3 +10,8 @@ bubble n = mkNetz $ do
     lo <- reverse [ 1 .. pred hi ]
     return ( lo, succ lo )
 
+bad_example :: Int -> Netz
+bad_example n =  mkNetz $ do
+    hi <- [ 2 .. n ]
+    lo <- reverse [ 1 .. pred hi `div` 2 ]
+    return ( lo, succ lo )
