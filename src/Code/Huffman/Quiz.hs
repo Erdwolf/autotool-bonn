@@ -13,6 +13,7 @@ import Code.Type
 import Code.Huffman.Partial
 import Code.Huffman.Throw
 
+import Util.Seed
 import Inter.Types
 import Reader
 import ToDoc
@@ -28,6 +29,7 @@ make conf = return $ Variant
 	  , version = "Quiz"
 	  , key = \ matrikel -> return matrikel
 	  , gen = \ key -> do
+		seed $ read key
 	        freq <- throw conf
 		return $ return freq
 	  }

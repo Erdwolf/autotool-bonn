@@ -12,7 +12,7 @@ import ToDoc
 coder :: Ord a
       => T.Coder a ( Coding [a] )
 coder = T.Coder
-      { T.nametag = text "move-to-front"
+      { T.nametag = text "MTF"
       , T.encode  = encode
       , T.decode = \ c -> Just $ decode c
       , T.decode_hint = \ c -> take 2 $ queue c

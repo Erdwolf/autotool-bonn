@@ -12,6 +12,7 @@ import Util.Wort
 import ToDoc
 import Reader
 import Util.Size
+import Util.Seed
 
 data Config a b =
      Config { alphabet :: Set a
@@ -33,10 +34,11 @@ enc :: ( Ord a, Show a, ToDoc [a]
      -> IO Variant
 enc conf = return $ Variant 
     $ Var { problem = Encode ( coder conf )
-	  , aufgabe = "Encode"
-	  , version = render $ nametag $ coder conf 
+	  , aufgabe = "enc" ++ ( render $ nametag $ coder conf )
+	  , version = "Quiz"
 	  , key = \ matrikel -> return matrikel
 	  , gen = \ key -> do
+		seed $ read key
 	        input <- throw conf
 		return $ return input
 	  }
@@ -48,10 +50,11 @@ dec :: ( Ord a, Show a, ToDoc [a], Reader [a], Size a
      -> IO Variant
 dec conf = return $ Variant 
     $ Var { problem = Decode ( coder conf )
-	  , aufgabe = "Decode"
-	  , version = render $ nametag $ coder conf 
+	  , aufgabe = "dec" ++ ( render $ nametag $ coder conf )
+	  , version = "Quiz"
 	  , key = \ matrikel -> return matrikel
 	  , gen = \ key -> do
+		seed $ read key
 	        input <- throw conf
 		let output = encode (coder conf) input
 		return $ return output

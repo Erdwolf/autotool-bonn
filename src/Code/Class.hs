@@ -12,7 +12,7 @@ import Reporter
 data Encode a b = Encode ( Coder a b )
 
 instance Show ( Encode a b ) where
-    show ( Encode c ) = render $ nametag c
+    show ( Encode c ) = "Encode"
 
 instance ( ToDoc [a], Eq b ) 
 	 => Partial ( Encode a b ) [a] b where
@@ -36,7 +36,7 @@ instance ( ToDoc [a], Eq b )
 data Decode a b = Decode ( Coder a b ) 
 
 instance Show ( Decode a b ) where
-    show (Decode c) = render $ nametag c
+    show (Decode c) = "Decode"
 
 instance ( ToDoc b, Eq b  )
 	 => Partial ( Decode a b ) b [ a ] where

@@ -15,7 +15,7 @@ import ToDoc
 
 data Huffman = Huffman deriving ( Eq, Ord, Show, Read )
 
-instance ( ToDoc a, ToDoc [a], Ord a ) 
+instance ( ToDoc a, ToDoc [a], Ord a, ToDoc [ (a, [ LR ] )] ) 
 	 => Partial Huffman ( Frequency a ) ( Code a LR ) where
 
     describe p i = vcat
