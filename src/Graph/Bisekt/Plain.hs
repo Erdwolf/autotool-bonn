@@ -14,7 +14,9 @@ import Autolib.Dot ( peng, Layout_Program (..) )
 import Autolib.Graph.Adj ( adjazenz_matrix , schoen )
 import Autolib.Graph.Ops ( unlinks )
 import Autolib.Xml
+import Text.XML.HaXml.Haskell2Xml
 import Autolib.Reader
+import Autolib.Set
 
 import Inter.Types
 import Autolib.Set
@@ -24,8 +26,8 @@ import Data.Typeable
 
 data Bisect = Bisect deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance ( GraphC a, Show a )
-    => C.Partial Bisect (Int,Graph a) (Solution a) where
+instance ( GraphC a, Show a, Haskell2Xml (Solution a) )
+    => C.Partial Bisect (Int, Graph a) (Solution a) where
 
     report _ (_,g) = do
         inform $ vcat $ map text
@@ -103,7 +105,7 @@ instance ( GraphC a, Show a )
 
 
 instance ( GraphC a, Show a )
-    => C.Measure Bisect (Int,Graph a) (Solution a) where
+    => C.Measure Bisect (Int, Graph a) (Solution a) where
     measure _ _ s = fromIntegral $ cardinality $ schnittkanten s
 
 {-
@@ -117,7 +119,7 @@ instance ( Ord a , ToDoc a, ToDoc [a] , Reader a , Reader [a] )
 -------------------------------------------------------------------------------
 
 make :: Make
-make = direct Bisect (5::Int,mkGraph (mkSet ns) (mkSet es))
+make = direct Bisect ( 5 :: Int, mkGraph (mkSet ns) (mkSet es) )
     where ns = [ 1..6 ] :: [Int]
 	  es = map (uncurry kante) 
 	       [      (1,2)      ,(1,4),(1,5)
@@ -126,4 +128,4 @@ make = direct Bisect (5::Int,mkGraph (mkSet ns) (mkSet es))
 	       ,(4,1)      ,(4,3)      ,(4,5)
 	       ,(5,1),(5,2),(5,3),(5,4)      ,(5,6)
 	             ,(6,2),(6,3)      ,(6,5)
-	       ]:: [Kante Int]
+	       ]:: [ Kante Int ]

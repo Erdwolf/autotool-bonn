@@ -9,7 +9,7 @@ import Autolib.Reader
 import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
-data ( Haskell2Xml a,  Reader [a], ToDoc [a], Ord a ) => Solution a = 
+data ( GraphC a ) => Solution a = 
      Solution { schnittkanten :: Set (Kante a)
 	      , knoten1 :: Set a
 	      , knoten2 :: Set a
