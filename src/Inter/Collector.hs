@@ -26,7 +26,8 @@ import qualified Hanoi.Quiz
 import qualified Type.Check
 import qualified Type.Quiz
 import qualified Palindrom.Plain
-import qualified Convert.Main
+import qualified NFA.Convert
+import qualified Exp.Convert
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -57,7 +58,10 @@ makers = [ Blank.make
 	 , Type.Check.make
 	 , Type.Quiz.make
 	 , Palindrom.Plain.make
-	 , Convert.Main.make
+	 , NFA.Convert.make
+	 , NFA.Convert.qmake
+	 , Exp.Convert.make
+	 , Exp.Convert.qmake
 	 ]
 
 

@@ -13,11 +13,21 @@ import qualified Autolib.Exp
 import qualified Exp.Property
 import qualified NFA.Property
 
-data Input = NFA ( Autolib.NFA.NFA Char Int )
-	   -- | Random_NFA  [ NFA.Property.Property Char ]
-	   | Exp  ( Autolib.Exp.RX Char )
-           -- | Random_Exp   [ Exp.Property.Property Char ]
+data Autolib.NFA.NFAC c Int => 
+     Input c = NFA ( Autolib.NFA.NFA c Int )
+	   | Exp  ( Autolib.Exp.RX c )
      deriving ( Typeable )
 
 {-! for Input derive: Reader, ToDoc, Haskell2Xml !-}
+
+lang :: Autolib.NFA.NFAC c Int 
+     => Input c -> Doc
+lang (NFA aut) =
+    vcat [ text "die von diesem Automaten akzeptierte Sprache:"
+	 , nest 4 $ toDoc aut
+	 ]
+lang (Exp exp) =
+    vcat [ text "die von diesem Ausdruck erzeugte Sprache:"
+	 , nest 4 $ toDoc exp
+	 ]
 

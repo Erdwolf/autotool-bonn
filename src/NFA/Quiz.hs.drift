@@ -1,0 +1,31 @@
+-- -*- mode: haskell -*-
+
+module NFA.Quiz where
+
+import Autolib.NFA
+
+import qualified NFA.Property as A
+import qualified Exp.Property as E
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+
+data NFAC c Int => 
+     Quiz c = Quiz { generate :: [ E.Property c ]
+		 , solve    :: [ A.Property c ]
+		 }
+    deriving ( Typeable )
+
+{-! for Quiz derive: Reader, ToDoc, Haskell2Xml !-}
+
+example :: Quiz Char
+example = Quiz { generate = [ E.Alphabet $ mkSet "ab"
+			    , E.Max_Size 10
+			    , E.Simple
+			    ]
+	       , solve    = [ A.Alphabet $ mkSet "ab"
+			    ]
+	       }

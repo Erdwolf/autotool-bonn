@@ -1,6 +1,8 @@
 -- | edit the problem configuration
 -- and check a sample solution
 
+-- TODO: hack this module into pieces
+
 --  $Id$
 
 module Main where

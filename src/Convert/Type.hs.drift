@@ -8,7 +8,6 @@ import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
 import qualified Convert.Input
-import qualified Convert.Wanted
 
 import Autolib.Exp.Inter
 import Autolib.Exp
@@ -17,7 +16,7 @@ import Autolib.Set
 
 data Convert =
      Convert { name :: Maybe String -- if Nothing, use (show input)
-             , input :: Convert.Input.Input
+             , input :: Convert.Input.Input Char
 	     }
     deriving ( Typeable )
 
@@ -25,7 +24,7 @@ data Convert =
 
 form :: Convert -> Doc
 form conv = case name conv of
-    Nothing -> toDoc $ input conv
+    Nothing -> Convert.Input.lang $ input conv
     Just cs -> text cs
 
 eval :: Set Char -> Convert -> NFA Char Int

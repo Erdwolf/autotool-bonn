@@ -5,6 +5,9 @@ module NFA.Test where
 import NFA.Property
 
 import Autolib.NFA
+import Autolib.NFA.Trim
+import Autolib.NFA.Check
+
 import Autolib.Reporter
 import Autolib.Reporter.Set
 import Autolib.ToDoc
@@ -23,12 +26,21 @@ test (Max_Size s) aut = do
 test (Alphabet m) aut = do
     subeq ( text "Alphabet des Automaten", alphabet aut )
           ( toDoc m, m )
+test (Deterministic) aut = do
+    deterministisch aut
+test (Reduced) aut = do
+    inform $ text "Der Automat soll reduziert sein."
+    subeq ( text "alle Zustände", states aut )
+	  ( text "erreichbare Zustände", states $ reachable aut )
+    subeq ( text "alle Zustände", states aut )
+	  ( text "produktive Zustände",  states $ productive aut )
+    
 {-
 	      | Minimal
 	      | Complete
-	      | Trim -- no useless states
 -}
+
 test prop aut = do
-    inform $ fsep [ text "test für", toDoc prop
+    reject $ fsep [ text "test für", toDoc prop
 		  , text "noch nicht implementiert"
 		  ]

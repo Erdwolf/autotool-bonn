@@ -17,6 +17,7 @@ import Autolib.Reporter
 import Autolib.NFA
 import Autolib.NFA.Example
 import Autolib.NFA.Eq
+import Autolib.NFA.Restrict
 import Autolib.Size
 
 import NFA.Property
@@ -43,14 +44,20 @@ instance C.Partial Convert_To_NFA
 	in  Autolib.NFA.Example.example_sigma alpha
 
     partial Convert_To_NFA ( from, props ) aut = do
+        let [ alpha ] = do Alphabet a <- props ; return a
+        restrict_states aut
+        restrict_alpha alpha aut
         inform $ text "Sind alle Eigenschaften erfüllt?"
-        mapM_ ( flip test aut ) props
+        nested 4 $ mapM_ ( flip test aut ) props
 
     total Convert_To_NFA ( from, props ) aut = do
         inform $ text "Akzeptiert der Automat die richtige Sprache?"
         let [ alpha ] = do Alphabet a <- props ; return a
-        True <- nested 4 $ equ ( eval alpha from ) aut
-	return ()
+        flag <- nested 4 
+             $ equ ( informed ( form from ) $ eval alpha from ) 
+                   ( informed ( text "Sprache Ihres Automaten" ) aut )
+        when (not flag) $ reject $ text ""
+
 
 instance C.Measure Convert_To_NFA 
                    ( Convert, [ Property Char ] ) 
