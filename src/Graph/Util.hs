@@ -59,7 +59,10 @@ equal_set x @ (d1, s1) y @ (d2, s2) = do
     Autolib.Reporter.Subset.check y x
 
 nachbarn :: Ord a => Graph a -> a -> Set a
-nachbarn g x = mkSet $ do
+nachbarn g x = mkSet $ lnachbarn g x
+
+lnachbarn :: Ord a => Graph a -> a -> [ a ]
+lnachbarn g x =  do
     k <- lkanten g
     if x == von k then return $ nach k
        else if x == nach k then return $ von k

@@ -7,7 +7,7 @@ import Graph.Color
 
 import Autolib.Graph.Ops ( gmap )
 import Autolib.Graph.Kneser ( petersen )
-import Autolib.Dot ( peng, Dot )
+import Autolib.Dot ( peng, Layout_Program (..) )
 
 import Inter.Types
 import Autolib.ToDoc
