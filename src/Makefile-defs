@@ -23,7 +23,10 @@ endif
 ifndef EXTRA_PACKS
 EXTRA_PACKS = -package-conf $(RELATIV_TO_MAIN_DIR)/autotool.pkg -package hsql 
 endif
+
+ifndef DEFINES
 DEFINES = -DHOME=1
+endif
 
 # erlaube überschreibung, s.o
 ifndef DIRS
@@ -33,24 +36,6 @@ endif
 ########################################################################
 # ugly ugly ugly : system-spezifische teile des makefiles
 ########################################################################
-ifeq ($(shell hostname), nfa)
-EXTRA_PACKS = -package hsql
-DEFINES = -DHOME=1
-GHC = ghc-6.0
-endif
-
-ifeq ($(shell hostname), dfa)
-EXTRA_PACKS = -package hsql
-DEFINES = -DSPACE=1
-GHC = ghc6 # which is 6.0.1, actually
-endif
-
-ifeq ($(shell hostname), aaron)
-# EXTRA_PACKS = -package hsql
-EXTRA_PACKS = -package-conf $(HOME)/autotool/autotool.pkg -package hsql
-DEFINES = -DSPACE=1
-GHC = ghc-6.0
-endif
 
 ifeq ($(shell hostname), theo1)
 EXTRA_PACKS = -package HToolkit
