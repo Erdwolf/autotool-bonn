@@ -23,7 +23,8 @@ wrapper v mat b = do
     Reporter.Result.wrapper $ do
         inform $ fsep
 	    [ text "Ihre Einsendung zur Aufgabe"
-	    , text $ T.variant v
+	    , text $ T.aufgabe v
+	    , parens ( text "Version:" <+> text ( T.version v ) )
 	    , text "ist:"
 	    ]
         inform $ nest 4 $ toDoc b

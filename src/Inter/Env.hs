@@ -15,6 +15,7 @@ get env =  P.empty { P.matrikel = item env "matrikel"
 		   , P.passwort = read $ item env "passwort"
 		   , P.problem  = item env "problem"
 		   , P.aufgabe  = item env "aufgabe"
+		   , P.version  = item env "version"
 		   , P.input    = item env "input"
 		   }
 

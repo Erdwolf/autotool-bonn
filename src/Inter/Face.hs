@@ -15,6 +15,7 @@ import qualified Output.Html
 import Inter.Env
 import Inter.Validate
 import Inter.Evaluate
+import Inter.Bank
 import qualified Inter.Param as P
 import qualified Challenger
 
@@ -74,19 +75,24 @@ iface variants env = do
 	      -- eingabe bewerten ( echter Reporter )
 	      let ( res :: Maybe Int , com :: Html ) 
 		      = export $ evaluate ( problem v ) i par2
-	      -- TODO: in datenbank schreiben
+	      -- bewertung in datenbank und file
+	      msg <- bank par2 res
+	      let log = p << "Eintrag ins Logfile:"
+			+++ p << pre << msg
+
 	      let height = length $ filter ( == '\n' ) $ P.input par2
 	      let status = case res of
 		     Just s -> 
 			 p << ( "Korrekte Lösung, Size: " ++ show s )
 		     Nothing -> 
-			 p << "Lösung nicht korrekt. Nochmal:"
+			 p << "Lösung ist nicht korrekt. Nochmal:"
 			 +++ textarea ( primHtml $ P.input par2  ) 
 			     ! [ name "input"
 			       , rows $ show $ height + 2
 			       , cols $ show $ P.input_width par2
 			       ]
-	      return $ page par2 $ inst +++ status +++ com
+
+	      return $ page par2 $ inst +++ log +++ status +++ com
 
 ------------------------------------------------------------------------
 
@@ -105,6 +111,7 @@ preface par = table <<
 		     
 	    , besides $  txtf "problem" ( P.problem par )
 		     ++ txtf "aufgabe" ( P.aufgabe par )
+		     ++ txtf "version" ( P.aufgabe par )
 	    ]
 
 txtf name cont = 

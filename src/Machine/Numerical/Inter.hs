@@ -14,12 +14,14 @@ import ToDoc
 import Informed
 
 computer :: ( Machine m dat conf, Numerical dat )
-         => String		-- name der variante 
+         => String		-- aufgabe (major)
+	 -> String -- version ( minor )
      -> N.Type m
      -> Var N.Computer ( N.Type m ) m
-computer v num =
+computer auf ver num =
     Var { problem = N.Computer
-	, variant = v
+	, aufgabe = auf
+	, version = ver
 	, key = \ matrikel -> do
 	      return matrikel
 	, gen = \ matrikel -> do

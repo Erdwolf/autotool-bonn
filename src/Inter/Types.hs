@@ -17,7 +17,8 @@ type Key = String
 
 data Var p i b = 
          Var { problem :: p 
-	     , variant :: String
+	     , aufgabe :: String
+	     , version :: String
 	     , key :: Matrikel -> IO Key
 	     , gen :: Matrikel -> Reporter i
 	     , gen_i :: Key -> i
@@ -45,7 +46,7 @@ data Variant = forall p i b
 
 instance ToDoc Variant where 
     toDoc ( Variant v ) = -- text "Variant" -- <+> parens ( toDoc v )
-        text $ show ( problem v) ++ "/" ++  variant v
+        text $ show ( problem v) ++ ":" ++ aufgabe v ++ "-" ++ version v
 
 instance Show Variant where
     show = render . toDoc
