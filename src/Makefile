@@ -15,7 +15,8 @@ FLAGS = -fallow-overlapping-instances \
 PACKS = -package text -package data \
 	-package posix -package network 
 
-EXTRA_PACKS = -package HToolkit 
+# EXTRA_PACKS = -package HToolkit 
+EXTRA_PACKS = -package hsql
 
 OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
 
@@ -23,10 +24,18 @@ OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
 
 GHC = ghc-6.0 # -pgmc gcc-2.95
 
-# WARN =  -Werror -dcore-lint
-WARN = -dcore-lint
+WARN =  -Werror -dcore-lint
 
-GHC_COMMAND = $(GHC) --make $(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) -i$(DIRS)
+ifeq ($(shell hostname), nfa)
+DEFINES = -DSPACE=1
+else
+ifeq ($(shell hostname), aaron)
+DEFINES = -DSPACE=1
+endif
+endif
+
+GHC_COMMAND = $(GHC) --make \
+	$(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) $(DEFINES) -i$(DIRS)
 
 
 
@@ -98,7 +107,6 @@ drift-clean :
 
 drift-commit : drift-clean drift
 	cvs commit -m drift-commit $(DRIFT)
-
 
 
 face : Inter/Face.cgi
