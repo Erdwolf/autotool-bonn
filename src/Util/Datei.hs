@@ -17,7 +17,7 @@ module Util.Datei
 import List (inits, intersperse)
 import Directory
 import Monad (guard, when)
-import System (getEnv)
+import System (getEnv, system)
 
 -- alle pfade sind relativ zu $HOME 
 data Datei = Datei{ pfad :: [String]
@@ -47,6 +47,8 @@ schreiben d inhalt = do
     createDir d
     h <- home d
     writeFile h inhalt
+    system $ unwords [ "chmod",  "go+r", h ]    
+    return ()
 
 lesen :: Datei -> IO(String)
 lesen d  = do
@@ -59,6 +61,7 @@ dirlesen d  = do
     getDirectoryContents h
 
 ----------------------------------------------------------------------------
+
 
 relativieren :: Datei -> String
 relativieren d = concat $ intersperse "/" ((drop (relativzahl d) (pfad d)) ++ [name d])
@@ -78,4 +81,5 @@ createDir d = do
 		    when ( not ok ) $ do 
 --                     putStrLn $ "creating directory " ++ show path
 		       createDirectory path
-
+		       system $ unwords [ "chmod",  "go+rx", path ]
+		       return ()
