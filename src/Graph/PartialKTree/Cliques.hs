@@ -48,14 +48,4 @@ cliques (g, k) ( x : xs ) = do
     return $ max r ( cardinality n ) 
     
 
-ist_clique :: Ord a => Graph a -> Bool
-ist_clique g = 
-    let n = cardinality $ knoten g
-        m = cardinality $ kanten g
-    in  2 * m == n * pred n
-
-no_fixed_layout :: Graph a -> Graph a
-no_fixed_layout g = g { graph_layout = emptyFM
-		      , layout_hints = []
-		      }
 
