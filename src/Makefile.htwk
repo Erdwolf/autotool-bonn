@@ -1,0 +1,51 @@
+# $Id$
+
+
+# for face: ########################################################
+
+PUB =  $(HOME)/public_html
+CGIBIN = $(PUB)/cgi-bin
+
+# local modifications ##############################################
+
+LOCAL = htwk:ws03/compilerbau:ws03/informatik:
+COMMON = util:wash:control:bridge:challenger:
+
+DIRS = $(LOCAL)$(COMMON)
+
+ifeq ($(shell hostname), nfa)
+EXTRA_PACKS = -package hsql
+DEFINES = -DHOME=1
+GHC = ghc-6.0
+endif
+
+ifeq ($(shell hostname), dfa)
+EXTRA_PACKS = -package hsql
+DEFINES = -DSPACE=1
+GHC = ghc6 # which is 6.0.1, actually
+endif
+
+ifeq ($(shell hostname), aaron)
+EXTRA_PACKS = -package-conf /home/alf/autotool/autotool.pkg -package hsql
+DEFINES = -DSPACE=1
+GHC = ghc-6.0
+endif
+
+# common parts ############################################################
+
+include Makefile
+
+# special targets #########################################################
+
+Inter/Streamer : do
+	$(GHC_COMMAND)  $@.hs -o $@
+
+stream : Inter/Streamer
+
+
+.PHONY : do
+
+
+
+
+
