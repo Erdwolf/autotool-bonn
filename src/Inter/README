@@ -1,0 +1,83 @@
+Plan zur Behandlung von extern zu korrigierenden Aufgaben
+
+(d. h. die Bewertung erfolgt nicht sofort, sondern später,
+durch ein separates Programm, oder durch einen Menschen)
+
+
+Begründung:
+
+bei manche Aufgaben ist eine externe menschliche Korrektur
+aus inhaltlichen oder didaktischen Gründen nötig
+
+oder es hatte einfach noch niemand die Zeit,
+einen automatischen Korrektor zu schreiben,
+
+oder (seltener Fall, aber möglich) ein Mensch muß
+überprüfen und ändern, was der automatische Korrektor gemacht hat.
+
+
+Datenstrukturen:
+
+Eingabe des Studenten wird in Datei gespeichert 
+(z. B. /speicher/Vorlesung/Aufgabe/Matrikel/latest.input )
+und der Dateiname in Datenbank 
+in der (bereits bestehenden) Tabelle "stud_aufg"
+in einer neuen Spalte "latest_submission" notiert.
+
+Ausgabe des Korrektors (Mensch oder Programm)
+wird auch in Datei geschrieben
+(z. B. /speicher/Vorlesung/Aufgabe/Matrikel/latest.report )
+in der DB-Tabelle "stud_aufg" 
+in neuer Spalte "latest_report" notiert.
+
+
+Auflauf (use cases):
+
+Student:
+
+* Lösung einreichen (dabei wird latest_submission überschrieben
+  und latest_report auf NULL gesetzt)
+
+* Bewertung ansehen (falls latest_report nicht NULL ist)
+
+Korrektor:
+
+* (Vorlesung/Aufgabe/Student wählen, dann)
+  Lösungsversuch ansehen, Report dazu schreiben,
+  dabei wird latest_report gesetzt,
+  Resultat festlegen (falsch, richtig, highscore-punkte)
+  das wird in die punkte-DB eingetragen
+
+
+Migration:
+
+aus o. g. Gründen soll die Möglichkeit der externen (Nach-)Korrektur
+für *alle* (auch die alten) Aufgaben bestehen.
+Die Einsendungen werden jetzt schon als Datei gespeichert.
+Neu: es sollen auch die Antworten (des Programms) gespeichert werden,
+damit die Sache uniform ist.
+Beide Dateinamen müssen in die Datenbank.
+
+interface Challenger.Partial erhält neue Methode 
+"total_neu" mit resultat "Reporter Status"
+(sinngemäß wie "total", aber das hatte "Reporter ()")
+
+data Status = OK Integer | External
+
+Für die automatischen (alten) Aufgaben 
+gibt es eine Default-Implementierung 
+total_neu input = do total input ; return $ OK $ size input 
+damit muß man am alten Code nichts ändern
+
+Bei der Bewertung in Inter/Super.hs
+wird die Methode "partial" ausgeführt (für jede Aufgabe)
+(die kann evtl. ein paar automatische Tests machen),
+dann die Methode "total_neu". Für die vollautomatischen Aufgaben
+verhält die sich wie beschrieben (ruft "total"),
+für die externen Aufgaben liefert sie Resultat "External"
+und sichtbare Mitteilung "Aufgabe wird extern korrigiert".
+
+
+
+
+
