@@ -20,7 +20,7 @@ import qualified Grammatik.CF.CYK_Tables as C
 
 import Data.FiniteMap
 import Simple_Set
-import qualified Set as S
+import qualified Data.Set as S
 
 import Array
 

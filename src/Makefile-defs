@@ -78,8 +78,8 @@ FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
 	-fallow-undecidable-instances 
 
-PACKS = -package text -package data \
-	-package posix -package network 
+# PACKS = -package text -package data -package posix -package network 
+PACKS = 
 
 OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
 

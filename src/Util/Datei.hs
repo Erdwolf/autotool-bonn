@@ -22,8 +22,8 @@ import Directory
 import Control.Monad (guard, when)
 import System (getEnv, system)
 import Char (isAlphaNum)
-import qualified Posix
-import qualified Exception
+import qualified System.Posix
+import qualified Control.Exception
 
 -- alle pfade sind relativ zu $HOME, falls das existiert
 -- in CGI-skripten existiert es nicht (?)
@@ -85,7 +85,7 @@ home_dir = do
 	    getEnv "HOME"
 #else
 #ifdef POSIX
-        user <- Posix.getEffectiveUserName
+        user <- System.Posix.getEffectiveUserName
         return $ "/home/" ++ user
 #else            
         let user = "autotool"
@@ -129,7 +129,7 @@ dirgehen :: Datei -> IO ()
 dirgehen d = do
     createDir d
     h <- home $ d { name = "", extension = "" }
-    Posix.changeWorkingDirectory h
+    System.Posix.changeWorkingDirectory h
 
 perm :: String -> FilePath -> IO ()
 perm flags f = do

@@ -1,6 +1,6 @@
--- -- $Id$
+--  $Id$
 
-module Pump.Central
+module Pump.Central {-# DEPRECATED #-}
 
 ( central
 )
@@ -26,14 +26,14 @@ central mat l p @ Nein {} = do
 
 central mat l p @ Ja   {} = do
     seed $ read mat
-    ws1 <- samples l 3 (n p    )
-    ws2 <- samples l 2 (n p + 3)
-    ws3 <- samples l 2 (n p + 6)
+    ws1 <- samples l 5 (    n p    )
+    ws2 <- samples l 5 (2 * n p + 3)
+    ws3 <- samples l 5 (3 * n p + 6)
     let ws = sort 
 	   $ nub 
 	   $ filter ( (n p <= ) . length ) 
-	   $ ws1 ++ ws2 ++ ws3
-    reporter $ positiv l p $ take 5 ws
+	   $ take 4 ws1 ++ take 3 ws2 ++ take 2 ws3
+    reporter $ positiv l p $ ws
 
 
 

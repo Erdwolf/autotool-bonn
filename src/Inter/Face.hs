@@ -75,7 +75,7 @@ import qualified Inter.Motd
 import qualified Challenger
 
 import Inter.Types
-import qualified Exception
+import qualified Control.Exception
 
 import Inter.Timer
 
@@ -85,7 +85,7 @@ import Inter.Timer
 import Inter.Boiler
 
 
-import qualified Posix
+
 import Informed
 
 patience :: Int
@@ -96,7 +96,7 @@ main = do
      vs <- boiler
      wrapper $ \ env ->  
          iface vs env
-             `Exception.catch` \ err -> 
+             `Control.Exception.catch` \ err -> 
                  return $ p << pre << primHtml ( show err )
 
 ------------------------------------------------------------------------
@@ -157,7 +157,7 @@ iface variants env = do
           ein <- case P.click par1 of
 	      Submit   -> return $ P.input par1
 	      Previous -> latest par1 
-		  `Exception.catch` \ _ -> return ( show b0 )
+		  `Control.Exception.catch` \ _ -> return ( show b0 )
 	      _  -> return $ show b0
 
           -- Eingabe.Form füllen entweder mit

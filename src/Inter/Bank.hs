@@ -3,7 +3,7 @@ module Inter.Bank where
 -- -- $Id$
 
 import SQLqueries
-import qualified Posix
+import qualified System.Posix
 
 import System.Time
 import qualified Inter.Param as P

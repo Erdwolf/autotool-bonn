@@ -3,7 +3,7 @@ module Inter.Store where
 -- -- $Id$
 
 import Util.Datei
-import qualified Posix
+import qualified System.Posix
 import qualified Inter.Param as P
 import Maybe
 
@@ -14,7 +14,7 @@ store ::  P.Type -> Maybe Int -> IO String
 -- d. h. eigentlich kein überschreiben
 store p mres = do
     let flag = isJust mres
-    pid <- if flag then fmap show $ Posix.getProcessID 
+    pid <- if flag then fmap show $ System.Posix.getProcessID 
 	           else return "latest"
     schreiben ( location p pid flag ) $ P.input p
     return $ pid

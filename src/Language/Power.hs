@@ -45,7 +45,7 @@ sam k c n = do
     ws <- sequence $ replicate c $ do
 	     w <- someIO "01" q
 	     return $ concat $ replicate k w
-    let w = do c <- [1 .. k]; r <- "01"; replicate n r
+    let w = do c <- [1 .. k]; r <- "01"; replicate q r
     return $ w : ws
 
 ----------------------------------------------------------------------------
