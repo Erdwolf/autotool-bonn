@@ -134,6 +134,7 @@ checkPasswdMNrDB maybePass mnr =
 -- Output:  IO Just SNr zurück, wenn (mnr,pass) in DB
 --
 loginDB :: String -> String -> IO (Maybe String)
+-- loginDB "" "" = return $ Nothing
 loginDB mnr pass =
     do
        conn <- myconnect

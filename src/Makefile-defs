@@ -15,13 +15,13 @@ endif
 
 ifeq ($(shell hostname), nfa)
 EXTRA_PACKS = -package hsql
-GHC = ghc-6.2
+GHC = ghc
 CGIDIR = /var/www/matchbox
 endif
 
 ifeq ($(shell hostname), dfa)
 EXTRA_PACKS = -package hsql
-GHC = ghc6 # which is 6.0.1, actually
+GHC = ghc 
 endif
 
 ifeq ($(shell hostname), aaron)

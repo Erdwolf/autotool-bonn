@@ -77,13 +77,11 @@ import Inter.Types
 import qualified Control.Exception
 
 import Inter.Timer
-
+import Inter.Logged
 --
 -- hier sind die aufgaben drin:
 --
 import Inter.Boiler
-
-
 
 import Informed
 
@@ -103,6 +101,8 @@ main = do
 iface :: [ Variant ] -> [(String, String)] -> IO Html
 iface variants env = do
 
+    logged "start" $ return ()
+
     -- alle Inputs aus Env. holen
     let par0 = case head variants of 
         -- erste Variante ist Default Variante
@@ -115,14 +115,14 @@ iface variants env = do
 			}
 		in Inter.Env.get_with env def
 
-    motd <- Inter.Motd.contents
+    motd <- logged "motd" $ Inter.Motd.contents
 
     -- gültigkeit prüfen, aufg.-instanz generieren / bzw. holen
     --
     -- das ist eine IO-Aktion 
     -- (wg. DB-zugriffen und evtl. Random in Generierung)
     -- im Reporter.Type gibts (mit Absicht) (leider) keine IO
-    res <- validate $ par0 { P.variants = variants }
+    res <- logged "validate" $ validate $ par0 { P.variants = variants }
 
     -- haben es wir geschafft zum aufgabenlösen
     case res of

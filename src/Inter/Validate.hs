@@ -3,6 +3,7 @@ module Inter.Validate where
 --   $Id$
 
 import Inter.Types
+import Inter.Logged
 import qualified Inter.Param as P
 
 -- das wird später mal autotool/bin/Settings.hs
@@ -19,7 +20,8 @@ validate par = do
     -- passwort vergleich mit db
     let matrikel = P.matrikel par
     let passwort = show $ P.passwort par
-    mbsnr <- loginDB matrikel passwort    
+    mbsnr <- logged ( show [ "loginDB", matrikel, passwort ] ) 
+	   $ loginDB matrikel passwort    
 
     let msgstr = 
             if length matrikel > 0 || length passwort > 0

@@ -65,7 +65,10 @@ generate = do
                    , A.noh  = map make noh
                    , A.cut = cut
 --                   , A.check = Reporter.Checker.wahr
-                    , A.check = \ prog -> do
+                    , A.check = Reporter.Checker.make 
+		               "unibranch"
+		               ( text "genau eine Verzweigung" )
+		               $ \ prog -> do
                          check prog
                          unibranch prog
                    , A.start = E.student
