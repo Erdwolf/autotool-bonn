@@ -19,14 +19,14 @@ oder (seltener Fall, aber möglich) ein Mensch muß
 Datenstrukturen:
 
 Eingabe des Studenten wird in Datei gespeichert 
-(z. B. /speicher/Vorlesung/Aufgabe/Matrikel/latest.input )
+(z. B. /speicher/$Vorlesung/$Aufgabe/$Matrikel/latest.input )
 und der Dateiname in Datenbank 
 in der (bereits bestehenden) Tabelle "stud_aufg"
 in einer neuen Spalte "latest_submission" notiert.
 
 Ausgabe des Korrektors (Mensch oder Programm)
 wird auch in Datei geschrieben
-(z. B. /speicher/Vorlesung/Aufgabe/Matrikel/latest.report )
+(z. B. /speicher/$Vorlesung/$Aufgabe/$Matrikel/latest.report )
 in der DB-Tabelle "stud_aufg" 
 in neuer Spalte "latest_report" notiert.
 
