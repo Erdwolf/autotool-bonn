@@ -25,9 +25,6 @@ data Type m dat =
 
 instance Informed ( Type m dat  ) where
      info = acceptor_info
-
-instance Informed ( Type m ) where
-     info = acceptor_info
      informed info m = m { acceptor_info = info }
 
 instance ToDoc ( Type m dat  ) where
