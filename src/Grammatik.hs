@@ -1,4 +1,9 @@
-module Grammatik where
+module Grammatik 
+
+( module Grammatik.Type
+)
+
+where
 
 -- $Id$
 
