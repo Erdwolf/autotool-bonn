@@ -49,7 +49,8 @@ instance Pumping Zerlegung where
 
     zerlegungen w n = do
         ( links, rest ) <- splits w
-	( mitte, rechts ) <- take n $ drop 1 $ splits rest
+	( mitte, rechts ) <- takeWhile ( \ (m,r) -> length m <= n ) 
+			   $ splits rest
 	( a, bc ) <- splits mitte
 	( b, c ) <- splits bc
 	guard $ not $ null $ a ++ c

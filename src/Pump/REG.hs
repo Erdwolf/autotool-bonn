@@ -40,7 +40,8 @@ instance Pumping Zerlegung where
     inflate i z = u z ++ concat ( replicate i $ v z ) ++ w z
 
     zerlegungen p n = do
-        ( ab, c ) <- take n $ splits p
+        ( ab, c ) <- takeWhile ( \ (ab,c) -> length ab <= n) 
+		  $ splits p
         ( a, b  ) <- splits ab
         guard $ not (null b)
         return $ Zerlegung { u = a, v = b, w = c }

@@ -75,6 +75,7 @@ report l neg @ Nein {} ( fodder :: z ) n = do
     let zs =  zerlegungen w n :: [ z ]
     let m = length zs
     let zzs = sort $ nub $ do 
+	    guard $ m > 0
             k <- take 5 [ m `div` 2 .. ]
 	    let i = ( k^3 + k + 13 ) `mod` m
 	    return $ zs  !! i
