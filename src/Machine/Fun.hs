@@ -3,6 +3,7 @@ module Machine.Fun
 --   $Id$
 
 ( fun_test
+, inner_fun_test
 , numerical_test
 , numerical_test'
 )
@@ -38,8 +39,8 @@ numerical_test :: ( Numerical dat, Machine m dat conf, Out m dat conf )
 	 -> m
 	 -> Reporter Int
 numerical_test cut inputs fun m = do
-    let check ein aus = do
-	    let a = decode aus
+    let check ein conf = do
+	    let a = decode $ Machine.Class.output m conf
 	    let a' = fun ein
 	    inform $ vcat
 		   [ text "Die Endkonfiguration enthält das Resultat", toDoc a
@@ -56,8 +57,9 @@ fun_test :: ( Machine m dat conf , Out m dat conf )
      -> Reporter Int
 fun_test cut pairs m = do
     let fm = listToFM pairs
-    let check ein aus = do
-            let Just wanted = lookupFM fm ein
+    let check ein conf = do
+            let aus = Machine.Class.output m conf
+		Just wanted = lookupFM fm ein
 		res = wanted == aus
 	    inform $ vcat [ text "wird die geforderte Endkonfiguration"
 			    <+> toDoc wanted <+> text "erreicht?"
@@ -71,7 +73,7 @@ inner_fun_test :: (ToDoc e, Machine m dat conf, Out m dat conf )
      => Int 
      -> [ e ] -- Liste von eingaben
      -> ( e -> dat ) -- input encoding
-     -> ( e -> dat -> Reporter Bool ) -- ausgabe korrekt?
+     -> ( e -> conf -> Reporter Bool ) -- ausgabe korrekt?
      -> m
      -> Reporter Int
 inner_fun_test cut inputs encode check m = do
@@ -94,7 +96,7 @@ richtige_ergebnisse :: ( ToDoc e, Machine m dat conf, Out m dat conf )
 	      -> m 
 	      -> [e] -- Liste von eingaben
 	      -> ( e -> dat ) -- input encoding
-	      -> ( e -> dat -> Reporter Bool ) -- ausgabe korrekt?
+	      -> ( e -> conf -> Reporter Bool ) -- ausgabe korrekt?
               -> Reporter ()
 richtige_ergebnisse cut m inputs encode check = do
    mapM_ ( re cut m encode check ) inputs
@@ -106,7 +108,7 @@ re :: ( ToDoc e, Machine m dat conf, Out m dat conf )
 	      => Int 
 	      -> m 
 	      -> ( e -> dat ) -- input encoding
-	      -> ( e -> dat -> Reporter Bool ) -- ausgabe korrekt?
+	      -> ( e -> conf -> Reporter Bool ) -- ausgabe korrekt?
 	      -> e
               -> Reporter ()
 
@@ -125,7 +127,7 @@ re cut m encode check ein = do
     sequence_ $ do 
        k <- ks
        return $  do
-           let b = Machine.Class.output m k
+           -- let b = Machine.Class.output m k
 	   inform $  vcat [ text "Bei Eingabe", toDoc ein
 			    , text "Startkonfiguration", nest 4 $ toDoc s
 			    , text "erreicht die Maschine"
@@ -133,7 +135,7 @@ re cut m encode check ein = do
 			    ]
            when ( not $ accepting m k ) $ do
 	        reject $ text "Das ist keine akzeptierende (erfolgreiche) Konfiguration."
-           f <- check ein b
+           f <- check ein k
 	   when ( not f ) $ do
 	           -- vorrechnen m s
 	           reject $ present k

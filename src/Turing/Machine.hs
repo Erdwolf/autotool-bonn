@@ -20,6 +20,7 @@ import ToDoc
 instance TUM y z => Compute ( Turing y z ) ( Konfiguration y z ) where
     next m k = folgekonfigurationen m k
     accepting m k = zustand k `elementOf` endzustandsmenge m
+    depth m k = schritt k
 
 instance TUM y z => In  ( Turing y z ) [ y ] ( Konfiguration y z ) where
     input  m ys = start_konfiguration m ys
@@ -27,13 +28,14 @@ instance TUM y z => In  ( Turing y z ) [ y ] ( Konfiguration y z ) where
 instance TUM y z => Out  ( Turing y z ) [ y ] ( Konfiguration y z ) where
     output m k = bandinhalt m k
 
-instance Numerical String where
+instance Encode String where
     -- unär
     encode xs = do
         x <- xs
-	replicate ( fromIntegral x) '1' ++ ","  -- nicht das leerzeichen!
-    decode m = fromIntegral $ length m -- eigentlich prüfen, welche zeichen
+	replicate ( fromIntegral x) '1' ++ "."  -- nicht das leerzeichen!
 
+instance Decode String where
+    decode m = fromIntegral $ length m -- eigentlich prüfen, welche zeichen
 
 instance TUM y z => 
         C.Partial A.Acceptor ( A.Type ( Turing y z ) [y] ) 

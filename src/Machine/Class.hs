@@ -25,6 +25,8 @@ instance ( ToDoc m, Size m
       , History conf
       ) => Machine m dat conf 
 
+--------------------------------------------------------------------
+
 class In m dat conf | m -> dat, m -> conf where -- strong dependencies ??
     -- | startkonf. herstellen (tupel von args)
     input  :: m -> dat -> conf
@@ -32,8 +34,8 @@ class In m dat conf | m -> dat, m -> conf where -- strong dependencies ??
 class Ord conf => Compute m conf where
     -- | alle direkten nachfolger ( nichtdeterministisch )
     next   :: m -> conf -> Set conf 
-    -- 
     accepting  :: m -> conf -> Bool
+    depth :: m -> conf -> Int
 
 nachfolger :: Compute m conf
            => m -> conf -> [ conf ]
@@ -53,8 +55,16 @@ class ( In m dat conf, Out m dat conf )
 instance ( In m dat conf, Out m dat conf )
       => InOut m dat conf
 
-class Numerical dat where
-    -- | berechnet eine mehrstellige zahlfunktion
+--------------------------------------------------------------------
+
+class Encode dat where
     encode :: [ Integer ] -> dat
+
+class Decode dat where
     decode :: dat -> Integer
+
+class ( Encode dat, Decode dat ) => Numerical dat 
+
+instance ( Encode dat, Decode dat ) => Numerical dat 
+
 

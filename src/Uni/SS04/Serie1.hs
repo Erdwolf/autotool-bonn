@@ -14,7 +14,10 @@ import Random
 import Data.List (inits)
 
 import qualified Machine.Fun.Type as F
-import qualified Machine.Fun.Inter as I
+import qualified Machine.Fun.Inter as FI
+
+import qualified Machine.Clock.Type as C
+import qualified Machine.Clock.Inter as CI
 
 import qualified Inter.Types as T
 import Inter.Wrapper
@@ -47,14 +50,31 @@ tm2 = do
            { F.fun_info = text "verdoppeln??"
            , F.pairs = testing
            , F.cut = 10000
-           , F.check = \ m -> return () -- alles OK ??
+           , F.check = \ m -> return () -- alles OK ?? TODO: det
            , F.start = Turing.Example.student -- ??
            }
-    return $ I.computer "TM" "2" it
+    return $ FI.computer "TM" "2" it
+
+clock3 :: IO ( T.Var C.Clock
+		      ( C.Type ( Turing Char Int ) )
+		      ( Turing Char Int )
+	       )
+clock3 = do
+    let it = C.Make
+	   { C.fun = \ n -> n + 1
+	   , C.fun_info = text "\\ n -> n + 1"
+	   , C.args = [ 2 .. 10 ] ++ [ 12 , 14 .. 20 ]
+	   , C.cut = 30
+	   , C.check = \ m -> return () -- alles OK ?? TODO: det
+	   , C.start = Turing.Example.student
+	   }
+    return $ CI.clock "TM" "3" it
 
 generate :: [ IO T.Variant ]
 generate = 
-    [ do i <- tm2 ; return $ T.Variant i
+    [ do i <- tm2   ; return $ T.Variant i
+    , do i <- clock3 ; return $ T.Variant i
     ]
+
 
 
