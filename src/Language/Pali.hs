@@ -17,7 +17,8 @@ import Random
 
 pali :: Language
 pali = Language
-	{ abbreviation = "{ w : w in {0,1}^*, w = reverse w }"
+	{ abbreviation = "{ w | w in {0,1}^*  und  w = reverse w }"
+	, nametag      = "Pali"
 	, alphabet     = mkSet "01"
 	, contains     = is_pali 
 	, sample       = sam

@@ -1,5 +1,4 @@
-
-module Grammatik.CYK_Tables 
+module Grammatik.CF.CYK_Tables 
 
 -- $Id$
 
@@ -13,7 +12,10 @@ module Grammatik.CYK_Tables
 where
 
 -- $Log$
--- Revision 1.1  2003-11-25 08:21:09  joe
+-- Revision 1.2  2003-11-25 09:49:49  joe
+-- aufgaben zu grammatiken
+--
+-- Revision 1.1  2003/11/25 08:21:09  joe
 -- moved CF-related files into subdir
 --
 -- Revision 1.1  2002/12/17 15:17:58  joe

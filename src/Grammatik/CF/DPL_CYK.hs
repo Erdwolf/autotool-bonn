@@ -1,5 +1,4 @@
-
-module Grammatik.DPL_CYK 
+module Grammatik.CF.DPL_CYK 
 
 -- $Id$
 
@@ -8,7 +7,10 @@ module Grammatik.DPL_CYK
 where
 
 -- $Log$
--- Revision 1.1  2003-11-25 08:21:09  joe
+-- Revision 1.2  2003-11-25 09:49:49  joe
+-- aufgaben zu grammatiken
+--
+-- Revision 1.1  2003/11/25 08:21:09  joe
 -- moved CF-related files into subdir
 --
 -- Revision 1.1  2002/12/17 15:17:58  joe
@@ -36,7 +38,7 @@ import Grammatik.Chomsky
 
 -- benutzt Arrays (auf jeden fall besser für ghc -O)
 
-import Grammatik.CYK_Arrays
+import Grammatik.CF.CYK_Arrays
 
 -- end auswahl
 

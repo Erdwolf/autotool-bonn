@@ -1,5 +1,4 @@
-
-module Grammatik.Kettenfrei where
+module Grammatik.CF.Kettenfrei where
 
 -- $Id$
 
@@ -14,7 +13,10 @@ import List (partition)
 import Monad (guard)
 
 -- $Log$
--- Revision 1.1  2003-11-25 08:21:09  joe
+-- Revision 1.2  2003-11-25 09:49:49  joe
+-- aufgaben zu grammatiken
+--
+-- Revision 1.1  2003/11/25 08:21:09  joe
 -- moved CF-related files into subdir
 --
 -- Revision 1.2  2003/06/04 08:04:14  joe
@@ -39,11 +41,13 @@ kettenfrei g = let
     ( pairs, nopairs ) = partition ( \ ( [lhs], rhs) -> 
             length rhs == 1 && head rhs `elementOf` nichtterminale g ) 
         ( rules g )
-    -- lookupset fm = lookupWithDefaultFM fm emptySet
-    chains = Relation.trans $ Relation.Make
-	           $ addListToFM_C union 
-		   ( listToFM [ (x, unitSet x) | x <- vars g ] )
-		   [ (l, unitSet r) | ([l],[r]) <- pairs ]
+
+    chains = Relation.trans 
+	   $ Relation.plus ( Relation.identic $ mkSet $ vars g )
+	                   ( Relation.make $ do 
+			        ([l],[r]) <- pairs
+			        return (l, r)
+			   )
 
     rewrite "" = return ""
     rewrite (c : cs) = do 
