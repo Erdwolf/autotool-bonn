@@ -13,6 +13,7 @@ import qualified JVM.Make
 import qualified Graph.Selfcom
 import qualified Graph.Nachbar
 import qualified Graph.Cross
+import qualified Graph.MinSep
 import qualified Robots.Interface
 import qualified Graph.Col.Plain
 import qualified Graph.Col.Quiz
@@ -48,6 +49,7 @@ makers = [ Blank.make
 	 , Graph.Selfcom.make
 	 , Graph.Nachbar.make
 	 , Graph.Cross.make
+	 , Graph.MinSep.make
 	 , Robots.Interface.make
 	 , Robots.Interface.qmake
 	 , Graph.Col.Plain.make

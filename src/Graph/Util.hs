@@ -13,11 +13,13 @@ module Graph.Util
 where
 
 import Autolib.Graph.Type hiding ( iso )
+import Autolib.Graph.Ops ( restrict )
 import Autolib.Reporter 
 import Autolib.Reporter.Set
 
 import Autolib.FiniteMap
 import Autolib.ToDoc
+import Autolib.Schichten
 
 validate :: GraphC a
 	 => Graph a
@@ -59,11 +61,28 @@ lnachbarn g x =  do
        else if x == nach k then return $ von k
 	  else mzero
 
+reachables :: Ord a => Graph a -> a -> Set a
+reachables g x = unionManySets $ schichten ( nachbarn g ) x
+     
 degree :: Ord a => Graph a -> a -> Int
 degree g x = cardinality $ nachbarn g x
 
 lkanten g = setToList $ kanten g
 lknoten g = setToList $ knoten g
+
+is_clique :: ( ToDoc [a], Ord a ) => Graph a -> Set a -> Bool
+is_clique g s = 
+    let h = restrict s g
+	n = cardinality $ knoten h
+	m = cardinality $ kanten h
+    in  2 * m == n * pred n
+
+is_independent :: GraphC a => Graph a -> Set a -> Bool
+is_independent g s = 
+    let h = restrict s g
+	n = cardinality $ knoten h
+	m = cardinality $ kanten h
+    in  0 == m
 
 check_reg :: ( ToDoc a, ToDoc [a], Ord a )
 	  => Graph a

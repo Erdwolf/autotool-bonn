@@ -118,13 +118,3 @@ nicht r = do
 	 Nothing -> return ()
          Just _  -> reject $ text "(nicht)"
     
--- TODO: move to Graph.Util or Graph.Basic
-is_independent :: GraphC a => Graph a -> Set a -> Bool
-is_independent g s = and $ do
-    [x, y] <- teilfolgen 2 $ setToList s
-    return $ not $ elementOf (kante x y) (kanten g)
-
-is_clique :: GraphC a => Graph a -> Set a -> Bool
-is_clique g s = and $ do
-    [x, y] <- teilfolgen 2 $ setToList s
-    return $ elementOf (kante x y) (kanten g)
