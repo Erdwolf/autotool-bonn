@@ -31,10 +31,10 @@ instance Reader Ziffer where
                return $ Ziffer $ fromEnum d - fromEnum '0'
         <|> do d <- satisfy isLower
                my_whiteSpace
-               return $ Ziffer $ fromEnum d - fromEnum 'a'
+               return $ Ziffer $ fromEnum d - fromEnum 'a' + zehn
         <|> do d <- satisfy isUpper
                my_whiteSpace
-               return $ Ziffer $ fromEnum d - fromEnum 'A'
+               return $ Ziffer $ fromEnum d - fromEnum 'A' + zehn
      
 
 data Zahl = Zahl { basis :: Int
