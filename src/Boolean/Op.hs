@@ -15,6 +15,8 @@ import Text.ParserCombinators.Parsec.Expr
 import Text.ParserCombinators.Parsec.Token
 import Text.ParserCombinators.Parsec.Language
 
+import Text.XML.HaXml.Haskell2Xml
+
 import Data.List (partition)
 
 import Data.Typeable
@@ -25,6 +27,14 @@ data Op = Op { name  :: String
 	     , assoc :: Assoc
 	     , inter :: [Bool] -> Bool
 	     }
+
+-- xml-darstellung ist einfach ein string (show/read)
+instance Haskell2Xml Op where
+    toContents   = toContents . show
+    fromContents cs = 
+        let ( x, rest ) = fromContents cs
+	in  ( read x, rest )
+    toHType _ = Prim "Op" "op" -- ??
 
 instance Typeable Op where
     typeOf _ = mkAppTy (mkTyCon "Op") [] -- ??

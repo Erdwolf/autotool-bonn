@@ -10,8 +10,9 @@ import Reader
 import qualified Reporter.Checker as C
 import Reporter hiding ( output )
 import Machine.Class
+import Data.Typeable
 
-data Acceptor = Acceptor
+data Acceptor = Acceptor deriving Typeable
 
 {-! for Acceptor derive : Show, Read, ToDoc, Reader !-}
 
@@ -24,6 +25,7 @@ data Type m dat =
 	    , check :: C.Type m -- sonstige Bedingungen an Maschine
 	    , start :: m -- damit soll der student anfangen
 	      }
+     deriving ( Typeable )
 
 instance ToDoc ( Type m dat  ) where
      toDoc = info

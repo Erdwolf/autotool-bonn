@@ -119,6 +119,9 @@ iface variants env = do
 
     let pres = h3 << "(experimental:) Makers" 
 	    +++ p << pre << show ( present B.makers )
+            +++ h3 << "(experimental:) Configs"
+	    +++ p << pre << show ( cpresent B.makers B.configs )
+		    
 
     -- alle Inputs aus Env. holen
     let par0 = case head variants of 

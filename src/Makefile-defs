@@ -22,6 +22,7 @@ endif
 ifeq ($(shell hostname), dfa)
 EXTRA_PACKS = -package hsql
 GHC = ghc 
+HUGS = /usr/lib/hugs
 endif
 
 ifeq ($(shell hostname), aaron)
@@ -54,6 +55,9 @@ ifndef RELATIV_TO_MAIN_DIR
 RELATIV_TO_MAIN_DIR =.
 endif
 
+ifndef HUGS
+HUGS = /usr/local/lib/hugs
+endif
 
 ifndef EXTRA_PACKS
 EXTRA_PACKS = -package-conf $(RELATIV_TO_MAIN_DIR)/autotool.pkg -package hsql 

@@ -27,7 +27,7 @@ data Bewegung = L | O | R
 {-! for Bewegung derive : ToDoc, Reader !-}
 
 data TM = TM -- for challenger instances
-     deriving (Eq, Ord, Show, Read)
+     deriving (Eq, Ord, Show, Read, Typeable)
      
 {-! for TM derive : ToDoc, Reader !-}
 

@@ -1,3 +1,5 @@
+-- -*- mode: haskell -*-
+
 module Boolean.Instance where
 
 --  $Id$
@@ -10,6 +12,7 @@ import Challenger.Partial
 import qualified Reporter.Subset
 
 import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 import ToDoc
 import Reporter
@@ -23,6 +26,8 @@ data BI =
 	, operators :: Set Op
 	}
      deriving ( Show, Typeable )
+
+{-! for BI derive: Haskell2Xml !-}
 
 instance Partial Boolean BI Exp where
 

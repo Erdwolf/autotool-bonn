@@ -22,7 +22,7 @@ CGIBIN = $(PUB)/cgi-bin
 
 DrIFT = DrIFT-2.0rc3/src/DrIFT
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
-DP = /usr/local/lib/hugs:$(HOME)/autotool/util
+DP = $(HUGS):$(HOME)/autotool/util
 
 ###############################################################################
 
@@ -46,7 +46,7 @@ rescore :
 #########################################################################
 
 tags :
-	rm TAGS && \
+	rm -f TAGS && \
 	find . \( -name "*.hs" -o -name "*.hs.drift" \) \
 	 -print -exec etags -a {} \;
 

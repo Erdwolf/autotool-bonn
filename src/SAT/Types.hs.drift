@@ -20,11 +20,11 @@ import TypeableFM
 -- KNF = Klausel && Klausel && ... && Klausel
 
 
-data SAT = SAT deriving Show
+data SAT = SAT deriving ( Show, Typeable )
 
 -- Elementare Def.
 data Literal = Pos Variable | Neg Variable
-    deriving (Eq,Ord, Typeable)
+    deriving ( Eq, Ord, Typeable)
 
 unLiteral ( Pos v ) = v
 unLiteral ( Neg v ) = v
@@ -52,7 +52,7 @@ instance Read Klausel where readsPrec = parsec_readsPrec
 
 -- Formeln in 3KNF = Liste von Klauseln
 -- type Formel = [Klausel]
-data Formel = And [Klausel]
+data Formel = And [Klausel] deriving ( Typeable )
 
 klauseln :: Formel -> [ Klausel ]
 klauseln (And cls) = cls
