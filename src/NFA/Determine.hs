@@ -12,6 +12,7 @@ import NFA.Restrict
 import NFA.Some
 import NFA.Minimize
 import NFA.Normalize
+import NFA.Det
 
 import Inter.Types
 import Util.Datei
@@ -75,12 +76,15 @@ data Conf = Conf
          }
     deriving ( Eq, Ord, Read, Show )
 
-throw :: Conf -> IO ( NFA Char Int, NFA Char Int )
+throw :: Conf -> IO ( NFA Char Int, NFA Char Int, NFA Char Int )
 throw conf = repeat_until
     ( do a <- nontrivial ( alpha conf ) ( nea_size conf )
-         let d = normalize $ minimize $ a
-         return ( a, d )
-    ) ( \ ( a, d ) -> min_dea_size conf <= size d 
+         let b = normalize $ det a 
+         let d = minimize0 a
+         return ( a, b, d )
+    ) ( \ ( a, b, d ) -> 
+                  size d < size b
+	       && min_dea_size conf <= size d 
                && size d <= max_dea_size conf
     )
 
@@ -96,7 +100,7 @@ determine auf ver conf =
           return matrikel
         , gen = \ key -> do
           seed $ read key
-          ( i, b ) <- cache (  Datei { pfad = [ "autotool", "cache"
+          ( i, _, b ) <- cache (  Datei { pfad = [ "autotool", "cache"
                                               , auf, ver
                                               ]
                                      , name = key ++ ".cache"
