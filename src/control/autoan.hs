@@ -300,7 +300,7 @@ studStatusPage mat F0 =
 		gesamtergTable daten = 
 		    do 
 		    hrline
-		    h3 $ text $ concat ["Gesamtpunkte:" ," " , show $ summe daten ," von 73 mgl." ]
+		    h3 $ text $ concat ["Gesamtpunkte:" ," " , show $ summe daten ] --," von 73 mgl." ]
 		    table $ mapM_ lin daten
 		    hrline
 		    where  lin (a,b) = tr $ do { td $ text a; td $ text b  }
