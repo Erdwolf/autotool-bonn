@@ -22,6 +22,8 @@ import qualified Collatz.Plain
 import qualified Collatz.Inverse
 import qualified Hanoi.Semantik
 import qualified Hanoi.Quiz
+import qualified Type.Check
+import qualified Type.Quiz
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -48,5 +50,7 @@ makers = [ Blank.make
 	 , Collatz.Inverse.qmake
 	 , Hanoi.Semantik.make
 	 , Hanoi.Quiz.make
+	 , Type.Check.make
+	 , Type.Quiz.make
 	 ]
 
