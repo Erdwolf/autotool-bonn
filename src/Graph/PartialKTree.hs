@@ -1,6 +1,8 @@
 module Graph.PartialKTree 
 
-( make, make_quiz )
+( make
+-- , make_quiz 
+)
 
 where
 
