@@ -40,7 +40,6 @@ instance ToDoc Ableitung where
 instance Show Ableitung where 
     show = render . toDoc
 
-
 car  :: Ableitung -> String
 car (Ableitung xs) = head xs
 
@@ -50,6 +49,19 @@ cdr (Ableitung xs) = Ableitung $ tail xs
 cadr :: Ableitung -> String
 cadr = car . cdr
 
+mcadr :: Ableitung -> Maybe String
+mcadr x = do d <- mcdr x ; mcar d
+
+mcar :: Ableitung -> Maybe String
+mcar (Ableitung xs) = do
+    guard $ not $ null xs
+    return $ head xs
+
+mcdr :: Ableitung -> Maybe Ableitung
+mcdr (Ableitung xs) = do
+    guard $ not $ null xs
+    return $ Ableitung $ tail xs
+  
 cons :: String -> Ableitung -> Ableitung
 cons x (Ableitung ys) = Ableitung (x : ys)
 

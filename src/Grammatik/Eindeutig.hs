@@ -24,7 +24,8 @@ eindeutig conf =
 	       , nest 4 $ toDoc $ take 4 $ links_ableitungen conf g
 	       ]
         let wrong = mehrdeutige_links_ableitungen conf g 
-	let interesting (x, y) = cadr x /= cadr y -- aber car x == car y
+	let interesting (x, y) =
+		mcadr x /= mcadr y -- aber car x == car y
 	when ( not $ null wrong ) $ reject $ vcat
 	     [ text "Diese Grammatik ist nicht eindeutig."
 	     , text "Die folgenden Wörter haben mehrere Links-Ableitungen:"
