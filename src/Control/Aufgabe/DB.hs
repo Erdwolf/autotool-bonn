@@ -46,5 +46,28 @@ get = do
                     ) stat
     return inh
 
-
-
+-- | put into table:
+-- do not evaluate Aufgabe.anr (it may be undefined!)
+-- instead use first argument: Just anr -> update, Nothing -> insert
+put :: Maybe ANr 
+    -> Aufgabe
+    -> IO ()
+put manr auf = do
+    conn <- myconnect 
+    let common = [ ( reed "VNr", toEx $ vnr auf )
+		 , ( reed "Name", toEx $ name auf )
+		 , ( reed "Typ", toEx $ typ auf )
+		 , ( reed "Config", toEx $ config auf )
+		 , ( reed "Remark", toEx $ remark auf )
+		 , ( reed "Highscore", toEx $ highscore auf )
+		 , ( reed "Von", toEx $ von auf )
+		 , ( reed "Bis", toEx $ bis auf )
+		 ]
+    stat <- case manr of
+	 Nothing -> squery conn $ Query
+            ( Insert (reed "aufgabe") common ) 
+	    [ ]
+         Just anr -> squery conn $ Query
+            ( Update (reed "aufgabe") common ) 
+	    [ Where $ equals ( reed "aufgabe.ANr" ) ( toEx anr ) ]
+    disconnect conn

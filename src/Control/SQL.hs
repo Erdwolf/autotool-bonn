@@ -177,13 +177,21 @@ data Expression = EId Id
         deriving Typeable
 
 
+quote :: String -> String
+quote cs = do
+    c <- cs
+    if c `elem` [ '\'', '"', '\\', '`' ]
+       then [ '\\' , c ]
+       else [ c ]
+
 instance T.ToDoc Expression where
     toDoc (EId id) = T.toDoc id
     toDoc (EInteger i) = T.toDoc i
---    toDoc (ETime t) = T.toDoc $ show t
-    toDoc (EString s) = T.toDoc s
+    toDoc (EString s) = T.toDoc $ quote s
+
     -- note: open par must come immediately after function symbol (no <+>)
     toDoc (EFun fun args) = T.toDoc fun <> T.dutch_tuple ( map T.toDoc args )
+
     toDoc (EBinop "BETWEEN" x (EBinop "AND" y z)) 
 	= T.parens $ T.fsep [ T.toDoc x, T.text "BETWEEN"
 			    , T.toDoc y, T.text "AND", T.toDoc z 

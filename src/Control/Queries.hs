@@ -246,7 +246,7 @@ updatePasswortDB mat pass =
        stat <- squery conn $ Query
 	       ( Update ( reed "student" )
 		        [ ( reed "Passwort", EString $ show cpass ) ] )
-               [ Where $ EBinop "=" (reed "student.MNr") (toEx mat) ] 
+               [ Where $ equals (reed "student.MNr") (toEx mat) ] 
        disconnect conn 
        return ()
 

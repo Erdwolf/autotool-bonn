@@ -47,11 +47,14 @@ instance SqlBind Time where
     toSqlValue (Time s) = s
 
 instance ToEx Time where
-    toEx x = EString $ show x
+    toEx (Time x) = EString x
+instance FromCGI Time where
+    fromCGI s = Time s
 
 -------------------------------------------------------------
 
-data HiLo = High | Low | Keine deriving ( Eq, Ord, Typeable )
+data HiLo = Keine | High | Low 
+    deriving ( Eq, Ord, Typeable, Bounded, Enum )
 
 {-! for HiLo derive : Reader, ToDoc, Haskell2Xml !-}
 
@@ -90,8 +93,7 @@ instance SqlBind MNr where
     -- fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
     fromSqlValue (SqlNumeric _ _) s = Just $ MNr $ read s
     toSqlValue (MNr i) = toSqlValue i
-instance ToEx MNr where
-    toEx (MNr x) = EString $ show x
+
 instance FromCGI MNr where
     fromCGI cs = MNr $ case readsPrec 0 cs of
               [(i, rest)] -> i
@@ -109,7 +111,7 @@ instance SqlBind Typ where
     fromSqlValue ty s = Just $ Typ s
     toSqlValue (Typ cs) = toSqlValue cs
 instance ToEx Typ where
-    toEx x = EString $ show x
+    toEx (Typ x) = EString x
 instance FromCGI Typ where
     fromCGI cs = Typ cs
 instance ToString Typ where 
@@ -123,8 +125,12 @@ data Config = Config String deriving ( Eq, Ord, Typeable )
 instance SqlBind Config where 
     fromSqlValue ty s = Just $ Config s
     toSqlValue (Config cs) = toSqlValue cs
+instance ToEx Config where
+    toEx (Config x) = EString x
 instance ToString Config where
     toString ( Config s ) = s
+instance FromCGI Config where
+    fromCGI s = Config s
 
 -- | Aufgaben-Remark
 data Remark = Remark String deriving ( Eq, Ord, Typeable )
@@ -134,9 +140,12 @@ data Remark = Remark String deriving ( Eq, Ord, Typeable )
 instance SqlBind Remark where 
     fromSqlValue ty s = Just $ Remark s
     toSqlValue (Remark cs) = toSqlValue cs
+instance ToEx Remark where
+    toEx (Remark x) = EString x
 instance ToString Remark where
     toString ( Remark s ) = s
-
+instance FromCGI Remark where
+    fromCGI s = Remark s
 
 -- | Aufgaben-Name
 data Name = Name String deriving ( Eq, Ord, Typeable )
@@ -146,6 +155,8 @@ data Name = Name String deriving ( Eq, Ord, Typeable )
 instance SqlBind Name where 
     fromSqlValue ty s = Just $ Name s
     toSqlValue (Name cs) = toSqlValue cs
+instance ToEx Name where
+    toEx (Name x) = EString x
 instance ToString Name where 
     toString (Name cs) = cs
 instance FromCGI Name where
