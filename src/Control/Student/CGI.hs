@@ -29,7 +29,7 @@ login = do
     close -- table
 
     when click blank
-    [ stud ] <- io $ Control.Student.DB.get $ fromCGI mnr
+    [ stud ] <- io $ Control.Student.DB.get_mnr $ fromCGI mnr
     guard $ Inter.Crypt.compare ( passwort stud ) pwd
     close -- row
     return stud

@@ -2,7 +2,7 @@ module Util.Datei
 
 --  $Id$
 
- (  schreiben
+ (  schreiben, mschreiben
   , anhaengen
   , lesen
   , dirlesen
@@ -106,6 +106,13 @@ schreiben d inhalt = do
     writeFile h inhalt
     perm "go+r" h
     return h
+
+mschreiben :: Datei -> Maybe String -> IO (Maybe FilePath)
+mschreiben d (Just inhalt) = do
+    f <- schreiben d inhalt
+    return $ Just f
+mschreiben d Nothing = do
+    return Nothing
 
 dirgehen :: Datei -> IO ()
 dirgehen d = do

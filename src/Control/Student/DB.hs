@@ -10,15 +10,21 @@ import Prelude hiding ( all )
 
 -- | get alle passenden studenten aus DB
 -- TODO: implementiere filter
-get :: MNr -> IO [ Student ]
-get mnr = do
+get_mnr  :: MNr -> IO [ Student ]
+get_mnr mnr = get_where $ equals ( reed "student.MNr" ) ( toEx mnr )
+
+get_snr  :: SNr -> IO [ Student ]
+get_snr snr = get_where $ equals ( reed "student.SNr" ) ( toEx snr )
+
+get_where :: Expression -> IO [ Student ]
+get_where exp = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "SNr", "MNr", "Name", "Vorname" 
 			    , "Email", "Passwort" 
 			    ] )
         [ From $ map reed [ "student" ] 
-        , Where $ equals ( reed "student.MNr" ) ( toEx mnr )
+        , Where $ exp 
 	]
     inh  <- collectRows (\ state -> do
         s_snr <- getFieldValue state "SNr"

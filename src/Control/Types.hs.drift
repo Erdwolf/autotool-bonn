@@ -322,6 +322,8 @@ data Oks = Oks Int deriving ( Eq, Ord, Typeable )
 instance SqlBind Oks where 
     fromSqlValue ty s = Just $ Oks $ read s
     toSqlValue (Oks i) = toSqlValue i
+instance ToString Oks where
+    toString (Oks x) = show x
 
 -- | No-Bewertung (Anzahl)
 
@@ -332,6 +334,9 @@ data Nos = Nos Int deriving ( Eq, Ord, Typeable )
 instance SqlBind Nos where 
     fromSqlValue ty s = Just $ Nos $ read s
     toSqlValue (Nos i) = toSqlValue i
+
+instance ToString Nos where
+    toString (Nos x) = show x
 
 -------------------------------------------------------------
 

@@ -17,16 +17,16 @@ bank p = do
     let res = P.result p
 	it = res
 				   
-    ( pid , infile  ) <- Inter.Store.store Inter.Store.Input p 
+    ( pid , minfile  ) <- Inter.Store.store Inter.Store.Input p 
     
     mrepfile <- case res of
         Pending -> return Nothing
         _       -> do 
-            ( pid , repfile ) <- Inter.Store.store Inter.Store.Report p 
-	    return $ Just repfile
+            ( pid , mrepfile ) <- Inter.Store.store Inter.Store.Report p 
+	    return $ mrepfile
 
     bepunkteStudentDB (P.ident p) (P.anr p) it (P.highscore p)
-         ( Just infile ) ( mrepfile )
+         ( minfile ) ( mrepfile )
 
     time <- zeit
     let msg = logline  time pid p res

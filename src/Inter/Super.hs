@@ -35,7 +35,7 @@ import qualified Control.Stud_Aufg.DB
 
 import qualified Control.Aufgabe as A
 import qualified Control.Stud_Aufg as SA
-import qualified Control.Student.Type as S
+import qualified Control.Student as S
 import qualified Control.Vorlesung as V
 
 import Autolib.Reporter.Type hiding ( wrap )
@@ -45,7 +45,9 @@ import Autolib.Reader
 import Autolib.Util.Sort
 import Autolib.FiniteMap
 
-import Random
+import Debug
+
+import System.Random
 import Data.Typeable
 import Data.Maybe
 import Data.List ( partition )
@@ -74,24 +76,36 @@ iface mks = do
              auf <- aufs
              return ( toString $ A.name auf , Just $ auf )
 
-    ( action, mauf, del ) <- 
+    ( mauf , action ) <- 
         if tutor
 	   then do 
-	        ( mauf, del ) <- selector_edit_delete "anr" "Aufgabe" 0 
-                   $ ( "(neue Aufgabe)", Nothing ) : opts
-                return ( Solve, mauf, del )
+	        mauf <- selector_submit' "Aufgabe" "Aufgabe"
+                         $ ( "(neue Aufgabe)", Nothing ) : opts
+                action <- selector_submit' "Action" "Action"
+			  $ do act <- [ Config, Statistics, Delete ] 
+			       return ( show act, act )
+                return ( mauf, action )
            else do 
 		( action, auf ) <- statistik stud aufs
-                return ( action, Just auf, False )
+                return ( Just auf, action )
     when tutor $ close -- btable ??
 
-    case mauf of
-         Just auf | tutor -> tutor_statistik vnr auf
-         _ -> return ()
+    when ( Statistics == action ) $ do
+         Just auf <- return mauf 
+	 Just sauf <- tutor_statistik vnr auf
+         mtriple <- show_previous tutor sauf
+         case mtriple of
+	     Nothing -> return ()
+	     Just ( cs, res, com ) -> do
+                 io $ debug "Super:Just"
+                 [ stud ] <- io $ S.get_snr $ SA.snr sauf
+                 io $ debug "Super:get [stud]"
+		 punkte stud auf ( cs, res, com )
+	 mzero
 
     let manr = fmap A.anr mauf
     
-    when del $ do
+    when ( Delete == action ) $ do
         Just anr <- return manr
         io $ A.delete anr
         plain $ unwords [ "Aufgabe", show anr, "gelöscht." ]
@@ -113,13 +127,15 @@ iface mks = do
     stud' <- get_stud tutor stud
 
     case action of
+        Config -> do
+	    solution vnr manr stud' mk auf' 
+	    return ()
         Solve -> do
             ( cs, res, com ) <- solution vnr manr stud' mk auf' 
-            -- bewertung in DB (für Stud-Variante)
-	    when ( not tutor ) $ punkte stud' auf' ( cs, res, com )
-	    -- when ( not tutor ) $ statistik stud' aufs
+	    punkte stud' auf' ( cs, res, com )
 	Review -> do
-	    show_previous stud' auf'
+	    find_previous stud' auf'
+            return ()
 
     return ()
 
@@ -231,7 +247,7 @@ get_stud tutor stud =
 	 return stud
 
 
-show_previous stud auf = do
+find_previous stud auf = do
 
     hr ---------------------------------------------------------
 
@@ -239,25 +255,50 @@ show_previous stud auf = do
     sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
                    `Control.Exception.catch` \ any -> return []
     case sas of
-        [ sa ] -> do
-            h3 "Vorige Einsendung und Bewertung zu dieser Aufgabe"
-	    -- pre $ show sa
-            br ; plain "Einsendung:"
-	    case SA.input sa of
-	        Just file -> do
-	            cs <- io $ logged "Super.view" 
-	    	         $ readFile $ toString file
-	    	    pre cs
-                Nothing -> plain "(keine)"
-            plain "Bewertung:"
-	    case SA.report sa of
-	        Just file -> do
-	            h <- io $ readFile $ toString file
-	    	    html $ primHtml h
-                Nothing -> plain "(keine)"
-	    blank
-	    hr
-        _ -> return ()
+        [ sa ] -> show_previous False sa
+        _ -> return Nothing
+
+-- | TODO: possibly with edit (for tutor)
+show_previous tutor sa = do
+    h3 "Vorige Einsendung und Bewertung zu dieser Aufgabe"
+    -- pre $ show sa
+    br ; plain "Einsendung:"
+    case SA.input sa of
+        Just file -> do
+            cs <- io $ logged "Super.view" 
+    	         $ readFile $ toString file
+    	    pre cs
+        Nothing -> plain "(keine)"
+    plain "Bewertung:"
+    h <- case SA.report sa of
+        Just file -> do
+            -- alte bewertung ist schon da
+	    io $ readFile $ toString file
+        Nothing -> case tutor of
+            -- alte bewertung nicht da
+	    False -> return "(keine Bewertung)"
+            True -> case SA.input sa of
+                 -- stattdessen alte eingabe lesen
+                 Just file -> io $ readFile $ toString file
+		 Nothing -> return "(keine Eingabe)"
+    case tutor of
+	 False -> do
+             html $ primHtml h
+             blank -- ??
+	     return Nothing
+         True  -> do
+               open table
+               com <- defaulted_textarea "bewerten" h    
+               open table
+               grade <- selector_submit' "Grade" "Grade" 
+			[ ("Pending", Pending), ("Ok", Ok 1), ("No", No) ]
+               close -- table
+	       return $ Just ( Nothing, grade
+			     , case grade of 
+			           Pending -> Nothing 
+			           _       -> Just $ primHtml com 
+			     )
+
 
 
 
@@ -335,7 +376,7 @@ solution vnr manr stud
     hr ; h3 "Neue Bewertung"
     (res, com :: Html) <- io $ run $ evaluate p i cs
     html com
-    return ( cs, fromMaybe No res, com )
+    return ( Just cs, fromMaybe No res, Just com )
 
 parameter_table auf = do
     h3 $ unwords [ "Aufgabe", toString $ A.name auf ]
@@ -344,10 +385,10 @@ parameter_table auf = do
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
-punkte stud auf ( cs, res, com ) = do
+punkte stud auf ( mcs, res, com ) = do
      hr ; h3 "Eintrag ins Logfile"
      let p = ( mkpar stud auf )  
-	   { P.input = cs, P.report = com, P.result = res }
+	   { P.input = mcs, P.report = com, P.result = res }
      msg <- io $ bank p
      pre msg
      return ()
@@ -366,7 +407,10 @@ mkpar stud auf = P.empty
 
 data Action = Solve  -- ^ neue Lösung bearbeiten
 	    | Review -- ^ alte Lösung + Bewertung ansehen
-     deriving Show
+	    | Statistics 
+	    | Config
+            | Delete 
+     deriving ( Show, Eq )
 
 -- | für Student: statistik aller seiner Aufgaben anzeigen, 
 -- mit aufgabenauswahl
@@ -473,13 +517,14 @@ data Entry = Entry
 	   , nos :: Nos
 	   }
 
+
 -- | für Tutor: statistik aller einsendungen zu dieser Aufgabe
 -- mit Möglichkeit, Bewertungen zu ändern
 
 -- FIXME: bewertung ändern soll durch explizite neu-korrektur geschehen,
 -- so daß Student auch eine Begründung sieht
 
-tutor_statistik vnr auf = do
+tutor_statistik_old vnr auf = do
     hr
     t <- io $ Control.Vorlesung.DB.teilnehmer vnr
     saufs <- io $ Control.Stud_Aufg.DB.get_anr $ A.anr auf
@@ -496,6 +541,12 @@ tutor_statistik vnr auf = do
 		   }
     h3 "Statistik für diese Aufgabe"
     open btable
+
+    open row
+    plain "Name" ; plain "Vorname" ; plain "Matrikel"
+    plain "Oks/Nos" ; plain "Set/Reset"
+    close -- row
+
     actions <- sequence $ do
         e <- sortBy name entries
         return $ do
@@ -503,6 +554,7 @@ tutor_statistik vnr auf = do
 	    plain $ toString $ name e 
 	    plain $ toString $ vorname e 
 	    plain $ toString $ mnr e
+            plain $ show ( oks e, nos e )
             let status = oks e > Oks 0
             let checkname = "st" ++ ( toString $ mnr e ) 
             check <- checkbox status checkname ""
@@ -526,6 +578,65 @@ tutor_statistik vnr auf = do
         io $ sequence_ actions
 	plain "... done (refresh picture)"
     return ()
+
+---------------------------------------------------------------------------
+
+-- | will return Maybe Stud_Aufg for re-grading
+tutor_statistik vnr auf = do
+    hr
+    t <- io $ Control.Vorlesung.DB.teilnehmer vnr
+    saufs <- io $ Control.Stud_Aufg.DB.get_anr $ A.anr auf
+
+    h3 "Statistik für diese Aufgabe"
+    open btable
+
+    open row
+    -- plain "Name" ; plain "Vorname" ; plain "Matrikel"
+    -- wird (erstmal) ohne Ansehen der person korrigiert
+    plain "SNr" ; plain "Oks" ; plain "Nos" ; plain "Result"
+    close -- row
+
+    cache <- look "cache"
+    clicks <- sequence $ do
+        sauf <- saufs
+        return $ do
+	    open row
+	    -- plain $ toString $ name e 
+	    -- plain $ toString $ vorname e 
+	    plain $ toString $ SA.snr sauf
+            plain $ toString $ SA.ok sauf
+	    plain $ toString $ SA.no sauf
+            let gname = "G" ++ toString ( SA.snr sauf ) 
+	    click <- case SA.result sauf of
+	        Nothing -> do plain "" ; return False
+		Just w  -> submit gname ( toString w )
+            close -- row
+            let hit = cache == Just gname
+            return [ ( hit, sauf, gname ) | click || hit ]
+    close -- btable
+    case sortBy (\(h,_,_)-> h) $ concat clicks of
+        ( hit, sauf, gname ) : rest -> do
+            hidden "cache" gname
+            return $ Just sauf
+        _  -> do
+	    return $ Nothing
+
+--------------------------------------------------------------------------
+
+
+-- TODO: need better layout
+selector_scd tag title def opts = do
+    open row
+    plain title
+    mopt <- selector (tag ++ "-menu") def opts
+    ch <- selector_submit' (tag ++ "-scd") "Action" 
+	  [ ( "Statistics", Statistics )
+	  , ( "Config", Config )
+	  , ( "Delete", Delete )
+	  ]
+    close -- row
+    Just opt <- return mopt
+    return ( opt, ch )
 
 -----------------------------------------------------------------------------
 

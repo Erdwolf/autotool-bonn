@@ -19,17 +19,19 @@ data Type = Input | Report deriving ( Eq, Ord, Show )
 -- d. h. überschreibt immer
 -- zur sicherheit auch: von richtigen einsendungen: speicher in "$pid.input"
 -- d. h. eigentlich kein überschreiben
-store :: Type -> P.Type -> IO ( String, File )
+store :: Type -> P.Type -> IO ( String, Maybe File )
 store ty p = logged "Inter.store" $ do
     pid <- fmap show $ System.Posix.getProcessID 
     let flag = case P.result p of Ok _ -> True ; _ -> False
-        thing = case ty of Input -> P.input p ; Report -> show $ P.report p
+        mthing = case ty of 
+                   Input -> P.input p
+                   Report -> fmap show $  P.report p
     when flag $ do
-        logged "Inter.store.schreiben" 
-           $ schreiben ( location ty p pid flag ) $ thing
-        return ()
-    f <- schreiben ( location ty p "latest" flag ) $ thing
-    return ( pid , fromCGI f )
+            logged "Inter.store.schreiben" 
+               $ mschreiben ( location ty p pid flag ) $ mthing
+            return ()
+    f <- mschreiben ( location ty p "latest" flag ) $ mthing
+    return ( pid , fmap fromCGI f )
 
 latest :: Type -> P.Type -> IO String
 latest ty p = logged "Inter.latest" $ do

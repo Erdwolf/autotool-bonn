@@ -25,9 +25,9 @@ data Type =
 	  , conf :: Config
 	  , remark :: Remark
 
-          , input    :: String
+          , input    :: Maybe String
           , result    :: Wert
-          , report    :: Text.Html.Html
+          , report    :: Maybe Text.Html.Html
 
 	  , wahl :: String -- ^ vorige aufgabe
 	  , click    :: Click
@@ -66,8 +66,8 @@ empty  = Param { makers = []
               , conf =  error "Param.empty.conf"
 	      , remark = error "Param.empty.remark"
 
-              , input  = ""
-	      , report = Text.Html.noHtml
+              , input  = Nothing
+	      , report = Nothing
 	      , result = Pending
 
 	      , wahl = ""

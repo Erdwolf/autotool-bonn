@@ -25,7 +25,7 @@ get_with env def =
                    -- , P.problem  = pav !! 0
                    -- , P.typ  = fromCGI $ pav !! 1
                    , P.aufgabe  = fromCGI $ item env "Aufgabe"
-                   , P.input    = item env "Input"
+                   , P.input    = Just $ item env "Input"
 		   , P.click    = read $ item env "Click"
                    }
 
