@@ -1,0 +1,63 @@
+module Language.Type
+
+-- $Id$
+
+
+where
+
+
+import Wort
+import ToDoc
+import Set
+import Monad (guard)
+import Random
+import Uniq
+
+data Language = Language
+	      { abbreviation :: String
+	      , alphabet     :: Set Char
+
+	      -- testet Mitgliedschaft in Sprache
+	      , contains     :: String -> Bool
+
+	      -- sample  c n
+	      -- würfelt maximal c Wörter der Sprache
+	      -- mit Länge == n
+	      , sample       :: Int -> Int -> IO [ String ]
+
+	      }
+
+instance ToDoc Language where
+    toDoc l = text ( abbreviation l )
+instance Show Language where
+    show = render . toDoc
+
+
+random_sample :: Language -> Int -> Int -> IO [ String ]
+-- würfeln und testen
+-- nur sinnvoll, wenn sprache genügend dicht ist
+random_sample l c n = do
+    ws <- sequence $ replicate c $ someIO (setToList $ alphabet l) n
+    return $ filter (contains l) ws
+
+       
+samples :: Language -> Int -> Int -> IO [ String ]
+-- würfelt genau (!) c Wörter der Sprache l, mit Länge >= n,
+-- dabei von jeder festen länge höchstens sqrt c viele
+-- das klappt nur, wenn die sprache unendlich ist
+samples l c n | c > 0 = do
+    let m = truncate $ sqrt $ fromIntegral c    
+    here <- sample l m n 
+    let d = 1 -- d <- randomRIO (1, 3)
+    there <- samples l (c - length here) (n + d)
+    return $ uniq $ here ++ there
+samples l c n = return []
+
+present :: Language -> IO ()
+present l = do
+    ws <- samples l 20 0
+    print $ vcat [ text "Zur Sprache" <+> text (abbreviation l)
+		 , text "gehören zum Beispiel diese Wörter:"
+		 , toDoc ws
+		 ]
+
