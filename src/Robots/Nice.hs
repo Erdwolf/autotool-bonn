@@ -1,5 +1,7 @@
 module Robots.Nice where
 
+-- $Id$
+
 import Robots.Data
 import Robots.Konfig
 import Robots.Hull

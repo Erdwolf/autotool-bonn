@@ -50,13 +50,14 @@ execute k z @ ( n, d ) = do
 			 Just z  -> Nothing  
 	 Just p  -> return $ addZug z $ move   (n, p) k
 	
-executes :: Konfig -> [ Zug ] -> Boc
-executes k [] = 
-    explain 0 ( nice k )
-    $ final k
-executes k (z : zs) = 
-    explain 0 ( vcat [ nice k , nest 4  $ text "nächster Zug:" <+> toDoc z ] )
-    $ case execute k z of
-	   Nothing -> ( False , text "nicht erlaubt" )
+
+executes :: Konfig -> [ Zug ] -> Reporter Konfig
+executes k [] = do
+    inform $ nice k
+    return k
+executes k (z : zs) = do
+    inform $ vcat [ nice k , nest 4  $ text "nächster Zug:" <+> toDoc z ] 
+    case execute k z of
+	   Nothing -> reject $ text "nicht erlaubt" 
 	   Just k' -> executes k' zs
 

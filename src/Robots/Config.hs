@@ -5,8 +5,8 @@ module Robots.Konfig
 , move, remove, addZug
 , look, robots
 , positions, goals
-, valid, final
-, fourty
+, valid
+
 )
 
 where
@@ -14,9 +14,6 @@ where
 -- $Id$
 
 import Robots.Data
-
-import Number
-import Iso
 
 import List (partition)
 import Monad ( guard )
@@ -26,7 +23,8 @@ import Sets
 
 
 import ToDoc
-import Boc
+import Reporter
+
 
 
 data Konfig = Konfig { inhalt :: FiniteMap String Robot
@@ -40,9 +38,8 @@ mkKonfig rs = Konfig { inhalt = listToFM $ do r <- rs ; return ( name r, r )
 		     }
 
 
-instance Number Konfig Konfig where number = id
-
-instance Iso Konfig where iso = (==)
+-- instance Number Konfig Konfig where number = id
+-- instance Iso Konfig where iso = (==)
 
 
 
@@ -101,44 +98,20 @@ positions = map position . robots
 goals :: Konfig -> [ Position ]
 goals k = do r <- robots k ; maybeToList ( ziel r )
 
-valid :: Konfig -> Boc
-valid k = 
+valid :: Konfig -> Reporter ()
+valid k = do
     let mappe = addListToFM_C (++) emptyFM $ do
 	      r <- robots k
 	      return ( position r, [ name r ] )
-	mehrfach = do 
+    let mehrfach = do 
 	      ( p, rs ) <- fmToList mappe
 	      guard $ length rs > 1
 	      return ( p , rs )
-    in	explain 4 ( text "Stehen alle Roboter auf verschiedenen Positionen?" )
-	$ if null mehrfach then ( True, text "Ja." )
-	  else ( False, text "Nein, diese nicht:" <+> toDoc mehrfach )
+    inform $ text "Stehen alle Roboter auf verschiedenen Positionen?"
+    if ( null mehrfach )
+	   then inform $ text "Ja."
+	   else reject $ text "Nein, diese nicht:" <+> toDoc mehrfach 
 
-final :: Konfig -> Boc
-final k = 
-    let robs = do r <- robots k
-		  guard $ isJust $ ziel r
-		  return ( ziel r == Just ( position r ) , r )
-	( yeah, noh ) = partition fst robs
-    in  explain 4 ( vcat [ text "Sind alle Roboter an ihren Zielpunkten?"
-			 , text "Diese ja: " <+> toDoc ( map snd yeah )
-			 , text "Diese nicht: " <+> toDoc ( map snd noh )
-			 ]
-		  )
-	$ if null noh then ( True, text "OK" ) else ( False, text "nicht OK" )
-
-
-------------------------------------------------------------------
-
-fourty :: Konfig
--- die beispielkarte nr. 40 aus dem original-spiel
-fourty = mkKonfig
-		  [ Robot { name = "A", position = (-2, 2), ziel = Nothing }
-		  , Robot { name = "B", position = ( 0, 2), ziel = Nothing }
-		  , Robot { name = "C", position = ( 2, 2), ziel = Nothing }
-		  , Robot { name = "D", position = ( 2,-1), ziel = Nothing }
-		  , Robot { name = "E", position = (-1,-2), ziel = Just (0,0) }
-		  ]
 
 
 

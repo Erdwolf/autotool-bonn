@@ -1,0 +1,43 @@
+-- -*- mode: haskell -*-
+
+module Robots.Data where
+
+-- $Id$
+
+import Reader
+import ToDoc
+import Number
+import Iso
+
+data Robots 
+   = Robots deriving ( Show, Read )
+
+type Position = ( Integer, Integer )
+
+
+data Robot = Robot { name :: String
+		   , position :: Position
+		   , ziel :: Maybe Position
+		   }
+     deriving ( Eq, Ord )
+
+{-! for Robot derive : Reader, ToDoc !-}
+
+instance Show Robot where show = render . toDoc
+instance Read Robot where readsPrec = parsec_readsPrec
+
+
+data Richtung = N | O | S | W 
+     deriving ( Eq, Ord, Enum, Bounded )
+
+{-! for Richtung derive : Reader, ToDoc !-}
+
+richtungen :: [ Richtung ]
+richtungen = [ minBound .. maxBound ]
+
+instance Show Richtung where show = render . toDoc
+instance Read Richtung where readsPrec = parsec_readsPrec
+
+type Zug = ( String, Richtung )
+
+

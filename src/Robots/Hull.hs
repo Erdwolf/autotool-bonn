@@ -1,5 +1,7 @@
 module Robots.Hull where
 
+-- $Id$
+
 import Robots.Data
 import Robots.Konfig
 import Maybe
