@@ -14,6 +14,21 @@ import PCP.Examples
 
 type Conf c = ( Maybe [c], Hide [Int] )
 
+solve :: Ord c 
+	  => PCP c
+	  -> Int
+	  -> [[Int]]
+solve pcp width = do
+    br <- [ 1 .. width ]
+    fun <- [ id {- , turn -} ]
+    (d, w) <- tree ( fun pcp ) br
+    guard $ null d
+    return w
+
+merge :: [a] -> [a] -> [a]
+merge (x : xs) ys = x : merge ys xs
+merge []       ys = ys
+
 tree :: Ord c 
      => PCP c
      -> Int
@@ -31,14 +46,5 @@ tree pcp width = do
     ( Just d , Hide w ) <- bfs next ( Nothing, Hide [] )
     return ( d, reverse w )
 
-around :: PCP c -> PCP c
-around pcp = do
-    (l, r) <- pcp
-    return (reverse r, reverse l)
-
---------------------------------------------------------------------------
-
-data Repeater c = This c
-		| Repeat Int [ Repeater c ]
 
 

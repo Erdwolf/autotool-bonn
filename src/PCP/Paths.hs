@@ -30,7 +30,10 @@ import Data.FiniteMap
 -- | check dis
 
 test = check simple $ take 4 ssimple
-emit = writeFile "vier.dot" $ show $ toDot $ automate $ check vier svier
+
+emit fname pcp sol 
+   = writeFile ( fname ++ ".dot" ) 
+   $ show $ toDot $ automate $ check pcp sol
 
 check pcp (k : ks) = runIdentity
       $ evalStateT ( do
@@ -69,7 +72,7 @@ instance ( Ord c ) => Ord ( Config c a ) where
     c `compare` d = wesen c `compare` wesen d
 
 
-spirals :: ( Eq a, Monad m )
+spirals :: ( Eq a, Monad m, Eq c )
         => [Int]
         -> StateT (Config c a) m (Config c a)
 spirals ks = do
@@ -77,7 +80,7 @@ spirals ks = do
     get
 
 -- | apply one pcp pair
-spiral :: (Eq a, Monad m)
+spiral :: (Eq a, Monad m, Eq c)
      => Int
      -> StateT (Config c a) m ()
 spiral k = do
@@ -106,7 +109,9 @@ spiral k = do
     ext <- extend (jack, l) 
 
     let (pre, post) = splitAt (length r) (bore ++ ext)
-    -- assert $ strip pre == r
+    if strip pre == r
+       then return ()
+       else error "PCP.Paths.spiral: does not match"
     put_border post
         
     link (end pre, [s], end ext)	
