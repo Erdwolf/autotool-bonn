@@ -495,7 +495,7 @@ bepunkteStudentDB snr anr bewert highlow = do
 				, ", \"" ++ filterQuots anr ++ "\""
 				, "," 
 				, case bewert of 
-				  No	-> "0,1,0,\"0000-00-00 00:00:00\"" 
+				  No	-> "0,1,NULL,\"0000-00-00 00:00:00\"" 
 				  Ok s	-> "1,0," ++ 
 					( case highlow of 
 					  Keine	-> "0,\"0000-00-00 00:00:00\""
@@ -516,13 +516,13 @@ bepunkteStudentDB snr anr bewert highlow = do
 					(	case highlow of 
 						Keine	-> " " 
 						High	-> " " 
-							++ ", Scoretime = IF( Size < " ++ show s 
-							++ " ,Now(), Scoretime)"
+							++ ", Scoretime = IF( Size > " ++ show s 
+							++ " ,Scoretime, Now())"
 							++ ", Size = GREATEST( Size," ++ show s ++ ")" 
 
 						Low	-> " "
-							++ ", Scoretime = IF( Size > " ++ show s
-							++ " ,Now(),Scoretime)"
+							++ ", Scoretime = IF( Size < " ++ show s
+							++ " ,Scoretime, Now())"
 							++ ", Size = LEAST( Size," ++ show s ++ ")" 
 
 					)
