@@ -991,7 +991,7 @@ getHighscoreAufgabeTypesDB =
     do
     { let { sqlstr = foldr1 (\x y -> x ++ " " ++ y) 
               [ "SELECT "
-              , " CONCAT(aufgabe.Name, aufgabe.Subject ) as aufg"
+              , " CONCAT(aufgabe.Name,\"-\",aufgabe.Subject ) as aufg"
               , ", Highscore "
               , "FROM   aufgabe "
               , "ORDER BY aufg"
