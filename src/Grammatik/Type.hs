@@ -3,14 +3,13 @@
 module Grammatik.Type 
 
 ( module Grammatik.Type
-, module Set
+, module Sets
 )
 
 where
 
 
-import Set
-import ReadSet
+import Sets
 
 import Size
 import ToDoc
