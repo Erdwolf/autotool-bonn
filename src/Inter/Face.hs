@@ -86,8 +86,8 @@ main = do
 
      -- damit die Datei-Geschichten funktionieren
      -- user <- Posix.getEffectiveUserName
-     let user = "alf"
-     Posix.setEnvVar "HOME" $ "/home/" ++ user
+     -- let user = "alf"
+     -- Posix.setEnvVar "HOME" $ "/home/" ++ user
 
      vs <- boiler
      wrapper $ \ env -> 
