@@ -16,6 +16,7 @@ import qualified Robots.Interface
 import qualified Graph.Col.Plain
 import qualified Graph.Col.Quiz
 import qualified Graph.Cage.Central
+import qualified Graph.Graceful.Central
 
 makers :: [ Make ]
 makers = [ NFA.Analyse.make
@@ -34,5 +35,6 @@ makers = [ NFA.Analyse.make
 	 , Graph.Col.Plain.make
 	 , Graph.Col.Quiz.make
 	 , Graph.Cage.Central.make
+	 , Graph.Graceful.Central.make
 	 ]
 
