@@ -21,6 +21,7 @@ testliste len ari hei = sequence $ replicate len $ do
     xs <- sequence $ replicate ari $ randomRIO (0, hei)
     return xs
 
+
 {-
 make :: ( Con.Check c m , Con.ConfigC c m , Machine m dat conf )
      => Con.Config c m

@@ -55,7 +55,8 @@ make ( p :: p ) ( conf :: conf ) =
 
 quiz :: ( Generator p conf k , Project p k i,  Partial p i b 
 	, V p i b
-	, Typeable conf, Reader conf, ToDoc conf, Haskell2Xml conf
+	, Typeable conf, Reader conf, ToDoc conf
+	-- , Haskell2Xml conf
 	, Show conf, Read conf
 	)
      => p -- ^ problem type

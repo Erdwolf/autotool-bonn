@@ -1,4 +1,4 @@
-{-# OPTIONS -fallow-incoherent-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances #-}
 
 module LCS.Instance 
 
@@ -87,7 +87,7 @@ make_fixed :: Make
 make_fixed = ( direct :: LCS -> Instance Char -> Make ) LCS LCS.Data.example
 
 
-instance ( Ord a, ToDoc a, Reader a ) 
+instance ( Show a, Read a, InstanceC a )
         => Generator LCS (Config a) ( [a], Instance a ) where
     generator _ conf key = roll conf
 instance Project LCS  ( [a], Instance a ) ( Instance a ) where
