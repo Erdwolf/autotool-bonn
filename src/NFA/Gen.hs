@@ -22,7 +22,10 @@ import Text.Html (Html)
 
 type Gene = [(Int,Int)]
 
-
+test :: IO ()
+test = do
+    this <- evolve (conf 4) 
+    print this
 
 conf :: Int -> Conf Gene Int
 conf n = Conf 
@@ -50,11 +53,13 @@ conf n = Conf
 	         return $ pokes a [(i, a!!j), (j, a!!i)]
 	    ]
        , size = 200
-       , num_mutate = 300
-       , num_combine = 400
+       , num_mutate = 100
+       , num_combine = 100
        , trace = \ pool -> print $ toDoc $ take 3 $ popul pool
        , present = \ pool -> schreib n pool
        }
+
+-----------------------------------------------------------------------
 
 schreib :: Int
 	-> Pool Gene Int
