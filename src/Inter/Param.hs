@@ -26,7 +26,7 @@ data Type =
 	  , remark :: Remark
 
           , input    :: Maybe String
-          , result    :: Wert
+          , mresult    :: Maybe Wert
           , report    :: Maybe Text.Html.Html
 
 	  , wahl :: String -- ^ vorige aufgabe
@@ -41,6 +41,12 @@ data Type =
           , variante :: Variant
           }
     deriving Show
+
+{-
+result p = case mresult p of
+    Just r -> r
+    Nothing -> error "Inter.Param.mresult = Nothing"
+-}
 
 matrikel p = case mmatrikel p of
     Just m -> m
@@ -68,7 +74,7 @@ empty  = Param { makers = []
 
               , input  = Nothing
 	      , report = Nothing
-	      , result = Pending
+	      , mresult = Nothing
 
 	      , wahl = ""
 	      , click = Example

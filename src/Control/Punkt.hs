@@ -41,7 +41,8 @@ loginDB mnr pass =
 		 return s
            _ -> Nothing
 
-set :: SNr -> ANr -> Wert 
+set :: SNr -> ANr 
+    -> Maybe Wert 
     -> Maybe File -- ^ Eingabe des Studenten
     -> Maybe File -- ^ Bewertung (automatische)
     -> IO ()
@@ -58,12 +59,12 @@ set snr anr wert minput mreport =
 
 bepunkteStudentDB :: SNr 
 		  -> ANr 
-		  -> Wert 
+		  -> Maybe Wert 
 		  -> HiLo 
 		  -> Maybe File -- ^ input
 		  -> Maybe File -- ^ report
 		  -> IO ()
-bepunkteStudentDB snr anr bewert highlow minput mreport = do
+bepunkteStudentDB snr anr mbewert highlow minput mreport = do
    conn <- myconnect
    stat <- squery conn $ Query 
 	   ( Select [ reed "SNr" ] )
@@ -92,30 +93,34 @@ bepunkteStudentDB snr anr bewert highlow minput mreport = do
 	   [] 
        return ()
 
-   let okno = case bewert of
-           Reset -> [ ( reed "Ok", reed "0" )      ]
-           No    -> [ ( reed "No", reed "No + 1" ) ]
-	   Ok s  -> [ ( reed "Ok", reed "Ok + 1" ) ]
-	   Pending -> [ ]
-       rest = return $ ( reed "Result", toEx bewert ) 
+   let okno = case mbewert of
+           Just Reset   -> [ ( reed "Ok", reed "0" )      ]
+           Just No      -> [ ( reed "No", reed "No + 1" ) ]
+	   Just (Ok s)  -> [ ( reed "Ok", reed "Ok + 1" ) ]
+	   _            -> [ ]
+       rest = maybeToList $ do
+                bewert <- mbewert
+		return ( reed "Result", toEx bewert ) 
        inpt = maybeToList $ do 
                 inp <-  minput
 		return ( reed "Input", toEx inp )
        rept = maybeToList $ do
 	        rpt <- mreport
 		return ( reed "Report", toEx rpt )
+       set  = okno ++ rest ++ inpt ++ rept 
 
-   squery conn $ Query 
+   when ( not $ null set ) $ do
+       squery conn $ Query 
 	   ( Update ( reed "stud_aufg" )
-	            ( okno ++ rest ++ inpt ++ rept )
+	            set
 	   ) 
            [ Where $ ands
 	           [ equals ( reed "SNr" ) ( toEx snr )
 		   , equals ( reed "ANr" ) ( toEx anr )
                    ]
 	   ]
-   disconnect conn 
-   return ()
+       disconnect conn 
+       return ()
 
 
 {- -- historic code:

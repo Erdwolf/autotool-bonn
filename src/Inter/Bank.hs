@@ -14,32 +14,32 @@ import Util.Datei
 
 bank :: P.Type -> IO String
 bank p = do
-    let res = P.result p
-	it = res
-				   
+
     ( pid , minfile  ) <- Inter.Store.store Inter.Store.Input p 
     
-    mrepfile <- case res of
-        Pending -> return Nothing
-        _       -> do 
+    mrepfile <- case P.mresult p of
+        Just x | x /= Pending -> do 
             ( pid , mrepfile ) <- Inter.Store.store Inter.Store.Report p 
 	    return $ mrepfile
+        _ -> return Nothing
 
-    bepunkteStudentDB (P.ident p) (P.anr p) it (P.highscore p)
+    bepunkteStudentDB (P.ident p) (P.anr p) (P.mresult p) (P.highscore p)
          ( minfile ) ( mrepfile )
 
-    time <- zeit
-    let msg = logline  time pid p res
+    case P.mresult p of
+        Nothing  -> do
+	    return "(kein Resultat => kein Eintrag)"
+	Just res -> do
+	    time <- zeit
+	    let msg = logline  time pid p res
 
-
-    d <- datum
-    let logcgi = Datei	{ pfad = [ "autotool", "log" ] ++ d
+            d <- datum
+	    let logcgi = Datei	{ pfad = [ "autotool", "log" ] ++ d
 			, name = "CGI"
 			, extension = ""
 			}
-    anhaengen logcgi msg
-
-    return msg
+	    anhaengen logcgi msg
+	    return msg
 
 
 logline time pid p res = unwords [ time

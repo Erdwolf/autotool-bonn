@@ -46,9 +46,11 @@ import Autolib.Reader
 import Autolib.Util.Sort
 import Autolib.FiniteMap
 
+import qualified Util.Datei
 import Debug
 
 import System.Random
+import System.Directory
 import Data.Typeable
 import Data.Maybe
 import Data.List ( partition )
@@ -80,12 +82,13 @@ iface mks = do
     ( mauf , action ) <- 
         if tutor
 	   then do 
-                open btable
+                -- btable has been opened in Inter.Login.form
 	        mauf <- click_choice "Aufgabe"
                          $ ( "(neue Aufgabe)", Nothing ) : opts
                 action <- click_choice "Action"
-			  $ do act <- [ Config, Statistics, Delete ] 
+			  $ do act <- [ Statistics, Config, Delete ] 
 			       return ( show act, act )
+		close -- btable
                 return ( mauf, action )
            else do 
 		( action, auf ) <- statistik False stud aufs
@@ -131,7 +134,7 @@ iface mks = do
 	    return ()
         Solve -> do
             ( cs, res, com ) <- solution vnr manr stud' mk auf' 
-	    punkte stud' auf' ( cs, res, com )
+	    punkte stud' auf' ( cs, Just res, com )
 	Edit | tutor -> do
 	    find_previous True stud' auf'
             return ()
@@ -155,11 +158,10 @@ find_mk mks tutor mauf = do
 		 h3 "Parameter dieser Aufgabe:"
 		 open btable -- will be closed in edit_aufgabe (tutor branch)
 		 selector_submit_click "Typ" pre_mk opts
-            else return 
-		    ( fromMaybe (error "oof") $ do
-                          pre <- pre_mk ; lookup pre opts
-                    , False
-		    ) 
+            else do
+		 Just pre <- return $ pre_mk
+		 Just it  <- return $ lookup pre opts
+		 return ( it, False )
     handler pre_mk $ do
         mk <- mks
 	return ( show mk, mk )
@@ -251,13 +253,31 @@ get_stud tutor stud =
 
 find_previous edit stud auf = do
 
-    hr ---------------------------------------------------------
-
     -- kann sein, daß S.anr  error  ergibt (für tutor)
     sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
                    `Control.Exception.catch` \ any -> return []
     case sas of
-        [ sa ] -> show_previous edit sa
+        [ sa ] -> do
+            inf <- case  SA.input sa of
+		Just file -> return $ Just file
+		Nothing -> io $ do
+                    -- fix location of previous einsendung
+                    let p = mkpar stud auf
+		        d = Inter.Store.location Inter.Store.Input 
+			         p "latest" False
+		    file <- Util.Datei.home d
+	            ex <- System.Directory.doesFileExist file
+                    let inf = fromCGI file
+		    if ex 
+		        then do
+                             -- nur infile-location einschreiben
+			     Control.Punkt.bepunkteStudentDB 
+				      (P.ident p) (P.anr p) Nothing 
+				      (P.highscore p) ( Just inf )
+				      Nothing
+			     return $ Just inf
+		        else return $ Nothing
+	    show_previous edit $ sa { SA.input = inf }
         _ -> return Nothing
 
 -- | TODO: possibly with edit (for tutor)
@@ -271,7 +291,8 @@ show_previous edit sa = do
             cs <- io $ logged "Super.view" 
     	         $ readFile $ toString file
     	    pre cs
-        Nothing -> plain "(keine)"
+        Nothing -> do
+	    plain "(keine Einsendung)"
     br
     plain "Bewertung:"
     h <- case SA.report sa of
@@ -294,18 +315,24 @@ show_previous edit sa = do
                mcom <- textarea h
                let com = fromMaybe h mcom   
                open table
-               grade <- click_choice0  "Grade" 
-			[ ("Pending", Pending), ("Ok", Ok 1), ("No", No) ]
+               mgrade <- click_choice0  "Grade" 
+			[ ("(none)", Nothing )
+			, ("Pending", Just Pending)
+			, ("Ok", Just $ Ok 1)
+			, ("No", Just No) 
+			]
                close -- table
 	       return $ Just ( Nothing
-			     , grade
-			     , case grade of 
-			           Pending -> Nothing 
-			           _       -> Just $ primHtml com 
+			     , mgrade
+			     , case mgrade of 
+			           Just x | x /= Pending -> 
+			                 Just $ primHtml com 
+			           _ -> Nothing
 			     )
 
 
-
+data Method = Textarea | Upload
+    deriving ( Eq, Show, Typeable )
 
 -- | eingabe und bewertung der lösung
 -- für tutor zum ausprobieren
@@ -329,55 +356,40 @@ solution vnr manr stud
     h3 "Aufgabenstellung"
     embed $ report (problem var) i
 
+    when ( not $ A.current auf ) vorbei
+
     ---------------------------------------------------------
     h3 "Neue Einsendung"
 
-    -- das vorige mal bei eingabefeld oder upload?
-    epeek <- look "subsol"
-    fpeek <- look "fsub"
+    open table
+    method <- click_choice_with_default 0 "Eingabe-Methode"
+       [ ( "Textfeld", Textarea ), ( "Datei-Upload", Upload ) ]
+    close
 
-    esol <- if isJust fpeek
-       then do 
-          -- voriges mal file gewählt, also textarea nicht anzeigen
-          wef <- submit "Text-Eingabefeld" 
-          when wef $ blank
-          return Nothing
-       else do
-          plain "Text-Eingabefeld:"
-	  ex    <- submit "Beispiel laden"
-	  prev  <- submit "vorige Einsendung laden"
-	  esub  <- submit "Textfeld absenden"
-	  br
-	  when ( ex || prev ) blank
+    mcs <- case method of
+        Textarea -> do
+	    ex    <- submit "Beispiel laden"
+	    prev  <- submit "vorige Einsendung laden"
+	    esub  <- submit "Textfeld absenden"
+	    br
+	    when ( ex || prev ) blank
 
-          let b0 = render $ toDoc ini 
-	  def <- io $ if prev 
+            let b0 = render $ toDoc ini 
+	    def <- io $ if prev 
 	      then Inter.Store.latest Inter.Store.Input past
                       `Control.Exception.catch` \ _ -> return b0
 	      else return b0
-          sol <- textarea def
-          return sol
+            sol <- textarea def
+            return sol
 
-    br ; plain "oder " 
-
-    fsol <- if isJust epeek
-        then do
-	    -- voriges mal textfeld gewählt, also file-dialog nicht anzeigen
-            wup <- submit "Datei hochladen"
-            when wup $ blank
-            return Nothing
-        else do
+	Upload -> do
             plain "Datei auswählen:"
             up <- file undefined
 	    fsub  <- submit "Datei absenden"
-	    return $ if fsub then up else Nothing
+            when ( not fsub ) $ mzero -- break
+	    return up
 
-    cs <- case esol of
-             Just cs -> return cs
-	     Nothing -> case fsol of
-		  Just cs -> return cs
-		  Nothing -> mzero
-
+    Just cs <- return mcs
     hr ; h3 "Neue Bewertung"
     (res, com :: Html) <- io $ run $ evaluate p i cs
     html com
@@ -390,13 +402,16 @@ parameter_table auf = do
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
-punkte stud auf ( mcs, res, com ) = do
-     hr ; h3 "Eintrag ins Logfile"
-     let p = ( mkpar stud auf )  
-	   { P.input = mcs, P.report = com, P.result = res }
-     msg <- io $ bank p
-     pre msg
-     return ()
+punkte stud auf ( mcs, mres, com ) = 
+     if A.current auf
+	then do
+             hr ; h3 "Eintrag ins Logfile"
+	     let p = ( mkpar stud auf )  
+		     { P.input = mcs, P.report = com, P.mresult = mres }
+	     msg <- io $ bank p
+	     pre msg
+	     return ()
+        else vorbei
 
 mkpar stud auf = P.empty 
             { P.mmatrikel = Just $ S.mnr stud
@@ -407,6 +422,10 @@ mkpar stud auf = P.empty
 	    , P.highscore = A.highscore auf
 	    , P.ident = S.snr stud
             }
+
+vorbei = do
+    h3 "Einsendeschluß dieser Aufgabe ist überschritten"
+    plain "Einsendung wird nicht gespeichert, Bewertung wird ignoriert."
 
 ------------------------------------------------------------------------
 

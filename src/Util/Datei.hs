@@ -2,18 +2,20 @@ module Util.Datei
 
 --  $Id$
 
- (  schreiben, mschreiben
-  , anhaengen
-  , lesen
-  , dirlesen
-  , dirgehen
-  , erzeugeVerzeichnisse
-  , home
-  , Datei (..)
-  , inner, outer, internalize
-  , perm
-  )
-  where
+(  schreiben, mschreiben
+, anhaengen
+, lesen
+, existiert
+, dirlesen
+, dirgehen
+, erzeugeVerzeichnisse
+, home
+, Datei (..)
+, inner, outer, internalize
+, perm
+) 
+
+where
 
 import Data.List (inits, intersperse)
 import Directory
@@ -25,8 +27,7 @@ import qualified Control.Exception
 
 import Util.Datei.Base
 
--- alle pfade sind relativ zu Util.Datei.Base
-
+-- | alle pfade sind relativ zu Util.Datei.Base
 data Datei = Datei{ pfad :: [String]
                   , name :: String
                   , extension :: String
@@ -38,20 +39,18 @@ instance Show Datei where
 namex d = name d 
        ++ if null (extension d) then "" else "." ++ extension d
 
--- ohne $HOME-prefix
+-- | ohne $HOME-prefix
 inner :: Datei -> String 
 inner d =  concat 
 	$ intersperse "/" 
 	$ pfad d ++ [ namex d ]
 
+-- | das kann als arg. für CGI verwendet werden:
+-- dann darf im filenamen natürlich kein komma stehen
 outer :: Datei -> String
--- das kann als arg. für CGI verwendet werden:
 outer d =  concat 
 	$ intersperse "," 
 	$ pfad d ++ [namex d ]
--- dann darf im filenamen natürlich kein komma stehen
-
-
     
 cutter :: Char -> String -> [ String ]
 cutter x cs = words $ map trans cs
@@ -93,7 +92,7 @@ home d = do
     prefix <- home_dir
     return $ prefix ++ "/" ++ inner d
 
-anhaengen :: Datei -> String -> IO()
+anhaengen :: Datei -> String -> IO ()
 anhaengen d inhalt = do
     createDir d
     h <- home d
@@ -130,6 +129,11 @@ lesen :: Datei -> IO(String)
 lesen d  = do
     h <- home d
     readFile h
+
+existiert :: Datei -> IO Bool
+existiert d  = do
+    h <- home d
+    doesFileExist h
 
 dirlesen :: Datei -> IO [String]
 dirlesen d  = do

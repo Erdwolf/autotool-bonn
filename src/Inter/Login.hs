@@ -4,6 +4,7 @@ module Inter.Login where
 
 import Inter.CGI
 import Control.Types ( VNr, toString )
+import Control.Monad ( when )
 
 import qualified Control.Vorlesung as V
 import qualified Control.Student.CGI
@@ -29,7 +30,7 @@ form = do
     vnr <- click_choice "Vorlesung" $ do
         vor <- vors
         return ( toString $ V.name vor , V.vnr vor )
-    close
+    when ( not tutor ) close -- risky
 
     return ( stud, vnr, tutor )
 
