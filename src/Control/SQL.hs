@@ -15,6 +15,7 @@ import Autolib.Reader as R
 import Autolib.ToDoc  as T
 
 import Data.List
+import Data.Typeable
 import Text.ParserCombinators.Parsec.Expr
 
 import Database.MySQL.HSQL hiding ( query, collectRows )
@@ -53,7 +54,7 @@ strich = "\n--------------------------------\n"
 
 --------------------------------------------------------------------------------
 
-data Id = Id [ String ]
+data Id = Id [ String ] deriving Typeable
 
 instance T.ToDoc Id where
     toDoc (Id ids) = 
@@ -69,7 +70,7 @@ instance Read Id where readsPrec = R.parsec_readsPrec
 
 --------------------------------------------------------------------------------
 
-data Query = Query Action [ Modifier ]
+data Query = Query Action [ Modifier ]  deriving Typeable
 
 instance T.ToDoc Query where
     toDoc (Query a ms) = T.vcat [ T.toDoc a
@@ -87,34 +88,34 @@ instance Read Query where readsPrec = R.parsec_readsPrec
 
 --------------------------------------------------------------------------------
 		     
-data Bind = Bind [ ( Expression, Maybe Id) ]
+data Bind = Bind  Expression (Maybe Id)   deriving Typeable
 
 instance T.ToDoc Bind where
-    toDoc (Bind eis) = T.fsep $ T.punctuate T.comma $ do
-             (e, mi) <- eis
-             return $ case mi of
+    toDoc (Bind e mi) = case mi of
 		  Nothing -> T.toDoc e
 	          Just i  -> T.hsep [ T.toDoc e, T.text "AS", T.toDoc i ]
 
 instance R.Reader Bind where
-    reader = fmap Bind $ do 
-	         e <- R.reader
-		 mi <- R.option Nothing $ do { R.my_reserved "AS" ; fmap Just R.reader }
-		 return (e, mi) 
-       `R.sepBy` R.my_comma
+    reader = do 
+         e <- R.reader
+	 mi <- R.option Nothing $ do { R.my_reserved "AS" ; fmap Just R.reader }
+	 return $ Bind e mi 
+
 
 instance Show Bind where show      = render . T.toDoc
 instance Read Bind where readsPrec = R.parsec_readsPrec
 
 ----------------------------------------------------------------------------
 
-data Action = Select Bind
+data Action = Select [ Bind ]
 	    | Insert Id [(Id, Expression)]
 	    | Update Id [(Id, Expression)]
 	    | Delete Id
+  deriving Typeable
 
 instance T.ToDoc Action where
-    toDoc (Select b) = T.text "SELECT" <+> T.toDoc b
+    toDoc (Select bs) = T.text "SELECT" 
+	       <+> T.sepBy T.comma ( map T.toDoc bs )
     toDoc (Insert tab pairs) = T.text "INSERT" <+> T.vcat
         [ T.text "INTO" <+> T.toDoc tab <+> T.dutch_tuple ( map ( T.toDoc . fst ) pairs )
 	, T.text "VALUES" <+> T.dutch_tuple ( map ( T.toDoc . snd ) pairs )
@@ -126,7 +127,8 @@ instance T.ToDoc Action where
     toDoc (Delete tab) = T.text "DELETE" <+> T.text "FROM" <+> T.toDoc tab
 
 instance R.Reader Action where
-    reader = do { R.my_reserved "SELECT" ; b <- reader ; return $ Select b }
+    reader = do 
+       R.my_reserved "SELECT" ; bs <- reader `R.sepBy` R.my_comma ; return $ Select bs 
           -- TODO: complete this
 
 instance Show Action where show      = render . T.toDoc
@@ -137,6 +139,7 @@ instance Read Action where readsPrec = R.parsec_readsPrec
 data Modifier = From [ Id ]
 	      | Where Expression
               | Using Bind
+     deriving Typeable
 
 instance T.ToDoc Modifier where
     toDoc (From ids) = T.text "FROM" <+> T.sepBy T.comma ( map T.toDoc ids )
@@ -158,6 +161,8 @@ data Expression = EId Id
 		-- | ETime ClockTime -- TODO
 		| EString String
 		| EBinop String Expression Expression -- ^ completely parenthesized
+        deriving Typeable
+
 
 instance T.ToDoc Expression where
     toDoc (EId id) = T.toDoc id

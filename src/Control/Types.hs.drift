@@ -67,7 +67,7 @@ instance SqlBind MNr where
     fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
     toSqlValue (MNr i) = toSqlValue i
 instance ToEx MNr where
-    toEx x = EString $ show x
+    toEx (MNr x) = EString $ show x
 instance FromCGI MNr where
     fromCGI cs = MNr $ case readsPrec 0 cs of
               [(i, rest)] -> i
@@ -148,7 +148,8 @@ data GNr = GNr Int deriving ( Eq, Ord, Typeable )
 instance Show GNr where show = render . toDoc
 instance Read GNr where readsPrec = parsec_readsPrec
 instance SqlBind GNr where 
-    fromSqlValue ty s = fmap GNr $ fromSqlValue ty s
+    -- fromSqlValue ty s = fmap GNr $ fromSqlValue ty s
+    fromSqlValue (SqlNumeric _ _) s = Just $ GNr $ read s
     toSqlValue (GNr i) = toSqlValue i
 instance ToEx GNr where
     toEx x = EString $ show x

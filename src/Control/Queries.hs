@@ -10,6 +10,7 @@ import Inter.Crypt
 
 import Control.Monad ( guard )
 import Data.Maybe ( maybeToList )
+import Data.Typeable
 
 import Helper
 import Mysqlconnect 
@@ -19,6 +20,10 @@ showColTypes :: Statement -> [ String ]
 showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
 
 
+reed cs = case readsPrec 0 cs of
+    [(x, "")] -> x
+    ( sonst :: [(a,String)] ) -> error $ unwords [ "kein parse für", cs , show sonst, "type"
+			     , show (typeOf (undefined::a)) ]
 
 --  ------------------------------------------------------------------------------
 -- DB Funktionen
@@ -31,21 +36,21 @@ studAufgDB mat =
     do
        conn <- myconnect 
        stat <- squery conn $
-            Query ( Select ( Bind [ read "vorlesung.Name AS vorlesung" 
-				  , read "aufgabe.Name AS Typ"
-				  , read "aufgabe.Subject AS Nr"
-				  , read "stud_aufg.Ok AS Ok"
-				  , read "stud_aufg.No AS No"
+            Query ( Select (      [ reed "vorlesung.Name AS vorlesung" 
+				  , reed "aufgabe.Name AS Typ"
+				  , reed "aufgabe.Subject AS Nr"
+				  , reed "stud_aufg.Ok AS Ok"
+				  , reed "stud_aufg.No AS No"
 				  ] 
 			   )
 		  )
-		  [ From  $ map read [ "student", "aufgabe", "stud_aufg", "vorlesung" ] 
+		  [ From  $ map reed [ "student", "aufgabe", "stud_aufg", "vorlesung" ] 
 		  , Where $ ands
-		          $ [ read "stud_aufg.SNr = student.SNr"
-			    , read "stud_aufg.ANr = aufgabe.ANr"
-			    , read "vorlesung.VNr = aufgabe.VNr"
+		          $ [ reed "stud_aufg.SNr = student.SNr"
+			    , reed "stud_aufg.ANr = aufgabe.ANr"
+			    , reed "vorlesung.VNr = aufgabe.VNr"
 			    ] ++ 
-		            [ EBinop "=" (read "student.MNr") (toEx mnr) 
+		            [ EBinop "=" (reed "student.MNr") (toEx mnr) 
 			    | mnr <- maybeToList mat
 			    ]
 		  ]
@@ -75,12 +80,12 @@ insertNewStudentDB vnm nme mat eml ps1 =    do
     cps1 <- encrypt ps1
     conn <- myconnect 
     stat <- squery conn $ Query
-            ( Insert (read "student")
-                     [ (read "Vorname", EString vnm)
-		     , (read "Name", EString nme)
-		     , (read "MNr", toEx mat)
-		     , (read "Email", EString eml)
-		     , (read "Passwort", EString $ show cps1)
+            ( Insert (reed "student")
+                     [ (reed "Vorname", EString vnm)
+		     , (reed "Name", EString nme)
+		     , (reed "MNr", toEx mat)
+		     , (reed "Email", EString eml)
+		     , (reed "Passwort", EString $ show cps1)
 		     ]
 	      ) []
     disconnect conn
@@ -100,16 +105,16 @@ checkPasswdMNrDB maybePass mat =
     do
        conn <- myconnect
        state <- squery conn $ Query 
-               ( Select $ Bind [ read "student.MNr AS MNr"
-			       , read "student.Vorname AS Vorname"
-			       , read "student.Name AS Name"
-			       , read "student.Email AS Email"
-			       , read "student.Passwort AS Passwort"
-			       , read "student.Status AS Status"
+               ( Select $      [ reed "student.MNr AS MNr"
+			       , reed "student.Vorname AS Vorname"
+			       , reed "student.Name AS Name"
+			       , reed "student.Email AS Email"
+			       , reed "student.Passwort AS Passwort"
+			       , reed "student.Status AS Status"
 			       ] 
 	       )
-	       [ From $ read "student"
-	       , Where $ equals (read "student.MNr") (toEx mat)
+	       [ From [ reed "student" ]
+	       , Where $ equals (reed "student.MNr") (toEx mat)
                ] 
        inh <- collectRows ( \ state -> do
                             a <- getFieldValue state "Vorname"
@@ -117,7 +122,7 @@ checkPasswdMNrDB maybePass mat =
                             c <- getFieldValue state "Email"
                             d <- getFieldValue state "Status"
                             e <- getFieldValue state "Passwort"
-                            return (  a,  b , c , d , read e )
+                            return (  a,  b , c , d , reed e )
                 ) state
        disconnect conn
        
@@ -173,8 +178,8 @@ getAllVorlesungenDB =
        logged "getAllVorlesungenDB"
        conn <- myconnect
        stat <- squery conn $ Query
-	       ( Select $ Bind [ read "vorlesung.Name AS Vorlesung" ] )
-               [ From $ read "vorlesung" ]
+	       ( Select $      [ reed "vorlesung.Name AS Vorlesung" ] )
+               [ From [ reed "vorlesung" ]]
        inh <- collectRows ( \ state -> do
                             a <- getFieldValue state "Vorlesung"
                             return a
@@ -194,12 +199,12 @@ getVorlesungWithPointsDB mnr =
     do 
        conn <- myconnect
        stat <- squery conn $ Query
-               ( Select $ Bind [ read "vorlesung.Name AS Vorlesung" ] ) 
-	       [ From $ map read [ "vorlesung", "stud_aufg" , "student" , "aufgabe" ]
-	       , Where $ ands [ read "student.SNr = stud_aufg.SNr"
-			      , equals (read "student.MNr") (toEx mnr)
-			      , read "vorlesung.VNr = aufgabe.VNr"
-			      , read "aufgabe.ANr = stud_aufg.ANr"
+               ( Select $      [ reed "vorlesung.Name AS Vorlesung" ] ) 
+	       [ From $ map reed [ "vorlesung", "stud_aufg" , "student" , "aufgabe" ]
+	       , Where $ ands [ reed "student.SNr = stud_aufg.SNr"
+			      , equals (reed "student.MNr") (toEx mnr)
+			      , reed "vorlesung.VNr = aufgabe.VNr"
+			      , reed "aufgabe.ANr = stud_aufg.ANr"
 			      ]
 	       ]
        inh <- collectRows ( \ state -> do
@@ -222,9 +227,9 @@ updateEmailDB mat email =
     do
        conn <- myconnect
        stat <- squery conn $ Query
-	       ( Update ( read "student" )
-		        [ ( read "Email", EString email ) ] )
-               [ Where $ equals (read "student.MNr") (toEx mat) ] 
+	       ( Update ( reed "student" )
+		        [ ( reed "Email", EString email ) ] )
+               [ Where $ equals (reed "student.MNr") (toEx mat) ] 
        disconnect conn 
        return ()
 
@@ -241,9 +246,9 @@ updatePasswortDB mat pass =
 
        conn <- myconnect
        stat <- squery conn $ Query
-	       ( Update ( read "student" )
-		        [ ( read "Passwort", EString $ show cpass ) ] )
-               [ Where $ EBinop "=" (read "student.MNr") (toEx mat) ] 
+	       ( Update ( reed "student" )
+		        [ ( reed "Passwort", EString $ show cpass ) ] )
+               [ Where $ EBinop "=" (reed "student.MNr") (toEx mat) ] 
        disconnect conn 
        return ()
 
@@ -326,11 +331,11 @@ getGruppenStudDB ( mat :: MNr ) =
     do
     conn <- myconnect
     stat <- squery conn $ Query 
-            ( Select $ Bind [ read "stud_grp.GNr AS GNr" ] )
-            [ From $ map read [ "stud_grp", "student" ]
+            ( Select $      [ reed "stud_grp.GNr AS GNr" ] )
+            [ From $ map reed [ "stud_grp", "student" ]
             , Where $ ands
-	            [ equals (read "stud_grp.SNr") (read "student.SNr")
-		    , equals (read "student.MNr") (toEx mat)
+	            [ equals (reed "stud_grp.SNr") (reed "student.SNr")
+		    , equals (reed "student.MNr") (toEx mat)
 		    ]
 	    ]
     inh  <- collectRows ( \ state -> do
@@ -343,9 +348,9 @@ getGruppenStudDB ( mat :: MNr ) =
 getSNrFromMatDB ( mat :: MNr ) = do
    conn <- myconnect
    stat <- squery conn $ Query 
-             ( Select $ Bind [ read "student.SNr AS SNr" ] )
-             [ From [ read "student" ]
-	     , Where $ equals ( read "student.MNr" ) ( toEx mat )
+             ( Select $      [ reed "student.SNr AS SNr" ] )
+             [ From [ reed "student" ]
+	     , Where $ equals ( reed "student.MNr" ) ( toEx mat )
 	     ]
    inh  <- collectRows ( \ state -> do
                          snr <- getFieldValue state "SNr"

@@ -14,9 +14,10 @@ import Codec.Encryption.Utils ( Octet )
 
 import Random
 import Data.Word
+import Data.Typeable
 
-data Crypt = Crypt { unCrypt :: String }
-
+data Crypt = Crypt { unCrypt :: String }    deriving Typeable
+ 
 -- brauchen kein quote Quots?
 instance Show Crypt where show = unCrypt
 instance Read Crypt where readsPrec p cs = [(Crypt cs, [])]
