@@ -13,8 +13,8 @@ import Control.Monad ( guard )
 
 import qualified SQLqueries
 
+-- | druckt Auswertung für alle Aufgaben einer Vorlesung
 emit :: String -> DataFM -> IO ()
--- ^ druckt Auswertung für alle Aufgaben einer Vorlesung
 emit vl fm0 = do
 
     mnrs <- SQLqueries.teilnehmer vl
@@ -48,13 +48,16 @@ realize es = take scoreItems -- genau 10 stück
 	   $ filter ( (> 1023) . matrikel) -- keine admins
 	   $ es
     
+-- | druckt Auswertung einer Aufgabe
 single :: ( String, [ Einsendung ] ) -> IO ()
--- ^ druckt Auswertung einer Aufgabe
 single ( auf, es ) = do
     let best = head es
-	header = unwords [ "Aufgabe" , auf
-			 , "( beste bekannte Lösung", show (size best), ")"  
-			 ]
+	header = unwords 
+	       [ "Aufgabe" , auf
+	       , if null es 
+		 then ""
+		 else "( beste bekannte Lösung", show (size best), ")"  
+	       ]
 	strich = replicate (length header) '-'
     putStrLn $ unlines 
 	     $ [ header
@@ -79,9 +82,9 @@ collect :: DataFM
 	 ->  [ (Int, Int) ] -- ^ ( Matrikel, Punkt )
 collect fm = take scoreItems
 	   $  sortBy ( \ (m, p) -> negate p ) -- größten zuerst
-	    $ fmToList
-	    $ addListToFM_C (+) emptyFM
-	    $ do ( auf, es ) <- fmToList fm
+	   $ fmToList
+	   $ addListToFM_C (+) emptyFM
+	   $ do  ( auf, es ) <- fmToList fm
 		 ( e, p ) <- zip ( realize es ) scorePoints 
 		 return ( matrikel e, p )
 

@@ -13,8 +13,9 @@ import Data.FiniteMap
 import Control.Monad ( guard )
 import System ( getArgs )
 
+
+-- | in fm steht abbildung von aufgabe(name) auf inhalt (z. b. direction)
 compute :: ( String, ScoreDefFM ) -> IO ()
--- in fm steht abbildung von aufgabe(name) auf inhalt (z. b. direction)
 compute ( vl, aufs ) = do
 
     -- wir lesen die logfiles für jede vorlesung komplett neu ein,

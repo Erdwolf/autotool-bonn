@@ -6,7 +6,7 @@ import Scorer.Util
 
 import Data.FiniteMap
 
--- usage: ScorerDB file1 file2 ...
+-- | usage: ScorerDB file1 file2 ...
 
 main :: IO ()
 main = do
