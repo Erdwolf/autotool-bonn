@@ -20,3 +20,8 @@ b_wort = Wort { inhalt = "0101"
                          ]
               }
 
+c_wort :: Wort Char
+c_wort = Wort { inhalt = "111111"
+              , regeln = [ Regel { from = "11" , to = "10" } 
+                         ]
+              }

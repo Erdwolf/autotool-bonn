@@ -1,11 +1,13 @@
 module Spielbaum.Wort where
 
-import Next
+-- this file is copied only (source: /autotool/autobahn/Wort.hs)
+-- reason for copying: autotool/util contains another Wort.hs
+
+import Spielbaum.Next
 import ToDoc
 
 import List (inits, tails)
 import Monad (guard)
-
 
 data Regel a = 
      Regel { from :: [a]

@@ -1,5 +1,8 @@
 module Spielbaum.Next where
 
+-- this file is copied only (source: /autotool/autobahn/Next.hs)
+-- reason for copying: avoid imports from other directories
+
 import Graph.Graph
 import Schichten
 import Schichten
