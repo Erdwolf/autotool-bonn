@@ -242,7 +242,6 @@ studStatusPage ( mat :: MNr ) F0 =
           mglAufgs      <- io $ mglNextAufgabenDB $ (snrs !!0 ) 
           io $ logged $ "mglAufgs: " ++ show mglAufgs
 
-          let mglAufgs2 = ( tail (fst mglAufgs) , Prelude.map tail (snd mglAufgs))
           -- c) Bepunktete Aufgaben holen
           result                <- io $ studAufgDB $ Just mat
           -- gesamtres <- io $ getSerienPunkteDB mat
@@ -268,9 +267,9 @@ studStatusPage ( mat :: MNr ) F0 =
                         spacerow
                         -- (b)
                         th3 "Moegliche Aufgaben:"
-                        if null (snd mglAufgs2) 
+                        if null (snd mglAufgs) 
                            then tr $ td $ text "zur Zeit keine."
-                           else showAsTable2 mglAufgs2
+                           else showAsTable mglAufgs
                         -- --------------------------------------------------
                         hrline
                         h3 $ text "Hier können Sie :"

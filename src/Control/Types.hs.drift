@@ -7,7 +7,7 @@ module Control.Types
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
 , Typ, Config, Remark, Name, Email
-, Oks, Nos
+, Oks (..), Nos (..)
 , Time
 , FromCGI (..)
 , ToString (..)
@@ -223,6 +223,8 @@ instance SqlBind ANr where
     toSqlValue (ANr i) = toSqlValue i
 instance ToEx ANr where
     toEx (ANr x) = EString $ show x
+instance ToString ANr where
+    toString (ANr i) = show i
 
 -- | Gruppen-Nummer
 
@@ -249,6 +251,9 @@ instance SqlBind VNr where
     toSqlValue (VNr i) = toSqlValue i
 instance ToEx VNr where
     toEx (VNr x) = EString $ show x
+instance ToString VNr where
+    toString (VNr x) = show x
+
 
 -- | OK-Bewertung (Anzahl)
 
@@ -257,7 +262,7 @@ data Oks = Oks Int deriving ( Eq, Ord, Typeable )
 {-! for Oks derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind Oks where 
-    fromSqlValue ty s = fmap Oks $ fromSqlValue ty s
+    fromSqlValue ty s = Just $ Oks $ read s
     toSqlValue (Oks i) = toSqlValue i
 
 -- | No-Bewertung (Anzahl)
@@ -267,7 +272,7 @@ data Nos = Nos Int deriving ( Eq, Ord, Typeable )
 {-! for Nos derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind Nos where 
-    fromSqlValue ty s = fmap Nos $ fromSqlValue ty s
+    fromSqlValue ty s = Just $ Nos $ read s
     toSqlValue (Nos i) = toSqlValue i
 
 -------------------------------------------------------------

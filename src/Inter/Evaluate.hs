@@ -20,12 +20,12 @@ evaluate :: ( Reader b
 	    , ToDoc b
 	    , Challenger.Partial p i b
 	    )
- 	    => p -> i -> P.Type -> Reporter Int
-evaluate p i par =
-    case parse (parse_complete reader) "input" $ P.input par of
+ 	    => p -> i -> String -> Reporter Int
+evaluate p i cs =
+    case parse (parse_complete reader) "input" cs of
          Left e -> do
 	       inform $ text "Syntaxfehler:"
-	       reject $ errmsg (P.input_width par) e $ P.input par
+	       reject $ errmsg 72 e $ cs
 	 Right b  -> do
 	       inform $ text "gelesen:" <+> toDoc b
                evaluate' p i b

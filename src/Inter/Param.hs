@@ -30,6 +30,7 @@ data Type =
           , ident :: SNr
           , highscore :: HiLo
           , anr :: ANr
+          , vnr :: VNr
 	  , names :: [ Name ]
             -- | generated
           , variante :: Variant
@@ -48,15 +49,7 @@ smatrikel p = toString $ matrikel p
 saufgabe p = toString $ aufgabe p 
 styp p = toString $ typ p 
 
-subject p = toString (typ p) ++ "-" ++ toString (aufgabe p)
-
-{-
-example :: Type
-example = empty { problem  = "Computer" -- damit ein beispiel dasteht
-                , aufgabe  = fromCGI "LOOP"
-                , typ = fromCGI "TIMES"
-                }
--}
+subject p = toString (vnr p) ++ "-" ++ toString (anr p)
 
 empty :: Type
 empty  = Param { makers = []
@@ -79,5 +72,6 @@ empty  = Param { makers = []
 
               , highscore = error "Param.empty.highscore"
               , anr = error "Param.empty.anr"
+              , vnr = error "Param.empty.vnr"
 	          }
 

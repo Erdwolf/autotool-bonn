@@ -6,6 +6,12 @@
 module Main where
 
 import Inter.CGI
+import Inter.Evaluate
+import Inter.Make 
+import Inter.Bank
+import Inter.Store 
+import qualified Inter.Param as P
+
 import Control.Types ( toString, fromCGI, Name, Remark, HiLo (..), Time )
 
 
@@ -18,13 +24,9 @@ import Inter.Types
 import Control.Student.CGI
 import Control.Vorlesung.DB
 
-import Inter.Make 
-import Inter.Evaluate
-
 import qualified Control.Aufgabe as A
 import qualified Control.Student.Type as S
 import qualified Control.Vorlesung as V
-
 
 import Autolib.Reporter.Type
 import Autolib.ToDoc
@@ -47,7 +49,7 @@ iface mks = do
 
     stud <- Control.Student.CGI.login
     let snr = S.snr stud
-
+    hr
     open btable
  
     tvors <- io $ V.get_tutored snr
@@ -82,29 +84,41 @@ iface mks = do
         plain $ unwords [ "Aufgabe", show anr, "gelöscht." ]
 	mzero
 
-    hr
     ( mk, type_click ) <- find_mk mks tutor mauf
-    auf' <- edit_aufgabe mk mauf vnr manr type_click
 
+    auf' <- if tutor 
+            then do
+		 edit_aufgabe mk mauf vnr manr type_click
+	    else -- kein tutor 
+                case mauf of
+		  Nothing -> do 
+                      -- kommt eigentlich nicht vor?
+		      plain "keine Aufgabe gewählt"
+		      mzero
+		  Just auf -> do
+                      return auf
+    stud' <- get_stud tutor stud
+    hr
+    ( cs, res ) <- solution stud' mk auf' 
+    -- bewertung in DB (für Stud-Variante)
+    when ( not tutor ) $ punkte stud' auf' vnr ( cs, res )
+    return ()
 
-    hr ---------------------------------------------------------
-    m0 <- io $ randomRIO (0, 999999 :: Int) 
-    -- neu würfeln nur bei änderungen oberhalb von hier
-    plain "eine gewürfelte Matrikelnummer:"
-    mat <- with ( show m0 ) $ textfield "mat" ( show m0 )
+-------------------------------------------------------------------------
 
-    solution mat mk auf' 
-
-
+-- | bestimme aufgaben-typ (maker)
+-- für tutor: wählbar
+-- für student: fixiert (ohne dialog)
 find_mk mks tutor mauf = do
-    h3 "Parameter dieser Aufgabe:"
-    open btable
-
     let pre_mk = fmap (toString . A.typ) mauf
-    let handler = 
+    let handler pre_mk opts = 
             if tutor 
-            then selector_submit_click "typ" "Typ"
-            else \ pre_mk opts -> return 
+            then do
+		 hr
+		 h3 "Parameter dieser Aufgabe:"
+		 open btable -- will be closed in edit_aufgabe (tutor branch)
+		 selector_submit_click "typ" "Typ" pre_mk opts
+            else return 
 		    ( fromMaybe (error "oof") $ do
                           pre <- pre_mk ; lookup pre opts
                     , False
@@ -113,6 +127,7 @@ find_mk mks tutor mauf = do
         mk <- mks
 	return ( show mk, mk )
 
+-- | ändere aufgaben-konfiguration (nur für tutor)
 edit_aufgabe mk mauf vnr manr type_click = do
     case mk of 
         Make doc ( fun :: conf -> Var p i b ) ex -> do
@@ -167,28 +182,71 @@ edit_aufgabe mk mauf vnr manr type_click = do
             when up $ io $ A.put manr auf'
             return auf'
 
+-- | matrikelnummer zum aufgabenlösen:
+-- tutor bekommt eine gewürfelt (und kann neu würfeln)
+-- student bekommt genau seine eigene
+get_stud tutor stud = 
+    if tutor 
+       then do
+         hr
+	 m0 <- io $ randomRIO (0, 999999 :: Int) 
+	 -- neu würfeln nur bei änderungen oberhalb von hier
+	 plain "eine gewürfelte Matrikelnummer:"
+	 mat <- with ( show m0 ) $ textfield "mat" ( show m0 )
+         -- falls tutor, dann geht es hier nur im die matrikelnr
+	 return $ stud { S.mnr = fromCGI mat
+		       , S.snr = error "gibt es nicht"
+		       }
+       else do
+	 return stud
 
-
-
-solution mat ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+-- | eingabe und bewertung der lösung
+-- für tutor zum ausprobieren
+-- für student echt
+solution stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
             let conf = read $ toString $ A.config auf
                 var = fun  conf
                 p = problem var
-            k <- io $ key var mat 
+            let mat = S.mnr stud
+            k <- io $ key var $ toString mat 
             g <- io $ gen var k
             let ( Just i  , com :: Doc ) = export g
                 desc = describe (problem var) i
                 ini  = initial  (problem var) i
             h3 "Aufgabenstellung"
             pre $ show desc
- 
-            hr ---------------------------------------------------------
+            br
+	    plain "Hinweise"
+	    pre $ toString $ A.remark auf
 
-            b <- editor_submit "b" "Lösung" ini
-     	    let (res, com :: Html) = export $ evaluate' p i b
-            -- pre $ show com
+            hr ---------------------------------------------------------
+	    h3 "Lösung"
+            sub <- submit "subsol" "submit"
+            Just cs <- textarea "sol" ( render $ toDoc ini )
+
+     	    let (res, com :: Html) = export $ evaluate p i cs
             html com
-	    -- TODO: bewertung in DB (für Stud-Variante)
+	    return ( cs, res )
+
+-- | erreichte punkte in datenbank schreiben 
+-- und lösung abspeichern
+punkte stud auf vnr ( cs, res ) = do
+     hr
+     let p :: P.Type
+	 p = P.empty 
+            { P.mmatrikel = Just $ S.mnr stud
+	    , P.aufgabe = A.name auf
+	    , P.typ = A.typ auf
+	    , P.anr = A.anr auf
+	    , P.vnr = vnr
+	    , P.highscore = A.highscore auf
+	    , P.input = cs 
+	    , P.ident = S.snr stud
+            }
+     msg <- io $ bank p res
+     plain $ "Eintrag ins Logfile:"
+     pre msg
+     return ()
 
 --------------------------------------------------------------------------
 
@@ -271,13 +329,15 @@ selector_submit' tag title def opts = do
     return opt
 
 editor_submit :: ( ToDoc a, Reader a, Monad m )
-	      => Tag -> String -> a 
+	      => Tag -- ^ tag
+	      -> String -- ^ title
+	      -> a -- ^ default
 	      -> Form m a
 editor_submit tag title ex = do
     open row
     plain title
-    mconf <- editor ("E" ++ tag) ex
     sconf <- submit ("S" ++ tag) "submit"
+    mconf <- editor ("E" ++ tag) ex
     close -- row
     case mconf of
 	 Nothing -> do

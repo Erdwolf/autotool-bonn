@@ -1,10 +1,13 @@
 module Inter.Store where
 
--- -- $Id$
+--  $Id$
 
 import Util.Datei
 import qualified System.Posix
 import qualified Inter.Param as P
+
+import Control.Types (toString)
+
 import Data.Maybe
 
 store ::  P.Type -> Maybe Int -> IO String
@@ -31,7 +34,8 @@ load p pid flag = do
 location :: P.Type -> String -> Bool -> Datei
 location p pid flag =  
     Datei { pfad = [ "autotool", "done"
-			    , P.styp p,  P.saufgabe p
+			    , toString $ P.vnr p
+		            , toString $ P.anr p
 			    , P.smatrikel p
 			    , if flag then "OK" else "NO"
 			    ]

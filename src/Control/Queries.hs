@@ -39,9 +39,9 @@ studAufgDB :: Maybe MNr -> IO ( [ String ] , [ [ StrOrInt ] ])
 studAufgDB mat = wrapped "studAufgDB" $ do
        conn <- myconnect 
        stat <- squery conn $
-            Query ( Select (      [ reed "vorlesung.Name AS vorlesung" 
-				  , reed "aufgabe.Typ AS Typ"
+            Query ( Select (      [ reed "vorlesung.Name AS Vorlesung" 
 				  , reed "aufgabe.Name AS Name"
+				  , reed "aufgabe.Typ AS Typ"
 				  , reed "stud_aufg.Ok AS Ok"
 				  , reed "stud_aufg.No AS No"
 				  ] 
@@ -53,7 +53,7 @@ studAufgDB mat = wrapped "studAufgDB" $ do
 			    , reed "stud_aufg.ANr = aufgabe.ANr"
 			    , reed "vorlesung.VNr = aufgabe.VNr"
 			    ] ++ 
-		            [ EBinop "=" (reed "student.MNr") (toEx mnr) 
+		            [ equals (reed "student.MNr") (toEx mnr) 
 			    | mnr <- maybeToList mat
 			    ]
 		  ]
@@ -61,8 +61,8 @@ studAufgDB mat = wrapped "studAufgDB" $ do
                             v <- getFieldValue state "Vorlesung"
                             s <- getFieldValue state "Name"
                             t <- getFieldValue state "Typ"
-                            o <- getFieldValue state "Ok"
-                            n <- getFieldValue state "No"
+                            Oks o <- getFieldValue state "Ok"
+                            Nos n <- getFieldValue state "No"
                             return [ S v, S s , S t, I o , I n  ] -- FIXME
                           ) stat
        disconnect conn
@@ -459,6 +459,8 @@ mglAufgabenDB' isAdmin snr =
 
 
 
+
+
 ----------------------------------------------------------------------------------
 
 
@@ -466,8 +468,8 @@ mglAufgabenDB' isAdmin snr =
 
 -- >  bzw. alle Student (snr=[])
 -- > ( [header ... ] , [ ( ANr, Name , Subject , Path , Highscore , Von , Bis ) ] ) 
-mglNextAufgabenDB :: SNr -> IO ( [String],[[String]])
-mglNextAufgabenDB snr = 
+mglNextAufgabenDB_old :: SNr -> IO ( [String],[[String]])
+mglNextAufgabenDB_old snr = 
   wrapped ( "mglNextAufgabenDB" ++ show snr ) $ do
     let ssnr = toString snr
     conn <- myconnect
@@ -504,4 +506,43 @@ mglNextAufgabenDB snr =
                ) stat
     disconnect conn
     return ( showColTypes stat, inh )
+
+
+
+-- | liefert bewertete Aufgaben von mat aus DB,
+-- TODO: mat = [] sollte auch StudentMNr als Spalte zurückliefern
+mglNextAufgabenDB :: SNr -> IO ( [String],[[StrOrInt]])
+mglNextAufgabenDB snr = wrapped "mglNextAufgabenDB" $ do
+       conn <- myconnect 
+       stat <- squery conn $
+            Query ( Select (      [ reed "vorlesung.Name AS Vorlesung" 
+				  , reed "aufgabe.Name AS Name"
+				  , reed "aufgabe.Typ AS Typ"
+				  , reed "aufgabe.Von AS Von"
+				  , reed "aufgabe.Bis AS Bis"
+				  ] 
+			   )
+		  )
+		  [ From  $ map reed [ "stud_grp", "aufgabe"
+				     , "gruppe", "vorlesung" ] 
+		  , Where $ ands
+		          $ [ equals (toEx snr) (reed "stud_grp.SNr") 
+			    , reed "stud_grp.GNr = gruppe.GNr"
+			    , reed "gruppe.VNr = vorlesung.VNr"
+			    , reed "vorlesung.VNr = aufgabe.VNr"
+			    , reed "NOW() BETWEEN ( Von AND Bis )"
+			    ] 
+		  ]
+       inh <- collectRows ( \ state -> do
+                            v <- getFieldValue state "Vorlesung"
+                            s <- getFieldValue state "Name"
+                            t <- getFieldValue state "Typ"
+                            ( von :: Time ) <- getFieldValue state "Von"
+                            ( bis :: Time ) <- getFieldValue state "Bis"
+                            return [ S v, S s , S t
+				   , S $ toString von , S $ toString bis  
+				   ]
+                           ) stat
+       disconnect conn
+       return ( showColTypes stat, inh )
 
