@@ -55,3 +55,6 @@ ghci-sql:
 
 #%.hi: %.o
 #	@\:
+
+mysql:
+	mysql -u test --password="test" -D autoan 
