@@ -7,6 +7,7 @@ module Main where
 
 import Network.CGI
 import Text.Html hiding ( size, text )
+import ToDoc (Doc, render)
 
 import Reporter
 import qualified Output
@@ -64,8 +65,9 @@ iface variants env = do
 	   Variant v -> do
 	      -- key/instanz herstellen und anzeigen
 	      k <- key  v $ P.matrikel par1
-	      let i = gen_i v k
-	      let inst = p << pre << show i
+	      let ( Just i, com :: Doc ) = export $ gen v $ P.matrikel par1
+	      let inst = p << "Die Aufgabenstellung ist:"
+			 +++ p << pre << render com
 
               let b0 = Challenger.initial ( problem v ) i
 	      let par2 = par1 { P.input = if null ( P.input par1 )
@@ -73,8 +75,11 @@ iface variants env = do
 			      }
 
 	      -- eingabe bewerten ( echter Reporter )
-	      let ( res :: Maybe Int , com :: Html ) 
+	      let ( res :: Maybe Int , com :: Doc ) 
 		      = export $ evaluate ( problem v ) i par2
+	      let ans = p << "Das Korrekturprogramm sagt:"
+			+++ p << pre << render com 
+
 	      -- bewertung in datenbank und file
 	      msg <- bank par2 res
 	      let log = p << "Eintrag ins Logfile:"
@@ -92,7 +97,7 @@ iface variants env = do
 			       , cols $ show $ P.input_width par2
 			       ]
 
-	      return $ page par2 $ inst +++ log +++ status +++ com
+	      return $ page par2 $ inst +++ log +++ status +++ ans
 
 ------------------------------------------------------------------------
 
@@ -111,7 +116,7 @@ preface par = table <<
 		     
 	    , besides $  txtf "problem" ( P.problem par )
 		     ++ txtf "aufgabe" ( P.aufgabe par )
-		     ++ txtf "version" ( P.aufgabe par )
+		     ++ txtf "version" ( P.version par )
 	    ]
 
 txtf name cont = 

@@ -10,6 +10,7 @@ import ShowFunctions
 import ToDoc
 import Reader
 import Size
+import Informed
 
 type Matrikel = String
 
@@ -18,6 +19,7 @@ type Key = String
 data Var p i b = 
          Var { problem :: p 
 	     , aufgabe :: String
+	     , var_info :: Doc
 	     , version :: String
 	     , key :: Matrikel -> IO Key
 	     , gen :: Matrikel -> Reporter i
@@ -50,4 +52,8 @@ instance ToDoc Variant where
 
 instance Show Variant where
     show = render . toDoc
+
+instance Informed ( Var p i b ) where
+    info = var_info
+    informed t v = v { var_info = t }
 

@@ -25,8 +25,9 @@ computer auf ver num =
 	, key = \ matrikel -> do
 	      return matrikel
 	, gen = \ matrikel -> do
-	      inform $ text "Konstruieren Sie eine Maschine für die Funktion"
-	      inform $ info num
+	      inform $ text "Konstruieren Sie eine Maschine,"
+	      inform $ text "welche die Funktion" <+> info num 
+	               <+> text "berechnet!"
 	      return num
 	, gen_i = \ matrikel -> num
 	}
