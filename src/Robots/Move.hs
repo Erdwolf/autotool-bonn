@@ -2,6 +2,7 @@ module Robots.Move where
 
 import Robots.Data
 import Robots.Konfig
+import Robots.Nice
 
 import Set
 import FiniteMap
@@ -53,7 +54,7 @@ executes :: Konfig -> [ Zug ] -> Boc
 executes k [] = 
     final k
 executes k (z : zs) = 
-    explain 0 ( vcat [ toDoc k , text "Zug:" <+> toDoc z ] )
+    explain 0 ( vcat [ nice k , text "Zug:" <+> toDoc z ] )
     $ case execute k z of
 	   Nothing -> ( False , text "nicht erlaubt" )
 	   Just k' -> executes k' zs

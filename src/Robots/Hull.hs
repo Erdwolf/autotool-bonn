@@ -1,6 +1,7 @@
 module Robots.Hull where
 
-import Robots.Type
+import Robots.Data
+import Robots.Konfig
 import Maybe
 
 hull :: Konfig -> (Position, Position)

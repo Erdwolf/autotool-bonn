@@ -13,6 +13,7 @@ import Monad ( guard )
 
 nachfolger :: Konfig -> [ Konfig ]
 nachfolger k = do
+    guard $ fst $ valid k
     r <- robots k
     d <- richtungen
     let z = (name r, d)
@@ -20,15 +21,19 @@ nachfolger k = do
     guard $ covered k'
     return k'
 
-solutions :: Konfig -> [ Doc ]
+solutions :: Konfig -> [ ((Int, Int), [[Zug]]) ]
 solutions k = do
     (d, ps) <- zip [0 :: Int ..] $ schichten ( mkSet . nachfolger ) k
     let out = do p <- setToList ps
 		 return $ if fst $ final p 
 		    then reverse $ geschichte p
 		    else []
-    return $ toDoc (( d, length out), filter (not . null) out)
+    return $ (( d, length out), filter (not . null) out)
 
 solve :: Konfig -> IO ()
-solve k = sequence_ $ map print $ solutions k
+solve k = sequence_ $ map ( print . toDoc ) $ solutions k
 
+shortest :: Konfig -> [[Zug]]
+shortest k = take 1 $ do
+    ( _ , zss ) <- solutions k
+    zss

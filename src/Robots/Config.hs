@@ -130,7 +130,6 @@ final k =
 
 ------------------------------------------------------------------
 
-
 fourty :: Konfig
 -- die beispielkarte nr. 40 aus dem original-spiel
 fourty = mkKonfig
