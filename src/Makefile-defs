@@ -14,7 +14,7 @@ endif
 
 ifeq ($(shell hostname), nfa)
 EXTRA_PACKS = -package hsql
-GHC = ghc-6.0
+GHC = ghc-6.2
 endif
 
 ifeq ($(shell hostname), dfa)
