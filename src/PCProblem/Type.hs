@@ -5,17 +5,19 @@
 
 -- $Id$
 
-module PCProblem.Type where
+module PCProblem.Type 
 
-import ToDoc
+( module PCProblem.Type
+, module PCProblem.Data
+)
+
+where
+
+import PCProblem.Data
+
 import Iso
 import Number
-
-data PCP = PCP [(String, String)] deriving (Show,Read)
-
--- ToDoc Instanz
-instance ToDoc PCP where
-	toDoc (PCP pcp) = text "PCP" <+> toDoc pcp
+import Size
 
 -- Isomorphie Instanz
 -- !!!!!!!!!!!!Muss noch fertig gestellt werden
@@ -29,6 +31,7 @@ instance Number PCP PCP where
 
 data PCProblem = PCProblem deriving Show
 type Folge = [ Integer ]
+instance Size Folge where size = length
 
 ---------------------------------------------------------------------------
 

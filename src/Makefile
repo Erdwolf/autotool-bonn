@@ -6,9 +6,8 @@
 # DIRS = $(BINDIR) $(EXERCISEDIRS)
 
 # neu: fa/ nicht mehr im pfad (steht jetzt alles in NFA.*)
-# desgl. für challenger
 
-DIRS = util:wash:control:bridge:ss03/bk/aufgaben
+DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \

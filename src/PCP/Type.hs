@@ -1,14 +1,5 @@
--- | Datenstruktur für PCP-Aufgaben
+module PCP.Type where
 
--- autor Markus Kreuz
--- mai99byv@studserv.uni-leipzig.de
+-- $Id$
 
--- patches joe@informatik.uni-leipzig.de
-
-module PCP.Type (
-      module Iso
-    , module Number
-    , PCP (..)
-    , module ToDoc
-    ) where
 
