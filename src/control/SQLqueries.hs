@@ -544,8 +544,8 @@ changeStudGrpDB mat grp =
 -- Input: (SNr,ANr,{No,Ok size}, {High,Low,Keine} )
 -- Output: IO ()
 --
-bepunkteStudentDB :: String -> String -> ATBewertung -> ATHighLow -> IO ()
-bepunkteStudentDB snr anr bewert highlow = return ()
+-- bepunkteStudentDB :: String -> String -> ATBewertung -> ATHighLow -> IO ()
+-- bepunkteStudentDB snr anr bewert highlow = return ()
 
 bepunkteStudentDB snr anr bewert highlow = do
    conn <- myconnect
