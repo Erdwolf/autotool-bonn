@@ -1,14 +1,16 @@
 -- | to edit the problem configuration
--- vorteil gegenüber direktem zugriff auf datenbank:
--- syntaxprüfung der config
--- später auch beispielrechnungen
+-- and to check a sample solution
+
+--  $Id$
 
 module Main where
 
 import Inter.Make
+import Inter.Env
 import Challenger.Partial
 import Inter.Types
 import Inter.Click
+import Inter.Area
 import Inter.Errmsg
 
 import Autolib.Reporter.Type
@@ -19,6 +21,7 @@ import Random
 import Network.CGI
 import Data.Typeable
 import Data.Maybe
+import Data.List
 import Control.Monad
 import qualified Control.Exception
 import Text.Html hiding ( text, input, version, width, height )
@@ -26,32 +29,33 @@ import Text.Html hiding ( text, input, version, width, height )
 -- for testing:
 import qualified HTWK.SS04.Informatik.Boolean as B
 
+data Par =
+     Par { env :: Env
+	 , makers :: [ Make ]
+	 , maker :: Make
+	 , config :: Area
+	 , solution :: Area
+	 }
+
 main :: IO ()
-main = wrapper $ \ env ->  
+main = wrapper $ \ e ->  
          iface ( Par { makers = B.makers 
 		     , maker = error "Super.maker"
-		     , input = error "Super.input"
-		     , height = error "Super.height"
-		     , width = 60
-		     } ) env
+		     , config = error "Super.config"
+		     , solution = error "Super.solution"
+		     , env = e
+		     } ) 
              `Control.Exception.catch` \ err -> 
                  return $ p << pre << primHtml ( show err )
 
-data Par =
-     Par { makers :: [ Make ]
-	 , maker :: Make
-	 , input :: String
-	 , height :: Int
-	 , width :: Int
-	 }
 
-iface :: Par -> [ (String, String) ] -> IO Html
-iface par env = do
+iface :: Par -> IO Html
+iface par = do
     
     let presenter = h3 << "all Makers and their types:" 
 	    +++ p << pre << show ( present $ makers par )
 
-    let mcs = lookup "Maker" env 
+    let mcs = lookup "Maker" $ env par
     let mks  = do 
           m @ ( Make doc fun ex ) <- makers par
           guard $ Just doc == mcs
@@ -60,11 +64,10 @@ iface par env = do
     center <- case mks of
           []   -> return $ h3 << ( "No Maker with name: " ++ show mcs )
 	  [ mk @ ( Make doc fun ex ) ] -> do  
-                  let inp = fromMaybe (show ex) $ lookup "input" env
-		  c <- core ( par { maker = mk 
-				  , input = inp
-				  , height = length $ lines inp
-				  } )
+                  let inp = fromMaybe (show ex) $ lookup "input" $ env par
+		  c <- core $ par { maker = mk 
+				  , config = Inter.Area.make "input" inp
+				  } 
 		  return $  h3 << ( "Chosing Maker: " ++ show mcs ) +++ c 
           _    -> return $ h3 << ( "More than one Maker with name: " ++ show mcs )
 
@@ -75,30 +78,26 @@ core par = case maker par of
     Make doc fun ex -> do    
         let ty = primHtml "has type"
 	        +++ pre << show ( toDoc $ typeOf fun )
-        let scratch = textarea ( primHtml $ input par  ) 
-					! [ name "input"
-					  , rows $ show $ height par + 2
-					  , cols $ show $ width  par
-					  ]
-			   +++ br
 
-			   +++ submit "Click" ( show Submit   ) +++ " " 
-			   +++ submit "Click" ( show Previous ) +++ " " 
-			   +++ submit "Click" ( show Example  ) +++ " " 
+        let scratch = Inter.Area.display ( config par )
 
-			   +++ reset  "Click" ( show Reset    ) 
+	let buttons name = (<<) table $ aboves $ return $ besides $ do
+               act <- [ Submit, Previous, Example, Reset ]
+               return $ td <<  submit name ( show act )
 
-        va <- case parse (parse_complete reader) "input" $ input par of
-		Left e -> do
-		    return $ primHtml $ show $ errmsg (width par) e $ input par
-                Right conf -> do
-                    h <- handler ( fun conf )
-	 	    return $ primHtml "gelesen:" +++ pre << show conf +++ h 
-        return $ ty +++ scratch +++ va
+        va <- Inter.Area.parser (config par) $ \ conf -> do
+                    h <- handler par ( fun conf )
+		    return h
 
-handler :: Partial p i b 
-	=> Var p i b -> IO Html
-handler var = do
+        return $ foldr1 (+++) 
+	       $ intersperse br
+               $ [ ty, scratch, buttons "Click", va ]
+
+handler :: ( Reader b, Partial p i b )
+	=> Par
+	-> Var p i b 
+	-> IO Html
+handler par ( var :: Var p i b ) = do
     let header = table << aboves 
             [ besides [ td << "Problem", td << show (problem var) ]
 	    , besides [ td << "Aufgabe", td << aufgabe var ]
@@ -118,7 +117,13 @@ handler var = do
 	   , besides [ td << "Description", td << pre << show desc ]
 	   , besides [ td << "Initial", td << pre << show ( toDoc ini ) ]
 	   ]
-    return $ header +++ belly
+    
+    let sol = fromMaybe (show $ toDoc ini) $ lookup "solution" $ env par
+	asol = Inter.Area.make "solution" sol
+    log <- Inter.Area.parser asol $ \ ( x :: b ) -> do
+              return $ primHtml "hier Inter.Evaluate aufrufen"
+
+    return $ header +++ belly +++ log
 
 page par contents = 
     let 

@@ -2,6 +2,8 @@ module Inter.Evaluate where
 
 --   $Id$
 
+import Inter.Area
+
 import Inter.Types
 import Inter.Errmsg
 import qualified Inter.Param as P
