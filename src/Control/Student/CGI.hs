@@ -15,16 +15,16 @@ import Autolib.Util.Zufall
 login :: Form IO Student
 login = do
     open row
-    click    <- submit    "loglog" "Login:"
+    click    <- submit    "Login:"
 
     open table
     open row
     plain "Matrikel:"
-    Just mnr <- textfield "logmnr" ""
+    Just mnr <- textfield ""
     close
     open row
     plain "Passwort:"
-    Just pwd <- password  "logpwd" ""
+    Just pwd <- password  ""
     close -- row
     close -- table
 
@@ -42,7 +42,7 @@ edit s = do
     name <- defaulted_textfield "name" $ toString $ T.name s
     email <- defaulted_textfield "email" $ toString $ T.email s
     close -- btable
-    up <- submit "up" "update"
+    up <- submit "update"
     when up $ do
         io $ Control.Student.DB.put (Just $ T.snr s)
 	   $ s { T.mnr = fromCGI mnr
@@ -58,7 +58,7 @@ edit s = do
 -- | generate, display and encode "random" passwort
 generator s = do
     open row
-    gen <- submit "gen" "new password"
+    gen <- submit "new password"
     when gen $ do
        p <- io $ pass
        pre p

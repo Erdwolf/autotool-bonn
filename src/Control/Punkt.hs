@@ -98,12 +98,12 @@ bepunkteStudentDB snr anr bewert highlow minput mreport = do
 	   Ok s  -> [ ( reed "Ok", reed "Ok + 1" ) ]
 	   Pending -> [ ]
        rest = return $ ( reed "Result", toEx bewert ) 
-       inpt = return $ ( reed "Input"
-		       , fromMaybe ENull $ fmap toEx minput
-		       )
-       rept = return $ ( reed "Report"
-		       , fromMaybe ENull $ fmap toEx mreport
-		       )
+       inpt = maybeToList $ do 
+                inp <-  minput
+		return ( reed "Input", toEx inp )
+       rept = maybeToList $ do
+	        rpt <- mreport
+		return ( reed "Report", toEx rpt )
 
    squery conn $ Query 
 	   ( Update ( reed "stud_aufg" )

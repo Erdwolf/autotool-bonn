@@ -18,7 +18,7 @@ import qualified Inter.Param as P
 
 import Control.Types 
     ( toString, fromCGI, Name, Remark, HiLo (..), Status (..)
-    , Oks (..), Nos (..), Time , Wert (..), MNr, SNr
+    , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr
     )
 
 
@@ -30,6 +30,7 @@ import Inter.Types
 
 import Control.Student.CGI
 import Control.Vorlesung.DB
+import qualified Control.Student.DB
 import qualified Control.Punkt
 import qualified Control.Stud_Aufg.DB
 
@@ -65,10 +66,10 @@ iface :: [ Make ] -> Form IO ()
 iface mks = do
 
     h3 "Login und Auswahl der Vorlesung"
-    open btable
+
     ( stud, vnr, tutor ) <- Inter.Login.form
+
     let snr = S.snr stud
-    when ( not tutor ) $ close -- table
 
     -- das sind alle aufgaben 
     aufs <- io $ A.get $ Just vnr
@@ -79,27 +80,25 @@ iface mks = do
     ( mauf , action ) <- 
         if tutor
 	   then do 
-	        mauf <- selector_submit' "Aufgabe" "Aufgabe"
+                open btable
+	        mauf <- click_choice "Aufgabe"
                          $ ( "(neue Aufgabe)", Nothing ) : opts
-                action <- selector_submit' "Action" "Action"
+                action <- click_choice "Action"
 			  $ do act <- [ Config, Statistics, Delete ] 
 			       return ( show act, act )
                 return ( mauf, action )
            else do 
 		( action, auf ) <- statistik False stud aufs
                 return ( Just auf, action )
-    when tutor $ close -- btable ??
 
-    when ( Statistics == action ) $ do
+    when ( tutor && Statistics == action ) $ do
          Just auf <- return mauf 
-	 Just sauf <- tutor_statistik vnr auf
-         mtriple <- show_previous tutor sauf
+	 ( act, sauf ) <- tutor_statistik vnr auf
+         mtriple <- show_previous ( Edit == act ) sauf
          case mtriple of
 	     Nothing -> return ()
 	     Just ( cs, res, com ) -> do
-                 io $ debug "Super:Just"
                  [ stud ] <- io $ S.get_snr $ SA.snr sauf
-                 io $ debug "Super:get [stud]"
 		 punkte stud auf ( cs, res, com )
 	 mzero
 
@@ -155,7 +154,7 @@ find_mk mks tutor mauf = do
 		 hr
 		 h3 "Parameter dieser Aufgabe:"
 		 open btable -- will be closed in edit_aufgabe (tutor branch)
-		 selector_submit_click "typ" "Typ" pre_mk opts
+		 selector_submit_click "Typ" pre_mk opts
             else return 
 		    ( fromMaybe (error "oof") $ do
                           pre <- pre_mk ; lookup pre opts
@@ -179,7 +178,7 @@ edit_aufgabe mk mauf vnr manr type_click = do
 	                           Just auf -> toString $ A.remark auf
             open row
             plain "Highscore"
-	    ( mhilo :: Maybe HiLo ) <- selector' "Highscore"  
+	    ( mhilo :: Maybe HiLo ) <- selector' 
                 ( case mauf of Nothing -> "XX"
 		               Just auf -> show $ A.highscore auf )
                    $ do
@@ -188,7 +187,7 @@ edit_aufgabe mk mauf vnr manr type_click = do
             close -- row
             open row
             plain "Status"
-	    ( mstatus :: Maybe Status ) <- selector' "Status"  
+	    ( mstatus :: Maybe Status ) <- selector' 
                 ( case mauf of Nothing -> "XX"
 		               Just auf -> show $ A.status auf )
                    $ do
@@ -206,7 +205,7 @@ edit_aufgabe mk mauf vnr manr type_click = do
 				   Just auf -> toString $ A.bis auf
 
             -- nimm default-config, falls type change
-            conf <- editor_submit "conf" "Konfiguration" 
+            conf <- editor_submit "Konfiguration" 
 		    $ case mauf of 
 			  Just auf | not type_click  -> 
 				 read $ toString $ A.config auf
@@ -214,7 +213,7 @@ edit_aufgabe mk mauf vnr manr type_click = do
 	    close -- table
 				   
             br
-	    up <- submit "update" "update data base: aufgabe"
+	    up <- submit "update data base: aufgabe"
             let auf' = A.Aufgabe 
 		               { A.anr = error "Super.anr" -- intentionally
 			       , A.vnr = vnr
@@ -241,7 +240,7 @@ get_stud tutor stud =
 	 m0 <- io $ randomRIO (0, 999999 :: Int) 
 	 -- neu würfeln nur bei änderungen oberhalb von hier
 	 plain "eine gewürfelte Matrikelnummer:"
-	 mat <- with ( show m0 ) $ textfield "mat" ( show m0 )
+	 mat <- with ( show m0 ) $ textfield ( show m0 )
          -- falls tutor, dann geht es hier nur um die matrikelnr
 	 return $ stud { S.mnr = fromCGI mat
 		       , S.snr = error "gibt es nicht"
@@ -263,7 +262,8 @@ find_previous edit stud auf = do
 
 -- | TODO: possibly with edit (for tutor)
 show_previous edit sa = do
-    h3 "Vorige Einsendung und Bewertung zu dieser Aufgabe"
+
+    hr ;  h3 "Vorige Einsendung und Bewertung zu dieser Aufgabe"
     -- pre $ show sa
     br ; plain "Einsendung:"
     case SA.input sa of
@@ -272,6 +272,7 @@ show_previous edit sa = do
     	         $ readFile $ toString file
     	    pre cs
         Nothing -> plain "(keine)"
+    br
     plain "Bewertung:"
     h <- case SA.report sa of
         Just file -> do
@@ -290,13 +291,14 @@ show_previous edit sa = do
              blank -- ??
 	     return Nothing
          True  -> do
+               mcom <- textarea h
+               let com = fromMaybe h mcom   
                open table
-               com <- defaulted_textarea "bewerten" h    
-               open table
-               grade <- selector_submit' "Grade" "Grade" 
+               grade <- click_choice0  "Grade" 
 			[ ("Pending", Pending), ("Ok", Ok 1), ("No", No) ]
                close -- table
-	       return $ Just ( Nothing, grade
+	       return $ Just ( Nothing
+			     , grade
 			     , case grade of 
 			           Pending -> Nothing 
 			           _       -> Just $ primHtml com 
@@ -337,14 +339,14 @@ solution vnr manr stud
     esol <- if isJust fpeek
        then do 
           -- voriges mal file gewählt, also textarea nicht anzeigen
-          wef <- submit "wef" "Text-Eingabefeld" 
+          wef <- submit "Text-Eingabefeld" 
           when wef $ blank
           return Nothing
        else do
           plain "Text-Eingabefeld:"
-	  ex   <- submit "subex" "Beispiel laden"
-	  prev <- submit "subprev" "vorige Einsendung laden"
-	  esub  <- submit "subsol" "Textfeld absenden"
+	  ex    <- submit "Beispiel laden"
+	  prev  <- submit "vorige Einsendung laden"
+	  esub  <- submit "Textfeld absenden"
 	  br
 	  when ( ex || prev ) blank
 
@@ -353,7 +355,7 @@ solution vnr manr stud
 	      then Inter.Store.latest Inter.Store.Input past
                       `Control.Exception.catch` \ _ -> return b0
 	      else return b0
-          sol <- textarea "sol" def
+          sol <- textarea def
           return sol
 
     br ; plain "oder " 
@@ -361,13 +363,13 @@ solution vnr manr stud
     fsol <- if isJust epeek
         then do
 	    -- voriges mal textfeld gewählt, also file-dialog nicht anzeigen
-            wup <- submit "wup" "Datei hochladen"
+            wup <- submit "Datei hochladen"
             when wup $ blank
             return Nothing
         else do
             plain "Datei auswählen:"
-            up <- file "up" undefined
-	    fsub  <- submit "fsub" "Datei absenden"
+            up <- file undefined
+	    fsub  <- submit "Datei absenden"
 	    return $ if fsub then up else Nothing
 
     cs <- case esol of
@@ -414,7 +416,7 @@ data Action = Solve  -- ^ neue Lösung bearbeiten
 	    | Statistics 
 	    | Config
             | Delete 
-     deriving ( Show, Eq )
+     deriving ( Show, Eq, Typeable )
 
 -- | für Student: statistik aller seiner Aufgaben anzeigen, 
 -- für Tutor: kann Aufgabenlösung sehen und (nach-)korrigieren
@@ -434,19 +436,17 @@ statistik tutor stud aufs = do
 
     -- daten anzeigen
     let dat = do
+	    begin -- mutex
             open btable
             open row
             plain "Aufgabe" ; plain "Status" ; plain "Highscore"
             plain "von" ; plain "bis"
             plain "vorige Bewertung" ; plain "Gesamt-Wertungen"
             close -- row
-            clicks <- sequence $ do 
+            sequence_ $ do 
                 ( auf, ( ok, no, mres ) ) <- score
                 let name = toString $ A.name  auf
                 return $ do
-                    let choices = 
-			    if tutor then [ View, Edit ]
-			    else [ Solve, View ]
             	    open row
                     let col = if A.current auf
 			         && Mandatory == A.status auf
@@ -461,15 +461,13 @@ statistik tutor stud aufs = do
                     farbe col $ toString $ A.bis auf
                     farbe col $ show mres
             	    farbe col $ show ( ok , no )
-                    mact <- radio_choice ("radio-" ++ name) $ do
-			   act <- choices
-			   return ( show act, act )
+                    sequence_ $ do
+		        ch <- if tutor then        [ View, Edit ]
+			               else [ Solve, View ]
+                        return $ click ( show ch , ( ch, auf ))
             	    close -- row
-		    return $ do 
-		        Just act <- return mact 
-			return ( act, auf )
-            close
-            return clicks
+            close -- table
+            end -- mutex
     -- auswerten
     let goal = sum $ do 
             ( auf, okno ) <- score
@@ -489,19 +487,8 @@ statistik tutor stud aufs = do
 		  , "Das sind", show percent, "Prozent." 
 		  ]
 
-    clicks <- dat ; br ; aus
-    -- vorige aufgabe holen
-    mvor <- look "vor"
-    case concat clicks of
-        ( act, auf ) : _ -> do
-            let nauf = toString $ A.name auf
-            -- neue aufgabe, zukunft löschen
-            when ( Just nauf  /= mvor ) $ blank
-            -- aufgabe merken
-	    hidden "mvor" nauf
-	    return ( act, auf )
-        _ -> do -- gar keine aufgabe, stop
-            mzero 
+    ( ch, auf ) <- dat ; br ; aus
+    return ( ch, auf )
 
 --------------------------------------------------------------------------
 
@@ -515,125 +502,44 @@ data Entry = Entry
 	   }
 
 
--- | für Tutor: statistik aller einsendungen zu dieser Aufgabe
--- mit Möglichkeit, Bewertungen zu ändern
-
--- FIXME: bewertung ändern soll durch explizite neu-korrektur geschehen,
--- so daß Student auch eine Begründung sieht
-
-tutor_statistik_old vnr auf = do
-    hr
-    t <- io $ Control.Vorlesung.DB.teilnehmer vnr
-    saufs <- io $ Control.Stud_Aufg.DB.get_anr $ A.anr auf
-    let fm = listToFM $ do
-            sauf <- saufs
-	    return ( SA.snr sauf , ( SA.ok sauf, SA.no sauf ) )
-    let entries = do
-	    ( s, ( m, v, n ) ) <- t
-            let ( ok, no ) = lookupWithDefaultFM fm ( Oks 0, Nos 0 ) s
-	    return $ Entry 
-		   { snr = s, mnr = m 
-		   , vorname = v, name = n
-		   , oks = ok, nos = no
-		   }
-    h3 "Statistik für diese Aufgabe"
-    open btable
-
-    open row
-    plain "Name" ; plain "Vorname" ; plain "Matrikel"
-    plain "Oks/Nos" ; plain "Set/Reset"
-    close -- row
-
-    actions <- sequence $ do
-        e <- sortBy name entries
-        return $ do
-	    open row
-	    plain $ toString $ name e 
-	    plain $ toString $ vorname e 
-	    plain $ toString $ mnr e
-            plain $ show ( oks e, nos e )
-            let status = oks e > Oks 0
-            let checkname = "st" ++ ( toString $ mnr e ) 
-            check <- checkbox status checkname ""
-            let actions = do
-		guard $ check /= status 
-                return $ case check of
-		    True -> Control.Punkt.set 
-			      ( snr e ) ( A.anr auf ) ( Ok 0 )
-				  ( Nothing ) -- input file
-				  ( Nothing ) -- report file
-		    False -> Control.Punkt.set 
-			      ( snr e ) ( A.anr auf ) Reset
-				  ( Nothing ) -- input file
-				  ( Nothing ) -- report file
-
-            close -- row
-            return $ sequence actions
-    close -- btable
-    sub <- submit "update" "update data base: stud_aufg ..."
-    when sub $ do
-        io $ sequence_ actions
-	plain "... done (refresh picture)"
-    return ()
-
 ---------------------------------------------------------------------------
 
 -- | will return Maybe Stud_Aufg for re-grading
+tutor_statistik :: VNr -> A.Aufgabe 
+		-> Form IO ( Action, SA.Stud_Aufg )
 tutor_statistik vnr auf = do
     hr
-    t <- io $ Control.Vorlesung.DB.teilnehmer vnr
     saufs <- io $ Control.Stud_Aufg.DB.get_anr $ A.anr auf
 
     h3 "Statistik für diese Aufgabe"
     open btable
+    begin -- mutex
 
     open row
-    -- plain "Name" ; plain "Vorname" ; plain "Matrikel"
-    -- wird (erstmal) ohne Ansehen der person korrigiert
-    plain "SNr" ; plain "Oks" ; plain "Nos" ; plain "Result"
+    plain "Matrikel" ; plain "Vorname" ; plain "Name" 
+    plain "Oks" ; plain "Nos" ; plain "Result"
+    plain "Action"
     close -- row
 
-    cache <- look "cache"
-    clicks <- sequence $ do
+    sequence_ $ do
         sauf <- saufs
         return $ do
+            [ stud ] <- io $ Control.Student.DB.get_snr $ SA.snr sauf
 	    open row
-	    -- plain $ toString $ name e 
-	    -- plain $ toString $ vorname e 
-	    plain $ toString $ SA.snr sauf
+	    plain $ toString $ S.mnr stud
+	    plain $ toString $ S.vorname stud
+	    plain $ toString $ S.name stud
             plain $ toString $ SA.ok sauf
 	    plain $ toString $ SA.no sauf
-            let gname = "G" ++ toString ( SA.snr sauf ) 
+	    plain $ show $ SA.result sauf
 	    click <- case SA.result sauf of
-	        Nothing -> do plain "" ; return False
-		Just w  -> submit gname ( toString w )
+	        Nothing -> do plain "" ; plain ""
+		Just w  -> do
+		    click ( "View", ( View, sauf ))
+		    click ( "Edit",  ( Edit, sauf ))
             close -- row
-            let hit = cache == Just gname
-            return [ ( hit, sauf, gname ) | click || hit ]
     close -- btable
-    case sortBy (\(h,_,_)-> h) $ concat clicks of
-        ( hit, sauf, gname ) : rest -> do
-            hidden "cache" gname
-            return $ Just sauf
-        _  -> do
-	    return $ Nothing
-
---------------------------------------------------------------------------
-
-
--- TODO: need better layout
-selector_scd tag title def opts = do
-    open row
-    plain title
-    mopt <- selector (tag ++ "-menu") def opts
-    ch <- selector_submit' (tag ++ "-scd") "Action" 
-	  [ ( "Statistics", Statistics )
-	  , ( "Config", Config )
-	  , ( "Delete", Delete )
-	  ]
-    close -- row
-    Just opt <- return mopt
-    return ( opt, ch )
+    end -- mutex
 
 -----------------------------------------------------------------------------
 

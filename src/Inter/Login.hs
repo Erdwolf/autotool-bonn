@@ -12,7 +12,9 @@ import qualified Control.Student.Type as S
 form :: Form IO ( S.Student, VNr, Bool )
 form = do
 
+    open btable
     stud <- Control.Student.CGI.login
+    close
     let snr = S.snr stud
  
     tvors <- io $ V.get_tutored snr
@@ -23,9 +25,11 @@ form = do
             then return tvors
 	    else io $ V.get_attended snr
 
-    vnr <- selector_submit "vnr" "Vorlesung" 0 $ do
+    open btable
+    vnr <- click_choice "Vorlesung" $ do
         vor <- vors
         return ( toString $ V.name vor , V.vnr vor )
+    close
 
     return ( stud, vnr, tutor )
 
