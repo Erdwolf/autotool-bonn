@@ -78,8 +78,8 @@ instance (ToDoc PCP, Show PCP, Read PCP
 
 lr :: PCP -> Folge -> ( String, String )
 lr (PCP pcp) folge = 
-    let links  = do k <- folge ; let { (l,r) = pcp !! fromIntegral (k+1) } ; l
-	rechts = do k <- folge ; let { (l,r) = pcp !! fromIntegral (k+1) } ; r
+    let links  = do k <- folge ; let { (l,r) = pcp !! fromIntegral (k-1) } ; l
+	rechts = do k <- folge ; let { (l,r) = pcp !! fromIntegral (k-1) } ; r
     in	( links, rechts )
 
 common :: Eq a => [a] -> [a] -> [a]
