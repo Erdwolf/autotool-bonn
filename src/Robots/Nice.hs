@@ -3,16 +3,16 @@ module Robots.Nice where
 -- -- $Id$
 
 import Robots.Data
-import Robots.Konfig
+import Robots.Config
 import Robots.Hull
 
-import ToDoc
-import Array
-import Maybe
-import Char
+import Autolib.ToDoc
+import Data.Array
+import Data.Maybe
+import Data.Char
 
-nice :: Konfig -> Doc
--- hübsches layout
+-- | hübsches layout
+nice :: Config -> Doc
 nice k = vcat $ do
     let bereich @ ((l,u), (r,o)) = hull k
     let a = array bereich $ do p <- range bereich

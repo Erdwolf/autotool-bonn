@@ -1,20 +1,19 @@
 module Robots.Move where
 
--- -- $Id$
+--  $Id$
 
 import Robots.Data
-import Robots.Konfig
+import Robots.Config
 import Robots.Nice
 
-import Data.Set
-import Data.FiniteMap
-import Maybe
+import Autolib.Set
+import Autolib.FiniteMap
+import Data.Maybe
 import Data.List (sortBy)
 import Control.Monad ( foldM )
 
-import Reporter
-import ToDoc
-
+import Autolib.Reporter
+import Autolib.ToDoc
 
 offset :: Richtung -> ( Integer, Integer )
 offset N = ( 0, 1 )
@@ -28,14 +27,14 @@ blocking d (px,py) (qx,qy) =
 	then px == qx && (dy * py < dy * qy)
 	else py == qy && (dx * px < dx * qx)
 
-blocks :: Konfig -> Position -> Richtung -> [ Position ]
--- alle, die in dieser Richtung im Weg sind
+-- | alle, die in dieser Richtung im Weg sind
+blocks :: Config -> Position -> Richtung -> [ Position ]
 blocks k p d = filter ( blocking d p ) 
 	     $ map position
 	     $ robots k
 
-slide :: Konfig -> Position -> Richtung -> Maybe Position
--- letzter freier platz in dieser richtung
+-- | letzter freier platz in dieser richtung
+slide :: Config -> Position -> Richtung -> Maybe Position
 slide k p d =
     let bs = sortBy ( \ q r -> if blocking d q r then LT else GT )
 	   $ blocks k p d
@@ -44,7 +43,7 @@ slide k p d =
 	     [] -> Nothing
 	     (qx, qy) : rest -> Just (qx-dx, qy-dy)
 
-execute :: Konfig -> Zug -> Maybe Konfig
+execute :: Config -> Zug -> Maybe Config
 execute k z @ ( n, d ) = do
     r <- look k n
     case slide k ( position r ) d of
@@ -55,7 +54,7 @@ execute k z @ ( n, d ) = do
 	 Just p  -> return $ addZug z $ move   (n, p) k
 	
 
-executes :: Konfig -> [ Zug ] -> Reporter Konfig
+executes :: Config -> [ Zug ] -> Reporter Config    
 executes k [] = do
     inform $ nice k
     return k

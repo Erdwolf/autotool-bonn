@@ -4,42 +4,34 @@ module Robots.Data where
 
 --   $Id$
 
-import Reader
-import ToDoc
+import Autolib.Reader
+import Autolib.ToDoc
+import Autolib.Size
 
-import Util.Size
+import Text.XML.HaXml.Haskell2Xml
+import Data.Typeable
 
--- import Number
--- import Iso
+data Robots = Robots deriving ( Typeable )
 
-data Robots 
-   = Robots deriving ( Show, Read )
+{-! for Robots derive : Reader, ToDoc, Haskell2Xml !-}
 
 type Position = ( Integer, Integer )
-
 
 data Robot = Robot { name :: String
 		   , position :: Position
 		   , ziel :: Maybe Position
 		   }
-     deriving ( Eq, Ord )
+     deriving ( Eq, Ord, Typeable )
 
-{-! for Robot derive : Reader, ToDoc !-}
-
-instance Show Robot where show = render . toDoc
-instance Read Robot where readsPrec = parsec_readsPrec
-
+{-! for Robot derive : Reader, ToDoc, Haskell2Xml !-}
 
 data Richtung = N | O | S | W 
-     deriving ( Eq, Ord, Enum, Bounded )
+     deriving ( Eq, Ord, Enum, Bounded, Typeable )
 
-{-! for Richtung derive : Reader, ToDoc !-}
+{-! for Richtung derive : Reader, ToDoc, Haskell2Xml !-}
 
 richtungen :: [ Richtung ]
 richtungen = [ minBound .. maxBound ]
-
-instance Show Richtung where show = render . toDoc
-instance Read Richtung where readsPrec = parsec_readsPrec
 
 type Zug = ( String, Richtung )
 

@@ -1,15 +1,15 @@
 module Robots.Interface where
 
--- -- $Id$
+--  $Id$
 
 import Robots.Data
-import Robots.Konfig
+import Robots.Config
 import Robots.Move
 import Robots.Nice
+import Robots.Examples
 
-
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 
 import Challenger.Partial
 import Inter.Types
@@ -18,13 +18,15 @@ import Data.Maybe ( isJust )
 import Data.List ( partition )
 
 instance Partial Robots 
-		 Konfig
+		 Config
 		 [ Zug ]
 	 where
 
     describe Robots k = vcat
-        [ text "Lunar Lockout." 
-	, text "Finden Sie eine Zugfolge für diese Konfiguration:"
+        [ text "Lunar Lockout (c) Binary Arts:"
+        , text "Geben Sie eine Zugfolge an,"
+	, text "die den (die) Roboter (Großbuchstaben)"
+	, text "ins Ziel (entsprechende Kleinbuchstaben) bringen:"
 	, nest 4 $ nice k
 	]
 
@@ -40,7 +42,7 @@ instance Partial Robots
         k' <- silent $ executes k zs
 	final k'
 
-final :: Konfig -> Reporter ()
+final :: Config -> Reporter ()
 final k = do
     inform $ nice k 
     let robs = do r <- robots k
@@ -53,21 +55,7 @@ final k = do
 			 ]
     assert ( null noh ) $ text "Geschafft?"
 
-------------------------------------------------------------------------------
-
-make :: String -- aufgabe (major)
-     -> String -- aufgabe (minor)
-     -> Konfig 
-     -> Var Robots Konfig [ Zug ]
-make auf ver conf = 
-    Var { problem = Robots
-        , aufgabe = auf
-        , version = ver
-        , key = \ matrikel -> do 
-	      return matrikel
-        , gen = \ key -> do
-	      return $ return conf
-        }
-
+make :: Make
+make = direct Robots Robots.Examples.fourty
 
 

@@ -1,45 +1,67 @@
 module Robots.Generator where
 
-import Robots.Type
+--  $Id$
+
+import Robots.Config
+import Robots.Data
 import Robots.Solver
 import Robots.Nice
 
+import Autolib.Util.Splits
+import Autolib.ToDoc
+
 import Challenger
+import Data.List ( intersperse )
 
 import Random
 import IO
+import IORef
 
-some :: Int -> Integer -> IO Konfig
--- erzeugt eine konfiguration mit n robots,
--- der erste hat ziel (0,0), die anderen haben keine ziele
--- alle im bereich (-w, -w) .. (+w, +w)
+-- | erzeugt eine konfiguration mit n robots,
+-- ohne ziele, alle im bereich (-w, -w) .. (+w, +w)
+some :: Int -> Integer -> IO Config
 some n w = do
     let punkt = do 
 	    x <- randomRIO (-w, w) ; y <- randomRIO (-w, w); return (x,y)
     let rob c = do
 	    p <- punkt
 	    return $ Robot { name = [c] , position = p, ziel = Nothing }
-    r : rs <- mapM rob $ take n [ 'A' .. ]
-    let z = ( 0, 0 )
-    return $ mkKonfig ( r { ziel = Just z } : rs )
+    rs <- mapM rob $ take n [ 'A' .. ]
+    return $ make rs
 
-form :: Konfig -> [ Zug ] -> Einsendung Robots Konfig [ Zug ]
+form :: Config -> [ Zug ] -> Einsendung Robots Config [ Zug ]
 form k zs = 
     Aufgabe { problem = Robots
 	    , instanz = k
 	    , beweis = zs
 	    }
 
-action :: Int -> Integer -> IO ()
-action n w = do
-    k <- some n w
-    -- print k
-    case shortest k of
-	 zs : _ | length zs > 5 -> do 
-	    putStrLn $ "\nSOL: " ++ show (length zs)
-	    print $ form k zs
-	    print $ nice k
-	 _	-> putStr "*"
-    hFlush stdout
+somes k = do
+    ( pre, x : post ) <- splits $ robots k
+    return $ make $ pre ++ [ x { ziel = Just (0,0) } ] ++ post
+
+action :: IORef Int -> Int -> Integer -> IO ()
+action top n w = do
+    k0 <- some n w
+    sequence_ $ do
+        k <- somes k0
+        return $ do
+	    -- print k
+            t <- readIORef top
+	    case shortest k of
+	        zs : _ | length zs >= t -> do 
+                    let l = length zs
+                    writeIORef top l
+		    let d = vcat [ toDoc l
+				 , toDoc $ form k zs
+				 , nice k
+				 ]
+		    print d
+                    let fname = concat 
+			      $ intersperse "-" 
+			      [ "robots", show n, show w, show l ]
+		    appendFile fname $ show d
+		_	-> putStr "*"
+	    hFlush stdout
 
 

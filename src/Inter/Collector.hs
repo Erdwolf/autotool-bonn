@@ -12,6 +12,7 @@ import qualified JVM.Make
 import qualified Graph.Selfcom
 import qualified Graph.Nachbar
 import qualified Graph.Cross
+import qualified Robots.Interface
 
 makers :: [ Make ]
 makers = [ NFA.Analyse.make
@@ -25,5 +26,6 @@ makers = [ NFA.Analyse.make
 	 , Graph.Selfcom.make
 	 , Graph.Nachbar.make
 	 , Graph.Cross.make
+	 , Robots.Interface.make
 	 ]
 

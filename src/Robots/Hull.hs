@@ -1,13 +1,13 @@
 module Robots.Hull where
 
--- -- $Id$
+--  $Id$
 
 import Robots.Data
-import Robots.Konfig
-import Maybe
+import Robots.Config
+import Data.Maybe
 
-hull :: Konfig -> (Position, Position)
--- kleinstes überdeckendes rechteck ( unten links, oben rechts )
+-- | kleinstes überdeckendes rechteck ( unten links, oben rechts )
+hull :: Config -> (Position, Position)
 hull k = 
     let ps = map position $ robots k
 	xs = map fst ps ; ys = map snd ps
@@ -17,8 +17,8 @@ inrange ::  (Position, Position) -> Position -> Bool
 inrange ((l,u),(r,o)) (x,y) = 
 	l <= x && x <= r && u <= y && y <= o
 
-covered :: Konfig -> Bool
--- ist jedes Ziel im Hüll-rechteck?
+-- | ist jedes Ziel im Hüll-rechteck?
+covered :: Config -> Bool
 covered k = 
     let h = hull k
     in	and $ map (inrange h) $ goals k
