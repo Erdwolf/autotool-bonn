@@ -20,7 +20,7 @@ import Helper
 -- Schluessel zum Studenten nur noch SNr nicht mehr Mat
 
 -- DB Helper
--- Header extrahieren aus SQL 
+-- Header extrahieren aus SQL
 showColTypes :: Statement -> [ String ]
 showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
 
@@ -29,36 +29,39 @@ showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
 -- DB Funktionen
 -- --------------------------------------------------------------------------------
 
--- hole mat -> bewerte Aufgaben aus DB, 
+-- liefert bewertete Aufgaben von mat aus DB,
+-- TODO: mat = [] sollte auch StudentMNr als Spalte zurückliefern
 studAufgDB :: String -> IO ( [ String ] , [ [ StrOrInt ] ])
-studAufgDB mat = 
+studAufgDB mat =
 	do
 	   conn <- connect "localhost" "autoan" "test" "test"
-	   stat <- query conn 
-			   ( concat 
+	   stat <- query conn
+			   ( concat
 				 [ "SELECT "
 				 , "vorlesung.Name As Vorlesung, "
-				 , "aufgabe.Name AS Aufgabe, " 
+				 , "aufgabe.Name AS Typ, "
+				 , "aufgabe.Subject AS Nr, "
 				 , "stud_aufg.Ok AS Ok, "
 				 , "stud_aufg.No AS No "
 				 , "FROM	student, aufgabe, stud_aufg , vorlesung "
 				 , "WHERE	stud_aufg.SNr = student.SNr "
 				 , "AND		stud_aufg.ANr = aufgabe.ANr "
 				 , "AND		vorlesung.VNr = aufgabe.VNr "
-				   -- wenn mat übergeben nur diese sonst alle 
-				 , if (length mat) > 0 
+				   -- wenn mat übergeben nur diese sonst alle
+				 , if (length mat) > 0
 				   then "AND student.MNr = \"" ++ (filterQuots mat)  ++ "\" "
 				   else ""
 				 , ";"
 				 ] )
 	   inh <- collectRows ( \ state -> do
 							v <- getFieldValue state "Vorlesung"
-							a <- getFieldValue state "Aufgabe"
+							t <- getFieldValue state "Typ"
+							s <- getFieldValue state "Nr"
 							o <- getFieldValue state "Ok"
 							n <- getFieldValue state "No"
-							return [ S v, S a , I o , I n  ]
+							return [ S v, S t, S s , I o , I n  ]
 						  ) stat
-	   disconnect conn 
+	   disconnect conn
 	   return ( showColTypes stat, inh )
 
 
@@ -67,35 +70,35 @@ insertNewStudentDB :: String -> String -> String -> String -> String -> IO ()
 insertNewStudentDB vnm nme mat eml ps1 =
 	do
 	conn <- connect "localhost" "autoan" "test" "test"
-	stat <- query conn 
-			( concat 
+	stat <- query conn
+			( concat
 			  [ "INSERT INTO student \n"
 			  , "(Vorname,Name,MNr,Email,Passwort) \n"
-			  , "VALUES ( " 
+			  , "VALUES ( "
 			  , "\"" , filterQuots vnm , "\" , "
 			  , "\"" , filterQuots nme , "\" , "
 			  , "\"" , filterQuots mat , "\" , "
 			  , "\"" , filterQuots eml , "\" , "
 			  , "\"" , quoteQuots ps1 , "\" )"
-			  , ";" 
+			  , ";"
 			  ] )
-	disconnect conn 
+	disconnect conn
 	return ()
-	
-	
+
+
 
 -- Passt mnr <-> passwort , passwort = Nothing -> ohne Kontrolle
 -- return Vornamen, Namen, Email, Status
 checkPasswdMNrDB :: Maybe String -> String -> IO [ ( String , String , String , String ) ]
 checkPasswdMNrDB maybePass mnr =
-	do 
+	do
 	   conn <- connect "localhost" "autoan" "test" "test"
-	   stat <- query conn 
-			   ( concat 
+	   stat <- query conn
+			   ( concat
 				 [ "SELECT student.MNr AS MNr, \n"
 				 , "student.Vorname AS Vorname, \n"
 				 , "student.Name AS Name, \n"
-				 , "student.Email AS Email, \n"  
+				 , "student.Email AS Email, \n"
 				 , "student.Status AS Status \n"
 				 , "FROM	autoan.student \n"
 				 , "WHERE	student.MNr = \"" ++ (filterQuots mnr)++ "\" "
@@ -111,16 +114,16 @@ checkPasswdMNrDB maybePass mnr =
 							d <- getFieldValue state "Status"
 							return (  a,  b , c , d )
 						  ) stat
-	   disconnect conn 
+	   disconnect conn
 	   return inh
 
 -- liefert IO Maybe SNr zurück, wenn (mnr,pass) in DB
 loginDB :: String -> String -> IO (Maybe String)
-loginDB mnr pass = 
+loginDB mnr pass =
 	do
 	   conn <- connect "localhost" "autoan" "test" "test"
-	   stat <- query conn 
-			   ( concat 
+	   stat <- query conn
+			   ( concat
 				 [ "SELECT "
 				 , "SNr \n"
 				 , "FROM	autoan.student \n"
@@ -132,7 +135,7 @@ loginDB mnr pass =
 							a <- getFieldValue state "SNr"
 							return (a :: String)
 						  ) stat
-	   disconnect conn 
+	   disconnect conn
 	   return $ if null inh then Nothing else Just $ inh !! 0
 
 
@@ -209,7 +212,7 @@ getVorlesungWithPointsDB :: String -> IO [ String ]
 getVorlesungWithPointsDB mnr = 
 	do 
 	   conn <- connect "localhost" "autoan" "test" "test"
-	   stat <- query conn 
+	   stat <- query conn
 			   ( concat 
 				 [ "SELECT	vorlesung.Name AS Vorlesung \n"
 				 , "FROM	autoan.vorlesung , autoan.stud_aufg , autoan.student , autoan.aufgabe\n"
@@ -339,44 +342,46 @@ removeStudVorlDB mat vorl =
 						  -- 	, ("gruppe.VNr","vorlesung.VNr")
 						  -- 	]
 						  -- 
-						  -- sqlselect s_as = "SELECT " ++ rowas' ++ " \n" 
+						  -- sqlselect s_as = "SELECT " ++ rowas' ++ " \n"
 						  -- 	where 
 						  -- 		rowas  = [  tbr ++ " AS " ++ tbn |  (tbr,tbn) <- s_as ]
 						  -- 		rowas' = foldr1 (kommas) rowas
 						  -- 
 						  -- sqlwhere weqs = "WHERE " ++ wheq' ++ " \n"
-						  -- 	where 
+						  -- 	where
 						  -- 		wheq	= [ l ++ " = " ++ r | (l,r) <- weqs ]
 						  -- 		wheq'	= foldr1 (andop) wheq
-						  -- 		andop   = \a b -> a ++ " AND " ++b 
-						  -- 
+						  -- 		andop   = \a b -> a ++ " AND " ++b
+						  --
 						  -- sqlfrom fs = "FROM " ++ f' ++ " \n"
-						  -- 	where 
+						  -- 	where
 						  -- 		dbnme		= fst fs
 						  -- 		f			= [ dbnme ++ "." ++ x | x <- snd fs ]
 						  -- 		f'			= foldr1 (kommas) f
-			  
+
 
 -- Übungsgruppen
--- liefert alle freien Gruppen einer (vl=) Vorlesung 
--- oder (vl="") aller Vorlesung
-getFreeGruppenDB = 
-	do 
+-- liefert alle freien Gruppen
+getFreeGruppenDB =
+	do
 	   conn <- connect "localhost" "autoan" "test" "test"
-	   stat <- query conn $ 
-			"SELECT \n" 
+	   stat <- query conn $
+			"SELECT \n"
 			++ "gruppe.GNr AS GNr, "
-			++ "vorlesung.Name AS Vorlesungen," 
-			++ "gruppe.Name AS Gruppen," 
-		    ++ "gruppe.Referent AS Referent, "
+			++ "vorlesung.Name AS Vorlesungen,"
+			++ "gruppe.Name AS Gruppen,"
+			++ "gruppe.Referent AS Referent, "
+			-- Maximum, Aktuelle Anzahl pro Gruppe
 			++ "gruppe.MaxStudents AS studentMax, "
 			++ "COUNT(SNr) AS studentCount" ++ " "
 			++ "\nFROM \n"
-			++ "autoan.gruppe LEFT JOIN autoan.stud_grp USING (GNr) ," 
-		    ++ "vorlesung" ++ " "
+			-- verbinde gruppe mit stud_grp über GNr
+			++ "autoan.gruppe LEFT JOIN autoan.stud_grp USING (GNr) ,"
+			++ "vorlesung" ++ " "
 			++ "\nWHERE \n" ++" gruppe.VNr = vorlesung.VNr "   ++" "
-			++ "\nGROUP BY \n" ++ "Gruppen "
-			++ "\nHAVING \n"	++ "studentCount" ++ " < " ++ " studentMax " ++ " " 
+			++ "\nGROUP BY \n" ++ "GNr "
+			-- nur nicht volle gruppen.
+			++ "\nHAVING \n"   ++ "studentCount" ++ " < " ++ " studentMax " ++ " "
 			++ "\nORDER BY \n" ++ "Vorlesungen, Gruppen " ++ ";"
 	   inh <- collectRows ( \ state -> do
 							k <- getFieldValue state "GNr"
@@ -386,50 +391,50 @@ getFreeGruppenDB =
 							m <- getFieldValue state "studentMax"
 							c <- getFieldValue state "studentCount"
 							return ( k :: Int ,
-									 [ v :: String 
-									 , g :: String                                           
-									 , r :: String 
-									 , m :: String 
+									 [ v :: String
+									 , g :: String
+									 , r :: String
+									 , m :: String
 									 , c :: String ]
 								   )
 						  ) stat
-	   disconnect conn 
+	   disconnect conn
 	   return ( showColTypes stat, inh )
 
 getAllGruppenDB = do
 	conn <- connect "localhost" "autoan" "test" "test"
-	stat <- query conn $ 
-			"SELECT \n" 
+	stat <- query conn $
+			"SELECT \n"
 			++ "gruppe.GNr AS GNr, "
-			++ "vorlesung.Name AS Vorlesungen," 
-			++ "gruppe.Name AS Gruppen," 
-		    ++ "gruppe.Referent AS Referent "
+			++ "vorlesung.Name AS Vorlesungen,"
+			++ "gruppe.Name AS Gruppen,"
+			++ "gruppe.Referent AS Referent "
 			++ "\nFROM vorlesung , gruppe "
-		    ++ "\nWHERE vorlesung.VNr = gruppe.VNr " 
-		    ++ "\nORDER BY Vorlesungen,Gruppen,Referent " ++ "\n"
+			++ "\nWHERE vorlesung.VNr = gruppe.VNr "
+			++ "\nORDER BY Vorlesungen,Gruppen,Referent " ++ "\n"
 	inh <- collectRows ( \ state -> do
 							k <- getFieldValue state "GNr"
 							v <- getFieldValue state "Vorlesungen"
 							g <- getFieldValue state "Gruppen"
 							r <- getFieldValue state "Referent"
 							return ( k :: Int ,
-									 [ v :: String 
-									 , g :: String                                           
-									 , r :: String 
+									 [ v :: String
+									 , g :: String
+									 , r :: String
 									 ]
 								   )
 						  ) stat
-	disconnect conn 
+	disconnect conn
 	return ( showColTypes stat, inh )
 
 getGruppenStudDB mat =
-	do 
+	do
 	conn <- connect "localhost" "autoan" "test" "test"
 	stat <- query conn
-			( "SELECT stud_grp.GNr as GNr" ++ " \n" 
-		   ++ "FROM stud_grp, student" ++ " \n" 
+			( "SELECT stud_grp.GNr as GNr" ++ " \n"
+		   ++ "FROM stud_grp, student" ++ " \n"
 		   ++ "WHERE stud_grp.SNr = student.SNr" ++ " \n"
-		   ++ "AND student.MNr = " ++"\"" ++ filterQuots mat ++ "\"" 
+		   ++ "AND student.MNr = " ++"\"" ++ filterQuots mat ++ "\""
 		   ++ ";" )
 	inh  <- collectRows ( \ state -> do
 						  g <- getFieldValue state "GNr"
@@ -464,7 +469,7 @@ changeStudGrpDB mat grp =
 		 }
 
 -- ================================================================================
--- fürs AUTOTOOL 
+-- fürs AUTOTOOL
 
 -- erhöht von Student, für Aufgabe (Ok,Size) / No 
 bepunkteStudentDB :: String -> String -> ATBewertung -> ATHighLow -> IO ()
@@ -485,16 +490,16 @@ bepunkteStudentDB snr anr bewert highlow = do
 	  then  -- insert 
 	    query conn 
 			  ( concat 
-				[ "INSERT INTO stud_aufg (SNr,ANr,Ok,No,Size) VALUES \n" 
+				[ "INSERT INTO stud_aufg (SNr,ANr,Ok,No,Size,Scoretime) VALUES \n" 
 				, "( \"" ++ filterQuots snr ++ "\" "
 				, ", \"" ++ filterQuots anr ++ "\""
 				, "," 
 				, case bewert of 
-				  No	-> "0,1,0" 
+				  No	-> "0,1,0,\"0000-00-00 00:00:00\"" 
 				  Ok s	-> "1,0," ++ 
 					( case highlow of 
-					  Keine	-> "0"
-					  _		-> show s
+					  Keine	-> "0,\"0000-00-00 00:00:00\""
+					  _	-> show s ++ ", NOW()"
 					)
 				, " )"
 				, ";"
@@ -506,12 +511,20 @@ bepunkteStudentDB snr anr bewert highlow = do
 			   [ "UPDATE stud_aufg \n"
 			   , "SET \n"
 			   , case bewert of 
-				 No		-> "No = No + 1 "
+				 No	-> "No = No + 1 "
 				 Ok s	-> "Ok = Ok + 1 " ++
 					(	case highlow of 
 						Keine	-> " " 
-						High	-> ", Size = GREATEST( Size," ++ show s ++ ")"
-						Low		-> ", Size = LEAST( Size," ++ show s ++ ")" 
+						High	-> " " 
+							++ ", Scoretime = IF( Size < " ++ show s 
+							++ " ,Now(), Scoretime)"
+							++ ", Size = GREATEST( Size," ++ show s ++ ")" 
+
+						Low	-> " "
+							++ ", Scoretime = IF( Size > " ++ show s
+							++ " ,Now(),Scoretime)"
+							++ ", Size = LEAST( Size," ++ show s ++ ")" 
+
 					)
 			   , " \n"
 			   , "WHERE SNr = \"" ++ filterQuots snr ++ "\" "
@@ -521,21 +534,22 @@ bepunkteStudentDB snr anr bewert highlow = do
    disconnect conn 
    return ()
 
-	
 
--- liefert (jetzt!)  mgl. Aufgaben für Student 
+
+-- liefert (jetzt!)  mgl. Aufgaben für Student
 -- [ ( ANr, Name , Subject , Path , Highscore ) ]
 mglAufgabenDB :: String -> IO [(String, String, String, String,String)]
 mglAufgabenDB snr = do
 	conn <- connect "localhost" "autoan" "test" "test"
-	stat <- query conn 
-			( concat 
+	stat <- query conn
+			( concat
 			  [ "SELECT aufgabe.ANr, aufgabe.Name , aufgabe.Subject , aufgabe.Path , aufgabe.Highscore \n"
 			  , "FROM	aufgabe, gruppe , stud_grp \n"
 			  , "WHERE \n"
 			  , "gruppe.VNr = aufgabe.VNr \n"
 			  , "AND gruppe.GNr = stud_grp.GNr \n"
 			  , "AND stud_grp.SNr = \"" ++ filterQuots snr ++ "\" \n"
+			  -- im Zeitfenster?
 			  , "AND NOW() BETWEEN Von AND Bis "
 			  , ";"
 			  ] )
@@ -547,18 +561,56 @@ mglAufgabenDB snr = do
 						 e <- getFieldValue state "Highscore"
 						 return (  a ,  b , c , d , e )
 					   ) stat
-	disconnect conn 
+	disconnect conn
 	return inh
 
-		
+-- liefert (nun und demnaechst mgl). Aufgaben für Student/alle Student (snr=[])
+-- ( [header ... ] , [ ( ANr, Name , Subject , Path , Highscore , Von , Bis ) ] )
+mglNextAufgabenDB :: String -> IO ( [String],[[String]])
+mglNextAufgabenDB snr = do
+	conn <- connect "localhost" "autoan" "test" "test"
+	stat <- query conn
+			( concat
+			  [ "SELECT aufgabe.ANr, aufgabe.Name AS Typ, aufgabe.Subject AS Nr, aufgabe.Highscore \n"
+			  , ", aufgabe.Von, aufgabe.Bis \n"
+			  , "FROM aufgabe "
+			  , if null snr 
+			    then " \n" 
+			    else ", gruppe, stud_grp \n"
+			  , "WHERE \n"
+			  , if null snr 
+			    then 
+			    " "
+			    else
+			    "gruppe.VNr = aufgabe.VNr \n" ++
+			    "AND gruppe.GNr = stud_grp.GNr \n" ++
+			    "AND stud_grp.SNr = \"" ++ filterQuots snr ++ "\" \n" ++
+			    "AND \n" 
+			  -- noch offene Aufg.
+			  , "NOW() < Bis "
+			  , ";"
+			  ] )
+	inh <- collectRows ( \ state -> do
+			     a <- getFieldValue state "ANr"
+			     b <- getFieldValue state "Typ"
+			     c <- getFieldValue state "Nr"
+			     h <- getFieldValue state "Highscore"
+			     vo <- getFieldValue state "Von"
+			     bi <- getFieldValue state "Bis"
+			     return [  a, b , c , h ,vo , bi ]
+			   ) stat
+	disconnect conn
+	return ( showColTypes stat, inh )
+
+
 -- ================================================================================
 checkAdminNamePasswortDB :: String -> String -> IO Bool
 -- ADMIN
-checkAdminNamePasswortDB nme pas = do 
+checkAdminNamePasswortDB nme pas = do
 	   conn <- connect "localhost" "autoan" "test" "test"
-	   stat <- query conn 
-			   ( concat 
-				 [ "SELECT \n"  
+	   stat <- query conn
+			   ( concat
+				 [ "SELECT \n"
 				 , "admin.Name AS Name \n"
 				 , "FROM	autoan.admin \n"
 				 , "WHERE	\n"
@@ -574,7 +626,7 @@ checkAdminNamePasswortDB nme pas = do
 	   let loginok = length inh > 0
 	   return loginok
 --checkAdminNamePasswortDB :: String -> String -> IO Bool
-failDB nme pas = do 
+failDB nme pas = do
 	   conn <- connect "localhost" "autoan" "test" "test"
 	   stat <- query conn 
 			   ( concat 
@@ -600,7 +652,7 @@ findStudDB vnm nme mat eml vrl= do
 	   let 
 			-- TODO optinale Teilwort suche (%part%)
 			-- TODO or Verknüpfung
-			ifexist x sqlnme = 
+			ifexist x sqlnme =
 				if length x > 0 
 				then "AND "++ sqlnme ++ " LIKE \"%" ++ (quoteQuots x)++ "%\" "
 				else ""
