@@ -8,10 +8,18 @@ import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
 
--- | Klasse: Partial
-class ( ToDoc p, ToDoc i, Reader b, ToDoc b , Size b )
-    => Partial p i b | p i -> b , p b -> i where
+class Measure p i b where
+      measure :: p -> i -> b -> Integer
 
+-- | die Messung der Größe ist von der Prüfung der Lösung getrennt.
+-- das ist schlecht, falls dadurch aufwendige Rechnungen
+-- wiederholt werden müssen (siehe z. B. Graph.Cross)
+instance Size b => Measure p i b where
+      measure _ _ b = fromIntegral $ size b
+      
+-- | Klasse: Partial
+class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
+    => Partial p i b | p i -> b , p b -> i where
       -- | Beschreibung der Aufgabe herstellen
       --
       -- TODO: es sollte (auch oder nur) eine Beschreibung geben,
@@ -43,9 +51,3 @@ class ( ToDoc p, ToDoc i, Reader b, ToDoc b , Size b )
       -- | alles richtig?
       -- vorher wird immer erst partial angewendet
       total   :: p -> i -> b -> Reporter ()
-
-      -- | bewertung der lösung
-      measure :: p -> i -> b -> Int
-      -- | default:
-      measure p i b = size b
-      

@@ -8,12 +8,11 @@ import qualified System.Posix
 
 import System.Time
 import qualified Inter.Param as P
-import qualified  Autolib.Reporter.Result
 
 import qualified Inter.Store
 import Util.Datei
 
-bank :: P.Type -> Maybe Int -> IO String
+bank :: P.Type -> Maybe Integer -> IO String
 bank p res = do
     let it = case res of Just s -> Ok s ; Nothing -> No
     bepunkteStudentDB (P.ident p) (P.anr p) it (P.highscore p)
@@ -39,10 +38,14 @@ logline time pid p res = unwords [ time
 		      , "cgi-" ++ P.smatrikel p
 		     , "(", P.smatrikel p, ")"
 		      , P.subject p , ":"
-		     , Autolib.Reporter.Result.result_string res
+		     , result_string res
 		     , "\n"
 		     ]
 
+result_string :: Maybe Integer -> String
+result_string mres = case mres of
+    Nothing -> "NO"
+    Just i  -> "OK # Size: " ++ show i
 
 datum :: IO [ String ]
 datum = do

@@ -11,11 +11,11 @@ import Inter.Logged
 
 import Data.Maybe
 
-store ::  P.Type -> Maybe Int -> IO String
--- von falschen einsendungen: speichert in "latest.input"
+-- | von falschen einsendungen: speichert in "latest.input"
 -- d. h. überschreibt immer
 -- von richtigen einsendungen: speicher in "$pid.input"
 -- d. h. eigentlich kein überschreiben
+store ::  P.Type -> Maybe Integer -> IO String
 store p mres = logged "Inter.store" $ do
     let flag = isJust mres
     pid <- if flag then fmap show $ System.Posix.getProcessID 

@@ -11,16 +11,14 @@ import qualified Inter.Param as P
 import qualified  Challenger 
 
 import Autolib.Reporter.Type
-import Autolib.Size
 import Autolib.Reader
 import Autolib.ToDoc
 
 evaluate :: ( Reader b
-	    , Size b
 	    , ToDoc b
 	    , Challenger.Partial p i b
 	    )
- 	    => p -> i -> String -> Reporter Int
+ 	    => p -> i -> String -> Reporter Integer
 evaluate p i cs =
     case parse (parse_complete reader) "input" cs of
          Left e -> do
