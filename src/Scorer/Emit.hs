@@ -61,12 +61,6 @@ single arg @( auf, es ) = do
 	       ]
 	strich = replicate (length header) '-'
 
-    print header
-    hFlush stdout
-
-    print strich
-    hFlush stdout
-
     putStrLn $ unlines 
 	     $ [ header
 	       , strich
