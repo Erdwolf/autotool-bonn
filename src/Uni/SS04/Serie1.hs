@@ -135,6 +135,3 @@ generate =
     , do i <- tmstep2  ; return $ T.Variant i
     , do i <- tmstep3  ; return $ T.Variant i
     ]
-
-
-
