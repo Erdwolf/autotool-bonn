@@ -943,3 +943,61 @@ getAllSerienPunkteDB =
                      , "ORDER BY s.Name, s.Vorname, Serie ;"
                      ]
 
+
+
+-- Erweiterungen für den ScorerDB
+getHighscoreCandidatesDB =
+	do
+	{ let { sqlstr = foldr1 (\x y -> x ++ " " ++ y) 
+			  [ "SELECT student.MNr "
+			  ,	", CONCAT(aufgabe.Name, aufgabe.Subject ) as aufg"
+			  , ", size "
+			  , ", Scoretime "	
+			  , "FROM 	stud_aufg, aufgabe, student "
+			  , "WHERE 	stud_aufg.ANr = aufgabe.ANr "
+			  , "AND    student.SNr = stud_aufg.SNr "
+			  ,	"AND 	size >= 0 "
+			  ,	"AND 	MNr > 1024 "
+			  , "ORDER BY aufg, size, Scoretime "
+			  ,	";" 
+			  ]  
+			; sqlstr' = "SELECT * from student;"
+		}
+    ; conn <- myconnect
+    ; stat <- query conn $ sqlstr
+	;  inh  <- collectRows (\ state ->
+                         do
+                                a <- getFieldValue state "aufg"
+                                b <- getFieldValue state "MNr"
+                                c <- getFieldValue state "size"
+                                d <- getFieldValue state "Scoretime"
+
+                                return ( a :: String , b :: String , c :: String , d :: String )
+                        ) stat
+	; return inh
+	}
+
+getHighscoreAufgabeTypesDB =
+	do
+	{ let { sqlstr = foldr1 (\x y -> x ++ " " ++ y) 
+			  [ "SELECT "
+			  ,	" CONCAT(aufgabe.Name, aufgabe.Subject ) as aufg"
+			  , ", Highscore "
+			  , "FROM 	aufgabe "
+			  , "ORDER BY aufg"
+			  ,	";" 
+			  ]  
+		}
+    ; conn <- myconnect
+    ; stat <- query conn $ sqlstr
+	;  inh  <- collectRows (\ state ->
+                         do
+                                a <- getFieldValue state "aufg"
+                                b <- getFieldValue state "Highscore"
+
+                                return ( a :: String , b :: String  )
+                        ) stat
+	; return inh
+	}
+
+

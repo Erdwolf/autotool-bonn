@@ -10,9 +10,9 @@ OPT=
 HCFLAGS=	$(OPT) $(HC_SPEC_FLAGS) $(HINCLUDES)
 
 HMAKE=		ghc --make 	$(HMAKEFLAGS)
-HINCLUDES=	-i..:../wash -package-conf "../autotool.pkg" \
-	-package lang -package posix
-# HINCLUDES=	-i../wash -package"HToolkit" -package"lang"
+#HINCLUDES=	-i..:../wash -package-conf "../autotool.pkg" \
+#	-package lang -package posix
+HINCLUDES=	-i../wash -package"HToolkit" -package"lang"
 HMAKEFLAGS=	$(HCFLAGS) $(HINCLUDES)
 HAPPY=		happy
 HAPPYFLAGS=	-i

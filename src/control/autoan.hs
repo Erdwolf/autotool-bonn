@@ -267,7 +267,7 @@ studStatusPage mat F0 =
 				tableRow2 (text "Name") 			( text ( vorname ++ ", " ++ name ++ " " ) )
 				tableRow2 (text "Matrikelnr.") 		( text mat )
 				tableRow2 (text "Email-Adresse")	( text email )
-				tableRow2 (text "Anmeldestatus") 	( text status )
+-- keine Email ueberpruefung zZ:				tableRow2 (text "Anmeldestatus") 	( text status )
  				tableRow2 (text "Vorlesung/Gruppe") $ text $ if null grp then "keine" else show grp
 			gesamtergTable gesamtres
 				-- (c)
@@ -453,9 +453,9 @@ changeEmailPage mat email F0 =
 		table $ do 
 			attr "width" "600"
 			hrrow
-			ttxt $ "Mit einer Änderung muss Ihre Email-Adresse erneut überprüft werden. " ++
-					 "Sie können bis zur vollständigen Prüfung keine Emails an das Autotool senden."
-			msgKontrollEmail
+--			ttxt $ "Mit einer Änderung muss Ihre Email-Adresse erneut überprüft werden. " ++
+--					 "Sie können bis zur vollständigen Prüfung keine Emails an das Autotool senden."
+--			msgKontrollEmail
 			emailF <- promptedInput "Neue Email-Adresse" (fieldVALUE email)
 			hrrow
 			smallSubButton (F1 emailF) (changedEmailPage mat email) "Ändern"  
