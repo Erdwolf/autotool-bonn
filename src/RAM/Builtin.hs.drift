@@ -17,7 +17,7 @@ import Set
 data Builtin = Copy 
 	     | Plus  | Minus
 	     | Times | Div | Mod
-	     | Suc   | Dec
+	     | Suc   | Pre
      deriving ( Eq, Ord, Enum, Ix )
 
 {-! for Builtin derive: Reader, ToDoc !-}
@@ -40,7 +40,7 @@ type Entry =  ( Int -- arity
 type Table = Array Builtin Entry
 
 table :: Table
-table = array ( Copy, Dec )
+table = array ( Copy, Pre )
 	      [ ( Copy , ( 1, \ [x   ] -> x ) )
 	      , ( Plus , ( 2, \ [x, y] -> x + y ) )
 	      , ( Minus, ( 2, \ [x, y] -> max 0 $ x - y ) )
@@ -48,7 +48,7 @@ table = array ( Copy, Dec )
 	      , ( Div  , ( 2, \ [x, y] -> if y == 0 then 0 else x `div` y ) )
 	      , ( Mod  , ( 2, \ [x, y] -> if y == 0 then 0 else x `mod` y ) )
 	      , ( Suc , ( 1, \ [x   ] -> succ x ) )
-	      , ( Dec , ( 1, \ [x   ] -> max 0 $ pred x ) )
+	      , ( Pre , ( 1, \ [x   ] -> max 0 $ pred x ) )
 	      ]
 
 
