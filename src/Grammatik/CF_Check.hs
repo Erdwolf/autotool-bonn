@@ -58,7 +58,9 @@ cf_check l typ w n ds t mat ( g, ts ) = do
 
     seed $ read mat
 
-    let klein = take 128 $ do n <- [0 .. ] ; alle ( setToList $ alphabet l ) n
+    -- die kleinen sollten ja auch schnell zu testen sein
+    let klein = take 100 $ do n <- [0 .. ] ; alle ( setToList $ alphabet l ) n
+
     here   <- samples      l w n
     there  <- anti_samples l w n
     let (yeah, noh) = partition (contains l) $ nub $ klein ++ here ++ there
@@ -82,6 +84,9 @@ cf_yeah_noh :: Language
 cf_yeah_noh lang yeah0 noh0 typ demos t gts @ ( g, ts ) = do
     let doc = text $ abbreviation lang
     inform $ text "Gesucht sind Grammatik und Beispiel-Ableitungen für" <+> doc
+    newline
+    inform $ text "Ihre Grammatik ist"
+    inform $ toDoc g
     newline
 
     typ2 g
