@@ -1,0 +1,15 @@
+multiple-choice-aufgaben (urgh)
+
+generator: bekommt $prefix und liste von objekten,
+die instanzen von ToDot und Informed sind,
+erzeugt die png-files unter $HOME/public_html/$prefix/
+und index-file unter $HOME/data/$prefix/index.text
+
+index-file besteht aus zeilen, jede zeile hat format "foo.png bar",
+wobei: erstes wort = filename (ohne dir, mit extensions)
+rest (bis zeilen-ende): beschreibung
+
+chooser.cgi: bekommt $prefix und zahlen  obs, names, tries;
+erzeugt cgi-skript, das $obs objekte aus dem indexfile auswählt und anzeigt,
+dafür $names namen vorschlägt, und $tries mal versuche annimmt.
+
