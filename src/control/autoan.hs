@@ -305,8 +305,8 @@ studStatusPage mat F0 =
 			   readsnd :: (String,String) -> Int = read . snd
 
 -- -----------------
--- TODO: alt nicht mehr benutzt
--- Vorlesung hinzufügen 
+--  TODO: alt nicht mehr benutzt
+--  Vorlesung hinzufügen 
 addVorlesungPage mat vorl F0 = do
 	vls <- io getAllVorlesungenDB
 	standardQuery "Vorlesung hinzufügen" $ 
