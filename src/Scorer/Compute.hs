@@ -30,6 +30,7 @@ compute ( vl, aufs ) = do
     -- pforsicht: hier sind auch die admins (< 1024) drin
     -- damit wir "best known" anzeigen können
     -- vor der bepunktung müssen die aber raus
+
     emit vl total
 
 update :: ScoreDefFM -> DataFM -> Einsendung -> DataFM

@@ -15,6 +15,8 @@ main = do
 
     vls <- Scorer.Aufgabe.get
 
+    -- print vls -- funktioniert, head [] kommt später
+
     mapM_ compute $ fmToList vls
 
 

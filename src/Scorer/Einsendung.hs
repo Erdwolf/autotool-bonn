@@ -18,11 +18,11 @@ import Scorer.Util
 import Data.FiniteMap
 import Control.Monad ( guard )
 
--- das ist die information zu jeweils einer studentischen einsendung
+-- | das ist die information zu jeweils einer studentischen einsendung
 data Einsendung = Einsendung
           { size     :: Int
 	  , date     :: [Int]
-	  , time     :: String -- original time entry
+	  , time     :: String -- ^ original time entry
 	  , matrikel :: Int
 	  , auf	     :: String
 	  , pid	     :: String
@@ -46,9 +46,8 @@ spaci n = stretch n . show
 nulli :: Show a => Int -> a -> String
 nulli n = stretchWith '0' n . show
 
-
+-- | alle lesbaren Zeilen
 slurp :: String -> [ Einsendung ]
--- alle lesbaren Zeilen
 slurp cs = do
     z <- lines cs
     ( e, _ ) <- readsPrec 0 z
@@ -86,13 +85,12 @@ instance Read Einsendung where
 	return ( e, rest )
 
 -------------------------------------------------------------------------------
--- komisch, aber ich habs nirgendwo gefunden
-
+-- | komisch, aber ich habs nirgendwo gefunden
 monthFM :: FiniteMap String Int 
 monthFM    = listToFM [ ("Jan", 1),("Feb", 2),("Mar", 3),("Apr", 4)
 		      , ("May", 5),("Jun", 6),("Jul", 7),("Aug", 8)
 		      , ("Sep", 9),("Oct",10),("Nov",11),("Dec",12)
                       ]
 
--- Umwandlung Monat-Kürzel -> Zahl, bei Fehler kommt 13 zurück
+-- | Umwandlung Monat-Kürzel -> Zahl, bei Fehler kommt 13 zurück
 monthNum m = lookupWithDefaultFM monthFM 13 m

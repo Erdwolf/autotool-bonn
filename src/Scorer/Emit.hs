@@ -10,6 +10,7 @@ import Data.FiniteMap
 import Data.Set
 import Util.Sort
 import Control.Monad ( guard )
+import System.IO ( hFlush, stdout )
 
 import qualified SQLqueries
 
@@ -29,9 +30,11 @@ emit vl fm0 = do
 	     [ "", ""
 	     ,  unwords [ "Auswertung für Lehrveranstaltung", vl, ":" ] 
 	     ]
+
     mapM_ single $ fmToList fm
     totalize fm
     inform
+
 
 inform :: IO ()
 inform = do
@@ -50,15 +53,20 @@ realize es = take scoreItems -- genau 10 stück
     
 -- | druckt Auswertung einer Aufgabe
 single :: ( String, [ Einsendung ] ) -> IO ()
-single ( auf, es ) = do
-    let best = head es
-	header = unwords 
+single arg @( auf, es ) = do
+    let header = unwords 
 	       [ "Aufgabe" , auf
-	       , if null es 
-		 then ""
-		 else "( beste bekannte Lösung", show (size best), ")"  
+	       , unwords $ if null es then [] else
+	         [ "( beste bekannte Lösung", show (size $ head es), ")" ]
 	       ]
 	strich = replicate (length header) '-'
+
+    print header
+    hFlush stdout
+
+    print strich
+    hFlush stdout
+
     putStrLn $ unlines 
 	     $ [ header
 	       , strich
