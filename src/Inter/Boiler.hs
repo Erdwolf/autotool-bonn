@@ -20,8 +20,8 @@ import qualified JVM.TIMES
 -- import qualified FUN.FIB
 -- import qualified FUN.QUIZ
 
-import qualified PCP.QUIZ
-import qualified SAT.QUIZ
+-- import qualified PCP.QUIZ
+-- import qualified SAT.QUIZ
 
 -- ws03/compilerbau:
 
@@ -37,6 +37,8 @@ import qualified JVM.NUMAT
 
 -- ws03/informatik:
 import qualified Sortier.Netz.Check
+import qualified PCP.Quiz
+import qualified Hanoi
 
 -- vorführen:
 
@@ -65,27 +67,13 @@ boiler = sequence $
 
 --       , fmap Variant $ JVM.FIB.generate
 
-       , fmap Variant $ PCP.QUIZ.generate
-       , fmap Variant $ SAT.QUIZ.generate
-
---       , fmap Variant $ TM.FACTOR.generate
-
---        , fmap Variant $ LOOP.SQRT.generate
---        , fmap Variant $ LOOP.TIMES.generate
---        , fmap Variant $ LOOP.PRIM.generate
---        , fmap Variant $ LOOP.FIB.generate
-
---        , fmap Variant $ FUN.SQRT.generate
---        , fmap Variant $ FUN.TIMES.generate
---        -- , fmap Variant $ FUN.PRIM.generate
---        , fmap Variant $ FUN.FIB.generate
---        , fmap Variant $ FUN.QUIZ.generate
-
        , Serie2.generate
 
        ]
 	   ++ Serie2.generates
 --       ++ Serie1.generates 
        ++ Sortier.Netz.Check.generates 
+       ++ PCP.Quiz.generates
+       ++ Hanoi.generates
        ++ Demo.L.generates
 
