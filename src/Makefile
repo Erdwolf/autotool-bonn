@@ -35,6 +35,10 @@ all : drift face
 control : 
 	( cd control && make autoan.cgi )
 
+score :
+	$(GHC_COMMAND) $(EXTRA_PACKS)  \
+		Scorer/Main.hs -o Scorer/ScorerDB
+
 # $(DIRS):
 # 	$(MAKE) -C $@
 
