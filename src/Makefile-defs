@@ -1,0 +1,89 @@
+########################################################################
+# ugly ugly ugly : system-spezifische teile des makefiles
+########################################################################
+
+#defaults
+GHC = ghc
+
+# is absolute --> allow overide
+ifndef EXTRA_PACKS
+EXTRA_PACKS = -package-conf "autotool.pkg"
+endif
+DEFINES = -DHOME=1
+
+ifeq ($(shell hostname), nfa)
+EXTRA_PACKS = -package hsql
+DEFINES = -DSPACE=1
+GHC = ghc-6.0
+endif
+
+ifeq ($(shell hostname), dfa)
+EXTRA_PACKS = -package hsql
+DEFINES = -DSPACE=1
+GHC = ghc6 # which is 6.0.1, actually
+endif
+
+ifeq ($(shell hostname), aaron)
+EXTRA_PACKS = -package hsql
+DEFINES = -DSPACE=1
+GHC = ghc-6.0
+endif
+
+ifeq ($(shell hostname), theo1)
+EXTRA_PACKS = -package HToolkit
+DEFINES = -DHOME=1
+GHC = ghc-6.0
+endif
+
+########################################################################
+# ghc / ghci : setup
+########################################################################
+
+ifndef DIRS
+DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau:ws03/aus
+endif
+
+FLAGS = -fallow-overlapping-instances \
+	-fglasgow-exts \
+	-fallow-undecidable-instances 
+
+PACKS = -package text -package data \
+	-package posix -package network 
+
+OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
+
+# PROF = -prof -auto-all -auto-dicts
+
+WARN =  -Werror -dcore-lint
+
+GHC_COMMAND = $(GHC) --make \
+	$(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) $(DEFINES) -i$(DIRS)
+
+GHCI_COMMAND = 	$(GHC) --interactive \
+	$(WARN) $(PACKS) $(FLAGS) $(DEFINES) -i$(DIRS)
+
+all:
+
+#########################################################################
+# Implicit rules
+#########################################################################
+
+# build haskell-cgis, we need hsql stuff too 
+%.cgi : %.hs
+	$(GHC_COMMAND)  $(EXTRA_PACKS)  $*.hs -o $@
+
+
+
+
+#########################################################################
+# cvs shorthands
+#########################################################################
+
+cvs-update:
+	cvs update -d 2>&1 | tee cvs.log
+
+cvs-update-log: 
+	cat cvs.log | grep -E '^[A-Z] '
+
+cvs-status:
+	cvs status 2>&1 | grep "File:" | grep -v "Up-to-date"

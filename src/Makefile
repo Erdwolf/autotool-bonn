@@ -1,56 +1,6 @@
 # $Id$
 
-DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau:ws03/aus
-
-FLAGS = -fallow-overlapping-instances \
-	-fglasgow-exts \
-	-fallow-undecidable-instances 
-
-PACKS = -package text -package data \
-	-package posix -package network 
-
-OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
-# PROF = -prof -auto-all -auto-dicts
-WARN =  -Werror -dcore-lint
-
-########################################################################
-# ugly ugly ugly : system-spezifische teile des makefiles
-########################################################################
-
-ifeq ($(shell hostname), nfa)
-EXTRA_PACKS = -package hsql
-DEFINES = -DSPACE=1
-GHC = ghc-6.0
-endif
-
-ifeq ($(shell hostname), dfa)
-EXTRA_PACKS = -package hsql
-DEFINES = -DSPACE=1
-GHC = ghc6 # which is 6.0.1, actually
-endif
-
-ifeq ($(shell hostname), aaron)
-EXTRA_PACKS = -package hsql
-DEFINES = -DSPACE=1
-GHC = ghc-6.0
-endif
-
-ifeq ($(shell hostname), theo1)
-EXTRA_PACKS = -package HToolkit
-DEFINES = -DHOME=1
-GHC = ghc-6.0
-endif
-
-########################################################################
-
-
-GHC_COMMAND = $(GHC) --make \
-	$(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) $(DEFINES) -i$(DIRS)
-
-
-
-PUB =  $(HOME)/public_html
-
+include Makefile-defs
 
 # for deleting/srs: ##################################################
 
@@ -64,6 +14,7 @@ CGIDIR = /var/www/matchbox
 
 # for face: ########################################################
 
+PUB =  $(HOME)/public_html
 CGIBIN = $(PUB)/cgi-bin
 
 
@@ -79,7 +30,10 @@ DP = /usr/local/lib/hugs:$(HOME)/autotool/util
 
 # all: $(DIRS)
 
-all : 
+all : drift face
+
+control : 
+	(cd control && make autoan.cgi )
 
 
 # $(DIRS):
@@ -102,10 +56,9 @@ matchbox : do
 	cp $(HTMLS) $(CGIDIR)/
 
 
-%.cgi : do
-	$(GHC_COMMAND)  $(EXTRA_PACKS)  $*.hs -o $@
-
-
+###############################################################################
+# drift
+###############################################################################
 
 %.hs : %.hs.drift
 	DERIVEPATH=$(DP)  $(DrIFT) $< > $@
@@ -118,14 +71,27 @@ drift-clean :
 drift-commit : drift-clean drift
 	cvs commit -m drift-commit $(DRIFT)
 
-INTER_FACE=Inter/Face.cgi
-INTER_FACE_TARGETDIR=root@theo1:/usr/lib/cgi-bin/Face.cgi
-face : $(INTER_FACE) 
+###############################################################################
+# cgi Inter/Face
+###############################################################################
+
+INTER_FACE_DIR=Inter
+INTER_FACE=Face.hs
+INTER_FACE_WITH_PATH=$(INTER_FACE_DIR)/$(INTER_FACE)
+INTER_FACE_CGI=$(INTER_FACE_DIR)/$(subst .hs,.cgi,$(INTER_FACE))
+INTER_FACE_TARGET=root@theo1:/usr/lib/cgi-bin/Face.cgi
+
+face : $(INTER_FACE_CGI) 
 	cp $< $(CGIBIN)/
 
 
-install-face : $(INTER_FACE)
-	scp $< $(INTER_FACE_TARGETDIR)
+install-face : $(INTER_FACE_CGI)
+	scp $< $(INTER_FACE_TARGET)
+
+
+ghci-face:
+	$(GHCI_COMMAND)  $(EXTRA_PACKS)  $(INTER_FACE_WITH_PATH)
+
 
 .PHONY : do
 
@@ -138,6 +104,7 @@ forall = $(foreach DIR,$(DIRS),$(MAKE) -C $(DIR) $(1);)
 objclean:
 	rm -f `find . -name '*.o'`
 	rm -f `find . -name '*.hi'`
+	rm -f `find . -name '*.cgi'`
 #	$(call forall,$@)
 
 clean: objclean
@@ -146,11 +113,4 @@ clean: objclean
 
 
 
-cvs-update:
-	cvs update -d 2>&1 | tee cvs.log
 
-cvs-update-log: 
-	cat cvs.log | grep -E '^[A-Z] '
-
-cvs-status:
-	cvs status 2>&1 | grep "File:" | grep -v "Up-to-date"
