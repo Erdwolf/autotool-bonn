@@ -1,6 +1,7 @@
 -- autor m.lindemeyer
--- stinfwww.infomatik.uni-leipzig.de/~psy99hvr
+-- stinfwww.informatik.uni-leipzig.de/~psy99hvr
 -- (8484955)
+
 
 module Col.Col 
 	( Col, Klassen 
@@ -16,16 +17,28 @@ import Graph.Type
 import Graph.Util
 import Graph.Viz
 import Challenger
+
 import ToDoc
 import Set
+import FiniteMap
 import Sort
 import Monad ( guard ) -- old style
 
 data Col = Col deriving Show
-data Klassen a = Klassen [[a]] deriving (Read,Show)
 
+-- Färbung als Klassen-Einteilung der Knoten
+data Klassen a = Klassen [[a]] deriving (Read,Show)
 instance (ToDoc [a])=> ToDoc (Klassen a) where
 	toDoc (Klassen erg) = text "Loesung: " <+> toDoc erg
+
+
+instance (ToDoc ((Graph a, Integer)), Show ((Graph a, Integer)), Read ((Graph a, Integer))
+	, ToDoc (Faerbung a),Show (Faerbung a), Read (Faerbung a), Ord a, ToDoc a
+	, Show a, ShowText a)
+	=> Problem DreiCol (Graph a) (Färbung a) where
+
+
+
 
 
 instance
