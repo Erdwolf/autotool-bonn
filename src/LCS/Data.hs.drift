@@ -1,0 +1,22 @@
+--  -*- mode: haskell -*-
+module LCS.Data where
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+
+class    ( Eq a, Reader a, ToDoc [a], ToDoc a, Reader [a] ) => InstanceC a 
+instance ( Eq a, Reader a, ToDoc [a], ToDoc a, Reader [a] ) => InstanceC a 
+
+data InstanceC a => Instance a = 
+     Instance { left :: [a]
+	      , right :: [a]
+	      , sharp :: Bool
+	      }
+     deriving ( Typeable )
+
+{-! for Instance derive : Reader, ToDoc !-}
+
+instance InstanceC a => Show (Instance a) where show = render . toDoc
+instance InstanceC a => Read (Instance a) where readsPrec = parsec_readsPrec
