@@ -1,4 +1,4 @@
-module Turing_Nachfolger 
+module Turing.Nachfolger 
 
 ( nachfolger
 , folgekonfigurationen -- brauchen wir nicht?
@@ -7,17 +7,17 @@ module Turing_Nachfolger
 where
 
 import Turing
-import Turing_Konfiguration
+import Turing.Konfiguration
 import Schichten
 
 
-nachfolger :: (Ord y, Ord z)
+nachfolger :: TUM y z
 	   => Turing y z -> Konfiguration y z -> [ Konfiguration y z ]
 nachfolger a k = concat $ map setToList $
     schichten (folgekonfigurationen a   ) k
 
 folgekonfigurationen 
-    :: (Ord y, Ord z)
+    :: TUM y z
     => Turing y z -> Konfiguration y z 
     -> Set (Konfiguration y z)
 folgekonfigurationen m k = mkSet $ do

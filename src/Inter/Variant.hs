@@ -8,12 +8,12 @@ import qualified Inter.Param as P
 
 import qualified Passwort
 import qualified Reporter 
-import Reporter.Washer
+import Reporter.Wash
 
 import qualified Challenger 
 
 import Reader
-
+import qualified Posix
 
 -- wash
 import CGI hiding ( span, map, div, head, name )
@@ -26,7 +26,10 @@ import Maybe (isJust)
 import Monad ( guard )
 
 interface :: [ Variant ] -> IO ()
-interface vs = CGI.run [] $ login ( P.empty { P.variants = vs } ) 
+interface vs = do
+    user <- Posix.getEffectiveUserName
+    Posix.setEnvVar "HOME" user
+    CGI.run [] $ login ( P.empty { P.variants = vs } ) 
 
 login :: P.Type -> CGI ()
 login par = standardQuery "Login" $ preface par
@@ -127,9 +130,9 @@ handler par0  (Variant v ) =   standardQuery "Computer" $ do
     case parse reader "input"$ P.input par of
         Right b -> do
             h3 $ CGI.text "partielle Korrektheit"
-            pc <- CGI.p $ Reporter.embed $ Challenger.partial p i b
+            pc <- CGI.p $ Reporter.Wash.embed $ Challenger.partial p i b
             h3 $ CGI.text "totale Korrektheit"
-            tc <- CGI.p $ Reporter.embed $ Challenger.total   p i b
+            tc <- CGI.p $ Reporter.Wash.embed $ Challenger.total   p i b
             h3 $ CGI.text $ "Aufgabe gelöst? " 
 		   ++ show ( isJust pc && isJust tc )
         Left e -> do

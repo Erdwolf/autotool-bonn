@@ -1,4 +1,6 @@
-module Turing_Fun
+module Turing.Fun
+
+-- $Id$
 
 ( fun_test
 )
@@ -6,10 +8,10 @@ module Turing_Fun
 where
 
 import Turing
-import Turing_Konfiguration
+import Turing.Konfiguration
 
-import Turing_Akzeptieren (akzeptierend)
-import Turing_Vorrechnen
+import Turing.Akzeptieren (akzeptierend)
+import Turing.Vorrechnen
 
 import Auswertung
 import Right
@@ -42,7 +44,8 @@ fun_test cut pairs m = do
 	  right
 
 
-bandinhalt :: Eq y => Turing y z -> Konfiguration y z -> [ y ]
+bandinhalt :: TUM y z 
+	   => Turing y z -> Konfiguration y z -> [ y ]
 bandinhalt m k = 
     let e = leerzeichen m
         strip_links  = dropWhile (== e) 

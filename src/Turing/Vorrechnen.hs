@@ -1,21 +1,12 @@
-module Turing_Vorrechnen
+module Turing.Vorrechnen
 
 where
 
--- $Log$
--- Revision 1.1  2003-04-14 05:47:20  joe
--- drift/todoc/reader
---
--- Revision 1.1.1.1  2002/05/24 10:46:48  challenger
--- start
---
--- Revision 1.2  2002/04/08 11:32:25  autotool
--- turing updates
--- 
+-- $Id$
 
 import Turing
-import Turing_Konfiguration
-import Turing_Nachfolger
+import Turing.Konfiguration
+import Turing.Nachfolger
 import Schichten
 
 vorrechnen :: TUM y z

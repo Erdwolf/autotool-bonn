@@ -1,6 +1,9 @@
-module Turing_Konfiguration where
+module Turing.Konfiguration where
+
+-- $Id$
 
 import Turing
+
 
 data Konfiguration y z = 
      Konfiguration { band_links :: [ y ]
@@ -10,10 +13,11 @@ data Konfiguration y z =
 		   , geschichte :: [Konfiguration y z] 
 		   }
 
-nummer :: Konfiguration y z -> Int
+nummer :: TUM y z
+       => Konfiguration y z -> Int
 nummer = length . geschichte
 
-instance (Show y, Show z, Ord y, Ord z) 
+instance TUM y z
 	 => Show (Konfiguration y z) where
     showsPrec p k = showString $ 
 	           ( show (reverse (band_links k)) )
@@ -21,7 +25,7 @@ instance (Show y, Show z, Ord y, Ord z)
 	 ++ " " ++ ( show (         band_rechts k) )
 
 
-showlinks :: (Show y, Show z, Ord y, Ord z) 
+showlinks :: TUM y z
 	 => Konfiguration y z -> String
 showlinks = unlines . map show . links
 
@@ -42,7 +46,8 @@ links :: Konfiguration y z -> [ Konfiguration y z ]
 links k = k : geschichte k
 
 
-start_konfiguration :: Turing y z -> [y] -> Konfiguration y z
+start_konfiguration :: TUM y z
+		    => Turing y z -> [y] -> Konfiguration y z
 start_konfiguration m xs = 
     Konfiguration { band_links = []
 		  , aktuelles_zeichen = case xs of [] -> leerzeichen m

@@ -7,7 +7,7 @@ import Turing.Type
 import Dot.Dot
 
 import qualified NFA as N
-import Compact
+import qualified NFA.Compact as C
 import ToDoc
 
 type Triple y = ( y,  y, Bewegung )
@@ -38,6 +38,3 @@ instance ( N.NFAC (Triple Char) z , N.NFAC [Triple Char] z , TUM Char z )
 	     $ convert tm
     toDotOptions tm = "-Grankdir=LR"
 
-
-instance N.NFAC (Turing.Dot.Triple Char) Char
-instance N.NFAC [Turing.Dot.Triple Char] Char

@@ -1,15 +1,18 @@
-module Laufzeit where
+module Turing.Laufzeit where
+
+-- $Id$
 
 import Turing
-import Turing_Akzeptieren
-import Turing_Vorrechnen
-import Turing_Konfiguration
+import Turing.Akzeptieren
+import Turing.Vorrechnen
+import Turing.Konfiguration
+
 import Monad (guard)
 import Right
 import Wrong
 import Auswertung
 
-test :: (Ord z, Show z)
+test :: TUM Char z
      => (Int -> Int) -> [ Int ]
      -> Turing Char z 
      -> IO String
@@ -18,7 +21,7 @@ test f args m = do
     putStrLn $ "Ihre Turingmaschine ist"
     putStrLn $ show m
 
-    muß (check m) $ do
+    muss (check m) $ do
 
 	putStrLn $ "ich teste die Laufzeit für die Eingabelängen " ++ show args
 	let falsch = do 

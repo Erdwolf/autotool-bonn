@@ -19,12 +19,18 @@ import List (inits, intersperse)
 import Directory
 import Monad (guard, when)
 import System (getEnv, system)
-import qualified Posix
+-- import qualified Posix
 import qualified Exception
 
 -- alle pfade sind relativ zu $HOME, falls das existiert
 -- in CGI-skripten existiert es nicht (?)
 -- dann relativ zu /home/$(posix.getloginname)
+
+-- änderung: das CGI-skript muß die env-var $HOME setzen
+-- damit wir hier nicht vom modul Posix anhängen,
+-- das es in hugs nämlich gar nicht gibt.
+-- CGI ist ja immer ghc-compiled,
+-- aber bei klassischen aufgaben läuft hier hugs
 
 data Datei = Datei{ pfad :: [String]
                   , name :: String
@@ -40,7 +46,8 @@ inner d =  concat $ intersperse "/" (pfad d ++ [name d])
 home_dir :: IO FilePath
 home_dir = getEnv "HOME"
     `Exception.catch` \ any -> do
-           user <- Posix.getEffectiveUserName
+           -- user <- Posix.getEffectiveUserName
+           let user = "autotool"
 	   return $ "/home/" ++ user
 
 home :: Datei -> IO FilePath
