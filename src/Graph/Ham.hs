@@ -9,6 +9,8 @@ import Autolib.Graph.Type ( Graph , Kante , kante , von , nach , knoten
 			  )
 import Autolib.Graph.Util ( knotenliste )
 import Autolib.Set ( Set , mkSet , addToSet , elementOf )
+import Autolib.Util.Hamming ( hamming )
+import Autolib.Util.Wort ( alle )
 import Graph.Util ( lnachbarn )
 import Control.Monad ( guard )
 
@@ -71,3 +73,29 @@ c = mkGraph (mkSet [ 1, 2, 3, 4, 5, 6 ])
                    , kante 2 5, kante 3 4, kante 3 6, kante 4 5, kante 5 6
                    ]
 	     )
+
+-------------------------------------------------------------------------------
+
+-- | kanten zwischen genau den knoten, die hammingdistance 1 haben
+
+hypercube :: Int -> Graph String
+hypercube n = let nodes = alle "01" n
+	      in mkGraph (mkSet nodes) $ mkSet $ do
+	         x <- nodes
+		 y <- nodes
+		 guard $ hamming x y == 1
+		 return $ kante x y
+
+-- | wie hypercube, aber als knoten der wert, wenn die knoten in hypercube
+--   als binärziffer aufgefasst werden
+
+hypercubeI :: Int -> Graph Int
+hypercubeI n = let nodes        = alle [0,1] n
+		   val v (0:xs) = val (v+v  ) xs
+		   val v (1:xs) = val (v+v+1) xs
+		   val v _      = v
+	       in mkGraph (mkSet $ map (val 0) nodes) $ mkSet $ do
+	          x <- nodes
+		  y <- nodes
+		  guard $ hamming x y == 1
+		  return $ kante (val 0 x) (val 0 y)
