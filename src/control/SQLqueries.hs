@@ -502,14 +502,15 @@ getFreeGruppenDB =
                             v <- getFieldValue state "Vorlesungen"
                             g <- getFieldValue state "Gruppen"
                             r <- getFieldValue state "Referent"
-                            m <- getFieldValue state "studentMax"
-                            c <- getFieldValue state "studentCount"
+                            -- m <- getFieldValue state "studentMax"
+                            -- c <- getFieldValue state "studentCount"
                             return ( read k :: Int ,
                                      [ v :: String
                                      , g :: String
                                      , r :: String
-                                     , m :: String
-                                     , c :: String ]
+                                     -- , m :: String
+                                     -- , c :: String 
+				     ]
                                    )
                           ) stat
        disconnect conn

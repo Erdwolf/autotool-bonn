@@ -278,7 +278,6 @@ studStatusPage mat F0 =
 			   readsnd :: (String,String) -> Int 
 			   readsnd = read . snd
 
-
 ------------------------------------------------------------------------------------
 -- TODO gruppen wechseln nach Bepunktung verhindern
 changeGrpPage mat F0 = do
@@ -286,53 +285,44 @@ changeGrpPage mat F0 = do
 	  (h,allgrps)   <- io $ getAllGruppenDB
 	  stdgrp	<- io $ getGruppenStudDB mat
 	  let	
-		posgrp       = [ (gnr , [v,g,r]) |  (gnr , [v,g,r,c,m]) <- freegrps , not $ gnr `elem` stdgrp ]
+		-- posgrp  = [ (gnr , [v,g,r]) |  (gnr , [v,g,r,c,m]) <- freegrps , not $ gnr `elem` stdgrp ]
 
+                posgrp =  filter ( \ (g,_) -> not $ g `elem` stdgrp ) freegrps
 		currentgrps = filter ( \ (g,_) -> g `elem` stdgrp ) allgrps
 		thrd (_,_,x) = x
           let { show' = show . snd }
-	  standardQuery "Übungsgruppe ändern" $ 
-			table $ 
-				  do
-				  -- th3  "Bitte  wählen Sie Ihre Übungsgruppe. "
-				  th3 $ "Ihre derzeitigen Übungsgruppen sind:" 
-				  grptab currentgrps 
+	  standardQuery "Übungsgruppe ändern" $ do
+		  h3 $ text "Sie besuchen diese Übungsgruppen:" 
+                  if null currentgrps then text "keine" else do
+		      grptab currentgrps 
+		      ttxt "Eine Übungsgruppe verlassen:"
+		      vgrpF <- selectSingle show' Nothing currentgrps empty
+		      smallSubButton (F1 vgrpF) (leaveGrpPage mat) "Weiter"
 
-				  ttxt "Eine Übungsgruppe verlassen:"
-				  vgrpF <- selectSingle show' Nothing currentgrps empty
-				  smallSubButton (F1 vgrpF) (leaveGrpPage mat) "Weiter"
+		  h3 $ text "Noch freie Übungsgruppen sind:"
+		  if null posgrp then text "keine" else do
+		      grptab posgrp 
+		      ttxt "Eine Übungsgruppe besuchen:"
+		      grpF <- selectSingle show' Nothing posgrp empty
+		      smallSubButton (F1 grpF) (changedGrpPage mat) "Weiter" 
 
-				  th3 $ "Noch freie Übungsgruppen sind:"
-				  grptab posgrp 
+		  hrrow
+		  smallSubButton F0 (studStatusPage mat) "Zurück"
 
-
-
-				  if null posgrp 
-					 then ttxt "Leider sind alle Gruppen voll."	>> hrrow >> smallSubButton F0 (studStatusPage mat) "Weiter"
-					 else 
-					 do
-					 ttxt "Eine Übungsgruppe besuchen:"
-					 grpF <- tr $ td $ selectSingle show' Nothing posgrp empty
-					 hrrow
-					 smallSubButton (F1 grpF) (changedGrpPage mat) "Weiter"			
-					 smallSubButton F0 (studStatusPage mat) "Zurück"
-
-
-grptab grps = mytable $ sequence $ do
-    grp@(gnr, [v,g,r]) <- grps
-    return $ tableRow3 [ text v, text g, text r ]
-
+grptab grps = mytable $ do
+    tableRow3 [ text "Vorlesung", text "Gruppe", text "Dozent" ]
+    sequence $ do
+        grp @ (gnr, [v,g,r]) <- grps
+        return $ tableRow3 [ text v, text g, text r ]
 
 changedGrpPage = commonGrpPage "ausgewählt" changeStudGrpDB 
-leaveGrpPage = commonGrpPage "verlassen" leaveStudGrpDB 
+leaveGrpPage   = commonGrpPage "verlassen"  leaveStudGrpDB 
 
 commonGrpPage name action  mat (F1 grpF) = do 
 	let (grp,desc) = value $ grpF
 	io $ action mat grp   
         let msg = unwords [ "Übungsgruppe" , show desc, name ]
-	standardQuery msg $ 
-		do	
-		table $ do
+	standardQuery msg $ table $ do
 			attr "width" "600"
 			hrrow
 			ttxt $ msg
