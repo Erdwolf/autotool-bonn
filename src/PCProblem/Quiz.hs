@@ -60,11 +60,11 @@ instance Partial PCProblem PCP Folge where
 	         $ text "Sind die Zeichenketten gleich?"
 
 
-quiz :: String -- Aufgabe
+make :: String -- Aufgabe
      -> String -- Version
-     -> Param
+     -> ( Key -> IO PCP )
      -> Var PCProblem PCP Folge
-quiz auf ver par =  
+make auf ver gene =  
          Var { problem = PCProblem
 	     , aufgabe = auf
 	     , version = ver
@@ -74,14 +74,14 @@ quiz auf ver par =
 	     -- holt tatsächliche instanz
 	     -- gen :: Key -> IO ( Reporter i )
 	     , gen = \ key -> do
-	           seed $ read key
-	           ( p, f ) <- cache (  Datei { pfad = [ "autotool", "cache"
-					   , auf, ver
-					   ]
-					, relativzahl = error "PCProblem.Quiz.relativzahl"
-				  , name = key ++ ".cache" 
-				  }
-			 ) ( generator par )
+                   p <- cache 
+	               (  Datei { pfad = [ "autotool", "cache"
+			   , auf, ver
+			     ]
+		          , name = key ++ ".cache" 
+		          , relativzahl = error "PCProblem.Quiz.relativzahl"
+  		          }
+       	                ) ( gene key )
 	           return $ do
 	               inform $ vcat
 	                  [ text "Lösen Sie diese Instanz des Postschen Korrespondenz-Problems:"
@@ -89,4 +89,16 @@ quiz auf ver par =
 			  ]
 	               return p
 	     }
+
+
+quiz :: Param -> Key -> IO PCP
+quiz par = \ key -> do
+     seed $ read key
+     (p, f) <- generator par
+     return p
+
+fixed :: PCP -> Key -> IO PCP
+fixed pcp = \ key -> return pcp
+
+
 

@@ -60,7 +60,7 @@ generator g = do
         not ( triviale_instanz p ) && 
         case mf of
 	     Nothing -> False
-	     Just f  -> nah g < length f && length f < fern g
+	     Just f  -> nah g <= length f && length f <= fern g
     return ( i, f )
 
 

@@ -12,7 +12,7 @@ import Monad ( guard )
 start :: PCP -> Konfig
 start i = Konfig 
         { instanz = i
-	, folge = []
+	, folge = [] -- vorsicht: falschrum
 	, tief = 0
 	, oben = ""
 	, unten = ""
@@ -56,5 +56,6 @@ solutions depth width i = do
 	   nachfolger k
     k <- take depth $ bfs fun k0
     guard $ final k
-    return $ folge k
+    return $ reverse $ folge k -- hier rumdrehen
+
 
