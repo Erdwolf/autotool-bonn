@@ -24,18 +24,17 @@ module Grammatik.Hierarchie
 where
 
 import Grammatik.Type
-import qualified Reporter.Checker as C
-import Wort
+import qualified Autolib.Reporter.Checker as C
+import Autolib.Wort
 
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 
-import Util.Splits
+import Autolib.Util.Splits
 import Control.Monad (guard)
 import Data.List (partition)
-import Data.Set
-import FilterSet
-import Maybe
+import Autolib.Set
+import Data.Maybe
 
 
 ---------------------------------------------------------------------------
@@ -43,7 +42,7 @@ import Maybe
 typ0 :: C.Type Grammatik
 typ0 = C.make "Typ0" ( text "Die Grammatik soll vom Typ-0 sein." ) $ \ g -> do
 
-    let us = filterSet ( \ (l, r) -> 
+    let us = sfilter ( \ (l, r) -> 
 	    any ( not . ( `elementOf` ( terminale g `union` nichtterminale g ) ) ) 
 		     (l ++ r)  ) 
 	   $ regeln g
@@ -60,7 +59,7 @@ typ0 = C.make "Typ0" ( text "Die Grammatik soll vom Typ-0 sein." ) $ \ g -> do
 	 , toDoc cs
 	 ]
 
-    let rs = filterSet ( \ (l, r) -> all ( `elementOf` (terminale g)) l ) 
+    let rs = sfilter ( \ (l, r) -> all ( `elementOf` (terminale g)) l ) 
 	   $ regeln g 
     verboten ( not $ isEmptySet rs ) 
 	     "enthalten links kein Nichtterminal"
@@ -117,7 +116,7 @@ kontexte g (lhs, rhs) = do
 
 kontextsensitiv :: C.Type Grammatik
 kontextsensitiv = C.make "CS" ( text "Die Grammatik soll kontextsensitiv sein." ) $ \ g -> do
-    let zs = filterSet (null . kontexte g ) $ regeln g
+    let zs = sfilter (null . kontexte g ) $ regeln g
     verboten ( not $ isEmptySet zs ) 
 	     "haben nicht die Form  c V d -> c w d:"
 	     zs
@@ -127,7 +126,7 @@ kontextsensitiv = C.make "CS" ( text "Die Grammatik soll kontextsensitiv sein." 
 kontextfrei :: C.Type Grammatik
 kontextfrei = 
   C.make "CF" ( text "Die Grammatik soll kontextfrei sein." ) $ \ g -> do
-    let lang = filterSet ( (> 1) . length . fst ) $ regeln g
+    let lang = sfilter ( (> 1) . length . fst ) $ regeln g
     verboten ( not $ isEmptySet lang ) 
 	     "haben nicht die Form V -> w:"
 	     lang
@@ -136,7 +135,7 @@ kontextfrei =
 
 linear :: C.Type Grammatik
 linear = C.make "Lin" ( text "Die Grammatik soll linear sein." ) $ \ g -> do
-    let schlecht = filterSet 
+    let schlecht = sfilter 
 	   ( (>1) . length . filter (`elementOf` nichtterminale g) . snd ) 
 	   $ regeln g
     verboten ( not $ isEmptySet schlecht ) 
@@ -148,8 +147,8 @@ linear = C.make "Lin" ( text "Die Grammatik soll linear sein." ) $ \ g -> do
 rechtslinear :: C.Type Grammatik
 rechtslinear = C.make "RightLin" ( text "Die Grammatik soll rechtslinear sein." ) $ \ g -> do
     let schlecht 
-	  = filterSet ( not . ( `elementOf` nichtterminale g ) . last . snd ) 
-	  $ filterSet ( (> 0) . length . filter ( `elementOf` nichtterminale g ) . snd ) 
+	  = sfilter ( not . ( `elementOf` nichtterminale g ) . last . snd ) 
+	  $ sfilter ( (> 0) . length . filter ( `elementOf` nichtterminale g ) . snd ) 
 	  $ regeln g
     verboten ( not $ isEmptySet schlecht ) 
 	     "sind nicht von der Form M -> A^* M"
@@ -160,8 +159,8 @@ rechtslinear = C.make "RightLin" ( text "Die Grammatik soll rechtslinear sein." 
 linkslinear :: C.Type Grammatik
 linkslinear = C.make "LeftLin" ( text "Die Grammatik soll linkslinear sein." ) $ \ g -> do
     let schlecht 
-	  = filterSet ( not . ( `elementOf` nichtterminale g ) . head . snd ) 
-	  $ filterSet ( (> 0) . length . filter ( `elementOf` nichtterminale g ) . snd ) 
+	  = sfilter ( not . ( `elementOf` nichtterminale g ) . head . snd ) 
+	  $ sfilter ( (> 0) . length . filter ( `elementOf` nichtterminale g ) . snd ) 
 	  $ regeln g
     verboten ( not $ isEmptySet schlecht )
 	     "sind nicht von der Form M -> M A^*"
@@ -171,14 +170,14 @@ linkslinear = C.make "LeftLin" ( text "Die Grammatik soll linkslinear sein." ) $
 
 epsfrei :: C.Type Grammatik
 epsfrei = C.make "EpsFree" ( text "Die Grammatik soll Epsilon-frei sein." ) $ \ g -> do
-    let schlecht = filterSet ( \ (lhs, rhs) -> null rhs ) $ regeln g
+    let schlecht = sfilter ( \ (lhs, rhs) -> null rhs ) $ regeln g
     verboten ( not $ isEmptySet schlecht )  
 	 "sind verboten:"
 	 schlecht
 
 kettenfrei :: C.Type Grammatik
 kettenfrei = C.make "ChFree" ( text "Die Grammatik soll kettenfrei sein." ) $ \ g -> do
-    let schlecht = filterSet ( \ (lhs, rhs) -> 
+    let schlecht = sfilter ( \ (lhs, rhs) -> 
 	 length rhs == 1 && head rhs `elementOf` nichtterminale g ) $ regeln g
     verboten ( not $ isEmptySet schlecht ) 
 	 "sind verboten:"
@@ -189,7 +188,7 @@ chomsky = C.make "CNF" ( text "Die Grammatik soll in Chomsky-Normalform sein." )
     let ok rhs = ( length rhs == 1 && head rhs `elementOf` terminale g )
               || ( length rhs == 2 && and [ x `elementOf` nichtterminale g 
 					  | x <- rhs ] )
-	schlecht = filterSet ( \ ( lhs, rhs) -> not (ok rhs) ) $ regeln g
+	schlecht = sfilter ( \ ( lhs, rhs) -> not (ok rhs) ) $ regeln g
     verboten ( not $  isEmptySet schlecht )
 	 "sind nicht von der Form N -> T oder N -> N N"
 	 schlecht
@@ -200,7 +199,7 @@ greibach = C.make "Greibach" ( text "Die Grammatik soll in Greibach-Normalform s
 		   && head rhs `elementOf` terminale g
 		   && and [ x `elementOf` nichtterminale g | x <- tail rhs ]
 		 )
-	schlecht = filterSet ( \ ( lhs, rhs) -> not (ok rhs) ) $ regeln g
+	schlecht = sfilter ( \ ( lhs, rhs) -> not (ok rhs) ) $ regeln g
     verboten ( not $ isEmptySet schlecht )
 	 "sind nicht von der Form N -> T N^*"
 	 schlecht

@@ -9,8 +9,8 @@ where
 
 import Control.Monad (guard)
 
-import Data.Set
-import Fix
+import Autolib.Set
+import Autolib.Fix
 import Grammatik.Type
 
 -- eigentlich ist das nur für CFG definiert.

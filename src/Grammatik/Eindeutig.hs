@@ -9,10 +9,10 @@ import Grammatik.Type
 import Grammatik.Ableitung
 import Grammatik.Links_Ableitung
 import Grammatik.Reduziert
-import qualified Reporter.Checker as C
+import qualified Autolib.Reporter.Checker as C
 
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 
 eindeutig :: Config
 	  -> C.Type Grammatik

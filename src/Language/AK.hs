@@ -1,9 +1,7 @@
+-- | formeln des aussagenkalküls
+--  $Id$
+
 module Language.AK
-
--- formeln des aussagenkalküls
-
--- -- $Id$
-
 
 ( form
 -- , allg
@@ -13,17 +11,17 @@ where
 
 import Language.Type
 import Language.Mutate
-import Util.Wort
-import Util.Zufall
+import Autolib.Util.Wort
+import Autolib.Util.Zufall
 
-import Data.Set
-import Random
+import Autolib.Set
+import System.Random
 import Data.List (intersperse)
 import Control.Monad ( guard )
-import Maybe (isJust)
+import Data.Maybe (isJust)
 
-form :: [Char] -> Language
--- syntaktisch korrekte formeln mit diesen variablen
+-- | syntaktisch korrekte formeln mit diesen variablen
+form :: [ Char ] -> Language
 form vs = mutate $ Language
 	{ abbreviation = "aussagenlogische Formeln mit A(ND), O(R), N(OT) und Variablen " ++ intersperse ',' vs
 	, alphabet     = mkSet $ "AON()," ++ vs

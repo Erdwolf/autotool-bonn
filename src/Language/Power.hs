@@ -11,8 +11,8 @@ where
 
 import Language.Type
 
-import Data.Set
-import Util.Wort
+import Autolib.Set
+import Autolib.Util.Wort
 import Data.List (nub)
 
 

@@ -5,15 +5,15 @@ module Grammatik.Links_Ableitung where
 import Grammatik.Type
 import Grammatik.Ableitung
 
-import Schichten
+import Autolib.Schichten
 -- import Util.BFS
 -- import Util.Mehrfache
-import Util.Doppler
-import Util.Wort
+import Autolib.Util.Doppler
+import Autolib.Util.Wort
 
 import Control.Monad (guard)
 import Data.List (intersperse)
-import Sets
+import Autolib.Set
 
 
 -- nur die erste (d. h. am weitesten linke) Ersetzung ausführen

@@ -1,4 +1,4 @@
-module WWRW 
+module Language.WWRW 
 
 -- -- $Id$
 

@@ -3,8 +3,8 @@ module Grammatik.CF.Nullable where
 --  $Id$
 
 import Grammatik.Type
-import Sets
-import Fix
+import Autolib.Set
+import Autolib.Fix
 import Control.Monad ( guard )
 
 

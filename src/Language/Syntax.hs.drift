@@ -1,0 +1,35 @@
+-- -*- mode: haskell -*-
+
+module Language.Syntax where
+
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Text.XML.HaXml.Haskell2Xml
+
+import Data.Typeable
+
+data Type
+     = ABCdiff
+     | Gleich String
+     | Ordered_Gleich String
+     | Ordered_Ungleich String
+     | AK String
+     | AmBnCmDn
+     | BinCompare
+     | Cee Char Type
+     | Lukas
+     | NoLukas
+     | Dyck
+     | NoDyck
+     | Pali
+     | NoPali
+     | Potenzen Int
+     | Power Int
+     | NoPower Int
+     | Vielfache Int
+   deriving ( Eq, Ord, Typeable )
+
+{-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
+
+

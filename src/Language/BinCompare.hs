@@ -1,8 +1,9 @@
 -- -- $Id$
 
-module BinCompare ( bincompare ) where
+module Language.BinCompare ( bincompare ) where
 
-import Language
+import Language.Type
+import Autolib.Set
 
 bincompare = Language
 	   { abbreviation = "{ bin(x) # bin(y) : 0 < x < y }"

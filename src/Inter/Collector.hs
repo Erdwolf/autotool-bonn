@@ -29,6 +29,7 @@ import qualified Palindrom.Plain
 import qualified NFA.Convert
 import qualified NFA.Equiv.Challenger
 import qualified Exp.Convert
+import qualified Grammatik.CF.Interface
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -64,6 +65,8 @@ makers = [ Blank.make
 	 , Exp.Convert.qmake
 	 , NFA.Equiv.Challenger.make
 	 , NFA.Equiv.Challenger.qmake
+
+         , Grammatik.CF.Interface.make
 	 ]
 
 

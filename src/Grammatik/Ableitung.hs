@@ -1,11 +1,11 @@
 module Grammatik.Ableitung where
 
 import Control.Monad (guard)
-import Data.Set
-import Schichten
-import ToDoc
+import Autolib.Set
+import Autolib.Schichten
+import Autolib.ToDoc
 
-import Util.Wort
+import Autolib.Util.Wort
 import Grammatik.Type
 
 -------------------------------------------------------------------

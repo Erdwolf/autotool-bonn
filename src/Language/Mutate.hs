@@ -4,8 +4,8 @@ module Language.Mutate where
 
 import Language.Type
 
-import Util.Zufall
-import Util.Edit
+import Autolib.Util.Zufall
+import Autolib.Util.Edit
 
 import Data.List ( nub, partition )
 

@@ -4,9 +4,9 @@ module Grammatik.CF.Chomsky.Type where
 
 --  $Id$
 
-import Reader
-import ToDoc
-import Util.Size
+import Autolib.Reader
+import Autolib.ToDoc
+import Autolib.Size
 
 type Rules a   = [ ( a, Either Char (a, a) ) ]
 

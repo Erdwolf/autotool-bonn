@@ -15,9 +15,9 @@ where
 
 import Control.Monad (guard)
 
-import Fix
-import Data.Set
-import Grammatik
+import Autolib.Fix
+import Autolib.Set
+import Grammatik.Type
 
 -- jede Variable der linken seite nennen wir produktiv,
 -- wenn rechts alle Variablen produktiv sind.

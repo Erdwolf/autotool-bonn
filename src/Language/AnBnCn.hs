@@ -1,14 +1,14 @@
 -- -- $Id$
 
-module Language.AnBnCn (anbncn) where
+module Language.AnBnCn (top) where
 
 import Language.Type
 
 import Data.Set
 import Control.Monad ( guard )
 
-anbncn :: Language
-anbncn = Language 
+top :: Language
+top = Language 
        { abbreviation = "{ a^n b^n c^n : n > 0 }" 
        , alphabet     = mkSet "abc"
        , sample       = sam

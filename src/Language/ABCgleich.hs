@@ -1,8 +1,8 @@
 -- -- $Id$
 
-module Gleich 
+module Language.ABCgleich 
 
-( gleich 
+( top
 ) 
 
 where
@@ -14,8 +14,8 @@ import Data.FiniteMap
 import Control.Monad ( guard )
 
 
-gleich :: String -> Language
-gleich xs = Language 
+top :: String -> Language
+top xs = Language 
        { abbreviation = "{ w : " ++ concat ( intersperse " = "
 			[ "|w|_" ++ [x] | x <- xs ] ) ++ " }"
        , alphabet     = mkSet xs

@@ -5,17 +5,19 @@
 module Grammatik.Type 
 
 ( module Grammatik.Type
-, module Sets
+, module Autolib.Set
 )
 
 where
 
 
-import Sets
+import Autolib.Set
+import Autolib.Size
+import Autolib.ToDoc
+import Autolib.Reader
 
-import Size
-import ToDoc
-import Reader
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 data Grammatik = Grammatik
 	       { terminale      :: Set Char
@@ -23,8 +25,9 @@ data Grammatik = Grammatik
 	       , startsymbol	:: Char
 	       , regeln		:: Set (String, String) 
 	       }
+         deriving ( Typeable )
 
-{-! for Grammatik derive: ToDoc, Reader !-}
+{-! for Grammatik derive: ToDoc, Reader, Haskell2Xml !-}
 
 terms = setToList . terminale
 vars  = setToList . nichtterminale

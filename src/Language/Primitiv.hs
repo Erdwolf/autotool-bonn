@@ -1,9 +1,9 @@
 --- $Header$
 
-module Primitiv where
+module Language.Primitiv where
 
-import Language
-import Data.Set
+import Language.Type
+import Autolib.Set
 import Power
 
 prim :: Language

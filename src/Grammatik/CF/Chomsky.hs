@@ -18,14 +18,14 @@ import Grammatik.CF.Kettenfrei
 import Grammatik.Reduziert
 import Grammatik.CF.Nullable
 
-import Sets
+import Autolib.Set
 
-import Data.FiniteMap
+import Autolib.FiniteMap
 import Control.Monad (guard)
 import Data.List (nub)
-import ToDoc
-import Size
-import Fix
+import Autolib.ToDoc
+import Autolib.Size
+import Autolib.Fix
 
 
 

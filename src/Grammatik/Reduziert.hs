@@ -15,11 +15,11 @@ import Grammatik.Type
 import Grammatik.Produktiv
 import Grammatik.Erreichbar
 
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 
 import Control.Monad (guard)
-import Sets
+import Autolib.Set
 
 einschraenkung :: Set Char -> Grammatik -> Grammatik
 -- behalte nur die variablen aus qs

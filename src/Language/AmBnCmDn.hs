@@ -1,4 +1,4 @@
-module AmBnCmDn (ambncmdn) where
+module Language.AmBnCmDn (ambncmdn) where
 
 -- -- $Id$
 

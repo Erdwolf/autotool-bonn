@@ -10,10 +10,10 @@ module Language.Pali
 where
 
 import Language.Type
-import Util.Wort
+import Autolib.Util.Wort
 
-import Data.Set
-import Random
+import Autolib.Set
+import System.Random
 
 pali :: Language
 pali = Language

@@ -12,12 +12,12 @@ import Grammatik.Ableitung
 
 import Grammatik.Reduziert
 
-import Data.Set
+import Autolib.Set
 
-import Util.Wort
+import Autolib.Util.Wort
 
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 
 takeUntil :: (a -> Bool) -> [a] -> [a]
 takeUntil p [] = []

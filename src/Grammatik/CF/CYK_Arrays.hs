@@ -3,7 +3,7 @@ module Grammatik.CF.CYK_Arrays
 -- -- $Id$
 
 
-( module Simple_Set
+( module Autolib.Simple_Set
 
 , ctable
 , vtable
@@ -18,11 +18,11 @@ where
 import Grammatik.CF.Chomsky
 import qualified Grammatik.CF.CYK_Tables as C
 
-import Data.FiniteMap
-import Simple_Set
-import qualified Data.Set as S
+import Autolib.FiniteMap
+import Autolib.Simple_Set
+import qualified Autolib.Set as S
 
-import Array
+import Data.Array
 
 
 -- polymorph ==> frißt rechenzeit

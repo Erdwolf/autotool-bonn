@@ -23,7 +23,7 @@ import Grammatik.CF.CYK_Arrays
 -- end auswahl
 
 
-import Util.DPL_Set
+import Autolib.Util.DPL_Set
 import Data.List (partition)
 
 -- import Ix

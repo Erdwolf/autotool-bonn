@@ -2,6 +2,8 @@ module Grammatik.CF.Yeah_Noh where
 
 -- -- $Id$
 
+import Language.Inter
+
 import Grammatik.Type
 import qualified Grammatik.Ableitung as A
 
@@ -15,10 +17,10 @@ import Grammatik.CF.Kettenfrei
 
 import Grammatik.Reduziert
 
-import FilterBound
-import Util.Sort
-import ToDoc
-import Reporter
+import Autolib.FilterBound
+import Autolib.Util.Sort
+import Autolib.ToDoc
+import Autolib.Reporter
 
 -- eins der beiden imports auswählen:
 
@@ -42,7 +44,7 @@ cf_yeah_noh c g = do
 	  , A.max_depth = 7
 	  , A.max_width = 100
 	  } 
-    check ( lang c ) conf g
+    check ( inter $ lang c ) conf g
 
     let arrange = sortBy length
     let [ yeahs, nohs ] = map arrange [ yeah c, noh c ]

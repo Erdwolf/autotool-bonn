@@ -1,6 +1,6 @@
 -- -- $Id$
 
-module Kleiner
+module Language.Kleiner
 
 ( kleiner
 ) 
@@ -8,8 +8,8 @@ module Kleiner
 where
 
 import Language
-import Data.Set
-import Data.FiniteMap
+import Autolib.Set
+import Autolib.FiniteMap
 import Data.List (intersperse, nub, sort)
 import Random
 import Genau

@@ -4,18 +4,18 @@ module Grammatik.CF.Kettenfrei where
 
 import Grammatik.Type
 
-import Fix
-import Data.Set
-import Data.FiniteMap
-import qualified Relation
+import Autolib.Fix
+import Autolib.Set
+import Autolib.FiniteMap
+import qualified Autolib.Relation as Relation
 
 import Data.List (partition)
 import Control.Monad (guard)
 
-kettenfrei :: Grammatik -> Grammatik
--- eingabe: kontextfreie Grammatik G1
+-- | eingabe: kontextfreie Grammatik G1
 -- ausgabe: kontextfreie Grammatik G2 mit L(G2) = L(G1)
 -- und G2 enthält keine Regeln  V -> V
+kettenfrei :: Grammatik -> Grammatik
 kettenfrei g = let
     ( pairs, nopairs ) = partition ( \ ( [lhs], rhs) -> 
             length rhs == 1 && head rhs `elementOf` nichtterminale g ) 

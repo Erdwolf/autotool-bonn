@@ -14,9 +14,9 @@ import Grammatik.Ableitung ( Config (..) )
 
 import Language.Type
 
-import Reporter
-import Size
-import ToDoc
+import Autolib.Reporter
+import Autolib.Size
+import Autolib.ToDoc
 import Data.List (partition)
 
 check :: Language

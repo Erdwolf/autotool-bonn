@@ -2,7 +2,7 @@ module Grammatik.CF.CYK_Tables
 
 -- -- $Id$
 
-( module Simple_Set
+( module Autolib.Simple_Set
 
 , ctable
 , vtable
@@ -14,16 +14,16 @@ where
 
 import  Grammatik.CF.Chomsky
 
-import Data.FiniteMap
-import Simple_Set
+import Autolib.FiniteMap
+import Autolib.Simple_Set
 -- import Data.Set
 
-import Array
+import Data.Array
 
 table_lookup fm = lookupWithDefaultFM fm emptySet
 
+-- | tafel für characters (terminale)
 ctable :: Ord a => Rules a -> FiniteMap Char (Set a)
--- tafel für characters (terminale)
 ctable rules = addListToFM_C union emptyFM $ do
     ( lhs, Left c ) <- rules
     return ( c, unitSet lhs )

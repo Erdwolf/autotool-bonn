@@ -19,12 +19,12 @@ where
 import Language.Type
 import Language.Genau
 
-import Util.Edit
-import Util.Uniq
+import Autolib.Util.Edit
+import Autolib.Util.Uniq
 
-import Sets
+import Autolib.Set
 import Data.List (intersperse, nub, group, sort)
-import Random
+import System.Random
 import Control.Monad
 
 -----------------------------------------------------------------------------

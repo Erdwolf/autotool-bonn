@@ -39,7 +39,7 @@ import qualified Control.Stud_Aufg as SA
 import qualified Control.Student as S
 import qualified Control.Vorlesung as V
 
-import Autolib.Reporter.Type hiding ( wrap )
+import Autolib.Reporter.Type hiding ( wrap, initial )
 import Autolib.ToDoc
 import qualified Autolib.Output as O
 import Autolib.Reader

@@ -1,17 +1,15 @@
-module Language.Type
+-- |  Sprachen 
+--  $Id$
 
--- -- $Id$
+module Language.Type where
 
+import Autolib.Util.Uniq
+import Autolib.Util.Wort
 
-where
-
-import Util.Uniq
-import Util.Wort
-
-import ToDoc
-import Data.Set
+import Autolib.ToDoc
+import Autolib.Set
 import Control.Monad (guard)
-import Random
+import System.Random
 
 
 data Language = Language
@@ -87,6 +85,9 @@ anti_samples :: Language -> Int -> Int -> IO [ String ]
 anti_samples l = samples ( komplement l )
 
 
+-- | TODO: das ist nicht OK, weil es IO benutzt.
+-- es sollte ein Random-State genügen.
+-- das würde auch andere Würfel-probleme lösen.
 
 present :: Language -> IO ()
 present l = do

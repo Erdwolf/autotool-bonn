@@ -4,12 +4,12 @@ module Language.Cee where
 
 import Language.Type
 
-import Util.Wort
-import Util.Zufall
+import Autolib.Util.Wort
+import Autolib.Util.Zufall
 import Control.Monad (guard)
 
-import Data.Set
-import Random
+import Autolib.Set
+import System.Random
 
 cee :: Char -> Language -> Language
 cee c l = Language

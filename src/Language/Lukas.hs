@@ -13,11 +13,11 @@ where
 
 -- Sprachen von Lukasiewicz, Dyck
 
-import Data.Set
+import Autolib.Set
 import Data.List ( mapAccumL, nub )
-import Random
+import System.Random
 
-import Util.Wort
+import Autolib.Util.Wort
 import Language.Type
 
 lukas :: Language
