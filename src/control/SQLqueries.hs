@@ -15,14 +15,8 @@ import Char -- toLower
 
 import Helper
 
+import Mysqlconnect 
 
--- Mysql 
-mysqlhost 	= "localhost"
-mysqldb		= "autoan"
-mysqluser	= "test"
-mysqlpasswd	= "test"
-
-myconnect = connect mysqlhost mysqldb mysqluser mysqlpasswd
 
 -- TODO:
 -- Schluessel zum Studenten nur noch SNr nicht mehr Mat
@@ -116,7 +110,7 @@ checkPasswdMNrDB maybePass mnr =
 				 , "student.Name AS Name, \n"
 				 , "student.Email AS Email, \n"
 				 , "student.Status AS Status \n"
-				 , "FROM	autoan.student \n"
+				 , "FROM	student \n"
 				 , "WHERE	student.MNr = \"" ++ (filterQuots mnr)++ "\" "
 				 , case maybePass of
 				   Just pass	-> "AND student.Passwort = \"" ++ (quoteQuots pass)++ "\" "
@@ -147,7 +141,7 @@ loginDB mnr pass =
 			   ( concat
 				 [ "SELECT "
 				 , "SNr \n"
-				 , "FROM	autoan.student \n"
+				 , "FROM	student \n"
 				 , "WHERE	student.MNr = \"" ++ (filterQuots mnr)++ "\" "
 				 , "AND student.Passwort = \"" ++ (quoteQuots pass)++ "\" "
 				 , ";"
@@ -174,7 +168,7 @@ duplMatOrEmailDB mat eml =
 	   stat <- query conn 
 			   ( concat 
 				 [ "SELECT student.MNr, student.Email \n"
-				 , "FROM	autoan.student \n"
+				 , "FROM	student \n"
 				 , "WHERE	student.MNr = \""  
 				 , filterQuots mat , "\" "
 				 , "OR		student.Email = \""
@@ -206,7 +200,7 @@ getAllVorlesungenDB =
 	   stat <- query conn 
 			   ( concat 
 				 [ "SELECT vorlesung.Name AS Vorlesung \n"
-				 , "FROM  autoan.vorlesung \n"
+				 , "FROM  vorlesung \n"
 				 , ";"
 				 ] )
 	   inh <- collectRows ( \ state -> do
@@ -229,7 +223,7 @@ studVorlDB mnr =
 	   stat <- query conn 
 			   ( concat 
 				 [ "SELECT vorlesung.Name AS Vorlesung \n"
-				 , "FROM	autoan.student , autoan.stud_vorl , autoan.vorlesung \n"
+				 , "FROM	student , stud_vorl , vorlesung \n"
 				 , "WHERE	student.MNr = \"" 
 				 , filterQuots mnr , "\" "
 				 , "AND stud_vorl.SNr = student.SNr \n"
@@ -256,7 +250,7 @@ getVorlesungWithPointsDB mnr =
 	   stat <- query conn
 			   ( concat 
 				 [ "SELECT	vorlesung.Name AS Vorlesung \n"
-				 , "FROM	autoan.vorlesung , autoan.stud_aufg , autoan.student , autoan.aufgabe\n"
+				 , "FROM	vorlesung , stud_aufg , student , aufgabe\n"
 				 , "WHERE	student.SNr = stud_aufg.SNr "
 				 , "AND		student.MNr = \"" 
 				 , filterQuots mnr , "\" "
@@ -384,7 +378,7 @@ removeStudVorlDB mat vorl =
 	  -- 	]
 	  -- 
 	  -- getGruppenDB_FROM = 
-	  -- 	(  "autoan"
+	  -- 	(  "
 			   -- 	, ["gruppe","vorlesung","stud_grp"]
 			   -- 	)
 			   -- 
@@ -428,7 +422,7 @@ getFreeGruppenDB =
 			++ "COUNT(SNr) AS studentCount" ++ " "
 			++ "\nFROM \n"
 			-- verbinde gruppe mit stud_grp über GNr
-			++ "autoan.gruppe LEFT JOIN autoan.stud_grp USING (GNr) ,"
+			++ "gruppe LEFT JOIN stud_grp USING (GNr) ,"
 			++ "vorlesung" ++ " "
 			++ "\nWHERE \n" ++" gruppe.VNr = vorlesung.VNr "   ++" "
 			++ "\nGROUP BY \n" ++ "GNr "
@@ -513,8 +507,8 @@ changeStudGrpDB mat grp =
 	  else  
 	  do {
 		 ; conn <- myconnect
-		 ; stat <- query conn $ "DELETE FROM autoan.stud_grp" ++ " " ++ "WHERE stud_grp.SNr = \"" ++ filterQuots (snrh!!0) ++ "\" " ++ ";"
-	     ; stat <- query conn $ "INSERT INTO autoan.stud_grp (SNr,GNr) VALUES (" ++ filterQuots (snrh!!0) ++ "," 
+		 ; stat <- query conn $ "DELETE FROM stud_grp" ++ " " ++ "WHERE stud_grp.SNr = \"" ++ filterQuots (snrh!!0) ++ "\" " ++ ";"
+	     ; stat <- query conn $ "INSERT INTO stud_grp (SNr,GNr) VALUES (" ++ filterQuots (snrh!!0) ++ "," 
 							++ filterQuots (show grp) ++");"
 		 ; disconnect conn 
 		 ; return ()
@@ -685,7 +679,7 @@ checkAdminNamePasswortDB nme pas = do
 			   ( concat
 				 [ "SELECT \n"
 				 , "admin.Name AS Name \n"
-				 , "FROM	autoan.admin \n"
+				 , "FROM	admin \n"
 				 , "WHERE	\n"
 				 , "admin.Name = \"" ++ (quoteQuots nme)++ "\" "
 				 , "AND admin.Passwort = \"" ++ (quoteQuots pas)++ "\" "
@@ -706,7 +700,7 @@ failDB nme pas = do
 			   ( concat 
 				 [ "SELECT"  
 				 , "admin.Name AS Name \n"
-				 , "FROM	autoan.admin \n"
+				 , "FROM	admin \n"
 				 , "WHERE	\n"
 				 , "admin.Name = \"" ++ (quoteQuots nme)++ "\" "
 				 , "AND admin.Passwort = \"" ++ (quoteQuots pas)++ "\" "
@@ -746,7 +740,7 @@ findStudDB vnm nme mat eml vrl= do
 				 , "student.Name	AS Name, \n"
 				 , "student.Email	AS Email, \n"  
 				 , "student.Status	AS Status \n"
-				 , "FROM	autoan.student , autoan.vorlesung , autoan.stud_vorl \n"
+				 , "FROM	student , vorlesung , stud_vorl \n"
 				 , "WHERE "
 				 , "student.SNr = stud_vorl.SNr " 
 				 , "AND stud_vorl.VNr = vorlesung.VNr " 
@@ -808,7 +802,7 @@ getStudentDB mnr = do
 			  , "student.Email AS Email, \n"  
 			  , "student.Status AS Status, \n"
 			  , "student.Passwort AS Passwort \n"
-			  , "FROM	autoan.student \n"
+			  , "FROM	student \n"
 			  , "WHERE	student.MNr = \"" ++ (filterQuots mnr)++ "\" "
 			  , ";"
 			  ] )
@@ -837,7 +831,7 @@ getEmailPasswortDB mnr = do
 			  [ "SELECT "
 			  , "student.Email AS Email, \n"  
 			  , "student.Passwort AS Passwort \n"
-			  , "FROM	autoan.student \n"
+			  , "FROM	student \n"
 			  , "WHERE	student.MNr = \"" ++ (filterQuots mnr)++ "\" "
 			  , ";"
 			  ] )
@@ -860,7 +854,7 @@ getIdMat email = do
 	putStrLn $ "connected"
 	stat <- query conn $ unlines
 	   [ "SELECT SNr, Email, MNr"
-	   , "FROM	autoan.student"
+	   , "FROM	student"
 	   , "WHERE	Email = \"" ++ (filterQuots email)++ "\""
 	   -- kein semikolon? sonst absturz?
 	   ] 
