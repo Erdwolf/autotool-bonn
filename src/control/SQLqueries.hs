@@ -542,8 +542,12 @@ bepunkteStudentDB snr anr bewert highlow = do
 -- feature: wenn nr < 1000 (d. h. admin), dann nicht nach zeit fragen
 
 mglAufgabenDB :: String -> IO [(String, String, String, String,String)]
-mglAufgabenDB snr = do
-        let timed = if False -- read snr < 1000 
+mglAufgabenDB snr = mglAufgabenDB' False snr 
+
+mglAufgabenDB' :: Bool -> String 
+	       -> IO [(String, String, String, String,String)]
+mglAufgabenDB' admin snr = do
+        let timed = if admin 
 		    then ""
 		    else "AND NOW() BETWEEN Von AND Bis "
 	conn <- connect "localhost" "autoan" "test" "test"
