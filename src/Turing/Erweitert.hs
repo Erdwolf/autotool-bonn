@@ -10,6 +10,8 @@ erweitert :: TUM y z => Turing y z -> Turing y z -> Reporter ()
 -- ist a erweiterung von b?
 erweitert a b = do
     inform $ text "ist Ihre Maschine eine Erweiterung der gegebenen?"
+    inform $ text "Ihre Maschine" <+> toDoc a
+    inform $ text "Gegebene Maschine" <+> toDoc b
     assert ( eingabealphabet a == eingabealphabet b )
 	   ( text "sind die Eingabealphabete gleich?" )
     assert ( leerzeichen a == leerzeichen b )
