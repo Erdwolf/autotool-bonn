@@ -20,7 +20,7 @@ PACKS = -package text -package data \
 EXTRA_PACKS = -package HToolkit 
 
 
-OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict -fdicts-strict
+OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
 # PROF = -prof -auto-all -auto-dicts
 # WARN =  -Werror -dcore-lint
 GHC = ghc-6.0 -pgmc gcc-2.95
