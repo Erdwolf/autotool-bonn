@@ -1,3 +1,4 @@
+-- | Autotool Challenger Partial
 module Challenger.Partial where
 
 --   $Id$
@@ -5,11 +6,13 @@ module Challenger.Partial where
 import Reporter
 import ToDoc
 
+-- | Klasse: Partial
 class Partial p i b | p i -> b , p b -> i where
 
       -- | Beschreibung der Aufgabe herstellen
+      --
       -- TODO: es sollte (auch oder nur) eine Beschreibung geben,
-      -- die nur von p allein abhängt (dann muß man i nicht erst erzegen
+      -- die nur von p allein abhängt (dann muß man nicht erst erzeugen
       -- und kann trotzdem schon was ausgeben)
       describe :: p -> i -> Doc
 
