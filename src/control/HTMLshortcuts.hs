@@ -61,6 +61,18 @@ showAsTable inh =
 		where
 			sline xs = tr $ sequence $ Prelude.map textOrInt xs 
 
+showAsTable2 :: ( [ String ] , [ [String] ]) -> WithHTML CGI ()
+showAsTable2 inh = 
+	table $ do 
+		attr "border" "1"
+ 		attr "cellspacing" "2" 
+		attr "cellpadding" "5"
+		tr $ mapM_ ( \ x -> ( th ( text x  ## attr "align" "left") ) ) ( fst inh )  
+		mapM_ sline ( snd inh )
+		where
+			sline xs = tr $ sequence $ Prelude.map (\s -> td $ text s) xs 
+
+
 
 
 -- table row shortcuts
