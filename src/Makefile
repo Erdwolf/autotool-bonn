@@ -87,8 +87,12 @@ MATCHBOX_DIRS = util Util Reporter Inter \
 MATCHBOX_SRC = $(wildcard Makefile* *.hs) \
 	$(shell find $(MATCHBOX_DIRS) -name "*.hs" -print)
 MATCHBOX_DOWNLOAD = $(CGIDIR)/download
+MATCHBOX_STORE = $(MATCHBOX_DOWNLOAD)/archive
 MATCHBOX_ARCHIVE = Matchbox-src-$(shell date -I).tar.bz2
+MATCHBOX_CURRENT_ARCHIVE = $(MATCHBOX_DOWNLOAD)/Matchbox-src-current.tar.bz2
 MATCHBOX_EXE = Matchbox-exe-$(shell date -I)
+MATCHBOX_CURRENT_EXE = $(MATCHBOX_DOWNLOAD)/Matchbox-exe-current
+
 
 SRS/Config/Build.hs : do
 	( echo module SRS.Config.Build where ; \
@@ -119,10 +123,14 @@ loop :
 # install source archive and executable
 release : SRS/Config/Build.hs SRS/Config/Release.hs
 	cvs commit -m release-$(shell date -I)
-	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXE)
-	bzip2 -v --force --best  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXE)
-	tar -cvjf $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_ARCHIVE) \
+	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_STORE)/$(MATCHBOX_EXE)
+	bzip2 -v --force --best  $(MATCHBOX_STORE)/$(MATCHBOX_EXE)
+	tar -cvjf $(MATCHBOX_STORE)/$(MATCHBOX_ARCHIVE) \
 		-C.. $(patsubst %, autotool/%, $(MATCHBOX_SRC))
+	rm -f $(MATCHBOX_CURRENT_EXE)
+	ln -s $(MATCHBOX_STORE)/$(MATCHBOX_EXE) $(MATCHBOX_CURRENT_EXE)
+	rm -f $(MATCHBOX_CURRENT_ARCHIVE)
+	ln -s $(MATCHBOX_STORE)/$(MATCHBOX_ARCHIVE) $(MATCHBOX_CURRENT_ARCHIVE)
 
 # install CGI programs and copy web pages
 install-matchbox : do release
