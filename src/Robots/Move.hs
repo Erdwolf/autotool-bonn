@@ -1,5 +1,7 @@
 module Robots.Move where
 
+-- $Id$
+
 import Robots.Data
 import Robots.Konfig
 import Robots.Nice
