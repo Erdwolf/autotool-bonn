@@ -12,6 +12,7 @@ import Reporter.Washer
 
 import qualified Challenger 
 
+import Reader
 
 
 -- wash
@@ -122,14 +123,19 @@ handler par0  (Variant v ) =   standardQuery "Computer" $ do
     hr CGI.empty
     h2 $ CGI.text "voriger Lösungs-Versuch"
     CGI.pre $ CGI.text $ P.input par
-    let b = read $ P.input par
 
-    h3 $ CGI.text "partielle Korrektheit"
-    pc <- CGI.p $ Reporter.embed $ Challenger.partial p i b
-    h3 $ CGI.text "totale Korrektheit"
-    tc <- CGI.p $ Reporter.embed $ Challenger.total   p i b
+    case parse reader "input"$ P.input par of
+        Right b -> do
+            h3 $ CGI.text "partielle Korrektheit"
+            pc <- CGI.p $ Reporter.embed $ Challenger.partial p i b
+            h3 $ CGI.text "totale Korrektheit"
+            tc <- CGI.p $ Reporter.embed $ Challenger.total   p i b
+            h3 $ CGI.text $ "Aufgabe gelöst? " 
+		   ++ show ( isJust pc && isJust tc )
+        Left e -> do
+	    h3 $ CGI.text "Syntaxfehler"
+	    CGI.pre $ CGI.text $ show e
 
-    h3 $ CGI.text $ "Aufgabe gelöst? " ++ show ( isJust pc && isJust tc )
     hr CGI.empty
 
 

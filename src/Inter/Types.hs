@@ -8,6 +8,7 @@ import Step
 
 import ShowFunctions
 import ToDoc
+import Reader
 
 type Matrikel = String
 
@@ -25,7 +26,7 @@ instance ( Show p ) => ToDoc ( Var p i ) where
     toDoc = text . show
 
 data Variant = forall p i b 
-         . ( Show p , Problem p i b , Partial p i b )
+         . ( Show p , Problem p i b , Partial p i b, Reader b )
 	 => Variant ( Var p i )
 
 instance ToDoc Variant where 

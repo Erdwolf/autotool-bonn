@@ -1,0 +1,48 @@
+module Turing.Type 
+
+( module Turing.Type
+, module Sets
+, module FiniteMap
+)
+
+where
+
+-- $Id$
+
+import Sets
+import FiniteMap
+import ReadFM
+import ToDoc
+import Reader
+
+data Bewegung = L | O | R
+     deriving (Eq, Show, Ord)
+
+{-! for Bewegung derive : ToDoc, Reader !-}
+
+data Turing y z = 
+     Turing { eingabealphabet  :: Set y
+	    , arbeitsalphabet  :: Set y
+	    , leerzeichen	     :: y
+	    , zustandsmenge    :: Set z 
+	    , tafel	     :: FiniteMap (y, z) (Set (y, z, Bewegung))
+	    , startzustand     :: z
+	    , endzustandsmenge :: Set z
+	    }
+
+{-! for Turing derive : ToDoc, Reader !-}
+
+
+class (Ord y, Ord z, Show y, Show z, ToDoc y, ToDoc z
+	 , ToDoc [y], ToDoc [z]) => TUM y z 
+    -- ohne methoden, soll nur die constraints aufsammeln
+instance TUM Char Integer
+
+
+instance TUM y z => Show (Turing y z) where
+    show = render . toDoc
+
+
+lookupset :: Ord a => FiniteMap a (Set b) -> a -> Set b
+lookupset fm x = case lookupFM fm x of
+    Just m -> m; Nothing -> emptySet

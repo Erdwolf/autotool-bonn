@@ -31,6 +31,7 @@ CGIDIR = $(PUB)/bounded
 
 
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
+DP = /usr/local/lib/hugs:$(HOME)/autotool/util
 
 ###############################################################################
 
@@ -58,7 +59,7 @@ tags :
 	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $*.hs -o $@
 
 %.hs : %.hs.drift
-	DERIVEPATH=  DrIFT $< > $@
+	DERIVEPATH=$(DP)  DrIFT $< > $@
 
 drift : $(DRIFT) 
 
