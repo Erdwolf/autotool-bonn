@@ -1,9 +1,9 @@
 module RAM.Example where
 
 import RAM
-import RAM.Step
 
 ex :: Program
-ex = [ Loop "a" [ Dec "a" , Inc "c" ]
-     , Loop "b" [ Dec "b" , Inc "c" ]
+-- Wirkung:  x0 := 2 ^ x1
+ex = [ Inc "x0"
+     , Loop "x1" [ Loop "x0" [ Inc "x0" ] ]
      ]
