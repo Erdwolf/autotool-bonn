@@ -1,0 +1,11 @@
+
+GHC = @GHC@
+AR = @AR@
+LD = @LD@
+INSTALL = @INSTALL@
+GHC_PKG = @GHC_PKG@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+CPPFLAGS = @CPPFLAGS@
+HADDOCK = @HADDOCK@
+AUTODRIFT = @AUTODRIFT@
