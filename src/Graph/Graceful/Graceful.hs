@@ -63,14 +63,6 @@ instance
 	     , fsep [ t1,  t2, t3 ] 
 	     )
 
-{-    
-	    testeAlles (text "Der Graph ist valid.")
-		    [ kantenPassenZuKnotenTest $ kantenPassenZuKnoten graph
-		    , ( isZusammen graph
-		      , text "Der Graph ist nicht zusammenhängend."
-		      )
-		    ]
--}
 
     verifiziere Graceful graph labeling =
 	    testeAlles (text "Die Lösung ist richtig.") (
