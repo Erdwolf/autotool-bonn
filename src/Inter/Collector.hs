@@ -13,6 +13,8 @@ import qualified Graph.Selfcom
 import qualified Graph.Nachbar
 import qualified Graph.Cross
 import qualified Robots.Interface
+import qualified Graph.Col.Plain
+import qualified Graph.Col.Quiz
 
 makers :: [ Make ]
 makers = [ NFA.Analyse.make
@@ -28,5 +30,7 @@ makers = [ NFA.Analyse.make
 	 , Graph.Cross.make
 	 , Robots.Interface.make
 	 , Robots.Interface.qmake
+	 , Graph.Col.Plain.make
+	 , Graph.Col.Quiz.make
 	 ]
 
