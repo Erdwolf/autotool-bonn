@@ -7,7 +7,7 @@ module NFA.Analyse where
 import Autolib.Exp
 import Autolib.Exp.Inter
 
-import Autolib.NFA.Type
+import Autolib.NFA.Type hiding ( alphabet )
 import Autolib.NFA.Eq
 import Autolib.Exp.Example
 import Autolib.Exp.Einfach

@@ -7,7 +7,7 @@ module NFA.Synthese where
 import Autolib.Exp
 import Autolib.Exp.Inter
 
-import Autolib.NFA.Type
+import Autolib.NFA.Type hiding ( alphabet )
 import Autolib.NFA.Eq
 import qualified Autolib.NFA.Example
 import qualified Autolib.NFA.Check

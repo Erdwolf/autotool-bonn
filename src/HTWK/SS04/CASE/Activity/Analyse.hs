@@ -21,7 +21,7 @@ convert si =
 	     , automat = informed ( toDoc $ S.ausdruck si ) 
 	               $ inter (std_sigma (setToList $ S.alphabet si))
 	               $ S.ausdruck si
-	     , alphabet = S.alphabet si
+	     , NFA.Analyse.alphabet = S.alphabet si
 	     }
 
 make ai = return 
