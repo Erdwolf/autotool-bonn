@@ -1,5 +1,7 @@
 module Language.Vielfache
 
+-- $Id$
+
 where
 
 import Language.Type
