@@ -7,7 +7,7 @@ module NPDA.Type
 
 ( module NPDA.Type
 , module Sets
-, module FiniteMap
+, module Data.FiniteMap
 )
 
 where
@@ -87,9 +87,6 @@ instance NPDAC x y z => Size (NPDA x y z) where
 
 ------------------------------------------------------------------------
 
-lookupset :: Ord a => FiniteMap a (Set b) -> a -> Set b
-lookupset fm x = case lookupFM fm x of
-    Just m -> m; Nothing -> emptySet
 
 the :: Maybe a -> a
 -- mit absturzgefahr

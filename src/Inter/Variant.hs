@@ -1,4 +1,4 @@
-module Inter.Variant where
+obsolete module Inter.Variant where
 
 --   $Id$
 
@@ -10,6 +10,7 @@ import qualified Passwort
 import qualified Reporter 
 import Reporter.Wash
 import Size
+
 
 import qualified Challenger 
 
@@ -23,6 +24,7 @@ import qualified Posix
 -- wash
 import CGI hiding ( span, map, div, head, name )
 import qualified CGI
+
 
 -- control
 import HTMLshortcuts 

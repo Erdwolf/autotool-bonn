@@ -58,6 +58,7 @@ import Inter.Evaluate
 -- und ins Logs schreiben.
 --
 import Inter.Bank
+import Inter.Store ( latest )
 
 --
 -- der Monster-Parameter darin sind alle wesentlichen Daten
@@ -151,14 +152,16 @@ iface variants env = do
           -- Beispiel Eingabe holen  
           let b0 = Challenger.initial ( problem v ) i
 
+          ein <- case item env "submit" of
+	      "example"  -> return $ show b0
+	      ""         -> return $ show b0
+	      "submit"   -> return $ P.input par1
+	      "previous" -> latest par1 
+		  `Exception.catch` \ _ -> return ( show b0 )
+
+
           -- Eingabe.Form füllen entweder mit
-          let par2 = par1 { P.input = 
-                            if null ( P.input par1 )
-                            -- dem Beispiel oder
-                            then show b0 
-                            -- der letzten Eingabe
-                            else P.input par1
-                          }
+          let par2 = par1 { P.input = ein }
 
           -- FIXED BUG: "Falsch Buchung zum Anfang" 
 		  -- bin gerade dabei...
@@ -209,8 +212,9 @@ iface variants env = do
 					  ]
 			   +++ br 
 			   +++ submit "submit" "submit" +++ " " 
-			   +++ submit "previous" "previous" +++ " " 
-			   +++ submit "example" "example"
+			   +++ submit "submit" "previous" +++ " " 
+			   +++ reset  "submit" "reset" +++ " " 
+			   +++ submit "submit" "example"
 
 
           return $ page par2 $ inst +++ motd +++ log +++ status +++ ans

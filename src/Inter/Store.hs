@@ -19,6 +19,10 @@ store p mres = do
     schreiben ( location p pid flag ) $ P.input p
     return $ pid
 
+latest :: P.Type -> IO String
+latest p = do
+    lesen ( location p "latest" False ) 
+
 load :: P.Type -> String -> Bool -> IO String
 load p pid flag = do
     lesen ( location p pid flag )
