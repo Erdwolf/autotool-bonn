@@ -1,4 +1,11 @@
-module Inter.Crypt where
+module Inter.Crypt 
+
+( Crypt 
+, encrypt
+, Inter.Crypt.compare
+)
+
+where
 
 --  $Id$
 
@@ -8,16 +15,24 @@ import Codec.Encryption.Utils ( Octet )
 import Random
 import Data.Word
 
+data Crypt = Crypt { unCrypt :: String }
+
+-- brauchen kein quote Quots?
+instance Show Crypt where show = unCrypt
+instance Read Crypt where readsPrec p cs = [(Crypt cs, [])]
+
 uu_base :: Char
 uu_base = 'a'
 
 uudecode :: String -> [ Octet ]
-uudecode =
+uudecode cs =
     let fun :: Char -> Octet
         fun c = toEnum $ fromEnum c - fromEnum uu_base 
 	decode [] = []
+	decode [x] = error $ "single octet in decode - should not happen: " 
+		           ++ show (cs, map fun cs, x)
         decode (hi : lo : rest) = ( 16 * hi + lo ) : decode rest
-    in  decode . map fun
+    in  decode $ map fun cs
 
 uuencode :: [ Octet ] -> String
 uuencode octs = do
@@ -30,7 +45,7 @@ salt_length :: Int
 salt_length = 4
 
 -- | generate random salt and encrypt
-encrypt :: String -> IO String
+encrypt :: String -> IO Crypt
 encrypt cs = do
     isalt <- sequence $ replicate salt_length $ randomRIO (0, 255 :: Int)
     let salt = map toEnum isalt
@@ -38,13 +53,13 @@ encrypt cs = do
         octs  = salt ++ map ( toEnum . fromEnum ) cs
     let hocts :: [ Octet ]
         hocts = salt ++ Codec.Encryption.MD5.hash octs
-    return $ uuencode hocts
+    return $ Crypt $ uuencode hocts
 
 -- | 
-compare :: String -- ^ from passwd base (encryption of salt + pwd)
+compare :: Crypt -- ^ from passwd base (encryption of salt + pwd)
 	      -> String -- ^ what the user typed (pwd)
 	      -> Bool
-compare store input =
+compare ( Crypt store ) input =
     let ( salt , cpwd ) = splitAt salt_length $ uudecode store
         cinput = Codec.Encryption.MD5.hash $ salt ++ map ( toEnum . fromEnum ) input
     in  cpwd == cinput

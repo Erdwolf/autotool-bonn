@@ -92,7 +92,7 @@ insertNewStudentDB vnm nme mat eml ps1 =    do
               , "\"" , filterQuots nme , "\" , "
               , "\"" , filterQuots mat , "\" , "
               , "\"" , filterQuots eml , "\" , "
-              , "\"" , quoteQuots cps1 , "\" )"
+              , "\"" , show cps1 , "\" )"
               , ";"
               ] )
     disconnect conn
@@ -127,7 +127,7 @@ checkPasswdMNrDB maybePass mnr =
                             c <- getFieldValue state "Email"
                             d <- getFieldValue state "Status"
                             e <- getFieldValue state "Passwort"
-                            return (  a,  b , c , d , e )
+                            return (  a,  b , c , d , read e )
                 ) state
        disconnect conn
        
@@ -135,7 +135,7 @@ checkPasswdMNrDB maybePass mnr =
            (a, b, c, d, e) <- inh
            guard $ case maybePass of
                  Nothing   -> True
-		 Just pass -> Inter.Crypt.compare pass e
+		 Just pass -> Inter.Crypt.compare e pass 
 	   return ( a, b, c, d )
 
 -- |
@@ -161,7 +161,7 @@ loginDB mnr pass =
        inhs <- collectRows ( \ state -> do
                             a <- getFieldValue state "SNr"
                             p <- getFieldValue state "Passwort"
-                            return (a :: String, p)
+                            return (a :: String, read p)
                           ) stat
        disconnect conn
 
@@ -341,7 +341,7 @@ updatePasswortDB mat pass =
        stat <- query conn 
                ( concat 
                  [ "UPDATE student "
-                 , "SET Passwort= \"" , quoteQuots cpass , "\" "
+                 , "SET Passwort= \"" , show cpass , "\" "
                  , "WHERE   student.MNr = \"" , filterQuots mat , "\" "
                  , ";"
                  ] )
@@ -833,7 +833,7 @@ updateStudDB oldmat mat vnm nme eml pas = do
              , "student.Vorname = \""   ++ quoteQuots vnm ++ "\", " 
              , "student.Name = \""      ++ quoteQuots nme ++ "\", "
              , "student.Email = \""     ++ quoteQuots eml ++ "\", "
-             , "student.Passwort = \""  ++ quoteQuots cpas ++ "\" "
+             , "student.Passwort = \""  ++ show cpas ++ "\" "
              , "WHERE student.MNr = \"" ++ quoteQuots oldmat ++ "\" "
              ] )
    disconnect conn 

@@ -1,9 +1,9 @@
 module Main where
 
 import IO
-import HTMLMonad 
-import CGI
-import Char -- toLower
+import Wash.HTMLMonad 
+import Wash.CGI
+import Data.Char( toLower )
 
 -- autoan-modules
 import HTMLshortcuts
