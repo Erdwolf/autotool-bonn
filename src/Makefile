@@ -22,8 +22,8 @@ HPACKS = $(PACKS) \
 	-package HToolkit 
 
 
-OPT = -O2 -fvia-C -funbox-strict-fields # -fdicts-strict
-# PROF = -prof -auto-all -auto-dicts
+# OPT = -O2 -fvia-C -funbox-strict-fields # -fdicts-strict
+PROF = -prof -auto-all -auto-dicts
 GHC = ghc-6.0 -pgmc gcc-2.95
 # GHC = ghc-5.04 -pgmc gcc-2.95
 
