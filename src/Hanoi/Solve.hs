@@ -1,6 +1,6 @@
 module Hanoi.Solve where
 
--- $Id$
+-- -- $Id$
 
 import Hanoi.Type
 import Data.Array

@@ -1,6 +1,6 @@
 module Turing.Check where
 
--- $Id$
+-- -- $Id$
 
 import Turing.Type
 

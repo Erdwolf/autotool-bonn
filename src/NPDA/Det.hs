@@ -1,6 +1,6 @@
 module NPDA.Det
 
--- $Id$
+-- -- $Id$
 
 where
 

@@ -1,6 +1,6 @@
 module Fun.Machine where
 
--- $Id$
+-- -- $Id$
 
 import Machine.Class
 

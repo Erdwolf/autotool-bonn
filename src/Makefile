@@ -49,6 +49,19 @@ tags :
 	( find . -name "*hs" -print && find . -name "*drift" -print ) \
 	| xargs etags
 
+HADDOCK_INPUTS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
+	Reporter Turing Dot Challenger Inter Boxing Machine Language \
+	SRS
+HADDOCK_OUTPUT = haddock
+HADDOCK = haddock
+HADDOCK_OPTS = -v -h
+
+haddock : 
+	( ls *.hs && find $(HADDOCK_INPUTS) -name "*.hs" -print ) \
+	| xargs $(HADDOCK) $(HADDOCK_OPTS) -o $(HADDOCK_OUTPUT)
+
+.PHONY : haddock
+
 ###############################################################################
 
 matchbox : do

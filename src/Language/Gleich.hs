@@ -1,6 +1,6 @@
 module Language.Gleich 
 
--- $Id$
+-- -- $Id$
 
 
 ( gleich 

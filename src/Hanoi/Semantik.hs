@@ -1,6 +1,6 @@
 module Hanoi.Semantik where
 
--- $Id$
+-- -- $Id$
 
 import Hanoi.Type
 import Hanoi.Move

@@ -1,6 +1,6 @@
 module RAM.Step where
 
--- $Id$
+-- -- $Id$
 
 import RAM.Type
 import RAM.Memory

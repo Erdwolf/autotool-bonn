@@ -1,6 +1,6 @@
 module Helper where
 
--- $Id$
+-- -- $Id$
 
 import Prelude
 import qualified Prelude ( map )

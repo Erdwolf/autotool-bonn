@@ -1,6 +1,6 @@
 module SAT.Quiz where
 
--- $Id$
+-- -- $Id$
 
 import SAT.SAT
 import SAT.Param

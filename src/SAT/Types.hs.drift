@@ -2,7 +2,7 @@
 
 module SAT.Types where
 
--- $Id$
+-- -- $Id$
 
 import FiniteMap
 import ToDoc

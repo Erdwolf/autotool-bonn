@@ -9,7 +9,7 @@ module Turing.Type
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Sets
 import Size

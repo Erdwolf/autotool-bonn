@@ -1,6 +1,6 @@
 module Language.Genau where
 
--- $Id$
+-- -- $Id$
 
 import Random
 

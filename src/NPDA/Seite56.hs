@@ -1,15 +1,6 @@
 module Seite56 where
 
--- $Log$
--- Revision 1.1  2003-01-13 23:20:05  joe
--- NPDA revamped
---
--- Revision 1.1.1.1  2002/05/24 10:46:48  challenger
--- start
---
--- Revision 1.2  2002/01/13 23:03:33  autotool
--- kellerautomaten: nutze toDoc, akzeptanzmodus sichtbar
---
+-- -- $Id$
 
 import NPDA
 import NPDATest

@@ -1,6 +1,6 @@
 module SAT.Generator where
 
--- $Id$
+-- -- $Id$
 
 import SAT.Types
 import SAT.Param

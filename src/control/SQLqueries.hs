@@ -7,7 +7,7 @@ module SQLqueries
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Database.MySQL.HSQL
 import IO

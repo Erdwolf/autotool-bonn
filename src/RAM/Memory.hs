@@ -1,6 +1,6 @@
 module RAM.Memory where
 
--- $Id$
+-- -- $Id$
 
 import RAM.Type
 import FiniteMap

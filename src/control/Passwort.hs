@@ -6,7 +6,7 @@ module Passwort
 
 where
 
--- $Id$
+-- -- $Id$
 
 import CGI hiding ( empty )
 import Prelude hiding ( span,map, head, div )

@@ -5,7 +5,7 @@ module Term.Dot
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Term.Type
 

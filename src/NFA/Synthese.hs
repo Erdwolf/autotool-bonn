@@ -2,7 +2,7 @@ module NFA.Synthese where
 
 -- vom regulären Ausdruck zum Automaten
 
--- $Id$
+-- -- $Id$
 
 import Exp
 import Exp.Inter

@@ -7,7 +7,7 @@ module Turing
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Turing.Type
 import Turing.Check

@@ -1,4 +1,4 @@
--- $Header$
+-- -- $Id$
 
 module Kleiner
 
@@ -6,28 +6,6 @@ module Kleiner
 ) 
 
 where
-
--- $Log$
--- Revision 1.1  2002-11-08 16:43:23  joe
--- language -> Language
--- pump -> Pump.REG (neu)
--- aufgaben dazu
---
--- Revision 1.1.1.1  2002/05/24 10:46:48  challenger
--- start
---
--- Revision 1.3  2001/12/12 08:14:13  autotool
--- fix (wg. genau)
---
--- Revision 1.2  2001/12/12 07:59:15  autotool
--- beim harten test nicht die buchstaben verwürfeln
---
--- Revision 1.1  2001/12/10 00:37:33  autotool
--- einige neue sprachen
---
--- Revision 1.1  2001/12/05 21:11:31  autotool
--- lang/*
---
 
 import Language
 import Set

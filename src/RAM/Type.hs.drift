@@ -2,7 +2,7 @@
 
 module RAM.Type where
 
--- $Id$
+-- -- $Id$
 
 import RAM.Builtin
 

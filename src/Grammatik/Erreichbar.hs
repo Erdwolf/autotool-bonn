@@ -1,6 +1,6 @@
 module Grammatik.Erreichbar
 
--- $Id$
+-- -- $Id$
 
 ( erreichbar
 )

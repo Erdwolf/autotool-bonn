@@ -1,6 +1,6 @@
 module Term.Change where
 
--- $Id$
+-- -- $Id$
 
 import Term.Type
 import Term.Match

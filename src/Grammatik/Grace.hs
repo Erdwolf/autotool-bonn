@@ -1,6 +1,6 @@
 module Grammatik.Grace -- Grammatik mit Trace
 
--- $Id$
+-- -- $Id$
 
 where
 

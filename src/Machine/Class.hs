@@ -1,6 +1,6 @@
 module Machine.Class where
 
--- $Id$
+-- -- $Id$
 
 import Set
 import Schichten

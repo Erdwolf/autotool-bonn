@@ -1,6 +1,6 @@
 module Machine.Acceptor.Inter where
 
--- $Id$
+-- -- $Id$
 
 import qualified Machine.Acceptor.Type as A
 import Machine.Akzeptieren

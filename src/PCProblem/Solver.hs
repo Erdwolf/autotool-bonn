@@ -1,6 +1,6 @@
 module PCProblem.Solver where
 
--- $Id$
+-- -- $Id$
 
 import PCProblem.Type
 import PCProblem.Konfig

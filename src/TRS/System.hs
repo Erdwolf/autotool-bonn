@@ -6,7 +6,7 @@ module TRS.System
 
 where
 
--- $Id$
+-- -- $Id$
 
 import TRS.Term
 

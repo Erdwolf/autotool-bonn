@@ -1,6 +1,6 @@
 module Model.SRS where
 
--- $Id$
+-- -- $Id$
 
 -- semantic labeling into a finite domain
 

@@ -1,6 +1,6 @@
 module Grammatik.Zeige
 
--- $Id$
+-- -- $Id$
 
 ( zeige
 )

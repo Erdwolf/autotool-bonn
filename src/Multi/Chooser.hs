@@ -1,6 +1,6 @@
 module Multi.Chooser where
 
--- $Id$
+-- -- $Id$
 
 import Multi.Config
 import Multi.Selection

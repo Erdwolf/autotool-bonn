@@ -1,6 +1,6 @@
 module Language.Lukas
 
--- $Id$
+-- -- $Id$
 
 
 ( lukas

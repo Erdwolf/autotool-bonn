@@ -1,6 +1,6 @@
 module JVM.Check where
 
--- $Id$
+-- -- $Id$
 
 import JVM.Type
 import JVM.Builtin

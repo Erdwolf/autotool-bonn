@@ -2,7 +2,7 @@ module NFA.Analyse where
 
 -- vom Automaten zum regulären Ausdruck
 
--- $Id$
+-- -- $Id$
 
 import Exp
 import Exp.Inter

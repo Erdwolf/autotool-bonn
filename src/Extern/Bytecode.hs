@@ -1,6 +1,6 @@
 module Extern.Bytecode where
 
--- $Id$
+-- -- $Id$
 
 import qualified Posix
 import Util.Datei

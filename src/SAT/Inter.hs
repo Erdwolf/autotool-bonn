@@ -1,6 +1,6 @@
 obsolete module SAT.Inter where
 
--- $Id$
+-- -- $Id$
 
 import SAT.Types
 import SAT.Beispiel

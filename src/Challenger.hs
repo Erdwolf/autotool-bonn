@@ -7,7 +7,7 @@ module Challenger
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Challenger.Problem
 import Challenger.Partial

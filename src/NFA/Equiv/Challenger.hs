@@ -1,6 +1,6 @@
 module NFA.Equiv.Challenger where
 
--- $Id$
+-- -- $Id$
 
 import NFA.Type
 import NFA.Equiv.Core

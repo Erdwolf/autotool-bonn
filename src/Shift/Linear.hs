@@ -1,6 +1,6 @@
 module Shift.Linear where
 
--- $Id$
+-- -- $Id$
 
 import Shift.Iterate
 import Shift.For

@@ -2,12 +2,12 @@
 
 module Hanoi.Type where
 
--- $Id$
+-- -- $Id$
 
 import Data.FiniteMap
 import ToDoc
 import Reader
-import Util.Size
+import Util.Size 
 
 type Scheibe = Integer
 

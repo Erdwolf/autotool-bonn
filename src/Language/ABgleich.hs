@@ -1,25 +1,6 @@
--- $Header$
-
 module Language.ABgleich ( abgleich ) where
 
--- $Log$
--- Revision 1.2  2003-01-13 14:34:19  joe
--- neue modulnamen (wg. pump-aufgaben)
---
--- Revision 1.1  2002/11/08 16:43:23  joe
--- language -> Language
--- pump -> Pump.REG (neu)
--- aufgaben dazu
---
--- Revision 1.1.1.1  2002/05/24 10:46:48  challenger
--- start
---
--- Revision 1.2  2002/01/14 23:11:14  autotool
--- anpassungen für serie 6
---
--- Revision 1.1  2001/12/05 21:11:31  autotool
--- lang/*
---
+-- -- $Id$
 
 import Language.Type
 

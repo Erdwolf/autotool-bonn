@@ -1,6 +1,6 @@
 module Fun.Create where
 
--- $Id$
+-- -- $Id$
 
 -- erzeuge eine k-stellige funktion bestimmter größe
 

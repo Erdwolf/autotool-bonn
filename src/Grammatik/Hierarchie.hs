@@ -1,7 +1,7 @@
 
 module Grammatik.Hierarchie
 
--- $Id$
+-- -- $Id$
 
 ( typ0
 , typ1

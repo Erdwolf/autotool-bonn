@@ -1,6 +1,6 @@
 module TRS.Symbol where
 
--- $Id$
+-- -- $Id$
 
 import Sets
 

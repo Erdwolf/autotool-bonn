@@ -1,6 +1,6 @@
 module NPDA.Machine where
 
--- $Id$
+-- -- $Id$
 
 import Machine.Class
 import Machine.Akzeptieren

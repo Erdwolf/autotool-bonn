@@ -1,5 +1,5 @@
 -- -*- mode: haskell -*-
--- $Id$
+-- -- $Id$
 
 import Challenger
 import SAT.SAT

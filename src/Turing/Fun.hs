@@ -1,6 +1,6 @@
 module Turing.Fun
 
--- $Id$
+-- -- $Id$
 
 ( fun_test
 )

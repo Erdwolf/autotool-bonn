@@ -7,7 +7,7 @@ module Shift.Meta
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Util.Size
 import ToDoc

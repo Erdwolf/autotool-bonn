@@ -1,6 +1,6 @@
 module Exp.Quiz where
 
--- $Id$
+-- -- $Id$
 
 import qualified Exp.Some
 import NFA.Type

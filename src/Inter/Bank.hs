@@ -1,6 +1,6 @@
 module Inter.Bank where
 
--- $Id$
+-- -- $Id$
 
 import SQLqueries
 import qualified Posix

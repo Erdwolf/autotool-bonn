@@ -19,6 +19,12 @@ DEFINES = -DSPACE=1
 GHC = ghc-6.0
 endif
 
+ifeq ($(shell hostname), afa)
+EXTRA_PACKS = -package hsql
+DEFINES = -DSPACE=1
+GHC = ghc
+endif
+
 ifeq ($(shell hostname), dfa)
 EXTRA_PACKS = -package hsql
 DEFINES = -DSPACE=1

@@ -1,6 +1,6 @@
 module Grammatik.Links_Ableitung where
 
--- $Id$
+-- -- $Id$
 
 import Grammatik.Type
 import Grammatik.Ableitung

@@ -1,6 +1,6 @@
 module Challenger.Ident where
 
--- $Id$
+-- -- $Id$
     
 data Ident = Ident {aufgabe :: Int } deriving (Show, Read)
 

@@ -1,6 +1,6 @@
 module Machine.History where
 
--- $Id$
+-- -- $Id$
 
 import ToDoc
 

@@ -1,6 +1,6 @@
 module Term.Match where
 
--- $Id$
+-- -- $Id$
 
 import Term.Type
 

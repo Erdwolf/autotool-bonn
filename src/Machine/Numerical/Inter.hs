@@ -1,6 +1,6 @@
 module Machine.Numerical.Inter where
 
--- $Id$
+-- -- $Id$
 
 import qualified Machine.Numerical.Type as N
 import Machine.Fun

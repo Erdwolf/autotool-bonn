@@ -11,7 +11,7 @@ module Robots.Konfig
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Robots.Data
 

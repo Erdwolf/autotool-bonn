@@ -1,6 +1,6 @@
 module Hanoi.Move where
 
--- $Id$
+-- -- $Id$
 
 import Hanoi.Type
 import Control.Monad

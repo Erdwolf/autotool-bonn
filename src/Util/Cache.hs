@@ -1,6 +1,6 @@
 module Util.Cache where
 
--- $Id$
+-- -- $Id$
 
 import Util.Datei
 import Util.Debug

@@ -1,6 +1,6 @@
 module Shift.For where
 
--- $Id$
+-- -- $Id$
 
 import ToDoc
 import Monad ( guard )

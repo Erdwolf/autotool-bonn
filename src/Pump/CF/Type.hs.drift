@@ -2,7 +2,7 @@
 
 module Pump.CF.Type where
 
--- $Id$
+-- -- $Id$
 
 import Size
 import Reader

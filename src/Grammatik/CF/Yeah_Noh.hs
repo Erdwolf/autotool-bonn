@@ -1,6 +1,6 @@
 module Grammatik.CF.Yeah_Noh where
 
--- $Id$
+-- -- $Id$
 
 import Grammatik.Type
 import qualified Grammatik.Ableitung as A

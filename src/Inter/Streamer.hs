@@ -1,6 +1,6 @@
 module Main where
 
--- $Id$
+-- -- $Id$
 
 -- socket-interface für tool
 -- geklaut und vereinfacht von Face.hs

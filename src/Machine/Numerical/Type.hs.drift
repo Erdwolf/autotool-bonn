@@ -2,7 +2,7 @@
 
 module Machine.Numerical.Type where
 
--- $Id$
+-- -- $Id$
 
 import Informed
 import ToDoc

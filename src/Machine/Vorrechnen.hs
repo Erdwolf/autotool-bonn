@@ -2,7 +2,7 @@ module Machine.Vorrechnen
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Machine.Class
 import Machine.History

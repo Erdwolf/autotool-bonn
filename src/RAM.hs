@@ -7,7 +7,7 @@ module RAM
 
 where
 
--- $Id$
+-- -- $Id$
 
 import RAM.Type
 import RAM.Machine

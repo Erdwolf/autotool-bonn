@@ -1,6 +1,6 @@
 module Challenger.Einsendung where
 
--- $Id$
+-- -- $Id$
 
 import Challenger.Ident
 

@@ -5,7 +5,7 @@ module PCProblem.Generator
 
 where
 
--- $Id$
+-- -- $Id$
 
 import PCProblem.Type
 import PCProblem.Param

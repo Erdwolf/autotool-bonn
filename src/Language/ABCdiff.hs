@@ -1,6 +1,6 @@
 module Language.ABCdiff (abcdiff) where
 
--- $Id$
+-- -- $Id$
 
 import Language
 import Set

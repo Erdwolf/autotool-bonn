@@ -1,7 +1,7 @@
 import Shift.Boiler
 import System
 
--- $Id$
+-- -- $Id$
 
 -- example: Main False 10 1000 [20,30,51,71]
 

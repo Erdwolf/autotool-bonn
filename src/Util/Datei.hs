@@ -2,7 +2,7 @@
 
 module Util.Datei 
 
--- $Id$
+-- -- $Id$
 
  (  schreiben
   , anhaengen

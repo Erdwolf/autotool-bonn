@@ -1,6 +1,6 @@
 module Inter.Types where
 
--- $Id$
+-- -- $Id$
 
 import Reporter
 

@@ -1,6 +1,6 @@
 module TRS.Position where
 
--- $Id$
+-- -- $Id$
 
 import TRS.Term
 

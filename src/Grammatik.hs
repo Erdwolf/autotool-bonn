@@ -5,7 +5,7 @@ module Grammatik
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Grammatik.Type
 

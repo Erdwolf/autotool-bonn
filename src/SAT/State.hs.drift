@@ -2,7 +2,7 @@
 
 module SAT.State where
 
--- $Id$
+-- -- $Id$
 
 import SAT.Types
 

@@ -1,6 +1,6 @@
 module JVM.Machine where
 
--- $Id$
+-- -- $Id$
 
 import Machine.Class
 

@@ -1,6 +1,6 @@
 module Grammatik.CF.Instance.Config where
 
--- $Id$
+-- -- $Id$
 
 import Language.Type
 import Grammatik.Type

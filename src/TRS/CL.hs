@@ -1,6 +1,6 @@
 module TRS.CL where
 
--- $Id$
+-- -- $Id$
 
 import TRS.System
 import TRS.Symbol

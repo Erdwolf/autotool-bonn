@@ -1,6 +1,6 @@
 module Language.Type
 
--- $Id$
+-- -- $Id$
 
 
 where

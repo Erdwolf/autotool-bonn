@@ -1,6 +1,6 @@
 module NFA.Equiv.Generate where
 
--- $Id$
+-- -- $Id$
 
 import NFA.Type
 

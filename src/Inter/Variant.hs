@@ -1,6 +1,6 @@
 module Inter.Variant where
 
--- $Id$
+-- -- $Id$
 
 import Inter.Types
 import Inter.Error

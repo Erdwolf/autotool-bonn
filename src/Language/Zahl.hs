@@ -1,6 +1,6 @@
 module Language.Zahl where
 
--- $Id$
+-- -- $Id$
 
 import Random
 

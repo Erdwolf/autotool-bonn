@@ -1,6 +1,6 @@
 module NPDA.Inter where
 
--- $Id$
+-- -- $Id$
 
 import NPDA.Type
 import qualified Machine.Acceptor.Type as A

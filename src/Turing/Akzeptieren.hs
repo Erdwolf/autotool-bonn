@@ -2,7 +2,7 @@ module Turing.Akzeptieren
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Turing
 import Turing.Konfiguration

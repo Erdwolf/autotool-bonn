@@ -1,6 +1,6 @@
 module NFA.Equiv.Core where
 
--- $Id$
+-- -- $Id$
 
 import NFA
 

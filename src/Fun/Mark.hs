@@ -1,6 +1,6 @@
 module Fun.Mark where
 
--- $Id$
+-- -- $Id$
 
 import Fun.Type
 import ToDoc

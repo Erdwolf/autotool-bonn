@@ -1,6 +1,6 @@
 module Multi.Selection where
 
--- $Id$
+-- -- $Id$
 
 import Multi.Config
 import Multi.Paths

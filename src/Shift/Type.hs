@@ -1,6 +1,6 @@
 module Shift.Type where
 
--- $Id$
+-- -- $Id$
 
 import Util.Size
 import ToDoc

@@ -1,6 +1,6 @@
 module SAT.Wert where
 
--- $Id$
+-- -- $Id$
 
 import SAT.Types
 import FiniteMap

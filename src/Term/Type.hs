@@ -1,6 +1,6 @@
 module Term.Type where
 
--- $Id$
+-- -- $Id$
 
 import ToDoc
 import FiniteMap

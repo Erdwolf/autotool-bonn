@@ -1,6 +1,6 @@
 module Language.IJK ( ijk ) where
 
--- $Id$
+-- -- $Id$
 
 import Language.Type
 import Language.Gleich

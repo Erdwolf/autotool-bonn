@@ -1,6 +1,6 @@
 module Shift.Computer where
 
--- $Id$
+-- -- $Id$
 
 import Shift.Type
 import Shift.Iterate

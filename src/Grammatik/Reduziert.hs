@@ -1,6 +1,6 @@
 module Grammatik.Reduziert 
 
--- $Id$
+-- -- $Id$
 
 ( reduziert
 , reduktion

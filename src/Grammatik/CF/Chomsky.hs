@@ -1,6 +1,6 @@
 module Grammatik.CF.Chomsky where
 
--- $Id$
+-- -- $Id$
 
 import qualified Grammatik.Type as G
 

@@ -1,6 +1,6 @@
 module Inter.Store where
 
--- $Id$
+-- -- $Id$
 
 import Util.Datei
 import qualified Posix

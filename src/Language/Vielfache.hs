@@ -1,6 +1,6 @@
 module Language.Vielfache
 
--- $Id$
+-- -- $Id$
 
 where
 

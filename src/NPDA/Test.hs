@@ -1,6 +1,6 @@
 module NPDA.Test
 
--- $Id$
+-- -- $Id$
 
 ( Config (..), Mod (..)
 , test

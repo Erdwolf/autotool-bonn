@@ -1,6 +1,6 @@
 module Inter.Validate where
 
--- $Id$
+-- -- $Id$
 
 import Inter.Types
 import qualified Inter.Param as P

@@ -1,6 +1,6 @@
 module Shift.Repeater 
 
--- $Id$
+-- -- $Id$
 
 ( repeater
 , clipper, clips

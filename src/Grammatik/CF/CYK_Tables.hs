@@ -1,6 +1,6 @@
 module Grammatik.CF.CYK_Tables 
 
--- $Id$
+-- -- $Id$
 
 ( module Simple_Set
 
@@ -11,29 +11,6 @@ module Grammatik.CF.CYK_Tables
 
 where
 
--- $Log$
--- Revision 1.3  2003-11-25 11:33:59  joe
--- Checker umgestellt
--- Chomsky nach subdir CF/
---
--- Revision 1.2  2003/11/25 09:49:49  joe
--- aufgaben zu grammatiken
---
--- Revision 1.1  2003/11/25 08:21:09  joe
--- moved CF-related files into subdir
---
--- Revision 1.1  2002/12/17 15:17:58  joe
--- grammatik -> Grammatik.
---
--- Revision 1.1.1.1  2002/05/24 10:46:47  challenger
--- start
---
--- Revision 1.2  2001/11/29 13:41:20  autotool
--- CF_advanced: besserer parser, härtere tests
---
--- Revision 1.1  2001/11/28 07:27:11  autotool
--- benutze DPL in CYK/CF_Chomsky
---
 
 import  Grammatik.CF.Chomsky
 

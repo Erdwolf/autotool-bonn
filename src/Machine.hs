@@ -1,6 +1,6 @@
 module Machine where
 
--- $Id$
+-- -- $Id$
 
 import Machine.Class
 import Machine.Vorrechnen

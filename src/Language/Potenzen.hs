@@ -1,6 +1,6 @@
 module Language.Potenzen
 
--- $Id$
+-- -- $Id$
 
 where
 

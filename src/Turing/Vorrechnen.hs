@@ -2,7 +2,7 @@ module Turing.Vorrechnen
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Turing
 import Turing.Konfiguration

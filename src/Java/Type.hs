@@ -1,6 +1,6 @@
 module Java.Type where
 
--- $Id$
+-- -- $Id$
 
 import ToDoc
 

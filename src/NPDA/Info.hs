@@ -1,6 +1,6 @@
 module NPDA.Info where
 
--- $Id$
+-- -- $Id$
 
 import NPDA.Type
 import NPDA.Konfiguration

@@ -1,6 +1,6 @@
 module Fun.Check where
 
--- $Id$
+-- -- $Id$
 
 import Fun.Type
 import qualified RAM.Builtin

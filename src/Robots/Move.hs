@@ -1,6 +1,6 @@
 module Robots.Move where
 
--- $Id$
+-- -- $Id$
 
 import Robots.Data
 import Robots.Konfig

@@ -1,6 +1,6 @@
 module Java.Parser where
 
--- $Id$
+-- -- $Id$
 
 import Java.Type
 

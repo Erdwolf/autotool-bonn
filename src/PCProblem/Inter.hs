@@ -1,6 +1,6 @@
 module PCProblem.Inter where
 
--- $Id$
+-- -- $Id$
 
 import PCProblem.Type
 import PCProblem.Verify

@@ -2,7 +2,7 @@ module NFA.Determine where
 
 -- vom NFA zum DFA
 
--- $Id$
+-- -- $Id$
 
 import NFA.Type
 import NFA.Eq

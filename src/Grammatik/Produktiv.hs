@@ -1,6 +1,6 @@
 module Grammatik.Produktiv 
 
--- $Id$
+-- -- $Id$
 
 ( produktiv
 )

@@ -1,6 +1,6 @@
 module Language.Cee where
 
--- $Id$
+-- -- $Id$
 
 import Language.Type
 

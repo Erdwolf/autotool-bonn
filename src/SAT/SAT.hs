@@ -4,7 +4,7 @@
 -- Autor: Mohammad Esad-Djou
 -- bss98aou@studserv.uni-leipzig.de
 
--- $Id$
+-- -- $Id$
 
 -- Gegeben: Aussagenlogik Formel F in konjunktive Normalform 
 --         (mit genau 3 Konjunktionsgliedern)

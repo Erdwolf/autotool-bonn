@@ -1,6 +1,6 @@
 module Pump.CF
 
--- $Id$
+-- -- $Id$
 
 ( Zerlegung (..)
 , Pump (..)

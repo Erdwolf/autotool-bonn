@@ -3,7 +3,7 @@
 module NPDA.Type
 
 -- nicht-deterministischer Kellerautomat
--- $Id$
+-- -- $Id$
 
 ( module NPDA.Type
 , module Sets

@@ -3,7 +3,7 @@
 -- autor Markus Kreuz
 -- mai99byv@studserv.uni-leipzig.de
 
--- $Id$
+-- -- $Id$
 
 module PCProblem.Type 
 

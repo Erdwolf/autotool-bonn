@@ -1,6 +1,6 @@
 module Grammatik.Check 
 
--- $Id$
+-- -- $Id$
 
 -- simpler test: einige wörter ableiten
 -- und prüfen, ob sie zur sprache gehören

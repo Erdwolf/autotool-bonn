@@ -1,6 +1,6 @@
 module Grammatik.CF.Kettenfrei where
 
--- $Id$
+-- -- $Id$
 
 import Grammatik.Type
 

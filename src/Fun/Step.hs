@@ -1,6 +1,6 @@
 module Fun.Step where
 
--- $Id$ 
+-- -- $Id$ 
 
 -- auswertung durch (top-)rewriting (mit cache)
 

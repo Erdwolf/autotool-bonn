@@ -1,6 +1,6 @@
 module Shift.Generate 
 
--- $Id$
+-- -- $Id$
 
 where
 

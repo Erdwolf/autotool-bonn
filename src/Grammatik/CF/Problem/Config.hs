@@ -1,6 +1,6 @@
 module Grammatik.CF.Problem.Config where
 
--- $Id$
+-- -- $Id$
 
 import Reporter.Type
 import Language.Type

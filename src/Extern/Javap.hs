@@ -2,7 +2,7 @@
 -- sollte später zerlegt und generalisiert werden
 -- falls es sich denn lohnen sollte
 
--- $Id$
+-- -- $Id$
 
 module Extern.Javap where
 

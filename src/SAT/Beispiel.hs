@@ -1,6 +1,6 @@
 module SAT.Beispiel where
 
--- $Id$
+-- -- $Id$
 
 import SAT.Types
 

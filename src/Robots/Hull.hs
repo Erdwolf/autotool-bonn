@@ -1,6 +1,6 @@
 module Robots.Hull where
 
--- $Id$
+-- -- $Id$
 
 import Robots.Data
 import Robots.Konfig

@@ -1,6 +1,6 @@
 module HTMLshortcuts where
 
--- $Id$
+-- -- $Id$
 
 import Prelude hiding ( span, head, div, map )
 import qualified Prelude

@@ -1,6 +1,6 @@
 module RAM.Check where
 
--- $Id$
+-- -- $Id$
 
 import RAM.Type
 import RAM.Builtin

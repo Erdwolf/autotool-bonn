@@ -1,6 +1,6 @@
 module Sortier.Netz.Bild where
 
--- $Id$
+-- -- $Id$
 
 import Sortier.Netz.Type
 import Sortier.Netz.Example

@@ -1,6 +1,6 @@
 module Turing.Konfiguration where
 
--- $Id$
+-- -- $Id$
 
 import Machine.History
 

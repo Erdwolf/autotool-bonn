@@ -1,6 +1,6 @@
 module NPDA.Beispiel where
 
--- $Id$
+-- -- $Id$
 
 -- Skript Seite 56
 

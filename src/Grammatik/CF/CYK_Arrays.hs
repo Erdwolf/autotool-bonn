@@ -1,6 +1,6 @@
 module Grammatik.CF.CYK_Arrays
 
--- $Id$
+-- -- $Id$
 
 
 ( module Simple_Set

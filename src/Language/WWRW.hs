@@ -1,6 +1,7 @@
--- $Header$
-
 module WWRW 
+
+-- -- $Id$
+
 
 ( wwrw
 )

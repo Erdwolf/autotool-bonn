@@ -1,6 +1,6 @@
 module Machine.Fun
 
--- $Id$
+-- -- $Id$
 
 ( fun_test
 , numerical_test

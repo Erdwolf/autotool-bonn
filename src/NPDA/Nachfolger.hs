@@ -1,6 +1,6 @@
 module NPDA.Nachfolger 
 
--- $Id$
+-- -- $Id$
 
 ( nachfolger
 , folgekonfigurationen -- brauchen wir nicht?

@@ -1,6 +1,6 @@
 module Term.Rewrite where
 
--- $Id$
+-- -- $Id$
 
 import Term.Type
 import Term.Match

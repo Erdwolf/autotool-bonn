@@ -6,7 +6,7 @@ module Machine.Numerical
 
 where
 
--- $Id$
+-- -- $Id$
 
 import Machine.Numerical.Type
 import Machine.Numerical.Inter

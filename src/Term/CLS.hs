@@ -1,6 +1,6 @@
 module Term.CLS where
 
--- $Id$
+-- -- $Id$
 
 -- untersuche, ob CL(S) rückwärts change-bounded ist
 -- falls ja, dann wäre das ein argument für REG-erhaltung

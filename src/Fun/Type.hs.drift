@@ -8,7 +8,7 @@ module Fun.Type
 
 where
 
--- $Id$
+-- -- $Id$
 
 import ToDoc
 import Reader

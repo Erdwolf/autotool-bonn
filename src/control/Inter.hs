@@ -2,7 +2,7 @@ module Main where
 
 -- ist eine Kopie von autoan.hs (von Alf)
 
--- $Id$
+-- -- $Id$
 
 import IO
 import HTMLMonad 

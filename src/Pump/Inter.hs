@@ -1,6 +1,6 @@
 module Pump.Inter where
 
--- $Id$
+-- -- $Id$
 
 import Pump.Type
 import Pump.Positiv

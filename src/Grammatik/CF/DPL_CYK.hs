@@ -1,6 +1,6 @@
 module Grammatik.CF.DPL_CYK 
 
--- $Id$
+-- -- $Id$
 
 ( accepted, accepteds )
 

@@ -2,7 +2,7 @@ module Language.AK
 
 -- formeln des aussagenkalküls
 
--- $Id$
+-- -- $Id$
 
 
 ( form

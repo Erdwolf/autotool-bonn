@@ -1,6 +1,6 @@
 module Grammatik.Generate 
 
--- $Id$
+-- -- $Id$
 
 ( generate )
 

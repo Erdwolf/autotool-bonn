@@ -1,6 +1,6 @@
 module NPDA.Vorganger 
 
--- $Id$
+-- -- $Id$
 
 ( vorganger
 , vorganger_konfigurationen -- brauchen wir nicht?

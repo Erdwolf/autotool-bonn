@@ -1,6 +1,6 @@
 module RAM.Machine where
 
--- $Id$
+-- -- $Id$
 
 import Machine.Class
 
