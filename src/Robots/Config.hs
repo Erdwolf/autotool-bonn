@@ -1,6 +1,7 @@
 module Robots.Config 
 
 ( Config -- abstract
+, breit
 , make, geschichte
 , move, remove, addZug
 , look, robots
@@ -19,6 +20,7 @@ import Autolib.FiniteMap
 import Autolib.Set
 
 import Autolib.ToDoc
+import Autolib.Hash
 import Autolib.Reader
 import Autolib.Xml
 import Autolib.Reporter
@@ -27,32 +29,48 @@ import Data.List (partition)
 import Control.Monad ( guard )
 import Data.Maybe ( isJust, maybeToList, fromMaybe )
 import Data.Typeable
+import Data.Int
 
-
-data Config = Config { inhalt :: FiniteMap String Robot
+data Config = Config { c_hash :: Int32
+		     , inhalt :: FiniteMap String Robot
+		     , breit :: Integer
 		     , geschichte :: [ Zug ]
 		     }
      deriving ( Typeable )
 
+
 make :: [ Robot ] -> Config
-make rs = Config 
-	{ inhalt = listToFM $ do 
+make rs = 
+    let i = listToFM $ do 
 	      r <- rs
 	      return ( name r, r )
+    in  Config 
+	{ c_hash = hash i
+	, inhalt = i
+	, breit = maximum $ do 
+               r <- rs 
+	       let (x,y) = position r
+	       map abs [x,y]
 	, geschichte = []
 	}
 
 -- | fort damit (into outer space)
 remove :: String -> Config -> Config
-remove n k = k { inhalt = delFromFM (inhalt k) n
-		 }
+remove n k = 
+    let i = delFromFM (inhalt k) n
+    in  k { inhalt = i
+	  , c_hash = hash i
+	  }
+
 -- | auf neue position
 move :: (String, Position) -> Config -> Config
 move (n, p) k = 
     let i = inhalt k
-    in  k { inhalt = addToFM i n 
+        j = addToFM i n 
 	      $ let r = fromMaybe ( error "Robots.Move.move" ) ( lookupFM i n )
 		in  r { position = p }
+    in  k { inhalt = j
+	  , c_hash = hash j
 	  }
 
 addZug :: Zug -> Config -> Config
@@ -72,13 +90,15 @@ instance Container Config [ Robot ] where
     pack = robots
     unpack = make
 
+instance Hash Config where hash = c_hash
+
 -- | die mit ziel werden echt verglichen,
 -- | von den anderen nur die positionen
-essence :: Config -> ( Set Robot, Set Position )
+essence :: Config -> ( Int32, Set Robot, Set Position )
 essence k = 
     let rs = robots k
 	(zs, ns) = partition ( isJust . ziel ) rs
-    in	(mkSet zs, mkSet $ map position ns)
+    in	(hash k, mkSet zs, mkSet $ map position ns)
 
 instance Ord Config where
     compare k l = compare (essence k) (essence l)
@@ -88,10 +108,10 @@ instance Eq Config where
 -----------------------------------------------------------------
 
 look :: Config -> String -> Maybe Robot
-look (Config k g) n = lookupFM k n
+look c n = lookupFM (inhalt c) n
 
 robots :: Config -> [ Robot ]
-robots (Config k g) = eltsFM k 
+robots c = eltsFM (inhalt c) 
 
 positions :: Config -> [ Position ]
 positions = map position . robots

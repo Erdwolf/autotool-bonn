@@ -44,7 +44,7 @@ make ( p :: p ) ( conf :: conf ) =
                    k <- cache 
 	               (  Datei { pfad = [ "autotool", "cache"
 			   , toString vnr
-			   , fromMaybe "testing" $ fmap toString manr
+			   , fromMaybe (show $ toDoc p) $ fmap toString manr
 			     ]
 		          , name = key
 			  , extension = "cache" 

@@ -8,65 +8,45 @@ import Robots.Solver
 import Robots.Nice
 
 import Autolib.Util.Splits
+import Autolib.Util.Zufall
 import Autolib.ToDoc
 
-import Challenger
+import Robots.Quiz
+import Inter.Quiz
+
 import Data.List ( intersperse )
+import Data.Array ( range )
 
 import Random
 import IO
 import IORef
 
 -- | erzeugt eine konfiguration mit n robots,
--- ohne ziele, alle im bereich (-w, -w) .. (+w, +w)
-some :: Int -> Integer -> IO Config
-some n w = do
-    let punkt = do 
-	    x <- randomRIO (-w, w) ; y <- randomRIO (-w, w); return (x,y)
-    let rob c = do
-	    p <- punkt
-	    return $ Robot { name = [c] , position = p, ziel = Nothing }
-    rs <- mapM rob $ take n [ 'A' .. ]
-    return $ make rs
+-- alle im bereich (-w, -w) .. (+w, +w)
+some :: Int -> [(Integer,Integer)] -> IO Config
+some n pos = do
+    let rob (c, p) = Robot { name = [c] , position = p, ziel = Nothing }
+    tgt : ps <- selektion (succ n) pos
+    let rs = map rob $ take n $ zip [ 'A' .. ] ps
+    i <- randomRIO (0, n-1)
+    let ( pre, x : post ) = splitAt i rs
+    return $ Robots.Config.make $ pre ++ [ x { ziel = Just tgt } ] ++ post
 
-form :: Config -> [ Zug ] -> Einsendung Robots Config [ Zug ]
-form k zs = 
-    Aufgabe { problem = Robots
-	    , instanz = k
-	    , beweis = zs
-	    }
+sol :: Int -> Int -> [(Integer,Integer)] -> IO ( Config, [[Zug]] )
+sol sw n pos = do
+    c <- some n pos
+    return ( c, shortest' sw c )
 
--- | nimmt eine konfiguration und setzt bei einem roboter
--- das ziel auf (0,0)
-somes :: Config -> [ Config ]
-somes k = do
-    ( pre, x : post ) <- splits $ robots k
-    return $ make $ pre ++ [ x { ziel = Just (0,0) } ] ++ post
+instance Generator Robots RC ( Config, [Zug] ) where
+    generator p rc key = do
+       let w = width rc
+	   pos = range ((-w,-w), (w,w))
+       ( i, zss ) <- sol (search_width rc) (num rc) pos
+           `repeat_until` \ ( c, zss ) -> case zss of
+	       []      -> False
+	       zs : _  -> at_least rc <= length zs
+       return ( i, head zss )
 
-----------------------------------------------------------------------------
-
-action :: IORef Int -> Int -> Integer -> IO ()
-action top n w = do
-    k0 <- some n w
-    sequence_ $ do
-        k <- somes k0
-        return $ do
-	    -- print k
-            t <- readIORef top
-	    case shortest k of
-	        zs : _ | length zs >= t -> do 
-                    let l = length zs
-                    writeIORef top l
-		    let d = vcat [ toDoc l
-				 , toDoc $ form k zs
-				 , nice k
-				 ]
-		    print d
-                    let fname = concat 
-			      $ intersperse "-" 
-			      [ "robots", show n, show w, show l ]
-		    appendFile fname $ show d
-		_	-> putStr "*"
-	    hFlush stdout
-
+instance Project Robots ( Config, [Zug] ) Config where
+   project p ( c, zs ) = c
 

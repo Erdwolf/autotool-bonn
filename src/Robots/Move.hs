@@ -21,6 +21,9 @@ offset O = ( 1, 0 )
 offset S = ( 0,-1 )
 offset W = (-1, 0 )
 
+gegen d = case d of
+    N -> S; S -> N; W -> O; O -> W
+
 blocking d (px,py) (qx,qy) = 
     let (dx, dy) = offset d
     in	if 0 == dx 
@@ -52,7 +55,30 @@ execute k z @ ( n, d ) = do
 			 -- Roboter mit Ziel darf nicht verschwinden
 			 Just z  -> Nothing  
 	 Just p  -> return $ addZug z $ move   (n, p) k
-	
+
+reverse_executes :: Config -> Zug -> [ Config ]
+reverse_executes k z @ (n, d) = do
+    r <- maybeToList $ look k n
+    let p @ (x,y) = position r
+        d' = gegen d
+	(dx', dy') = offset d'
+    case slide k p d of
+         Just q | q == p -> do
+             -- ist blockiert in richtung d,
+	     -- könnte also von gegenüber gekommen sein
+             let st = case slide k p d' of
+                   Nothing -> ( if 0 == dx' then x else breit k * dx'
+			      , if 0 == dy' then y else breit k * dy'
+			      )
+		   Just q  -> q
+	     zw <- zwischen d' p st 
+             return $ move (n, zw) k
+         _ -> []
+
+zwischen d p @ (x,y) st = drop 1 $ takeWhile (/= st) $ do
+    let (dx, dy) = offset d
+    k <- [ 0 .. ]
+    return (x + k*dx, y + k*dy)
 
 executes :: Config -> [ Zug ] -> Reporter Config    
 executes k [] = do
@@ -63,4 +89,6 @@ executes k (z : zs) = do
     case Robots.Move.execute k z of
 	   Nothing -> reject $ text "nicht erlaubt" 
 	   Just k' -> executes k' zs
+
+
 

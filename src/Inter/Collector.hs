@@ -27,5 +27,6 @@ makers = [ NFA.Analyse.make
 	 , Graph.Nachbar.make
 	 , Graph.Cross.make
 	 , Robots.Interface.make
+	 , Robots.Interface.qmake
 	 ]
 

@@ -7,6 +7,7 @@ module Robots.Data where
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
+import Autolib.Hash
 
 import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
@@ -24,6 +25,9 @@ data Robot = Robot { name :: String
      deriving ( Eq, Ord, Typeable )
 
 {-! for Robot derive : Reader, ToDoc, Haskell2Xml !-}
+
+instance Hash Robot where
+    hash r = hash ( name r, position r, ziel r )
 
 data Richtung = N | O | S | W 
      deriving ( Eq, Ord, Enum, Bounded, Typeable )
