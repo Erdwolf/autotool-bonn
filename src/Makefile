@@ -5,7 +5,7 @@
 
 # DIRS = $(BINDIR) $(EXERCISEDIRS)
 
-DIRS = util:fa:wash
+DIRS = util:fa:wash:control:challenger:bridge
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
@@ -24,10 +24,11 @@ CGIS = SRS/Deleting/Demo.cgi \
 
 CGIINDEX = SRS/Interface/index.html
 
-CGIDIR = $(HOME)/public_html/bounded
+PUB =  $(HOME)/public_html
+CGIBIN = $(PUB)/cgi-bin
 
-# location of DB script
-# WWW = $(HOME)/public_html/db
+CGIDIR = $(PUB)/bounded
+
 
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
 
@@ -61,11 +62,14 @@ tags :
 
 drift : $(DRIFT) 
 
-# www : DB/CGI.cgi
-#	cp DB/CGI.cgi DB/index.html $(WWW)/
-
 cgi : $(CGIS)
 	cp $(CGIS) $(CGIINDEX) $(CGIDIR)
+
+quiz : Graph/Quiz.cgi
+	cp $< $(CGIBIN)/
+
+check : Inter/Check.cgi
+	cp $< $(CGIBIN)/
 
 .PHONY : do
 

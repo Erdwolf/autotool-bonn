@@ -9,6 +9,8 @@ where
 -- $Id$
 
 import CGI hiding ( empty )
+import Prelude hiding ( span,map, head, div )
+import qualified Prelude
 
 --
 newtype Type = ATPasswort { unATPasswort :: String }

@@ -1,5 +1,10 @@
 module Helper where
 
+-- $Id$
+
+import Prelude
+import qualified Prelude ( map )
+
 import Char -- toLower
 
 data StrOrInt = S String | I Int deriving ( Show , Read )

@@ -3,7 +3,7 @@ module Inter.Types where
 -- $Id$
 
 import Reporter
-import Challenger
+import Challenger ( Problem (..), Partial (..) )
 import Step
 
 import ShowFunctions

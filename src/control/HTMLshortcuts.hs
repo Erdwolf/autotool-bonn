@@ -2,6 +2,9 @@ module HTMLshortcuts where
 
 -- $Id$
 
+import Prelude hiding ( span, head, div, map )
+import qualified Prelude
+
 import qualified Passwort
 
 import IO
@@ -31,7 +34,10 @@ textOrInt (S s ) = td $ text s
 -- Helper Button ([>] str)
 smallSubButton subParm subAktion str =
 -- 	smallSubButton2 subParm subAktion str (ttxt "")
-	tr $ td $ (attr "colspan" "2") >> ( ( submit subParm subAktion (fieldVALUE ">>")) >> text ( "  " ++ str ) )
+	tr $ td $ (attr "colspan" "2") >> ssb subParm subAktion str 
+
+ssb subParm subAktion str = 
+   ( ( submit subParm subAktion (fieldVALUE ">>")) >> text ( "  " ++ str ) )
 
 -- smallSubButton2 subParm subAktion str tdd = 
 -- 	tr $ td td1 >> tdd
