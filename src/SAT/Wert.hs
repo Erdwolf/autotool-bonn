@@ -3,7 +3,7 @@ module SAT.Wert where
 -- -- $Id$
 
 import SAT.Types
-import Data.FiniteMap
+import Autolib.FiniteMap
 import Control.Monad ( mzero )
 
 class Wert a where 
