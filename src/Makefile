@@ -55,6 +55,7 @@ HADDOCK_DIRS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
 	SRS TES Baum NFTA Exp Graph GVKnoten Util Scorer \
 	ws03 util 
 # control? challenger?
+
 HADDOCK_FILES = *.hs
 HADDOCK_OUTPUT = $(PUB)/autotool/haddock
 HADDOCK = haddock
