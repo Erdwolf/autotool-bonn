@@ -15,8 +15,13 @@ import ToDoc
 vorrechnen :: TUM y z
 	   => Turing y z -> [y]
 	   -> Reporter ()
-vorrechnen a xs = do
-    let cut = 10
+vorrechnen a xs = vorrechnen_cut 10 a xs
+
+vorrechnen_cut :: TUM y z
+	   => Int 
+	   -> Turing y z -> [y]
+	   -> Reporter ()
+vorrechnen_cut cut a xs = do
     inform $ fsep [ text "mit Eingabe", toDoc xs
 		  , text "erreicht der Automat folgende Konfigurationen:"
 		  , parens (text "ich zeige maximal die ersten" 
