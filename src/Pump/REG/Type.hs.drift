@@ -1,0 +1,46 @@
+-- -*- mode: haskell -*-
+
+module Pump.REG.Type where
+
+-- $Id$
+
+
+
+
+import Size
+import Reader
+import ToDoc
+
+
+import Util.Splits
+import Monad (guard)
+
+
+data Zerlegung = Zerlegung
+	       { u :: String, v :: String, w :: String }
+     deriving (Eq, Ord)
+
+{-! for Zerlegung derive: ToDoc, Reader !-}
+
+instance Show Zerlegung where show = render . toDoc
+instance Read Zerlegung where readsPrec = parsec_readsPrec
+
+--------------------------------------------------------------------------
+
+zerlegungen :: String -> Int -> [ Zerlegung ]
+-- alle Zerlegungen mit |uv| <= n, |v| > 0
+zerlegungen p n = do
+    ( ab, c ) <- take n $ splits p
+    ( a, b  ) <- splits ab
+    guard $ not (null b)
+    return $ Zerlegung { u = a, v = b, w = c }
+
+aufpump :: Zerlegung -> Int -> String
+aufpump g i =  u g
+	 ++ concat ( replicate i $ v g )
+	 ++ w g
+
+
+
+
+

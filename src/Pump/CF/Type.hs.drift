@@ -1,0 +1,24 @@
+-- -*- mode: haskell -*-
+
+module Pump.CF.Type where
+
+-- $Id$
+
+import Size
+import Reader
+import ToDoc
+
+
+data Zerlegung = Zerlegung
+	       { u :: String, v :: String
+	       , x :: String, y :: String, z :: String }
+     deriving (Eq, Ord)
+
+{-! for Zerlegung derive: Reader, ToDoc !-}
+
+
+instance Show Zerlegung where show = render . toDoc
+instance Read Zerlegung where readsPrec = parsec_readsPrec
+
+
+

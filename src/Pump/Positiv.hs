@@ -12,15 +12,12 @@ import Language.Type
 import Util.Seed
 import ToDoc
 import Size
-import Monad (guard)
-import Right
-import Wrong
-import Auswertung
+import Control.Monad ( guard )
 
 import Reporter
 import FiniteMap
 import Set
-import List (sort, nub)
+import List ( sort, nub )
 import Maybe ( isNothing )
 
 positiv :: Pumping z

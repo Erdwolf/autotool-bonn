@@ -4,7 +4,6 @@ module Pump.REG
 
 ( Zerlegung (..)
 , Pump (..)
-, module FiniteMap
 )
 
 where
@@ -12,15 +11,13 @@ where
 -------------------------------------------------------------------
 
 import Pump.Type
+import Pump.REG.Type
 
 import Util.Splits
-import FiniteMap
+import Data.FiniteMap
 import Reporter
 import ToDoc
 
-data Zerlegung = Zerlegung
-               { u :: String, v :: String, w :: String }
-     deriving (Read, Eq, Ord)
 
 instance Pumping Zerlegung where
     tag z = "Pump-Eigenschaft für reguläre Sprachen"
@@ -48,15 +45,7 @@ instance Pumping Zerlegung where
 
     exempel = Zerlegung { u = "", v = "", w = "" }
 
-instance ToDoc Zerlegung where
-    toDoc g =
-         let teile = do
-                 (name, wert) <- [ ("u", u g), ("v", v g), ("w", w g) ]
-                 return $ text name <+> equals <+> toDoc wert
-         in      text "Zerlegung"
-             <+> braces ( fsep $ punctuate comma $ teile )
 
-instance Show Zerlegung where show = render . toDoc
 
 
     

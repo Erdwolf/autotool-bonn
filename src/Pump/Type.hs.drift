@@ -15,7 +15,7 @@ import Data.FiniteMap
 
 --------------------------------------------------------------------------
 
-class ( Ord z,  Show z, ToDoc z, ToDoc [z] ) => Pumping z where
+class ( Ord z,  Show z, ToDoc z, ToDoc [z], Reader z ) => Pumping z where
     tag :: z -> String
     tag_show :: z -> String
     admissable :: Int -> z -> Reporter ()
@@ -42,7 +42,7 @@ data Pumping z =>
 
 instance Pumping z => Show ( Pump z ) where 
     show = render . toDoc
-instance Reader z => Read ( Pump z ) where
+instance Pumping z => Read ( Pump z ) where
     readsPrec = parsec_readsPrec
 
 

@@ -12,17 +12,13 @@ where
 -------------------------------------------------------------------
 
 import Pump.Type
+import Pump.CF.Type
 
 import Util.Splits
 import FiniteMap
 import Reporter
 import ToDoc
 
-
-data Zerlegung = Zerlegung
-	       { u :: String, v :: String
-	       , x :: String, y :: String, z :: String }
-     deriving (Read, Eq, Ord)
 
 instance Pumping Zerlegung where
     tag z = "Pump-Eigenschaft für kontextfreie Sprachen"
@@ -56,17 +52,8 @@ instance Pumping Zerlegung where
 	guard $ not $ null $ a ++ c
 	return $ Zerlegung { u = links, v = a, x = b, y = c, z = rechts }
 
--------------------------------------------------------------------------
 
-instance ToDoc Zerlegung where
-    toDoc g = 
-	 let teile = do
-	         (name, wert) <- [ ("u", u g), ("v", v g), ("x", x g), ("y", y g), ("z", z g) ]
-		 return $ text name <+> equals <+> toDoc wert
-	 in      text "Zerlegung" 
-	     <+> braces ( fsep $ punctuate comma $ teile )
 
-instance Show Zerlegung where show = render . toDoc
 
 
     

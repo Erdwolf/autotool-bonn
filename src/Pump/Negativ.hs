@@ -22,21 +22,22 @@ import Size
 
 negativ :: Pumping z 
 	=> Language -> Pump z 
-	-> z
         -> Reporter Int
-negativ l p @ Nein {} fodder = do
+negativ l ( p @ Nein {} :: Pump z ) = do
 
     let checked =  [ 1, 2, 4, 8, 10 ]
 
     inform $ vcat $ map text
 	     [ "Guten Tag. Sie möchten nachweisen, daß die Sprache "
 	     , show l
-	     , "die " ++ tag fodder ++ " NICHT erfüllt."
+	     , "die " ++ tag ( undefined :: z ) ++ " NICHT erfüllt."
 	     , ""
 	     , "Sie behaupten, zu jeder Zahl n > 0"
 	     , "gibt es ein Wort  p  in L  mit  |p| >= n,"
-	     , "so daß zu jeder gültigen Zerlegung  p = " ++ tag_show fodder
-	     , "ein  i  existiert mit  " ++ inflate_show_i fodder ++ " not in L."
+	     , "so daß zu jeder gültigen Zerlegung  p = " 
+	       ++ tag_show ( undefined :: z )
+	     , "ein  i  existiert mit  " 
+	       ++ inflate_show_i ( undefined :: z ) ++ " not in L."
 	     , ""
 	     , "Dazu sollen Sie mir für jedes  n  aus " ++ render (toDoc checked)
 	     , "ein solches Wort  p  angeben."
@@ -46,7 +47,7 @@ negativ l p @ Nein {} fodder = do
 	     ]
 
     newline
-    mapM_ ( report l p fodder ) checked
+    mapM_ ( report l p ) checked
 
 
     inform $ vcat $ map text
@@ -57,9 +58,9 @@ negativ l p @ Nein {} fodder = do
 ----------------------------------------------------------------------------
 
 report :: Pumping z 
-       => Language -> Pump z -> z -> Int 
+       => Language -> Pump z -> Int 
        -> Reporter ()
-report l neg @ Nein {} ( fodder :: z ) n = do
+report l ( neg @ Nein {} :: Pump z ) n = do
     let pre1 = "Ich wähle  n = " ++ show n
 	mw @ ~ (Just w) = lookupFM (wort neg) n
 	pre2 = "Sie wählen  p = " ++ show w
@@ -94,7 +95,7 @@ report l neg @ Nein {} ( fodder :: z ) n = do
 		  ]
           ) zs
     inform $ text $ "OK. Für jede Zerlegung gibt es ein  i  mit  " 
-	       ++ inflate_show_i fodder  ++ " not in L."
+	       ++ inflate_show_i ( undefined :: z )  ++ " not in L."
     newline
 
 
