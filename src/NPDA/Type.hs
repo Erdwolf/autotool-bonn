@@ -23,12 +23,24 @@ import Maybe
 import Reporter
 
 data Modus z = Leerer_Keller | Zustand (Set z) 
-     deriving (Show, Read)
+
+instance (Ord z, Read z) => Read ( Modus z ) where
+    readsPrec p cs = do
+        ( k, cs ) <- lex cs
+	if k == "Leerer_Keller"
+	   then return ( Leerer_Keller, cs )
+	 else if k == "Zustand" then do
+	   readParen False ( \ cs -> do
+	       ( zs, cs	) <- reads cs
+	       return ( Zustand zs , cs ) ) cs
+	 else
+	   mzero
 
 instance ToDoc [z] => ToDoc (Modus z) where
      toDoc Leerer_Keller = text "Leerer_Keller"
-     toDoc ( Zustand zs ) = text "Zustand" <+> parens (toDoc zs)
-
+     toDoc ( Zustand zs ) = text "Zustand" <+> parens ( toDoc zs )
+instance ToDoc [z] => Show (Modus z) where
+     show = render . toDoc
 
 data NPDA x y z = 
      NPDA { eingabealphabet  :: Set x 
