@@ -8,6 +8,8 @@ import Inter.Types
 import Inter.Errmsg
 import qualified Inter.Param as P
 
+import Control.Types ( Wert (..) )
+
 import qualified  Challenger 
 
 import Autolib.Reporter.Type
@@ -18,7 +20,8 @@ evaluate :: ( Reader b
 	    , ToDoc b
 	    , Challenger.Partial p i b
 	    )
- 	    => p -> i -> String -> Reporter Integer
+ 	    => p -> i -> String 
+	    -> Reporter Wert
 evaluate p i cs =
     case parse (parse_complete reader) "input" cs of
          Left e -> do
@@ -33,11 +36,10 @@ evaluate' p i b = do
        Challenger.partial     p i b
        Challenger.demonstrate p i b
        inform $ text "total korrekt?"
-       Challenger.total       p i b
-       let m = Challenger.measure p i b 
-       inform $ text "Lösung ist korrekt und hat Größe" 
-	      <+> toDoc m
-       return $ m
+       code <- Challenger.total_neu       p i b
+       -- let m = Challenger.measure p i b 
+       inform $ text "Bewertung der Einsendung:" <+> toDoc code
+       return $ code
 
 
     

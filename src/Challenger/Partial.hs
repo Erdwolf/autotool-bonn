@@ -8,6 +8,8 @@ import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
 
+import Control.Types ( Wert (..) )
+
 class Measure p i b where
       measure :: p -> i -> b -> Integer
 
@@ -55,3 +57,12 @@ class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
       -- | alles richtig?
       -- vorher wird immer erst partial angewendet
       total   :: p -> i -> b -> Reporter ()
+
+      -- | liefert (in jedem Fall) einen Wert
+      total_neu :: p -> i -> b -> Reporter Wert
+      total_neu p i b = do
+          mres <- wrap $ total p i b
+	  return $ case mres of
+	       Nothing -> No
+	       Just () -> Ok $ measure p i b
+ 

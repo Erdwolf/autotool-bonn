@@ -6,37 +6,42 @@ import Util.Datei
 import qualified System.Posix
 import qualified Inter.Param as P
 
-import Control.Types (toString, fromCGI, File)
+import Control.Types (toString, fromCGI, File, Wert(..))
 import Control.Monad ( when )
 import Inter.Logged
 
 import Data.Maybe
+import Data.Char
+
+data Type = Input | Report deriving ( Eq, Ord, Show )
 
 -- | alles: speichert in "latest.input"
 -- d. h. überschreibt immer
 -- zur sicherheit auch: von richtigen einsendungen: speicher in "$pid.input"
 -- d. h. eigentlich kein überschreiben
-store ::  P.Type -> Maybe Integer -> IO ( String, File )
-store p mres = logged "Inter.store" $ do
+store :: Type -> P.Type -> IO ( String, File )
+store ty p = logged "Inter.store" $ do
     pid <- fmap show $ System.Posix.getProcessID 
-    let flag = isJust mres
+    let flag = case P.result p of Ok _ -> True ; _ -> False
+        thing = case ty of Input -> P.input p ; Report -> show $ P.report p
     when flag $ do
-        schreiben ( location p pid flag ) $ P.input p
+        logged "Inter.store.schreiben" 
+           $ schreiben ( location ty p pid flag ) $ thing
         return ()
-    f <- schreiben ( location p "latest" flag ) $ P.input p
+    f <- schreiben ( location ty p "latest" flag ) $ thing
     return ( pid , fromCGI f )
 
-latest :: P.Type -> IO String
-latest p = logged "Inter.latest" $ do
-    lesen ( location p "latest" False ) 
+latest :: Type -> P.Type -> IO String
+latest ty p = logged "Inter.latest" $ do
+    lesen ( location ty p "latest" False ) 
 
-load :: P.Type -> String -> Bool -> IO String
-load p pid flag = logged "Inter.load" $ do
-    lesen ( location p pid flag )
+load :: Type -> P.Type -> String -> Bool -> IO String
+load ty p pid flag = logged "Inter.load" $ do
+    lesen ( location ty p pid flag )
     
 
-location :: P.Type -> String -> Bool -> Datei
-location p pid flag =  
+location :: Type -> P.Type -> String -> Bool -> Datei
+location ty p pid flag =  
     Datei { pfad = [ "autotool", "done"
 			    , toString $ P.vnr p
 		            , toString $ P.anr p
@@ -44,5 +49,5 @@ location p pid flag =
 			    , if flag then "OK" else "NO"
 			    ]
                    , name = pid
-		   , extension = "input" 
+		   , extension = map toLower $ show ty
 		   } 

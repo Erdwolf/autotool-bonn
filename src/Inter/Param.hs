@@ -3,11 +3,13 @@ module Inter.Param where
 --   $Id$
 
 import qualified Control.Passwort 
+import Control.Types ( Wert )
 
 import Inter.Types ( Variant, Make )
 import Inter.Click
 import Control.Types
 
+import qualified Text.Html
 
 -- | CGI - Zustands-Daten
 data Type = 
@@ -24,6 +26,9 @@ data Type =
 	  , remark :: Remark
 
           , input    :: String
+          , result    :: Wert
+          , report    :: Text.Html.Html
+
 	  , wahl :: String -- ^ vorige aufgabe
 	  , click    :: Click
             -- | after login key for DB
@@ -62,6 +67,9 @@ empty  = Param { makers = []
 	      , remark = error "Param.empty.remark"
 
               , input  = ""
+	      , report = Text.Html.noHtml
+	      , result = Pending
+
 	      , wahl = ""
 	      , click = Example
               , ident    = error "Param.empty.ident"

@@ -16,7 +16,6 @@ one :: Config -> IO ( Integer, P.Parameter )
 one conf = do
     x <- randomRIO ( min_start conf, max_start conf )
     let pair =  ( x, P.compute x )
-    when debug $ appendFile "/tmp/tool.log" $ show pair
     return pair
 
 conforms :: Config -> P.Parameter -> Bool

@@ -11,6 +11,7 @@ import Inter.Make
 import Inter.Bank
 import Inter.Store 
 import Inter.Login
+import Inter.Logged
 import qualified Inter.Param as P
 
 import Control.Types 
@@ -48,7 +49,7 @@ import Data.List ( partition )
 import Control.Monad
 import qualified Control.Exception
 
-import Text.Html ( Html )
+import Text.Html ( Html, primHtml )
 
 main :: IO ()
 main = Inter.CGI.execute "Super.cgi" 
@@ -106,9 +107,9 @@ iface mks = do
                       return auf
     stud' <- get_stud tutor stud
     hr
-    ( cs, res ) <- solution vnr manr stud' mk auf' 
+    ( cs, res, com ) <- solution vnr manr stud' mk auf' 
     -- bewertung in DB (für Stud-Variante)
-    when ( not tutor ) $ punkte stud' auf' ( cs, res )
+    when ( not tutor ) $ punkte stud' auf' ( cs, res, com )
     -- when ( not tutor ) $ statistik stud' aufs
     return ()
 
@@ -219,6 +220,8 @@ get_stud tutor stud =
        else do
 	 return stud
 
+
+
 -- | eingabe und bewertung der lösung
 -- für tutor zum ausprobieren
 -- für student echt
@@ -227,6 +230,8 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
     let conf = read $ toString $ A.config auf
         var = fun  conf
         p = problem var
+        past = mkpar stud auf
+
     let mat = S.mnr stud
     k <- io $ key var $ toString mat 
     g <- io $ gen var vnr manr k
@@ -238,8 +243,36 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
     parameter_table auf
     h3 "Aufgabenstellung"
     html desc
+
     hr ---------------------------------------------------------
-    h3 "Lösung"
+
+    sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
+    case sas of
+        [ sa ] -> do
+            h3 "Vorige Einsendung"
+	    plain "(und Bewertung) zu dieser Aufgabe"
+            view <- submit "view" "anzeigen"
+            when view $ do
+	        -- pre $ show sa
+                br ; plain "Einsendung:"
+		case SA.input sa of
+		    Just file -> do
+		        cs <- io $ logged "Super.view" 
+			         $ readFile $ toString file
+			pre cs
+                    Nothing -> plain "(keine)"
+                plain "Bewertung:"
+		case SA.report sa of
+		    Just file -> do
+		        h <- io $ readFile $ toString file
+			html $ primHtml h
+                    Nothing -> plain "(keine)"
+	        blank
+        _ -> return ()
+
+    hr ---------------------------------------------------------
+    h3 "Neue Einsendung"
+
 
     -- das vorige mal bei eingabefeld oder upload?
     epeek <- look "subsol"
@@ -253,15 +286,15 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
           return Nothing
        else do
           plain "Eingabefeld:"
-	  ex   <- submit "subex" "example"
-	  prev <- submit "subprev" "previous"
-	  esub  <- submit "subsol" "submit"
+	  ex   <- submit "subex" "Beispiel laden"
+	  prev <- submit "subprev" "vorige Einsendung laden"
+	  esub  <- submit "subsol" "Abschicken"
 	  br
 	  when ( ex || prev ) blank
 
           let b0 = render $ toDoc ini 
 	  def <- io $ if prev 
-	      then Inter.Store.latest (mkpar stud auf)
+	      then Inter.Store.latest Inter.Store.Input past
                       `Control.Exception.catch` \ _ -> return b0
 	      else return b0
           sol <- textarea "sol" def
@@ -272,11 +305,11 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
     fsol <- if isJust epeek
         then do
 	    -- voriges mal textfeld gewählt, also file-dialog nicht anzeigen
-            wup <- submit "wup" "Datei-Upload"
+            wup <- submit "wup" "Datei hochladen"
             when wup $ blank
             return Nothing
         else do
-            plain "Datei-Upload:"
+            plain "Datei hochladen:"
             up <- file "up" undefined
 	    fsub  <- submit "fsub" "submit"
 	    return $ if fsub then up else Nothing
@@ -288,11 +321,11 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 		  Nothing -> mzero
 
     hr
-    h3 "Bewertung"
+    h3 "Neue Bewertung"
     -- let (res, com :: Html) = export $ evaluate p i cs
     (res, com :: Html) <- io $ run $ evaluate p i cs
     html com
-    return ( cs, res )
+    return ( cs, fromMaybe No res, com )
 
 parameter_table auf = do
     h3 $ unwords [ "Aufgabe", toString $ A.name auf ]
@@ -317,10 +350,11 @@ parameter_table auf = do
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
-punkte stud auf ( cs, res ) = do
+punkte stud auf ( cs, res, com ) = do
      hr
-     let p = ( mkpar stud auf )  { P.input = cs }
-     msg <- io $ bank p res
+     let p = ( mkpar stud auf )  
+	   { P.input = cs, P.report = com, P.result = res }
+     msg <- io $ bank p
      h3 "Eintrag ins Logfile:"
      pre msg
      return ()

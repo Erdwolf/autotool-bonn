@@ -12,14 +12,21 @@ import qualified Inter.Param as P
 import qualified Inter.Store
 import Util.Datei
 
-bank :: P.Type -> Maybe Integer -> IO String
-bank p res = do
-    let it = case res of Just s -> Ok s ; Nothing -> No
+bank :: P.Type -> IO String
+bank p = do
+    let res = P.result p
+	it = res
+				   
+    ( pid , infile  ) <- Inter.Store.store Inter.Store.Input p 
+    
+    mrepfile <- case res of
+        Pending -> return Nothing
+        _       -> do 
+            ( pid , repfile ) <- Inter.Store.store Inter.Store.Report p 
+	    return $ Just repfile
 
-    ( pid , infile ) <- Inter.Store.store p res
     bepunkteStudentDB (P.ident p) (P.anr p) it (P.highscore p)
-         ( Just infile ) ( Nothing )
-
+         ( Just infile ) ( mrepfile )
 
     time <- zeit
     let msg = logline  time pid p res
@@ -44,10 +51,11 @@ logline time pid p res = unwords [ time
 		     , "\n"
 		     ]
 
-result_string :: Maybe Integer -> String
+result_string :: Wert -> String
 result_string mres = case mres of
-    Nothing -> "NO"
-    Just i  -> "OK # Size: " ++ show i
+    Pending -> "Pending"
+    No -> "NO"
+    Ok i  -> "OK # Size: " ++ show i
 
 datum :: IO [ String ]
 datum = do
