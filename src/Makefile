@@ -1,38 +1,48 @@
 # $Id$
 
-# BINDIR = bin/
-# EXERCISEDIRS = ws01/compiled
-
-# DIRS = $(BINDIR) $(EXERCISEDIRS)
-
 DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau:ws03/aus
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
 	-fallow-undecidable-instances 
 
-
 PACKS = -package text -package data \
 	-package posix -package network 
 
-# EXTRA_PACKS = -package HToolkit 
-EXTRA_PACKS = -package hsql
-
 OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
-
 # PROF = -prof -auto-all -auto-dicts
-
-GHC = ghc-6.0 # -pgmc gcc-2.95
-
 WARN =  -Werror -dcore-lint
 
+########################################################################
+# ugly ugly ugly : system-spezifische teile des makefiles
+########################################################################
+
 ifeq ($(shell hostname), nfa)
+EXTRA_PACKS = -package hsql
 DEFINES = -DSPACE=1
-else
+GHC = ghc-6.0
+endif
+
+ifeq ($(shell hostname), dfa)
+EXTRA_PACKS = -package hsql
+DEFINES = -DSPACE=1
+GHC = ghc6 # which is 6.0.1, actually
+endif
+
 ifeq ($(shell hostname), aaron)
+EXTRA_PACKS = -package hsql
 DEFINES = -DSPACE=1
+GHC = ghc-6.0
 endif
+
+ifeq ($(shell hostname), theo1)
+EXTRA_PACKS = -package HToolkit
+DEFINES = -DHOME=1
+GHC = ghc-6.0
 endif
+
+########################################################################
+
 
 GHC_COMMAND = $(GHC) --make \
 	$(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) $(DEFINES) -i$(DIRS)
