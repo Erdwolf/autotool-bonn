@@ -29,6 +29,7 @@ instance TES.Symbol.Symbol Op where
     arity = arity
     set_arity a x = x { arity = a }
     precedence = precedence
+    assoc = assoc
 
 instance ToDoc Op where 
     toDoc = text . name
