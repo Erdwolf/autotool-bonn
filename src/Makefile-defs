@@ -24,7 +24,8 @@ GHC = ghc6 # which is 6.0.1, actually
 endif
 
 ifeq ($(shell hostname), aaron)
-EXTRA_PACKS = -package-conf /home/alf/autotool/autotool.pkg -package hsql
+# EXTRA_PACKS = -package-conf /home/alf/autotool/autotool.pkg -package hsql
+EXTRA_PACKS = -package hsql
 GHC = ghc-6.2
 endif
 
