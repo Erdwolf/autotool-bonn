@@ -23,8 +23,7 @@ module SAT.SAT
 , Variable, Literal (..)
 , Klausel, Formel, Belegung
 , module FiniteMap
-
-, bsp_formel
+, var
 )
 
 where
@@ -47,36 +46,8 @@ import Maybe
 import Number
 import Iso
 
--- *****************************************************************
---Bemerkungen: 
---1. Aussagenlogische Formel in konjunktiver Normalform (KNF):
---Literal = Variable oder nonVariableVariable
---Klausel= Literal || Literal ||...|| Literal 	
---KNF = Klausel && Klausel && ... && Klausel
--- *****************************************************************
-
-data SAT = SAT deriving Show
-
--- Elementare Def.
-data Literal = Pos Variable | Neg Variable
-    deriving (Show,Read,Eq,Ord)
-
-instance ToDoc Literal where
-   toDoc l = text (show l)
-
---Klausel = Tripeln von Literalen
-type Klausel = (Literal,Literal,Literal)
-
---Formeln in 3KNF = Liste von Klauseln
-type Formel = [Klausel]
-
---Variable = String
-type Variable = String 
-
---Belegung = Variable -> B00l
-type Belegung = FiniteMap Variable Bool
-type Map = [(Literal,Literal)]
-
+import SAT.Types
+import SAT.Inter
 
 variablen :: Formel -> Set Variable
 variablen f = mkSet $ do
@@ -226,19 +197,6 @@ erzInstanz f = "<tr><td>" ++ show f ++ "</td></tr>"
 erzBeweis :: Belegung -> String
 erzBeweis b = "<tr><td>" ++ show b ++ "</td></tr>"
 
-
---belegtest = 
--------------------------------------------------
-l1 = Pos "x" :: Literal
-v1 = "x" :: Variable
-k1 = (Pos "x", Neg "y", Pos "z") :: Klausel
-k2 = (Neg "x", Pos "y", Pos "z") :: Klausel
-bsp_formel = [ k1, k2 ] :: Formel
-
-b1 :: Belegung
-b1 = listToFM [ ("x", True), ("y", False) ]
-b2 :: Belegung
-b2 = listToFM [("x", False), ("y" , True), ("z" , False)]
 
 wert_formel :: Formel -> Belegung -> Bool
 wert_formel f b =

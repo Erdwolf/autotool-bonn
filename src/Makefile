@@ -5,7 +5,7 @@
 
 # DIRS = $(BINDIR) $(EXERCISEDIRS)
 
-DIRS = util:fa
+DIRS = util:fa:wash
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
