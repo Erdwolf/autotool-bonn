@@ -44,8 +44,8 @@ step conf vpool = do
                    z <- mutate conf x
 		   return (fitness conf z, z)
     let vpool' = reverse
-	      $ sort
 	      $ uniq -- ??
+	      $ sort
 	      $ combis ++ mutants ++ popul vpool
     return $ Pool
 	   { num = succ $ num vpool

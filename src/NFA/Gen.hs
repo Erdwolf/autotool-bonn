@@ -49,9 +49,9 @@ conf n = Conf
             , do [i, j] <- einige 2 [0 .. n-1]
 	         return $ pokes a [(i, a!!j), (j, a!!i)]
 	    ]
-       , size = 500
-       , num_mutate = 500
-       , num_combine = 500
+       , size = 200
+       , num_mutate = 300
+       , num_combine = 400
        , trace = \ pool -> print $ toDoc $ take 3 $ popul pool
        , present = \ pool -> schreib n pool
        }
