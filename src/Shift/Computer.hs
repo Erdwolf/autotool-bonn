@@ -14,6 +14,7 @@ import System
 import List (sort)
 
 import Util.Zufall
+import Util.Faktor
 
 next0 :: Int -> Pins -> [Bool] -> [Bool]
 -- wegen effizienz wird length ps nicht immer ausgerechnet
@@ -90,10 +91,10 @@ suche n k = do
 	    let (q, p) = find $ zustands_folge ps
 
 	    -- hiernach wird optimiert
-	    let m = q
+	    let m = p
 
 	    let sh = Shift { pins = ps, vorperiode = q, periode =  p }	
-	    when ( m  > top ) $ print $ sh
+	    when ( m  > top ) $ print (sh, primfaktoren $ fromIntegral p)
 	    when ( m == top ) $ putStr " * " 
 	    handle ( max m top ) rest
 

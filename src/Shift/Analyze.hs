@@ -10,7 +10,9 @@ import Shift.Common
 import Monad ( guard )
 
 import FiniteMap
+import Set
 import Maybe
+import List ( inits, tails )
 
 type State = [ Bool ]
 
@@ -18,6 +20,9 @@ instance Show State where
    show xs = do x <- xs ; if x then "+" else "-"
 
 type STI = (State, Int)
+
+smp :: Show a => [a] -> IO ()
+smp = sequence_ . map print
 
 hamming :: State -> State -> Int
 -- anzahl verschiedener positionen
@@ -55,3 +60,39 @@ helper next fm xi @ (x, i) =
     in	do zk <- cs ; return ( yi, zk )
 	++ if null ds then helper next fm' yi else []
 
+
+subwords :: Int -> [a] -> [[a]]
+subwords l xs = do
+    ys <- tails xs
+    let zs = take l ys
+    guard $ length zs == l
+    return zs
+
+allwords :: Int -> [a] -> [[a]]
+allwords 0 alpha = [[]]
+allwords l alpha = do
+    w <- allwords (l-1) alpha
+    x <- alpha
+    return $ x : w
+
+defect :: Pins -> Int -> Int -> [[Bool]]
+defect ps cut d = setToList $
+    minusSet ( mkSet $ allwords d [ False, True ] )
+	     ( mkSet $ subwords d $ take cut $ folge ps )
+
+factor :: Eq a => [a] -> [a] -> Bool
+factor u v = or $ do
+    w <- tails v
+    return $ take (length u) w == u
+
+defects :: Int -> Pins -> [[[Bool]]]
+defects cut ps = weed factor $ do d <- [1 .. ] ; return $ defect ps cut d
+
+weed :: (b -> b -> Bool) -> [[b]] -> [[b]]
+weed rel (xs : xss) = ( xs : ) $ weed rel $ do
+    let fresh y = not $ or $ do x <- xs ; return $ rel x y
+    ys <- xss
+    return $ filter fresh ys
+
+	   
+    

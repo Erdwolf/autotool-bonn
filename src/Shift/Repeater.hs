@@ -34,7 +34,7 @@ cut :: Eq a => [a] -> (Int, [a])
 -- find best initial repetition
 cut [] = (1, [])
 cut w = maximumBy ( \ foo bar -> fst foo `compare` fst bar ) $ (1, w) : do
-    u <- take 10 $ inits w
+    u <- {- take 10 $ -} inits w
     guard $ not $ null u
     let (c, rest) = zahl u w
     guard $ c > 2
