@@ -84,6 +84,11 @@ is_independent g s =
 	m = cardinality $ kanten h
     in  0 == m
 
+is_connected :: GraphC a => Graph a -> Bool
+is_connected g = 
+    let xs = reachables g ( head $ lknoten g )
+    in  xs == knoten g
+
 check_reg :: ( ToDoc a, ToDoc [a], Ord a )
 	  => Graph a
 	  -> Reporter ()

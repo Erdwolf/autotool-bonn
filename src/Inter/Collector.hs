@@ -38,6 +38,7 @@ import qualified SAT.SAT
 import qualified Baum.Reconstruct
 import qualified Baum.Binary
 import qualified Baum.ZweiDrei
+import qualified Graph.TreeWidth
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -85,6 +86,8 @@ makers = [ Blank.make
          , Baum.Reconstruct.make_quiz
          , Baum.Binary.make_quiz
          , Baum.ZweiDrei.make_quiz
+
+         , Graph.TreeWidth.make
 	 ]
 
 
