@@ -1,0 +1,45 @@
+-- -*- mode: haskell -*-
+
+module Number.Base.Data where
+
+import Autolib.ToDoc
+import Autolib.Reader
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+import Data.Char
+
+data Ziffer = Ziffer Int
+    deriving ( Eq, Ord, Typeable )
+
+{-! for Ziffer derive: Haskell2Xml !-}
+
+zehn :: Int
+zehn = 10
+
+instance ToDoc Ziffer where
+    toDoc (Ziffer z) =
+        if (0 <= z) && (z < zehn) then toDoc z
+        else if fromEnum 'Z' - fromEnum 'A' <= z - zehn
+             then Autolib.ToDoc.char $ toEnum $ fromEnum 'A' + (z - zehn)
+             else error $ "cannot convert digit to character: " ++ show z
+
+instance Reader Ziffer where
+    reader = 
+            do d <- satisfy isDigit
+               my_whiteSpace
+               return $ Ziffer $ fromEnum d - fromEnum '0'
+        <|> do d <- satisfy isLower
+               my_whiteSpace
+               return $ Ziffer $ fromEnum d - fromEnum 'a'
+        <|> do d <- satisfy isUpper
+               my_whiteSpace
+               return $ Ziffer $ fromEnum d - fromEnum 'A'
+     
+
+data Zahl = Zahl { basis :: Int
+                 , ziffern :: [ Ziffer ]
+                 }
+    deriving ( Eq, Ord, Typeable )
+
+{-! for Zahl derive: Reader, ToDoc, Haskell2Xml !-}
