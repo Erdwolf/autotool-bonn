@@ -57,30 +57,32 @@ instance ToTex [ Line ] where
 next :: Block -> Line -> (Int, Int) -> Line
 next w line (b, p')  = 
     let (bre, block : bost) = splitAt b line
-        p = if p' < 0 then p' + 4 else p'
+        m = length block
+        p = if p' < 0 then p' + m else p'
         (pre, item  : post) = splitAt p block
         items' = case item of
             Num d -> map (shift $ succ d) w
             Yps d -> error "PCP.Describe.next.exp"
-        (here, there) = splitAt 4 $ pre ++ items' ++ post
+        (here, there) = splitAt m $ pre ++ items' ++ post
         block' = [here, there]
     in  bre ++ block' ++ bost
 
 topform :: Block -> [(Int, Int)] -> [ Line ]
 topform w bps = zipWith (:)
-    ( [Fmt " "] : repeat [Fmt "\\to"] )
+    ( [Fmt " "] : repeat [Fmt "\\mto"] )
     ( fbox bps $ scanl (next w) [ init w ] bps )
 
 botform :: Block -> [(Int, Int)] -> [ Line ]
 botform w bps = zipWith (:)
-    ( [Fmt "\\sim"] : repeat [Fmt "\\to"])
+    ( [Fmt "\\msim"] : repeat [Fmt "\\mfrom"])
     ( reverse $ fbox (reverse bps) $ scanl (next w) [ tail w ] $ reverse bps )
 
 fbox bps lines = 
     let (here, rest) = splitAt (length bps) lines
     in  do ((b, p'), line) <- zip bps here
 	   let (bre, block : bost) = splitAt b line
-	       p = if p' < 0 then p' + 4 else p'
+               m = length block
+	       p = if p' < 0 then p' + m else p'
 	       (pre, item  : post) = splitAt p block
            return $ bre ++ [ pre ++ Box item : post ] ++ bost
         ++ rest        
@@ -104,6 +106,8 @@ runit = do
             putStrLn $ unwords [ "writing", "file", fname ]
             writeFile fname $ show $ form w (t, b)
 
+    handle "001"   (3,0)
+    handle "011"   (6,7)
     handle "00y01" (0,1)
     handle "00y11" (2,2)
     handle "01y01" (2,2)
