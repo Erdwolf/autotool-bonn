@@ -14,12 +14,14 @@ import Data.Char
 -- | hübsches layout
 nice :: Config -> Doc
 nice k = vcat $ do
-    let bereich @ ((l,u), (r,o)) = hull k
+    let bereich @ ((l,u), (r,o)) = hull_with_goals k
+                                     -- ^ this is important here, since...
     let a = array bereich $ do p <- range bereich
 			       return ( p, '.' )
     let b = a // do r <- robots k
 		    return ( position r, head $ name r )
     let c = b // do r <- robots k
+                                    -- | ... we depend on it :-)
 		    z <- maybeToList $ ziel r
 		    return ( z, toLower $ head $ name r )
     y <- reverse [ u .. o ]
