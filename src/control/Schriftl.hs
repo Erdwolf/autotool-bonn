@@ -36,10 +36,12 @@ fillDatInDB xs = do
 --serie 4: kein tool / sch: DIAG 5, ENT 5 pkt
 --serie 5: {PCP,SAT}-QUIZ 2 pkt / sch: CFI 4, COL 4
 
-serie 1 = [("TM","SUCC|EXPO|STEP[12]")]
+-- serie 1 = 
+serie 1 = [("TM","SUCC|EXPO|STEP[12]|BIN")]
 serie 2 = [("TM","FACTOR"), ("LOOP","TIME|SQRT|PRIM|FIB")]
 serie 3 = [("FUN","SQRT|FIB|QUIZ")]
 serie 5 = [("PCP","QUIZ"),("SAT","QUIZ")]
+
 
 getPunkteDB i = 
     do

@@ -64,3 +64,9 @@ ghci-sql:
 
 mysql:
 	mysql -u test --password="test" -D autoan 
+
+ghci-schriftl:
+	ghci-6.0 $(HINCLUDES) Schriftl.hs
+
+punkte.cgi:
+	$(HMAKE) $(HMAKEFLAGS) Schriftl.hs -o punkte.cgi
