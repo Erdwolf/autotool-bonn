@@ -40,30 +40,32 @@ tags :
 # note: HADDOCK will be set by configure in config.mk
 #######################################################################
 
-HADDOCK_DIRS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
-	Reporter Turing Dot Challenger Inter Boxing Machine Language \
-	Boolean \
-	SRS TES Rewriting Baum NFTA Exp Graph GVKnoten Util Scorer \
-	ws03 util control 
+PUB = /var/www
 
-# control? challenger?
+GHC_LIBS = base haskell98 parsec unix network readline
+GHC_LINK = http://www.haskell.org/ghc/docs/6.2/html/libraries
+GHC_DESC = /usr/local/share/ghc-6.2/html/libraries
 
-HADDOCK_LIBS = base haskell98 parsec unix network readline
-HADDOCK_LINK = http://www.haskell.org/ghc/docs/6.2/html/libraries
-HADDOCK_DESC = /usr/local/share/ghc-6.2/html/libraries
+HAXML_LINK = http://www.cs.york.ac.uk/fp/HaXml
+HAXML_DESC = /usr/local/share/ghc-6.2/html/libraries/HaXml
 
-HADDOCK_FILES = $(wildcard *.hs)
-HADDOCK_OUTPUT = $(PUB)/autotool/haddock
+AUTOLIB_LINK = http://141.57.11.163/auto/lib/haddock
+AUTOLIB_DESC = /usr/local/share/ghc-6.2/html/libraries/AutoLib
+
+HADDOCK_OUTPUT = $(PUB)/auto/tool/haddock
 HADDOCK_OPTS = -v \
 --html \
---source=http://theo1.informatik.uni-leipzig.de/cgi-bin/cvsweb/autotool/ \
-$(foreach lib,$(HADDOCK_LIBS), \
---read-interface=$(HADDOCK_LINK)/$(lib),$(HADDOCK_DESC)/$(lib)/$(lib).haddock)
+--title=auto/tool \
+--source=http://141.57.11.163/cgi-bin/cvsweb/tool/src \
+$(foreach lib,$(GHC_LIBS), \
+--read-interface=$(GHC_LINK)/$(lib),$(GHC_DESC)/$(lib)/$(lib).haddock) \
+--read-interface=$(HAXML_LINK)/HaXml,$(HAXML_DESC)/HaXml.haddock \
+--read-interface=$(AUTOLIB_LINK),$(AUTOLIB_DESC)/AutoLib.haddock 
 
 
 
 haddock : 
-	( ls $(HADDOCK_FILES) && find $(HADDOCK_DIRS) -name "*.hs" -not -name "Datei.hs" -print ) \
+	( find . -name "*.hs" -print ) \
 	| xargs $(HADDOCK) $(HADDOCK_OPTS) -o $(HADDOCK_OUTPUT)
 
 .PHONY : haddock

@@ -14,9 +14,11 @@ import Autolib.NFA.Dot
 
 import Autolib.ToDoc
 import Autolib.Letters
+import Autolib.Symbol
 
 -- input: complete and deterministic automaton
 -- output: automaton that accepts all synchronizing words
+
 
 synchro :: NFAC c a 
 	=> NFA c a

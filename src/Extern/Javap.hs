@@ -2,7 +2,7 @@
 -- sollte sp‰ter zerlegt und generalisiert werden
 -- falls es sich denn lohnen sollte
 
--- -- $Id$
+--  $Id$
 
 module Extern.Javap where
 
@@ -14,13 +14,13 @@ data BC = BC { resultat :: [ String ]
     deriving ( Show )
 
 data Java = Java String
-instance Reader Java where ...
-instance ToDoc Java where ...
+instance Reader Java 
+instance ToDoc Java 
 
 instance C.Partial Bytecode BC Java where
     initial p i   = Java $ unlines [ "return (x0 * x1);" ]
     partial p i b = return ()
-    total   p i b = do
+    total   p i b = undefined
         -- hier muﬂ leider ein IO-Prozess laufen!
   
 

@@ -1,4 +1,4 @@
--- | from http://www.rsasecurity.com/rsalabs/node.asp?id=2093
+--| from http://www.rsasecurity.com/rsalabs/node.asp?id=2093
 
 module Faktor.RSA where
 

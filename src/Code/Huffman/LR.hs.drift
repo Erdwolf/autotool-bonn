@@ -2,7 +2,7 @@
 
 module Code.Huffman.LR where
 
--- $Id$
+--  $Id$
 
 import Autolib.ToDoc
 import Autolib.Reader

@@ -1,6 +1,6 @@
 module HTWK.SS04.CASE.LCS where
 
--- $Id$
+--  $Id$
 
 import LCS.Instance
 import LCS.Quiz

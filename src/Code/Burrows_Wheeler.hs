@@ -1,6 +1,6 @@
 module Code.Burrows_Wheeler where
 
--- $Id$
+--  $Id$
 
 import qualified Code.Type as T
 import Code.Burrows_Wheeler.Work

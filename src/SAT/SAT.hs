@@ -1,5 +1,5 @@
 
--- | Korrekturfunktion für 3SAT
+--| Korrekturfunktion für 3SAT
 -- 
 -- Autor: Mohammad Esad-Djou
 -- bss98aou@studserv.uni-leipzig.de
