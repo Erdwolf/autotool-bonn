@@ -9,9 +9,11 @@ import qualified Inter.Param as P
 import qualified Passwort
 import qualified Reporter 
 import Reporter.Wash
+import Size
 
 import qualified Challenger 
 
+import ToDoc
 import Reader
 import ParsecError
 import ParsecPos
@@ -158,9 +160,15 @@ errmsg :: ParseError -> String -> Doc
 errmsg e inp = 
     let css = lines inp
 	p = errorPos e
-	(pre, post) = splitAt (sourceLine p - 1) css
+	(pre, post) = splitAt (sourceLine p - 2) css
 	it  = replicate (sourceColumn p - 1) '-' ++ "?"
-    in  vcat $ map text $ pre ++ [ it , messageString e ] ++ post
+    in  vcat $ map ToDoc.text 
+	     $ pre ++ [ it ]
+		   ++ [ showErrorMessages "or" "unknown parse error" 
+                              "expecting" "unexpected" "end of input"
+                       (errorMessages e) ]
+		   ++ [ it ]
+		   ++ post
 
 
     
