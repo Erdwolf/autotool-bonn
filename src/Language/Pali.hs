@@ -29,7 +29,8 @@ is_pali w = w == reverse w
 
 nopali :: Language
 nopali = ( komplement pali )
-	{ abbreviation = "{ w : w in {0,1}^*, w /= reverse w }"
+	{ nametag      = "ComPali"
+        , abbreviation = "{ w : w in {0,1}^*, w /= reverse w }"
 	}
 
 -------------------------------------------------------------------------
