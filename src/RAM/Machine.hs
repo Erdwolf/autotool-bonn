@@ -12,6 +12,9 @@ import RAM.Step
 import Set
 import Size
 
+instance Compute Program State where
+    next p s = mkSet $ step s
+    accepting p s = null $ todo s
 
 instance InOut Program Memory State where
     input  p m = State { memory = m, todo = p }
@@ -23,7 +26,4 @@ instance Numerical Memory where
 	return ( "x" ++ show k , x )
     decode m = get m "x0"
 
-instance Compute Program State where
-    next m s = mkSet $ step s
-    accepting m s = null $ todo s -- ??
 

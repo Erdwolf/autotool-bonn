@@ -4,6 +4,7 @@ module RAM.Builtin
 
 ( Table, Entry, Builtin
 , table, get
+, none, every
 )
 
 where
@@ -11,13 +12,22 @@ where
 import ToDoc
 import Reader
 import Array
+import Set
 
 data Builtin = Copy 
 	     | Plus  | Minus
 	     | Times | Div | Mod
-     deriving ( Eq, Ord, Ix )
+     deriving ( Eq, Ord, Enum, Ix )
 
 {-! for Builtin derive: Reader, ToDoc !-}
+
+
+none :: Set Builtin
+none = mkSet [ ]
+
+every :: Set Builtin
+every = mkSet [ Copy .. Mod ]
+
 
 instance Show Builtin where show = render . toDoc
 instance Read Builtin where readsPrec = parsec_readsPrec
