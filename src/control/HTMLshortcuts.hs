@@ -1,5 +1,9 @@
 module HTMLshortcuts where
 
+-- $Id$
+
+import qualified Passwort
+
 import IO
 import HTMLMonad 
 import CGI
@@ -7,6 +11,7 @@ import Char -- toLower
 -- import Exception -- 
 
 import Helper
+
 
 -- --------------------------------------------------------------------------------
 -- Helper InputFields
@@ -22,27 +27,6 @@ promptedPassword txt attrs =
 
 textOrInt (I i ) = td $ text (show i)
 textOrInt (S s ) = td $ text s
-
---
-newtype ATPasswort = ATPasswort { unATPasswort :: String }
-
-
-
-instance Read ATPasswort where
-  readsPrec i str = 
-	  let 
-		(anf, rst ) = Prelude.span okPass str 
-		okPass = not . (=='"' )
-	  in 
-	  if null rst 
-		 then [(ATPasswort str, [] )] 
-		 else [] -- throw $ PatternMatchFail str
-
-instance Show ATPasswort where
-  showsPrec i (ATPasswort str) = showString str
-
-instance Reason ATPasswort where
-  reason _ = "Passwort enthält nicht nur [a-zA-Z0-9-_ ]"
 
 -- Helper Button ([>] str)
 smallSubButton subParm subAktion str =
