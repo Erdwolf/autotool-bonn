@@ -1,3 +1,0 @@
-module Finite.World where
-
-
