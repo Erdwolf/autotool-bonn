@@ -93,7 +93,10 @@ mailPasswdPage (F1 matF) =
 	   else 
 	   	do
 		let [(email,pass)] = mayEP
-	   	io $ system $ unwords [ "echo", "Ihr Passwort fuer Autotool: " ++ pass, "|" , "elm", "-s", "\"Autotool-Passwort\"", email ]
+	   	io $ system $ unwords [ "echo ", "\"Ihr Passwort fuer Autotool: " ++ pass ++ "\""
+							  , "|" 
+							  , "/usr/bin/mailx ", "-s", "\"Autotool-Passwort\"", email 
+							  ]
 		return ()
         standardQuery "Passwort vergessen." $ 
 		table $ do 
