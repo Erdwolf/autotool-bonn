@@ -19,14 +19,17 @@ PACKS = -package text -package data \
 
 EXTRA_PACKS = -package HToolkit 
 
-
 OPT = -O2 -fvia-C -funbox-strict-fields -fnumbers-strict # -fdicts-strict
+
 # PROF = -prof -auto-all -auto-dicts
-# WARN =  -Werror -dcore-lint
-GHC = ghc-6.0 -pgmc gcc-2.95
-# GHC = ghc-5.04 -pgmc gcc-2.95
+
+GHC = ghc-6.0 # -pgmc gcc-2.95
+
+WARN =  -Werror -dcore-lint
 
 GHC_COMMAND = $(GHC) --make $(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) -i$(DIRS)
+
+
 
 PUB =  $(HOME)/public_html
 
@@ -91,7 +94,7 @@ matchbox : do
 drift : $(DRIFT) 
 
 drift-clean :
-	rm -v ` find . -name "*.drift" -print | sed s/.drift$$// `
+	rm ` find . -name "*.drift" -print | sed s/.drift$$// `
 
 drift-commit : drift-clean drift
 	cvs commit -m drift-commit $(DRIFT)
