@@ -1,20 +1,21 @@
--- *****************************************************************
+
 -- Korrekturfunktion für 3SAT
 -- 
 -- Autor: Mohammad Esad-Djou
 -- bss98aou@studserv.uni-leipzig.de
--- *****************************************************************
--- ************************  3SATProblem:  *************************
---Gegeben: Aussagenlogik Formel F in konjunktive Normalform 
+
+
+-- Gegeben: Aussagenlogik Formel F in konjunktive Normalform 
 --         (mit genau 3 Konjunktionsgliedern)
---Gesucht: Ist F erfüllbar?
---Problem ist 3SAT, d.h. Erfüllbarkeitsproblem. 
+-- Gesucht: Ist F erfüllbar?
+-- Problem ist 3SAT, d.h. Erfüllbarkeitsproblem. 
 --     => ein Datentyp mit einem konstanten Konstruktor
---Instanz ist Formel F. 
+-- Instanz ist Formel F. 
 --     => ein Datenstruktur
---Beweis ist Belegung b, die Formel f erfüllt.
+-- Beweis ist Belegung b, die Formel f erfüllt.
 --     => ein Datenstruktur
--- *****************************************************************
+
+
 module SAT.SAT 
 
 ( SAT (..)

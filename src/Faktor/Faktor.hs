@@ -1,4 +1,5 @@
 -- | Korrekturfunktion für Faktorisierung
+
 --
 -- joe@informatik.uni-leipzig.de
 -- benutzt code für challenger/PCProblem

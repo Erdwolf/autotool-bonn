@@ -1,5 +1,5 @@
 -- | Korrekturfunktion für PCP-Aufgaben
---
+
 -- autor Markus Kreuz
 -- mai99byv@studserv.uni-leipzig.de
 

@@ -79,7 +79,7 @@ ffind next x0 =
 	d = head $ do (i, y) <- tail $ zip [0..] $ iterate next x
 		      guard $ y == x
 		      return i
-    in	c
+    in	d
 
 --------------------------------------------------------------------------
 

@@ -32,11 +32,6 @@ instance (ToDoc [a])=> ToDoc (Klassen a) where
 	toDoc (Klassen erg) = text "Loesung: " <+> toDoc erg
 
 
-instance (ToDoc ((Graph a, Integer)), Show ((Graph a, Integer)), Read ((Graph a, Integer))
-	, ToDoc (Faerbung a),Show (Faerbung a), Read (Faerbung a), Ord a, ToDoc a
-	, Show a, ShowText a)
-	=> Problem DreiCol (Graph a) (Färbung a) where
-
 
 
 

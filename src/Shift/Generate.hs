@@ -20,9 +20,9 @@ type Pool = [(Pins, Int)]
 
 handle :: Pool -> Pins -> IO Pool
 handle pool ps = do
-    let per = pii ps 
+    let per = pee ps 
     let it = ( ps, per )
-    if per > 100 
+    if per > 2 * maximum ps 
        then do
             -- putStr $ show per ++ "," ; hFlush stdout
 	    mapM (comp it) pool
@@ -36,7 +36,8 @@ comp (ps, p) (qs, q) | p < q = comp (qs,q) (ps,p)
 comp (ps, p) (qs, q) = do
     let ds = zipWith (-) ps qs
     let g = geeceedee ds
-    when ( p > q && all (>= 0) ds && g > 1 ) $ do
+    when ( p > q && all (>= 0) ds && ds == sort ds ) $ do
+        -- print ( qs, ds )
         case  mf $ Meta { start = qs, diff = ds } of
             i @ ( _, _, ps, ds ) : rest ->  do
                 let g = length ds - 1
@@ -52,20 +53,22 @@ single b h = do
     return $ sort ps
 
 mainf b h = 
-    foldM handle []  $ subsets b [ 1 .. h ]
+    -- foldM handle []  $ subsets b [ 1 .. h ]
+    foldM ( \ pool ps -> do 
+	        qs <- einige b [1 .. h] 
+		handle pool $ sort qs 
+	  ) []  $ repeat ()
 
 pee ps = 
     let m = maximum $ 0 : ps
-    in  ffind (next0 m ps) $ replicate m True
-
-pii ps = 
-    let (q, p) = find $ zustands_folge ps
-    in p
+	p = ffind (next0 m ps) $ replicate m True
+	-- (q, p) = find $ zustands_folge ps
+    in	p
 
 mf me = do
     let ups = do -- unendlich! 
 	    k <- [ 0 .. ] 
-	    return $ pii $ vector me k
+	    return $ pee $ vector me k
     (ds, ps) <- take 1
 	      $ filter ( \ (ds, ps) -> length ds < length ps )
 	      $ takeWhile ( \ ( ds, ps ) -> all (>= 0) ds ) $ do

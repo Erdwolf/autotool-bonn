@@ -1,19 +1,6 @@
--- $Header$
+-- $Id$
 
 module BinCompare ( bincompare ) where
-
--- $Log$
--- Revision 1.1  2002-11-08 16:43:23  joe
--- language -> Language
--- pump -> Pump.REG (neu)
--- aufgaben dazu
---
--- Revision 1.1.1.1  2002/05/24 10:46:48  challenger
--- start
---
--- Revision 1.1  2001/12/05 21:11:31  autotool
--- lang/*
---
 
 import Language
 
@@ -38,8 +25,7 @@ con w0 =
 
 sam :: Int -> Int -> IO [ String ]
 sam c n | n < 4 = return []
-sam c n = do
- 
+sam c n = 
     let (q, r) = divMod n (length xs)
     in	if 0 == r
 	then sequence $ replicate c $ one [ (x, q) | x <- xs ]
