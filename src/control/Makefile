@@ -48,6 +48,11 @@ install-autoan.cgi:
 install-showgruppen.cgi:
 	scp showgruppen.cgi root@theo1:/usr/lib/cgi-bin/showgruppen.cgi
 
+
+test: 
+	cp autoan.cgi ~/public_html/cgi-bin
+
+
 ghci-sql: 
 	ghci $(HINCLUDES) SQLqueries.hs
 

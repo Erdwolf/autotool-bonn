@@ -5,6 +5,8 @@ import HTMLMonad
 import CGI
 import Char -- toLower
 
+import System -- system
+
 -- autoan-modules
 import HTMLshortcuts
 import SQLqueries
@@ -36,7 +38,7 @@ msgPasswort = do
 --	ttxt $ "Als Passwort sind nur Worte aus deutschen Buchstaben [a-ZA-ZäöüÄÖÜß] und Zahlen [0-9] erlaubt."
 
 -- Einstieg: loginPage 
--- folge Seiten
+-- Folgeseiten
 -- a) registerPage
 -- b) checkLoginPage 
 loginPage mat F0  = 
@@ -46,7 +48,7 @@ loginPage mat F0  =
 			hrrow
 			th3 "Hier können Sie Sich in die Übungsgruppen von Logik oder Berechenbarkeit/Komplexität einschreiben."
 			spacerow
-			ttxt "Dazu müssen Sie sich Neuanmelden und dann eine Gruppe wählen."
+			ttxt "Dazu müssen Sie Sich Neuanmelden und dann eine Gruppe wählen."
 			spacerow
 			spacerow
 			ttxt $ concat 
@@ -59,7 +61,31 @@ loginPage mat F0  =
 			pwdF <- promptedPassword	"Passwort:"		(fieldSIZE 30)
 			hrrow
 			smallSubButton (F2 matF pwdF)	checkLoginPage	"Login" 
-			smallSubButton F0				(registerPage "" "" "" "") "Neuanmeldung"
+			smallSubButton F0	       		(registerPage "" "" "" "") "Neuanmeldung"
+			smallSubButton (F1 matF) 		mailPasswdPage  "Passwort zuschicken, dazu bitte Matrikelnr. angeben."
+
+mailPasswdPage (F1 matF) = 
+    do    
+    	let mat = unNonEmpty ( value matF )
+    	mayEP  <- io $ getEmailPasswortDB mat		
+	if null mayEP 
+	   then 
+	   	return ()	
+	   else 
+	   	do
+		let [(email,pwd)] = mayEP
+	   	io $ system $ unwords [ "echo", "Ihr Passwort fuer Autotool: " ++ pwd, "|" , "elm", "-s", "\"Autotool-Passwort\"", email ]
+		return ()
+		     -- return ec
+
+        standardQuery "Passwort vergessen." $ 
+		table $ do 
+			case mayEP of
+			  [] 		-> ttxt $ "Fehler: Matrikelnummer: " ++ mat ++ " unbekannt!"
+			  [(email,pwd)]	-> ttxt $ "Ihr Passwort wurde Ihnen zugesandt." 
+			hrrow
+			smallSubButton F0 (loginPage mat) "Zurueck."
+
 
 
 -- Neuanmeldung 								  

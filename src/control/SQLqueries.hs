@@ -16,6 +16,14 @@ import Char -- toLower
 import Helper
 
 
+-- Mysql 
+mysqlhost 	= "localhost"
+mysqldb		= "autoan"
+mysqluser	= "test"
+mysqlpasswd	= "test"
+
+myconnect = connect mysqlhost mysqldb mysqluser mysqlpasswd
+
 -- TODO:
 -- Schluessel zum Studenten nur noch SNr nicht mehr Mat
 
@@ -23,6 +31,7 @@ import Helper
 -- Header extrahieren aus SQL
 showColTypes :: Statement -> [ String ]
 showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
+
 
 
 -- --------------------------------------------------------------------------------
@@ -34,7 +43,7 @@ showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
 studAufgDB :: String -> IO ( [ String ] , [ [ StrOrInt ] ])
 studAufgDB mat =
 	do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect 
 	   stat <- query conn
 			   ( concat
 				 [ "SELECT "
@@ -66,6 +75,7 @@ studAufgDB mat =
 
 
 -- Neuen Student einfügen
+-- TODO EMail-Ueberpruefung
 insertNewStudentDB :: String -> String -> String -> String -> String -> IO ()
 insertNewStudentDB vnm nme mat eml ps1 =
 	do
@@ -92,7 +102,7 @@ insertNewStudentDB vnm nme mat eml ps1 =
 checkPasswdMNrDB :: Maybe String -> String -> IO [ ( String , String , String , String ) ]
 checkPasswdMNrDB maybePass mnr =
 	do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn
 			   ( concat
 				 [ "SELECT student.MNr AS MNr, \n"
@@ -121,7 +131,7 @@ checkPasswdMNrDB maybePass mnr =
 loginDB :: String -> String -> IO (Maybe String)
 loginDB mnr pass =
 	do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn
 			   ( concat
 				 [ "SELECT "
@@ -144,7 +154,7 @@ loginDB mnr pass =
 duplMatOrEmailDB :: String -> String -> IO ( Bool , Bool )
 duplMatOrEmailDB mat eml = 
 	do 
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn 
 			   ( concat 
 				 [ "SELECT student.MNr, student.Email \n"
@@ -171,7 +181,7 @@ duplMatOrEmailDB mat eml =
 getAllVorlesungenDB :: IO [ String ]
 getAllVorlesungenDB = 
 	do 
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn 
 			   ( concat 
 				 [ "SELECT vorlesung.Name AS Vorlesung \n"
@@ -189,7 +199,7 @@ getAllVorlesungenDB =
 studVorlDB :: String -> IO [ String ]
 studVorlDB mnr = 
 	do 
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn 
 			   ( concat 
 				 [ "SELECT vorlesung.Name AS Vorlesung \n"
@@ -211,7 +221,7 @@ studVorlDB mnr =
 getVorlesungWithPointsDB :: String -> IO [ String ]
 getVorlesungWithPointsDB mnr = 
 	do 
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn
 			   ( concat 
 				 [ "SELECT	vorlesung.Name AS Vorlesung \n"
@@ -235,7 +245,7 @@ getVorlesungWithPointsDB mnr =
 updateEmailDB :: String -> String -> IO ()
 updateEmailDB mat email =
 	do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn 
 			   ( concat 
 				 [ "UPDATE student "
@@ -252,7 +262,7 @@ updateEmailDB mat email =
 updatePasswortDB :: String -> String -> IO ()
 updatePasswortDB mat pass =
 	do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn 
 			   ( concat 
 				 [ "UPDATE student "
@@ -267,7 +277,7 @@ updatePasswortDB mat pass =
 insertStudVorlDB :: String -> String -> IO ()
 insertStudVorlDB mat vorl =
 	do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat1 <- query conn
 				( concat
 				  [ "SELECT student.SNr, vorlesung.VNr "
@@ -296,7 +306,7 @@ insertStudVorlDB mat vorl =
 removeStudVorlDB :: String -> String -> IO ()
 removeStudVorlDB mat vorl =
 	do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat1 <- query conn
 				( concat
 				  [ "SELECT student.SNr, vorlesung.VNr "
@@ -364,7 +374,7 @@ removeStudVorlDB mat vorl =
 -- liefert alle freien Gruppen
 getFreeGruppenDB =
 	do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn $
 			"SELECT \n"
 			++ "gruppe.GNr AS GNr, "
@@ -402,7 +412,7 @@ getFreeGruppenDB =
 	   return ( showColTypes stat, inh )
 
 getAllGruppenDB = do
-	conn <- connect "localhost" "autoan" "test" "test"
+	conn <- myconnect
 	stat <- query conn $
 			"SELECT \n"
 			++ "gruppe.GNr AS GNr, "
@@ -429,7 +439,7 @@ getAllGruppenDB = do
 
 getGruppenStudDB mat =
 	do
-	conn <- connect "localhost" "autoan" "test" "test"
+	conn <- myconnect
 	stat <- query conn
 			( "SELECT stud_grp.GNr as GNr" ++ " \n"
 		   ++ "FROM stud_grp, student" ++ " \n"
@@ -444,7 +454,7 @@ getGruppenStudDB mat =
 	return inh
 
 getSNrFromMatDB mat = do
-   conn <- connect "localhost" "autoan" "test" "test"
+   conn <- myconnect
    stat <- query conn $ "SELECT student.SNr AS SNr FROM student WHERE student.MNr =" ++ "\"" ++ filterQuots mat ++ "\""
    inh  <- collectRows ( \ state -> do
 						 snr <- getFieldValue state "SNr"
@@ -460,7 +470,7 @@ changeStudGrpDB mat grp =
 	  then return ()
 	  else  
 	  do {
-		 ; conn <- connect "localhost" "autoan" "test" "test"
+		 ; conn <- myconnect
 		 ; stat <- query conn $ "DELETE FROM autoan.stud_grp" ++ " " ++ "WHERE stud_grp.SNr = \"" ++ filterQuots (snrh!!0) ++ "\" " ++ ";"
 	     ; stat <- query conn $ "INSERT INTO autoan.stud_grp (SNr,GNr) VALUES (" ++ filterQuots (snrh!!0) ++ "," 
 							++ filterQuots (show grp) ++");"
@@ -474,7 +484,7 @@ changeStudGrpDB mat grp =
 -- erhöht von Student, für Aufgabe (Ok,Size) / No 
 bepunkteStudentDB :: String -> String -> ATBewertung -> ATHighLow -> IO ()
 bepunkteStudentDB snr anr bewert highlow = do
-   conn <- connect "localhost" "autoan" "test" "test"
+   conn <- myconnect
    -- wenn (snr,anr) bereits in db -> update der Zeile sonst insert Zeile
    stat <- query conn ("SELECT SNr FROM stud_aufg \n" ++ 
 					   "WHERE SNr = \"" ++ filterQuots snr ++ "\" "++
@@ -550,7 +560,7 @@ mglAufgabenDB' admin snr = do
         let timed = if admin 
 		    then ""
 		    else "AND NOW() BETWEEN Von AND Bis "
-	conn <- connect "localhost" "autoan" "test" "test"
+	conn <- myconnect
 	stat <- query conn
 			( concat
 			  [ "SELECT aufgabe.ANr, aufgabe.Name , aufgabe.Subject , aufgabe.Path , aufgabe.Highscore \n"
@@ -578,7 +588,7 @@ mglAufgabenDB' admin snr = do
 -- ( [header ... ] , [ ( ANr, Name , Subject , Path , Highscore , Von , Bis ) ] )
 mglNextAufgabenDB :: String -> IO ( [String],[[String]])
 mglNextAufgabenDB snr = do
-	conn <- connect "localhost" "autoan" "test" "test"
+	conn <- myconnect
 	stat <- query conn
 			( concat
 			  [ "SELECT aufgabe.ANr, aufgabe.Name AS Typ, aufgabe.Subject AS Nr, aufgabe.Highscore \n"
@@ -620,7 +630,7 @@ mglNextAufgabenDB snr = do
 checkAdminNamePasswortDB :: String -> String -> IO Bool
 -- ADMIN
 checkAdminNamePasswortDB nme pas = do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn
 			   ( concat
 				 [ "SELECT \n"
@@ -640,7 +650,7 @@ checkAdminNamePasswortDB nme pas = do
 	   return loginok
 --checkAdminNamePasswortDB :: String -> String -> IO Bool
 failDB nme pas = do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   stat <- query conn 
 			   ( concat 
 				 [ "SELECT"  
@@ -661,7 +671,7 @@ failDB nme pas = do
 
 --
 findStudDB vnm nme mat eml vrl= do
-	   conn <- connect "localhost" "autoan" "test" "test"
+	   conn <- myconnect
 	   let 
 			-- TODO optinale Teilwort suche (%part%)
 			-- TODO or Verknüpfung
@@ -703,7 +713,7 @@ findStudDB vnm nme mat eml vrl= do
 	   return (  showColTypes stat, inh )
 --
 updateStudDB oldmat mat vnm nme eml pas = do
-   conn <- connect "localhost" "autoan" "test" "test"
+   conn <- myconnect
    stat <- query conn
 		   ( concat 
 			 [ "UPDATE student \n"
@@ -719,7 +729,7 @@ updateStudDB oldmat mat vnm nme eml pas = do
    return ()
 --
 getStudentDB mnr = do 
-	conn <- connect "localhost" "autoan" "test" "test"
+	conn <- myconnect
 	stat <- query conn 
 			( concat 
 			  [ "SELECT student.MNr AS MNr, \n"
@@ -743,13 +753,36 @@ getStudentDB mnr = do
 	disconnect conn 
 	return inh
 
+-- Input : Matrikelnr
+-- Output :(Email,Passwort) 
+getEmailPasswortDB :: String -> IO [(String, String)]
+getEmailPasswortDB mnr = do 
+	conn <- myconnect
+	stat <- query conn 
+			( concat 
+			  [ "SELECT "
+			  , "student.Email AS Email, \n"  
+			  , "student.Passwort AS Passwort \n"
+			  , "FROM	autoan.student \n"
+			  , "WHERE	student.MNr = \"" ++ (filterQuots mnr)++ "\" "
+			  , ";"
+			  ] )
+	inh <- collectRows ( \ state -> do
+			     	e <- getFieldValue state "Email"
+			     	p <- getFieldValue state "Passwort"
+			     	return (e,p)
+			   ) stat
+	disconnect conn 
+	return inh
+
+
 --
 -- input: email-adresse
 -- output: ( Id, Matrikel )
 --
 getIdMat :: String -> IO ( Maybe ( String, String ))
 getIdMat email = do 
-	conn <- connect "localhost" "autoan" "test" "test"
+	conn <- myconnect
 	putStrLn $ "connected"
 	stat <- query conn $ unlines
 	   [ "SELECT SNr, Email, MNr"
