@@ -52,9 +52,10 @@ execute k z @ ( n, d ) = do
 	
 executes :: Konfig -> [ Zug ] -> Boc
 executes k [] = 
-    final k
+    explain 0 ( nice k )
+    $ final k
 executes k (z : zs) = 
-    explain 0 ( vcat [ nice k , text "Zug:" <+> toDoc z ] )
+    explain 0 ( vcat [ nice k , nest 4  $ text "nächster Zug:" <+> toDoc z ] )
     $ case execute k z of
 	   Nothing -> ( False , text "nicht erlaubt" )
 	   Just k' -> executes k' zs
