@@ -728,8 +728,7 @@ checkAdminNamePasswortDB nme pas = do
        conn <- myconnect
        stat <- query conn
                ( concat
-                 [ "SELECT \n"
-                 , "admin.Name AS Name \n"
+                 [ "SELECT admin.Name AS Name \n"
                  , "FROM    admin \n"
                  , "WHERE   \n"
                  , "admin.Name = \"" ++ (quoteQuots nme)++ "\" "
@@ -749,8 +748,7 @@ failDB nme pas = do
        conn <- myconnect
        stat <- query conn 
                ( concat 
-                 [ "SELECT"  
-                 , "admin.Name AS Name \n"
+                 [ "SELECT admin.Name AS Name \n"
                  , "FROM    admin \n"
                  , "WHERE   \n"
                  , "admin.Name = \"" ++ (quoteQuots nme)++ "\" "
@@ -778,10 +776,13 @@ failDB nme pas = do
 findStudDB vnm nme mat eml vrl= do
        conn <- myconnect
        let 
-            ifexist x sqlnme =
+            ifexist_pre pre x sqlnme =
                 if length x > 0 
-                then "AND "++ sqlnme ++ " LIKE \"%" ++ (quoteQuots x)++ "%\" "
+                then pre ++ sqlnme ++ " LIKE \"%" ++ (quoteQuots x)++ "%\" "
                 else ""
+            ifexist0 = ifexist_pre ""
+            ifexist = ifexist_pre "AND "
+
        stat <- query conn 
                ( concat 
                  [ "SELECT DISTINCT \n"
@@ -791,11 +792,12 @@ findStudDB vnm nme mat eml vrl= do
                  , "student.Name    AS Name, \n"
                  , "student.Email   AS Email, \n"  
                  , "student.Status  AS Status \n"
-                 , "FROM    student , vorlesung , stud_vorl \n"
+		 --, "FROM    student , vorlesung , stud_vorl \n"
+                 , "FROM    student \n"
                  , "WHERE "
-                 , "student.SNr = stud_vorl.SNr " 
-                 , "AND stud_vorl.VNr = vorlesung.VNr " 
-                 , ifexist mat "student.MNr" 
+--                 , "student.SNr = stud_vorl.SNr " 
+--                 , "AND stud_vorl.VNr = vorlesung.VNr " 
+                 , ifexist0 mat "student.MNr" 
                  , ifexist vnm "student.Vorname"
                  , ifexist nme "student.Name"
                  , ifexist eml "student.Email"

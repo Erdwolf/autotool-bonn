@@ -45,7 +45,8 @@ checkLoginPage (F2 lgnF pwdF) =
   do 
 --  lgnok <- io $ checkAdminNamePasswortDB lgn passwort
 -- EX
-  lgnok <-  io $ failDB lgn pass `catchSql` \e -> do { error $ "sql fehler!" ++ (seErrorMsg e) }
+  lgnok <-  io $ failDB lgn pass `catchSql` \e -> do 
+		   error $ "sql fehler!" ++ (seErrorMsg e) 
   if lgnok 
 	 then findStudPage
 	 else standardQuery "Fehler" $ do
