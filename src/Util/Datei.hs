@@ -54,7 +54,7 @@ home_dir = do
 	    getEnv "HOME"
 #else
 #ifdef POSIX
-            user <- Posix.getEffectiveUserName
+        user <- Posix.getEffectiveUserName
 	    return $ "/home/" ++ user
 #else            
             let user = "autotool"
