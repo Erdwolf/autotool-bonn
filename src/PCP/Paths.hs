@@ -1,4 +1,5 @@
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
+{-# OPTIONS -fallow-undecidable-instances #-}
 
 -- | compute the cyclic tetris graph 
 -- corresponding to a (partial) PCP solution
@@ -8,9 +9,12 @@ import Autolib.Util.Splits
 import Autolib.NFA.Type
 import Autolib.NFA.Dot
 import Autolib.NFA.Compact
+import Autolib.Exp.Type
 import Autolib.Informed
 import Autolib.Schichten
 import Autolib.Util.Sort
+import Autolib.Util.Size
+import Autolib.ToDoc
 
 import PCP.Type
 import PCP.Examples
@@ -18,17 +22,21 @@ import PCP.Examples
 import Control.Monad.State
 import Control.Monad.Identity
 
---------------------------------------------------------------
--- the leftmost derivation
---------------------------------------------------------------
-
 -- | check dis
-check pcp w = runIdentity
-      $ evalStateT (spirals w)
+
+test = check simple $ take 4 ssimple
+
+check pcp (k : ks) = runIdentity
+      $ evalStateT ( do
+            let (l, r) = pcp !! k
+            p <- next
+            q <- next
+	    path <- link (p, drop (length r) l, q)
+            put_border path
+	    put_cut p
+	    spirals ks
+      )
       $ blank 'x' pcp 
-
-
-
 
 --------------------------------------------------------------------------
 
@@ -40,6 +48,7 @@ data Config c a = Config
 		, used :: [a]
 		, from :: a, to :: a
 		, border :: [(a, c, a)]
+		, cut :: a
 		, time :: Int
 		}
 
@@ -53,7 +62,7 @@ instance ( Ord c ) => Ord ( Config c a ) where
     c `compare` d = wesen c `compare` wesen d
 
 
-spirals :: Monad m
+spirals :: ( Eq a, Monad m )
         => [Int]
         -> StateT (Config c a) m (Config c a)
 spirals ks = do
@@ -61,25 +70,38 @@ spirals ks = do
     get
 
 -- | apply one pcp pair
-spiral :: Monad m
+spiral :: (Eq a, Monad m)
      => Int
      -> StateT (Config c a) m ()
 spiral k = do
     p <- gets pcp
     let (l, r) = p !! k
 
-    bo <- gets border
-    -- add to border (on the right), returns top state
-    ex <- extend (begin bo, l) 
+    bore <- gets border
 
-    bore <- gets border -- new value!
-    let (pre, post) = splitAt (length r) bore
+    c <- gets cut
+    jack <- if c `elem` states_on ( take (length r) bore )
+       then do -- start next level
+            jack <- next
+            put_cut $ jack
+            return jack
+       else do -- continue old level
+	    return $ end bore
+
+    -- add to border (on the right)
+    ext <- extend (jack, l) 
+
+    let (pre, post) = splitAt (length r) (bore ++ ext)
     -- assert $ strip pre == r
+    put_border post
         
     s <- gets separator
-    link (end pre, [s], end ex)
+    link (end pre, [s], end ext)	
+    return ()
 
-    put_border post
+states_on path = do
+    (p, c, q) <- path
+    return p
 
 blank :: c -- ^ separator
       -> PCP c -- ^ instance
@@ -89,7 +111,7 @@ blank s p = Config { separator = s, pcp = p
 	       , supply = [0 ..]
 	       , used = []
 	       -- questionable
-	       , from = 0 , to = 0
+	       , from = 0 , to = 0, cut = 0
 	       , border = []
 	       , time = 0
 	       }
@@ -136,6 +158,9 @@ add_store path = do
     put $ conf { store = path ++ store conf }
     return path
 
+put_cut c = do
+    conf <- get
+    put $ conf { cut = c }
 
 put_border :: Monad m 
 	   => [(a, c, a)] 
@@ -185,7 +210,7 @@ strip :: Path c a -> [c]
 strip = map ( \ (_,b,_) -> b)
 
 begin :: Path c a -> a
-begin path = case head path of (a, _, _) -> a
+begin path = case path of (a, _, _) : _ -> a
 
 end :: Path c a -> a
 end path = case last path of (_, _, c) -> c
@@ -248,12 +273,23 @@ applicables srs w = do
 
 --------------------------------------------------------------------------
 
+data Net c = Net { net :: NFA c Int }
+
+instance NFAC c Int => ToDoc (Net c) where
+    toDoc = toDoc . net
+instance NFAC c Int => Show  (Net c) where
+    show = render . toDoc
+instance NFAC c Int => ToDot (Net c) where
+    toDot = toDot . net
+    toDotProgram _ = "neato"
+
 automate :: (  NFAC c Int )
     => Config c Int 
-    -> NFA c Int
+    -> Net (RX c)
 automate conf = 
     let trs = store conf
-    in  NFA { nfa_info = funni "automate" [ ] 
+    in  Net $ Autolib.NFA.Compact.make
+	    $ NFA { nfa_info = funni "automate" [ ] 
 		 , states = mkSet $ used conf
 		 , alphabet = mkSet $ strip trs
 		 , starts = unitSet $ from conf
