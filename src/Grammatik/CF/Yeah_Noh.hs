@@ -66,7 +66,7 @@ cf_yeah_noh c g = do
 
     when ( not $ null yeah_falsch ) $ reject $ vcat
 	 [ text "Ihre Grammatik erzeugt unter anderem diese Wörter NICHT:"
-	 , toDoc yeah_falsch
+	 , nest 4 $ toDoc yeah_falsch
 	 ]
     inform $ text "OK."
 
@@ -84,7 +84,7 @@ cf_yeah_noh c g = do
 
     when ( not $ null noh_falsch ) $ reject $ vcat
 	 [ text "Ihre Grammatik erzeugt unter anderem diese Wörter DOCH:"
-	 , toDoc noh_falsch
+	 , nest 4 $ toDoc noh_falsch
 	 ]
     inform $ text "OK."
 

@@ -35,6 +35,10 @@ instance Partial CFG I.Config Grammatik where
 	   [ text "Gesucht ist eine kontextfreie Grammatik für die Sprache"
 	   , nest 4 $ text $ abbreviation $ I.lang i
 	   , text "über dem Alphabet" <+> toDoc ( alphabet $ I.lang i )
+	   , text ""
+	   , text "Zu dieser Sprache gehören unter anderem die Wörter:"
+	   , nest 4 $ toDoc $ take 10 $ I.yeah i
+	   , text ""
 	   , C.condition $ I.typ i
 	   ]
 
@@ -63,7 +67,7 @@ make0 :: P.Config
 	 -> Var CFG I.Config Grammatik
 make0 c = Var { problem = CFG
         , aufgabe = C.nametag ( P.typ c )
-        , version = L.nametag ( P.lang c )
+        , version = nametag ( P.lang c )
         , key = \ matrikel -> do 
           return matrikel
         , gen = \ key -> do

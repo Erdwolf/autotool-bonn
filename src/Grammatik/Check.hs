@@ -33,7 +33,7 @@ check lang l d a n g = do
      let ( yeah, noh ) = partition ( contains lang ) ws
      when ( not $ null noh ) $ reject $ vcat
 	  [ text "Nein, diese nicht:"
-	  , toDoc $ take 10 $ noh
+	  , nest 4 $ toDoc $ take 10 $ noh
 	  ]
      inform $ text "OK."
      newline
