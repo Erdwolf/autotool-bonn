@@ -21,6 +21,8 @@ module SAT.SAT
 , Variable, Literal (..)
 , Klausel, Formel
 , module FiniteMap
+
+, variablen
 )
 
 where
