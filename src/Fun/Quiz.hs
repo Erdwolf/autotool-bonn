@@ -63,6 +63,7 @@ quiz auf ver s t =
 					   , auf, ver
 					   ]
 				  , name = key ++ ".cache" 
+				  , relativzahl = error "Fun.Quiz.relativzahl"
 				  }
 			 ) ( nontrivial s t )
 	           return $ do
