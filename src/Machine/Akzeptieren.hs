@@ -9,9 +9,9 @@ import Machine.Class
 import Machine.History
 
 import Control.Monad (guard)
-import Reporter hiding ( output )
-import ToDoc
-import Data.Set
+import Autolib.Reporter hiding ( output )
+import Autolib.ToDoc
+import Autolib.Set
 
 akzeptierend
     :: Machine m dat conf

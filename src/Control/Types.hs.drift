@@ -6,7 +6,7 @@ module Control.Types
 , Wert (..)
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
-, Typ, Config, Remark, Name
+, Typ, Config, Remark, Name, Email
 , Oks, Nos
 , Time
 , FromCGI (..)
@@ -22,6 +22,7 @@ import Autolib.ToDoc
 
 import System.Time
 import Control.SQL
+import Inter.Crypt
 import Data.Char ( toLower )
 import Database.MySQL.HSQL
 
@@ -35,6 +36,14 @@ class FromCGI a where fromCGI :: String -> a
 class ToString a where toString :: a -> String
 
 -------------------------------------------------------------
+
+instance ToEx Crypt where 
+    toEx c = EString ( unCrypt c )
+instance SqlBind Crypt where 
+    fromSqlValue _ s = Just $ Crypt s
+    toSqlValue c = unCrypt c
+
+--------------------------------------------------------------
 
 data Time = Time String deriving ( Eq, Ord, Typeable )
 
@@ -50,6 +59,8 @@ instance ToEx Time where
     toEx (Time x) = EString x
 instance FromCGI Time where
     fromCGI s = Time s
+instance ToString Time where
+    toString (Time x) = x
 
 -------------------------------------------------------------
 
@@ -83,7 +94,7 @@ instance SqlBind Wert where
 
 -- | Matrikel-Nummer
 -- FIXME: sollte das lieber ein String sein? School fehlt auch noch.
-data MNr = MNr Int deriving ( Eq, Ord, Typeable )
+data MNr = MNr Integer deriving ( Eq, Ord, Typeable )
 
 {-! for MNr derive: ToDoc, Reader, Haskell2Xml !-}
 
@@ -101,6 +112,10 @@ instance FromCGI MNr where
 instance ToString MNr where
     toString (MNr i) = show i
 
+instance ToEx MNr where
+    toEx (MNr i) = EInteger i
+
+-------------------------------------------------------------------
 
 -- | Aufgaben-Typ
 data Typ = Typ String deriving ( Eq, Ord, Typeable )
@@ -117,10 +132,29 @@ instance FromCGI Typ where
 instance ToString Typ where 
     toString (Typ cs) = cs
 
+------------------------------------------------------------
+
+-- | Aufgaben-Email
+data Email = Email String deriving ( Eq, Ord, Typeable )
+
+{-! for Email derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance SqlBind Email where 
+    fromSqlValue ty s = Just $ Email s
+    toSqlValue (Email cs) = toSqlValue cs
+instance ToEx Email where
+    toEx (Email x) = EString x
+instance FromCGI Email where
+    fromCGI cs = Email cs
+instance ToString Email where 
+    toString (Email cs) = cs
+
+------------------------------------------------------------
+
 -- | Aufgaben-Config
 data Config = Config String deriving ( Eq, Ord, Typeable )
+{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
-{-! for Config derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind Config where 
     fromSqlValue ty s = Just $ Config s

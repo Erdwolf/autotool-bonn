@@ -8,7 +8,7 @@ module JVM.Builtin
 where
 
 import JVM.Type
-import Sets
+import Autolib.Set
 
 builtins :: Set Statement
 builtins = mkSet [ Add, Sub, Mul ]

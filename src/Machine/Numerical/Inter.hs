@@ -9,9 +9,10 @@ import Machine.Class
 import qualified Challenger as C
 
 import Inter.Types
-import Reporter hiding ( output )
-import ToDoc
-import Informed
+import Autolib.Reporter hiding ( output )
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Informed
 
 computer :: ( Machine m dat conf, Numerical dat )
          => String		-- aufgabe (major)
@@ -27,15 +28,14 @@ computer_mat :: ( Machine m dat conf, Numerical dat )
      -> Var N.Computer ( N.Type m ) m 
 computer_mat auf ver fnum =
     Var { problem = N.Computer
-	, aufgabe = auf
-	, version = ver
+	, tag = auf ++ "-" ++ ver
 	, key = \ matrikel -> do
 	      return matrikel
 	, gen = \ key -> return $ do
 	      return $ fnum key
 	}
 
-instance ( Machine m dat conf, Numerical dat )
+instance ( Machine m dat conf, Numerical dat, Reader m )
          => C.Partial N.Computer (N.Type m) m where
     describe p i =
 	    vcat [ text "Konstruieren Sie eine Maschine,"

@@ -4,14 +4,18 @@ module Machine.Numerical.Type where
 
 --   $Id$
 
-import Informed
-import ToDoc
-import Reader
-import Reporter
+import Autolib.Informed
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Reporter
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 data Computer = Computer
+     deriving Typeable
 
-{-! for Computer derive : Show, Read, ToDoc, Reader !-}
+{-! for Computer derive : ToDoc, Reader, Haskell2Xml !-}
 
 data Type m = 
      Make { fun ::  [ Integer ] -> Integer -- zu berechnende funktion
@@ -21,6 +25,7 @@ data Type m =
 	    , check :: m -> Reporter () -- sonstige Bedingungen an Maschine
 	    , start :: m -- damit soll der student anfangen
 	      }
+     deriving Typeable
 
 instance Informed ( Type m ) where
      info = fun_info
@@ -28,10 +33,4 @@ instance Informed ( Type m ) where
 
 instance ToDoc ( Type m ) where
      toDoc = info
-instance Show ( Type m ) where
-     show = render . toDoc
 
-instance Reader ( Type m ) where
-     reader = error "Machine.Numerical.Type.reader"
-instance Read ( Type m ) where
-     readsPrec p = error "Machine.Numerical.Type.readsPrec"

@@ -2,7 +2,7 @@ module Boolean.Equiv where
 
 --  $Id$
 
-import Boolean.Data
+import Boolean.Op
 import Boolean.Eval
 
 import Autolib.Reporter.Type
@@ -14,7 +14,7 @@ import Control.Monad ( when )
 -- slightly asymmetric since
 -- each variable of f has to occur in e 
 -- (but not necessarily vice versa)
-check :: Exp -> Exp -> Reporter ()
+check :: Exp Bool -> Exp Bool -> Reporter ()
 check e f = do
     inform $ vcat
 	   [ text "Sind die Ausdrücke"
@@ -26,7 +26,7 @@ check e f = do
     mapM_ ( test e f ) $ belegungen $ vars e
     inform $ text "Ja, die Werte stimmen für alle Variablen-Belegungen überein."
 
-test :: Exp -> Exp -> Belegung Identifier
+test :: Exp Bool -> Exp Bool -> Belegung Identifier
      -> Reporter ()
 test e f b = do
     let x = eval b e ; y = eval b f

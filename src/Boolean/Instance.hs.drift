@@ -5,7 +5,6 @@ module Boolean.Instance where
 --  $Id$
 
 import Boolean.Op
-import Boolean.Data
 import qualified Boolean.Equiv
 
 import Challenger.Partial
@@ -21,22 +20,19 @@ import Autolib.Set
 
 import Inter.Types
 
-data Boolean = Boolean deriving ( Eq, Ord, Show, Read, Typeable )
+data Boolean = Boolean deriving ( Eq, Ord, Typeable )
 
-instance ToDoc Boolean where toDoc = text . show
+{-! for Boolean derive: Haskell2Xml, ToDoc, Reader !-}
 
 data BI =
-     BI { formula :: Exp
+     BI { formula :: Exp Bool
 	, operators :: Set ( Op Bool )
 	}
      deriving ( Typeable )
 
 {-! for BI derive: Haskell2Xml, ToDoc, Reader !-}
 
-instance Show BI where show = render . toDoc
-instance Read BI where readsPrec = parsec_readsPrec
-
-instance Partial Boolean BI Exp where
+instance Partial Boolean BI ( Exp Bool ) where
 
     describe p i = vcat
         [ text "Gesucht ist ein aussagenlogischer Ausdruck,"
@@ -75,8 +71,6 @@ make = direct Boolean $  BI
        { formula = read "x == (y == z)"
        , operators = read "mkSet [ false, true, !, ||, && ]"
        }
-
-
 
 
 

@@ -1,17 +1,23 @@
 -- -*- mode: haskell -*-
 
-module Control.Student.Typ where
+module Control.Student.Type where
 
 import Control.Types
+import Inter.Crypt
 
 import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
 data Student =
-     Student {
+     Student { snr :: SNr
+	     , mnr :: MNr
+	     , name :: Name
+	     , vorname :: Name
+             , email :: Email
+	     , passwort :: Crypt
 	     }
      deriving ( Eq, Ord, Typeable )
 

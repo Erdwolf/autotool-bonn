@@ -2,8 +2,9 @@ module Boolean.Eval where
 
 --  $Id$
 
-import Boolean.Data
-import Boolean.Op ( inter )
+-- import Boolean.Data
+import Boolean.Op 
+import Expression.Op
 
 import Data.FiniteMap
 import Autolib.Util.Wort
@@ -18,7 +19,7 @@ belegungen vs = do
     xs <- alle [ False, True ] $ cardinality vs
     return $ listToFM $ zip ( setToList vs ) xs
 
-eval :: Belegung Identifier -> Exp -> Bool
+eval :: Belegung Identifier -> Exp Bool -> Bool
 eval b = 
     tfold ( lookupWithDefaultFM b (error "Boolean.Eval") )
 	  ( inter )

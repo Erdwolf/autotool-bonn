@@ -1,13 +1,13 @@
 module Boolean.Op 
 
-( module Expression.Op )
+( module Expression.Op
+) 
 
 where
 
 --  $Id$
 
 import Expression.Op
-
 
 instance Ops Bool where
     ops = nullary ++ unary ++ binary

@@ -2,7 +2,7 @@ module Machine.History where
 
 --   $Id$
 
-import ToDoc
+import Autolib.ToDoc
 
 detail :: Int
 detail = 7

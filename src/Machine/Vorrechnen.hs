@@ -7,10 +7,10 @@ where
 import Machine.Class
 import Machine.History
 
-import Data.Set
-import Schichten
-import Reporter hiding ( output )
-import ToDoc
+import Autolib.Set
+import Autolib.Schichten
+import Autolib.Reporter hiding ( output )
+import Autolib.ToDoc
 
 vorrechnen :: Machine m dat conf
 	   => m -> dat

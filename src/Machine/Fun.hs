@@ -18,12 +18,12 @@ import Machine.History
 import qualified Machine.Numerical.Type as N
 
 import Control.Monad (guard)
-import Reporter hiding ( output )
-import ToDoc
-import Reader
-import Data.FiniteMap
-import Data.Set
-import Size
+import Autolib.Reporter hiding ( output )
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.FiniteMap
+import Autolib.Set
+import Autolib.Size
 
 numerical_test' ::  ( Numerical dat, Machine m dat conf, Out m dat conf )
 	        => N.Type m

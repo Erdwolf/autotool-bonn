@@ -8,7 +8,7 @@ import qualified PCProblem.Quiz
 import qualified Boolean.Instance
 import qualified Boolean.Quiz
 import qualified Sortier.Netz.Check 
--- import qualified JVM.Make
+import qualified JVM.Make
 
 makers :: [ Make ]
 makers = [ NFA.Analyse.make
@@ -18,5 +18,5 @@ makers = [ NFA.Analyse.make
 	 , Boolean.Instance.make
 	 , Boolean.Quiz.make
 	 , Sortier.Netz.Check.make
-	 -- , JVM.Make.make
+	 , JVM.Make.make
 	 ]

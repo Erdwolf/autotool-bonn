@@ -5,10 +5,11 @@ module Challenger.Partial where
 
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Reader
 import Autolib.Size
 
 -- | Klasse: Partial
-class ( Show p, ToDoc i, ToDoc b , Size b )
+class ( ToDoc p, ToDoc i, Reader b, ToDoc b , Size b )
     => Partial p i b | p i -> b , p b -> i where
 
       -- | Beschreibung der Aufgabe herstellen

@@ -6,7 +6,7 @@
 module Main where
 
 import Inter.CGI
-import Control.Types ( toString, fromCGI, Name, Remark, HiLo, Time )
+import Control.Types ( toString, fromCGI, Name, Remark, HiLo (..), Time )
 
 
 import qualified Inter.Collector
@@ -14,12 +14,15 @@ import qualified Inter.Collector
 
 import Challenger.Partial
 import Inter.Types
-import Inter.Click
+
+import Control.Student.CGI
+import Control.Tutor
 
 import Inter.Make 
 import Inter.Evaluate
 
 import qualified Control.Aufgabe as A
+import qualified Control.Student.Type as S
 import qualified Control.Vorlesung as V
 
 
@@ -27,13 +30,13 @@ import Autolib.Reporter.Type
 import Autolib.ToDoc
 import Autolib.Reader
 
-
 import Random
 import Data.Typeable
 import Data.Maybe
 import Data.List
 import Control.Monad
 
+import Text.Html ( Html )
 
 main :: IO ()
 main = Inter.CGI.execute "Super.cgi" 
@@ -42,81 +45,138 @@ main = Inter.CGI.execute "Super.cgi"
 iface :: [ Make ] -> Form IO ()
 iface mks = do
 
-    -- TODO: check tutor-login bzw. stud-login
+    stud <- Control.Student.CGI.login
+    let snr = S.snr stud
+
+    open btable
+ 
+    tvors <- io $ V.get_tutored snr
     -- unterschiede: tutor darf "alles",
-    -- student darf kein aufgaben ändern und nur aktuelle aufgaben sehen
-    vors <- io $ V.get
-    vnr <- selector_submit "vnr" "wähle Vorlesung" 0 $ do
+    -- student darf keine aufgaben ändern und nur aktuelle aufgaben sehen
+    let tutor = not $ null tvors
+    vors <- if tutor 
+            then return tvors
+	    else io $ V.get_attended snr
+
+    vnr <- selector_submit "vnr" "Vorlesung" 0 $ do
         vor <- vors
         return ( show $ V.name vor , V.vnr vor )
 
-    -- FIXME: nicht alle aufgaben aus DB holen, 
-    -- sondern nur die mit passender VNr
-    aufs <- io $ A.get  
-    br
-    mauf <- selector_submit "anr" "bearbeite Aufgabe" 0 
-    -- TODO: implementiere "delete aufgabe"
-      $ ( "(neue Aufgabe)", Nothing ) : do
-        auf <- aufs
-        guard $ A.vnr auf == vnr
-        return ( show $ A.name auf , Just $ auf )
+    aufs <- io $ A.get vnr ( not tutor ) -- student darf nur aktuelle
+    let opts = do
+                     auf <- aufs
+                     return ( show $ A.name auf , Just $ auf )
+    ( mauf, del ) <- 
+        if tutor
+	   then selector_edit_delete "anr" "Aufgabe" 0 
+                   $ ( "(neue Aufgabe)", Nothing ) : opts
+           else do 
+		( mauf, _ ) <- selector_submit_click "anr" "Aufgabe" Nothing $ opts
+                return ( mauf, False )
     let manr = fmap A.anr mauf
+    close -- table
+    
+    when del $ do
+        Just anr <- return manr
+        io $ A.delete anr
+        plain $ unwords [ "Aufgabe", show anr, "gelöscht." ]
+	mzero
 
-    pre $ "Vorlesung gewählt : " ++ show vnr
-    pre $ "Aufgabe gewählt : " ++ show manr
+    hr
+    ( mk, type_click ) <- find_mk mks tutor mauf
+    auf' <- edit_aufgabe mk mauf vnr manr type_click
+
 
     hr ---------------------------------------------------------
+    m0 <- io $ randomRIO (0, 999999 :: Int) 
+    -- neu würfeln nur bei änderungen oberhalb von hier
+    plain "eine gewürfelte Matrikelnummer:"
+    mat <- with ( show m0 ) $ textfield "mat" ( show m0 )
+
+    solution mat mk auf' 
+
+
+find_mk mks tutor mauf = do
+    h3 "Parameter dieser Aufgabe:"
+    open btable
 
     let pre_mk = fmap (toString . A.typ) mauf
-    mk <- selector_submit' "mk" "wähle Aufgabentyp" pre_mk $ do
+    let handler = 
+            if tutor 
+            then selector_submit_click "typ" "Typ"
+            else \ pre_mk opts -> return 
+		    ( fromMaybe (error "oof") $ do
+                          pre <- pre_mk ; lookup pre opts
+                    , False
+		    ) 
+    handler pre_mk $ do
         mk <- mks
 	return ( show mk, mk )
 
+edit_aufgabe mk mauf vnr manr type_click = do
     case mk of 
         Make doc ( fun :: conf -> Var p i b ) ex -> do
-            conf <- editor_submit "conf" "Konfiguration" ( ex :: conf )
-            let var = fun conf
-                p = problem var
-            br
-	    h3 "Zur Übernahme in die Datenbank:"
             ( name :: Name ) <- fmap fromCGI 
-		     $ defaulted_textfield "name" "noch kein Name"
-            br -- TODO: überschrift "remark"
+		     $ defaulted_textfield "Name" 
+		     $ case mauf of Nothing -> "noch kein Name"
+                                    Just auf -> toString $ A.name auf
 	    ( remark :: Remark ) <- fmap fromCGI 
-		    $ defaulted_textarea "rem" "noch keine Hinweise"
-            br
-	    ( hilo :: HiLo ) <- defaulted_selector "high" "Highscore" 0 $ do
+		    $ defaulted_textarea "Remark" 
+		    $ case mauf of Nothing -> "noch keine Hinweise"
+	                           Just auf -> toString $ A.remark auf
+            open row
+            plain "Highscore"
+	    ( mhilo :: Maybe HiLo ) <- selector' "Highscore"  
+                ( case mauf of Nothing -> "XX"
+		               Just auf -> show $ A.highscore auf )
+                   $ do
 		     ( x :: HiLo ) <- [ minBound .. maxBound ]
                      return ( show x, x )
-            br -- FIXME: get now() from DB
+            close -- row
+            -- FIXME: get now() from DB
             ( von :: Time ) <- fmap fromCGI 
-		    $ defaulted_textfield "von" ( "2004-10-15 11:16:08" )
-	    br
+		    $ defaulted_textfield "von" 
+		    $ case mauf of Nothing -> "2004-10-15 11:16:08"
+				   Just auf -> toString $ A.von auf
             ( bis ::Time ) <- fmap fromCGI
-		    $ defaulted_textfield "bis" ( "2004-10-15 11:16:08" )
-	    br
+		    $ defaulted_textfield "bis" 
+		    $ case mauf of Nothing -> "2004-10-15 11:16:08"
+				   Just auf -> toString $ A.bis auf
+	    close -- table
+
+            -- nimm default-config, falls type change
+            conf <- editor_submit "conf" "Konfiguration" 
+		    $ case mauf of 
+			  Just auf | not type_click  -> 
+				 read $ toString $ A.config auf
+			  _ -> ex :: conf
+				   
+            br
 	    up <- submit "update" "update data base"
-            when up $ io $ A.put manr $ A.Aufgabe 
+            let auf' = A.Aufgabe 
 		               { A.anr = error "Super.anr" -- intentionally
 			       , A.vnr = vnr
 			       , A.name = name
 			       , A.typ = fromCGI $ show mk
 			       , A.config = fromCGI $ show conf
 			       , A.remark = remark
-			       , A.highscore = hilo
+			       , A.highscore = fromMaybe Keine mhilo
 			       , A.von = von
 			       , A.bis = bis
 			       }
+            when up $ io $ A.put manr auf'
+            return auf'
 
-            hr ---------------------------------------------------------
 
-            m0 <- io $ randomRIO (0, 999999 :: Int) 
-            -- gewürfelte matrikelnummer
-            -- neu würfeln nur bei änderungen oberhalb von hier
-            mat <- with ( show m0 ) $ textfield "mat" ( show m0 )
+
+
+solution mat ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+            let conf = read $ toString $ A.config auf
+                var = fun  conf
+                p = problem var
             k <- io $ key var mat 
             g <- io $ gen var k
-            let ( Just i , com :: Doc ) = export g
+            let ( Just i  , com :: Doc ) = export g
                 desc = describe (problem var) i
                 ini  = initial  (problem var) i
             h3 "Aufgabenstellung"
@@ -125,58 +185,102 @@ iface mks = do
             hr ---------------------------------------------------------
 
             b <- editor_submit "b" "Lösung" ini
-     	    let (res, com :: Doc) = export $ evaluate' p i b
-            pre $ show com
+     	    let (res, com :: Html) = export $ evaluate' p i b
+            -- pre $ show com
+            html com
 	    -- TODO: bewertung in DB (für Stud-Variante)
 
 --------------------------------------------------------------------------
 
 -- TODO: move to separate module (chop Control.CGI into pieces as well)
 
-defaulted_selector tag title def opts = do
-    ms <- selector tag title def opts
+defaulted_selector tag def opts = do
+    open row
+    plain tag
+    ms <- selector tag def opts
+    close
     return $ fromMaybe ( snd $ opts !! def ) ms
 
 defaulted_textfield tag def = do
+    open row
+    plain tag
     ms <- textfield tag def
+    close -- row
     return $ fromMaybe def ms
 
 defaulted_textarea tag def = do
+    open row
+    plain tag
     ms <- textarea tag def
+    close -- row
     return $ fromMaybe def ms
 
 selector_submit tag title def opts = do
-    mopt <- selector ("L" ++ tag) title def opts
+    open row
+    plain title
+    mopt <- selector ("L" ++ tag) def opts
     sopt <- submit   ("S" ++ tag) "submit"
+    close -- row
     case mopt of
 	 Nothing -> mzero
 	 Just opt -> do
 	      when sopt blank
 	      return opt
 
-selector_submit' :: Monad m
+selector_edit_delete tag title def opts = do
+    open row
+    plain title
+    mopt <- selector ("L" ++ tag) def opts
+    sopt <- submit   ("S" ++ tag) "edit"
+    dopt <- submit   ("D" ++ tag) "delete"
+    close -- row
+    case mopt of
+	 Nothing -> mzero
+	 Just opt -> do
+	      when sopt blank
+	      return ( opt, dopt )
+
+
+-- | if default is Nothing, then stop here, else continue with default
+selector_submit_click :: Monad m
 	         => Tag 
 		 -> String 
 		 -> Maybe String -- ^ possible default
 		 -> [(String, a) ] 
-		 -> Form m a
-selector_submit' tag title def opts = do
-    mopt <- selector' ("L" ++ tag) title (fromMaybe "XX" def) opts
+		 -> Form m (a, Bool)
+selector_submit_click tag title def opts = do
+    open row
+    plain title
+    mopt <- selector' ("L" ++ tag) (fromMaybe "XX" def) opts
     sopt <- submit   ("S" ++ tag) "submit"
+    close
     case mopt of
-	 Nothing -> mzero
+	 Nothing -> case def of
+	      Nothing -> mzero
+	      Just d -> case lookup d opts of
+		   Nothing -> mzero
+                   Just opt -> return ( opt, False )
 	 Just opt -> do
 	      when sopt blank
-	      return opt
+	      return ( opt, sopt )
+
+selector_submit' tag title def opts = do
+    ( opt, sopt ) <- selector_submit_click tag title def opts
+    return opt
 
 editor_submit :: ( ToDoc a, Reader a, Monad m )
 	      => Tag -> String -> a 
 	      -> Form m a
 editor_submit tag title ex = do
-    mconf <- editor ("E" ++ tag) title ex
+    open row
+    plain title
+    mconf <- editor ("E" ++ tag) ex
     sconf <- submit ("S" ++ tag) "submit"
+    close -- row
     case mconf of
-	 Nothing -> mzero
+	 Nothing -> do
+	     -- mzero
+	     return ex
 	 Just conf -> do
              when sconf blank
 	     return conf

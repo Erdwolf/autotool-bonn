@@ -10,18 +10,21 @@ import Prelude hiding ( all )
 
 -- | get alle aufgaben aus DB
 -- TODO: implementiere filter
-get :: IO [ Aufgabe ]
-get = do
+get :: VNr 
+    -> Bool
+    -> IO [ Aufgabe ]
+get vnr only_current = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "ANr", "VNr", "Name"
 			    , "Typ", "Config", "Remark"
 			    , "Highscore", "Von" , "Bis"
 			    ]
-	)
+	) $
         [ From $ map reed [ "aufgabe" ] 
-        -- , order_by
-	]
+        , Where $ equals ( reed "aufgabe.VNr" ) ( toEx vnr )
+        ] ++
+        [ Where $ reed "NOW() BETWEEN ( Von AND Bis )" | only_current ]
     inh  <- collectRows (\ state -> do
         g_anr <- getFieldValue state "ANr"
     	g_vnr <- getFieldValue state "VNr"
@@ -71,3 +74,16 @@ put manr auf = do
             ( Update (reed "aufgabe") common ) 
 	    [ Where $ equals ( reed "aufgabe.ANr" ) ( toEx anr ) ]
     disconnect conn
+
+-- | delete
+delete :: ANr 
+    -> IO ()
+delete anr = do
+    conn <- myconnect 
+    stat <- squery conn $ Query
+        ( Delete ( reed "aufgabe" ) )
+	[ Where $ equals ( reed "aufgabe.ANr" ) ( toEx anr ) ]
+    return ()
+
+
+

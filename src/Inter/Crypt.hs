@@ -1,6 +1,6 @@
 module Inter.Crypt 
 
-( Crypt 
+( Crypt (..)
 , encrypt
 , Inter.Crypt.compare
 )
@@ -12,15 +12,25 @@ where
 import Codec.Encryption.MD5 ( hash )
 import Codec.Encryption.Utils ( Octet )
 
+import Control.SQL
+
 import Random
 import Data.Word
 import Data.Typeable
+import Autolib.Xml
 
-data Crypt = Crypt { unCrypt :: String }    deriving Typeable
+data Crypt = Crypt { unCrypt :: String }    
+    deriving ( Eq, Ord, Typeable )
  
 -- brauchen kein quote Quots?
 instance Show Crypt where show = unCrypt
 instance Read Crypt where readsPrec p cs = [(Crypt cs, [])]
+
+instance Container Crypt String where
+    label _ = "Crypt"
+    pack = unCrypt
+    unpack = Crypt 
+
 
 uu_base :: Char
 uu_base = 'a'

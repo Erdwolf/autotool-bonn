@@ -187,7 +187,9 @@ quote cs = do
 instance T.ToDoc Expression where
     toDoc (EId id) = T.toDoc id
     toDoc (EInteger i) = T.toDoc i
-    toDoc (EString s) = T.toDoc $ quote s
+
+    -- NOTE: this should NEVER cut off a string (max_string_length)
+    toDoc (EString s) = T.doubleQuotes $ T.text $ quote s
 
     -- note: open par must come immediately after function symbol (no <+>)
     toDoc (EFun fun args) = T.toDoc fun <> T.dutch_tuple ( map T.toDoc args )

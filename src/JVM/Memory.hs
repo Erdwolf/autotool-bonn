@@ -1,12 +1,18 @@
-module JVM.Memory where
+module JVM.Memory 
+
+( Var (..), Memory
+, make, get, set
+)
+
+where
 
 --   $Id$
 
 import JVM.Type
-import Data.FiniteMap
-import OrdFM
+import Autolib.FiniteMap
+import Autolib.ToDoc
 
-type Var = Integer -- Adresse
+import Machine.Var
 
 type Memory = FiniteMap Var Integer
 

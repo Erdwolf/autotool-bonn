@@ -3,7 +3,6 @@ module Boolean.Quiz where
 --  $Id$
 
 import Boolean.Op 
-import Boolean.Data
 import Boolean.Instance
 
 import Autolib.TES.Type
@@ -57,7 +56,7 @@ make = Make "Boolean-Quiz"
 quiz :: String -- Aufgabe
      -> String -- Version
      -> Int
-     -> Inter.Types.Var Boolean BI Exp
+     -> Inter.Types.Var Boolean BI ( Exp Bool )
 quiz auf ver par =
     Inter.Types.Var { problem = Boolean
              , tag = auf ++ "-" ++ ver

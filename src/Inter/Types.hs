@@ -39,7 +39,7 @@ instance Show Make
 
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)
-direct :: ( V p i b	    )
+direct :: ( V p i b , Haskell2Xml i, Reader i, Read i )
          => p 
 	 -> i -- ^ example instance
 	 -> Make
@@ -73,12 +73,14 @@ data Var p i b =
       deriving Typeable
 
 class ( Show p, Typeable p
-      , Show i, Typeable i, Haskell2Xml i, ToDoc i, Reader i, Read i
+      , Show i, Typeable i, ToDoc i
+      -- , Haskell2Xml i, Reader i, Read i
       , Show b, Typeable b, Haskell2Xml b, ToDoc b, Reader b , Size b
       , Partial p i b
       ) => V p i b -- ohne methoden
 instance ( Show p, Typeable p
-      , Show i, Typeable i, Haskell2Xml i, ToDoc i, Reader i, Read i
+      , Show i, Typeable i, ToDoc i
+      -- , Haskell2Xml i, Reader i, Read i
       , Show b, Typeable b, Haskell2Xml b, ToDoc b, Reader b , Size b
       , Partial p i b
       ) => V p i b -- ohne methoden
@@ -92,8 +94,7 @@ instance ToDoc Variant where
     toDoc ( Variant v ) = -- text "Variant" -- <+> parens ( toDoc v )
         text $ tag v
 
-instance Show Variant where
-    show = render . toDoc
+
 
 
 

@@ -4,9 +4,12 @@ module JVM.Type where
 
 --   $Id$
 
-import ToDoc
-import Reader
-import Size
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Size
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 data Statement = 
 	   Push Integer	 | Drop | Dup
@@ -14,7 +17,7 @@ data Statement =
 	 | Load 	 | Store 
 	 | Jump Int | Jumpz Int -- relative Sprünge
 	 | Halt
-    deriving ( Eq, Ord )
+    deriving ( Eq, Ord, Typeable )
 
 type Program = [ Statement ]
 
@@ -26,11 +29,7 @@ instance Size Program where
 instance Size Statement where
     size _ = 1
 
-{-! for Statement derive: ToDoc, Reader !-}
+{-! for Statement derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Statement where
-    show = render . toDoc
 
-instance Read Statement where
-    readsPrec = parsec_readsPrec
 

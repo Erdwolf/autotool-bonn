@@ -2,6 +2,7 @@ module Expression.Op
 
 ( module Expression.Op
 , module Text.ParserCombinators.Parsec.Expr
+, Identifier, vars, syms, draw, T.tfold
 )
 
 where
@@ -15,7 +16,13 @@ import Autolib.Util.Size
 
 import qualified Autolib.Symbol
 import qualified Autolib.TES.Parsec
+import qualified Autolib.TES.In as I
+import qualified Autolib.TES.Term as T
+import Autolib.TES.Position ( vars, syms )
+import Autolib.TES.Draw ( draw )
 
+import Autolib.TES.Identifier
+import Autolib.Xml
 
 import Text.ParserCombinators.Parsec.Expr
 import Text.ParserCombinators.Parsec.Token
@@ -26,6 +33,8 @@ import Text.XML.HaXml.Haskell2Xml
 import Data.List (partition)
 
 import Data.Typeable
+
+type Exp a = T.Term Identifier ( Op a )
 
 data Op a = Op { name  :: String
 	     , arity :: Int
@@ -40,13 +49,10 @@ class Ops a where
       ops :: [ Op a ]
 
 -- | xml-darstellung ist einfach ein string (show\/read)
-instance Ops a => Haskell2Xml (Op a) where
-    toContents   = toContents . show
-    fromContents cs = 
-        let ( x, rest ) = fromContents cs
-	in  ( read x, rest )
-    toHType _ = Prim "Op" "op" -- ??
-
+instance Ops a => Container (Op a) String where
+    label _ = "Op"
+    pack = show
+    unpack = read
 
 instance Eq (Op a) where o == p = name o == name p
 instance Ord (Op a) where compare o p = compare (name o) (name p)
@@ -61,9 +67,6 @@ instance Ops a => Autolib.Symbol.Symbol (Op a) where
 
 instance Ops a => ToDoc (Op a) where 
     toDoc = text . name
-
-instance Ops a => Show (Op a) where
-    show = render . toDoc
 
 instance Ops a => Reader (Op a) where
     readerPrec p = choice $
@@ -82,6 +85,8 @@ instance Ops a => Reader (Op a) where
 	      return $ do Autolib.TES.Parsec.reserved table ( name op )
 			  return op
 
-instance Ops a => Read (Op a) where
-    readsPrec = parsec_readsPrec
+instance Ops a => Reader ( Exp a ) where
+    readerPrec p = I.treader $ I.Config { I.reserved_symbols = ops
+                                     , I.allow_new_symbols = False
+                                     }
 

@@ -72,13 +72,13 @@ zwei fun s = do
 load :: State -> [ State ]
 load s = do
     (a, s) <- pop s
-    push ( get (memory s) a ) s
+    push ( get (memory s) (Var a) ) s
 
 store :: State -> [ State ]
 store s = do
     (a, s) <- pop s
     (b, s) <- pop s
-    return $ s { memory = set ( memory s ) ( a, b ) }
+    return $ s { memory = set ( memory s ) ( Var a, b ) }
 
 -----------------------------------------------------------------------
 

@@ -2,11 +2,11 @@ module Machine.Class where
 
 --   $Id$
 
-import Sets
-import Schichten
-import Reporter hiding ( output )
-import ToDoc
-import Size
+import Autolib.Set
+import Autolib.Schichten
+import Autolib.Reporter hiding ( output )
+import Autolib.ToDoc
+import Autolib.Size
 
 import Machine.History
 

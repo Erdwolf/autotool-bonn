@@ -8,7 +8,8 @@ import JVM.Memory
 import Machine.History
 import Data.Array
 
-import ToDoc
+import Autolib.ToDoc
+import Autolib.FiniteMap
 
 data State =
      State { schritt :: Int
@@ -26,7 +27,7 @@ instance ToDoc State where
 	    , text "memory" <+> equals <+> toDoc ( memory st )
 	    , text "stack" <+> equals <+> toDoc ( stack st )
 	    , text "pc" <+> equals <+> toDoc ( pc st )
-	    , text "code [PC]" <+> equals <+> 
+	    , text "code [pc]" <+> equals <+> 
 	         if   inRange (bounds $ code st) ( pc st )
 	         then toDoc ( code st ! pc st )
 	         else text "<<outside>>"
