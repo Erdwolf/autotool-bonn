@@ -38,9 +38,9 @@ import Monad (guard)
 import Sets
 import System
 
-import Step
-import Interactive.Type
-import qualified Component as C
+-- import Step
+-- import Interactive.Type
+-- import qualified Component as C
 import Reporter
 import Maybe
 
