@@ -27,7 +27,7 @@ acceptor auf ver num =
 	      return matrikel
 	, gen = \ matrikel -> return $ do
 	      inform $ text "Konstruieren Sie eine Maschine,"
-	      inform $ text "welche die Sprache" <+> info num 
+	      inform $ text "welche die Sprache" <+> A.data_info num 
 	               <+> text "akzeptiert!"
 	      return num
 	}
