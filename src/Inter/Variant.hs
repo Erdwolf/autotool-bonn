@@ -118,22 +118,28 @@ handler par0  (Variant v ) =  do
 	-- mgl. Aufgaben aus DB für snr aus DB
 	-- und Aufgaben Number ermittlen
   mglAufgaben <- io $ mglAufgabenDB (P.snr par0)
-  let anr = [ a | (a,name,subj,_,_) <- mglAufgaben
+  let ahs = [ (a,hl) | (a,name,subj,_,hl) <- mglAufgaben
 			, (P.problem par0) == name 
 			, (P.variant par0) == subj
 			]
-  if null anr then standardQuery "Fehler" $ CGI.text "keine Variante des Students"
-   else 
-	standardQuery "Computer" $ do
+  if null ahs 
+   then standardQuery "Fehler" $ CGI.text "keine Variante des Students"
+   else standardQuery "Computer" $ do
+    let { [(anr,hlstr)] = ahs ; snr = P.snr par0 
+	} 
     hr CGI.empty
     preface par0
+
+    -- Zeige Ergebnisse dieser Aufgabe
+    ergtabl @ (header , ergs) <- lift $ unsafe_io $ studAufgDB (P.matrikel par0)
+    showAsTable ergtabl
 
     -- TODO: die folgenden Zeilen mit Cache !
     k <- lift $ unsafe_io $ key v ( P.matrikel par0 )
     inst <- lift $ unsafe_io $ washer $ gen v ( P.matrikel par0 )
 
     hr CGI.empty
-    h2 $ CGI.text $ "Die Aufgaben-Instanz: Nr." ++ anr!!0
+    h2 $ CGI.text $ "Die Aufgaben-Instanz: Nr." ++ anr
     Just i <- inst
 
     let p = Inter.Types.problem v
@@ -169,13 +175,11 @@ handler par0  (Variant v ) =  do
 		  CGI.p $ CGI.text $ "Größe der Lösung: " ++ show s
 		  -- TODO: ermittle Low/High von DB
 		  lift $ unsafe_io 
-		       $ bepunkteStudentDB (P.snr par0) (anr!!0) 
-		                           (Helper.Ok s) Helper.Low
+		       $ bepunkteStudentDB snr anr (Helper.Ok s) $ read hlstr
 	       else do
 	          CGI.p $ CGI.text "Nein."
 		  lift $ unsafe_io 
-		       $ bepunkteStudentDB (P.snr par0) (anr!!0) 
-		                           (Helper.No ) Helper.Low
+			   $ bepunkteStudentDB snr anr (Helper.No ) $ read hlstr
         Left e -> do
 	    h3 $ CGI.text "Syntaxfehler"
 	    CGI.pre $ CGI.text $ render $ errmsg e $ P.input par
