@@ -45,6 +45,7 @@ import qualified Demo.L
 
 -- ws03/aus NFA 
 import qualified Serie1
+import qualified Serie2
 
 -- hier steht ALLES machbare drin
 -- in der datenbank steht dann, zu welcher zeit es erlaubt ist.
@@ -80,6 +81,7 @@ boiler = sequence $
 --        , fmap Variant $ FUN.FIB.generate
 --        , fmap Variant $ FUN.QUIZ.generate
 
+       , Serie2.generate
 
        ]
        ++ Serie1.generates 
