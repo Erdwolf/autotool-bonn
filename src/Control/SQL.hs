@@ -232,4 +232,5 @@ equals :: Expression -> Expression -> Expression
 equals = EBinop "="
 
 ands :: [ Expression ] -> Expression
-ands = foldr1 (EBinop "AND")
+ands [] = Control.SQL.equals (EInteger 0) (EInteger 0)
+ands xs = foldr1 (EBinop "AND") xs
