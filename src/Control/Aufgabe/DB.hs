@@ -6,14 +6,15 @@ import Control.SQL
 import Control.Types
 import Control.Aufgabe.Typ
 
+import Data.Maybe
 import Prelude hiding ( all )
 
 -- | get alle aufgaben aus DB
 -- TODO: implementiere filter
-get :: VNr 
+get :: Maybe VNr 
     -> Bool
     -> IO [ Aufgabe ]
-get vnr only_current = do
+get mvnr only_current = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "ANr", "VNr", "Name"
@@ -23,8 +24,12 @@ get vnr only_current = do
 	) $
         [ From $ map reed [ "aufgabe" ] 
         , Where $ ands $
-	        [ equals ( reed "aufgabe.VNr" ) ( toEx vnr ) ] 
-	     ++ [ reed "NOW() BETWEEN ( Von AND Bis )" | only_current ]
+	        [ equals ( reed "aufgabe.VNr" ) ( toEx vnr ) 
+		| vnr <- maybeToList mvnr
+		] 
+	     ++ [ reed "NOW() BETWEEN ( Von AND Bis )" 
+		| only_current 
+		]
         ]
     inh  <- collectRows (\ state -> do
         g_anr <- getFieldValue state "ANr"

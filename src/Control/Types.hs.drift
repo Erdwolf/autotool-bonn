@@ -225,6 +225,8 @@ instance ToEx ANr where
     toEx (ANr x) = EString $ show x
 instance ToString ANr where
     toString (ANr i) = show i
+instance FromCGI ANr where
+    fromCGI cs = ANr $ read cs
 
 -- | Gruppen-Nummer
 
@@ -253,7 +255,8 @@ instance ToEx VNr where
     toEx (VNr x) = EString $ show x
 instance ToString VNr where
     toString (VNr x) = show x
-
+instance FromCGI VNr where
+    fromCGI cs = VNr $ read cs
 
 -- | OK-Bewertung (Anzahl)
 

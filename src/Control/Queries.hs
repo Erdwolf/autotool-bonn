@@ -546,3 +546,7 @@ mglNextAufgabenDB snr = wrapped "mglNextAufgabenDB" $ do
        disconnect conn
        return ( showColTypes stat, inh )
 
+
+
+
+
