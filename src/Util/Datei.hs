@@ -73,7 +73,7 @@ home_dir = do
 
 -- | mit großer vorsicht: über das argument von Get.cgi
 -- könnte jemand von außen files zu lesen probieren.
--- inklusive aller tricks mit "../.." usw.
+-- inklusive aller tricks mit "..\/.."  usw.
 -- deswegen vor jedem zugriff testen
 sanity :: Datei -> IO ()
 sanity d = 

@@ -5,7 +5,7 @@ include Makefile-defs
 
 # for autotool: ########################################################
 
-CGIBIN = $(CGIDIR)
+CGIBIN = $(CGI)/cgi-bin
 
 ###############################################################################
 
@@ -53,7 +53,7 @@ HAXML_DESC = /usr/local/share/ghc-6.2/html/libraries/HaXml
 AUTOLIB_LINK = http://141.57.11.163/auto/lib/haddock
 AUTOLIB_DESC = /usr/local/share/ghc-6.2/html/libraries/AutoLib
 
-HADDOCK_OUTPUT = $(PUB)/auto/tool/haddock
+HADDOCK_OUTPUT = $(WWW)/auto/tool/haddock
 HADDOCK_OPTS = -v \
 --html \
 --title=auto/tool \
@@ -66,7 +66,7 @@ $(foreach lib,$(GHC_LIBS), \
 
 
 haddock : 
-	( find . -name "*.hs" -print ) \
+	( find . -name "*.hi" -print | sed -e 's/hi$$/hs/' ) \
 	| xargs $(HADDOCK) $(HADDOCK_OPTS) -o $(HADDOCK_OUTPUT)
 
 .PHONY : haddock
