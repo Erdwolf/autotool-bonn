@@ -20,8 +20,8 @@ PACKS = -package text -package data \
 HPACKS = $(PACKS) \
 	-package HToolkit 
 
-
 OPT = -O2
+# PROF = -prof -auto-all
 GHC = ghc
 
 PUB =  $(HOME)/public_html
@@ -66,7 +66,7 @@ tags :
 ###############################################################################
 
 SRS/Matchbox : do
-	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $@.hs -o $@
+	$(GHC) --make $(PROF) $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $@.hs -o $@
 
 matchbox : do
 	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) \
