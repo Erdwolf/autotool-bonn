@@ -13,7 +13,7 @@ import PCP.Reach
 import Autolib.Schichten
 import Autolib.Util.Splits
 import Autolib.Util.Sort
-import Autolib.Sets
+import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Util.Hide
 import Autolib.Util.Wort

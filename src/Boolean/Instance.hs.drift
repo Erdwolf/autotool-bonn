@@ -17,7 +17,7 @@ import Text.XML.HaXml.Haskell2Xml
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Reporter
-import Autolib.Sets
+import Autolib.Set
 
 data Boolean = Boolean deriving ( Eq, Ord, Show, Read, Typeable )
 

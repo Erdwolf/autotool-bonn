@@ -2,7 +2,7 @@ module Code.Type
 
 ( module Code.Type
 , module Data.FiniteMap
-, module Autolib.Sets
+, module Autolib.Set
 )
 
 where
@@ -14,7 +14,7 @@ import Data.FiniteMap
 import Data.Typeable
 import Autolib.TypeableFM
 
-import Autolib.Sets
+import Autolib.Set
 import Autolib.ToDoc
 
 -- | FIXME: das ist unzusammenhängend

@@ -16,14 +16,15 @@ import NFA.AI
 import Autolib.Exp
 import Autolib.Exp.Inter
 
-import Autolib.NFA.Type hiding ( alphabet )
+import Autolib.NFA.Type 
 import Autolib.NFA.Eq
+import Autolib.NFA.Example
 import Autolib.Exp.Example
 import Autolib.Exp.Einfach
 
 import Inter.Types
 
-import Autolib.Sets
+import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Reporter
 
@@ -39,11 +40,11 @@ instance C.Partial  Analyse AI Exp
 	             [     text "Finden Sie einen"
 	               <+> text "regulären Ausdruck,"
 		     , text "der die Sprache" <+> info ( automat i )
-		     , text "über dem Alphabet" <+> toDoc ( alphabet i )
+		     , text "über dem Alphabet" <+> toDoc ( alphabet $ automat i )
 		     , text "beschreibt."
 		     ]
 
-    initial p i   = Autolib.Exp.Example.example (alphabet i)
+    initial p i   = Autolib.Exp.Example.example (alphabet $ automat i)
 
     partial p i b = do
         ist_einfach b
@@ -51,7 +52,7 @@ instance C.Partial  Analyse AI Exp
     total   p i b = do
 	f <- equ ( automat i )
 		 ( informed ( toDoc b ) 
-		   $ inter (std_sigma (setToList $ alphabet i)) b  )
+		   $ inter (std_sigma (setToList $ alphabet $ automat i)) b  )
 
 	assert f $ text "Stimmen die Sprachen überein?"
         return () 
@@ -70,5 +71,10 @@ analyse auf ver i =
 	      return i
 	}
 
+make :: Make
+make = Make "NFA-Analyse"
+            ( \ ai -> analyse "A" "0" ai )
+	    NFA.AI.example
+	    
 
 

@@ -15,10 +15,19 @@ import  Autolib.Size
 import  Autolib.Informed
 
 import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
 
 type Matrikel = String
 
 type Key = String
+
+data Make = forall conf p i b 
+          . ( V p i b 
+	    , Typeable conf, Haskell2Xml conf, ToDoc conf, Show conf, Reader conf
+	    )
+	  => Make String -- ^ description
+		  (conf -> Var p i b) -- ^ maker function
+                  conf -- ^ example
 
 data Var p i b = 
          Var { problem :: p 

@@ -20,7 +20,7 @@ import Autolib.NFA.Dot
 import qualified Autolib.NFA.Compact 
 
 import Autolib.ToDoc
-import Autolib.Sets
+import Autolib.Set
 import Autolib.Letters
 import Autolib.Symbol
 import Autolib.Util.Wort ( alle )
@@ -493,7 +493,7 @@ loopfree_from a (p, seen) = [] : do
     c <- setToList $ alphabet a
     q <- setToList $ lookupset (trans a) (p, c)
     guard $ not $ q  `elementOf` seen
-    rest <- loopfree_from a (q, Autolib.Sets.union seen (unitSet q))
+    rest <- loopfree_from a (q, Autolib.Set.union seen (unitSet q))
     return $ (p,c,q) : rest
 
 -- | loop-freee accepting paths

@@ -14,7 +14,7 @@ import Autolib.TES.Position
 import Autolib.Util.Zufall
 import Autolib.Util.Wort
 import Autolib.Util.Seed
-import Autolib.Sets
+import Autolib.Set
 
 import Util.Datei
 import Util.Cache

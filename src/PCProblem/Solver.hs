@@ -6,7 +6,7 @@ import PCProblem.Type
 import PCProblem.Konfig
 
 import Autolib.Schichten ( bfs )
-import Autolib.Sets
+import Autolib.Set
 import Control.Monad ( guard )
 
 start :: PCP -> Konfig

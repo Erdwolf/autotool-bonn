@@ -8,7 +8,7 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
-import Autolib.Sets
+import Autolib.Set
 
 data Param = 
      Param { von :: Int

@@ -8,7 +8,7 @@ import qualified Code.Move_To_Front
 import qualified Code.Burrows_Wheeler
 import qualified Code.Hamming as A
 
-import Autolib.Sets
+import Autolib.Set
 import Inter.Types
 
 generates :: [ IO Variant ]

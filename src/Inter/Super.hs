@@ -5,12 +5,14 @@
 
 module Main where
 
-import Inter.Make
+import qualified Inter.Collector
+
 import Inter.Env
 import Challenger.Partial
 import Inter.Types
 import Inter.Click
 import Inter.Area
+import Inter.Make 
 import Inter.Errmsg
 import Inter.Evaluate
 
@@ -27,8 +29,6 @@ import Control.Monad
 import qualified Control.Exception
 import Text.Html hiding ( text, input, version, width, height )
 
--- for testing:
-import qualified HTWK.SS04.Informatik.Boolean as B
 
 data Par =
      Par { env :: Env
@@ -40,7 +40,7 @@ data Par =
 
 main :: IO ()
 main = wrapper $ \ e ->  
-         iface ( Par { makers = B.makers 
+         iface ( Par { makers = Inter.Collector.makers
 		     , maker = error "Super.maker"
 		     , config = error "Super.config"
 		     , solution = error "Super.solution"
@@ -121,10 +121,13 @@ page par contents =
 				   ! [ Text.Html.action "Super.cgi" , method "POST" ]
 		 )
          
-preface par = btable << aboves [ besides ( selector ( makers par) 
+preface par = btable << aboves [ besides ( selector par
 					  ++ [ td << submit "Click" ( show Change ) ] ) ]
-selector mks =
-    let docs = map primHtml $ do Make doc _ _ <- mks ; return doc
-    in  [ td << "Maker:" ,  td << menu "Maker" docs ]
+selector par =
+    let opts = do
+          let sel = lookup "Maker" (env par)
+	  Make doc _ _ <- makers par
+          return $ Text.Html.option (primHtml doc) ! [ selected | Just doc == sel ]
+    in  [ td << "Maker:" ,  td << select ! [ Text.Html.name "Maker"] << opts ]
 
 btable x = table x ! [ border 1 ]

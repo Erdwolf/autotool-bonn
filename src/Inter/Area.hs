@@ -38,7 +38,7 @@ make nm cs =
     Area { name = nm
 	 , contents = cs
 	 , height = length ( lines cs )
-	 , width = 60
+	 , width = 80
 	 }
 
 -- | input area, submit button, log window

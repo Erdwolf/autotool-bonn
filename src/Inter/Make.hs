@@ -7,18 +7,11 @@ import Data.Typeable
 import Data.Dynamic
 import Data.Maybe
 
+
 import Autolib.ToDoc
 import Autolib.Reader
-import Autolib.Informed
 import Text.XML.HaXml.Haskell2Xml
 
-data Make = forall conf p i b 
-          . ( V p i b 
-	    , Typeable conf, Haskell2Xml conf, ToDoc conf, Show conf, Reader conf
-	    )
-	  => Make String -- ^ description
-		  (conf -> Var p i b) -- ^ maker function
-                  conf -- ^ example
 
 get_boiler :: [ Make ] 
 	   -> [ Dynamic ]

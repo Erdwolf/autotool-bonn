@@ -17,7 +17,7 @@ import Autolib.ToDoc
 import Autolib.Hash
 import Control.Monad
 import Data.FiniteMap
-import Autolib.Sets
+import Autolib.Set
 
 
 

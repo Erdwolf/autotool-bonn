@@ -4,7 +4,7 @@ module Code.Check where
 
 import Code.Type
 import Autolib.ToDoc
-import Autolib.Sets
+import Autolib.Set
 import Data.FiniteMap
 import Data.List
 import Control.Monad

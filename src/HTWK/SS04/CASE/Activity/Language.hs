@@ -4,7 +4,7 @@ module HTWK.SS04.CASE.Activity.Language where
 
 import NFA.Synthese
 
-import Autolib.Sets
+import Autolib.Set
 import Autolib.ToDoc
 
 languages :: [ SI ]

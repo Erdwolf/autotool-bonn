@@ -2,7 +2,7 @@ module Code.Move_To_Front.Work where
 
 --  $Id$
 
-import Autolib.Sets
+import Autolib.Set
 import Autolib.Util.Splits
 
 import Data.List

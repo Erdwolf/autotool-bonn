@@ -7,7 +7,7 @@ import Boolean.Op ( inter )
 
 import Data.FiniteMap
 import Autolib.Util.Wort
-import Autolib.Sets
+import Autolib.Set
 
 type Belegung v = FiniteMap v Bool
 

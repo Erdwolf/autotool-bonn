@@ -17,7 +17,7 @@ import Autolib.Letters
 
 import Random
 import Data.Maybe
-import Autolib.Sets
+import Autolib.Set
 
 gen :: Param -> IO PCP
 gen g = do

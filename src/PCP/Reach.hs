@@ -4,7 +4,7 @@
 
 module PCP.Reach where
 
-import Autolib.Sets
+import Autolib.Set
 import Data.Ratio
 
 type SRS c = [([c],[c])]

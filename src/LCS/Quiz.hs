@@ -8,7 +8,7 @@ import LCS.Instance
 
 import Inter.Types
 
-import Autolib.Sets
+import Autolib.Set
 import Random
 import Autolib.Util.Wort
 import Util.Datei

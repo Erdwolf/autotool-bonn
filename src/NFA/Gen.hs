@@ -14,7 +14,7 @@ import Autolib.ToDoc
 import Autolib.Reporter
 import Autolib.Output
 
-import Autolib.Sets
+import Autolib.Set
 import Autolib.Schichten
 
 import Random

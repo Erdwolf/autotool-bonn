@@ -20,7 +20,7 @@ import Autolib.Util.Size
 import Autolib.Util.Cache
 import Autolib.Util.Seed
 import Autolib.Util.Zufall
-import Autolib.Sets
+import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Reporter
 

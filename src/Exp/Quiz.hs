@@ -12,7 +12,7 @@ import Autolib.Util.Cache
 
 import Autolib.Inter.Types
 
-import Autolib.Sets
+import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Reporter
 

@@ -7,7 +7,7 @@ import Autolib.Exp.Inter
 import Autolib.NFA
 import Autolib.ToDoc 
 
-import Autolib.Sets
+import Autolib.Set
 
 import qualified NFA.Synthese as S
 import NFA.Analyse 

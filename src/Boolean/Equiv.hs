@@ -6,7 +6,7 @@ import Boolean.Data
 import Boolean.Eval
 
 import Autolib.Reporter.Type
-import Autolib.Sets
+import Autolib.Set
 import Autolib.ToDoc
 import Control.Monad ( when )
 

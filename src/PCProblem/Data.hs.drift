@@ -5,7 +5,7 @@ module PCProblem.Data where
 import Autolib.ToDoc
 import Autolib.Reader
 
-import Autolib.Sets
+import Autolib.Set
 import Autolib.Letters
 
 data PCP = PCP [(String, String)]

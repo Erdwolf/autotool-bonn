@@ -23,14 +23,14 @@ import Autolib.NFA.Restrict
 
 import Inter.Types
 
-import Autolib.Sets
+import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Reporter
 
 import qualified Challenger as C
+import Data.Typeable
 
-
-data Synthese = Synthese deriving ( Eq, Ord, Show, Read )
+data Synthese = Synthese deriving ( Eq, Ord, Show, Read, Typeable )
 
 
 besch :: SI -> Doc
@@ -80,5 +80,9 @@ synthese auf ver i =
 	      return i
 	}
 
+make :: Make
+make = Make "NFA-Synthese"
+            ( \ si -> synthese "S" "0" si )
+	    NFA.SI.example
 
 

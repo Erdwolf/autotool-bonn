@@ -6,7 +6,7 @@ import Autolib.Schichten
 import Autolib.Util.Hide
 import Autolib.Util.Splits
 import Autolib.Hash
-import Autolib.Sets
+import Autolib.Set
 import Autolib.ToDoc
 
 import Control.Monad
