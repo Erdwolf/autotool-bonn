@@ -24,10 +24,17 @@ import Autolib.Letters
 import Autolib.Symbol
 import Autolib.Util.Wort ( alle )
 import Autolib.Util.Splits
+import Autolib.Util.Sort
 import Autolib.Exp.Type 
+
+import Autolib.Reporter
+import Autolib.Output
+import Autolib.Dot.Dotty
 
 import Control.Monad ( guard )
 import Data.Array
+import Data.List ( intersperse )
+import qualified Text.Html
 
 ----------------------------------------------------------------------------
 
@@ -80,48 +87,65 @@ isos (xs, ys) = do
 
 -- | is lex. smallest among iso?
 lexi :: ([Int],[Int]) -> Bool
-lexi xy = xy == minimum (isos xy)
+lexi xy = 
+   -- the following is (quadratically ?) inefficient
+   -- xy == minimum (isos xy)
+   and $ do z <- isos xy ; return $ xy <= z
     
 
--- | list of all (trans tables) of automata with two letters, n states
+-- | list of all automata with two letters, n states
 -- where first one is permutaion
 -- second one is no permuation
-gen :: Int -> [([Int],[Int])]
-gen n = do
-    xs <- perms [0 .. n-1] 
-    ys <- alle [0 .. n-1] n
-    guard $ not $ mkSet ys == mkSet xs
-    let xy = (xs, ys)
-    -- guard $ lexi xy
-    return xy
-
 genau :: Int -> [ NFA Char Int ]
+{-# inline genau #-}
 genau n = do
+
+    -- no permutation: cannot be a mapping onto
     ys <- alle [0 .. n-1] n
     guard $ n > cardinality (mkSet ys)
+
+    -- should not be synchronizing for letter b alone
     let b = make [ys]
     guard $ null $ shosyn b
+
+    -- should be permutation (mapping onto)
     xs <- perms [0 .. n-1] 
+
+    -- only if smallest from iso class
     guard $ lexi (xs, ys)
+
     return $ make [xs, ys]
 
 extreme :: Int -> [ ( String, NFA Char Int ) ]
 extreme n = do
     a <- genau n
     w <- shosyn a
-    guard $ length w == pred n ^ 2
+    guard $ length w == ( n - 1 ) ^ 2 
     return (w, a)
 
 
 run :: Int -> IO ()
 run n = sequence_ $ do 
     it @ (i, (w, a)) <- zip [0 :: Int ..] $ extreme n
-    let fname = "auto_" ++ show n ++ "_" ++ show i
     return $ do
-        print $ toDoc it
-        writeFile ( fname ++ ".text" ) ( show $ toDoc it )
-        writeFile ( fname ++ ".dot" ) ( show $ toDot a )
+        ( _ , out :: Text.Html.Html ) <- Autolib.Reporter.run $ handle it
+        let fname = concat 
+		  $ intersperse "-"
+		  $ [ "auto", show n, show i ]
+	writeFile ( fname ++ ".html" ) $ show out
 
+handle it @ (i, (w, a)) = do
+    inform $ vcat
+	   [ text "synch:" <+> toDoc w
+	   , text "length:" <+> toDoc (length w)
+	   , text "aut:" <+> toDoc a
+	   ]
+    dotty "dot" a
+    sequence_ $ do
+        x <- setToList $ alphabet a
+        return $ do
+            inform $ text "Automaton for letter" <+> toDoc x
+	    dotty "dot" $ alphafilter ( == x ) a
 
 -- emit :: Int -> [ NFA Char Int ]
 emit (w, a) = 
@@ -161,10 +185,7 @@ shosyn = take 1 . syn
 syn ::  NFAC c a
        => NFA c a
        -> [[ c ]]
-syn =    map contents 
-	 . loopfree 
-	 . uno 
-	 . synchro
+syn = accepted . synchro
 
 
 ----------------------------------------------------------------------------
@@ -266,8 +287,8 @@ loopfree a = do
 bad :: Int -> NFA Char Int
 bad n = NFA
       { nfa_info = funni "bad" [ toDoc n ]  
-      , states = mkSet [ 0 .. pred n ]
       , alphabet = mkSet "ab"
+      , states = mkSet [ 0 .. pred n ]
       , starts = emptySet
       , finals = emptySet
       , trans  = collect $
