@@ -36,9 +36,9 @@ equal_length code = do
 
 -- | Hamming-Abstand zwischen zwei Wörtern
 -- Vorsicht: schneidet auf gemeinsame Länge
-distance :: Eq a 
+dist :: Eq a 
 	 => [a] -> [a] -> Int
-distance u v = Prelude.length 
+dist u v = Prelude.length 
 	     $ filter (uncurry (/=))
 	     $ zip u v
 
@@ -49,6 +49,6 @@ minimum_distance :: Ord a
       -> ( Int, ([a], [a]) )
 minimum_distance code = minimum $ do
     p @ (u, v) <- pairs code
-    return ( distance u v, p )
+    return ( dist u v, p )
 
     

@@ -31,16 +31,20 @@ instance Read Goal where readsPrec = parsec_readsPrec
 data Config = 
      Config { length :: Goal
 	    , size   :: Goal
-	    , dist   :: Goal
+	    , distance   :: Goal
 	    }
      deriving ( Eq, Ord )
 
-attributes = [ (length, "Länge"), (size, "Größe"), (dist, "Weite") ]
+attributes = [ (length, "Länge"), (size, "Größe"), (distance, "Weite") ]
 
 {-! for Config derive : ToDoc, Reader !-}
 
 instance Show Config where show = render . toDoc
 instance Read Config where readsPrec = parsec_readsPrec
 
+demo = Config { size = Maximize
+	      , length = Fixed 4
+	      , distance = Fixed 2
+	      }
 
 

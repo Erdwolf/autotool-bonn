@@ -16,17 +16,17 @@ generates =
     [ A.make $ A.Config
              { A.length = A.Fixed 6
 	     , A.size   = A.Maximize
-	     , A.dist  = A.Fixed 3
+	     , A.distance  = A.Fixed 3
 	     }
     , A.make $ A.Config
              { A.length = A.Minimize
 	     , A.size   = A.Fixed 10
-	     , A.dist  = A.Fixed 2
+	     , A.distance  = A.Fixed 2
 	     }
     , A.make $ A.Config
              { A.length = A.Fixed 8
 	     , A.size   = A.Fixed 10
-	     , A.dist  = A.Maximize
+	     , A.distance  = A.Maximize
 	     }
     , H.make $ H.Config 
 	     { H.alphabet = mkSet [ 'a' .. 'i' ]

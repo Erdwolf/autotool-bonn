@@ -71,6 +71,16 @@ continue set = do
                  return 
                  $ Right 
                  $ set { S.anr = anr , S.highscore = read highscore }
+
+     -- new sub-case: aufgabe ist noch nicht in db,
+     -- aber nutzer ist admin: also darf er das
+     -- wir müssen dann aber die fehlenden DB-einträge raten
+     _ | is_admin ->
+                 return 
+                 $ Right 
+                 $ set { S.anr = "0" , S.highscore = Keine }
+
+     -- fall-through: aufgabe gibt es nicht
      _ -> return $ Left
                  $ p << ( "Problem/Aufgabe/Version ist nicht aktuell oder " 
 						  ++ "Sie sind nicht in der passenden Gruppe.")

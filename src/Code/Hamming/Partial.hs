@@ -42,7 +42,7 @@ instance Partial Hamming Config Code where
 		 _ -> return ()
         check "Länge" (Code.Hamming.Data.length conf) l
         check "Größe" (size   conf) (Prelude.length code)
-        check "Weite" (dist   conf) d
+        check "Weite" (distance   conf) d
 
 
 instance Measure Hamming Config Code where
@@ -56,7 +56,7 @@ instance Measure Hamming Config Code where
 		    _       -> return v
         in  head $ do 
 	        (f, v) <- [ (Code.Hamming.Data.length, l)
-			  , (dist, d), (size, s) 
+			  , (distance, d), (size, s) 
 			  ]
                 meter (f, v) conf  
 

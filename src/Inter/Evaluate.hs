@@ -13,7 +13,10 @@ import Size
 import Reader
 import ToDoc
 
-evaluate :: ( Reader b, Size b, ToDoc b
+evaluate :: ( Reader b
+	    , Size b
+	    , Challenger.Measure p i b
+	    , ToDoc b
 	    , Challenger.Partial p i b
 	    )
  	    => p -> i -> P.Type -> Reporter Int
@@ -29,9 +32,10 @@ evaluate p i par =
 	       Challenger.demonstrate p i b
 	       inform $ text "total korrekt?"
 	       Challenger.total       p i b
+               let m = Challenger.measure p i b 
 	       inform $ text "Lösung ist korrekt und hat Größe" 
-		      <+> toDoc ( size b )
-	       return $ size b
+		      <+> toDoc m
+	       return $ m
 
 
     
