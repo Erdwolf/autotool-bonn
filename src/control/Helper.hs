@@ -5,11 +5,27 @@ module Helper where
 import Prelude
 import qualified Prelude ( map )
 
-import Char -- toLower
+import Char ( toLower )
+import Monad ( mzero )
+
 
 data StrOrInt = S String | I Int deriving ( Show , Read )
-data ATBewertung = No | Ok Int deriving ( Show , Read )
-data ATHighLow = High | Low | Keine deriving ( Show , Read )
+
+data ATBewertung = No | Ok Int deriving ( Show, Read )
+
+data ATHighLow = High | Low | Keine 
+instance Show ATHighLow where
+    show High = "high" ; show Low = "low" ; show Keine = "keine"
+instance Read ATHighLow where
+    readsPrec p cs = do
+       ( this, rest ) <- lex cs
+       it <- case map toLower this of
+            "high" -> return High
+            "low"  -> return Low
+            "keine" -> return Keine
+            _ -> mzero
+       return ( it, rest )
+
 
 space a b	= a ++ " " ++ b
 
