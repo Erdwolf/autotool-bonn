@@ -65,8 +65,6 @@ handler variants ( h, rhost, rport ) = do
 
     res <- validate par
 
-
-
     case res of
      Left _ -> do
           hPutStrLn h "oops"
@@ -75,7 +73,9 @@ handler variants ( h, rhost, rport ) = do
        Variant v -> do
           k <- key  v $ P.matrikel par
           generator <- gen v k
-          let ( Just i, com :: Doc ) = export generator
+          let gen @ ( Just i, com :: Doc ) = export generator
+	  print gen ; hFlush stdout
+
 	  hPutStrLn h $ show i -- Kommentar wird ignoriert
 	  hFlush h
 
@@ -83,9 +83,13 @@ handler variants ( h, rhost, rport ) = do
 	  
 	  par <- return $ par { P.input = unlines $ block }
 
-          let ( res :: Maybe Int , com :: Doc ) 
+          let evl @ ( res :: Maybe Int , com :: Doc ) 
                  = export $ evaluate ( problem v ) i par
+	  print evl ; hFlush stdout
+
 	  msg <- bank par res 
+	  print msg ; hFlush stdout
+
 	  hPutStrLn h $ msg
 	  hPutStrLn h $ render com
 
@@ -93,6 +97,7 @@ hGetBlock :: Handle -> IO [ String ]
 -- bis zu leerzeile lesen
 hGetBlock h = do
     l <- hGetLine h
+    putStrLn $ "<< " ++ l ; hFlush stdout
     if null l 
 	then return [ l ]
 	else do ls <- hGetBlock h

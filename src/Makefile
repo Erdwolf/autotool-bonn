@@ -88,12 +88,6 @@ install-face : $(INTER_FACE_CGI)
 ghci-face:
 	$(GHCI_COMMAND)  $(EXTRA_PACKS)  $(INTER_FACE_WITH_PATH)
 
-Inter/Streamer : do
-	$(GHC_COMMAND)  $@.hs -o $@
-
-stream : Inter/Streamer
-
-
 
 
 .PHONY : do
