@@ -16,7 +16,7 @@ import Autolib.Size
 import Autolib.FiniteMap
 import qualified Challenger as C
 
-import qualified Autolib.Reporter.Subset
+import qualified Autolib.Reporter.Set
 import Data.Typeable
 
 data Col = Col deriving ( Eq, Ord, Show, Read, Typeable )
@@ -43,7 +43,7 @@ instance ( GraphC a, Show a )
     partial p (c, g) f = do
         let s1 = ( text "Knotenmenge des Graphen" , knoten g )
 	    s2 = ( text "gefärbte Knoten" , mkSet $ keysFM f )
-	Autolib.Reporter.Subset.check s1 s2
+	Autolib.Reporter.Set.subeq s1 s2
     
     total p (c, g) f = do
         let col v = lookupWithDefaultFM f (error $ "Graph.Col.Plain" ++ show v) v

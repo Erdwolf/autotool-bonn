@@ -5,19 +5,15 @@ module Hanoi.Semantik where
 import Hanoi.Type
 import Hanoi.Move
 
-import Data.FiniteMap
-import Reporter
-import ToDoc
+import Autolib.FiniteMap
+import Autolib.Reporter
+import Autolib.ToDoc
 
 import qualified Challenger as C
 import Inter.Types
+import Data.Typeable
 
-data Hanoi = Hanoi deriving ( Eq, Ord, Show, Read )
-
-data HI = HI { start :: Hof
-	     , ziel  :: Hof
-	     }
-    deriving ( Show )
+data Hanoi = Hanoi deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance C.Partial Hanoi HI [ Zug ] where
 
@@ -41,29 +37,14 @@ instance C.Partial Hanoi HI [ Zug ] where
 	assert ( hof == ziel i ) $ text "Aufgabe gelöst?"
 	return ()
 
-data Conf = Conf { hoch :: Int
-		 , turms :: Int
-		 }
-     deriving ( Show, Read )
 
-make :: Conf -> HI
-make conf = 
-    let ts = take ( turms conf ) [ A .. ]
+make :: Make
+make = direct Hanoi $
+    let ts = take 3 [ A .. ]
         leer = listToFM $ do t <- ts ; return ( t, [] )
-        ss = [ 1 .. fromIntegral $ hoch conf ]
+        ss = [ 1 .. 5 ]
     in  HI { start = addToFM leer A ss
 	   , ziel  = addToFM leer B ss
 	   }
 
-hanoi :: Conf -> Var Hanoi HI [ Zug ]
-hanoi conf =
-    Var { problem = Hanoi
-        , aufgabe = "T" ++ show ( turms conf )
-        , version = "H" ++ show ( hoch conf )
-        , key = \ matrikel -> do
-              return matrikel
-        , gen = \ key -> do
-              return $ do
-	          return $ make conf
-        }
 

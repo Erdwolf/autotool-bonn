@@ -19,7 +19,7 @@ import Autolib.FiniteMap
 import Autolib.Util.Sort
 import qualified Challenger as C
 
-import qualified Autolib.Reporter.Subset
+import qualified Autolib.Reporter.Set
 import Data.Typeable
 
 data Cage = Cage deriving ( Eq, Ord, Show, Read, Typeable )

@@ -20,6 +20,8 @@ import qualified Graph.Cage.Central
 import qualified Graph.Graceful.Central
 import qualified Collatz.Plain
 import qualified Collatz.Inverse
+import qualified Hanoi.Semantik
+import qualified Hanoi.Quiz
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -44,5 +46,7 @@ makers = [ Blank.make
 	 , Collatz.Plain.qmake
 	 , Collatz.Inverse.make
 	 , Collatz.Inverse.qmake
+	 , Hanoi.Semantik.make
+	 , Hanoi.Quiz.make
 	 ]
 

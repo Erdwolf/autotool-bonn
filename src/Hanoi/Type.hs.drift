@@ -4,15 +4,20 @@ module Hanoi.Type where
 
 --  $Id$
 
-import Data.FiniteMap
-import ToDoc
-import Reader
-import Util.Size 
+import Autolib.FiniteMap
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Size 
+
+import Text.XML.HaXml.Haskell2Xml
+import Data.Typeable
 
 type Scheibe = Integer
 
 data Turm = A | B | C | D
-    deriving ( Eq, Ord, Enum )
+    deriving ( Eq, Ord, Enum, Typeable )
+
+{-! for Turm derive: Reader, ToDoc, Haskell2Xml !-}
 
 type Hof = FiniteMap Turm [ Scheibe ]
 
@@ -20,13 +25,22 @@ type Zug = ( Turm, Turm )
 
 instance Size Zug where size _ = 1
 
-{-! for Turm derive: Reader, ToDoc !-}
+data HI = HI { start :: Hof
+	     , ziel  :: Hof
+	     }
+    deriving ( Typeable )
 
-instance Show Turm where
-    show = render . toDoc
+{-! for HI derive: Reader, ToDoc, Haskell2Xml !-}
 
-instance Read Turm where
-    readsPrec = parsec_readsPrec
+data Conf = Conf { scheiben :: Int
+		 , turme :: Int
+		 }
+     deriving ( Typeable )
+
+{-! for Conf derive: Reader, ToDoc, Haskell2Xml !-}
+
+
+
 
 
 

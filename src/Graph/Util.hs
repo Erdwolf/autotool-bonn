@@ -5,7 +5,7 @@ module Graph.Util
 ( module Graph.Util
 , module Autolib.Graph.Type
 , module Autolib.Reporter
-, module Autolib.Reporter.Subset
+, module Autolib.Reporter.Set
 , module Autolib.ToDoc
 , module Autolib.FiniteMap
 )
@@ -14,7 +14,7 @@ where
 
 import Autolib.Graph.Type hiding ( iso )
 import Autolib.Reporter 
-import Autolib.Reporter.Subset
+import Autolib.Reporter.Set
 
 import Autolib.FiniteMap
 import Autolib.ToDoc
@@ -47,16 +47,7 @@ equal_set :: ( Ord a, ToDoc [a] )
        => ( Doc, Set a )
        -> ( Doc, Set a )
        -> Reporter ()
-equal_set x @ (d1, s1) y @ (d2, s2) = do
-    inform $ vcat
-           [ text "Stimmen die Menge"
-           , nest 4 $ fsep [ d1 , equals, toDoc s1 ]
-           , text "und die Menge"
-           , nest 4 $ fsep [ d2, equals, toDoc s2 ]
-           , text "überein?"
-           ]
-    Autolib.Reporter.Subset.check x y
-    Autolib.Reporter.Subset.check y x
+equal_set = Autolib.Reporter.Set.eq
 
 nachbarn :: Ord a => Graph a -> a -> Set a
 nachbarn g x = mkSet $ lnachbarn g x

@@ -9,7 +9,7 @@ import qualified Autolib.TES.Binu as B
 import qualified Boolean.Equiv
 
 import Challenger.Partial
-import qualified Autolib.Reporter.Subset
+import qualified Autolib.Reporter.Set
 
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
@@ -64,10 +64,10 @@ instance Partial Boolean BI ( Exp Bool ) where
 	       , nest 4 $ draw b
 	       , text ""
 	       ]
-        Autolib.Reporter.Subset.check
+        Autolib.Reporter.Set.subeq
 	    ( parens $ text "benutzte Operatoren" , syms b )
 	    ( parens $ text "erlaubte Operatoren" , operators i )
-	Autolib.Reporter.Subset.check
+	Autolib.Reporter.Set.subeq
 	    ( parens $ text "benutzte Variablen" , vars b )
 	    ( parens $ text "Variablen der Aufgabenstellung",vars $ formula i )
 

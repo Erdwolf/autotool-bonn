@@ -5,9 +5,9 @@ module Hanoi.Move where
 import Hanoi.Type
 import Control.Monad
 
-import Data.FiniteMap
-import Reporter
-import ToDoc
+import Autolib.FiniteMap
+import Autolib.Reporter
+import Autolib.ToDoc
 
 moves :: Hof -> [ Zug ] -> Reporter Hof
 moves = foldM move
