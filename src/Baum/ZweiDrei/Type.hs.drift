@@ -1,0 +1,26 @@
+-- -*- mode: haskell -*-
+
+module Baum.ZweiDrei.Type where
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Baum a = Baum [ ( Baum a, Maybe a ) ]
+     deriving ( Typeable )
+
+isNull :: Baum a -> Bool
+isNull Null = True
+isNull _ = False
+
+{-! for Baum  derive: Reader, ToDoc, Haskell2Xml !-}
+
+data Op = Insert | Delete
+     deriving Typeable
+
+{-! for Op derive: Reader,  ToDoc, Haskell2Xml !-}
+
+
+
