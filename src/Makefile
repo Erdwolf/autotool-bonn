@@ -81,7 +81,7 @@ forall = $(foreach DIR,$(DIRS),$(MAKE) -C $(DIR) $(1);)
 objclean:
 	rm -f `find . -name '*.o'`
 	rm -f `find . -name '*.hi'`
-	$(call forall,$@)
+#	$(call forall,$@)
 
 clean: objclean
-	$(call forall,$@)
+#	$(call forall,$@)
