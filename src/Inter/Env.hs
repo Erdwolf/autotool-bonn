@@ -9,6 +9,8 @@ import qualified Passwort
 
 import Inter.Click
 
+import Control.Exception
+
 type Env = [(String, String)]
 
 get :: Env  -> P.Type
@@ -20,12 +22,21 @@ get_with env def =
     if null $ item env "Click"
      then def
      else 
-        let 
+        let	    
+            -- String aufsplitten eg. "Computer:TM-2" -> "Computer TM 2"
+            -- -> pav = ("Computer","TM","2") -- pav heisst problem,aufgabe,version
             mySub ':' = ' ' 
             mySub '-' = ' ' 
             mySub x@_   = x 
+	    -- pav lesen aus 
 	    pav = if item env "Click" == "Change"
-	          then words $ map mySub $ item env "Wahl" 
+		  -- eingabe boxen
+	          then 
+		  	if item env "Wahl" == "--"
+			-- TODO: Hier keine Exception missbrauchen!
+			then throw $ AssertionFailed "Keine Aufgabe gewaehlt!" 
+			else words $ map mySub $ item env "Wahl" 
+		  -- aus env-variablen
 		  else map ( item env ) [ "Problem", "Aufgabe", "Version" ]
         in P.empty { P.matrikel = item env "Matrikel" 
                    , P.passwort = read $ item env "Passwort"
