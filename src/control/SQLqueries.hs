@@ -574,8 +574,8 @@ mglNextAufgabenDB snr = do
 			  [ "SELECT aufgabe.ANr, aufgabe.Name AS Typ, aufgabe.Subject AS Nr, aufgabe.Highscore \n"
 			  , ", DATE_FORMAT( aufgabe.Von , \"%H:%i %a %d. %b %Y\") as Von " 
 			  , ", DATE_FORMAT( aufgabe.Bis , \"%H:%i %a %d. %b %Y\") as Bis\n"
---			  , ", aufgabe.Von " 
---			  , ", aufgabe.Bis "
+			    --			  , ", aufgabe.Von " 
+			    --			  , ", aufgabe.Bis "
 			  , "FROM aufgabe "
 			  , if null snr 
 			    then " \n" 
