@@ -8,19 +8,26 @@ import Autolib.Reader
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
-data Baum a = Baum [ ( Baum a, Maybe a ) ]
-     deriving ( Typeable )
+data Key a = This a | Infinity 
+     deriving ( Typeable, Eq, Ord )
+
+{-! for Key derive:  Reader, ToDoc, Haskell2Xml !-}
+
+-- |  zweites element ist jeweils der schlüssel,
+-- schlüssel sind aufsteigend geordnet (je Knoten)
+-- in baum stehen jeweils alle knoten,
+-- die echt kleiner als schlüssel sind.
+-- der letzte Eintrag jeder liste hat key == Infinity
+data Baum a = Null 
+	    | Baum [ ( Baum a, Key a ) ]
+     deriving ( Eq, Ord, Typeable )
 
 isNull :: Baum a -> Bool
 isNull Null = True
 isNull _ = False
 
-{-! for Baum  derive: Reader, ToDoc, Haskell2Xml !-}
+{-! for Baum derive: Reader, ToDoc, Haskell2Xml !-}
 
-data Op = Insert | Delete
-     deriving Typeable
-
-{-! for Op derive: Reader,  ToDoc, Haskell2Xml !-}
 
 
 

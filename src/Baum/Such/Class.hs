@@ -2,7 +2,10 @@
 
 module Baum.Such.Class where
 
+import Baum.Such.Op
 import Autolib.ToDoc
+import Data.Tree
+import Data.Typeable
 
 class Such baum where
 
@@ -15,4 +18,19 @@ class Such baum where
 
     equal :: Eq a => baum a -> baum a -> Bool
     contents :: Ord a => baum a -> [a]
-    form :: Show a => baum a -> Doc
+    toTree :: Show a => baum a -> Tree String
+
+form :: ( Such baum, OpC a ) 
+     => baum a -> Doc
+form = vcat . map text . lines . drawTree . fmap text . toTree
+
+class ( Show t, ToDoc t, Typeable t
+      , Such baum, OpC a
+      , ToDoc (baum a), Show ( baum a ), Read ( baum a ) 
+      , Typeable (baum a)
+      ) 
+    => Tag t baum a | t -> baum, t -> a where
+   tag :: t
+
+
+

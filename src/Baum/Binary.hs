@@ -1,7 +1,6 @@
 module Baum.Binary 
 
-( module Baum.Binary.Type
-, module Baum.Binary.Ops
+( make_quiz
 )
 
 where
@@ -12,8 +11,11 @@ import Baum.Binary.Type
 import Baum.Binary.Ops
 import Baum.Binary.Show
 
+import qualified Baum.Such.Central
 import qualified Baum.Such.Class as C
+import Inter.Types
 import Autolib.ToDoc
+import Data.Typeable
 
 instance C.Such Baum where
     empty = Null
@@ -25,5 +27,13 @@ instance C.Such Baum where
 
     equal = (==)
     contents = contents
-    form = toDoc . toTree
+    toTree = toTree
 
+data SuchbaumBinary = SuchbaumBinary 
+    deriving ( Eq, Ord, Show, Read, Typeable )
+
+instance C.Tag SuchbaumBinary Baum Int where
+    tag = SuchbaumBinary
+
+make_quiz :: Make
+make_quiz = Baum.Such.Central.make_quiz SuchbaumBinary

@@ -1,55 +1,61 @@
 module Baum.ZweiDrei.Ops where
 
+--  $Id$
+
 import Baum.ZweiDrei.Type 
+
+zwei :: Int
+zwei = 2
+
+drei :: Int
+drei = 3
 
 contains :: Ord a
 	 => Baum a -> a -> Bool
-contains (Baum xys) k = 
+contains Null         x = False
+contains ( Baum bks ) x = 
     let handle [] = False
-	handle ( (x, my) : rest ) =
-	    let here = case my of Just y ->  k < y ; Nothing -> True
-	    in  if here 
-		then contains x k
-		else handle rest
+	handle ( (b, k) : bks ) =
+	    if This x == k then True
+	    else if This x < k then contains b x
+		 else handle bks
+    in  handle bks 
+
+contents :: Baum a -> [ a ] 
+contents Null = []
+contents ( Baum bks ) = do
+    (b, k) <- bks
+    contents b ++ [ x | This x <- [ k ] ]
+
+--------------------------------------------------------------------------
+
+insert :: Ord a => Baum a -> a -> Baum a
+insert b x = 
+    case split_insert ( b, Infinity ) x of
+        [ ( b', Infinity ) ] -> b'
+	bks -> Baum bks
     
-----------------------------------------------------------------------
+list_insert :: Ord a 
+	    => [ (Baum a, Key a) ] 
+	    -> a
+	    -> [ (Baum a, Key a) ] 
+list_insert bks @ ((b, k) : rest) x = 
+    if This x < k
+    then split_insert (b, k) x ++ rest
+    else (b, k) : list_insert rest x
 
-inter :: Ord a
-      => Op
-      -> Baum a
-      -> Baum a
-inter op = case op of
-    Insert -> insert 
-    Delete -> delete
+split_insert :: Ord a 
+	     => ( Baum a, Key a ) 
+	     -> a 
+	     ->  [ (Baum a, Key a) ] 
+split_insert ( Null, k ) x =
+     [ (Null, This x), ( Null, k ) ]
+split_insert ( Baum bks, k ) x =
+    let bks' = list_insert bks x
+    in  if length bks' <= drei
+        then [ ( Baum bks', k ) ]
+        else let ( pre, post ) = splitAt (length bks' `div` 2 ) bks'
+                 ( last_b, last_k ) = last pre
+		 pre' = init pre ++ [ ( last_b, Infinity ) ]
+	     in  [ ( Baum pre', last_k), ( Baum post, k ) ]
 
-insert :: Ord a
-       => Baum a -> a -> Baum a
-insert Null k = Zwei { left = Null, key = k, right = Null }
-insert ( b @  k | k < key b = b { left  = insert (left  b) k }
-           | otherwise = b { right = insert (right b) k }
-
-
-
--- | if present, then delete, else return unchanged
-delete :: Ord a 
-       => Baum a -> a -> Baum a
-delete b k 
-    | isNull b = b
-    | k == key b && isNull (left  b) = right b
-    | k == key b && isNull (right b) = left  b
-    | k == key b = -- interessanter fall, beide kinder nicht leer
-         let ( r, lemo ) = replace_leftmost ( right b ) ( right lemo )
-	 in  b { key = key lemo , right = r }
-
-    | k < key b = b { left  = delete (left  b) k }
-    | otherwise = b { right = delete (right b) k }
-
--- replace leftmost node of top with new,
--- return new top and old leftmost
-replace_leftmost :: Baum a -> Baum a -> ( Baum a, Baum a )
-replace_leftmost top new = case left top of 
-    Null -> ( new , top )
-    b'   -> let ( b'', lemo ) = replace_leftmost b' new
-	    in ( top { left = b'' } , lemo )
-
- 

@@ -7,7 +7,9 @@ import Baum.Such.Class
 import Baum.Such.Op
 import Baum.Such.Inter
 import Baum.Such.Generate
-import Baum.Binary
+
+-- import qualified Baum.Binary as B
+-- import qualified Baum.ZweiDrei as Z
 
 import Challenger.Partial
 import Autolib.Reporter
@@ -18,16 +20,15 @@ import Inter.Types
 import Inter.Quiz
 import Data.Typeable
 
-data Suchbaum = Suchbaum deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance ( Such baum, OpC a ) => 
-    Measure Suchbaum ( Instanz baum a ) [ Op a ] where
-    measure Suchbaum inst ops = fromIntegral $ length ops
+instance ( Tag t baum a ) => 
+    Measure t ( Instanz baum a ) [ Op a ] where
+    measure t inst ops = fromIntegral $ length ops
 
-instance ( Such baum, OpC a, ToDoc (baum a) ) => 
-    Partial Suchbaum ( Instanz baum a ) [ Op a ] where
+instance ( Tag t baum a ) => 
+    Partial t ( Instanz baum a ) [ Op a ] where
 
-    describe Suchbaum ( start, plan, end ) = vcat
+    describe t ( start, plan, end ) = vcat
        [ text "Auf den Baum:"
        , nest 4 $ form start
        , text "sollen diese Operationen angewendet werden"
@@ -37,10 +38,10 @@ instance ( Such baum, OpC a, ToDoc (baum a) ) =>
        , nest 4 $ form end
        ]
 
-    initial Suchbaum ( start, plan, end ) =
+    initial t ( start, plan, end ) =
         plan
 
-    total   Suchbaum ( start, plan, end ) ops = do
+    total   t ( start, plan, end ) ops = do
         inform $ text "Beginne mit" <+> form start
         c <- steps start plan ops
 	assert ( c `equal` end) $ vcat
@@ -48,13 +49,16 @@ instance ( Such baum, OpC a, ToDoc (baum a) ) =>
 	       , nest 4 $ form end
 	       ]
 
-instance Generator Suchbaum ( Config Int ) ( Instanz Baum Int ) where
-    generator Suchbaum conf key = generate conf
+instance Tag t baum a
+      => Generator t ( Config a ) ( Instanz baum a ) where
+    generator t conf key = generate conf
 
-instance Project Suchbaum  ( Instanz Baum Int ) ( Instanz Baum Int ) where
-    project Suchbaum i = i
+instance Project t  ( Instanz baum a ) ( Instanz baum a ) where
+    project t i = i
 
-make_quiz :: Make
-make_quiz = quiz Suchbaum Baum.Such.Config.example
+make_quiz :: Tag t baum Int => t -> Make
+make_quiz t = quiz t Baum.Such.Config.example  
+
+
 
 
