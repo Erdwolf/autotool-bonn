@@ -2,31 +2,10 @@ module Grammatik.Chomsky where
 
 -- $Id$
 
--- $Log$
--- Revision 1.1  2002-12-17 15:17:58  joe
--- grammatik -> Grammatik.
---
--- Revision 1.1.1.1  2002/05/24 10:46:47  challenger
--- start
---
--- Revision 1.4  2001/11/28 07:27:11  autotool
--- benutze DPL in CYK/CF_Chomsky
---
--- Revision 1.3  2001/11/21 16:44:06  autotool
--- bessere version von Chomsky.hs
--- bessere testfälle für CF4
---
--- Revision 1.2  2001/11/21 12:18:59  autotool
--- bugfix (serious!) in Chomsky.hs
---
--- Revision 1.1  2001/11/18 23:57:05  autotool
--- neu: chomsky-form, greibach-form, CYK-parser und hilfsprogramme
---
-
 import qualified Grammatik.Type as G
 
-import Set
-import OrdSet
+import Sets
+
 import FiniteMap
 import Monad (guard)
 import List (nub)
