@@ -25,6 +25,12 @@ DEFINES = -DSPACE=1
 GHC = ghc6 # which is 6.0.1, actually
 endif
 
+ifeq ($(shell hostname), theo1)
+EXTRA_PACKS = -package hsql
+DEFINES = -DSPACE=1
+GHC = ghc6 # which is 6.0.1, actually
+endif
+
 ifeq ($(shell hostname), aaron)
 EXTRA_PACKS = -package-conf /home/alf/autotool/autotool.pkg -package hsql
 DEFINES = -DSPACE=1
