@@ -3,13 +3,16 @@ module Baum.Bin where
 --  $Id$
 
 import Baum.Type
+import Baum.Label
+
 import Control.Monad ( when )
 import Reporter.Type
 import ToDoc
-import Random
-import Util.Zufall
 
-checkbin :: Baum -> Reporter ()
+-- | check whether tree is binary
+-- i. e. each node has 0 or 2 children exactly
+checkbin :: ( Show c, ToDoc v, ToDoc c )
+	 => Term v c -> Reporter ()
 checkbin = mapM_ check . subterms where
     check t @ ( Node f args ) 
 	= when ( not $ length args `elem` [0, 2] )
@@ -20,16 +23,13 @@ checkbin = mapM_ check . subterms where
 		    , nest 4 $ present t
 		    ]
 
--- | make "random" binary tree of given size (must be odd)
--- contains no variables
-rollbin :: Int -> IO ( Term a () )
-rollbin s | s < 2 = return $ Node () []
-rollbin s = do
-    x <- randomRIO (1, s-2)
-    let sl = if even x then pred x else x
-    let sr = s - 1 - sl
-    l <- rollbin sl
-    r <- rollbin sr
-    return $ Node () [ l, r ]
-
+-- | construct balanced binary tree of (at most) given size
+balanced :: Int -> Term a ()
+balanced s | s <= 2 = Node () []
+balanced s = 
+    let sl = (s - 1) `div` 2
+	l = balanced sl
+	sr = s - 1 - sl
+	r = balanced sr
+    in	Node () [ l, r ]
 

@@ -3,12 +3,28 @@ module Baum.Traverse where
 --  $Id$
 
 import Baum.Type
+import ToDoc
+
+data Order = Pre | In | Post | Level
+     deriving ( Eq, Ord, Show, Read )
+
+instance ToDoc Order where toDoc = text . show
+
+traverse :: Order -> Term a c -> [ c ]
+traverse o = case o of
+    Pre   -> preorder
+    In	  -> inorder
+    Post  -> postorder
+    Level -> levelorder
+
+announce :: Order -> Doc -> Doc
+announce o d =  hsep [ toDoc o <> text "order", parens d , equals ]
 
 preorder :: Term a c -> [c]
 preorder (Node f args) = [ f ] ++ concat ( map preorder args )
 
 postorder :: Term a c -> [c]
-postorder (Node f args) = concat ( map preorder args ) ++ [ f ]
+postorder (Node f args) = concat ( map postorder args ) ++ [ f ]
 
 -- | only for binary trees
 inorder :: Term a c -> [c]
