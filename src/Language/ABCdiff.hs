@@ -1,22 +1,6 @@
--- $Header$
+module Language.ABCdiff (abcdiff) where
 
-module ABCdiff (abcdiff) where
-
--- $Log$
--- Revision 1.1  2002-11-08 16:43:23  joe
--- language -> Language
--- pump -> Pump.REG (neu)
--- aufgaben dazu
---
--- Revision 1.1.1.1  2002/05/24 10:46:48  challenger
--- start
---
--- Revision 1.1  2001/12/05 21:11:31  autotool
--- lang/*
---
--- Revision 1.1  2001/12/04 13:04:10  autotool
--- neu: pump/* lang/*
---
+-- $Id$
 
 import Language
 import Set
@@ -27,8 +11,10 @@ import Random
 abcdiff :: Language
 abcdiff = Language 
        { abbreviation = "{ a^i b^j c^k : i /= j, j /= k, k /= i }" 
+       , nametag      = "ABCdiff"
        , alphabet     = mkSet "abc"
        , sample       = sam
+       , anti_sample  = error "ABCdiff.anti_sample not implemented"
        , contains     = con
        }
 

@@ -16,6 +16,7 @@ import Random
 
 data Language = Language
 	      { abbreviation :: String
+	      , nametag      :: String
 	      , alphabet     :: Set Char
 
 	      -- testet Mitgliedschaft in Sprache
