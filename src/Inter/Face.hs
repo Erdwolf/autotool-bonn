@@ -168,8 +168,7 @@ iface variants env = do
 	  
           -- neu (11. 11. 03): IO-Aktion ausführen
           ( res :: Maybe Int , com :: Doc ) 
-	      <- timed patience ( Nothing, text "timer expired" ) $
-                     run $ do
+	      <- timed_run patience ( reject $ text "timer expired" ) $ do
 	  	         -- TODO: set default dir
 	                 evaluate ( problem v ) i par2
 
