@@ -12,7 +12,7 @@ import Informed
 
 step :: String		-- name der variante 
      -> Laufzeit
-     -> Var TM Laufzeit
+     -> Var TM Laufzeit ( Turing Char Integer )
 step v l =
     Var { problem = TM
 	, variant = "STEP" ++ v
