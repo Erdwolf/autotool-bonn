@@ -365,7 +365,8 @@ parameter_table auf = do
             close -- table
     let hin = above ( plain "Hinweise" )
 	            ( pre $ toString $ A.remark auf )
-    beside tab hin
+    -- beside tab hin
+    hin
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
