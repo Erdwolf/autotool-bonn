@@ -105,8 +105,6 @@ data Typ = Typ String deriving ( Eq, Ord, Typeable )
 
 {-! for Typ derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Typ where show = render . toDoc
-instance Read Typ where readsPrec = parsec_readsPrec
 instance SqlBind Typ where 
     fromSqlValue ty s = Just $ Typ s
     toSqlValue (Typ cs) = toSqlValue cs
@@ -122,8 +120,6 @@ data Config = Config String deriving ( Eq, Ord, Typeable )
 
 {-! for Config derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Config where show = render . toDoc
-instance Read Config where readsPrec = parsec_readsPrec
 instance SqlBind Config where 
     fromSqlValue ty s = Just $ Config s
     toSqlValue (Config cs) = toSqlValue cs
@@ -135,8 +131,6 @@ data Remark = Remark String deriving ( Eq, Ord, Typeable )
 
 {-! for Remark derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Remark where show = render . toDoc
-instance Read Remark where readsPrec = parsec_readsPrec
 instance SqlBind Remark where 
     fromSqlValue ty s = Just $ Remark s
     toSqlValue (Remark cs) = toSqlValue cs
@@ -149,8 +143,6 @@ data Name = Name String deriving ( Eq, Ord, Typeable )
 
 {-! for Name derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Name where show = render . toDoc
-instance Read Name where readsPrec = parsec_readsPrec
 instance SqlBind Name where 
     fromSqlValue ty s = Just $ Name s
     toSqlValue (Name cs) = toSqlValue cs
@@ -166,11 +158,8 @@ data SNr = SNr Int deriving ( Eq, Ord, Typeable )
 
 {-! for SNr derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show SNr where show = render . toDoc
-instance Read SNr where readsPrec = parsec_readsPrec
 instance SqlBind SNr where 
-    -- fromSqlValue ty s = fmap SNr $ fromSqlValue ty s
-    fromSqlValue (SqlNumeric _ _) s = Just $ SNr $ read s
+    fromSqlValue _ s = Just $ SNr $ read s -- FIXME: check SqlType
     toSqlValue (SNr i) = toSqlValue i
 
 instance ToEx SNr where
@@ -182,11 +171,8 @@ data ANr = ANr Int deriving ( Eq, Ord, Typeable )
 
 {-! for ANr derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show ANr where show = render . toDoc
-instance Read ANr where readsPrec = parsec_readsPrec
 instance SqlBind ANr where 
-    -- fromSqlValue ty s = fmap ANr $ fromSqlValue ty s
-    fromSqlValue (SqlNumeric _ _) s = Just $ ANr $ read s
+    fromSqlValue _ s = Just $ ANr $ read s -- FIXME: check SqlType
     toSqlValue (ANr i) = toSqlValue i
 instance ToEx ANr where
     toEx (ANr x) = EString $ show x
@@ -197,11 +183,8 @@ data GNr = GNr Int deriving ( Eq, Ord, Typeable )
 
 {-! for GNr derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show GNr where show = render . toDoc
-instance Read GNr where readsPrec = parsec_readsPrec
 instance SqlBind GNr where 
-    -- fromSqlValue ty s = fmap GNr $ fromSqlValue ty s
-    fromSqlValue (SqlNumeric _ _) s = Just $ GNr $ read s
+    fromSqlValue _ s = Just $ GNr $ read s -- FIXME: check SqlType
     toSqlValue (GNr i) = toSqlValue i
 instance ToEx GNr where
     toEx (GNr x) = EString $ show x
@@ -212,11 +195,8 @@ data VNr = VNr Int deriving ( Eq, Ord, Typeable )
 
 {-! for VNr derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show VNr where show = render . toDoc
-instance Read VNr where readsPrec = parsec_readsPrec
 instance SqlBind VNr where 
-    -- fromSqlValue ty s = fmap VNr $ fromSqlValue ty s
-    fromSqlValue (SqlNumeric _ _) s = Just $ VNr $ read s
+    fromSqlValue _ s = Just $ VNr $ read s -- FIXME: check SqlType
     toSqlValue (VNr i) = toSqlValue i
 instance ToEx VNr where
     toEx (VNr x) = EString $ show x
@@ -227,8 +207,6 @@ data Oks = Oks Int deriving ( Eq, Ord, Typeable )
 
 {-! for Oks derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Oks where show = render . toDoc
-instance Read Oks where readsPrec = parsec_readsPrec
 instance SqlBind Oks where 
     fromSqlValue ty s = fmap Oks $ fromSqlValue ty s
     toSqlValue (Oks i) = toSqlValue i
@@ -239,8 +217,6 @@ data Nos = Nos Int deriving ( Eq, Ord, Typeable )
 
 {-! for Nos derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Nos where show = render . toDoc
-instance Read Nos where readsPrec = parsec_readsPrec
 instance SqlBind Nos where 
     fromSqlValue ty s = fmap Nos $ fromSqlValue ty s
     toSqlValue (Nos i) = toSqlValue i
