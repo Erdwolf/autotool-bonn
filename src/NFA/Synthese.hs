@@ -45,7 +45,6 @@ instance C.Partial  Synthese SI ( NFA Char Int )
     partial p i b = do
         restrict_states b
 	restrict_alpha ( alphabet i ) b
-        when (  deterministisch i ) $ NFA.Check.deterministisch b
 
     total   p i b = do
         let goal = inter (std_sigma $ setToList $ alphabet i) (ausdruck i)
@@ -53,6 +52,7 @@ instance C.Partial  Synthese SI ( NFA Char Int )
 		 ( informed ( text "Sprache Ihres Automaten" )  b    )
 
 	assert f $ text "Stimmen die Sprachen überein?"
+        when (  deterministisch i ) $ NFA.Check.deterministisch b
         return () 
 
 synthese :: String -- aufgabe (major)
