@@ -26,7 +26,7 @@ import qualified JVM.EXP2
 
 import qualified JVM.NUM32
 import qualified JVM.NUM42
-import qualified JVM.NUMMAT
+import qualified JVM.NUMAT
 
 import qualified Demo.L
 
@@ -39,6 +39,10 @@ boiler = sequence $
        [ fmap Variant $ JVM.TIMES.generate
        , fmap Variant $ JVM.EXP1.generate
        , fmap Variant $ JVM.EXP2.generate
+
+       , fmap Variant $ JVM.NUM32.generate
+       , fmap Variant $ JVM.NUM42.generate
+       , fmap Variant $ JVM.NUMMAT.generate
 
        , fmap Variant $ PCP.QUIZ.generate
        , fmap Variant $ SAT.QUIZ.generate
