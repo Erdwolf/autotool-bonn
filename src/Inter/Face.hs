@@ -74,6 +74,7 @@ import qualified Inter.Motd
 import qualified Challenger
 
 import Inter.Types
+import Inter.Make
 import qualified Control.Exception
 
 
@@ -87,6 +88,10 @@ import Inter.Logged
 --
 import Inter.Boiler
 
+
+-- temporarily:
+import qualified HTWK.SS04.Informatik.Boolean as B
+
 import Informed
 
 patience :: Int
@@ -94,7 +99,12 @@ patience = 15 -- seconds
 
 main :: IO ()
 main = do
-     vs <- boiler
+     -- original:
+     -- vs <- boiler
+
+     -- testing:
+     let vs = get_boiler B.makers B.configs
+
      wrapper $ \ env ->  
          iface vs env
              `Control.Exception.catch` \ err -> 

@@ -9,6 +9,8 @@ import qualified Boolean.Equiv
 import Challenger.Partial
 import qualified Reporter.Subset
 
+import Data.Typeable
+
 import ToDoc
 import Reporter
 import Sets
@@ -20,7 +22,7 @@ data BI =
         , formula :: Exp
 	, operators :: Set Op
 	}
-     deriving ( Show )
+     deriving ( Show, Typeable )
 
 instance Partial Boolean BI Exp where
 
