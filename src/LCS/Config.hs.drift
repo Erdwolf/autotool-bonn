@@ -11,7 +11,7 @@ import Autolib.Set
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
-data InstanceC a => Config a =
+data ( ToDoc [a], Reader [a], Ord a ) => Config a =
      Config { alphabet :: Set a
 	    , solution_length_min :: Int
 	    , solution_length_max :: Int

@@ -1,3 +1,5 @@
+{-# OPTIONS -fallow-overlapping-instances #-}
+
 module LCS.Quiz where
 
 --  $Id$
@@ -9,6 +11,8 @@ import LCS.Config
 import Inter.Types
 
 import Autolib.Set
+import Autolib.Reader
+import Autolib.ToDoc
 import Random
 import Autolib.Util.Wort
 import Util.Datei
@@ -17,7 +21,7 @@ import Autolib.Util.Seed
 import Autolib.Util.Zufall
 
 
-roll :: InstanceC a
+roll :: ( ToDoc [a], Reader [a], Ord a )
      => Config a 
      -> IO ( [a], Instance a )
 roll conf = do
