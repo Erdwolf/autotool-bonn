@@ -5,7 +5,7 @@ module NPDA.Konfiguration where
 import NPDA.Type
 
 import ToDoc
-import ReadSet
+import Sets
 import ReadFM
 
 

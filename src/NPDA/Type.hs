@@ -4,20 +4,20 @@ module NPDA.Type
 -- $Id$
 
 ( module NPDA.Type
-, module Set
+, module Sets
 , module FiniteMap
 )
 
 where
 
 
-import Set
+import Sets
 import FiniteMap
 import Schichten
 import Size
 
 import ToDoc
-import ReadSet
+
 import ReadFM
 import Maybe
 import Reporter
