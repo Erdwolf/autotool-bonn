@@ -14,6 +14,9 @@ all: $(DIRS)
 $(DIRS):
 	$(MAKE) -C $@
 
+tags :
+	find . -name "*.hs" -print | xargs etags
+
 ###############################################################################
 
 .PHONY: objclean clean
