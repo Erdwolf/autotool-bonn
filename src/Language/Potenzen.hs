@@ -42,8 +42,10 @@ potenzen :: Int -> Language
 potenzen e = Language
 	    { abbreviation = "{ dezimal(n^" ++ show e ++ ") : n >= 0 }"
 	    , alphabet	   = mkSet alpha
-	    , contains	   = \ w -> 
-	          all isDigit w && ( ist_wurzel e (read w :: Integer) )
+	    , contains	   = \ w 
+                  -> not ( null w ) 
+	          && all isDigit w 
+	          && ( ist_wurzel e (read w :: Integer) )
 	    , sample       = \ c n -> sequence $ replicate c $ sam e n
 	    }
 
