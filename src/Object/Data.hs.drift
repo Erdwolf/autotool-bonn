@@ -1,0 +1,230 @@
+-- -*- mode: haskell -*-
+
+module Object.Data where
+
+--  $Id$
+
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Autolib.TES.Identifier
+import Autolib.Xml
+import Autolib.Hash
+import Autolib.Size
+
+import Text.XML.HaXml.Haskell2Xml
+import Data.Typeable
+
+----------------------------------------------------------------------------
+
+instance Container Identifier String where
+     label _ = "Identifier"
+     pack = show 
+     unpack = mknullary
+
+----------------------------------------------------------------------------
+
+data Type = Type Identifier 
+     deriving ( Eq, Ord, Typeable )
+
+instance Hash Type where hash (Type t) = hash t
+
+instance ToDoc Type where toDoc (Type t) = toDoc t
+instance Reader Type where 
+     reader = do t <- reader; return $ Type t
+
+{-! for Type derive: Haskell2Xml !-}
+
+----------------------------------------------------------------------------
+
+data Variable = 
+     Variable { vname :: Identifier
+	      , vtype :: Type
+	      }
+     deriving ( Eq, Ord, Typeable )
+
+instance ToDoc Variable where
+    toDoc v = toDoc (vtype v) <+> toDoc (vname v)
+instance Reader Variable where
+    reader = do
+        t <- reader -- type
+        n <- reader -- name
+        return $ Variable { vname = n, vtype = t }
+
+{-! for Variable derive: Haskell2Xml !-}
+
+----------------------------------------------------------------------------
+
+data Method = 
+     Method { fname :: Identifier
+	      , arguments :: [ Type ] 
+	      , result :: Type
+	      }
+     deriving ( Eq, Ord, Typeable )
+
+supply :: [ Identifier ]
+supply = do
+    v <- "xyzpqrst" ++ error "too many parameters in method"
+    return $ mknullary [v]
+
+instance ToDoc Method where
+    -- vorsicht: alte syntax ist im cache -- na und?
+    toDoc f = hsep [ text "static"
+		   , toDoc ( result f )
+		   , toDoc ( fname f )
+		   , dutch_tuple $ do
+		         ( t, z ) <- zip ( arguments f ) supply
+		         return $ toDoc t <+> toDoc z
+		   ]
+
+instance Reader Method where
+    reader = do
+        my_reserved "static"
+        r <- reader -- result type
+	n <- reader -- method name
+        ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma  -- parameters
+        return $ Method { fname = n
+			  , arguments = map vtype ps
+			  , result = r 
+			  }
+
+{-! for Method derive: Haskell2Xml !-}
+
+
+----------------------------------------------------------------------------
+
+data Class =
+     Class { name :: Identifier
+           , extends :: Maybe Identifier
+	   , declarations :: [ Declaration ]
+	   }
+  deriving ( Typeable )
+
+instance Size Class where
+     size s = length (declarations s) 
+
+
+instance ToDoc Class where
+    toDoc c = text "class" 
+        <+> case extends c of 
+	       Nothing -> empty 
+	       Just i  -> text "extends" <+> toDoc i
+        <+> braces ( nest 4 $ vcat $ map toDoc $ declarations c )
+ 
+instance Reader Class where
+    reader = do
+        my_reserved "class"
+        n <- reader -- name
+        e <- option Nothing $ do
+               my_reserved "extends"
+	       i <- reader
+	       return $ Just i
+        ds <- my_braces $ many reader
+        return $  Class
+	       { name      = n
+	       , extends   = e
+	       , declarations = ds
+	       }
+
+{-! for Class derive: Haskell2Xml !-}
+
+---------------------------------------------------------------------------
+
+data Declaration =
+     Declaration { access :: Access
+		 , static :: Static
+		 , member :: Member
+		 }
+     deriving ( Typeable )
+
+instance ToDoc Declaration where
+    toDoc d =  toDoc ( access d )
+	   <+> toDoc ( static d )
+	   <+> toDoc ( member d )
+
+instance Reader Declaration where
+    reader = do
+        a <- reader
+	s <- reader
+	m <- reader
+	return $ Declaration { access = a, static = s, member = m }
+
+{-! for Declaration derive: Haskell2Xml !-}
+
+---------------------------------------------------------------------------
+
+data Static = Static | Dynamic
+   deriving ( Eq, Ord, Typeable )
+
+instance ToDoc Static where
+    toDoc a = case a of
+       Static -> text "static"
+       Dynamic -> empty
+
+instance Reader Static where
+    reader = do my_reserved "static" ; return Static
+	 <|> do                        return Dynamic
+
+{-! for Static derive: Haskell2Xml !-}
+
+---------------------------------------------------------------------------
+
+data Access = Public | Private | Protected | Default
+   deriving ( Eq, Ord, Typeable )
+
+instance ToDoc Access where
+    toDoc a = case a of
+       Public -> text "public"
+       Private -> text "private"
+       Protected -> text "protected"
+       Default -> empty
+
+instance Reader Access where
+    reader = do my_reserved "public" ; return Public
+         <|> do my_reserved "private" ; return Private
+         <|> do my_reserved "protected" ; return Protected
+	 <|> do                           return Default
+
+{-! for Access derive: Haskell2Xml !-}
+
+---------------------------------------------------------------------------
+
+data Member = V Variable
+	 | M Method 
+	 | C Class
+    deriving ( Typeable )
+
+
+instance ToDoc Member where
+    toDoc ( C c ) =  toDoc c
+    toDoc ( V v ) =  toDoc v <> semi
+    toDoc ( M m ) =  toDoc m <> semi
+
+instance Reader Member where
+    reader =  do c <-     reader ;          return $ C c
+          <|> do m <- try reader ; my_semi; return $ M m
+          <|> do v <-     reader ; my_semi; return $ V v
+
+{-! for Member derive: Haskell2Xml !-}
+
+
+data Conf = Conf { max_arity :: Int
+		 , types :: [ Type ]
+		 , min_symbols :: Int
+		 , max_symbols :: Int
+		 , min_size :: Int
+		 , max_size :: Int
+		 }
+    deriving ( Typeable )
+
+conf :: Conf
+conf = Conf { max_arity = 3
+	    , types = read "[ int, boolean, char, String, Foo, Bar ]"
+	    , min_symbols = 4
+	    , max_symbols = 10
+	    , min_size = 5
+	    , max_size = 10
+	    }
+
+{-! for Conf derive: ToDoc, Reader, Haskell2Xml !-}
