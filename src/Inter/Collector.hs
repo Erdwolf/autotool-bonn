@@ -29,6 +29,8 @@ import qualified Type.Quiz
 -- import qualified Object.Quiz
 import qualified Palindrom.Plain
 
+import qualified Faktor.Faktor
+
 import qualified NFA.Convert
 import qualified NFA.Equiv.Challenger
 import qualified Exp.Convert
@@ -91,6 +93,9 @@ makers = [ Blank.make
          , Graph.TreeWidth.make
          , Graph.PartialKTree.make
          , Graph.PartialKTree.qmake
+
+         , Faktor.Faktor.make_fixed
+         , Faktor.Faktor.make_quiz
 	 ]
 
 

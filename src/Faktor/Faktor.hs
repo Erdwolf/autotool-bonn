@@ -5,7 +5,8 @@
 -- von Markus Kreuz  mai99byv@studserv.uni-leipzig.de
 
 module Faktor.Faktor (
-     Faktor (..)
+     , make_fixed 
+     , make_quiz
     ) where
 
 --  $Id$
@@ -14,43 +15,50 @@ import Challenger.Partial
 import Autolib.ToDoc
 import Autolib.Reporter
 import Autolib.Ana
-import Data.Typeable
 
--- import Number
--- import Iso
--- import System
+import Inter.Types
+import Inter.Quiz
 
+import Faktor.Type
+import Faktor.Quiz
+import qualified Faktor.Param
 
-data Faktor = Faktor deriving ( Show, Typeable )
+-------------------------------------------------------------------------------
 
--- instance Number Integer Integer where number = id
+instance Partial Faktor (Int,Integer) [Integer] where
 
-instance Partial Faktor Integer ( Integer, Integer ) where
-
-    describe Faktor x = vcat
-	   [ text "Gesucht sind Zahlen (y, z) mit y > 1, z > 1"
-	   , text "und y * z =" <+> toDoc x
+    describe Faktor (n,x) = vcat
+	   [ text $ foldl1 (++) [ "Gesucht sind " 
+                                , show n , " Zahlen x_1 .. x_" 
+                                , show n , " mit x_i > 1" ]
+	   , text ( foldl1 (++) [ "und product " , l , " =" ] ) <+> toDoc x
 	   ]
+           where l = "[ x_1 , ... , x_" ++ show n ++ " ]"
 
-    initial Faktor x = 
+    initial Faktor (_,x) = 
         let -- do something silly to get candidates of useful size
             b = 3
 	    xs = based b x
 	    (ys, zs) = splitAt (length xs `div` 2) xs
-	in  (unbased b ys, unbased b zs)
+	in  [unbased b ys, unbased b zs]
 
-    partial Faktor x (y, z) = do
-           -- assert (x > 1) $ text "Die Zahl soll > 1 sein."
-	   assert (y > 1 && z > 1) $ text "Beide Zahlen sollen > 1 sein."
+    partial Faktor (n,x) fs = do
+           assert (length fs == n) $ text $ foldl1 (++) 
+                      [ "Es sollen genau " , show n , " Zahlen sein." ]
+	   assert (all (>1) fs ) $ text "Alle Zahlen sollen > 1 sein."
 
-    total Faktor x (y, z) = do
-        let yz = y * z  
-        assert (x == yz) $ fsep
-     	                      [ text "Das Produkt der beiden Zahlen"
-			      , toDoc y, text "und", toDoc z
-			      , text "ist" , toDoc yz
-			      , text "und nicht", toDoc x
-			      ]
+    total Faktor (_,x) fs = do
+        let p = product fs
+        assert (x == p) $ fsep
+     	                  [ text "Das Produkt der Zahlen"
+			  , toDoc fs, text "ist" , toDoc p
+			  , text "und nicht", toDoc x
+			  ]
 
+-------------------------------------------------------------------------------
 
+make_quiz :: Make
+make_quiz = quiz Faktor Faktor.Param.p
 
+make_fixed :: Make
+make_fixed = direct Faktor (3::Int,1001::Integer)

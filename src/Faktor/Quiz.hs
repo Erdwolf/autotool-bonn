@@ -1,25 +1,15 @@
-module Faktor.Quiz 
-
-( make
-, fixed
-, Param (..)
-)
-
-where
+module Faktor.Quiz where
 
 --  $Id$
 
 import Faktor.Param
-import Faktor.Faktor
+import Faktor.Type
 import Faktor.Prim
 
 import Autolib.Util.Wort
-import Autolib.Util.Seed
+import Inter.Quiz
 
-import Util.Datei
-import Util.Cache
-
-import Inter.Types
+-------------------------------------------------------------------------------
 
 roll :: Param -> IO Integer
 roll p = do
@@ -29,6 +19,24 @@ roll p = do
     w <- someIO ps ( anzahl p )
     return $ product w
 
+instance Generator Faktor Param ( Int , Integer ) where
+    generator _ conf key = do
+       zahl <- roll conf
+       return ( anzahl conf , zahl )
+
+instance Project Faktor ( Int , Integer ) ( Int , Integer ) where
+    project _ = id
+
+
+-------------------------------------------------------------------------------
+-- import Autolib.Util.Seed
+
+-- import Util.Datei
+-- import Util.Cache
+
+-- import Inter.Types
+
+{-
 make :: Param -> IO Variant
 make p = return 
        $ Variant
@@ -65,3 +73,4 @@ fixed auf ver x = return $ Variant
              , gen = \ key -> do
                    return $ return x
 	     }
+-}
