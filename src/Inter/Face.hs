@@ -172,20 +172,19 @@ iface variants env = do
 	          evaluate ( problem v ) i par2
 
           let ans = 
-				  if isFirstRun
-				  then noHtml
-				  else
-				      p << "Das Korrekturprogramm sagt:"
-							+++ p << pre << render com 
+		  if isFirstRun
+		  then noHtml
+		  else
+		      p << "Das Korrekturprogramm sagt:"
+					+++ p << pre << render com 
 
 
           -- bewertung in datenbank und file
           log <- if isFirstRun 
-				  then return noHtml
-	              else 
-				      do 
-					  msg <- bank par2 res 
-					  return $ p << "Eintrag ins Logfile:" +++ p << pre << msg
+	      then return noHtml
+              else do 
+		  msg <- bank par2 res 
+		  return $ p << "Eintrag ins Logfile:" +++ p << pre << msg
 
 
 		  -- Höhe der Eingabe-Form berechnen
@@ -193,57 +192,59 @@ iface variants env = do
 
 		  -- bewertung ausgeben, bzw. zur Lösungseingabe auffordern
           let status = case res of
-					   Just s -> 
-						   p << bold << ( "Korrekte Lösung, Size: " ++ show s )
-					   Nothing -> 
-						   p << bold << ( 
-								 if isFirstRun 
-								 then "Hier Lösung eingeben:"
-								 else "Lösung ist nicht korrekt. Nochmal:" 
+		   Just s -> 
+			   p << bold << ( "Korrekte Lösung, Size: " ++ show s )
+		   Nothing -> 
+			   p << bold << ( 
+					 if isFirstRun 
+					 then "Hier Lösung eingeben:"
+					 else "Lösung ist nicht korrekt. Nochmal:" 
 
-								 )
-						   +++ textarea ( primHtml $ P.input par2  ) 
-								! [ name "input"
-								  , rows $ show $ height + 2
-								  , cols $ show $ P.input_width par2
-								  ]
-						   +++ br 
-						   +++ submit "submit" "submit" +++ " " 
-						   +++ submit "Beispiel" "Beispiel"
+					 )
+			   +++ textarea ( primHtml $ P.input par2  ) 
+					! [ name "input"
+					  , rows $ show $ height + 2
+					  , cols $ show $ P.input_width par2
+					  ]
+			   +++ br 
+			   +++ submit "submit" "submit" +++ " " 
+			   +++ submit "Beispiel" "Beispiel"
 
 
           return $ page par2 $ inst +++ motd +++ log +++ status +++ ans
 
 ------------------------------------------------------------------------
 --
--- Die HTML Seite und ihre Bestandteile
+-- Die HTML-Seite und ihre Bestandteile
 --
 page par msg = 
-	let 
+    let 
 	heading = h2 << "Autotool CGI Inter.Face"
 	pref = preface par 
 	var = varselector par 
 	sub = submit "change" "change" 
-	chg = "  Achtung, verwirft Lösung!!"
+	chg = primHtml "  Achtung, verwirft Lösung!!"
     in  header << thetitle << "Inter.Face"
-            +++ body ( form ( heading +++ hr +++ pref +++ sub +++ chg +++ hr +++ msg )
-					   ! [ Text.Html.action "Face.cgi"
-						 , method "POST" ]
-					 )
+            +++ body ( form ( foldr1 (+++) 
+			       [ heading , hr , pref , sub , chg , hr , msg ] )
+				   ! [ Text.Html.action "Face.cgi"
+				 , method "POST" ]
+		 )
          
 preface par = 
 	let var = varselector par in
     table << 
-		  aboves [ besides $  
-				   txtf' "10" "matrikel" ( P.matrikel par )
-				   ++ pwdf "passwort" ( P.passwort par )
-				 , besides $ var ++ [ td ! [ colspan 2 ] << "Bitte hier wählen ODER unten eingeben." ]
---				 , besides [ td << h4 << stringToHtml "Quick Start" ]
-				 , besides $  
-				   txtf' "10" "problem" ( P.problem par )
-				   ++ txtf' "5" "aufgabe" ( P.aufgabe par )
-				   ++ txtf' "5" "version" ( P.version par )
-				 ]
+	  aboves [ besides $  
+   	   txtf' "10" "matrikel" ( P.matrikel par )
+   	   ++ pwdf "passwort" ( P.passwort par )
+   	 , besides $ var ++ [ td ! [ colspan 2 ] 
+			      << "Bitte hier wählen ODER unten eingeben." ]
+-- 		 , besides [ td << h4 << stringToHtml "Quick Start" ]
+   	 , besides $  
+   	      txtf' "10" "problem" ( P.problem par )
+   	   ++ txtf' "5" "aufgabe" ( P.aufgabe par )
+   	   ++ txtf' "5" "version" ( P.version par )
+   	 ]
 
 varselector par =
     let 
