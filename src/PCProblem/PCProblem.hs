@@ -13,11 +13,13 @@ module PCProblem.PCProblem (
 
 import FiniteMap
 import PCP.Type
---import PCP.Util
+
 import Challenger
 import ToDoc
 import Set
 import System
+
+import List (isPrefixOf)
 
 
 data PCProblem = PCProblem deriving Show
@@ -62,6 +64,26 @@ instance (ToDoc PCP, Show PCP, Read PCP
 			, text "Der Rest des unteren Wortes ist:" <+> toDoc rechtsrest
 			]
 		 )
+
+
+-----------------------------------------------------------------------
+
+instance 
+    Partial PCProblem ( PCP pcp ) folge where
+
+    initial PCProblem ( PCP pcp ) = 
+        []
+    partial PCProblem ( PCP pcp ) lsg = do
+        let (l,r) = lr pcp folge
+        assert ( isPrefixOf l r || isPrefixOf r l )
+	    $ text "Ist das eine Wort ein Präfix des anderen?"
+
+instance  Step PCProblem ( PCP pcp ) Folge ( Select Int ) where
+        step Vertex ( g, k ) xs ( Pick x ) =
+            xs ++ [x]
+
+-----------------------------------------------------------------------
+
 
     -- Erzeugt HTML-File zur Visualisierung
     getInstanz PCProblem pcp folge dateiName =
