@@ -48,7 +48,7 @@ empty = Param { matrikel = ""
               , passwort = Passwort.empty
               , input    = ""
               , ident    = ""
-              , input_width = 65
+              , input_width = 80
               , variants = []
               , variante = error "empty.variante"
 

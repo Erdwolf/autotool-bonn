@@ -103,16 +103,16 @@ iface :: [ Variant ] -> [(String, String)] -> IO Html
 iface variants env = do
 
     -- alle Inputs aus Env. holen
-    let par0 = 
+    let par0 = case head variants of 
         -- erste Variante ist Default Variante
-		case head variants of 
-			Inter.Types.Variant var -> 
-			-- default Parameter füllen, bekommt man beim start
-				let def = P.empty  { P.problem = show ( Inter.Types.problem var )
-							   , P.aufgabe = Inter.Types.aufgabe var
-							   , P.version = Inter.Types.version var
-							   }
-				in Inter.Env.get_with env def
+	     Inter.Types.Variant var -> 
+	-- default Parameter füllen, bekommt man beim start
+		let def = P.empty  
+			{ P.problem = show ( Inter.Types.problem var )
+			, P.aufgabe = Inter.Types.aufgabe var
+			, P.version = Inter.Types.version var
+			}
+		in Inter.Env.get_with env def
 
     motd <- Inter.Motd.contents
 

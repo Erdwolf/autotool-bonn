@@ -8,6 +8,11 @@ where
 
 -- $Id$
 
+{- so sehen die dinger aus:
+
+Fri Nov 28 18:33:49 CET 2003 ( 2425 ) cgi-318 ( 318 ) Ein-Gleich : OK # Size: 7 
+-}
+
 import Scorer.Util
 
 import Data.FiniteMap
@@ -16,11 +21,12 @@ import Control.Monad ( guard )
 -- das ist die information zu jeweils einer studentischen einsendung
 data Einsendung = Einsendung
           { size     :: Int
-		  , date     :: [Int]
-		  , matrikel :: Int
-		  , auf	     :: String
-		  , pid	     :: String
-		  }	deriving (Eq,Ord)
+	  , date     :: [Int]
+	  , time     :: String -- original time entry
+	  , matrikel :: Int
+	  , auf	     :: String
+	  , pid	     :: String
+	  }	deriving (Eq,Ord)
 
 instance Show Einsendung where
     show i = unwords 
@@ -65,7 +71,8 @@ instance Read Einsendung where
 	guard $ ok == "OK"
 
 	let e = Einsendung
-	      { date = [ read     $ field 6 date'            -- Jahr
+	      {	time = unwords $ take 6 wl
+              , date = [ read     $ field 6 date'            -- Jahr
                        , monthNum $ field 2 date'            -- Monat
                        , read     $ field 3 date'            -- Tag
                        ]

@@ -16,13 +16,21 @@ store p mres = do
     let flag = isJust mres
     pid <- if flag then fmap show $ Posix.getProcessID 
 	           else return "latest"
-    let d =  Datei { pfad = [ "autotool", "done"
+    schreiben ( location p pid flag ) $ P.input p
+    return $ pid
+
+load :: P.Type -> String -> Bool -> IO String
+load p pid flag = do
+    lesen ( location p pid flag )
+    
+
+location :: P.Type -> String -> Bool -> Datei
+location p pid flag =  
+    Datei { pfad = [ "autotool", "done"
 			    , P.aufgabe p, P.version p
 			    , P.matrikel p
 			    , if flag then "OK" else "NO"
 			    ]
                    , name = pid
 		   , extension = "input" 
-		   }
-    schreiben d $ P.input p
-    return $ pid
+		   } 

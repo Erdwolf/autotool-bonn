@@ -5,7 +5,7 @@ module Inter.Bank where
 import SQLqueries
 import qualified Posix
 
-import Time
+import System.Time
 import qualified Inter.Param as P
 import qualified Reporter.Result
 
@@ -20,16 +20,11 @@ bank p res = do
     pid <- Inter.Store.store p res
 
     time <- zeit
-    let msg = unwords [ time
-		      , "(",  pid, ")"
-		      , "cgi-" ++ P.matrikel p
-		     , "(", P.matrikel p, ")"
-		      , P.subject p , ":"
-		     , Reporter.Result.result_string res
-		     , "\n"
-		     ]
+    let msg = logline  time pid p res
 
-    let logcgi = Datei	{ pfad = [ "autotool", "log" ]
+
+    d <- datum
+    let logcgi = Datei	{ pfad = [ "autotool", "log" ] ++ d
 			, name = "CGI"
 			, extension = ""
 			}
@@ -38,16 +33,28 @@ bank p res = do
     return msg
 
 
--- wer braucht das? soll Util.Datei benutzen!
+logline time pid p res = unwords [ time
+		      , "(",  pid, ")"
+		      , "cgi-" ++ P.matrikel p
+		     , "(", P.matrikel p, ")"
+		      , P.subject p , ":"
+		     , Reporter.Result.result_string res
+		     , "\n"
+		     ]
 
--- home :: FilePath -> IO FilePath
--- absolut machen ( $HOME davor )
--- home fp = do
---    user <- Posix.getEffectiveUserName
---    return $ "/home/" ++ user ++ "/" ++ fp
+
+datum :: IO [ String ]
+datum = do
+    clock <- getClockTime
+    cal <- toCalendarTime clock    
+    return [ show $ ctYear cal
+	   , show $ ctMonth cal
+	   , show $ ctDay cal
+	   ]
 
 zeit :: IO String
 zeit = do
     clock <- getClockTime
     cal <- toCalendarTime clock    
     return $ calendarTimeToString cal
+

@@ -39,8 +39,11 @@ score :
 	$(GHC_COMMAND) $(EXTRA_PACKS)  \
 		Scorer/Main.hs -o Scorer/ScorerDB
 
-# $(DIRS):
-# 	$(MAKE) -C $@
+rescore :
+	$(GHC_COMMAND) $(EXTRA_PACKS)  \
+		Inter/Rescore.hs -o Inter/Rescore
+
+#########################################################################
 
 tags :
 	( find . -name "*hs" -print && find . -name "*drift" -print ) \
