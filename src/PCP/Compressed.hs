@@ -6,17 +6,21 @@ module PCP.Compressed where
 
 import PCP.Type
 import PCP.DFS
+import PCP.Form
 
 import PCP.Reach
 
 import Autolib.Schichten
 import Autolib.Util.Splits
+import Autolib.Util.Sort
 import Autolib.Sets
 import Autolib.ToDoc
 import Autolib.Util.Hide
+import Autolib.Util.Wort
 
 import Control.Monad
 import Data.Ratio
+import IO
 
 m :: Int
 m = 3
@@ -43,50 +47,88 @@ expand w = do
 
 
 next :: Ord c
-     => SRS c -> ([c], Hide[[c]]) -> Set( [c], Hide [[c]] )
-next srs (w, Hide hist) = mkSet $ do
+     => SRS c 
+     -> ( [c] -> Bool ) -- ^ prefix ok?
+     -> ([c], Hide[[c]]) 
+     -> Set( [c], Hide [[c]] )
+next srs ok (w, Hide hist) = mkSet $ do
     (pre, midpost) <- splits w
+    guard $ ok pre
     (l, r) <- srs
     let (mid, post) = splitAt (length l) midpost
     guard $ mid == l
     return ( pre ++ r ++ post, Hide $ w : hist )
 
+leftmost_next :: Ord c
+    =>  SRS c
+    -> ( [c] -> Bool )
+    -> ([c], [c], Hide [[c]])
+    -> Set([c], [c], Hide [[c]] )
+leftmost_next srs ok (done, todo, Hide hist) = mkSet $ do
+    let w = done ++ todo
+    (pre, midpost) <- splits todo
+    guard $ ok $ done ++ pre
+    (l, r) <- srs
+    let (mid, post) = splitAt (length l) midpost
+    guard $ mid == l
+    return ( done ++ pre, r ++ post, Hide $ w : hist )
+
+leftmost srs ok start = do
+    (here, there, h) <- bfs (leftmost_next srs ok) ([], start, Hide [])
+    return ( here ++ there, h )
+    
+runit :: IO ()
+runit = sequence_ $ do
+    n <- [0 .. ]
+    w' <- alle [0, 1] n
+    let w = [0] ++ w' ++ [1]
+	spiegel = reverse . map ( 1 - )
+    guard $ w <= spiegel w
+    return $ do
+         line
+	 pft ("parameter", w)
+         let f = concat $ map show w
+	 pft ("instance", form f)
+	 blank
+         let ntd @ (n, t, d) : _ = topdown w
+	 pft $ ntd
+         let l = length w - 1
+	 print ("form", look tops $ analyze l t, look bots $ analyze l d, f)
+	 line
 
 
-test w = layers (expand w) (init w) (tail w) 
-{-
-layers :: SRS Int -- ^ expanding
-       -> [Int] -- ^ top
-       -> [Int] -- ^ bot
-       -> [(Int,[Int],[Int])]
--}
-layers srs top bot = do
-    let tops = schichten (next srs) (top, Hide [])
-        bots = schichten (next srs) (bot, Hide [])
-    (k, (t, b)) <- zip [0..] $ zip tops bots
-    let b' = mkSet $ do
-           (w', Hide hw') <- setToList b
-	   w'' <- equivs w'
-           return (w'', Hide $ w' : hw')
-    return (k, intersect t b')
+printf x = do print x ; hFlush stdout
+
+pft :: ToDoc a => a -> IO ()
+pft = printf . toDoc
+
+line = putStrLn $ "*****************************************"
+blank = putStrLn ""
 
 topdown conf = do
     let start = init conf ; end = tail conf
     let srs = inverse $ expand conf
-    w <- fore conf start
+        -- restrict derivations
+        ok pre = ( length pre `mod` (length conf - 1) ) <= 1
+    (w, Hide future) <- leftmost (expand conf) ok start
     w' <- equivs w
  
     let ns = numbers srs (w', end)
+
     guard $ and $ do
          n <- ns ; return $ 1 == denominator n
+    guard $ and $ do
+         n <- ns ; return $ 0 <= numerator n
 
-    (w'', Hide hist) <- bfs -- dfs 
-	   ( next srs) (w', Hide [] )
+    let ok pre = 0 == (1 + length pre) `mod` (length conf - 1)
+    (w'', Hide hist) <- bfs ( next srs (const True) ) (w', Hide [] )
     guard $ w'' == end
-    (w0, Hide fute) <-  bfs -- dfs 
-	   ( next srs ) (w, Hide [] )
-    guard $ w0 == start
-    return ( start : fute, reverse $ w'' : hist)
+
+    return ( ns, reverse $ w : future, reverse $ w'' : hist)
+
+-- TODO: should go into ToDoc/*
+instance (Integral a, ToDoc a) => ToDoc (Ratio a) where
+    toDoc r = fsep [ toDoc (numerator r), text "%", toDoc (denominator r) ]
 
 -- | compute successore more effectively
 fore w this = do
@@ -105,7 +147,7 @@ bruteforce w d = do
     let srs = expand w ++ inverse (expand w)
         nach w = mkSet $ do
              guard $ length w <= d
-             (w', Hide hist) <- setToList $ next srs (w, Hide [])
+             (w', Hide hist) <- setToList $ next srs (const True) (w, Hide [])
              equivs w'
     t <- bfs nach (init w) 
     -- guard $ t == tail w
@@ -126,4 +168,43 @@ equiv w w' = or $ do
     let vu = v ++ map (down . pred) u
     let ds = zipWith (-) vu w'
     return $ 1 == cardinality (mkSet ds)
+
+-------------------------------------------------------------------------
+
+common :: Eq c => [c] -> [c] -> Int
+common (x : xs) (y : ys) | x == y = succ $ common xs ys
+common _ _ = 0
+
+analyze :: Int -> [[Int]] -> [(Int,Int)]
+analyze l ws = do
+    (u, v) <- zip ws (tail ws)
+    let c = common u v
+    let (d, m) = divMod c l
+    return ( d, if m > 1 then m - l else m )
+
+look :: Eq a
+     => [a] -> a -> Either a Int
+look ys x = 
+    case do (i, y) <- zip [0..] ys ; guard $ x == y ; return i of
+        [i] -> Right i
+        _   -> Left x
+
+tops = [ [(0,0),(0,0),(0,1),(0,1),(1,1),(2,1)] -- 0
+       , [(0,0),(0,0),(0,1),(1,0),(3,0),(4,0)] -- 1
+       , [(0,0),(0,0),(0,1),(1,1),(2,1)]       -- 2
+       , [(0,0),(0,0),(0,1),(1,1)]             -- 3
+       , []                                    -- 4
+       ]
+
+bots = [ [(1,1),(1,1),(1,1),(0,1)]                   -- 0
+       , [(2,-1),(2,-2),(2,-2),(2,-2),(1,-1),(0,-1)] -- 1
+       , [(2,-2),(2,-2),(2,-2),(1,-1),(0,-1)]        -- 2
+       , [(2,-2),(2,-2),(2,-2),(1,-2),(0,-2),(0,-2)] -- 3
+       , [(2,1),(2,1),(2,1),(1,1),(0,1),(0,1)]       -- 4
+       , []                                          -- 5
+       ]
+
+-- patterns occuring: 
+--   (2/2) for  00x11  and 01x01
+--   (0,1) for  00x01  (iso. to 01x11 ?)
 
