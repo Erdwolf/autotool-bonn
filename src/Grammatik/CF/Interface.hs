@@ -1,9 +1,10 @@
-module Grammatik.CF.Check where
+module Grammatik.CF.Interface where
 
 -- $Id$
 
 import Language.Type
 import Grammatik.Type
+import qualified Grammatik.Checker as C
 
 import qualified Grammatik.CF.Instance.Config as I
 import qualified Grammatik.CF.Problem.Config as P
@@ -32,6 +33,7 @@ instance Partial CFG I.Config Grammatik where
 	   [ text "Gesucht ist eine kontextfreie Grammatik für die Sprache"
 	   , nest 4 $ text $ abbreviation $ I.lang i
 	   , text "über dem Alphabet" <+> toDoc ( alphabet $ I.lang i )
+	   , C.condition $ I.typ i
 	   ]
     initial  p i = Grammatik 
 	   { terminale = alphabet $ I.lang i
@@ -43,8 +45,8 @@ instance Partial CFG I.Config Grammatik where
 	   }
 
     partial p i b = do
-          typ2 b
-          I.typ i b
+          C.run typ2 b
+          C.run ( I.typ i ) b
 
     total p i b = do
           cf_yeah_noh i b
@@ -70,8 +72,9 @@ make0 c = Var { problem = CFG
 		 n <- [0 .. ]
 		 alle ( setToList $ alphabet l ) n
 		 
-          here   <- samples      l w n
-          there  <- anti_samples l w n
+          -- watch argument ordering! -- TODO: use records instead
+          here   <- samples      l n w
+          there  <- anti_samples l n w
           let (yeahs, nohs) = partition (contains l) 
 			    $ nub 
 			    $ klein ++ here ++ there

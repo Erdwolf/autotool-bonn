@@ -24,6 +24,7 @@ module Grammatik.Hierarchie
 where
 
 import Grammatik.Type
+import qualified  Grammatik.Checker as C
 import Wort
 
 import Reporter
@@ -39,11 +40,8 @@ import Maybe
 
 ---------------------------------------------------------------------------
 
-
-
-typ0 :: Grammatik -> Reporter ()
-typ0 g = do
-    inform $ text "Ist das eine Typ-0-Grammatik?"
+typ0 :: C.Type
+typ0 = C.make "Typ0" ( text "Die Grammatik soll vom Typ-0 sein." ) $ \ g -> do
 
     let us = filterSet ( \ (l, r) -> 
 	    any ( not . ( `elementOf` ( terminale g `union` nichtterminale g ) ) ) 
@@ -70,9 +68,8 @@ typ0 g = do
     
 ---------------------------------------------------------------------------
 
-monoton :: Grammatik -> Reporter ()
-monoton g = do 
-    inform $ text "Ist das eine monotone Grammatik?"    
+monoton :: C.Type 
+monoton = C.make "Monoton" ( text "Die Grammatik soll monoton sein." ) $ \ g -> do
 
     let (eps, noeps) = partition ( null . snd ) $ rules g
 	weps = mkSet $ filter ((/= [startsymbol g]) . fst) eps
@@ -118,9 +115,8 @@ kontexte g (lhs, rhs) = do
     guard $ post == hinten
     return $ ((pre, post), (x, mitte))
 
-kontextsensitiv :: Grammatik -> Reporter ()
-kontextsensitiv g = do
-    inform $ text "Ist das eine kontextsensitive Grammatik?"
+kontextsensitiv :: C.Type
+kontextsensitiv = C.make "CS" ( text "Die Grammatik soll kontextsensitiv sein." ) $ \ g -> do
     let zs = filterSet (null . kontexte g ) $ regeln g
     verboten ( not $ isEmptySet zs ) 
 	     "haben nicht die Form  c V d -> c w d:"
@@ -128,9 +124,9 @@ kontextsensitiv g = do
 
 ---------------------------------------------------------------------------
 
-kontextfrei :: Grammatik -> Reporter ()
-kontextfrei g = do
-    inform $ text "Ist das eine kontextfreie Grammatik?"
+kontextfrei :: C.Type
+kontextfrei = 
+  C.make "CF" ( text "Die Grammatik soll kontextfrei sein." ) $ \ g -> do
     let lang = filterSet ( (> 1) . length . fst ) $ regeln g
     verboten ( not $ isEmptySet lang ) 
 	     "haben nicht die Form V -> w:"
@@ -138,9 +134,8 @@ kontextfrei g = do
 
 -----------------------------------------------------------------------------
 
-linear :: Grammatik -> Reporter ()
-linear g = do
-    inform $ text "Ist das eine lineare Grammatik?"
+linear :: C.Type
+linear = C.make "Lin" ( text "Die Grammatik soll linear sein." ) $ \ g -> do
     let schlecht = filterSet 
 	   ( (>1) . length . filter (`elementOf` nichtterminale g) . snd ) 
 	   $ regeln g
@@ -150,9 +145,8 @@ linear g = do
 
 ------------------------------------------------------------------------------
 
-rechtslinear :: Grammatik -> Reporter ()
-rechtslinear g = do
-    inform $ text "Ist das eine rechtslineare Grammatik?"
+rechtslinear :: C.Type
+rechtslinear = C.make "RightLin" ( text "Die Grammatik soll rechtslinear sein." ) $ \ g -> do
     let schlecht 
 	  = filterSet ( not . ( `elementOf` nichtterminale g ) . last . snd ) 
 	  $ filterSet ( (> 0) . length . filter ( `elementOf` nichtterminale g ) . snd ) 
@@ -163,9 +157,8 @@ rechtslinear g = do
 
 ------------------------------------------------------------------------------
 
-linkslinear :: Grammatik -> Reporter ()
-linkslinear g = do
-    inform $ text "Ist das eine linkslineare Grammatik?"
+linkslinear :: C.Type
+linkslinear = C.make "LeftLin" ( text "Die Grammatik soll linkslinear sein." ) $ \ g -> do
     let schlecht 
 	  = filterSet ( not . ( `elementOf` nichtterminale g ) . head . snd ) 
 	  $ filterSet ( (> 0) . length . filter ( `elementOf` nichtterminale g ) . snd ) 
@@ -176,26 +169,23 @@ linkslinear g = do
 
 ---------------------------------------------------------------------------
 
-epsfrei :: Grammatik -> Reporter ()
-epsfrei g = do
-    inform $ text "Ist das eine Epsilon-freie Grammatik?"
+epsfrei :: C.Type
+epsfrei = C.make "EpsFree" ( text "Die Grammatik soll Epsilon-frei sein." ) $ \ g -> do
     let schlecht = filterSet ( \ (lhs, rhs) -> null rhs ) $ regeln g
     verboten ( not $ isEmptySet schlecht )  
 	 "sind verboten:"
 	 schlecht
 
-kettenfrei :: Grammatik -> Reporter ()
-kettenfrei g = do
-    inform $ text "Ist das eine kettenfreie Grammatik?"
+kettenfrei :: C.Type
+kettenfrei = C.make "ChFree" ( text "Die Grammatik soll kettenfrei sein." ) $ \ g -> do
     let schlecht = filterSet ( \ (lhs, rhs) -> 
 	 length rhs == 1 && head rhs `elementOf` nichtterminale g ) $ regeln g
     verboten ( not $ isEmptySet schlecht ) 
 	 "sind verboten:"
 	 schlecht
 
-chomsky :: Grammatik -> Reporter ()
-chomsky g = do
-    inform $ text "Ist das eine Grammatik in Chomsky-Normalform?"
+chomsky :: C.Type
+chomsky = C.make "CNF" ( text "Die Grammatik soll in Chomsky-Normalform sein." ) $ \ g -> do
     let ok rhs = ( length rhs == 1 && head rhs `elementOf` terminale g )
               || ( length rhs == 2 && and [ x `elementOf` nichtterminale g 
 					  | x <- rhs ] )
@@ -204,9 +194,8 @@ chomsky g = do
 	 "sind nicht von der Form N -> T oder N -> N N"
 	 schlecht
 
-greibach :: Grammatik -> Reporter ()
-greibach g = do
-    inform $ text "Ist das eine Grammatik in Greibach-Normalform?"
+greibach :: C.Type
+greibach = C.make "Greibach" ( text "Die Grammatik soll in Greibach-Normalform sein." ) $ \ g -> do
     let ok rhs = ( length rhs > 0 
 		   && head rhs `elementOf` terminale g
 		   && and [ x `elementOf` nichtterminale g | x <- tail rhs ]
@@ -226,24 +215,30 @@ verboten f msg d = do
 	 ]
     inform $ text "Ja." 
 
-final :: String -> Reporter () -> Reporter ()
-final msg r = do
-      inform $ text "Ist das eine"  <+> text msg <> text "?"
-      f <- wrap r
+combine :: String -> [ C.Type ] -> C.Type
+combine msg cs = C.make msg 
+    ( text "Die Grammatik soll vom"  <+> text msg <+> text "sein." ) $ \ g -> do
+      f <- wrap $ nested 4 $ sequence_ $ do c <- cs ; return $ C.run c g 
+      let answer f = fsep 
+	    [ text "Das ist", text (if f then "" else "k" ) <>  text "eine" 
+	    , text msg <> text "-Grammatik."
+	    ]
       when ( isNothing f ) $ reject 
-	     $ text "Das ist keine" <+> text msg <> text "."
-      inform $ text "Das ist eine"  <+> text msg <> text "."
+	     $ answer False 
+      inform $ answer True
       newline
 
 ----------------------------------------------------------------------------
 
-typ1 g = final "Typ-1-Grammatik"
-       $ sequence_ [ typ0 g, monoton g ] 
+typ1 = combine "Typ1"
+       $ [ typ0, monoton ] 
        
-typ2 g = final "Typ-2-Grammatik"
-       $ sequence_ [ typ0 g, kontextfrei g ]
+typ2 = combine "Typ2"
+       $ [ typ0, kontextfrei ]
 
-typ3 g = final "Typ-3-Grammatik"
-       $ sequence_ [ typ0 g, kontextfrei g, linear g, rechtslinear g ]
+typ3 = combine "Typ3"
+       $ [ typ0, kontextfrei, linear, rechtslinear ]
 
-immergut g = return ()
+immergut :: C.Type
+immergut = C.make "" empty $ \ g -> return ()
+

@@ -1,4 +1,4 @@
-module Grammatik.Chomsky where
+module Grammatik.CF.Chomsky where
 
 -- $Id$
 

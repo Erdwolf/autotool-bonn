@@ -6,7 +6,7 @@ import Grammatik.Type
 import Grammatik.CF.Instance.Config
 import Grammatik.Check
 
-import qualified Grammatik.Chomsky as C
+import qualified Grammatik.CF.Chomsky as C
 
 import Grammatik.CF.Epsfrei
 import Grammatik.CF.Kettenfrei
@@ -54,7 +54,7 @@ cf_yeah_noh c g = do
 
     inform $ vcat
 	   [ text "Ich prüfe, ob diese Wörter der Zielsprache"
-	   , toDoc yeah
+	   , nest 4 $ toDoc yeahs
 	   , text "von Ihrer Grammatik erzeugt werden."
 	   ]
 
@@ -72,7 +72,7 @@ cf_yeah_noh c g = do
 
     inform $ vcat
 	   [ text "Ich prüfe, ob diese Wörter aus dem Komplement der Zielsprache"
-	   , toDoc noh
+	   , nest 4 $ toDoc nohs
 	   , text "tatsächlich NICHT von Ihrer Grammatik erzeugt werden."
 	   ]
 

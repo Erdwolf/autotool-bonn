@@ -7,7 +7,11 @@ module Grammatik.CF.DPL_CYK
 where
 
 -- $Log$
--- Revision 1.2  2003-11-25 09:49:49  joe
+-- Revision 1.3  2003-11-25 11:33:59  joe
+-- Checker umgestellt
+-- Chomsky nach subdir CF/
+--
+-- Revision 1.2  2003/11/25 09:49:49  joe
 -- aufgaben zu grammatiken
 --
 -- Revision 1.1  2003/11/25 08:21:09  joe
@@ -28,7 +32,7 @@ where
 
 
 
-import Grammatik.Chomsky
+import Grammatik.CF.Chomsky
 
 
 -- eins der beiden auswählen:
