@@ -37,8 +37,9 @@ iface = do
     guard $ tutor
 
     open btable
-    ( action, _ ) <- selector_submit_click "sel" "zeige" Nothing
-           [ ("Resultate", resultate vnr) 
+    ( action, _ ) <- selector_submit_click "zeige" Nothing
+           [ ("Resultate (mandatory)", resultate vnr True ) 
+           , ("Resultate (alle)"     , resultate vnr False) 
 	   , ("Studenten", studenten vnr)
 	   ]
     action
@@ -47,24 +48,27 @@ iface = do
 
 studenten vnr = do
     t <- io $ Control.Vorlesung.DB.teilnehmer vnr
-    ( mnr, _ ) <- selector_submit_click "pick" "bearbeite" Nothing $ do
+    ( mnr, _ ) <- selector_submit_click "bearbeite" Nothing $ do
         (mnr, v, n) <- sortBy (\(m,v,n) -> n) $ map snd t
         let s = unwords [ toString mnr , toString v, toString n ]
         return (s, mnr)
     close -- btable
-    [ stud ] <- io $ Control.Student.DB.get mnr
+    [ stud ] <- io $ Control.Student.DB.get_mnr mnr
     Control.Student.CGI.edit stud
     
 --------------------------------------------------------------------------
 
-resultate vnr = do
+resultate vnr only_mandatory = do
     close -- btable
     t <- io $ Control.Vorlesung.DB.teilnehmer vnr
     let fmt = listToFM t -- snr to (mnr, vorname,  name)
 
-    aufs <- io $ Control.Aufgabe.DB.get ( Just vnr ) False
+    aufs <- io $ Control.Aufgabe.DB.get ( Just vnr )
     -- anr to name
-    let fma = listToFM $ do auf <- aufs ; return ( A.anr auf, A.name auf )
+    let fma = listToFM $ do 
+	   auf <- aufs
+	   guard $ only_mandatory <= ( A.status auf == Mandatory )
+	   return ( A.anr auf, A.name auf )
 
     items <- sequence $ do
         auf <- aufs
@@ -86,6 +90,7 @@ resultate vnr = do
 	return $ plain $ case lookupFM fma anr of
 	    Just name -> toString name
 	    Nothing   -> show anr
+    plain "total"
     close -- row
     sequence_ $ do
         snr <- setToList $ snrs
@@ -96,13 +101,21 @@ resultate vnr = do
 	return $ do
 	    open row 
 	    plain mnr ; plain vorname ; plain name
-	    sequence_ $ do
+	    nums <- sequence $ do
 	        anr <- setToList $ anrs
+                let result = lookupFM stud_aufg (snr, anr) 
 		return $ do
-		     plain $ case lookupFM stud_aufg (snr, anr) of
+		     plain $ case result of
 		         Just ( Oks o, Nos n ) -> show (o, n)
 		         Nothing -> "-"
+		     return $ case result of
+			 Just ( Oks o, _ ) | o > 0 -> 1
+			 _                         -> 0
+
+            plain $ show $ sum nums
             close -- row
+
+        
     close -- btable
 
 
