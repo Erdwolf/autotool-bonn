@@ -1,4 +1,4 @@
-HC=			ghc
+HC=			ghc-6.0
 HC_SPEC_FLAGS= -fglasgow-exts		# -cpp -package posix -package data
 HCLOADFLAGS=
 
@@ -8,7 +8,7 @@ OPT=
 
 HCFLAGS=	$(OPT) $(HC_SPEC_FLAGS) $(HINCLUDES)
 
-HMAKE=		ghc --make 			# hmake
+HMAKE=		ghc-6.0 --make 			# hmake
 HMAKEFLAGS=	$(HCFLAGS) $(HINCLUDES)
 HINCLUDES=	-i../wash -package"HToolkit" -package"lang"
 # HINCLUDES=	-i../wash -i../HToolkit -package lang

@@ -26,8 +26,11 @@ myconnect = connect mysqlhost mysqldb mysqluser mysqlpasswd
 
 -- TODO:
 -- Schluessel zum Studenten nur noch SNr nicht mehr Mat
+-- Email-Validierung
 
+-- ========================================
 -- DB Helper
+
 -- Header extrahieren aus SQL
 showColTypes :: Statement -> [ String ]
 showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
@@ -96,9 +99,12 @@ insertNewStudentDB vnm nme mat eml ps1 =
 	return ()
 
 
-
--- Passt mnr <-> passwort , passwort = Nothing -> ohne Kontrolle
--- return Vornamen, Namen, Email, Status
+--
+-- Login des Studenten Version 1
+--
+-- Passt mnr <-> passwort 
+-- Input: 	Matrikelnr, passwort (= Nothing -> ohne Kontrolle)
+-- Output: 	IO [ (Vornamen, Namen, Email, Status) ] oder [] bei Fehler
 checkPasswdMNrDB :: Maybe String -> String -> IO [ ( String , String , String , String ) ]
 checkPasswdMNrDB maybePass mnr =
 	do
@@ -127,7 +133,12 @@ checkPasswdMNrDB maybePass mnr =
 	   disconnect conn
 	   return inh
 
--- liefert IO Maybe SNr zurück, wenn (mnr,pass) in DB
+--
+-- Login des Studenten Version 2
+--
+-- Input: 	Matrikelnr., Passwort
+-- Output: 	IO Just SNr zurück, wenn (mnr,pass) in DB
+--
 loginDB :: String -> String -> IO (Maybe String)
 loginDB mnr pass =
 	do
@@ -149,8 +160,13 @@ loginDB mnr pass =
 	   return $ if null inh then Nothing else Just $ inh !! 0
 
 
--- Registrierung Vorabcheck auf Duplikate in Mnr, Email
--- return ( mnr Duplikat :: Bool , email Duplikat ::Bool)
+-- 
+-- Existiert mat oder email in DB?
+-- 
+-- Benutzt bei Registrierung als Vorabcheck auf Duplikate in Mnr, Email
+-- Input: 	Matrikelnr., Email-Adresse
+-- Ouput: 	( mnr Duplikat :: Bool , email Duplikat ::Bool)
+--
 duplMatOrEmailDB :: String -> String -> IO ( Bool , Bool )
 duplMatOrEmailDB mat eml = 
 	do 
@@ -177,7 +193,12 @@ duplMatOrEmailDB mat eml =
 	   return mORe
 
 
--- Alle mgl. Vorlesungen 
+--
+-- Liefert alle mgl. Vorlesungen 
+--
+-- Input:
+-- Output:	IO [ Vorlesungsname ]
+--
 getAllVorlesungenDB :: IO [ String ]
 getAllVorlesungenDB = 
 	do 
@@ -195,7 +216,12 @@ getAllVorlesungenDB =
 	   disconnect conn 
 	   return inh
 
--- Vorlesungen von Mnr
+--
+-- Liefer Vorlesungen von Matrikelnr.
+--
+-- Input: 	Matrikelnr
+-- Output:	IO [ Vorlesungsname ]
+--
 studVorlDB :: String -> IO [ String ]
 studVorlDB mnr = 
 	do 
@@ -217,7 +243,12 @@ studVorlDB mnr =
 	   disconnect conn 
 	   return inh
 
--- bepunktete Vorlesungen von Mnr 
+--
+-- Liefert bepunktete Vorlesungen von Matrikelnr.
+--
+-- Input: 	Matrikelnr.
+-- Output: 	IO [ Vorlesungsname ]
+--
 getVorlesungWithPointsDB :: String -> IO [ String ]
 getVorlesungWithPointsDB mnr = 
 	do 
@@ -240,8 +271,14 @@ getVorlesungWithPointsDB mnr =
 	   disconnect conn 
 	   return inh
 
--- Email von Mnr ändern
+--
+-- Modifiziert Email-Adresse von Matrikelnr.
+--
+-- Input:	Matrikelnr., Email-Adresse
+-- Output: 	IO ()
+--
 -- TODO email validierung
+--
 updateEmailDB :: String -> String -> IO ()
 updateEmailDB mat email =
 	do
@@ -258,7 +295,12 @@ updateEmailDB mat email =
 	   disconnect conn 
 	   return ()
 
--- Passwort - Änderung
+--
+-- Modifiziert Passwort von Matrikelnr.
+--
+-- Input: 	Matrikelnr., Passwort
+-- Output: 	IO () 
+--
 updatePasswortDB :: String -> String -> IO ()
 updatePasswortDB mat pass =
 	do
@@ -556,8 +598,8 @@ mglAufgabenDB snr = mglAufgabenDB' False snr
 
 mglAufgabenDB' :: Bool -> String 
 	       -> IO [(String, String, String, String,String)]
-mglAufgabenDB' admin snr = do
-        let timed = if admin 
+mglAufgabenDB' isAdmin snr = do
+        let timed = if isAdmin 
 		    then ""
 		    else "AND NOW() BETWEEN Von AND Bis "
 	conn <- myconnect
@@ -569,7 +611,7 @@ mglAufgabenDB' admin snr = do
 			  , "gruppe.VNr = aufgabe.VNr \n"
 			  , "AND gruppe.GNr = stud_grp.GNr \n"
 			  , "AND stud_grp.SNr = \"" ++ filterQuots snr ++ "\" \n"
-			  -- im Zeitfenster?
+			  -- mit Zeitfenster?
 			  , timed
 			  , ";"
 			  ] )
@@ -627,8 +669,16 @@ mglNextAufgabenDB snr = do
 
 
 -- ================================================================================
-checkAdminNamePasswortDB :: String -> String -> IO Bool
 -- ADMIN
+
+
+-- 
+-- Login des Admins
+-- 
+-- Input: 	Name, Passwort
+-- Output: 	IO True/False
+--
+checkAdminNamePasswortDB :: String -> String -> IO Bool
 checkAdminNamePasswortDB nme pas = do
 	   conn <- myconnect
 	   stat <- query conn
@@ -642,13 +692,14 @@ checkAdminNamePasswortDB nme pas = do
 				 , ";"
 				 ] )
 	   inh <- collectRows ( \ state -> do
-							b <- getFieldValue state "Name"
-							return (b :: String)
-						  ) stat
+					b <- getFieldValue state "Name"
+					return (b :: String)
+			) stat
 	   disconnect conn
 	   let loginok = length inh > 0
 	   return loginok
---checkAdminNamePasswortDB :: String -> String -> IO Bool
+
+
 failDB nme pas = do
 	   conn <- myconnect
 	   stat <- query conn 
@@ -670,11 +721,18 @@ failDB nme pas = do
 	   return loginok
 
 --
+-- Liefert Studenten-Daten die auf Vorname,Name,Matrikel,Email und Vorlesung passen.
+--
+-- Hinweis: Und-Verknuepfung, wobei leere (="") Parameter ignorier werden.
+-- Input: Vorname,Name,Matrikel,Email,Vorlesungsname
+-- Output: IO [ [ SNr, MNr, Vorname , Email, Status ] ]
+--
+-- TODO optinale Teilwort suche (%part%)
+-- TODO optinale or Verknüpfung?
+--
 findStudDB vnm nme mat eml vrl= do
 	   conn <- myconnect
 	   let 
-			-- TODO optinale Teilwort suche (%part%)
-			-- TODO or Verknüpfung
 			ifexist x sqlnme =
 				if length x > 0 
 				then "AND "++ sqlnme ++ " LIKE \"%" ++ (quoteQuots x)++ "%\" "
@@ -711,6 +769,12 @@ findStudDB vnm nme mat eml vrl= do
 						  ) stat
 	   disconnect conn 
 	   return (  showColTypes stat, inh )
+
+--
+-- Modifiziert vom Student Matrikel,Vorname,Name,Email,Passwort
+--
+-- Input: 	AlteMatrikelnr., NeueMatrikelnr., Vorname,Name,Email,Passwort
+-- Output: 	IO ()
 --
 updateStudDB oldmat mat vnm nme eml pas = do
    conn <- myconnect
@@ -727,6 +791,12 @@ updateStudDB oldmat mat vnm nme eml pas = do
 			 ] )
    disconnect conn 
    return ()
+
+--
+-- Liefert vom Studenten: Vorname,Name,Email,Status,Passwort
+--
+-- Input: Matrikelnr.
+-- Output: IO [( Vorname, Name , Email, Status, Passwort )]
 --
 getStudentDB mnr = do 
 	conn <- myconnect
@@ -753,8 +823,12 @@ getStudentDB mnr = do
 	disconnect conn 
 	return inh
 
--- Input : Matrikelnr
--- Output :(Email,Passwort) 
+--
+-- Liefert Emai und Passwort von Matrikelnr
+--
+-- Input: 	Matrikelnr
+-- Output:	(Email,Passwort) 
+--
 getEmailPasswortDB :: String -> IO [(String, String)]
 getEmailPasswortDB mnr = do 
 	conn <- myconnect
