@@ -1,0 +1,38 @@
+-- -*- mode: haskell -*-
+
+module Number.Float.Data where
+
+import qualified Number.Base.Data as B
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Signed a = Signed { negative :: Bool
+                       , contents :: a
+                       }
+
+instance ToDoc a => ToDoc (Signed a) where
+    toDoc s = ( if negative s then char '-' else empty ) 
+            <> toDoc ( contents s )
+
+instance Reader a => Reader (Signed a) where
+    reader = do
+        sign <- option False 
+             $   do char '+' ; my_whiteSpace ; return False
+             <+> do char '-' ; my_whiteSpace ; return True
+        c <- reader
+        return $ Signed { negative = sign, contents = c }
+
+
+data Zahl = Zahl
+          { basis :: Int
+          , mantisse :: 
+          , exponent ::
+          }
+
+
+
+
+
