@@ -62,5 +62,16 @@ start_konfiguration m xs =
 		  }
 
 
+  
+
+bandinhalt :: TUM y z 
+	   => Turing y z -> Konfiguration y z -> [ y ]
+bandinhalt m k = 
+    let e = leerzeichen m
+        strip_links  = dropWhile (== e) 
+	strip_rechts = reverse . strip_links . reverse
+	band = reverse ( band_links  k ) ++ aktuelles_zeichen k : band_rechts k
+    in	strip_links . strip_rechts $ band
+
 
 
