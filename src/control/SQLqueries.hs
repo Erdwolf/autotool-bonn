@@ -543,7 +543,8 @@ bepunkteStudentDB snr anr bewert highlow = do
 
 mglAufgabenDB :: String -> IO [(String, String, String, String,String)]
 mglAufgabenDB snr = do
-        let timed = if read snr < 1000 then ""
+        let timed = if False -- read snr < 1000 
+		    then ""
 		    else "AND NOW() BETWEEN Von AND Bis "
 	conn <- connect "localhost" "autoan" "test" "test"
 	stat <- query conn
