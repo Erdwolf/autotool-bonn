@@ -14,7 +14,6 @@ import Reader
 import ToDoc
 
 evaluate :: ( Reader b, Size b, ToDoc b
-	    -- , Challenger.Problem p i b
 	    , Challenger.Partial p i b
 	    )
  	    => p -> i -> P.Type -> Reporter Int
@@ -26,9 +25,12 @@ evaluate p i par =
 	 Right b  -> do
 	       inform $ text "gelesen:" <+> toDoc b
 	       inform $ text "partiell korrekt?"
-	       pa <- Challenger.partial p i b
+	       Challenger.partial     p i b
+	       Challenger.demonstrate p i b
 	       inform $ text "total korrekt?"
-	       to <- Challenger.total p i b
+	       Challenger.total       p i b
+	       inform $ text "Lösung ist korrekt und hat Größe" 
+		      <+> toDoc ( size b )
 	       return $ size b
 
 

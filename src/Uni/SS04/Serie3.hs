@@ -70,6 +70,7 @@ funFib = do
            , N.check = \ f -> do
                  check_builtins RAM.Builtin.every f
                  check_arity 1 f
+		 anzeig $ tabelle1 f 9
            , N.start = Fun.Examples.plus
            }
     return $ I.computer "FUN" "FIB" it
@@ -98,6 +99,7 @@ funTeilbar = do
            , N.check = \ f -> do
                  check_builtins RAM.Builtin.every f
                  check_arity 2 f
+		 anzeig $ tabelle2 f (5, 5)
            , N.start = Fun.Examples.plus
            }
     return $ I.computer "FUN" "TEILBAR" it

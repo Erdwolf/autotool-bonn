@@ -58,8 +58,8 @@ instance Partial Quiz Tafel Fun where
     total   p i b = do
           inform $ text "Die Wertetabelle Ihrer Funktion ist:"
           let ((0,0), xy) = bounds i
-          let t = tabulate b xy
-          inform $ nest 4 $ frame t
+          let t = tabulate2 b xy
+          inform $ nest 4 $ rollout $ frame2 t
           -- Unterschiede berechnen
           let diffs = do
                   xy <- indices i
@@ -75,7 +75,7 @@ instance Partial Quiz Tafel Fun where
     describe p i = 
             vcat [ text "Konstruieren Sie eine zweistellige primitiv rekursive Funktion"
                  , text "mit dieser Wertetabelle:"
-                 , frame i
+                 , rollout $ frame2 i
                  ]
 
 -- | Konstruktor
@@ -103,7 +103,7 @@ quiz auf ver s t =
            inform $ vcat
                 [ text "Gesucht ist eine zweistellige primitiv rekursive Funktion"
                 , text "mit folgender Wertetabelle:"
-                , nest 4 $ frame tab
+                , nest 4 $ rollout $ frame2 tab
                 ]
            return tab
         }

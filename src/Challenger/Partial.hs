@@ -31,6 +31,13 @@ class Partial p i b | p i -> b , p b -> i where
       -- default
       partial p i b = return ()
 
+      -- | hier können wir irgendwas vorrechen
+      -- nachdem der partial-test bestanden wurde 
+      -- (zur Reihenfolge siehe Inter.Evaluate)
+      demonstrate :: p -> i -> b -> Reporter ()
+      demonstrate p i n = return ()
+
       -- | alles richtig?
       -- vorher wird immer erst partial angewendet
       total   :: p -> i -> b -> Reporter ()
+

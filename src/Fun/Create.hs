@@ -54,7 +54,7 @@ nontrivial :: Int -- größe (des funktions-ausdrucks)
 nontrivial s t =
     repeat_until ( do 
         f <- create 2 s
-	return ( f, tabulate f (fromIntegral t, fromIntegral t) )
+	return ( f, tabulate2 f (fromIntegral t, fromIntegral t) )
     ) $ \ ( f, tab ) -> 
             let ((0,0), (h,w)) = bounds tab
 		-- nur bis zur hälfte testen (aber mehr ausgeben)
