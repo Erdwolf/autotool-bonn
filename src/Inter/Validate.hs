@@ -19,38 +19,37 @@ import Control.Punkt ( loginDB )
 import Control.Monad ( guard )
 import Autolib.ToDoc
 
-validate :: P.Type -> IO ( Either Html P.Type )
+import Data.Maybe
+
+validate :: P.Type -> IO ( Either ( Html, P.Type ) P.Type )
+validate par |  isNothing ( P.mmatrikel par ) 
+             || isNothing ( P.mpasswort par ) = 
+      logged "validate_nothing" $ return 
+         $ Left ( p << "kein matrikel oder kein passwort", par )
+
 validate par = do
-    -- passwort vergleich mit db
-    let passwort = show $ P.passwort par
-    mbsnr <- logged ( show [ "loginDB", P.smatrikel par, "<passwort>" ] ) 
-	   $ loginDB (P.matrikel par) passwort    
 
-    let msgstr = 
-            if {- length P.smatrikel > 0 || -} length passwort > 0
-            then "Passwort paﬂt nicht"
-            else "Bitte Matrikelnummer und Passwort eingeben sowie Problem/Aufgabe/Version w‰hlen."
+    -- FIXME: security hole
+    mbsnr <- logged ( show [ "loginDB", show $ P.matrikel par, show $ P.passwort par ] ) 
+	   $ loginDB (P.matrikel par) (P.passwort par)
 
+    let msg = p << "Bitte g¸ltige Matrikelnummer und Passwort eingeben, danach Aufgabe w‰hlen."
     case mbsnr of 
      -- nein 
-     Nothing -> return $ Left $ p << msgstr 
+     Nothing -> return $ Left ( p << msg, par )
      -- gut nun Aufgaben-Varianten fuer User (ident) 
      -- aus ( Inter.Boiler ) holen und mit Eingaben vergleichen
-     Just ident -> 
+     Just ident -> continue $ par { P.ident = ident } -- ist SNr
+
+{-
         do 
         let vvs :: [ Variant ]
             vvs = do
             -- Ueber alle Varianten (mittles List-Monade)
                   vv <- P.variants par
                   case vv of 
-                    Variant v ->
-                      do
-                      -- vergleiche nacheinander Problem-Typ,Aufgabe,Version
-                      -- wenn OK -> return vv
-                      -- Abbruch bei Fehler (=wenn guard fehlschlaegt) return []
-                      guard $ P.problem par == show ( Inter.Types.problem v )
-                      guard $ P.styp par ==         Inter.Types.aufgabe v
-                      guard $ P.saufgabe par ==       Inter.Types.version v
+                    Variant v -> do
+                      guard $ P.saufgabe par ==       Inter.Types.tag v
                       return vv
         case vvs of
                  [ vv ] -> continue $ par { P.ident = ident
@@ -62,38 +61,56 @@ validate par = do
                            $ p << "mˆgliche Probleme/Aufgaben/Versionen:"
                                  +++ pre << render ( toDoc $ P.variants par )
 
-continue :: P.Type -> IO ( Either Html P.Type )
-continue set = do 
-   let is_admin = read ( S.smatrikel set ) < 1024 -- FIXME: remove explicit number
-   aufs <- mglAufgabenDB' is_admin $ S.ident set
-   let matching = 
-           do
+-}
+
+continue :: P.Type -> IO ( Either ( Html, P.Type ) P.Type )
+continue set = do
+   let is_admin = False 
+		  -- read ( S.smatrikel set ) < 1024 -- FIXME: remove explicit number
+   aufs <- logged "mglAufgabenDB'" $ mglAufgabenDB' is_admin $ S.ident set
+   let names = do  
+	 ( (anr, name, typ), (conf, highscore, remark) ) <- aufs
+         return $ name
+   let matching = do
            auf @ ( (anr, name, typ), (conf, highscore, remark) ) <- aufs
-           guard $ name == S.aufgabe set && typ == S.typ set
+           guard $ name == S.aufgabe set 
            return auf
+   logged ( "matching: " ++ show matching ) $ return ()
+   logged ( "makers: " ++ show (P.makers set) ) $ return ()
+
    case matching of
-     [ auf @ ( (anr, name, typ),( conf, highscore, remark )) ] -> 
-                 return 
-                 $ Right 
-                 $ set { S.anr = anr
+     [ auf @ ( (anr, name, typ),( conf, highscore, remark )) ] -> do
+         -- maker suchen
+         case ( do mk <- P.makers set
+		   guard $ show mk == toString typ 
+		   return mk
+	      ) of
+	     [ mk @ ( Make doc ( fun :: conf -> Var p i b ) i ) ] -> 
+	         -- parametersatz herstellen
+	         return $ Right $ set 
+		       { S.anr = anr
+		       , S.variante = -- TODO: parserfehler behandeln
+			    Variant $ ( fun ( read $ toString conf :: conf ) )
+				      { Inter.Types.tag = toString name }
+		       , S.typ = typ
 		       , S.conf = conf
 		       , S.highscore = highscore 
 		       , S.remark = remark
+		       , S.names = names
 		       }
-
-     -- new sub-case: aufgabe ist noch nicht in db,
-     -- aber nutzer ist admin: also darf er das
-     -- wir m¸ssen dann aber die fehlenden DB-eintr‰ge raten
-     _ | is_admin ->
-                 return 
-                 $ Right 
-                 $ set { S.anr = read "0" , S.highscore = Keine }
+             mks -> return $ Left 
+		  ( p << "nicht genau ein passender maker f¸r diesen typ, sondern:"
+		    +++ p << pre << render ( toDoc mks )
+		  , set { S.names = names }
+		  )
 
      -- fall-through: aufgabe gibt es nicht
      _ -> return $ Left
-                 $ p << ( "Problem/Aufgabe/Version ist nicht aktuell oder " 
+                 ( p << ( "Problem/Aufgabe/Version ist nicht aktuell oder " 
 						  ++ "Sie sind nicht in der passenden Gruppe.")
                        +++ p << pre << render ( toDoc matching )
+		 , set { S.names = names }
+		 )
 
 
 

@@ -6,6 +6,7 @@ module Control.Punkt where
 
 import Control.SQL
 import Control.Types
+import Control.Passwort
 import Inter.Crypt
 
 import Control.Monad
@@ -15,13 +16,12 @@ import Control.Monad
 -- Input:   Matrikelnr., Passwort
 -- Output:  IO Just SNr zurück, wenn (mnr,pass) in DB
 --
-loginDB :: MNr -> String -> IO (Maybe SNr)
--- loginDB "" "" = return $ Nothing
+loginDB :: MNr -> Control.Passwort.Type -> IO (Maybe SNr)
 loginDB mnr pass =
     do
        conn <- myconnect
        stat <- squery conn $ Query
-	       ( Select $ map reed [ "SNr, Passwort" ] )
+	       ( Select $ map reed [ "SNr", "Passwort" ] )
 	       [ From $ map reed [ "student" ]
 	       , Where $ equals ( reed "student.MNr" ) ( toEx mnr )
 	       ]
@@ -32,9 +32,11 @@ loginDB mnr pass =
                           ) stat
        disconnect conn
 
+       logged $ "toString pass: " ++ show (toString pass) 
+
        return $ case inhs of
            [ (s, p) ] -> do
-		 guard $ Inter.Crypt.compare p pass
+		 guard $ Inter.Crypt.compare p (toString pass)
 		 return s
            _ -> Nothing
 

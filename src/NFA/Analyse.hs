@@ -63,8 +63,7 @@ analyse :: String -- aufgabe (major)
 	 -> Var  Analyse AI Exp
 analyse auf ver i = 
     Var { problem = Analyse
-	, aufgabe = auf
-	, version = ver
+	, tag = auf ++ "-" ++ ver
 	, key = \ matrikel -> do 
 	      return ""
 	, gen = \ key -> return $ do

@@ -5,140 +5,93 @@
 
 module Main where
 
+import Inter.CGI
+import Control.Types ( toString )
+
 import qualified Inter.Collector
 
-import Inter.Env
+
 import Challenger.Partial
 import Inter.Types
 import Inter.Click
-import Inter.Area
+
 import Inter.Make 
-import Inter.Errmsg
 import Inter.Evaluate
+
+import qualified Control.Aufgabe
+import qualified Control.Vorlesung
+
 
 import Autolib.Reporter.Type
 import Autolib.ToDoc
 import Autolib.Reader
 
+
 import Random
-import Network.CGI
 import Data.Typeable
 import Data.Maybe
 import Data.List
 import Control.Monad
-import qualified Control.Exception
-import Text.Html hiding ( text, input, version, width, height )
 
-
-data Par =
-     Par { env :: Env
-	 , makers :: [ Make ]
-	 }
-
-click :: String
-click = "Click"
-
-maker :: String
-maker = "Maker"
 
 main :: IO ()
-main = wrapper $ \ e ->  
-         iface ( Par { makers = Inter.Collector.makers
-		     -- sort of a bit of a hack:
-		     , env = case lookup click e of
-		          Nothing -> e
-		          Just "Change" -> filter ( \ (i,v)-> i == maker ) e
-		     } ) 
-             `Control.Exception.catch` \ err -> 
-                 return $ p << pre << primHtml ( show err )
+main = Inter.CGI.execute "Super.cgi" 
+     $ iface Inter.Collector.makers
 
+iface :: [ Make ] -> Form IO ()
+iface mks = do
 
-iface :: Par -> IO Html
-iface par = do
+    vors <- io $ Control.Vorlesung.get
+    vnr <- selector "vnr" "wähle Vorlesung" 0 $ do
+        vor <- vors
+        return ( show $ Control.Vorlesung.name vor
+	       , Control.Vorlesung.vnr vor 
+	       )
 
-    
+    -- FIXME: nicht alle aufgaben aus DB holen, 
+    -- sondern nur die mit passender VNr
+    aufs <- io $ Control.Aufgabe.get  
+    br
+    manr  <- selector "anr" "bearbeite Aufgabe" 0 
+      $ ( "(neue Aufgabe)", Nothing ) : do
+        auf <- aufs
+        guard $ Control.Aufgabe.vnr auf == vnr
+        return ( show $ Control.Aufgabe.name auf
+	       , Just $ Control.Aufgabe.anr auf
+	       )
+    submit "sauf" "edit"
 
-    
-    let presenter = h3 << "all Makers and their types:" 
-	    +++ p << pre << show ( present $ makers par )
+    pre $ "Vorlesung gewählt : " ++ show vnr
+    pre $ "Aufgabe gewählt : " ++ show manr
 
-    let mcs = lookup "Maker" $ env par
-    let mks  = do 
-          m @ ( Make doc fun ex ) <- makers par
-          guard $ Just doc == mcs
-          return m
+    mk <- selector "mk" "wähle Aufgabentyp" 0 $ do
+        mk <- mks
+	return ( show mk, mk )
 
-    center <- case mks of
-          []   -> return $ h3 << ( "No Maker with name: " ++ show mcs )
-	  [ mk @ ( Make doc fun ex ) ] -> do  
-                  let inp = fromMaybe (show ex) $ lookup "input" $ env par
-		  c <- editor "config" ex (env par) $ \ conf ->
-		          core ( fun conf ) ( env par )
-		  return $  h3 << ( "Chosing Maker: " ++ show mcs ) +++ c 
-          _    -> return $ h3 << ( "More than one Maker with name: " ++ show mcs )
+    case mk of 
+        Make doc fun ex -> do
+            mconf <- editor "conf" "konfiguriere" ex
+            sconf <- submit "sconf" "submit"
 
-    return $ page par [ presenter, center ]
+            case mconf of
+                 Nothing -> return ()
+                 Just conf -> do
+                      let var :: Var p i b = fun conf
+                          p = problem var
+                      m0 <- io $ randomRIO (0, 999999 :: Int) 
+                      mat <- textfield "mat" $ show m0
+                      k <- io $ key var mat -- some key
+                      g <- io $ gen var k
+                      let ( Just i , com :: Doc ) = export g
+                          desc = describe (problem var) i
+                          ini = initial (problem var) i
+                      h3 "Aufgabenstellung"
+                      pre $ show desc
+                      mb <- editor "b" "Lösung" ini
+                      bconf <- submit "bconf" "submit"
+                      case mb of
+			   Nothing -> return ()
+                           Just b -> do
+      	                       let (res, com :: Doc) = export $ evaluate' p i b
+                               pre $ show com
 
-core ::  ( Reader b, Partial p i b )
-     => Var p i b
-     -> Env
-     -> IO Html 
-core ( var :: Var p i b ) env = do
-    let p = problem var
-    let header = btable << aboves 
-            [ besides [ td << "Problem", td << show p ]
-	    , besides [ td << "Aufgabe", td << aufgabe var ]
-	    , besides [ td << "Version", td << version var ]
-	    ]     
-    m0 <- randomRIO (0, 999999 :: Int) -- some matrikelnummer
-    let m = show m0
-    k <- key var m -- some key
-    g <- gen var k
-    let ( Just i , com :: Html ) = export g
-    let desc = describe (problem var) i
-        ini = initial (problem var) i
-    let belly = btable << aboves 
-           [ besides [ td << "Matrikel", td << pre << show m ]
-	   , besides [ td << "Key", td << pre << show k ]
-	   , besides [ td << "Instanz", td << pre << show (toDoc i) ]
-	   , besides [ td << "Description", td << pre << show desc ]
-	   , besides [ td << "Initial", td << pre << show ( toDoc ini ) ]
-	   ]
-
-
-    let desc = pre << ( show $ describe p i )
-    log <- editor "solution" ini env $ \ b -> do
-	   let (res, com :: Doc) = export $ do
-		    evaluate' p i b
-           return $ pre << show com
-
-    return $ header 
-	   +++ h3 << "Diese Konfiguration erzeugt folgende Aufgabe:" +++ belly 
-	   +++ h3 << "Für den Studenten sieht das dann so aus:" +++ desc +++ log
-
----------------------------------------------------------------------------------
-
-page par contents = 
-    let 
-	heading = h2 << "Autotool-Super-Interface"
-		+++ primHtml "Aufgaben konfigurieren und testen"
-	helper = h3 << "(debug) CGI parameters"
-		+++ pre << show (toDoc $ env par)
-	pref = preface par 
-    in  header << thetitle << "Super.cgi"
-            +++ body ( form ( foldr1 (+++) 
-			      $ [ heading , hr , helper, hr, pref , hr ] ++ contents )
-				   ! [ Text.Html.action "Super.cgi" , method "POST" ]
-		 )
-         
-preface par = btable << aboves [ besides ( selector par 
-  ++    [ td << submit click ( show Change ) ] ) ]
-
-selector par =
-    let opts = do
-          let sel = lookup maker (env par)
-	  Make doc _ _ <- makers par
-          return $ Text.Html.option (primHtml doc) ! [ selected | Just doc == sel ]
-    in  [ td << "choose Maker:" ,  td << select ! [ Text.Html.name maker ] << opts ]
-
-btable x = table x ! [ border 1 ]

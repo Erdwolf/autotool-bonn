@@ -26,8 +26,7 @@ data Boolean = Boolean deriving ( Eq, Ord, Show, Read, Typeable )
 instance ToDoc Boolean where toDoc = text . show
 
 data BI =
-     BI { tag :: String
-        , formula :: Exp
+     BI { formula :: Exp
 	, operators :: Set ( Op Bool )
 	}
      deriving ( Typeable )
@@ -72,12 +71,11 @@ instance Partial Boolean BI Exp where
 
 
 make :: Make
-make = direct Boolean 
-	$    (  BI { tag = "A"
-      		  , formula = read "x == (y == z)"
-      		  , operators = read "mkSet [ false, true, !, ||, && ]"
-      		  }
-	    )
+make = direct Boolean $  BI 
+       { formula = read "x == (y == z)"
+       , operators = read "mkSet [ false, true, !, ||, && ]"
+       }
+
 
 
 

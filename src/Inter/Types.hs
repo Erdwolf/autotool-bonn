@@ -24,11 +24,18 @@ type Key = String
 -- | Make name (maker function) example
 data Make = forall conf p i b 
           . ( V p i b 
-	    , Typeable conf, Haskell2Xml conf, ToDoc conf, Show conf, Reader conf
+	    , Typeable conf, Haskell2Xml conf
+	    , ToDoc conf, Show conf
+	    , Reader conf, Read conf
 	    )
 	  => Make String --  description
 		  (conf -> Var p i b) --  maker function
                   conf --  example
+
+instance ToDoc Make 
+    where toDoc ( Make doc fun ex ) = text doc
+instance Show Make
+    where show = render . toDoc
 
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)
@@ -39,8 +46,7 @@ direct :: ( V p i b	    )
 direct p i = Make 
              (show p ++ "-Direct") 
 	     ( \ i -> Var { problem = p
-		   , aufgabe = show p
-		   , version = "-Direct"
+		   , tag = show p ++ "-Direct"
 		   , key = \ mat -> return mat
 		   , gen = \ key -> return $ return i
 		   }
@@ -49,12 +55,13 @@ direct p i = Make
 
 data Var p i b = 
          Var { problem :: p 
-	     , aufgabe :: String
-	     , version :: String
-	     -- erzeugt cached version der instanz (o. ä.)
+	     -- | das ist der unique bezeichner 
+	     -- (den der benutzer in auswahlliste sieht)
+	     , tag :: String
+	     -- | erzeugt cached version der instanz (o. ä.)
 	     , key :: Matrikel -> IO Key
 
-	     -- holt tatsächliche instanz
+	     -- | holt tatsächliche instanz
 	     -- TODO: der Reporter hier ist unsinnig,
 	     -- das würfeln soll schweigend gehen,
 	     -- wenn es etwas zu sagen gibt,
@@ -65,18 +72,13 @@ data Var p i b =
 	     }
       deriving Typeable
 
---     deriving Show
-
--- instance ( Show p ) => ToDoc ( Var p i b ) where
---    toDoc = text . show
-
 class ( Show p, Typeable p
-      , Show i, Typeable i, Haskell2Xml i, ToDoc i, Reader i
+      , Show i, Typeable i, Haskell2Xml i, ToDoc i, Reader i, Read i
       , Show b, Typeable b, Haskell2Xml b, ToDoc b, Reader b , Size b
       , Partial p i b
       ) => V p i b -- ohne methoden
 instance ( Show p, Typeable p
-      , Show i, Typeable i, Haskell2Xml i, ToDoc i, Reader i
+      , Show i, Typeable i, Haskell2Xml i, ToDoc i, Reader i, Read i
       , Show b, Typeable b, Haskell2Xml b, ToDoc b, Reader b , Size b
       , Partial p i b
       ) => V p i b -- ohne methoden
@@ -88,7 +90,7 @@ data Variant = forall p i b
 
 instance ToDoc Variant where 
     toDoc ( Variant v ) = -- text "Variant" -- <+> parens ( toDoc v )
-        text $ show ( problem v) ++ ":" ++ aufgabe v ++ "-" ++ version v
+        text $ tag v
 
 instance Show Variant where
     show = render . toDoc

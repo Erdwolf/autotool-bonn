@@ -65,13 +65,12 @@ quiz :: InstanceC a
      -> Var LCS (Instance a) [a]
 quiz conf = 
     x where x = Var { problem = LCS
-	  , aufgabe = "LCS"
-	  , version = "Quiz"
+	  , tag = "LCS" ++ "-" ++  "Quiz"
 	  , key = \ matrikel -> return matrikel
 	  , gen = \ key -> do
 		seed $ read key  
 		i <- cache (  Datei { pfad = [ "autotool", "cache"
-                                              , aufgabe x, version x
+                                              , tag x
                                               ]
                                      , name = key
                                      , extension = "cache"

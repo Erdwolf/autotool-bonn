@@ -40,8 +40,7 @@ quiz :: String -- Aufgabe
      -> Var Faktor Integer (Integer, Integer)
 quiz auf ver par =
          Var { problem = Faktor
-             , aufgabe = auf
-             , version = ver
+             , tag = auf ++ "-" ++ ver
              , key = \ mat -> return mat
              , gen = \ key -> do
                    seed $ read key
@@ -61,8 +60,7 @@ fixed :: String
       -> IO Variant
 fixed auf ver x = return $ Variant 
        $ Var { problem = Faktor
-             , aufgabe = auf
-             , version = ver
+             , tag = auf ++ "-" ++ ver
              , key = \ mat -> return mat
              , gen = \ key -> do
                    return $ return x

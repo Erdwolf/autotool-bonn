@@ -8,24 +8,24 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
--- | das sollte exactly das sein, was auch in DB-tabelle aufgabe steht
+-- | das sollte exactly das sein, was auch in DB-tabelle  steht
+
 data Aufgabe  =
-     Aufgabe { aufgabe :: ANr
-	     , vorlesung :: VNr
+     Aufgabe { anr :: ANr
+	     , vnr :: VNr
 	     , name :: Name
              , typ :: Typ
 	     , config :: Config
 	     , remark :: Remark
-	     , direction :: HiLo
-	     , von :: ClockTime
-	     , bis :: ClockTime
+	     , highscore :: HiLo
+	     , von :: Time
+	     , bis :: Time
 	     }
      deriving ( Eq, Ord, Typeable )
 
 {-! for Aufgabe derive: Reader, ToDoc, Haskell2Xml !-}
 
-instance Show Aufgabe where show = render . toDoc
-instance Read Aufgabe where readsPrec = parsec_readsPrec
+
 

@@ -68,8 +68,7 @@ fixed :: InstanceC a
       -> Var LCS (Instance a) [a]
 fixed name sh ( xs, ys ) = Var
 	  { problem = LCS
-	  , aufgabe = "LCS"
-	  , version = name
+	  , tag = "LCS" ++ name
 	  , key = \ matrikel -> return matrikel
 	  , gen = \ key -> do
 		return $ return 

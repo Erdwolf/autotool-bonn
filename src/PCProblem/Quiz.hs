@@ -76,8 +76,7 @@ make :: String -- Aufgabe
      -> Var PCProblem PCP Folge
 make auf ver gene =  
          Var { problem = PCProblem
-	     , aufgabe = auf
-	     , version = ver
+	     , tag = auf ++ "-" ++ ver
 	     -- erzeugt cached version der instanz (o. ä.)
 	     -- key :: Matrikel -> IO Key
 	     , key = \ mat -> return mat

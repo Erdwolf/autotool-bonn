@@ -72,8 +72,7 @@ synthese :: String -- aufgabe (major)
 	 -> Var  Synthese SI ( NFA Char Int )
 synthese auf ver i = 
     Var { problem = Synthese
-	, aufgabe = auf
-	, version = ver
+	, tag = auf ++ "-" ++ ver
 	, key = \ matrikel -> do 
 	      return ""
 	, gen = \ key -> return $ do

@@ -8,6 +8,8 @@ where
 
 --   $Id$
 
+import Control.Types
+
 import Prelude hiding ( span,map, head, div )
 import qualified Prelude
 
@@ -28,6 +30,7 @@ instance Read Type where
 		 else [] -- throw $ PatternMatchFail str
 
 instance Show Type where
-  showsPrec i (ATPasswort str) = showString str
+  show (ATPasswort str) = str
 
-
+instance ToString Type where
+    toString = unATPasswort

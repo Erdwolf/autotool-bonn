@@ -90,8 +90,7 @@ synthese :: String -- aufgabe (major)
          -> Var  Sortier Int Netz
 synthese auf ver i =
     Var { problem = Sortier
-        , aufgabe = auf
-        , version = ver
+        , tag = auf ++ "-" ++ ver
         , key = \ matrikel -> do
               return ""
         , gen = \ key -> return $ do

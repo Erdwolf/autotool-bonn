@@ -131,7 +131,8 @@ instance T.ToDoc Action where
         [ T.text "INTO" <+> T.toDoc tab <+> T.dutch_tuple ( map ( T.toDoc . fst ) pairs )
 	, T.text "VALUES" <+> T.dutch_tuple ( map ( T.toDoc . snd ) pairs )
 	]
-    toDoc (Update tab pairs) = T.text "UPDATE" <+> T.toDoc tab <+> T.sepBy T.comma ( do
+    toDoc (Update tab pairs) = T.text "UPDATE" <+> T.toDoc tab 
+         <+> T.text "SET" <+> T.sepBy T.comma ( do
          (e, v) <- pairs
 	 return $ hsep [ T.toDoc e, T.equals, T.toDoc v ]
        )
@@ -149,7 +150,7 @@ instance Read Action where readsPrec = R.parsec_readsPrec
 
 data Modifier = From [ Id ]
 	      | Where Expression
-              | Using Bind
+              | Using [ Bind ]
      deriving Typeable
 
 instance T.ToDoc Modifier where
@@ -181,7 +182,12 @@ instance T.ToDoc Expression where
     toDoc (EInteger i) = T.toDoc i
 --    toDoc (ETime t) = T.toDoc $ show t
     toDoc (EString s) = T.toDoc s
-    toDoc (EFun fun args) = T.toDoc fun <+> T.dutch_tuple ( map T.toDoc args )
+    -- note: open par must come immediately after function symbol (no <+>)
+    toDoc (EFun fun args) = T.toDoc fun <> T.dutch_tuple ( map T.toDoc args )
+    toDoc (EBinop "BETWEEN" x (EBinop "AND" y z)) 
+	= T.parens $ T.fsep [ T.toDoc x, T.text "BETWEEN"
+			    , T.toDoc y, T.text "AND", T.toDoc z 
+			    ]
     toDoc (EBinop op x y) = T.parens $ T.fsep [ T.toDoc x, T.text op, T.toDoc y ]
 
 instance R.Reader Expression where

@@ -41,8 +41,7 @@ enc :: ( Ord a, Show a, ToDoc [a], Reader [a]
      -> IO Variant
 enc conf = return $ Variant 
     $ Var { problem = Encode ( coder conf )
-	  , aufgabe = "enc" ++ ( render $ nametag $ coder conf )
-	  , version = "Quiz"
+	  , tag = "enc" ++ ( render $ nametag $ coder conf ) ++ "-" ++ "Quiz"
 	  , key = \ matrikel -> return matrikel
 	  , gen = \ key -> do
 		seed $ read key
@@ -59,8 +58,7 @@ dec :: ( Ord a, Show a, ToDoc [a], Reader [a], Size a
      -> IO Variant
 dec conf = return $ Variant 
     $ Var { problem = Decode ( coder conf )
-	  , aufgabe = "dec" ++ ( render $ nametag $ coder conf )
-	  , version = "Quiz"
+	  , tag = "dec" ++ ( render $ nametag $ coder conf ) ++ "-" ++  "Quiz"
 	  , key = \ matrikel -> return matrikel
 	  , gen = \ key -> do
 		seed $ read key

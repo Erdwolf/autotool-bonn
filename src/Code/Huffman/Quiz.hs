@@ -30,8 +30,7 @@ make :: ( Ord a
 	  -> IO Variant
 make conf = return $ Variant 
     $ Var { problem = Huffman
-	  , aufgabe = show Huffman
-	  , version = "Quiz"
+	  , tag = show Huffman ++ "-" ++ "Quiz"
 	  , key = \ matrikel -> return matrikel
 	  , gen = \ key -> do
 		seed $ read key

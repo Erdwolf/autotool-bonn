@@ -22,54 +22,25 @@ module Main where
 --  $Id$
 
 
--- Standard CGI,HTML lib
 import Network.CGI
 import Text.Html hiding ( text  )
 
--- Pretty-Printer Erweiturng
 import Autolib.ToDoc (Doc, render, toDoc, text)
 
--- Aufgaben Bewertungsprotokoll
 import Autolib.Reporter
 import qualified Autolib.Output
 import qualified Autolib.Output.Html
 
---
--- CGI Env-Variabeln in Parameter umwandeln
--- Akutellen Zustand berechen.
---
+
 import Inter.Env
-
---
--- hier drin ist : 
--- - Passwort Kontrolle
--- - Aufgaben-Varianten abh. von Login bestimmen
--- - vergleichen der Variante mit eingegeben Wunsch
--- 	- Fehler -> mgl Varianten des Logins anzeigen
---	- ok -> Parameter mit Variante bestuecken
---
 import Inter.Validate
-
 import Inter.Evaluate
 
---
--- Bewertung einer Lösung in der (Daten)Bank sichern
--- und ins Logs schreiben.
---
 import Inter.Bank
 import Inter.Store ( latest )
 import Inter.Click
 
-import Control.Types ( fromCGI, toString )
-
---
--- der Monster-Parameter darin sind alle wesentlichen Daten
--- fuer die aktuelle Session:
---
--- Param { matrikel , problem , aufgabe , version 
--- , passwort , input , ident , input_width 
--- , variants , variante , highscore , anr }
---
+import Control.Types ( fromCGI, ToString (..) )
 import qualified Inter.Param as P
 import qualified Inter.Motd
 
@@ -85,14 +56,9 @@ import Data.Typeable
 
 import Autolib.Timer
 import Inter.Logged
---
+
 -- hier sind die aufgaben drin:
---
-import Inter.Boiler
-
-
--- temporarily:
-import qualified HTWK.SS04.Informatik.Boolean as B
+import qualified Inter.Collector
 
 import Autolib.Informed
 
@@ -100,43 +66,20 @@ patience :: Int
 patience = 15 -- seconds
 
 main :: IO ()
-main = do
-     -- original:
-     -- vs <- boiler
-
-     -- testing:
-     let vs = get_boiler B.makers B.configs
-
-     wrapper $ \ env ->  
-         iface vs env
+main = wrapper $ \ env ->  
+         iface Inter.Collector.makers env
              `Control.Exception.catch` \ err -> 
-                 return $ p << pre << primHtml ( show err )
+                 logged ( "catching" ++ show err )
+			$ return $ p << pre << primHtml ( show err )
 
 ------------------------------------------------------------------------
 
-iface :: [ Variant ] -> [(String, String)] -> IO Html
-iface variants env = do
-
-    logged "start" $ return ()
-
-    let pres = h3 << "(experimental:) Makers" 
-	    +++ p << pre << show ( present B.makers )
-            +++ h3 << "(experimental:) Configs"
-	    +++ p << pre << show ( cpresent B.makers B.configs )
-		    
+iface :: [ Make ] -> [(String, String)] -> IO Html
+iface makers env = logged "iface" $ do
 
     -- alle Inputs aus Env. holen
-    let par0 = case head variants of 
-        -- erste Variante ist Default Variante
-	     Inter.Types.Variant var -> 
-	-- default Parameter füllen, bekommt man beim start
-		let def = P.empty  
-			{ P.problem = show ( Inter.Types.problem var )
-			, P.typ = fromCGI $ Inter.Types.aufgabe var
-			, P.aufgabe = fromCGI $ Inter.Types.version var
-			}
-		in Inter.Env.get_with env def
-
+    let par0 = Inter.Env.get_with env $
+	       P.empty { P.makers = makers }
     motd <- logged "motd" $ Inter.Motd.contents
 
     -- gültigkeit prüfen, aufg.-instanz generieren / bzw. holen
@@ -144,14 +87,15 @@ iface variants env = do
     -- das ist eine IO-Aktion 
     -- (wg. DB-zugriffen und evtl. Random in Generierung)
     -- im Reporter.Type gibts (mit Absicht) (leider) keine IO
-    res <- logged "validate" $ validate $ par0 { P.variants = variants }
+    res <- logged "validate" $ validate $ par0 
 
     -- haben es wir geschafft zum aufgabenlösen
     case res of
      -- nein, fehler (=msg) : entweder passwort falsch 
      -- oder ungültige Aufgabe (-> zeige mögliche)
-     Left msg -> do
-          return $ page par0 { P.variants = variants }  ( msg +++ motd )
+     Left ( msg, par1 ) -> logged ( "lefty" ++ show msg ) $ do
+          return $ page par1 ( msg +++ motd )
+
 
      -- ja,
      Right par1 -> case P.variante par1 of
@@ -166,12 +110,14 @@ iface variants env = do
           let ( Just i, com :: Doc ) = export generator
 
           ( _ , desc :: Html ) <- run $ do
-		  -- set default dir
+		  -- FIXME: set default dir
 	          Challenger.report (problem v) i
-          let inst =   h3 << "Aufgabenstellung"
+          let inst =  h3 << "Aufgabenstellung"
 		   +++ p  <<  desc
-          
-          -- Beispiel Eingabe holen  
+		   +++ h3 << "Hinweise"
+                   +++ p << toString (P.remark par1)
+
+          -- Beispiel-Eingabe holen  
           let b0 = Challenger.initial ( problem v ) i
 
 	  -- nur bei Submit wird textarea übernommen.
@@ -227,14 +173,11 @@ iface variants env = do
 
 			   +++ reset  "Click" ( show Reset    ) 
 
-                           +++ hidden "Problem" ( P.problem par2 ) 
                            +++ hidden "Aufgabe" ( P.saufgabe par2 ) 
-                           +++ hidden "Typ" ( P.styp par2 ) 
 
 
           return $ page par2 
-		 $   pres -- experimentell (makers)
-		 +++ inst -- aufgabenstellung (immer)
+		 $   inst -- aufgabenstellung (immer)
 		 +++ motd -- message vom tage (immer)
 		 +++ log  -- logfile entry (nur bei submit)
 		 +++ status -- antwort OK bzw. Textarea für neue lösg (immer)
@@ -246,9 +189,8 @@ iface variants env = do
 --
 page par msg = 
     let 
-	heading = h2 << "Autotool CGI Inter.Face"
+	heading = h2 << "Autotool-CGI-Inter.Face"
 	pref = preface par 
-	var = varselector par 
 	chg = primHtml "  Achtung, verwirft Lösung!!"
     in  header << thetitle << "Inter.Face"
             +++ body ( form ( foldr1 (+++) 
@@ -258,16 +200,22 @@ page par msg =
 		 )
          
 preface par = table << aboves 
-     [ besides
-	$ txtf' "10" "Matrikel" ( P.smatrikel par )
-   	++ pwdf "Passwort" ( P.passwort par )
-   	++ varselector par 
+     [ besides	$ 
+           txtf' "10" "Matrikel" ( toString $ P.mmatrikel par )
+   	++ pwdf "Passwort" ( toString $ P.mpasswort par )
+  	++ varselector ( P.names par )
 	++ [ td << submit "Click" ( show Change ) ]
      ]
-       
-varselector par =
-    let vars = map primHtml  $ "--" : map show ( P.variants par )
-    in  [ td << "Aufgabe "  ,  td << menu "Wahl" vars ]
+
+
+instance ToString a => ToString (Maybe a) where   
+    toString mx = case mx of Just x -> toString x ; Nothing -> ""
+
+varselector nms =
+    let vars = map ( primHtml . toString ) nms
+    in  if null nms 
+	then [ ] 
+	else [ td << "Aufgabe "  ,  td << menu "Aufgabe" vars ]
 
 txtf name cont = 
     [ td << name , td << textfield name ! [ value cont ] ]
@@ -276,5 +224,5 @@ txtf' sz name cont =
     [ td << name , td << textfield name ! [ value cont , Text.Html.size sz ] ]
 
 pwdf name cont = 
-    [ td << name , td << password name ! [ value $ show  cont , Text.Html.size "10" ] ]
+    [ td << name , td << password name ! [ value cont , Text.Html.size "10" ] ]
 

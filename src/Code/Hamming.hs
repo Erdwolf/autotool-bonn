@@ -33,8 +33,7 @@ make :: Config
      -> IO Variant
 make conf = return $ Variant
      $ Var { problem = Hamming
-	   , aufgabe = show Hamming
-	   , version = version_tag conf
+	   , tag = show Hamming ++ "-" ++ version_tag conf
 	   , key = \ matrikel -> return undefined
            , gen = \ _ -> do
                  return $ return conf

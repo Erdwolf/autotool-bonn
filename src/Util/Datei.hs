@@ -78,9 +78,12 @@ sanity :: Datei -> IO ()
 -- inklusive aller tricks mit "../.." usw.
 -- deswegen vor jedem zugriff testen
 sanity d = 
-    when ( not $ all isAlphaNum
+    when ( not $ all isok
 	       $ concat $ pfad d ++ [ name d , extension d ] 
 	 ) $ error "strange zeichen in dateiname"
+
+isok :: Char -> Bool
+isok c = isAlphaNum c || c == '-'
 
 
 home :: Datei -> IO FilePath

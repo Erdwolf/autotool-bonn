@@ -13,6 +13,8 @@ import Data.Maybe ( maybeToList )
 import Data.List ( intersperse )
 import Data.Typeable
 
+import Database.MySQL.HSQL ( SqlBind )
+
 import Helper
 import Mysqlconnect 
 
@@ -393,6 +395,9 @@ leaveStudGrpDB mat grp =     do
          }
 
 
+-- tricky
+data Col a = Col String
+data Cola = forall a . ( Show a, SqlBind a ) => Cola (Col a)
 
 -- | liefert (jetzt!)  mgl. Aufgaben für Student
 -- FIXME: use Control.Aufgabe type
@@ -404,12 +409,13 @@ mglAufgabenDB' :: Bool
     -> SNr
            -> IO [(( ANr, Name, Typ), ( Config, HiLo, Remark)) ]
 mglAufgabenDB' isAdmin snr = 	do
+    let cols =  [ "ANr", "Name", "Typ", "Config", "Highscore", "Remark" ]
     conn <- myconnect
     stat <- squery conn $ Query
-	    ( Select $ map reed 
-	             [ "aufgabe.ANr", "aufgabe.Name", "aufgabe.Typ"
-		     , "aufgabe.Config", "aufgabe.Highscore", "aufgabe.Remark" 
-		     ]
+	    ( Select $ do 
+	         col <- cols
+                 let long = EId $ Id [ "aufgabe", col ] ; short = Id [ col ]
+                 return $ Bind long (Just short)
 	    )
             [ From $ map reed [ "aufgabe", "gruppe" , "stud_grp" ]
 	    , Where $ ands $
@@ -427,11 +433,12 @@ mglAufgabenDB' isAdmin snr = 	do
                          t <- getFieldValue state "Typ"
                          c <- getFieldValue state "Config"
                          h <- getFieldValue state "Highscore"
-			 r <- getFieldValue state "Remark"
-                         return ( ( a , n, t), (c, h, r) )
+		         r <- getFieldValue state "Remark"
+                         return ( ( a , n, t) , (c, h, r) )
                        ) stat
     disconnect conn
     return inh
+
 
 
 ----------------------------------------------------------------------------------

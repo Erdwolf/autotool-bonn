@@ -60,8 +60,7 @@ quiz :: String -- Aufgabe
      -> Inter.Types.Var Boolean BI Exp
 quiz auf ver par =
     Inter.Types.Var { problem = Boolean
-             , aufgabe = auf
-             , version = ver
+             , tag = auf ++ "-" ++ ver
              , key = \ mat -> return mat
              , gen = \ key -> do
                    seed $ read key
@@ -73,8 +72,7 @@ quiz auf ver par =
                                   }
                          ) ( roll par )
                    return $ return 
-			  $ BI { tag = "Quiz"
-			       , formula = x
+			  $ BI { formula = x
 		      , operators = read "mkSet [ !, ||, && ]" 
 			       }
 	      }

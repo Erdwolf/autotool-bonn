@@ -8,8 +8,9 @@ module Control.Types
 , ClockTime
 , Typ, Config, Remark, Name
 , Oks, Nos
-, fromCGI
-, toString
+, Time
+, FromCGI (..)
+, ToString (..)
 )
 
 where
@@ -21,6 +22,7 @@ import Autolib.ToDoc
 
 import System.Time
 import Control.SQL
+import Data.Char ( toLower )
 import Database.MySQL.HSQL
 
 import qualified Exception
@@ -34,6 +36,21 @@ class ToString a where toString :: a -> String
 
 -------------------------------------------------------------
 
+data Time = Time String deriving ( Eq, Ord, Typeable )
+
+{-! for Time derive : Reader, ToDoc, Haskell2Xml !-}
+
+instance Show Time where show = render . toDoc
+instance Read Time where readsPrec = parsec_readsPrec
+instance SqlBind Time where 
+    fromSqlValue _ s = Just $ Time s
+    toSqlValue (Time s) = s
+
+instance ToEx Time where
+    toEx x = EString $ show x
+
+-------------------------------------------------------------
+
 data HiLo = High | Low | Keine deriving ( Eq, Ord, Typeable )
 
 {-! for HiLo derive : Reader, ToDoc, Haskell2Xml !-}
@@ -41,8 +58,11 @@ data HiLo = High | Low | Keine deriving ( Eq, Ord, Typeable )
 instance Show HiLo where show = render . toDoc
 instance Read HiLo where readsPrec = parsec_readsPrec
 instance SqlBind HiLo where 
-    fromSqlValue SqlENUM s = read s
+    fromSqlValue _ s = Just $ case parse (parse_complete reader) "string" s of
+        Right x -> x
+	Left e -> Keine
     toSqlValue w = show w
+
 instance ToEx HiLo where
     toEx x = EString $ show x
 
@@ -67,7 +87,8 @@ data MNr = MNr Int deriving ( Eq, Ord, Typeable )
 instance Show MNr where show = render . toDoc
 instance Read MNr where readsPrec = parsec_readsPrec
 instance SqlBind MNr where 
-    fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
+    -- fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
+    fromSqlValue (SqlNumeric _ _) s = Just $ MNr $ read s
     toSqlValue (MNr i) = toSqlValue i
 instance ToEx MNr where
     toEx (MNr x) = EString $ show x
@@ -87,7 +108,7 @@ data Typ = Typ String deriving ( Eq, Ord, Typeable )
 instance Show Typ where show = render . toDoc
 instance Read Typ where readsPrec = parsec_readsPrec
 instance SqlBind Typ where 
-    fromSqlValue ty s = fmap Typ $ fromSqlValue ty s
+    fromSqlValue ty s = Just $ Typ s
     toSqlValue (Typ cs) = toSqlValue cs
 instance ToEx Typ where
     toEx x = EString $ show x
@@ -104,8 +125,10 @@ data Config = Config String deriving ( Eq, Ord, Typeable )
 instance Show Config where show = render . toDoc
 instance Read Config where readsPrec = parsec_readsPrec
 instance SqlBind Config where 
-    fromSqlValue ty s = fmap Config $ fromSqlValue ty s
+    fromSqlValue ty s = Just $ Config s
     toSqlValue (Config cs) = toSqlValue cs
+instance ToString Config where
+    toString ( Config s ) = s
 
 -- | Aufgaben-Remark
 data Remark = Remark String deriving ( Eq, Ord, Typeable )
@@ -115,8 +138,10 @@ data Remark = Remark String deriving ( Eq, Ord, Typeable )
 instance Show Remark where show = render . toDoc
 instance Read Remark where readsPrec = parsec_readsPrec
 instance SqlBind Remark where 
-    fromSqlValue ty s = fmap Remark $ fromSqlValue ty s
+    fromSqlValue ty s = Just $ Remark s
     toSqlValue (Remark cs) = toSqlValue cs
+instance ToString Remark where
+    toString ( Remark s ) = s
 
 
 -- | Aufgaben-Name
@@ -127,7 +152,7 @@ data Name = Name String deriving ( Eq, Ord, Typeable )
 instance Show Name where show = render . toDoc
 instance Read Name where readsPrec = parsec_readsPrec
 instance SqlBind Name where 
-    fromSqlValue ty s = fmap Name $ fromSqlValue ty s
+    fromSqlValue ty s = Just $ Name s
     toSqlValue (Name cs) = toSqlValue cs
 instance ToString Name where 
     toString (Name cs) = cs
@@ -144,11 +169,12 @@ data SNr = SNr Int deriving ( Eq, Ord, Typeable )
 instance Show SNr where show = render . toDoc
 instance Read SNr where readsPrec = parsec_readsPrec
 instance SqlBind SNr where 
-    fromSqlValue ty s = fmap SNr $ fromSqlValue ty s
+    -- fromSqlValue ty s = fmap SNr $ fromSqlValue ty s
+    fromSqlValue (SqlNumeric _ _) s = Just $ SNr $ read s
     toSqlValue (SNr i) = toSqlValue i
 
 instance ToEx SNr where
-    toEx x = EString $ show x
+    toEx (SNr x) = EString $ show x
 
 -- | Aufgaben-Nummer
 
@@ -159,10 +185,11 @@ data ANr = ANr Int deriving ( Eq, Ord, Typeable )
 instance Show ANr where show = render . toDoc
 instance Read ANr where readsPrec = parsec_readsPrec
 instance SqlBind ANr where 
-    fromSqlValue ty s = fmap ANr $ fromSqlValue ty s
+    -- fromSqlValue ty s = fmap ANr $ fromSqlValue ty s
+    fromSqlValue (SqlNumeric _ _) s = Just $ ANr $ read s
     toSqlValue (ANr i) = toSqlValue i
 instance ToEx ANr where
-    toEx x = EString $ show x
+    toEx (ANr x) = EString $ show x
 
 -- | Gruppen-Nummer
 
@@ -177,7 +204,7 @@ instance SqlBind GNr where
     fromSqlValue (SqlNumeric _ _) s = Just $ GNr $ read s
     toSqlValue (GNr i) = toSqlValue i
 instance ToEx GNr where
-    toEx x = EString $ show x
+    toEx (GNr x) = EString $ show x
 
 -- | Vorlesungs-Nummer
 
@@ -188,10 +215,11 @@ data VNr = VNr Int deriving ( Eq, Ord, Typeable )
 instance Show VNr where show = render . toDoc
 instance Read VNr where readsPrec = parsec_readsPrec
 instance SqlBind VNr where 
-    fromSqlValue ty s = fmap VNr $ fromSqlValue ty s
+    -- fromSqlValue ty s = fmap VNr $ fromSqlValue ty s
+    fromSqlValue (SqlNumeric _ _) s = Just $ VNr $ read s
     toSqlValue (VNr i) = toSqlValue i
 instance ToEx VNr where
-    toEx x = EString $ show x
+    toEx (VNr x) = EString $ show x
 
 -- | OK-Bewertung (Anzahl)
 

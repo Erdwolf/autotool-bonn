@@ -1,14 +1,11 @@
 -- this is a main module
 
-import qualified SAT.SAT
-import qualified TM.Steps
+import Inter.CGI
 
-import Inter.Types
-import Inter.Variant
+main :: IO ()
+main = execute "Check.cgi" $ do
+    a <- textfield "a" "0"
+    b <- textarea "b" "0"
+    submit "foo" "bar"
+    pre $ "Summe ist " ++ show (read a + read b)
 
-variants :: [ Variant ]
-variants = [ Variant SAT.SAT.var ]
-
-main = do
-     steps <- TM.Steps.variantsIO 
-     interface $ steps ++ variants
