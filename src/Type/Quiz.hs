@@ -60,21 +60,6 @@ roll conf = do
     let ts = types conf
     fin <- eins ts -- final state
     au <- roller conf ( mkSet [ 0 .. max_arity conf ] ) (mkSet  ts) fin
- 
-{-
-    debug $ show $ toDoc au
-    let nau = normalize au
-    debug $ show $ toDoc nau
-    let sh = shortest0 nau
-    debug $ show $ length $ assocs sh
-    sequence_ $ do
-       k <- [ 0 .. 4 ] 
-       (i, vs) <- assocs $ sh
-       return $ do
-	   debug $ show ( i, k )
-	   debug $ show $ vs !! k 
--}
-
     let fs = do c <- [ 'a' .. ] ; return $ mknullary [c]
     let vfs = do 
           (f, (p, (c, qs))) <- zip fs $ Relation.pairs $ trans au
@@ -95,10 +80,8 @@ instance Generator TypeCheck Conf ( NFTA Int Type, TI ) where
         roll conf `repeat_until` \ ( au, ti ) -> 
               min_symbols conf <= size (signature ti)
 	   && size (signature ti) <= max_symbols conf
-{-
            && let s = size $ head $ shortest au
               in  min_size conf <= s && s <= max_size conf 
--}
 
 instance Project TypeCheck ( NFTA Int Type, TI ) TI where
     project p ( au, ti ) = ti

@@ -86,7 +86,7 @@ iface mks = do
 			       return ( show act, act )
                 return ( mauf, action )
            else do 
-		( action, auf ) <- statistik stud aufs
+		( action, auf ) <- statistik False stud aufs
                 return ( Just auf, action )
     when tutor $ close -- btable ??
 
@@ -133,8 +133,11 @@ iface mks = do
         Solve -> do
             ( cs, res, com ) <- solution vnr manr stud' mk auf' 
 	    punkte stud' auf' ( cs, res, com )
-	Review -> do
-	    find_previous stud' auf'
+	Edit | tutor -> do
+	    find_previous True stud' auf'
+            return ()
+	View -> do
+	    find_previous False stud' auf'
             return ()
 
     return ()
@@ -247,7 +250,7 @@ get_stud tutor stud =
 	 return stud
 
 
-find_previous stud auf = do
+find_previous edit stud auf = do
 
     hr ---------------------------------------------------------
 
@@ -255,11 +258,11 @@ find_previous stud auf = do
     sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
                    `Control.Exception.catch` \ any -> return []
     case sas of
-        [ sa ] -> show_previous False sa
+        [ sa ] -> show_previous edit sa
         _ -> return Nothing
 
 -- | TODO: possibly with edit (for tutor)
-show_previous tutor sa = do
+show_previous edit sa = do
     h3 "Vorige Einsendung und Bewertung zu dieser Aufgabe"
     -- pre $ show sa
     br ; plain "Einsendung:"
@@ -274,14 +277,14 @@ show_previous tutor sa = do
         Just file -> do
             -- alte bewertung ist schon da
 	    io $ readFile $ toString file
-        Nothing -> case tutor of
+        Nothing -> case edit of
             -- alte bewertung nicht da
 	    False -> return "(keine Bewertung)"
             True -> case SA.input sa of
                  -- stattdessen alte eingabe lesen
                  Just file -> io $ readFile $ toString file
 		 Nothing -> return "(keine Eingabe)"
-    case tutor of
+    case edit of
 	 False -> do
              html $ primHtml h
              blank -- ??
@@ -406,15 +409,17 @@ mkpar stud auf = P.empty
 ------------------------------------------------------------------------
 
 data Action = Solve  -- ^ neue Lösung bearbeiten
-	    | Review -- ^ alte Lösung + Bewertung ansehen
+	    | View -- ^ alte Lösung + Bewertung ansehen
+	    | Edit -- ^ alte Lösung + Bewertung ändern
 	    | Statistics 
 	    | Config
             | Delete 
      deriving ( Show, Eq )
 
 -- | für Student: statistik aller seiner Aufgaben anzeigen, 
+-- für Tutor: kann Aufgabenlösung sehen und (nach-)korrigieren
 -- mit aufgabenauswahl
-statistik stud aufs = do
+statistik tutor stud aufs = do
     hr 
     h3 "Punktestand und Aufgaben-Auswahl"
     -- daten holen
@@ -426,8 +431,7 @@ statistik stud aufs = do
 		     [    ] ->  ( Oks 0, Nos 0 , Nothing )
 		     [ sa ] ->  ( SA.ok sa, SA.no sa, SA.result sa )
 	    return ( auf, okno )
-    -- vorige aufgabe holen
-    mvor <- look "vor"
+
     -- daten anzeigen
     let dat = do
             open btable
@@ -440,6 +444,9 @@ statistik stud aufs = do
                 ( auf, ( ok, no, mres ) ) <- score
                 let name = toString $ A.name  auf
                 return $ do
+                    let choices = 
+			    if tutor then [ View, Edit ]
+			    else [ Solve, View ]
             	    open row
                     let col = if A.current auf
 			         && Mandatory == A.status auf
@@ -447,24 +454,20 @@ statistik stud aufs = do
 				   then "green"
 				   else "red"
 			      else "black"
-                    click_solve <- if A.current auf
-                       then do submit ( "solve-" ++ name )  name
-            	       else do plain name ; return False
+                    farbe col $ toString $ A.name auf
                     farbe col $ toString $ A.status auf
                     farbe col $ toString $ A.highscore auf
                     farbe col $ toString $ A.von auf
                     farbe col $ toString $ A.bis auf
-		    click_review <- case mres of
-			Just res -> submit ( "review-" ++ name ) ( show res )
-		        Nothing -> do plain "" ; return False
+                    farbe col $ show mres
             	    farbe col $ show ( ok , no )
+                    mact <- radio_choice ("radio-" ++ name) $ do
+			   act <- choices
+			   return ( show act, act )
             	    close -- row
-                    return $ [ ( click_solve, ( Solve, auf ) )
-			     | click_solve || mvor == Just name 
-			     ]
-		          ++ [ ( click_review, ( Review, auf ) )
-			     | click_review 
-			     ]
+		    return $ do 
+		        Just act <- return mact 
+			return ( act, auf )
             close
             return clicks
     -- auswerten
@@ -487,24 +490,18 @@ statistik stud aufs = do
 		  ]
 
     clicks <- dat ; br ; aus
-
-    let ( cli, uncli ) = partition fst $ concat clicks
-        clicked = map snd cli
-        unclicked = map snd uncli
-    ( action, auf ) <- case clicked of
-        [ aauf ] -> do
-            -- plain "neue aufgabe, gedächtnis löschen"
-	    blank 
-            return aauf
-        _ -> case unclicked of
-	      [ aauf ] -> do
-		   -- plain "alte aufgabe, weiter"
-		   return aauf 
-              _ -> do
-		   -- plain "gar keine aufgabe, stop"
-                   mzero 
-    hidden "vor" $ toString $ A.name auf
-    return ( action , auf )
+    -- vorige aufgabe holen
+    mvor <- look "vor"
+    case concat clicks of
+        ( act, auf ) : _ -> do
+            let nauf = toString $ A.name auf
+            -- neue aufgabe, zukunft löschen
+            when ( Just nauf  /= mvor ) $ blank
+            -- aufgabe merken
+	    hidden "mvor" nauf
+	    return ( act, auf )
+        _ -> do -- gar keine aufgabe, stop
+            mzero 
 
 --------------------------------------------------------------------------
 
