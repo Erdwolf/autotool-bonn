@@ -3,5 +3,6 @@
 The files in  src/Codec  are (c) Dominic Steinitz, Ian Lynagh
 from Haskell Cryptographic Library 1.2.2 http://www.haskell.org/crypto/
 
-
+The files in src/Wash  are (c) Peter Thiemann
+http://www.informatik.uni-freiburg.de/~thiemann/haskell/WASH/
 

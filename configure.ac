@@ -103,38 +103,38 @@ AC_SUBST(BASE)
 dnl ***********************************************
 dnl autotool www directory
 dnl ***********************************************
-PUB="/var/www"
-AC_ARG_WITH(pub,
-[  --with-pub=<autotool www directory>
-        haddockumentaion goes to $pub/auto/tool
-	pics go in $pub/pics
+WWW="/var/www"
+AC_ARG_WITH(www,
+[  --with-www=<autotool www directory>
+       haddockumentation goes to $www/auto
 ],
-[PUB="$withval"]
+[WWW="$withval"]
 )
 
-if test "$PUB" = "" || test ! -d $PUB; then
+if test "$WWW" = "" || test ! -d $WWW; then
   AC_MSG_ERROR([need a www directory to build the package])
 fi
 
-AC_SUBST(PUB)
-
+AC_SUBST(WWW)
 
 dnl ***********************************************
-dnl cgi script directory
+dnl autotool cgi directory
 dnl ***********************************************
-CGIDIR=$PUB/cgi-bin
+CGI="/usr/lib"
 AC_ARG_WITH(cgi,
-[  --with-cgi-dir=<cgi script directory>
-        CGI script is installed here
+[  --with-cgi=<autotool cgi directory>
+        CGI programs go to $cgi/cgi-bin
+        pictures go to $cgi/pics
 ],
-[CGIDIR="$withval"]
+[CGI="$withval"]
 )
 
-if test "$CGIDIR" = "" || test ! -d $CGIDIR; then
-  AC_MSG_ERROR([need a cgi script directory])
+if test "$CGI" = "" || test ! -d $CGI; then
+  AC_MSG_ERROR([need a cgi directory to build the package])
 fi
 
-AC_SUBST(CGIDIR)
+AC_SUBST(CGI)
+
 
 dnl ***********************************************
 dnl debugging?
