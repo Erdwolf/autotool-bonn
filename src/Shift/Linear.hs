@@ -22,17 +22,21 @@ data Linear a = Item { unItem :: a }
 		       , count  :: Int 
 		       , diff  :: [ Diff ]
 		       }
+	    | Wild
      deriving ( Eq )
 
 instance ToDoc a => ToDoc ( Linear a ) where
     toDoc ( Item i ) = toDoc i
-    toDoc ( r @ Repeat {} ) = 
-	toDoc ( start r ) <+>
-           if all nul (diff r)
-	   then text "*" <+> toDoc ( count r )
-	   else nest 4 ( text ("+ {" ++ show 0 ++ ".." ++ show (count r - 1) ++ "} *" )
-		    <> toDoc ( diff r )
-		    )
+    toDoc ( r @ Repeat {} ) = vcat
+          [ hcat [ toDoc ( count r ) 
+		 , if all nul (diff r)  then empty else 
+		   text "@" <> braces (toDoc ( diff r ) )
+		 , text "*" 
+		 ]
+	  , nest 4 $ toDoc ( start r ) 
+	  ]
+    toDoc ( Wild ) = text "?"
+
 
 instance ToDoc a => Show ( Linear a ) where show = render . toDoc
 
@@ -42,12 +46,17 @@ data Diff = DZero -- no difference on items
 	  | DRepeat { dcount :: Int
 		    , dstart :: [ Diff ]
 		    }
+	  | DWild
     deriving ( Eq, Ord )
 
 instance ToDoc Diff where
-    toDoc ( DZero ) = text "0"
+    toDoc DZero = text "0"
+    toDoc d | nul d  = text "o"
     toDoc ( d @ DRepeat {} ) = braces $
-	toDoc (dstart d) <+>  toDoc (dcount d) 
+	( if all nul $ dstart d then empty else 
+	  toDoc (dstart d)
+	) <+>  toDoc (dcount d) 
+    toDoc DWild = text "?"
 
 instance Show Diff where show = render . toDoc
 
@@ -79,12 +88,14 @@ plus ( x @ Repeat {} ) ( y @ DRepeat {} ) =
 		, count = (+)  (count x) (dcount y)
 		, diff  = diff x
 		}
+plus ( Wild ) ( DWild ) = Wild
 plus _ _ = error "Shift.Linear.plus: args do not match"
 
 conform :: Linear a -> Diff -> Bool
 conform ( Item x ) ( DZero ) = True
 conform ( x @ Repeat {} ) ( y @ DRepeat {} ) = 
     conforms ( start x ) ( dstart y )
+conform ( Wild ) ( DWild ) = True
 conform _ _ = False
 
 conforms :: [ Linear a ] -> [ Diff ] -> Bool
@@ -96,13 +107,21 @@ conforms xs ds =
 
 small :: Diff -> Bool
 small ( DZero ) = True
+small ( DWild ) = True
 small ( r @ DRepeat {} ) = 
     abs (dcount r) <= 1 &&  all small ( dstart r )
 
 nul :: Diff -> Bool
 nul ( DZero ) = True
+nul ( DWild ) = True
 nul ( r @ DRepeat {} ) = 
     abs (dcount r) == 0 &&  all nul   ( dstart r )
+
+depth :: Linear a -> Int
+depth ( Item _ ) = 0
+depth ( Wild ) = 0
+depth ( r @ Repeat {} ) = 
+    succ $ maximum $ map depth $ start r
 
 ------------------------------------------------------------------
 
@@ -120,6 +139,7 @@ minus (x @ Repeat {}) (y @ Repeat {}) = do
     return $ DRepeat { dstart = s 
 		    , dcount = c
                     }
+minus Wild Wild = return DWild
 minus _ _ = mzero
 
 minusses :: Eq a => [ Linear a ] -> [ Linear a ] -> Maybe [ Diff ]
@@ -129,31 +149,32 @@ minusses xs ys = do
 
 --------------------------------------------------------------
 
-diffs :: Eq a => Int -> [Linear a] -> [ [Diff] ]
-diffs w xs = do
+diffs :: Eq a => Int -> Int -> [Linear a] -> [ [Diff] ]
+diffs k0 w xs = do
     ys <- tails xs
-    k <- [ 1 .. w ]
-    ( a : b : c : rest ) <- return $ cuts k ys
+    k <- [ k0 .. w ]
+    ( a : b : rest ) <- return $ cuts k ys
     guard $ not $ null a
     ba <- maybeToList $ minusses b a
-    guard  $ all small ba
-    cb <- maybeToList $ minusses c b
-    guard $ ba == cb
+    -- guard  $ all small ba
+    -- cb <- maybeToList $ minusses c b
+    -- guard $ ba == cb
     return $ ba
 
-topdiffs :: Eq a => Int -> [ Linear a ] -> [[ Diff ]]
-topdiffs w xs = uniq $ do
+topdiffs :: Eq a => Int -> Int -> [ Linear a ] -> [[ Diff ]]
+topdiffs k0 w xs = uniq $ do
     let fm = addListToFM_C (+) emptyFM $ do 
-	     ds <- diffs w xs
+	     ds <- diffs k0 w xs
 	     return ( ds, 1 )
     (c, ds) <- sortBy (negate . fst ) $ do 
 	     ( ds, c ) <- fmToList fm
 	     return ( c, ds )
     return ds
 
-apply :: Eq a => [ Diff ] -> [ Linear a ] -> [ Linear a ]
-apply ds [] = []
-apply ds xs = 
+apply :: Eq a => Bool -> [ Diff ] -> [ Linear a ] -> [ Linear a ]
+-- if compact == True, then insert Wild elements for non-matching items
+apply compact ds [] = []
+apply compact ds xs = 
     let k = length ds
         ys = cuts k xs
         y = head ys
@@ -164,8 +185,12 @@ apply ds xs =
 	zs = repeater r
 	c  = length $ takeWhile ( uncurry (==) ) $ zip ys zs
     in  if   conforms y ds && c > 1
-	then r       : apply ds ( drop ( c * k ) xs )
-	else head xs : apply ds ( drop         1 xs )
+	then r : apply compact ds ( drop ( c * k ) xs )
+	else ( if compact then wild
+	       else ( head xs : )
+	     ) $ apply compact ds ( drop         1 xs )
+
+wild xs = Wild : dropWhile (== Wild) xs
 
 cuts :: Int -> [a] -> [[a]]
 -- schneidet in gleichlange stücke
@@ -176,19 +201,22 @@ cuts w xs =
 
 ---------------------------------------------------------------------------
 
-work :: Eq a => Int -> [ Linear a ] -> Maybe [ Linear a ]
+triv ( Repeat { start = [ Item foo ] } ) = True
+triv _ = False
+
+work :: Eq a => Bool -> Int -> Int -> [ Linear a ] -> [ Linear a ] 
 -- apply one complete pass of analysis
-work w xs = do
-    let dss = take 5 $ topdiffs w xs 
-    guard $ not $ null dss
-    return $ foldr apply xs dss
+-- try several of the topdiffs
+work compact k0 w xs = 
+    let dss = take 1 $ topdiffs k0 w xs 
+    in	if null dss then []
+	else foldr (apply compact) xs dss
 
-worker :: Eq a => Int -> [ Linear a ] -> [[Linear a]]
-worker w xs = 
-    case work w xs of
-        Just ys -> ys : worker w ys
-	Nothing -> []
+worker :: Eq a => Bool -> Int -> [ Linear a ] -> [[ Linear a ]]
+worker compact w xs = helper compact False w xs
 
-worker1 w xs = do
-    ys <- maybeToList $ work 1 xs
-    worker w ys
+helper compact f w xs = xs :
+    case work compact (if f then 1 else 1 ) w xs of
+	 [] -> []
+	 ys -> helper compact True w ys
+

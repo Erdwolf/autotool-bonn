@@ -1,12 +1,31 @@
 module Shift.Boiler where
 
-import Shift.Type
-import Shift.Generate ( pee )
-import Shift.Meta ( vector )
+import Shift.Linear
+import Shift.Computer
+import Shift.Break
 
-import Shift.Computer ( smp )
 
-m = Meta { start = [2,3,6,8], diff = [2,3,5,7] }
-mm = do k <- [ 0 .. ] ; return $ pee $ vector m k
+import Bits
+import List ( group )
+import ToDoc
+
+
+ak k = [2*k,3*k,5*k+1,7*k+1]
+
+ch f = if f then '+' else '-'
+
+ex k = map ( \ g -> Repeat { start = [ Item $ ch $ head g ]
+			   , diff  = [ DZero ]
+			   , count = length g
+			   }
+	   ) $ group $ folge $ ak k
+
+brk :: Break -> [ Linear () ]
+brk ms = map ( \ n -> Repeat { start = [ Item () ], diff = [ DZero ]
+			     , count = fromIntegral n
+			     } )
+       $ grundy ms
+
+mainf a b c = smp $ worker False a $ take b $ brk c
 
 
