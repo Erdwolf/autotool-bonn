@@ -61,7 +61,7 @@ find xs =
 -------------------------------------------------------------------
 
 
-{-# SPECIALIZE find :: ([Bool] -> [Bool]) -> [Bool] -> Int #-}
+{-# SPECIALIZE ffind :: ([Bool] -> [Bool]) -> [Bool] -> Int #-}
 
 ffind :: Eq a => (a -> a) -> a -> Int
 -- etwas more tricky:
