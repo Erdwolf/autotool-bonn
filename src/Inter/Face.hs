@@ -55,6 +55,7 @@ iface variants env = do
     case res of
 	 Left msg -> do
 	      return $ page par0 msg
+
 	 Right par1 -> case P.variante par1 of
 	   Variant v -> do
 	      -- key/instanz herstellen und anzeigen
@@ -99,8 +100,9 @@ iface variants env = do
 
 page par msg = 
     let pre = preface par
+	submit = submit "submit" "submit"
     in  header << thetitle << "Inter.Face"
-             +++ body ( form ( pre +++ msg )
+             +++ body ( form ( pre +++ submit +++ msg )
 		      ! [ Text.Html.action "Face.cgi"
 			, method "POST" ]
 		      )
