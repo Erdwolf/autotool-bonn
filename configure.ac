@@ -88,12 +88,11 @@ AC_ARG_WITH(hsql,
 [  --with-hsql=<1.2|1.4>
         HSQL version
 ],
-[HSQL="$withval"],
-[AC_PATH_PROG(HSQL,hsql)]
+[HSQL="$withval"]
 )
 
-if test "$HSQL" != "1.2" || test "$HSQL" != "1.4" ; then
-  echo only version 1.2 and 1.4 of HSQL are supported
+if test ! "$HSQL" = "1.2" && test ! "$HSQL" = "1.4" ; then
+  AC_MSG_ERROR([only version 1.2 and 1.4 of HSQL are supported]);
 fi
 
 AC_SUBST(HSQL)
