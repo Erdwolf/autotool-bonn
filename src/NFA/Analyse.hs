@@ -31,6 +31,14 @@ data AI = AI { name :: String -- abkürzung
 
 instance C.Partial  Analyse AI Exp
   where
+    describe p i =  vcat
+	             [     text "Finden Sie einen"
+	               <+> text "regulären Ausdruck,"
+		     , text "der die Sprache" <+> info ( automat i )
+		     , text "über dem Alphabet" <+> toDoc ( alphabet i )
+		     , text "beschreibt."
+		     ]
+
     initial p i   = Exp.Example.example (alphabet i)
 
     partial p i b = do
@@ -55,13 +63,6 @@ analyse auf ver i =
 	, key = \ matrikel -> do 
 	      return ""
 	, gen = \ key -> return $ do
-	      inform $ vcat
-	             [     text "Finden Sie einen"
-	               <+> text "regulären Ausdruck,"
-		     , text "der die Sprache" <+> info ( automat i )
-		     , text "über dem Alphabet" <+> toDoc ( alphabet i )
-		     , text "beschreibt."
-		     ]
 	      return i
 	}
 

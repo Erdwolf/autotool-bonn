@@ -40,6 +40,16 @@ besch i = case beschreibung i
 
 instance C.Partial  Synthese SI ( NFA Char Int )
   where
+    describe p i = vcat
+        [ text "Finden Sie einen"
+                       <+> ( if deterministisch i 
+			     then text "deterministischen" else empty )
+	               <+> text "endlichen Automaten,"
+	, text "der die Sprache" <+> besch i
+	, text "über dem Alphabet" <+> toDoc ( alphabet i )
+	, text "akzeptiert."
+	]
+
     initial p i   = NFA.Example.example
 
     partial p i b = do
@@ -65,20 +75,7 @@ synthese auf ver i =
 	, version = ver
 	, key = \ matrikel -> do 
 	      return ""
-        -- TODO: diese kommentare sollten eigentlich
-	-- eine methode  describe :: p i -> Doc  von Challenger.Partial sein.
-	-- dazu muß man einigen code umstellen
-	-- aber es sollte danach viel besser aussehen
 	, gen = \ key -> return $ do
-	      inform $ vcat
-	             [     text "Finden Sie einen"
-                       <+> ( if deterministisch i 
-			     then text "deterministischen" else empty )
-	               <+> text "endlichen Automaten,"
-		     , text "der die Sprache" <+> besch i
-		     , text "über dem Alphabet" <+> toDoc ( alphabet i )
-		     , text "akzeptiert."
-		     ]
 	      return i
 	}
 

@@ -31,16 +31,18 @@ computer_mat auf ver fnum =
 	, version = ver
 	, key = \ matrikel -> do
 	      return matrikel
-	, gen = \ matrikel -> return $ do
-	      let num = fnum matrikel
-	      inform $ text "Konstruieren Sie eine Maschine,"
-	      inform $ text "welche die Funktion" <+> info num 
-	               <+> text "berechnet!"
-	      return num
+	, gen = \ key -> return $ do
+	      return $ fnum key
 	}
 
 instance ( Machine m dat conf, Numerical dat )
          => C.Partial N.Computer (N.Type m) m where
+    describe p i =
+	    vcat [ text "Konstruieren Sie eine Maschine,"
+		 , text "welche die Funktion" <+> info i
+	               <+> text "berechnet!"
+		 ]
+
     initial p i   = N.start i
     partial p i b = N.check i b
     total   p i b = do

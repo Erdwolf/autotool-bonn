@@ -68,6 +68,7 @@ import Inter.Bank
 -- , variants , variante , highscore , anr }
 --
 import qualified Inter.Param as P
+import qualified Inter.Motd
 
 import qualified Challenger
 
@@ -80,14 +81,10 @@ import qualified Exception
 import Inter.Boiler
 
 import qualified Posix
+import Informed
 
 main :: IO ()
 main = do
-
-     -- damit die Datei-Geschichten funktionieren
-     -- user <- Posix.getEffectiveUserName
-     -- let user = "alf"
-     -- Posix.setEnvVar "HOME" $ "/home/" ++ user
 
      vs <- boiler
      wrapper $ \ env -> 
@@ -111,6 +108,8 @@ iface variants env = do
 							   }
 				in Inter.Env.get_with env def
 
+    motd <- Inter.Motd.contents
+
     -- gültigkeit prüfen, aufg.-instanz generieren / bzw. holen
     --
     -- das ist eine IO-Aktion 
@@ -118,17 +117,16 @@ iface variants env = do
     -- im Reporter.Type gibts (mit Absicht) (leider) keine IO
     res <- validate $ par0 { P.variants = variants }
 
-    -- haben es wir geschaft zum aufgabenlösen
+    -- haben es wir geschafft zum aufgabenlösen
     case res of
      -- nein, fehler (=msg) : entweder passwort falsch 
      -- oder ungültige Aufgabe (-> zeige mögliche)
      Left msg -> do
-          return $ page par0{ P.variants = variants }  msg
+          return $ page par0{ P.variants = variants }  ( msg +++ motd )
 
      -- ja,
      Right par1 -> case P.variante par1 of
        Variant v -> do
-
 
           -- key (für persönliche Aufgabe) und Aufgaben-Instanz
           -- herstellen und anzeigen
@@ -136,8 +134,8 @@ iface variants env = do
           generator <- gen v k
           let ( Just i, com :: Doc ) = export generator
 
-          let inst = p << "Die Aufgabenstellung ist:"
-					  +++ p << pre << render com 
+          let inst =   h3 << "Aufgabenstellung"
+		   +++ p  << pre << render ( Challenger.describe (problem v) i )
           
           -- Beispiel Eingabe holen  
           let b0 = Challenger.initial ( problem v ) i
@@ -199,7 +197,7 @@ iface variants env = do
 						   +++ submit "Beispiel" "Beispiel"
 
 
-          return $ page par2 $ inst +++ log +++ status +++ ans
+          return $ page par2 $ inst +++ motd +++ log +++ status +++ ans
 
 ------------------------------------------------------------------------
 --

@@ -23,8 +23,15 @@ data Var p i b =
 	     , version :: String
 	     -- erzeugt cached version der instanz (o. ä.)
 	     , key :: Matrikel -> IO Key
+
 	     -- holt tatsächliche instanz
+	     -- TODO: der Reporter hier ist unsinnig,
+	     -- das würfeln soll schweigend gehen,
+	     -- wenn es etwas zu sagen gibt,
+	     -- dann soll es mit (informed) drangeschrieben werden.
 	     , gen :: Key -> IO ( Reporter i )
+
+
 	     }
      deriving Show
 

@@ -18,8 +18,18 @@ import Array
 import Reporter
 import List (isPrefixOf)
 import ToDoc
+import Informed
+
 
 instance Partial PCProblem PCP Folge where
+
+    describe p i = 
+        vcat [ text "Lösen Sie diese Instanz des Postschen Korrespondenz-Problems:"
+	     , nest 4 $ toDoc i
+	     ]
+
+
+
     initial p i   = 
         case do let PCP uvs = i
 		(k, (u,v)) <- zip [1..] uvs
@@ -83,13 +93,8 @@ make auf ver gene =
   		          }
        	                ) ( gene key )
 	           return $ do
-	               inform $ vcat
-	                  [ text "Lösen Sie diese Instanz des Postschen Korrespondenz-Problems:"
-			  , nest 4 $ toDoc p
-			  ]
 	               return p
 	     }
-
 
 quiz :: Param -> Key -> IO PCP
 quiz par = \ key -> do

@@ -40,8 +40,20 @@ data DI = DI { nea :: NFA Char Int
 
 -- p,b,i = problem,instance,beweis
 
-instance C.Partial  Determine DI ( NFA Char Int )
-  where
+instance C.Partial  Determine DI ( NFA Char Int )  where
+    describe p i =
+            let minitxt = 
+	          if (mustmini $ config i) 
+	          then " minimierten, vollständigen" 
+	          else ""
+            in  vcat
+		[ text "Gegeben ist der Automat"
+		, nest 4 $ toDoc ( nea i)
+		, text $ "Finden Sie einen dazu äquivalenten" 
+			  ++ minitxt
+			  ++ " deterministischen Automaten!"
+		]
+
     initial p i   = NFA.Example.example
 
     -- partielle korrektheit
@@ -108,17 +120,6 @@ determine auf ver conf =
                                      }
                             ) ( throw conf )
           return $ do
-            let minitxt = 
-	          if (mustmini conf) 
-	          then " minimierten, vollständigen" 
-	          else ""
-            inform $ vcat
-		[ text "Gegeben ist der Automat"
-		, nest 4 $ toDoc i
-		, text $ "Finden Sie einen dazu äquivalenten" 
-			  ++ minitxt
-			  ++ " deterministischen Automaten!"
-		]
             return $ DI { nea = i
                        , alphabet = alpha conf
                        , dea = b -- merken uns auch einen zielautomat

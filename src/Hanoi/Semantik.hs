@@ -20,6 +20,14 @@ data HI = HI { start :: Hof
     deriving ( Show )
 
 instance C.Partial Hanoi HI [ Zug ] where
+
+    describe p i = 
+          vcat [ text "Türme von Hanoi. Finden Sie eine Zugfolge von"
+		     , nest 4 $ toDoc ( start i )
+		     , text "nach"
+		     , nest 4 $ toDoc ( ziel i )
+		     ]
+
     initial p i = [ (A, B) ]
 
     partial p i b = return ()
@@ -56,13 +64,6 @@ hanoi conf =
               return matrikel
         , gen = \ key -> do
               return $ do
-	          let hi = make conf
-                  inform $ vcat
-                     [ text "Türme von Hanoi. Finden Sie eine Zugfolge von"
-		     , nest 4 $ toDoc ( start hi )
-		     , text "nach"
-		     , nest 4 $ toDoc ( ziel hi )
-		     ]
-	          return hi
+	          return $ make conf
         }
 

@@ -59,7 +59,16 @@ is_increasing xs = and $ do
 
 data Sortier = Sortier deriving ( Eq, Ord, Show, Read )
 
+
 instance C.Partial Sortier Int Netz where
+
+    describe p i = vcat 
+	  [ text "Finden Sie ein Sortiernetz für"
+	         <+> toDoc i <+> text "Eingänge"
+	  , text "mit weniger als" <+> toDoc ( size $ bubble i )
+		 <+> text "Komparatoren."
+	  ]        
+
     initial p i   = bubble i
     partial p i b =  do
         inform $ text "Ihr Netz ist:" <+> toDoc ( toBild b )
@@ -68,13 +77,12 @@ instance C.Partial Sortier Int Netz where
 	     [ text "Das Netz soll Breite" <+> toDoc i <+> text "haben"
 	     , text "es hat aber" <+> toDoc ist
 	     ]
+    total   p i b =  do
+	check i b
         when ( size b >= size ( bubble i ) ) $ reject $ vcat
-	     [ text "Das Netz soll weniger Komparatoren haben"
-	     , text "als das einfache Bubblesort-Netzwerk:"
-	     , nest 4 $ toDoc $ bubble i
+	     [ text "Das sind zuviele Komparatoren."
 	     ]
-        
-    total   p i b = check i b
+
 
 synthese :: String -- aufgabe (major)
          -> String -- aufgabe (minor)
@@ -87,12 +95,6 @@ synthese auf ver i =
         , key = \ matrikel -> do
               return ""
         , gen = \ key -> return $ do
-              inform $ vcat 
-	             [ text "Finden Sie ein Sortiernetz für"
-	                  <+> toDoc i <+> text "Eingänge"
-		     , text "mit weniger als" <+> toDoc ( size $ bubble i )
-		          <+> text "Komparatoren."
-		     ]
 	      return i
         }
 
