@@ -29,7 +29,9 @@ instance ( GraphC a, Show a )
 	       [ text "Gesucht ist eine konfliktfreie Knoten-Färbung des Graphen"
 	       , nest 4 $ toDoc g
 	       ]
-        peng g
+        peng $ g { layout_program = Dot
+		 , layout_hints = [ "-Nshape=ellipse" ]
+		 }
 	inform $ fsep 
 	       [ text "mit höchstens", toDoc c, text "verschiedenen Farben." ]
 
@@ -47,7 +49,9 @@ instance ( GraphC a, Show a )
         let col v = lookupWithDefaultFM f (error $ "Graph.Col.Plain" ++ show v) v
         let fg = gmap ( \ v ->  (v, col v ) ) g 
         inform $ vcat [ text "Der gefärbte Graph ist" ]
-        peng $ fg
+        peng $ fg { layout_program = Dot
+		  , layout_hints = [ "-Nshape=ellipse" ]
+		  }
 	let wrong = do
 	      k <- lkanten g
 	      guard $ col (von k) == col (nach k)
