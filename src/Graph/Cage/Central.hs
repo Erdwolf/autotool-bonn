@@ -115,18 +115,6 @@ paths l g path = path : do
     guard $ not $ x `elem` path
     paths l g $ x : path
 
-------------------------------------------------------------------
-
-g = mkGraph ( mkSet [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11] )
-      ( mkSet [
-		kante 1 2, kante 2 3, kante 3 4, kante 4 5, kante 5 1,
-		kante 1 8, kante 1 11, kante 2 7, kante 2 9,
-		kante 3 8, kante 3 10,
-		kante 4 9, kante 4 11, kante 5 10, kante 5 7,
-		kante 6 7, kante 6 8, kante 6 9, kante 6 10, kante 6 11
-	       ]
-      )
-
 
 
 
