@@ -86,7 +86,7 @@ MATCHBOX_SRC = $(wildcard Makefile* *.hs) \
 	$(shell find $(MATCHBOX_DIRS) -name "*.hs" -print)
 MATCHBOX_DOWNLOAD = $(CGIDIR)/download
 MATCHBOX_ARCHIVE = Matchbox-src-$(shell date -I).tar.bz2
-MATCHBOX_EXEC = Matchbox-exec-$(shell date -I)
+MATCHBOX_EXE = Matchbox-exe-$(shell date -I)
 
 matchbox : do
 	$(GHC_COMMAND) \
@@ -101,8 +101,8 @@ loop :
 # install source archive and executable
 release : do
 	cvs commit -m release-$(shell date -I)
-	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXEC)
-	bzip2 -v --force --best  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXEC)
+	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXE)
+	bzip2 -v --force --best  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXE)
 	tar -cvjf $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_ARCHIVE) \
 		-C.. $(patsubst %, autotool/%, $(MATCHBOX_SRC))
 
