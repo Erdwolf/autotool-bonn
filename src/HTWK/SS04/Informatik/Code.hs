@@ -14,19 +14,28 @@ import Inter.Types
 generates :: [ IO Variant ]
 generates = 
     [ A.make $ A.Config
-             { A.length = A.Fixed 6
-	     , A.size   = A.Maximize
-	     , A.distance  = A.Fixed 3
+             { A.length = (A.Atmost, 6)
+	     , A.size   = (A.Atleast, 10)
+	     , A.distance  = (A.Atleast, 3)
+	     , A.optimize = "Größe"
 	     }
     , A.make $ A.Config
-             { A.length = A.Minimize
-	     , A.size   = A.Fixed 10
-	     , A.distance  = A.Fixed 2
+             { A.length = (A.Atmost, 4)
+	     , A.size = (A.Atleast, 6)
+	     , A.distance  = (A.Atleast, 2)
+	     , A.optimize = "Größe"
 	     }
     , A.make $ A.Config
-             { A.length = A.Fixed 8
-	     , A.size   = A.Fixed 10
-	     , A.distance  = A.Maximize
+             { A.length = (A.Atmost, 9)
+	     , A.size   = (A.Atleast, 10)
+	     , A.distance  = (A.Atleast, 5)
+	     , A.optimize = "Länge"
+	     }
+    , A.make $ A.Config
+             { A.length = (A.Atmost, 8)
+	     , A.size   = (A.Atleast, 10)
+	     , A.distance  = (A.Atleast, 3)
+	     , A.optimize = "Weite"
 	     }
     , H.make $ H.Config 
 	     { H.alphabet = mkSet [ 'a' .. 'i' ]

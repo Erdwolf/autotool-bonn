@@ -15,7 +15,6 @@ import ToDoc
 
 evaluate :: ( Reader b
 	    , Size b
-	    , Challenger.Measure p i b
 	    , ToDoc b
 	    , Challenger.Partial p i b
 	    )

@@ -7,6 +7,7 @@ import Challenger.Partial
 import Inter.Types
 
 import ToDoc
+import Size
 import Reporter
 
 data LCS = LCS deriving ( Eq, Ord, Show, Read )
@@ -18,7 +19,7 @@ data Instance a =
 	      }
      deriving ( Read, Show )
 
-instance ( Eq a, ToDoc [a] ) => Partial LCS ( Instance a ) [a] where
+instance ( Eq a, ToDoc [a], Size [a] ) => Partial LCS ( Instance a ) [a] where
 
     describe LCS i =
         vcat [ fsep [ text "Bestimmen Sie eine"  
@@ -61,6 +62,8 @@ instance ( Eq a, ToDoc [a] ) => Partial LCS ( Instance a ) [a] where
 		then reject 
 		   $ text "Ihre Folge ist kürzer als die Hälfte meiner Lösung."
 		else return ()
+
+    measure LCS i zs = length zs
 
 fixed :: String 
       -> Bool

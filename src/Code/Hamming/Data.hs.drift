@@ -20,7 +20,9 @@ import ToDoc
 -- daß nur zwei buchstaben verwendet werden
 type Code = [[ LR ]]
 
-data Goal = Minimize | Maximize | Fixed Int
+data Goal = Fixed 
+          | Atleast
+	  | Atmost 
      deriving ( Eq, Ord )
 
 {-! for Goal derive : ToDoc, Reader !-}
@@ -29,9 +31,10 @@ instance Show Goal where show = render . toDoc
 instance Read Goal where readsPrec = parsec_readsPrec
 
 data Config = 
-     Config { length :: Goal
-	    , size   :: Goal
-	    , distance   :: Goal
+     Config { length :: ( Goal, Int )
+	    , size   :: ( Goal, Int )
+	    , distance :: ( Goal, Int )
+	    , optimize :: String
 	    }
      deriving ( Eq, Ord )
 
@@ -42,9 +45,10 @@ attributes = [ (length, "Länge"), (size, "Größe"), (distance, "Weite") ]
 instance Show Config where show = render . toDoc
 instance Read Config where readsPrec = parsec_readsPrec
 
-demo = Config { size = Maximize
-	      , length = Fixed 4
-	      , distance = Fixed 2
+demo = Config { size = ( Atleast, 5 )
+	      , length = ( Fixed,  4 )
+	      , distance = ( Atleast, 2 )
+	      , optimize = "Weite"
 	      }
 
 

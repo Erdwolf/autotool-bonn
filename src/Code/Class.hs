@@ -6,7 +6,9 @@ import Code.Type
 
 import Challenger.Partial
 import ToDoc
+import Size
 import Reporter
+
 
 
 data Encode a b = Encode ( Coder a b )
@@ -14,7 +16,7 @@ data Encode a b = Encode ( Coder a b )
 instance Show ( Encode a b ) where
     show ( Encode c ) = "Encode"
 
-instance ( ToDoc [a], Eq b ) 
+instance ( ToDoc [a], Eq b, Size b ) 
 	 => Partial ( Encode a b ) [a] b where
 
     describe ( Encode p ) i = vcat    
@@ -38,7 +40,7 @@ data Decode a b = Decode ( Coder a b )
 instance Show ( Decode a b ) where
     show (Decode c) = "Decode"
 
-instance ( ToDoc b, Eq b  )
+instance ( ToDoc b, Eq b , Size [a] )
 	 => Partial ( Decode a b ) b [ a ] where
 
     describe ( Decode p ) i = vcat
@@ -56,3 +58,4 @@ instance ( ToDoc b, Eq b  )
 	   then inform $ text "Die Eingabe ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
 	 
+    measure ( Decode p ) i b = length b

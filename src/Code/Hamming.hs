@@ -26,8 +26,8 @@ version_tag :: Config -> String
 version_tag conf = do
     ( f, tag ) <- attributes
     case f conf of
-        Fixed i -> take 1 tag ++ show i
-        _       -> mzero
+        (_, i) -> take 1 tag ++ show i
+
     
 make :: Config
      -> IO Variant

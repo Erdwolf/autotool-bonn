@@ -8,7 +8,7 @@ import ToDoc
 import Size
 
 -- | Klasse: Partial
-class Partial p i b | p i -> b , p b -> i where
+class Size b => Partial p i b | p i -> b , p b -> i where
 
       -- | Beschreibung der Aufgabe herstellen
       --
@@ -42,12 +42,8 @@ class Partial p i b | p i -> b , p b -> i where
       -- vorher wird immer erst partial angewendet
       total   :: p -> i -> b -> Reporter ()
 
-
-class Size b => Measure p i b where
       -- | bewertung der lösung
       measure :: p -> i -> b -> Int
       -- | default:
       measure p i b = size b
       
--- | default
-instance Size b => Measure p i b
