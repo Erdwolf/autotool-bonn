@@ -8,13 +8,16 @@ import Grammatik.Type
 import Fix
 import Set
 import FiniteMap
-import Relation
+import qualified Relation
 
 import List (partition)
 import Monad (guard)
 
 -- $Log$
--- Revision 1.1  2002-12-17 15:17:58  joe
+-- Revision 1.2  2003-06-04 08:04:14  joe
+-- TES (für WST-contest)
+--
+-- Revision 1.1  2002/12/17 15:17:58  joe
 -- grammatik -> Grammatik.
 --
 -- Revision 1.1.1.1  2002/05/24 10:46:47  challenger
@@ -33,8 +36,9 @@ kettenfrei g = let
     ( pairs, nopairs ) = partition ( \ ( [lhs], rhs) -> 
             length rhs == 1 && head rhs `elementOf` nichtterminale g ) 
         ( rules g )
-    lookupset fm = lookupWithDefaultFM fm emptySet
-    chains = trans $ addListToFM_C union 
+    -- lookupset fm = lookupWithDefaultFM fm emptySet
+    chains = Relation.trans $ Relation.Make
+	           $ addListToFM_C union 
 		   ( listToFM [ (x, unitSet x) | x <- vars g ] )
 		   [ (l, unitSet r) | ([l],[r]) <- pairs ]
 
@@ -43,7 +47,7 @@ kettenfrei g = let
         rest <- rewrite cs
 	[ c : rest ] ++ 
 	  [ rhs ++ rest 
-	  | let ds = lookupset chains c
+	  | let ds = Relation.images chains c
 	  , ( [ d ], rhs ) <- nopairs
 	  , d `elementOf` ds
 	  ]

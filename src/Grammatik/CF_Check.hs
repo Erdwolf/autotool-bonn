@@ -44,6 +44,7 @@ import Util.Zufall
 
 
 import Reporter
+import qualified Reporter.Result
 
 cf_check :: Language 
 	 -> ( Grammatik -> Reporter () ) -- form-test (z. b. greibach)
@@ -53,7 +54,7 @@ cf_check :: Language
 	 -> Int -- schrittweite für trace
 	 -> String -- matrikelnummer
 	 -> ( Grammatik, Tracks ) -- einsendung
-	 -> IO String
+	 -> IO ( Maybe Int )
 cf_check l typ w n ds t mat ( g, ts ) = do
 
     seed $ read mat
@@ -70,7 +71,8 @@ cf_check l typ w n ds t mat ( g, ts ) = do
 	    eins ws
     demos  <- mapM handle ds
 
-    reporter $ cf_yeah_noh l yeah noh typ (mkSet demos) t ( g, ts )
+    Reporter.Result.wrapper 
+		$ cf_yeah_noh l yeah noh typ (mkSet demos) t ( g, ts )
 
 
 cf_yeah_noh :: Language
