@@ -104,7 +104,7 @@ cached :: State -- start
        -> State -- ergebnis
 cached s it =
     let x : xs = todo s
-    in  case Fun.Cache.lookup (cache s) x of 
+    in  case Fun.Cache.find (cache s) x of 
             Nothing -> it
 	    Just v  -> s  { todo = xs , stack = v : stack s }
 

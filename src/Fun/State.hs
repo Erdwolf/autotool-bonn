@@ -6,7 +6,7 @@ import Fun.Type
 import Fun.Cache
 
 import Reader
-import ToDoc
+import ToDoc hiding ( empty )
 
 import Machine.History
 

@@ -38,40 +38,51 @@ check_arity soll f = case f of
     Zero ist -> do
 	      diff f soll ist	      
     Succ ist -> do
-	      when (1 /= ist) $ complain f $ fsep
-		   [ text "Diese Funktion ist einstellig." ]
+	      when (1 /= ist) $ do
+		   complain f
+		   reject $ fsep [ text "Diese Funktion ist einstellig." ]
 	      diff f soll ist
     Decr ist -> do
-	      when (1 /= ist) $ complain f $ fsep
-		   [ text "Diese Funktion ist einstellig." ]
+	      when (1 /= ist) $ do 
+		   complain f 
+		   reject $ fsep [ text "Diese Funktion ist einstellig." ]
 	      diff f soll ist
     Proj ist unten -> do
-              when ( ist < 0 ) $ reject $ fsep 
-		   [ text "Es gibt keine", tupel ist ]
-              when ( unten < 1 || unten > ist ) $ reject $ fsep
-		   [ text "Ein", tupel ist, text "besitzt keine"
-		   , komponente unten
-		   ]
+              when ( ist < 0 ) $ do
+	           complain f
+		   reject $ fsep [ text "Es gibt keine", tupel ist ]
+              when ( unten < 1 || unten > ist ) $ do
+	           complain f
+		   reject $ fsep [ text "Ein", tupel ist
+				 , text "besitzt keine" , komponente unten
+				 ]
 	      diff f soll ist
 
     Builtin ist b -> do
-        let ( arity, f ) = RAM.Builtin.get b
-	when ( arity /= ist ) $ reject $ fsep
-	     [ text "Diese Funktion ist", toDoc arity, text "-stellig." ]
+        let ( arity, _ ) = RAM.Builtin.get b
+	when ( arity /= ist ) $ do
+	     complain f
+	     reject $ fsep [ text "Diese Funktion ist"
+			   , toDoc arity, text "-stellig." 
+			   ]
 	diff f soll ist
 
     -- Operatoren
 
-    Sub ist [ ] -> reject $ fsep 
-	[ text "Der Sub-Operator benötigt wenigstens" , text "ein Argument." ]
+    Sub ist [ ] -> do
+        complain f
+	reject $ fsep [ text "Der Sub-Operator benötigt wenigstens" 
+		      , text "ein Argument." ]
     Sub ist (g : hs) -> do
         diff f soll ist
 	let n = length hs
 	check_arity n g
 	mapM_ (check_arity soll) hs
         
-    PR ist gh | 2 /= length gh -> reject $ fsep 
-	[ text "Der PR-Operator benötigt genau" , text "zwei Argumente." ]
+    PR ist gh | 2 /= length gh -> do
+        complain f
+	reject $ fsep [ text "Der PR-Operator benötigt genau" 
+		      , text "zwei Argumente." ]
     PR ist [ g, h ] -> do
         diff f soll ist
         check_arity (pred soll) g
@@ -84,17 +95,15 @@ check_arity soll f = case f of
 	check_arity (succ soll) g
 
 
-complain :: Fun -> Doc -> Reporter ()
-complain f t = do
+complain :: Fun -> Reporter ()
+complain f = do
     inform $ text "Fehler im Ausdruck:"
     inform $ nest 4 $ toDoc f
-    reject $ t
 
 ste i = text "eine" <+> text ( show i ++ "-stellige" ) <+> text "Funktion"
 
 diff f soll ist = when ( soll /= ist ) $ do
-    inform $ text "Fehler im Ausdruck:"
-    inform $ nest 4 $ toDoc f
+    complain f
     reject $ fsep
 	      [ text "Dieser Ausdruck beschreibt", ste ist, text ","
 	      , text "verlangt ist hier", ste soll, text "."

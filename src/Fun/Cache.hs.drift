@@ -6,7 +6,7 @@ module Fun.Cache
 
 ( Cache -- abstrakt
 , empty
-, lookup
+, find
 , insert
 )
 
@@ -34,8 +34,8 @@ instance (Ord k, Reader k, Reader e) => Read (Cache k e) where
 empty :: Ord k => Cache k e
 empty = Cache emptyFM
 
-lookup :: Ord k => Cache k e -> k -> Maybe e
-lookup (Cache c) k = lookupFM c k
+find :: Ord k => Cache k e -> k -> Maybe e
+find (Cache c) k = lookupFM c k
 
 insert :: Ord k => Cache k e -> k -> e -> Cache k e
 insert (Cache c) k e = Cache (addToFM c k e)
