@@ -72,9 +72,6 @@ analyse auf ver i =
 	}
 
 make :: Make
-make = Make "NFA-Analyse"
-            ( \ ai -> analyse "A" "0" ai )
-	    NFA.AI.example
-	    
+make = direct Analyse NFA.AI.example
 
 

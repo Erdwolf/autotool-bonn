@@ -81,8 +81,6 @@ synthese auf ver i =
 	}
 
 make :: Make
-make = Make "NFA-Synthese"
-            ( \ si -> synthese "S" "0" si )
-	    NFA.SI.example
+make = direct Synthese NFA.SI.example
 
 

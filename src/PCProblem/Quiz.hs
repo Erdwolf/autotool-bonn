@@ -111,8 +111,7 @@ fixed :: PCP -> Key -> IO PCP
 fixed pcp = \ key -> return pcp
 
 make_fixed :: Make
-make_fixed = Make "PCP-Fixed"
-    ( \ pcp -> make "PCP" "Fixed" $ fixed pcp )
+make_fixed = direct PCProblem 
     ( PCP [ ("bba","b"),("a","b"),("b","ab") ] )
 
 

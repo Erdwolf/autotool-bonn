@@ -72,16 +72,8 @@ instance Partial Boolean BI Exp where
 
 
 make :: Make
-make = Make "Boolean-Fixed"
-            ( \ bi -> Inter.Types.Var { problem = Boolean
-				 , aufgabe = "Boolean"
-				 , version = tag bi
-				 , key = \ matrikel -> return matrikel
-				 , gen = \ key -> do
-				       return $ return bi
-				 } 
-            )
-	    (  BI { tag = "A"
+make = direct Boolean 
+	$    (  BI { tag = "A"
       		  , formula = read "x == (y == z)"
       		  , operators = read "mkSet [ false, true, !, ||, && ]"
       		  }
