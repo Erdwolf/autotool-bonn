@@ -8,13 +8,13 @@ import Code.Hamming.Data
 import Reporter
 import ToDoc
 
-import Data.List ( inits )
+import Data.List ( tails )
 import Control.Monad ( guard )
 
 -- | alle (xs !! i, xs !! j) für i < j
 pairs :: [a] -> [(a,a)]
 pairs xs = do
-    u : rest <- inits xs
+    u : rest <- tails xs
     v <- rest
     return (u, v)
 
