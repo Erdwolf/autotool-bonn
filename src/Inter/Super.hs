@@ -241,9 +241,10 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
     hr ---------------------------------------------------------
     h3 "Lösung"
 
-    ex <- submit "subex" "example"
+    plain "Eingabefeld:"
+    ex   <- submit "subex" "example"
     prev <- submit "subprev" "previous"
-    sub <- submit "subsol" "submit"
+    esub  <- submit "subsol" "submit"
     br
     when ( ex || prev ) blank
 
@@ -252,10 +253,21 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 	   then Inter.Store.latest (mkpar stud auf)
                       `Control.Exception.catch` \ _ -> return b0
 	   else return b0
-	
+    sol <- textarea "sol" def
+    br
+    plain "oder Datei-Upload (note: currently broken):"
+    up <- file "up" undefined
+    fsub  <- submit "fsub" "submit"
+    br
 
-    Just cs <- textarea "sol" def
+    cs <- if esub
+          then do Just cs <- return sol ; return cs
+	  else if fsub
+	       then do Just cs <- return up ; return cs
+	       else mzero
 
+    hr
+    h3 "Bewertung"
     -- let (res, com :: Html) = export $ evaluate p i cs
     (res, com :: Html) <- io $ run $ evaluate p i cs
     html com
