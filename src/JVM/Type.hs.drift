@@ -1,0 +1,36 @@
+-- -*- mode: haskell -*-
+
+module JVM.Type where
+
+-- $Id$
+
+import ToDoc
+import Reader
+import Size
+
+data Statement = 
+	   Push Integer	 | Drop
+	 | Add | Sub | Mul -- | Div
+	 | Load 	 | Store 
+	 | Jump Int | Jumpz Int -- relative Sprünge
+	 | Halt
+    deriving ( Eq, Ord )
+
+type Program = [ Statement ]
+
+flatten :: Program -> [ Statement ]
+flatten p = p
+
+instance Size Program where 
+    size = sum . map size
+instance Size Statement where
+    size _ = 1
+
+{-! for Statement derive: ToDoc, Reader !-}
+
+instance Show Statement where
+    show = render . toDoc
+
+instance Read Statement where
+    readsPrec = parsec_readsPrec
+
