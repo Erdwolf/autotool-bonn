@@ -1,38 +1,112 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts -fallow-undecidable-instances #-} 
 
 module Number.Float.Data where
 
+import Prelude hiding ( exponent )
 import qualified Number.Base.Data as B
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Size
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
+
+-------------------------------------------------------------------
 
 data Signed a = Signed { negative :: Bool
                        , contents :: a
                        }
+    deriving ( Typeable )
+
+instance Size a => Size (Signed a) where 
+    size s = size (contents s)
 
 instance ToDoc a => ToDoc (Signed a) where
-    toDoc s = ( if negative s then char '-' else empty ) 
+    toDoc s = ( if negative s then Autolib.ToDoc.char '-' else empty ) 
             <> toDoc ( contents s )
 
 instance Reader a => Reader (Signed a) where
     reader = do
-        sign <- option False 
-             $   do char '+' ; my_whiteSpace ; return False
-             <+> do char '-' ; my_whiteSpace ; return True
+        sign <- option False $   
+                 do Autolib.Reader.char '+' ; my_whiteSpace ; return False
+             <|> do Autolib.Reader.char '-' ; my_whiteSpace ; return True
         c <- reader
         return $ Signed { negative = sign, contents = c }
 
+{-! for Signed derive: Haskell2Xml !-}
+
+-------------------------------------------------------------------
+
+data Natural = Natural
+	     { ziffern :: [ B.Ziffer ] 
+	     }
+     deriving Typeable
+
+instance Size Natural where
+    size n = length $ ziffern n
+
+instance ToDoc Natural where
+    toDoc n = hcat $ map toDoc $ ziffern n
+
+instance Reader Natural where
+    reader = do
+        zs <- many reader
+	return $ Natural { ziffern = zs }
+
+{-! for Natural derive: Haskell2Xml !-}
+
+-------------------------------------------------------------------
+
+-- | where "decimal" point is mandatory
+data Fixed = Fixed 
+	   { pre :: Natural
+	   , post :: Natural
+	   }
+     deriving ( Typeable )
+
+instance Size Fixed where
+    size f = size (pre f) + size (post f)
+
+instance ToDoc Fixed where
+    toDoc f = 
+        hcat [ toDoc $ pre f , Autolib.ToDoc.char '.' , toDoc $ post f ]
+
+instance Reader Fixed where
+    reader = do
+        e <- reader
+	Autolib.Reader.char '.'
+        o <- reader
+	return $ Fixed { pre = e, post = o }
+
+{-! for Fixed derive: Haskell2Xml !-}
+
+-------------------------------------------------------------------
 
 data Zahl = Zahl
           { basis :: Int
-          , mantisse :: 
-          , exponent ::
+          , mantisse :: Signed Fixed
+          , exponent :: Signed Natural
           }
+    deriving ( Typeable )
 
+instance Size Zahl where
+    size z = size ( mantisse z ) + size ( exponent z )
 
+{-! for Zahl derive: Reader, ToDoc, Haskell2Xml !-}
+
+ist_normalisiert :: Zahl -> Bool
+ist_normalisiert z = case ziffern $ pre $ contents $ mantisse z of
+    [ x ] | x > B.Ziffer 0 -> True
+    otherwise ->
+       let zero z = all ( == B.Ziffer 0 ) $ ziffern z
+       in  all zero [ pre $ contents $ mantisse z
+		    , post $ contents $ mantisse z
+		    , contents $ exponent z
+		    ]
+
+-- Local Variables: 
+-- mode:haskell
+-- End: 
 
 
 

@@ -75,7 +75,7 @@ haddock :
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
 
 %.hs : %.hs.drift
-	$(AUTODRIFT) $< > $@
+	$(AUTODRIFT) $< | grep -v "^{- Generated" > $@
 
 drift : $(DRIFT) 
 

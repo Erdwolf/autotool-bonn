@@ -1,0 +1,42 @@
+{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts -fallow-undecidable-instances #-} 
+
+module Number.Float.Config where
+
+import Prelude hiding ( exponent )
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Autolib.Size
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+import Autolib.Reporter
+import qualified Number.Float.Data as F
+
+data Config = Config
+	    { basis :: Int
+	    , normalisiert :: Bool
+	    , mantisse :: Int -- ^ Anzahl der Stellen (max)
+	    , exponent :: Int -- ^ Anzahl der Stellen (max)
+	    }
+    deriving ( Typeable )
+
+{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+
+conforms :: Config -> F.Zahl -> Reporter ()
+conforms c z = do
+    assert ( basis c == F.basis z )
+	   $ text "Ist die Basis gleich" <+> toDoc (basis c) <+> text "?"
+    when ( normalisiert c )
+	 $ assert ( F.ist_normalisiert z ) 
+	 $ text "Ist die Zahl normalisiert?"
+    assert ( size ( F.mantisse z ) <= mantisse c )
+	   $ text "Hat die Mantisse höchstens" <+> toDoc ( mantisse c )
+	        <+> text "Stellen?"
+    assert ( size ( F.exponent z ) <= exponent c )
+	   $ text "Hat der Exponent höchstens" <+> toDoc ( exponent c )
+	        <+> text "Stellen?"
+
+-- Local Variables: 
+-- mode:haskell
+-- End: 
