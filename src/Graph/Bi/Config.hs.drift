@@ -20,7 +20,7 @@ data Config = Config
 {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 rc :: Config
-rc = Config { nodes = 10
-	    , edges = 30
-	    , teil  = 2
+rc = Config { nodes = 12
+	    , edges = 40
+	    , teil  = 3
 	    }
