@@ -21,89 +21,96 @@ import System
 
 
 data PCProblem = PCProblem deriving Show
-data Folge = Folge [Int] deriving (Show, Read)
 
-instance ToDoc (Folge) where
-	toDoc (Folge flg) = text "Loesung: " <+> toDoc flg
+-- Indexfolge
+type Folge = [ Int ]
+
+-- data Folge = Folge [Int] deriving (Show, Read)
+-- instance ToDoc (Folge) where
+-- 	toDoc (Folge flg) = text "Loesung: " <+> toDoc flg
 
 
 -- Erzeugen der Instanz fuer die Klasse Problem 
 -- Problem: PCProblem
--- Instanz: PCP [(a,(String,String))]
--- Beweis: Folge 
+-- Instanz: PCP [(String,String)]
+-- Beweis: [Int]
 
 instance (ToDoc PCP, Show PCP, Read PCP
          , ToDoc Folge, Show Folge, Read Folge)
     => Problem PCProblem PCP Folge where
 
-    validiere PCProblem ((PCP pcp)) (folge @ (Folge fol)) = 
-    		if and [(not(pcp == [])),not(fol == []),folgeIsInPcP (listToFM pcp) folge]
-			    then (True, text "PCP Ok.")
-			    else (False, text "PCP ist nichtkorrekt")
+    validiere PCProblem (PCP  pcp) folge = 
+        let range = mkSet [ 1 .. length pcp ]
+	    aussen = filter ( \ i -> not (elementOf i range) ) folge
+	in  if null folge 
+	    then ( False, text "Die Lösungsfolge darf nicht leer sein." )
+	    else if not $ null aussen 
+	    then ( False, text "Diese Elemente der Lösungsfolge bezeichnen kein Paar der Instanz:" <+> toDoc aussen )
+	    else ( True, text "OK" )
         
-    verifiziere PCProblem (PCP pcp) lsg = (pcpTest (listToFM pcp) lsg "" "")
+    verifiziere PCProblem p folge = 
+        let ( links, rechts ) = lr p folge
+	    c = common links rechts
+	    linksrest = drop (length c) links
+	    rechtsrest = drop (length c) rechts
+	in  if links == rechts
+	    then ( True, text "Oberes und unteres Wort stimmen überein:"
+			 <+> toDoc links )
+	    else ( False
+		 , fsep [ text "Der längste gemeinsame Präfix des oberen und unteren Wortes ist" <+> toDoc c
+			, text "Der Rest des oberen Wortes ist:" <+> toDoc linksrest
+			, text "Der Rest des unteren Wortes ist:" <+> toDoc rechtsrest
+			]
+		 )
 
     -- Erzeugt HTML-File zur Visualisierung
-    getInstanz PCProblem (PCP pcp) folge dateiName =
+    getInstanz PCProblem pcp folge dateiName =
 	 do 
 	  writeFile (dateiName ++ ".html") ("<br><table borders><caption>PCP-Instanz</caption>" ++ (erzInstanz pcp) ++ "</table>")
 	  return (dateiName ++ ".html","html",ExitSuccess)
         
     -- Erzeugt HTML-File zur Visualisierung
-    getBeweis PCProblem (PCP pcp) (fol @ (Folge folge)) dateiName =
+    getBeweis PCProblem pcp folge dateiName =
 	 do 
-	  writeFile (dateiName ++ ".html") ("L&ouml;sungsfolge: " ++ show folge ++ "\n<br>" ++ (erzBeweis (listToFM pcp) fol ""))
+	  writeFile (dateiName ++ ".html") (erzBeweis pcp folge)
 	  return (dateiName ++ ".html","html",ExitSuccess)
 
 
+lr :: PCP -> [ Int ] -> ( String, String )
+lr (PCP pcp) folge = 
+    let links  = do k <- folge ; let { (l,r) = pcp !! (k+1) } ; l
+	rechts = do k <- folge ; let { (l,r) = pcp !! (k+1) } ; r
+    in	( links, rechts )
+
+common :: Eq a => [a] -> [a] -> [a]
+-- längster gemeinsamer prefix
+common [] ys = []
+common xs [] = []
+common xxs @ (x : xs) yys @ (y : ys) =
+    if x == y then x : common xs ys else []
+
+---------------------------------------------------------------------------
 
 -- erzeugt den Ausgabestring fuer die HTML Ausgabe der PCP-Instanz
-erzInstanz :: [(Int,(String,String))] -> String
-erzInstanz (x:xs) = 
-	let
-	(a,(str1,str2)) = x
-	in "<tr><td>" ++ str1 ++ "</td><td>" ++ show a ++ "</td><td>" ++ str2 ++ "</td></tr>\n" ++ (erzInstanz xs)
-erzInstanz [] = ""    
+erzInstanz :: PCP -> String
+erzInstanz (PCP xys) = unlines $ do 
+    (x, y) <- xys
+    return $ "<tr><td>" ++ x ++ "</td><td>" ++ y ++ "</td></tr>"
+
 	
 
 -- erzeugt den AusgabeString fuer die HTML Ausgabe des Beweises 
-erzBeweis :: FiniteMap Int (String,String) -> Folge -> String -> String
-erzBeweis pcp (Folge []) str1 = "L&ouml;sungsketten: " ++ str1 ++ "<br>\n"
-erzBeweis pcp (Folge (x:xs)) str1 =
-	let
-	(add1,add2) = (lookupWithDefaultFM pcp (error "PCProblems.erzBeweis") x)
-	in
-	    erzBeweis pcp (Folge xs) (str1 ++ add1)
-
-
-
---Funktion erzeugt die beiden Ketten und vergleicht sie
-pcpTest :: FiniteMap Int (String,String) -> Folge -> String -> String -> (Bool,Doc) 
-pcpTest pcp (Folge []) str1 str2 = if str1 == str2
-									then (True,text "Korrektes PCP\n" <+> text "Kette 1/2:" <+> text str1)
-                                    else (False,text "Ketten sind nicht identisch" <+> 
-                                    	text "\nKette1: " <+> text str1 <+> text "\nKette2: " <+> text str2)
-pcpTest pcp (Folge (x:xs)) str1 str2 = 
-	let
-    	(add1,add2) = (lookupWithDefaultFM pcp (error "PCProblems.pcpTest") x)	   
-    in    
-		pcpTest pcp (Folge xs) (str1 ++ add1) (str2 ++ add2)
-
-
-
---Testet ob Folgenelemente im PCP sind
-folgeIsInPcP :: FiniteMap Int (String,String) -> Folge -> Bool
-folgeIsInPcP pcp (Folge []) = True
-folgeIsInPcP pcp (Folge (x:xs)) = if (elemFM x pcp) then (folgeIsInPcP pcp (Folge xs)) else False
-
+erzBeweis :: PCP -> Folge -> String
+erzBeweis pcp ks = 
+    let (links, rechts) = lr pcp ks
+    in	unlines [ "Lösungsfolge: " ++ show ks ++ "<BR>"
+		, "expandierte Lösungsfolge: " ++ show links
+		]
 
 
 
 --Beispielstrukturen
-bsp_pcp =PCP([(1,("001","0")),
-        	(2,("10","011")),
-                 (3,("01","001"))
-                ])
+bsp_pcp = PCP [("001","0"), ("10","011"), ("01","001") ]
 
 
-bsp_folge = Folge [1,2,3,1]
+bsp_folge =  [1,2,3,1]
