@@ -1,0 +1,74 @@
+module Sortier.Netz.Bild where
+
+-- $Id$
+
+import Sortier.Netz.Type
+import Sortier.Netz.Example
+import Util.Bild
+import Data.Array
+
+levelled :: Netz -> [ ( Comp, Int, Int ) ]
+-- bestimmt (greedy) die schicht in der zeichnung
+levelled n = helped ( array ( low n, high n ) $ do
+		          i <- [ low n .. high n ]
+		          return ( i, 0 )
+		    )
+		    ( comps n )
+		    0
+
+helped :: Array Int Int -> [ Comp ] -> Int 
+       -> [ ( Comp, Int, Int ) ]
+-- in  a ! x  steht die schicht des vorigen komparators auf linie x
+-- ausgabe: (comp, alte nummer, level)
+helped a [] n = []
+helped a ( (x,y) : rest ) n =
+    let this = succ $ max ( a ! x ) ( a ! y )
+        b    = a // do 
+		    z <- [ min x y .. max x y ]
+		    return ( z, this )
+    in  ((x,y), n, this) : helped b rest ( succ n )
+
+instance ToBild Netz where toBild n = paint (n, [])
+instance ToBild ( Netz, States ) where toBild ( n, sts ) = paint (n, sts )
+
+
+paint :: ( Netz , States ) -> Bild
+paint ( n, sts ) = 
+    let xscale = 4 ; yscale = 2
+        (u, o) = (yscale * low n, yscale * high n)
+        cnts = levelled n
+
+	-- die 1 , um leere listen zu retten
+	ts = 1 : do ( c, n, t ) <- cnts ; return t
+
+	( l, r ) = ( xscale * pred ( minimum ts )
+		   , xscale * succ ( maximum ts )
+		   )
+
+        linien = do -- durchgehende leitungen
+            z <- [ low n .. high n ]
+	    t <- [ l .. r ]
+	    return ((t, yscale * z), '-' )
+	knoten =  do
+            ((x,y), n, t) <- cnts
+	    s <- [x,y]
+	    return ((xscale * t, yscale * s), 'o')
+        kanten = do -- für komparatoren
+            ((x,y), n, t) <- cnts
+ 	    let c = if x < y then 'v' else '^'
+	    z <- [ succ $ yscale * min x y .. pred $ yscale * max x y ]
+	    return ((xscale * t,z), c)
+	marken = do -- zahlen an komparatoren
+            ((x,y), n, t) <- cnts
+	    z <- [x, y]
+	    let vor  = ( sts !!      n ) !! z
+	        nach = ( sts !! succ n ) !! z
+            (d , m) <- [ (-1, vor), (1, nach) ]
+	    return ( ( xscale * t + ( xscale * d ) `div` 2, yscale * z )
+		   , head $ show m
+		   )
+	    
+    in  accumArray (flip const) ' ' ((l,u), (r,o)) 
+	    $ linien ++ knoten ++ kanten 
+	      ++ if null sts then [] else marken
+
