@@ -11,7 +11,7 @@ import SAT.SAT
 
 student = Aufgabe { problem = SAT
 
-                  , instanz = f
+                  , instanz = f'
 
 		  , beweis  =b
                   }
@@ -19,6 +19,14 @@ student = Aufgabe { problem = SAT
 
 
 --Beispielstrukturen 
+
+
+
+f' :: Formel 
+f' = [(Pos "x", Pos "y", Pos "z")
+    ,(Neg "x", Neg "y", Pos "y")
+    ]
+
 
 
 --Erfüllbare Aussage mit Belegung b
