@@ -51,6 +51,9 @@ tags :
 matchbox : do
 	$(GHC_COMMAND) \
 		SRS/Matchbox.hs -o SRS/Matchbox
+checker : do
+	$(GHC_COMMAND) \
+		SRS/Checker.hs -o SRS/Checker
 
 install-matchbox : do
 	$(GHC_COMMAND)  \
