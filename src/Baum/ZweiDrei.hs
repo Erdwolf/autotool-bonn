@@ -14,6 +14,7 @@ import Baum.ZweiDrei.Show
 import qualified Baum.Such.Class as C
 import qualified Baum.Such.Central
 
+import qualified Tree as T
 import Autolib.ToDoc
 import Inter.Types
 import Data.Typeable
@@ -29,6 +30,8 @@ instance C.Such Baum where
 
     equal = (==)
     contents = contents
+
+instance T.ToTree Baum where
     toTree = toTree
 
 data SuchbaumZweiDrei = SuchbaumZweiDrei 

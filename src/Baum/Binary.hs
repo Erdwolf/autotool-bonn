@@ -11,6 +11,7 @@ import Baum.Binary.Type
 import Baum.Binary.Ops
 import Baum.Binary.Show
 
+import qualified Tree as T
 import qualified Baum.Such.Central
 import qualified Baum.Such.Class as C
 import Inter.Types
@@ -27,6 +28,8 @@ instance C.Such Baum where
 
     equal = (==)
     contents = contents
+
+instance T.ToTree Baum where
     toTree = toTree
 
 data SuchbaumBinary = SuchbaumBinary 

@@ -3,6 +3,7 @@ module Type.Infer where
 --  $Id$
 
 import Type.Data
+import Type.Tree
 
 import Autolib.Reporter.Type hiding ( result )
 import Autolib.ToDoc

@@ -3,6 +3,7 @@ module Type.Check where
 --  $Id$
 
 import Type.Data
+import Type.Tree
 import Type.Infer
 
 import Autolib.Reporter.Type
@@ -34,6 +35,7 @@ instance C.Partial TypeCheck TI Exp where
 	       [ text "Die Baumstruktur dieses Ausdrucks ist"
 	       , nest 4 $ draw b
 	       ]
+	peng b
         t <- infer (signature i) b
         assert ( t == target i )
                $ text "ist das der geforderte Typ?"
@@ -44,5 +46,5 @@ instance C.Measure TypeCheck TI Exp where
 make :: Make
 make = direct TypeCheck $
     TI { target = read "boolean"
-       , signature = read "int a; boolean eq (int a, int b);"
+       , signature = read "int a; static boolean eq (int a, int b);"
        }

@@ -1,10 +1,7 @@
 -- | Layout routine for Data.Tree
 --  $Id$
 
-module Baum.Dot
-
-( module Autolib.Dot.Dot
-)
+module Tree.Dot
 
 where
 
@@ -21,11 +18,8 @@ import Data.Maybe
 import Control.Monad ( guard )
 import Control.Monad.State
 
-instance ( Show a ) => ToDot ( Tree a ) where
-    toDotProgram t = Dot
-    toDotOptions t = unwords [ "-Gordering=out", "-Gnodesep=0" ]
 
-    toDot t = 
+make t = 
 	let it = number t
 	in  Autolib.Dot.Graph.Type
             { Autolib.Dot.Graph.directed = True
@@ -51,24 +45,17 @@ subtrees t @ ( Node f args ) = t : concat ( map subtrees args )
 
 -------------------------------------------------------------------------
 
-nodes :: Show a 
-      => Tree ( Int, a ) 
+nodes :: Tree ( Int, String ) 
       -> [ Autolib.Dot.Node.Type ]
 nodes t = do
-    ( i, f ) <- flatten t
-    let tricky cs = 
-	        if take 1 cs `elem` [ "\"", "'" ]  
-		   -- dann ist es Show String|Char
-		then tail ( init cs )	  -- und eine "-klammer kann weg
-		else cs
+    ( i, cs ) <- flatten t
     return $ Autolib.Dot.Node.blank
            { Autolib.Dot.Node.ident = show i
-           , Autolib.Dot.Node.label = return $ tricky $ show f
+           , Autolib.Dot.Node.label = return cs
            , Autolib.Dot.Node.shape = return "plaintext"
            }  
 
-edges :: Show a 
-      => Tree ( Int, a ) 
+edges :: Tree ( Int, a ) 
       -> [ Autolib.Dot.Edge.Type ]
 edges t = do
     Node (i, f) jxs <- subtrees t

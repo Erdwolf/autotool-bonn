@@ -7,6 +7,7 @@ import Baum.Such.Class
 import Baum.Such.Op
 import Baum.Such.Inter
 import Baum.Such.Generate
+import qualified Tree
 
 -- import qualified Baum.Binary as B
 -- import qualified Baum.ZweiDrei as Z
@@ -47,10 +48,10 @@ instance ( Tag t baum a ) =>
         inform $ text "Beginne mit"
 	peng start
         c <- steps start plan ops
-	assert ( c `equal` end) $ vcat
-	       [ text "Stimmt überein mit Aufgabenstellung?"
-	       , nest 4 $ form end
-	       ]
+	inform $ text "Stimmt überein mit Aufgabenstellung?"
+        peng end
+	assert ( c `equal` end) $ Autolib.ToDoc.empty
+
 
 instance Tag t baum a
       => Generator t ( Config a ) ( Instanz baum a ) where
