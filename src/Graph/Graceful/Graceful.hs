@@ -11,7 +11,7 @@
 -------------------------------------------------------------------------------
 
 module Graceful.Graceful
-	( Graceful
+	( Graceful (..)
 	, module Graph.Graph
 --	, module Graceful.Labeling
 	, module FiniteMap
@@ -19,6 +19,7 @@ module Graceful.Graceful
     where
 
 -- import Graceful.Labeling
+import Graph.Graph
 import Graph.Type
 import Graph.Util
 import Graph.Viz

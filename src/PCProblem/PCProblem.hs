@@ -4,7 +4,7 @@
 -- mai99byv@studserv.uni-leipzig.de
 
 module PCProblem.PCProblem (
-     PCProblem
+     PCProblem (..)
     ,Folge (..)
     ,module PCP.Type
     ,validiere
