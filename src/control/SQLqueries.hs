@@ -538,8 +538,13 @@ bepunkteStudentDB snr anr bewert highlow = do
 
 -- liefert (jetzt!)  mgl. Aufgaben für Student
 -- [ ( ANr, Name , Subject , Path , Highscore ) ]
+
+-- feature: wenn nr < 1000 (d. h. admin), dann nicht nach zeit fragen
+
 mglAufgabenDB :: String -> IO [(String, String, String, String,String)]
 mglAufgabenDB snr = do
+        let timed = if read snr < 1000 then ""
+		    else "AND NOW() BETWEEN Von AND Bis "
 	conn <- connect "localhost" "autoan" "test" "test"
 	stat <- query conn
 			( concat
@@ -550,7 +555,7 @@ mglAufgabenDB snr = do
 			  , "AND gruppe.GNr = stud_grp.GNr \n"
 			  , "AND stud_grp.SNr = \"" ++ filterQuots snr ++ "\" \n"
 			  -- im Zeitfenster?
-			  , "AND NOW() BETWEEN Von AND Bis "
+			  , timed
 			  , ";"
 			  ] )
 	inh <- collectRows ( \ state -> do
