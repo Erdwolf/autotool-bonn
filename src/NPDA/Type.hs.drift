@@ -1,0 +1,104 @@
+-- -*- mode: haskell -*-
+
+module NPDA.Type
+
+-- nicht-deterministischer Kellerautomat
+-- $Id$
+
+( module NPDA.Type
+, module Sets
+, module FiniteMap
+)
+
+where
+
+
+import Sets
+import FiniteMap
+import Schichten
+import Size
+
+import ToDoc
+import Reader
+
+import ReadFM
+import Maybe
+import Reporter
+
+class ( Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z )
+    => RTO z
+instance ( Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z )
+    => RTO z
+
+      
+data RTO z => Modus z = Leerer_Keller | Zustand (Set z) 
+
+{-! for Modus derive: Reader, ToDoc !-}
+
+instance RTO z => Read (Modus z) where
+    readsPrec = parsec_readsPrec
+instance RTO z => Show (Modus z) where
+     show = render . toDoc
+
+class ( RTO x, RTO y, RTO z ) 
+    => NPDAC x y z
+instance ( RTO x, RTO y, RTO z ) 
+    => NPDAC x y z
+
+data NPDAC x y z => NPDA x y z = 
+     NPDA { eingabealphabet  :: Set x 
+	  , kelleralphabet   :: Set y 
+	  , zustandsmenge    :: Set z 
+	  , startzustand     :: z
+	  , startsymbol	     :: y
+	  , akzeptiert	     :: Modus z
+	  , tafel	     :: FiniteMap (Maybe x, z, y) (Set (z, [y]))
+	  }
+
+{-! for NPDA derive: Reader, ToDoc !-}
+
+instance NPDAC x y z => Read (NPDA x y z) where
+    readsPrec = parsec_readsPrec
+instance NPDAC x y z => Show (NPDA x y z) where
+     show = render . toDoc
+
+
+-- helpers für weniger klammern in der eingabe
+
+collect :: NPDAC x y z
+	=> [ ((Maybe x, z, y), (z, [y])) ]
+	-> FiniteMap (Maybe x, z, y) (Set (z, [y]))
+collect pairs = addListToFM_C union emptyFM $ do
+    ( x, y ) <- pairs ; return ( x, unitSet y )
+
+unCollect :: FiniteMap (Maybe x, z, y) (Set (z, [y]))
+	  ->  [ ((Maybe x, z, y), (z, [y])) ]
+unCollect fm = do
+    ( x, ys ) <- fmToList fm
+    y <- setToList ys
+    return (x, y)
+
+
+instance NPDAC x y z => Size (NPDA x y z) where
+    size a = sum $ do
+	 ( x, ys ) <- fmToList $ tafel a
+	 y <- setToList ys
+	 return 1
+
+------------------------------------------------------------------------
+
+lookupset :: Ord a => FiniteMap a (Set b) -> a -> Set b
+lookupset fm x = case lookupFM fm x of
+    Just m -> m; Nothing -> emptySet
+
+the :: Maybe a -> a
+-- mit absturzgefahr
+the = fromMaybe ( error "the" )
+
+
+
+
+
+
+
+
