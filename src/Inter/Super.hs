@@ -224,11 +224,11 @@ solution stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
             hr ---------------------------------------------------------
 	    h3 "Lösung"
 
-            sub <- submit "subsol" "submit"
-            prev <- submit "subprev" "previous"
             ex <- submit "subex" "example"
+            prev <- submit "subprev" "previous"
+            sub <- submit "subsol" "submit"
 	    br
-            when ex blank
+            when ( ex || prev ) blank
 
             let b0 = render $ toDoc ini 
             def <- io $ if prev 
