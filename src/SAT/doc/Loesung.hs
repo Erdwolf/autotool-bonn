@@ -1,25 +1,12 @@
 -- -*- mode: haskell -*-
+-- $Id$
 
-
-
-import FiniteMap
 import Challenger
-
 import SAT.SAT
 
+student = Loesung 
+	{ problem = SAT
+        , ident = Ident { aufgabe = 1 }
+        , beweis = listToFM [("x", True),("y", False),("z", False)]
+        }
 
-
-
-student = Loesung {
-problem = SAT
-
-                  , ident = Ident { aufgabe = 1 }
-
-                  , beweis = b
-
-                  }
-
-
-
-b :: Belegung
-b = listToFM [("x", True),("y", False),("z", False)]
