@@ -126,9 +126,11 @@ re cut m encode check ein = do
 			    , text "erreicht die Maschine"
 			    , text "die Endkonfiguration", nest 4 $ toDoc k
 			    ]
-	   f <- check ein b
+           when ( not $ accepting m k ) $ do
+	        reject $ text "Das ist keine akzeptierende (erfolgreiche) Konfiguration."
+           f <- check ein b
 	   when ( not f ) $ do
-	     -- vorrechnen m s
-	     reject $ present k
+	           -- vorrechnen m s
+	           reject $ present k
 
   

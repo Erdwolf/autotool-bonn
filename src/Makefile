@@ -68,7 +68,8 @@ all :
 # 	$(MAKE) -C $@
 
 tags :
-	find . -name "*hs" -print | xargs etags
+	( find . -name "*hs" -print && find . -name "*drift" -print ) \
+	| xargs etags
 
 ###############################################################################
 
