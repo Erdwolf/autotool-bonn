@@ -12,8 +12,10 @@ import Control.Monad ( mzero )
 data StrOrInt = S String | I Int deriving ( Show , Read )
 
 
+{- who needs that?
 data ATBepunkte = ATBEmpty | ATB String String ATBewertung ATHighLow
 		  deriving ( Show, Read )
+-}
 
 
 space a b	= a ++ " " ++ b
