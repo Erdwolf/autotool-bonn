@@ -6,22 +6,25 @@ import Util.Datei
 import qualified System.Posix
 import qualified Inter.Param as P
 
-import Control.Types (toString)
+import Control.Types (toString, fromCGI, File)
+import Control.Monad ( when )
 import Inter.Logged
 
 import Data.Maybe
 
--- | von falschen einsendungen: speichert in "latest.input"
+-- | alles: speichert in "latest.input"
 -- d. h. überschreibt immer
--- von richtigen einsendungen: speicher in "$pid.input"
+-- zur sicherheit auch: von richtigen einsendungen: speicher in "$pid.input"
 -- d. h. eigentlich kein überschreiben
-store ::  P.Type -> Maybe Integer -> IO String
+store ::  P.Type -> Maybe Integer -> IO ( String, File )
 store p mres = logged "Inter.store" $ do
+    pid <- fmap show $ System.Posix.getProcessID 
     let flag = isJust mres
-    pid <- if flag then fmap show $ System.Posix.getProcessID 
-	           else return "latest"
-    schreiben ( location p pid flag ) $ P.input p
-    return $ pid
+    when flag $ do
+        schreiben ( location p pid flag ) $ P.input p
+        return ()
+    f <- schreiben ( location p "latest" flag ) $ P.input p
+    return ( pid , fromCGI f )
 
 latest :: P.Type -> IO String
 latest p = logged "Inter.latest" $ do

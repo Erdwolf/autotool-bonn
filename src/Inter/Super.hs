@@ -465,8 +465,12 @@ tutor_statistik vnr auf = do
                 return $ case check of
 		    True -> Control.Punkt.set 
 			      ( snr e ) ( A.anr auf ) ( Ok 0 )
+				  ( Nothing ) -- input file
+				  ( Nothing ) -- report file
 		    False -> Control.Punkt.set 
 			      ( snr e ) ( A.anr auf ) Reset
+				  ( Nothing ) -- input file
+				  ( Nothing ) -- report file
 
             close -- row
             return $ sequence actions

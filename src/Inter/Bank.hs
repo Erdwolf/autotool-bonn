@@ -15,9 +15,11 @@ import Util.Datei
 bank :: P.Type -> Maybe Integer -> IO String
 bank p res = do
     let it = case res of Just s -> Ok s ; Nothing -> No
-    bepunkteStudentDB (P.ident p) (P.anr p) it (P.highscore p)
 
-    pid <- Inter.Store.store p res
+    ( pid , infile ) <- Inter.Store.store p res
+    bepunkteStudentDB (P.ident p) (P.anr p) it (P.highscore p)
+         ( Just infile ) ( Nothing )
+
 
     time <- zeit
     let msg = logline  time pid p res

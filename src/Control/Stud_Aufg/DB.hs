@@ -24,7 +24,9 @@ get_where :: [ Expression ] -> IO [ Stud_Aufg ]
 get_where wh = do
     conn <- myconnect
     stat <- squery conn $ Query
-        ( Select $ map reed [ "SNr", "ANr", "Ok", "No" ] )
+        ( Select $ map reed [ "SNr", "ANr", "Ok", "No"
+			    , "Result", "Input", "Report" 
+			    ] )
         [ From $ map reed [ "stud_aufg" ] 
         , Where $ ands wh
 	]
@@ -33,10 +35,16 @@ get_where wh = do
     	s_anr <- getFieldValue state "ANr"
         s_ok <- getFieldValue state "Ok"
         s_no <- getFieldValue state "No"
+        s_result <- getFieldValueMB state "Result"
+        s_input <- getFieldValueMB state "Input"
+        s_report <- getFieldValueMB state "Report"
         return $ Stud_Aufg { snr = s_snr
     			   , anr = s_anr
 			 , ok = s_ok
 			 , no = s_no
+			   , result = s_result
+			   , input = s_input
+			   , report = s_report
     			   }
                     ) stat
     disconnect conn

@@ -7,7 +7,7 @@ module Control.Types
 , Wert (..)
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
-, Typ, Config, Remark, Name, Email
+, Typ, Config, Remark, Name, File, Email
 , Oks (..), Nos (..)
 , Time
 , FromCGI (..)
@@ -112,15 +112,25 @@ instance ToString Status where
 
 -------------------------------------------------------------
 
-data Wert = Reset | No | Ok Integer deriving ( Eq, Ord, Typeable )
+data Wert = Reset 
+	  | Pending
+	  | No 
+	  | Ok Integer 
+    deriving ( Eq, Ord, Typeable )
 
 {-! for Wert derive : Reader, ToDoc, Haskell2Xml !-}
 
-{-
-instance SqlBind Wert where
-    fromSqlValue _ _ = error "undefined"
-    toSqlValue _ = error "undefined"
--}
+instance SqlBind Wert where 
+    fromSqlValue _ s = Just $ case reads s of
+        [ (x, "") ] -> x
+	_           -> Pending
+    toSqlValue w = show w
+
+instance ToEx Wert where
+    toEx x = EString $ show x
+
+instance ToString Wert where
+    toString = show 
 
 -------------------------------------------------------------
 
@@ -225,6 +235,21 @@ instance ToString Name where
     toString (Name cs) = cs
 instance FromCGI Name where
     fromCGI cs = Name cs
+
+-- | File-Name
+data File = File String deriving ( Eq, Ord, Typeable )
+
+{-! for File derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance SqlBind File where 
+    fromSqlValue ty s = Just $ File s
+    toSqlValue (File cs) = toSqlValue cs
+instance ToEx File where
+    toEx (File x) = EString x
+instance ToString File where 
+    toString (File cs) = cs
+instance FromCGI File where
+    fromCGI cs = File cs
 
 -------------------------------------------------------------
 

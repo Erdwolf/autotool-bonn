@@ -99,13 +99,13 @@ anhaengen d inhalt = do
     h <- home d
     appendFile h inhalt
 
-schreiben :: Datei -> String -> IO()
+schreiben :: Datei -> String -> IO FilePath
 schreiben d inhalt = do
     createDir d
     h <- home d
     writeFile h inhalt
     perm "go+r" h
-    return ()
+    return h
 
 dirgehen :: Datei -> IO ()
 dirgehen d = do

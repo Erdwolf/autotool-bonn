@@ -10,6 +10,7 @@ import Control.Passwort
 import Inter.Crypt
 
 import Control.Monad
+import Data.Maybe
 
 -- | Login des Studenten Version 2
 --
@@ -40,8 +41,12 @@ loginDB mnr pass =
 		 return s
            _ -> Nothing
 
-set :: SNr -> ANr -> Wert -> IO ()
-set snr anr wert = bepunkteStudentDB snr anr wert Keine
+set :: SNr -> ANr -> Wert 
+    -> Maybe File -- ^ Eingabe des Studenten
+    -> Maybe File -- ^ Bewertung (automatische)
+    -> IO ()
+set snr anr wert minput mreport = 
+    bepunkteStudentDB snr anr wert Keine minput mreport
 
 -- | erhöht von Student, für Aufgabe (Ok,Size) \/ No 
 --
@@ -51,8 +56,14 @@ set snr anr wert = bepunkteStudentDB snr anr wert Keine
 -- bepunkteStudentDB :: String -> String -> ATBewertung -> ATHighLow -> IO ()
 -- bepunkteStudentDB snr anr bewert highlow = return ()
 
-bepunkteStudentDB :: SNr -> ANr -> Wert -> HiLo -> IO ()
-bepunkteStudentDB snr anr bewert highlow = do
+bepunkteStudentDB :: SNr 
+		  -> ANr 
+		  -> Wert 
+		  -> HiLo 
+		  -> Maybe File -- ^ input
+		  -> Maybe File -- ^ report
+		  -> IO ()
+bepunkteStudentDB snr anr bewert highlow minput mreport = do
    conn <- myconnect
    stat <- squery conn $ Query 
 	   ( Select [ reed "SNr" ] )
@@ -75,22 +86,28 @@ bepunkteStudentDB snr anr bewert highlow = do
 		    , ( reed "ANr", toEx anr )
 		    , ( reed "Ok" , reed "0" ) 
 		    , ( reed "No" , reed "0" )
+		    , ( reed "Result" , ENull )
 		    ] 
 	   ) 
 	   [] 
        return ()
 
+   let okno = case bewert of
+           Reset -> [ ( reed "Ok", reed "0" )      ]
+           No    -> [ ( reed "No", reed "No + 1" ) ]
+	   Ok s  -> [ ( reed "Ok", reed "Ok + 1" ) ]
+	   Pending -> [ ]
+       rest = return $ ( reed "Result", toEx bewert ) 
+       inpt = return $ ( reed "Input"
+		       , fromMaybe ENull $ fmap toEx minput
+		       )
+       rept = return $ ( reed "Report"
+		       , fromMaybe ENull $ fmap toEx mreport
+		       )
+
    squery conn $ Query 
 	   ( Update ( reed "stud_aufg" )
-	            ( case bewert of
-                         Reset -> [ ( reed "Ok", reed "0" ) ]
-                         No    -> [ ( reed "No", reed "No + 1" ) ]
-	                 Ok s  -> [ ( reed "Ok" , reed "Ok + 1" )
-                               -- FIXME (see historic code below): 
-                               -- , ( reed "Size" , EInteger s )
-                               -- , ( reed "Scoretime" , reed "NOW()" )
-			       ] 
-		    )
+	            ( okno ++ rest ++ inpt ++ rept )
 	   ) 
            [ Where $ ands
 	           [ equals ( reed "SNr" ) ( toEx snr )

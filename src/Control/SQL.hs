@@ -2,7 +2,7 @@ module Control.SQL
 
 ( squery, query, logged, reed
 , myconnect, collectRows, disconnect
-, Statement, getFieldValue, getFieldsTypes 
+, Statement, getFieldValue, getFieldValueMB, getFieldsTypes 
 , Query (..), Action (..), Modifier (..)
 , Id (..), Bind (..)
 , Expression (..), ToEx (..), Control.SQL.equals, ands
@@ -160,7 +160,8 @@ instance R.Reader Modifier where
 -------------------------------------------------------------------------------
 
 
-data Expression = EId Id
+data Expression = ENull
+                | EId Id
 		| EInteger Integer
 		-- | ETime ClockTime -- TODO
 		| EString String
@@ -177,6 +178,7 @@ quote cs = do
        else [ c ]
 
 instance T.ToDoc Expression where
+    toDoc (ENull) = text "NULL"
     toDoc (EId id) = T.toDoc id
     toDoc (EInteger i) = T.toDoc i
 
@@ -196,6 +198,7 @@ instance R.Reader Expression where
     reader = buildExpressionParser operators atomic
 
 atomic =   R.my_parens reader
+     R.<|> do { R.my_reserved "NULL" ; return $ ENull }
      R.<|> id_or_fun
      R.<|> do { i <- R.my_integer ; return $ EInteger i }
      R.<|> do { s <- R.my_stringLiteral ; return $ EString s }
