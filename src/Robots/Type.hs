@@ -19,8 +19,6 @@ import ReadFM
 
 import Challenger
 import ToDoc
-import Number
-import Iso
 
 import Boc
 import System 

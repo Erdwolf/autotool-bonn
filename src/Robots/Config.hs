@@ -6,7 +6,7 @@ module Robots.Konfig
 , look, robots
 , positions, goals
 , valid, final
-, ex
+, fourty
 )
 
 where
@@ -15,14 +15,19 @@ where
 
 import Robots.Data
 
+import Number
+import Iso
+
 import List (partition)
 import Monad ( guard )
 import Maybe ( isJust, maybeToList, fromMaybe )
 import FiniteMap
 import Set
 import OrdSet
+
 import ToDoc
 import Boc
+
 
 data Konfig = Konfig { inhalt :: FiniteMap String Robot
 		     , geschichte :: [ Zug ]
@@ -33,6 +38,12 @@ mkKonfig :: [ Robot ] -> Konfig
 mkKonfig rs = Konfig { inhalt = listToFM $ do r <- rs ; return ( name r, r )
 		     , geschichte = []
 		     }
+
+
+instance Number Konfig Konfig where number = id
+
+instance Iso Konfig where iso = (==)
+
 
 
 remove :: String -> Konfig -> Konfig
@@ -120,11 +131,15 @@ final k =
 ------------------------------------------------------------------
 
 
-ex :: Konfig
-ex = mkKonfig
+fourty :: Konfig
+-- die beispielkarte nr. 40 aus dem original-spiel
+fourty = mkKonfig
 		  [ Robot { name = "A", position = (-2, 2), ziel = Nothing }
 		  , Robot { name = "B", position = ( 0, 2), ziel = Nothing }
 		  , Robot { name = "C", position = ( 2, 2), ziel = Nothing }
 		  , Robot { name = "D", position = ( 2,-1), ziel = Nothing }
 		  , Robot { name = "E", position = (-1,-2), ziel = Just (0,0) }
 		  ]
+
+
+

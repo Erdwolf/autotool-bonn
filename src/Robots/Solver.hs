@@ -25,11 +25,10 @@ solutions k = do
     (d, ps) <- zip [0 :: Int ..] $ schichten ( mkSet . nachfolger ) k
     let out = do p <- setToList ps
 		 return $ if fst $ final p 
-		    then geschichte p
+		    then reverse $ geschichte p
 		    else []
-    return $ toDoc (( d, length out), out)
+    return $ toDoc (( d, length out), filter (not . null) out)
 
-main :: IO ()
-main = sequence_ $ map print $ solutions ex
-
+solve :: Konfig -> IO ()
+solve k = sequence_ $ map print $ solutions k
 
