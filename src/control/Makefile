@@ -18,6 +18,8 @@ autoan.cgi: %.cgi : %.hs
 
 autoadmin.cgi showgruppen.cgi: %.cgi : %.hs
 
+Schriftl.cgi: %.cgi : %.hs
+
 #########################################################################
 # mysql 
 #########################################################################
@@ -36,6 +38,7 @@ ghci-sql:
 	$(GHCI_COMMAND) $(EXTRA_PACKS) SQLqueries.hs
 
 ghci-schriftl:
+	(cd ../wash && make clean)
 	$(GHCI_COMMAND) $(EXTRA_PACKS) Schriftl.hs
 
 
