@@ -4,6 +4,7 @@
 -- Autor: Mohammad Esad-Djou
 -- bss98aou@studserv.uni-leipzig.de
 
+-- $Id$
 
 -- Gegeben: Aussagenlogik Formel F in konjunktive Normalform 
 --         (mit genau 3 Konjunktionsgliedern)
@@ -23,8 +24,7 @@ module SAT.SAT
 , Klausel, Formel, Belegung
 , module FiniteMap
 
-, variablen
-, wert_literal
+, bsp_formel
 )
 
 where
@@ -36,6 +36,12 @@ import ToDoc
 import Monad (guard)
 import Set
 import System
+
+import Step
+import Interactive.Type
+import qualified Component as C
+import Reporter
+import Maybe
 
 -- ???
 import Number
@@ -95,13 +101,10 @@ instance Problem SAT Formel Belegung where
 	else (True, text "Die Belegung passt zur Formel.")
 
 
+   verifiziereR SAT f b = do
+        partial SAT  f b
+	total   SAT f b
 
-
-   verifiziere SAT f b = 
-    let w = wert_formel f b
-	ks = [ k | k <- f , wert_klausel k b == False ]
-    in  if w then (w, text "Die Belegung erfüllt die Formel.")
-             else (w, text "Diese Klauseln sind nicht erfüllt:" <+> toDoc ks ) 
 
 -- Erzeugt HTML-File zur Visualisierung
    getInstanz SAT f b dateiName =
@@ -124,7 +127,106 @@ instance Number Formel Formel where number = id
 -- Version 1
 instance Iso Formel where iso f1 f2 = (mkSet f1) == (mkSet f2)
 
-------------------------------------------------
+
+---------------------------------------------------------------------------
+
+instance Partial SAT Formel Belegung where
+
+
+    initial SAT g = emptyFM
+
+    partial SAT f b = do
+
+        let domain = mkSet $ keysFM b
+	    out = minusSet domain ( variablen f )
+        when ( not $ isEmptySet out ) $ reject $ vcat
+	     [ text "Diese Variablen der Belegung"
+	     , text "gehören gar nicht zur Formel:"
+	     , nest 4 $ toDoc out
+	     ]
+
+	let wrong = do 
+	        klaus <- f
+		False <- maybeToList $ m_wert_klausel klaus b
+		return klaus
+	when ( not $ null wrong ) $ reject $ vcat
+	     [ text "Diese vollständig belegten Klauseln sind nicht erfüllt:"
+	     , nest 4 $ toDoc wrong
+	     ]
+	inform $ text "Alle vollständig belegten Klauseln sind erfüllt."
+	       
+
+    total SAT f b = do
+        let fehl = minusSet ( variablen f ) ( mkSet $ keysFM b )
+	when ( not $ isEmptySet fehl ) $ reject $ vcat
+	     [ text "Diese Variablen sind nicht belegt:"
+	     , nest 4 $ toDoc fehl
+	     ]
+	inform $ text "Alle Variablen sind belegt."
+
+
+
+instance  Step SAT Formel Belegung ( Paint String (Maybe Bool) ) where
+        step SAT f b ( Paint v mc ) =
+	    case mc of
+	         Nothing -> delFromFM b v
+		 Just c  -> addToFM   b v c
+
+instance  Interactive SAT Formel Belegung ( Paint String (Maybe Bool) ) where
+
+  interactive SAT f  = do
+
+    let doc = ( C.mkLabel "rechte Maustaste ergibt Popup-Menu" )
+	      { C.ident = C.Ident "doc" }
+
+    -- pop up menu
+    let menu = C.Component
+	     { C.kind = C.Menu
+	     , C.ident = C.Ident "Menu"
+	     , C.options = [ C.Menu_Items 
+		   $ map show ( Nothing : map Just [ False, True ] ) 
+		   ]
+	     , C.bbox = (0,0) -- dummy
+	     }
+
+    let handle v = \ ( C.Input cs) -> Paint v $
+           case reads cs of
+	        [(mc, "")] -> mc
+		_          -> Nothing
+
+    let result listener = 
+          let vccs = do 
+		 v <- setToList $ variablen f
+		 let c0 = ( C.mkLabel v ) 
+			  { C.ident = C.Ident $ v ++ "0" 
+			  }
+		 let c1 = ( C.mkButton "??" ) 
+			  { C.ident = C.Ident $ v ++ "1" 
+			  , C.action = C.translate ( handle v ) listener
+                          } `C.with_options` [ C.Color (255,255,255) ]
+		 return (v, c0, c1)
+
+              set = C.splits $ do
+			(v, c0, c1) <- vccs
+			return $ C.translate ( \ f -> 
+				      [ C.Text $ show $ lookupFM f v ] )
+			       $ C.changeL c1 
+          in ( C.column [ C.row [ doc, menu ]
+			, C.grid $ do 
+			     ( v, c0, c1 ) <- vccs
+			     return [ c0, c1 ]
+			]
+	     , set )
+
+
+    return $ result
+
+
+
+
+----------------------------------------------------------------------------
+
+
 -- erzeugt den Ausgabestring fuer die HTML Ausgabe der Instanz
 erzInstanz :: Formel -> String
 erzInstanz f = "<tr><td>" ++ show f ++ "</td></tr>"
@@ -139,21 +241,17 @@ erzBeweis b = "<tr><td>" ++ show b ++ "</td></tr>"
 l1 = Pos "x" :: Literal
 v1 = "x" :: Variable
 k1 = (Pos "x", Neg "y", Pos "z") :: Klausel
-f1 = [ k1 ] :: Formel
+k2 = (Neg "x", Pos "y", Pos "z") :: Klausel
+bsp_formel = [ k1, k2 ] :: Formel
 
 b1 :: Belegung
 b1 = listToFM [ ("x", True), ("y", False) ]
 b2 :: Belegung
 b2 = listToFM [("x", False), ("y" , True), ("z" , False)]
 
-wahrheitswert :: Formel -> Belegung -> Bool
--- falsch:
-wahrheitswert f b = True
-
 wert_formel :: Formel -> Belegung -> Bool
-wert_formel f b = 
+wert_formel f b =
     and [ wert_klausel k b | k <- f ]
-
 
 wert_klausel 	:: Klausel -> Belegung -> Bool
 wert_klausel (l1,l2,l3) b = wert_literal l1 b || wert_literal l2 b || wert_literal l3 b
@@ -167,3 +265,22 @@ wert_variable v b =
     case lookupFM b v of
 	Nothing -> error "variable nicht in belegung."
 	Just w  -> w
+
+-----------------------------------------------------------
+
+m_wert_formel :: Formel -> Belegung -> Maybe Bool
+m_wert_formel f b = do
+    ws <- mapM (flip m_wert_klausel b) f
+    return $ and ws
+
+m_wert_klausel :: Klausel -> Belegung -> Maybe Bool
+m_wert_klausel (l1, l2, l3) b = do
+    ws <- mapM (flip m_wert_literal b) [l1, l2, l3]
+    return $ or ws
+
+m_wert_literal 	:: Literal -> Belegung -> Maybe Bool
+m_wert_literal (Pos v) b = m_wert_variable v b
+m_wert_literal (Neg v) b = fmap not $ m_wert_variable v b
+
+m_wert_variable 	:: Variable -> Belegung -> Maybe Bool
+m_wert_variable v b = lookupFM b v
