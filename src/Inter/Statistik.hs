@@ -63,11 +63,15 @@ resultate vnr only_mandatory = do
     t <- io $ Control.Vorlesung.DB.teilnehmer vnr
     let fmt = listToFM t -- snr to (mnr, vorname,  name)
 
-    aufs <- io $ Control.Aufgabe.DB.get ( Just vnr )
+    aufs0 <- io $ Control.Aufgabe.DB.get ( Just vnr )
+    let aufs = do 
+           auf <- aufs0
+	   guard $ only_mandatory <= ( A.status auf == Mandatory )
+	   return auf
+
     -- anr to name
     let fma = listToFM $ do 
 	   auf <- aufs
-	   guard $ only_mandatory <= ( A.status auf == Mandatory )
 	   return ( A.anr auf, A.name auf )
 
     items <- sequence $ do
