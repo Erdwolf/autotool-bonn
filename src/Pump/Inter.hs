@@ -29,10 +29,13 @@ data Conf z = Conf { lang :: Language
      deriving Show -- ??
 
 instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
-    describe PUMP conf = vcat $ map text
-	     [ "Untersuchen Sie, ob die Sprache  L = "
-	     , show (lang conf)
-	     , "die " ++ tag (typo conf) ++ " erfüllt."
+    describe PUMP conf = vcat 
+	     [ text $ "Untersuchen Sie, ob die Sprache  L = "
+	     , nest 4 $ toDoc (lang conf)
+	     , text $ "die " ++ tag (typo conf) ++ " erfüllt."
+	     , text ""
+	     , text "Zu dieser Sprache gehören unter anderem die Wörter:"
+	     , nest 4 $ toDoc $ take 10 $ samp conf
 	     ]
     initial PUMP conf = 
 	let e = exempel
