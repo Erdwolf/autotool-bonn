@@ -21,11 +21,12 @@ BINS = DB/Server.bin DB/Client.bin DB/CGI.cgi
 
 CGIS = SRS/Deleting/Demo.cgi \
        SRS/Bounded/MB.cgi \
+       SRS/RFC/Ancestor.cgi \
        SRS/RFC/RFC.cgi 
 
 CGIINDEX = SRS/Interface/index.html
 
-CGIDIR = $(HOME)/public_html/cgi-bin
+CGIDIR = $(HOME)/public_html/bounded
 
 # location of DB script
 # WWW = $(HOME)/public_html/db
