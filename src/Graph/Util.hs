@@ -15,12 +15,15 @@ where
 import Autolib.Graph.Type hiding ( iso )
 import Autolib.Graph.Ops ( restrict , unlinks )
 import Autolib.Graph.Util ( isZusammen , anzKnoten )
+import Autolib.Graph.Adj ( AdjMatrix , adjazenz_matrix )
 import Autolib.Reporter 
 import Autolib.Reporter.Set
 
 import Autolib.FiniteMap
 import Autolib.ToDoc
 import Autolib.Schichten
+import Autolib.Set
+import Autolib.Util.Fix ( fixL )
 
 validate :: GraphC a
 	 => Graph a
@@ -64,7 +67,56 @@ lnachbarn g x =  do
 
 reachables :: Ord a => Graph a -> a -> Set a
 reachables g x = unionManySets $ schichten ( nachbarn g ) x
-     
+
+-------------------------------------------------------------------------------
+-- | echte nachfolger (nicht reflexive nachfolger-hülle)
+
+sucs :: Ord a => Graph a -> a -> Set a
+sucs g = unionManySets . fixL . tail . schichten_with_loops (nachbarn g)
+
+-- | echte nachfolger, die genau n>0 schritte entfernt sind, n=0 -> keine!
+
+sucsN :: Ord a => Int -> Graph a -> a -> Set a
+sucsN 0 _ _ = emptySet
+sucsN n g x = schichten_with_loops (nachbarn g) x !! n
+
+-- | gibt es nichtleeren pfad von x nach y?
+
+path :: Ord a => Graph a -> a -> a -> Bool
+path g x y = y `elementOf` sucs g x
+
+-- | gibt es pfad der länge n von x nach y
+
+pathN :: Ord a => Int -> Graph a -> a -> a -> Bool
+pathN n g x y = y `elementOf` sucsN n g x
+
+-- | erreichbarkeitsgraph: kanten zwischen allen knoten, zwischen
+-- | denen ein nichtleerer pfad existiert
+-- | es gilt: adjazenz_matrix . egraph == wegematrix
+
+egraph :: Ord a => Graph a -> Graph a
+egraph g = gen_egraph (path g) g
+
+wegematrix :: Ord a => Graph a -> AdjMatrix
+wegematrix = adjazenz_matrix . egraph
+
+-- | erreichbarkeitsgraph: kanten zwischen allen knoten, zwischen
+-- | denen ein Pfad der Länge n existiert
+-- | es gilt: n>0 => adjazenz_matrix (egraphN n g) = sig (adjazenz_matrix g)^n
+
+egraphN :: Ord a => Int -> Graph a -> Graph a
+egraphN n g = gen_egraph (pathN n g) g
+
+gen_egraph :: Ord a => ( a -> a -> Bool ) -> Graph a -> Graph a
+gen_egraph f g = mkGraph (knoten g)
+		         (mkSet $ do
+			  (x,y) <- setToList $ cross (knoten g) (knoten g)
+			  guard $ f x y
+			  return $ kante x y
+			 )
+
+-------------------------------------------------------------------------------
+
 degree :: Ord a => Graph a -> a -> Int
 degree g x = cardinality $ nachbarn g x
 
