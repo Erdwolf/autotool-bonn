@@ -11,7 +11,10 @@ type Env = [(String, String)]
 
 get :: Env  -> P.Type
 -- default: leerer string
-get env =  P.empty { P.matrikel = item env "matrikel"
+get env =
+    if null $ item env "matrikel"
+    then P.example
+    else P.empty { P.matrikel = item env "matrikel"
 		   , P.passwort = read $ item env "passwort"
 		   , P.problem  = item env "problem"
 		   , P.aufgabe  = item env "aufgabe"

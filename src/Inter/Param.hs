@@ -28,16 +28,22 @@ data Type =
 
 subject p = aufgabe p ++ "-" ++ version p
 
+example :: Type
+example = empty { problem  = "Computer" -- damit ein beispiel dasteht
+		, aufgabe  = "LOOP"
+                , version = "TIMES"
+		}
+
 empty :: Type
-empty = Param { matrikel = ""
-			  , passwort = Passwort.empty
-			  , problem  = ""
-			  , aufgabe  = ""
-	                  , version = ""
-			  , input    = ""
-			  , ident 	 = ""
-		          , input_width = 70
-			  , variants = []
-			  , variante = error "empty.variante"
-			  }
+empty = Param { matrikel = "" 
+	       , problem  = "" 
+		, aufgabe  = ""
+                , version = ""
+		  , passwort = Passwort.empty
+		  , input    = ""
+		  , ident 	 = ""
+	          , input_width = 65
+		  , variants = []
+		  , variante = error "empty.variante"
+		  }
 
