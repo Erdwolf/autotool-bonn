@@ -1,0 +1,37 @@
+-- -*- mode: haskell -*-
+
+module Machine.Acceptor.Type where
+
+-- $Id$
+
+import Informed
+import ToDoc
+import Reader
+import Reporter
+import Machine.Class
+
+data Acceptor = Acceptor
+
+{-! for Acceptor derive : Show, Read, ToDoc, Reader !-}
+
+data Type m dat = 
+     Make { acceptor_info :: Doc
+	  , yeah :: [ dat ] -- sollen akzeptiert werden
+	  , noh :: [ dat ] -- dürfen nicht akzeptiert werden
+	    , cut :: Int -- höchstens soviele schritte
+	    , check :: m -> Reporter () -- sonstige Bedingungen an Maschine
+	    , start :: m -- damit soll der student anfangen
+	      }
+
+instance Informed ( Type m dat  ) where
+     info = acceptor_info
+
+instance ToDoc ( Type m dat  ) where
+     toDoc = info
+instance Show ( Type m dat  ) where
+     show = render . toDoc
+
+instance Reader ( Type m dat  ) where
+     reader = error "Machine.Acceptor.Type.reader"
+instance Read ( Type m dat  ) where
+     readsPrec p = error "Machine.Acceptor.Type.readsPrec"
