@@ -3,6 +3,7 @@ module Shift.Computer where
 -- $Id$
 
 import Shift.Type
+
 import Shift.Enum
 
 import FiniteMap
@@ -14,16 +15,20 @@ import List (sort)
 
 import Util.Zufall
 
-next :: Int -> Pins -> [Bool] -> [Bool]
-next m ps xs = take m
+next0 :: Int -> Pins -> [Bool] -> [Bool]
+-- wegen effizienz wird length ps nicht immer ausgerechnet
+next0 m ps xs = take m
 		$ not ( and $ do p <- ps ; return $ xs !! (p - 1) )
 		: xs
+
+next :: Pins -> [Bool] -> [Bool]
+next ps = next0 (maximum $ 0 : ps) ps
 
 zustands_folge :: Pins -> [[ Bool ]]
 zustands_folge ps = 
     let m = maximum (0 : ps)
 	start = replicate m True 
-    in  tail $ iterate (next m ps) $ start
+    in  tail $ iterate (next0 m ps) $ start
 
 folge :: Pins -> [ Bool ]
 folge = map head . zustands_folge
@@ -81,7 +86,7 @@ suche n k = do
     putStrLn $ "optimiere q"
 
     let handle top ( ps : rest ) = do
-	    ps <- somes n k
+
 	    let (q, p) = find $ zustands_folge ps
 
 	    -- hiernach wird optimiert

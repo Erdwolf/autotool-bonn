@@ -28,16 +28,12 @@ meta limit me = do
     inform $ text "Sie haben eingesandt:" <+> toDoc me
     newline
 
-    let shs0 = do 
+    let shs = do 
           (k, (q,p)) <- zip [0..] $ qps me
 	  return $ Shift { pins = vector me k
 			 , vorperiode = q
 			 , periode = p
 			 }
-    -- jetzt abschneiden
-    let shs = take 10 
-	    $ takeWhile ( \ sh -> periode sh <= limit ) 
-	    $ shs0
     
     inform $ text "Ich prüfe die Shift-Instanzen"
     inform $ toDoc shs
@@ -45,7 +41,7 @@ meta limit me = do
     inform $ text "OK"
     newline    
 
-    let ps = take 20 $ map periode shs0
+    let ps = map periode shs
     inform $ text "Ich untersuche das Wachstum der Periodenlängen."
 
     delta 0 ps
