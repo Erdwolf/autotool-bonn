@@ -271,7 +271,7 @@ PACKAGE_VERSION='0.0'
 PACKAGE_STRING='autotool 0.0'
 PACKAGE_BUGREPORT=''
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os GHC GHC_PKG AUTODRIFT HADDOCK BASE PUB SCHOOL CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AR LD DEP_LIBS LIB_DIRS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os GHC GHC_PKG AUTODRIFT HADDOCK BASE PUB SCHOOL DEBUG CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AR LD DEP_LIBS LIB_DIRS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -833,6 +833,8 @@ Optional Packages:
         name of the module that exports "boiler"
         (= list of problems)
 
+  --with-debug=<True|False>
+
 
 Some influential environment variables:
   CC          C compiler command
@@ -1292,7 +1294,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-                              ac_config_files="$ac_config_files config.mk:config.mk.in src/Util/Datei/Base.hs:src/Util/Datei/Base.hs.in src/Inter/Boiler.hs:src/Inter/Boiler.hs.in"
+                                        ac_config_files="$ac_config_files config.mk:config.mk.in src/Local.hs:src/Local.hs.in src/Util/Datei/Base.hs:src/Util/Datei/Base.hs.in src/Inter/Boiler.hs:src/Inter/Boiler.hs.in"
 
 
 ac_aux_dir=
@@ -1676,6 +1678,18 @@ if test "${with_school+set}" = set; then
 
 fi;
 
+
+
+
+
+DEBUG="False"
+
+# Check whether --with-debug or --without-debug was given.
+if test "${with_debug+set}" = set; then
+  withval="$with_debug"
+  DEBUG="$withval"
+
+fi;
 
 
 
@@ -3589,6 +3603,7 @@ do
   case "$ac_config_target" in
   # Handling of arguments.
   "config.mk" ) CONFIG_FILES="$CONFIG_FILES config.mk:config.mk.in" ;;
+  "src/Local.hs" ) CONFIG_FILES="$CONFIG_FILES src/Local.hs:src/Local.hs.in" ;;
   "src/Util/Datei/Base.hs" ) CONFIG_FILES="$CONFIG_FILES src/Util/Datei/Base.hs:src/Util/Datei/Base.hs.in" ;;
   "src/Inter/Boiler.hs" ) CONFIG_FILES="$CONFIG_FILES src/Inter/Boiler.hs:src/Inter/Boiler.hs.in" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
@@ -3693,6 +3708,7 @@ s,@HADDOCK@,$HADDOCK,;t t
 s,@BASE@,$BASE,;t t
 s,@PUB@,$PUB,;t t
 s,@SCHOOL@,$SCHOOL,;t t
+s,@DEBUG@,$DEBUG,;t t
 s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t

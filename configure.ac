@@ -1,6 +1,9 @@
 AC_INIT([autotool],[0.0],[],[autotool])
 
-AC_CONFIG_FILES([config.mk:config.mk.in src/Util/Datei/Base.hs:src/Util/Datei/Base.hs.in src/Inter/Boiler.hs:src/Inter/Boiler.hs.in])
+AC_CONFIG_FILES([config.mk:config.mk.in 
+    src/Local.hs:src/Local.hs.in 
+    src/Util/Datei/Base.hs:src/Util/Datei/Base.hs.in 
+    src/Inter/Boiler.hs:src/Inter/Boiler.hs.in])
 
 AC_CANONICAL_SYSTEM
 
@@ -133,6 +136,19 @@ dnl   AC_MSG_ERROR([need a problem source module])
 dnl fi
 
 AC_SUBST(SCHOOL)
+
+
+dnl ***********************************************
+dnl debugging?
+dnl ***********************************************
+DEBUG="False"
+AC_ARG_WITH(debug,
+[  --with-debug=<True|False>
+],
+[DEBUG="$withval"]
+)
+
+AC_SUBST(DEBUG)
 
 
 dnl ***********************************************
