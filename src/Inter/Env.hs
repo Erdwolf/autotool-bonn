@@ -11,9 +11,12 @@ type Env = [(String, String)]
 
 get :: Env  -> P.Type
 -- default: leerer string
-get env =
+get env = get_with env P.example
+
+get_with :: Env -> P.Type -> P.Type
+get_with env def = 
     if null $ item env "matrikel"
-    then P.example
+    then def
     else P.empty { P.matrikel = item env "matrikel"
 		   , P.passwort = read $ item env "passwort"
 		   , P.problem  = item env "problem"

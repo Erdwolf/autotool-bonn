@@ -27,7 +27,11 @@ import qualified Demo.L
 
 boiler :: IO [ Variant ]
 boiler = sequence $
-       [ fmap Variant $ TM.FACTOR.generate
+       -- der erste ist der default-wert!
+       [ fmap Variant $ PCP.QUIZ.generate
+       , fmap Variant $ SAT.QUIZ.generate
+
+       , fmap Variant $ TM.FACTOR.generate
 
        , fmap Variant $ LOOP.SQRT.generate
        , fmap Variant $ LOOP.TIMES.generate
@@ -40,8 +44,6 @@ boiler = sequence $
        , fmap Variant $ FUN.FIB.generate
        , fmap Variant $ FUN.QUIZ.generate
 
-       , fmap Variant $ PCP.QUIZ.generate
-       , fmap Variant $ SAT.QUIZ.generate
        ]
        ++ Demo.L.generates
 
