@@ -1,6 +1,12 @@
 -- $Id$
 
-module Grammatik.Type where
+module Grammatik.Type 
+
+( module Grammatik.Type
+, module Set
+)
+
+where
 
 
 import Set
