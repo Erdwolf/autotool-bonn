@@ -53,7 +53,7 @@ tags :
 HADDOCK_DIRS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
 	Reporter Turing Dot Challenger Inter Boxing Machine Language \
 	Boolean \
-	SRS TES Baum NFTA Exp Graph GVKnoten Util Scorer \
+	SRS TES Rewriting Baum NFTA Exp Graph GVKnoten Util Scorer \
 	ws03 util control 
 
 # control? challenger?
