@@ -11,6 +11,7 @@ module Util.Datei
   , home
   , Datei (..)
   , inner
+  , perm
   )
   where
 
@@ -47,8 +48,14 @@ schreiben d inhalt = do
     createDir d
     h <- home d
     writeFile h inhalt
-    system $ unwords [ "chmod",  "go+r", h ]    
+    perm "go+r" h
     return ()
+
+perm :: String -> FilePath -> IO ()
+perm flags f = do
+    system $ unwords [ "chmod",  flags, f ]    
+    return ()
+
 
 lesen :: Datei -> IO(String)
 lesen d  = do
@@ -81,5 +88,5 @@ createDir d = do
 		    when ( not ok ) $ do 
 --                     putStrLn $ "creating directory " ++ show path
 		       createDirectory path
-		       system $ unwords [ "chmod",  "go+rx", path ]
+		       perm "go+rx" path 
 		       return ()
