@@ -20,13 +20,14 @@ nachfolger k = do
     guard $ covered k'
     return k'
 
-solutions :: Konfig -> [[[Zug ]]]
+solutions :: Konfig -> [ Doc ]
 solutions k = do
-    ps <- schichten ( mkSet . nachfolger ) k
-    return $ do p <- setToList ps
-		if fst $ final p 
-		   then return $ geschichte p
-		   else return []
+    (d, ps) <- zip [0 :: Int ..] $ schichten ( mkSet . nachfolger ) k
+    let out = do p <- setToList ps
+		 return $ if fst $ final p 
+		    then geschichte p
+		    else []
+    return $ toDoc (( d, length out), out)
 
 main :: IO ()
 main = sequence_ $ map print $ solutions ex
