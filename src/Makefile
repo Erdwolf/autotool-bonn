@@ -20,9 +20,9 @@ PACKS = -package text -package data \
 HPACKS = $(PACKS) \
 	-package HToolkit 
 
-OPT = -O2
+OPT = -O2 -funbox-strict-fields
 # PROF = -prof -auto-all
-GHC = ghc
+GHC = ghc-6.0
 
 PUB =  $(HOME)/public_html
 
