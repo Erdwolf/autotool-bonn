@@ -9,6 +9,7 @@ import qualified Boolean.Instance
 import qualified Boolean.Quiz
 import qualified Sortier.Netz.Check 
 import qualified JVM.Make
+import qualified Graph.Selfcom
 
 makers :: [ Make ]
 makers = [ NFA.Analyse.make
@@ -19,4 +20,6 @@ makers = [ NFA.Analyse.make
 	 , Boolean.Quiz.make
 	 , Sortier.Netz.Check.make
 	 , JVM.Make.make
+	 , Graph.Selfcom.make
 	 ]
+
