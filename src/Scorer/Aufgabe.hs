@@ -26,7 +26,7 @@ split_vorlesungen aufs =
 get :: IO ( FiniteMap VNr ScoreDefFM )
 get = do
     -- die informationen zu den aufgaben holen
-    aufs <- Control.Aufgabe.DB.get Nothing False
+    aufs <- Control.Aufgabe.DB.get Nothing
     let vls = split_vorlesungen aufs
     return vls
 

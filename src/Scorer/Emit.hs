@@ -13,7 +13,7 @@ import Control.Aufgabe.DB
 import qualified Control.Vorlesung.Typ as V
 import qualified Control.Aufgabe.Typ as A
 
-import Autolib.FiniteMap
+import Autolib.FiniteMap hiding ( collect )
 import Autolib.Set
 import Autolib.Util.Sort
 
@@ -30,7 +30,7 @@ emit vnr fm0 = do
           _   -> show vnr
 
     mnrs <- Control.Vorlesung.DB.teilnehmer vnr
-    let smnrs = mkSet $ mnrs
+    let smnrs = mkSet $ map ( \ (_,(mnr,_,_)) -> mnr ) mnrs
     let fm = mapFM ( \ key val -> do
 		  e <- val
 		  guard $ matrikel e `elementOf` smnrs
