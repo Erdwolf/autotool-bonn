@@ -1,4 +1,4 @@
-module NPDA.Check
+obsolete module NPDA.Check -- use Machine.Akzeptieren
 
 -- $Id$
 

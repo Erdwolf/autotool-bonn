@@ -12,6 +12,17 @@ import ToDoc
 
 -- import Seite56
 
+anbn :: NPDA Char Char Int
+anbn = NPDA 
+     { eingabealphabet = mkSet "ab"
+     , kelleralphabet = mkSet "XA" , zustandsmenge = mkSet [ 0, 1, 2]
+     , startzustand = 0 , startsymbol = 'X' , akzeptiert = Leerer_Keller
+     , tafel = listToFM [ ( ( Just 'a', 0 , 'X'), mkSet [ ( 0, "AX")])
+			, ( ( Just 'a', 0 , 'A'), mkSet [ ( 0, "AA")])
+                        , ( ( Just 'b', 0 , 'A'), mkSet [ ( 2, "") ])
+                        , ( ( Just 'b', 2 , 'A'), mkSet [ ( 2, "") ])
+			]
+     }
 
 -- der Automat soll { w w^R  |  w  in  {a, b}* }
 -- durch leeren Keller akzeptieren

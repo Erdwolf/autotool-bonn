@@ -28,13 +28,17 @@ instance NPDAC x y z
 	 => Out ( NPDA x y z ) [x] ( Konfiguration x y z ) where
     -- endkonf. lesen (ein einziges arg)
     -- output :: m -> conf -> dat
+    
+    -- TODO: wouzu ist diese Instanz eigentlich nötig?
+    -- NPDA soll doch  nur rechnen und akzeptieren, nichts ausgeben?
     output m k = eingabe k -- sollte verbraucht sein
 
 
 instance NPDAC x y z 
 	 => Compute ( NPDA x y z ) ( Konfiguration x y z ) where
     next m k = folgekonfigurationen m k
-    accepting m k = case akzeptiert m of
-        Leerer_Keller -> null $ keller k
-	Zustand qs    -> zustand k `elementOf` qs
+    accepting m k = null ( eingabe k ) 
+	&& case akzeptiert m of
+	        Leerer_Keller -> null $ keller k
+	        Zustand qs    -> zustand k `elementOf` qs
 

@@ -21,11 +21,11 @@ data Konfiguration x y z =
 		   }
 
 instance NPDAC x y z => ToDoc (Konfiguration x y z) where
-    toDoc k = braces $ fsep $ punctuate comma
+    toDoc k = text "Konfiguration" <+> ( braces $ fsep $ punctuate comma
         [ text "eingabe" <+> equals <+> toDoc (eingabe k) 
 	, text "zustand" <+> equals <+> toDoc (zustand k) 
 	, text "keller"  <+> equals <+> toDoc (keller k) 
-	]
+	] )
 
 instance NPDAC x y z => Show (Konfiguration x y z) where
     show = render . toDoc

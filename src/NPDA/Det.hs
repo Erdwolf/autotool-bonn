@@ -5,6 +5,7 @@ module NPDA.Det
 where
 
 import NPDA.Type
+import NPDA.Sane
 
 import Monad (guard)
 import Reporter
@@ -13,7 +14,7 @@ import Set
 import ToDoc
 
 check :: NPDAC x y z => C.Type ( NPDA x y z )
-check = C.Make 
+check = sanity `C.and_then` C.Make 
       { C.nametag = "det"
       , C.condition = text "Der Kellerautomat soll determinstisch sein."
       , C.investigate = ist_deterministisch
@@ -29,7 +30,7 @@ ist_deterministisch a =
 	    let fs =            lookupset (tafel a) (Just x , z, y)
 		     `union` lookupset (tafel a) (Nothing, z, y)
 	    guard $ cardinality fs > 1
-	    return ((x, z, y), setToList fs)
+	    return ((x, z, y), fs)
     of []  -> inform $ text "das ist ein deterministischer Kellerautomat"
        fss -> reject $ vcat 
 	      [ text "das ist kein deterministischer Kellerautomat,"

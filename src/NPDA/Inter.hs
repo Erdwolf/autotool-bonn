@@ -36,14 +36,15 @@ make config =
 	    let l = lang config
 		m = max_num config
 		e = max_length config
-	    yeah <- samples      l m e
-	    noh  <- anti_samples l m e
+	        small w = length w <= e
+	    yeah <- samples      l m 0
+	    noh  <- anti_samples l m 0
 	    return $ return $ A.Make
 		   { A.machine_info = text "Keller-Automat"
 		   , A.data_info = info $ lang config
-		   , A.yeah = yeah
-		   , A.noh = noh
-		   , A.cut = cut config 
+		   , A.yeah = take m $ filter small yeah
+		   , A.noh  = take m $ filter small noh
+		   , A.cut  = cut config 
 		   , A.check = check config
 		   , A.start = start config
 		   }
