@@ -23,6 +23,7 @@ import Challenger
 import ToDoc
 import Monad (guard)
 import Set
+import System 
 import Auswertung
 import Report
 import Right
@@ -39,7 +40,7 @@ data SAT = SAT deriving Show
 
 -- Elementare Def.
 data Literal = Pos Variable | Neg Variable
-    deriving (Show,Read)
+    deriving (Show,Read,Eq,Ord)
 
 instance ToDoc Literal where
    toDoc l = text (show l)
@@ -58,11 +59,35 @@ type Belegung = FiniteMap Variable Bool
 
 instance Problem SAT Formel Belegung where 
 
+   --TODO: prüfe, ob alle Variablen wirklich belegt werden
+   validiere SAT f b = ( True, text "zunächst ist alles valid" )
+
    verifiziere SAT f b = 
     let w = wert_formel f b
 	ks = [ k | k <- f , wert_klausel k b == False ]
     in  if w then (w, text "Die Belegung erfüllt die Formel.")
              else (w, text "Diese Klauseln sind nicht erfüllt:" <+> toDoc ks ) 
+
+    -- Erzeugt HTML-File zur Visualisierung
+   getInstanz SAT f b dateiName =
+         do 
+          writeFile (dateiName ++ ".html") 
+                    ("<br><table borders><caption>Diese Formel ist zu erfüllen:")
+          return (dateiName ++ ".html","html",ExitSuccess)
+        
+    -- Erzeugt HTML-File zur Visualisierung
+   getBeweis SAT f b dateiName =
+         do 
+          writeFile (dateiName ++ ".html") 
+		    $ "<TR><TD>" ++ show b ++ "</TD></TR>"
+          return (dateiName ++ ".html","html",ExitSuccess)
+
+
+
+
+instance Number Formel Formel where number = id
+
+instance Iso Formel where iso = (==)
 
 
 ------------------------------------------------
@@ -99,41 +124,6 @@ wert_variable v b =
 	Just w  -> w
 
 
--- Beispiel
-student = Aufgabe { problem = SAT
-
-                  , instanz = f
-
-		  , beweis  = b'
-                  }
+-- Beispiel -> doc/Aufgabe.hs
 
 
-
---Beispielstrukturen 
-
-
---Erfüllbare Aussage mit Belegung b
-f :: Formel 
-f = [(Pos "x", Pos "y", Pos "z")
-    ,(Neg "x", Neg "y", Neg "z")
-    ]
-
-b' :: Belegung
-b' = listToFM [("x", True),("y", False),("z", False)]
-
--- Gegenbeispiel:nicht erfüllbare 3SAt
-
-fgegen :: Formel 
-fgegen = [(Pos "x", Pos "y", Pos "z")
-	 ,(Neg "x", Neg "y", Neg "z")
-	 ,(Neg "x", Neg "y", Pos "z")
-	 ,(Neg "x", Pos "y", Pos "z")
-	 ,(Neg "x", Pos "y", Neg "z")
-	 ,(Pos "x", Neg "y", Neg "z")
-	 ,(Pos "x", Neg "y", Pos "z")
-	 ,(Pos "x", Pos "y", Neg "z")
-	 ]
-
---Für alle Belegungen ist nicht erfüllbar. Beispiel:
-bgegen :: Belegung
-bgegen = listToFM [("x", True),("y", False),("z", True)]
