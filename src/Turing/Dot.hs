@@ -6,20 +6,20 @@ module Turing.Dot where
 import Turing.Type
 import Dot.Dot
 
-import NFA
+import qualified NFA as N
 import Compact
 import ToDoc
 
 type Triple y = ( y,  y, Bewegung )
 
-convert :: ( NFAC (Triple Char) z , UM z ) 
-	=> Turing Char z -> NFA (Triple Char ) z
+convert :: ( N.NFAC (Triple Char) z , UM z ) 
+	=> Turing Char z -> N.NFA (Triple Char ) z
 convert tm = 
-    NFA { nfa_info = text "converted from Turing"
-	, states   = zustandsmenge tm
-	, starts   = unitSet $ startzustand tm
-	, finals   = endzustandsmenge tm
-	, trans    = collect $ do
+    N.NFA { N.nfa_info = text "converted from Turing"
+	, N.states   = zustandsmenge tm
+	, N.starts   = unitSet $ startzustand tm
+	, N.finals   = endzustandsmenge tm
+	, N.trans    = N.collect $ do
 	      ( (input, p), next ) <- fmToList $ tafel tm
 	      ( output, q, move )  <- setToList next
 	      return ( p, (input, output, move) , q )
@@ -31,7 +31,13 @@ instance Show  [ Triple Char ] where
     show = render . toDoc
 
 
-instance ( NFAC (Triple Char) z , NFAC [Triple Char] z , TUM Char z ) 
+instance ( N.NFAC (Triple Char) z , N.NFAC [Triple Char] z , TUM Char z ) 
     => ToDot ( Turing Char z ) where
-    toDot tm = toDot $ parallel_compact $ convert tm
-    toDotOptions tm = ""
+    toDot tm = toDot 
+	     -- $ parallel_compact 
+	     $ convert tm
+    toDotOptions tm = "-Grankdir=LR"
+
+
+instance N.NFAC (Turing.Dot.Triple Char) Char
+instance N.NFAC [Turing.Dot.Triple Char] Char

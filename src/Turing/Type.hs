@@ -29,9 +29,11 @@ class ( Ord y, Show y, ToDoc y, ToDoc [y], Reader y, Reader [y]  ) => UM y
 class ( UM y, UM z ) => TUM y z 
 
 instance UM Char
+instance UM Int
 instance UM Integer
-instance TUM Char Integer
 
+instance TUM Char Integer
+instance TUM Char Int
 
 data (UM y, UM z) => Turing y z = 
      Turing { eingabealphabet  :: Set y
@@ -45,6 +47,20 @@ data (UM y, UM z) => Turing y z =
 
 {-! for Turing derive : ToDoc, Reader !-}
 
+unCollect :: TUM y z
+	=> FiniteMap (y, z) (Set (y, z, Bewegung))
+	-> [ ((y, z), (y, z, Bewegung)) ]
+unCollect tf = do
+    (arg, cont) <- fmToList tf
+    val <- setToList cont
+    return ( arg, val )
+
+collect :: TUM y z
+	=>  [ ((y, z), (y, z, Bewegung)) ]
+	->  FiniteMap (y, z) (Set (y, z, Bewegung))
+collect avs = addListToFM_C union emptyFM $ do
+    ( a, v ) <- avs
+    return ( a, unitSet v )
 
 
 instance TUM y z => Show (Turing y z) where
