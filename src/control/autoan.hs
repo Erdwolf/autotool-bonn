@@ -68,7 +68,7 @@ loginPage mat F0  = do
 			-- a)
 			smallSubButton (F2 matF pwdF)	checkLoginPage	"Login" 
 			-- c)
-			smallSubButton (F1 matF) 		mailPasswdPage  "Passwort zuschicken, dazu bitte Matrikelnr. angeben."
+--			smallSubButton (F1 matF) 		mailPasswdPage  "Passwort zuschicken, dazu bitte Matrikelnr. angeben."
 
 			hrrow
 			th3 $ "Hier können Sie Sich in die Übungsgruppen von " ++ vorlesungen ++ " einschreiben."
