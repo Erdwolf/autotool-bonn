@@ -121,8 +121,11 @@ loop :
 		Exp/Loop.hs -o Exp/Loop
 
 # install source archive and executable
-release : SRS/Config/Build.hs SRS/Config/Release.hs
+release : 
 	cvs commit -m release-$(shell date -I)
+	make publish
+
+publish :  SRS/Config/Build.hs SRS/Config/Release.hs
 	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_STORE)/$(MATCHBOX_EXE)
 	bzip2 -v --force --best  $(MATCHBOX_STORE)/$(MATCHBOX_EXE)
 	tar -cvjf $(MATCHBOX_STORE)/$(MATCHBOX_ARCHIVE) \

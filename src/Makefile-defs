@@ -16,6 +16,7 @@ endif
 ifeq ($(shell hostname), nfa)
 EXTRA_PACKS = -package hsql
 GHC = ghc-6.2
+CGIDIR = /var/www/matchbox
 endif
 
 ifeq ($(shell hostname), dfa)
