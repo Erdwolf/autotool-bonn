@@ -8,20 +8,33 @@ import Turing.Vorrechnen
 import Turing.Konfiguration
 
 import Reporter
+import qualified Reporter.Result
+import ToDoc
+import Size
+
+wrapped_test note f args m = Reporter.Result.wrapper ( test note f args m )
 
 test :: TUM Char z
-     => (Int -> Int) -> [ Int ]
+     => String
+     -> (Int -> Int) -> [ Int ]
      -> Turing Char z 
      -> Reporter Int
 
-test f args m = do
+test note f args m = do
+
+    inform $ fsep [ text "Ihre Turingmaschine"
+		  , text "soll für Eingaben der Form A^n"
+		  , text "genau", text note, text "Schritte ausführen."
+		  ]
+    
+
     inform $ text "Ihre Turingmaschine ist"
     inform $ toDoc m
 
     check m
     deterministisch m
 
-    inform $ text $ "ich teste die Laufzeit für die Eingabelängen" 
+    inform $ text "ich teste die Laufzeit für die Eingabelängen" 
 	     <+> toDoc args
 
     let falsch = do 
@@ -35,6 +48,7 @@ test f args m = do
 		    , fsep [ text "erreicht innerhalb der ersten"
 			   , toDoc t, text "Schritte"
 			   , text "keinen Endzustand." 
+			   ]
 		    )
 		ks -> do k <- ks
 			 guard $ nummer k /= t
@@ -43,15 +57,19 @@ test f args m = do
 				       , toDoc (nummer k), text ","
 				       , text "Laufzeit soll aber" 
 				       , toDoc t, text "sein." 
+				       ]
 				)
 
     case  falsch of
         [] -> do 
 		  inform $ text $ "alle Laufzeiten sind korrekt"
+		  return $ size m
         wms -> do 
-	    inform $ vcat [ text $ "diese Eingaben/Laufzeiten sind falsch:"
-			  , toDoc wms
-			  ]
+	    inform $ text  "diese Eingaben/Laufzeiten sind falsch:"
+		   $$ ( vcat $ do 
+			( ein, f ) <- wms
+			return $ toDoc ein <+> f
+		      )
 	    vorrechnens m $ take 3 $ map fst falsch
             reject empty
 
