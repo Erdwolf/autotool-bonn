@@ -17,7 +17,7 @@ import Prelude hiding ( lookup )
 import FiniteMap
 import ReadFM
 
-import ToDoc
+import ToDoc hiding ( empty )
 import Reader
 
 data Ord k => Cache k e = Cache ( FiniteMap k e )
