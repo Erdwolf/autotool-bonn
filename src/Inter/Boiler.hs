@@ -30,7 +30,7 @@ import qualified JVM.NUM32
 import qualified JVM.NUM42
 import qualified JVM.NUMAT
 
-import qualified JVM.FIB
+-- import qualified JVM.FIB
 
 -- ws03/informatik:
 import qualified Sortier.Netz.Check
@@ -57,7 +57,7 @@ boiler = sequence $
        , fmap Variant $ JVM.NUM42.generate
        , fmap Variant $ JVM.NUMAT.generate
 
-       , fmap Variant $ JVM.FIB.generate
+--       , fmap Variant $ JVM.FIB.generate
 
        , fmap Variant $ PCP.QUIZ.generate
        , fmap Variant $ SAT.QUIZ.generate

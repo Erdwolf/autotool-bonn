@@ -5,6 +5,8 @@ module Sortier.Netz.Check where
 import Sortier.Netz.Type
 import Sortier.Netz.Rechnung
 import Sortier.Netz.Example
+import Sortier.Netz.Bild
+import Util.Bild
 
 import qualified Util.Wort ( alle )
 import List ( tails)
@@ -15,6 +17,7 @@ import qualified Challenger as C
 import Inter.Types
 import Size
 
+
 check :: Int -> Netz -> Reporter ()
 check soll n = do
     let verify xs = do
@@ -24,7 +27,8 @@ check soll n = do
 	       [ text "Diese Eingabe wird nicht korrekt geordnet:"
 	       , nest 4 $ toDoc xs
 	       , text "Die Rechung des Netzes ist:"
-	       , nest 4 $ toDoc xss
+	       -- , nest 4 $ toDoc xss
+	       , nest 4 $ toDoc $ toBild ( n , xss )
 	       ]
     mapM_ verify $ Util.Wort.alle [ 0, 1 ] soll
     inform $ text "Das Netz hat alle möglichen Eingaben korrekt geordnet."
@@ -40,6 +44,7 @@ data Sortier = Sortier deriving ( Eq, Ord, Show, Read )
 instance C.Partial Sortier Int Netz where
     initial p i   = bubble i
     partial p i b =  do
+        inform $ text "Ihr Netz ist:" <+> toDoc ( toBild b )
         let ist  = high b - low b + 1
         when ( i /= ist ) $ reject $ vcat
 	     [ text "Das Netz soll Breite" <+> toDoc i <+> text "haben"
