@@ -30,7 +30,7 @@ import Grammatik.DPL_CYK
 import Size
 import Set
 import Wort
-import Edit
+
 
 import List (partition, nub, sortBy)
 import FilterBound
@@ -42,24 +42,23 @@ import Reporter
 
 cf_check :: Language 
 	 -> ( Grammatik -> Reporter () )
-	 -> Int -> Int
+	 -> Int -> Int -> Int
 	 -> ( Grammatik, Tracks ) 
 	 -> IO ( Reporter Int )
-cf_check l typ w n ( g, ts ) = do
-    ws <- samples l w n
-    let large = maximum [ length w | w <- ws ]
-    ms <- mapM edits $ ws ++ ws
-    let mutants = filter ( \ w -> length w <= large ) ms
-    let (yeah, noh) = partition (contains l) $ nub $ ws ++ mutants
-    return $ cf_yeah_noh ( toDoc l ) yeah noh typ ( g, ts )
+cf_check l typ w n t ( g, ts ) = do
+    here   <- samples      l w n
+    there  <- anti_samples l w n
+    let (yeah, noh) = partition (contains l) $ nub $ here ++ there
+    return $ cf_yeah_noh ( toDoc l ) yeah noh typ t ( g, ts )
 
 
 cf_yeah_noh :: Doc 
 	    -> [ String ] -> [ String ] 
 	    -> ( Grammatik -> Reporter () )
+	    -> Int
 	    -> ( Grammatik, Tracks ) 
 	    -> Reporter Int
-cf_yeah_noh doc yeah0 noh0 typ gts @ ( g, ts ) = do
+cf_yeah_noh doc yeah0 noh0 typ t gts @ ( g, ts ) = do
     inform $ text "Gesucht sind Grammatik und Beispiel-Ableitungen für" <+> doc
     inform $ text "Sie haben eingesandt:" <+> toDoc gts
 
@@ -68,9 +67,9 @@ cf_yeah_noh doc yeah0 noh0 typ gts @ ( g, ts ) = do
 
     let arrange = sortBy (\ x y -> compare (length x, x) (length y, y))
     let [ yeah, noh ] = map arrange [ yeah0, noh0 ]
-    let demo = mkSet $ take 3 yeah
 
-    trace 4 ( g, demo ) ts -- FIXME: arbitrary constant
+    let demo = mkSet $ take 2 yeah -- FIXME: arbitrary constant
+    trace t ( g, demo ) ts 
 
     -- wenn wir hier ankommen, sind die ableitungen OK
 

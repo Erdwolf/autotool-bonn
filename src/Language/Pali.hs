@@ -1,27 +1,11 @@
--- $Header$
-
 module Language.Pali 
+
+-- $Id$
+
 
 ( pali
 , nopali
 )
-
--- $Log$
--- Revision 1.2  2002-12-17 15:17:58  joe
--- grammatik -> Grammatik.
---
--- Revision 1.1  2002/11/08 16:43:23  joe
--- language -> Language
--- pump -> Pump.REG (neu)
--- aufgaben dazu
---
--- Revision 1.1.1.1  2002/05/24 10:46:48  challenger
--- start
---
--- Revision 1.1  2001/12/05 21:11:31  autotool
--- lang/*
---
-
 
 where
 
@@ -29,7 +13,7 @@ import Language.Type
 import Util.Wort
 
 import Set
-
+import Random
 
 pali :: Language
 pali = Language
@@ -37,14 +21,14 @@ pali = Language
 	, alphabet     = mkSet "01"
 	, contains     = is_pali 
 	, sample       = sam
+	, anti_sample  = anti_sam
 	}
 
+is_pali w = w == reverse w
+
 nopali :: Language
-nopali = Language
+nopali = ( komplement pali )
 	{ abbreviation = "{ w : w in {0,1}^*, w /= reverse w }"
-	, alphabet     = mkSet "01"
-	, contains     = not . is_pali
-	, sample       = random_sample nopali
 	}
 
 -------------------------------------------------------------------------
@@ -58,8 +42,28 @@ sam c n = do
         w <- someIO (setToList $ alphabet pali) (q + r)
 	return $ w ++ drop r (reverse w)
 
-is_pali w = w == reverse w
+anti_sam :: Int -> Int -> IO [ String ]
+anti_sam 0 n = return []
+anti_sam c n | n < 2 = return []
+anti_sam c n = sequence $ replicate c $ do
+    r <- randomRIO (n `div` 3, n `div` 2 - 1)
 
+    let xs =  setToList $ alphabet pali
+	l = length xs
+
+    -- würfle zwei verschiedene Buchstaben x und y
+    i <- randomRIO (0, l-1)
+    d <- randomRIO (1, l-1)
+    let x = xs !! i 
+	y = xs !! ( (i+d) `mod` l )
+
+    w <- someIO xs r
+    v <- someIO xs (n-2)
+
+    return $ w ++ [x] ++ v ++ [y] ++ reverse w
+
+    
+    
 
 
 

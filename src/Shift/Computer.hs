@@ -16,6 +16,8 @@ import List (sort)
 import Util.Zufall
 import Util.Faktor
 
+import List ( group )
+
 instance Show [Bool] where
     show = map ( \ x -> if x then '+' else '-' ) 
 

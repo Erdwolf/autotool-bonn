@@ -26,7 +26,17 @@ data Language = Language
 	      -- mit Länge == n
 	      , sample       :: Int -> Int -> IO [ String ]
 
+              -- das gleiche für wörter im komplement
+              , anti_sample  :: Int -> Int -> IO [ String ]
+
 	      }
+
+komplement :: Language -> Language
+komplement l = l { abbreviation = "Komplement von " ++ abbreviation l
+		 , contains = not . contains l
+		 , sample = anti_sample l
+		 , anti_sample = sample l
+		 }
 
 instance ToDoc Language where
     toDoc l = text ( abbreviation l )
@@ -41,7 +51,6 @@ random_sample l c n = do
     ws <- sequence $ replicate c $ someIO (setToList $ alphabet l) n
     return $ filter (contains l) ws
 
-       
 samples :: Language -> Int -> Int -> IO [ String ]
 -- würfelt genau (!) c Wörter der Sprache l, mit Länge >= n,
 -- dabei von jeder festen länge höchstens sqrt c viele
@@ -53,6 +62,11 @@ samples l c n | c > 0 = do
     there <- samples l (c - length here) (n + d)
     return $ uniq $ here ++ there
 samples l c n = return []
+
+anti_samples :: Language -> Int -> Int -> IO [ String ]
+anti_samples l = samples ( komplement l )
+
+
 
 present :: Language -> IO ()
 present l = do
