@@ -1,3 +1,5 @@
+{-# OPTIONS -cpp #-}
+
 module Util.Datei 
 
 -- $Id$
@@ -19,7 +21,7 @@ import List (inits, intersperse)
 import Directory
 import Monad (guard, when)
 import System (getEnv, system)
--- import qualified Posix
+import qualified Posix
 import qualified Exception
 
 -- alle pfade sind relativ zu $HOME, falls das existiert
@@ -44,11 +46,23 @@ inner :: Datei -> String -- ohne $HOME-prefix
 inner d =  concat $ intersperse "/" (pfad d ++ [name d])
 
 home_dir :: IO FilePath
-home_dir = getEnv "HOME"
-    `Exception.catch` \ any -> do
-           -- user <- Posix.getEffectiveUserName
-           let user = "autotool"
-	   return $ "/home/" ++ user
+home_dir = do
+#ifdef SPACE
+	    return "/space"
+#else
+#ifdef HOME
+	    getEnv "HOME"
+#else
+#ifdef POSIX
+            user <- Posix.getEffectiveUserName
+	    return $ "/home/" ++ user
+#else            
+            let user = "autotool"
+	    return $ "/home/" ++ user
+#endif
+#endif
+#endif
+
 
 home :: Datei -> IO FilePath
 home d = do
@@ -102,9 +116,11 @@ createDir d = do
         prefix <- inits $ h : pfad d
 	guard $ not $ null prefix
 	let path = concat $ intersperse "/" prefix
-	return $ do ok <- doesDirectoryExist path
-		    when ( not ok ) $ do 
---                     putStrLn $ "creating directory " ++ show path
+ 	return $ do 
+		ok <- doesDirectoryExist path
+	    	when ( not ok ) $ do 
 		       createDirectory path
+		           `catch` \ any ->
+			       error $ unlines [ show any, show path ]
 		       perm "go+rx" path 
 		       return ()
