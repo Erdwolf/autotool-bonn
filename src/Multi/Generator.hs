@@ -23,12 +23,12 @@ generator prefix xs = do
 		      $ prefix { name = show n } -- ohne extension
 		f <- deng p x -- f hat extension
 		return ( name f -- ohne dir, mit extension
-		       , info x 
+		       , unwords $ words $ render $ info x 
 		       )
 	   ) xs
     let d = data_index prefix
-    anhaengen d $ unlines $ do
+    schreiben d $ unlines $ do
         ( f, i ) <- fis
-	return $ unwords [ f, render i ]
+	return $ unwords [ f, i ]
 
     

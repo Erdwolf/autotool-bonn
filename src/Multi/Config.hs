@@ -10,5 +10,6 @@ data Config =
 	    , objects :: Int
 	    , names :: Int
 	    , tries :: Int
+	    , tries_left :: Int
 	    }
 

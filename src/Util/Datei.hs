@@ -19,8 +19,13 @@ import List (inits, intersperse)
 import Directory
 import Monad (guard, when)
 import System (getEnv, system)
+import qualified Posix
+import qualified Exception
 
--- alle pfade sind relativ zu $HOME 
+-- alle pfade sind relativ zu $HOME, falls das existiert
+-- in CGI-skripten existiert es nicht (?)
+-- dann relativ zu /home/$(posix.getloginname)
+
 data Datei = Datei{ pfad :: [String]
                   , name :: String
                   , relativzahl :: Int
@@ -32,9 +37,15 @@ instance Show Datei where
 inner :: Datei -> String -- ohne $HOME-prefix
 inner d =  concat $ intersperse "/" (pfad d ++ [name d])
 
+home_dir :: IO FilePath
+home_dir = getEnv "HOME"
+    `Exception.catch` \ any -> do
+           user <- Posix.getEffectiveUserName
+	   return $ "/home/" ++ user
+
 home :: Datei -> IO FilePath
 home d = do
-    prefix <- getEnv "HOME"
+    prefix <- home_dir
     return $ prefix ++ "/" ++ inner d
 
 anhaengen :: Datei -> String -> IO()
@@ -79,7 +90,7 @@ erzeugeVerzeichnisse = createDir
 
 createDir :: Datei -> IO ()
 createDir d = do
-    h <- getEnv "HOME"
+    h <- home_dir
     sequence_ $ do
         prefix <- inits $ h : pfad d
 	guard $ not $ null prefix
