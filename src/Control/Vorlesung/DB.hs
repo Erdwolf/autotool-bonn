@@ -32,8 +32,8 @@ get_tutored :: SNr -> IO [ Vorlesung ]
 get_tutored snr = do
     conn <- myconnect
     stat <- squery conn $ Query
-        ( Select $ map reed [ "vorlesung.VNr AS VNr"
-			    , "vorlesung.Name AS Name" ] )
+        ( Select $ map reed [ "vorlesung.VNr as VNr"
+			    , "vorlesung.Name as Name" ] )
         [ From $ map reed [ "tutor", "vorlesung" ] 
 	, Where $ ands
 	        [ equals ( toEx snr ) ( reed "tutor.SNr" ) 
@@ -46,8 +46,8 @@ get_attended :: SNr -> IO [ Vorlesung ]
 get_attended snr = do
     conn <- myconnect
     stat <- squery conn $ Query
-        ( Select $ map reed [ "vorlesung.VNr AS VNr"
-			    , "vorlesung.Name AS Name" ] )
+        ( Select $ map reed [ "vorlesung.VNr as VNr"
+			    , "vorlesung.Name as Name" ] )
         [ From $ map reed [ "stud_grp", "gruppe", "vorlesung" ] 
 	, Where $ ands
 	        [ equals ( toEx snr ) ( reed "stud_grp.SNr" ) 
@@ -72,10 +72,10 @@ teilnehmer :: VNr -> IO [ ( SNr, (MNr, Name, Name) ) ]
 teilnehmer vnr = do
     conn <- myconnect
     stat <- squery conn $ Query
-        ( Select $ map reed [ "student.SNr AS SNr" 
-			    , "student.MNr AS MNr" 
-			    , "student.Vorname AS Vorname" 
-			    , "student.Name AS Name" 
+        ( Select $ map reed [ "student.SNr as SNr" 
+			    , "student.MNr as MNr" 
+			    , "student.Vorname as Vorname" 
+			    , "student.Name as Name" 
 			    ] 
 	)
         [ From $ map reed [ "student", "stud_grp", "gruppe" ] 

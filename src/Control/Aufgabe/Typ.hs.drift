@@ -20,8 +20,13 @@ data Aufgabe  =
 	     , config :: Config
 	     , remark :: Remark
 	     , highscore :: HiLo
+	     , status :: Status
 	     , von :: Time
 	     , bis :: Time
+	     -- | das wird bei DB-zugriff berechnet (NOW between VON and BIS)
+	     -- damit wir außerhalb der DB keine Uhr brauchen
+	     -- und keine zeiten vergleichen müssen
+	     , current :: Bool
 	     }
      deriving ( Eq, Ord, Typeable )
 

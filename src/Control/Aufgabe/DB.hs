@@ -15,22 +15,19 @@ get_this :: ANr -> IO [ Aufgabe ]
 get_this anr = select_where [ equals ( reed "aufgabe.ANr" ) ( toEx anr ) ]
 
 get :: Maybe VNr 
-    -> Bool
     -> IO [ Aufgabe ]
-get mvnr only_current = select_where $
+get mvnr = select_where $
 	        [ equals ( reed "aufgabe.VNr" ) ( toEx vnr ) 
 		| vnr <- maybeToList mvnr
 		] 
-	     ++ [ reed "NOW() BETWEEN ( Von AND Bis )" 
-		| only_current 
-		]
 
 select_where wh = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "ANr", "VNr", "Name"
 			    , "Typ", "Config", "Remark"
-			    , "Highscore", "Von" , "Bis"
+			    , "Highscore", "Status", "Von" , "Bis"
+			    , "NOW() BETWEEN ( Von AND Bis ) as Current"
 			    ]
 	) $
         [ From $ map reed [ "aufgabe" ] 
@@ -48,15 +45,19 @@ common = collectRows $ \ state -> do
         g_config <- getFieldValue state "Config"
         g_remark <- getFieldValue state "Remark"
         g_highscore <- getFieldValue state "Highscore"
+        g_status <- getFieldValue state "Status"
         g_von <- getFieldValue state "Von"
         g_bis <- getFieldValue state "Bis"
+	g_current <- getFieldValue state "Current"
 
         return $ Aufgabe { anr = g_anr
     			   , vnr = g_vnr
 			 , name = g_name
     			 , highscore = g_highscore
+    			 , status = g_status
     			   , von = g_von
     			   , bis = g_bis
+			  , current = g_current
     			   , typ = g_typ
     			   , config = g_config
     			   , remark = g_remark
@@ -77,6 +78,8 @@ put manr auf = do
 		 , ( reed "Config", toEx $ config auf )
 		 , ( reed "Remark", toEx $ remark auf )
 		 , ( reed "Highscore", toEx $ highscore auf )
+                 -- current wird nicht geputtet
+		 , ( reed "Status", toEx $ status auf )
 		 , ( reed "Von", toEx $ von auf )
 		 , ( reed "Bis", toEx $ bis auf )
 		 ]

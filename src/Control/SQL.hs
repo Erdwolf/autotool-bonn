@@ -15,6 +15,8 @@ where
 import Autolib.Reader as R
 import Autolib.ToDoc  as T
 
+import qualified Local
+
 import Data.List
 import Data.Typeable
 import Text.ParserCombinators.Parsec.Expr
@@ -23,8 +25,9 @@ import Mysqlconnect
 
 import Database.MySQL.HSQL hiding ( query, collectRows )
 import qualified Database.MySQL.HSQL
+import Control.Monad ( when )
 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 -- | structured query
 squery :: Connection -> Query -> IO Statement
@@ -48,9 +51,9 @@ collectRows fun stat = do
     return i
 
 logfile = "/tmp/HSQL.log"
-logged cs = do
-    -- appendFile logfile cs ; appendFile logfile strich 
-    return ()
+logged cs = when ( Local.debug ) $ do 
+    appendFile logfile cs
+    appendFile logfile strich 
 
 strich = "\n--------------------------------\n"
 
@@ -68,15 +71,14 @@ reed cs = case readsPrec 0 cs of
 data Id = Id [ String ] deriving Typeable
 
 instance T.ToDoc Id where
-    toDoc (Id ids) = 
-        T.sepBy (T.char '.') $ map text ids
+    toDoc (Id ids) = hcat $ intersperse (T.char '.') $ map text ids
 
 instance R.Reader Id where
     reader = do
         ids <- R.my_identifier `R.sepBy1` R.my_dot 
         return $ Id ids
 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 data Query = Query Action [ Modifier ]  deriving Typeable
 
@@ -91,21 +93,23 @@ instance R.Reader Query where
 	R.my_semi
 	return $ Query a ms
 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
--- data Bind = Bind  Expression (Maybe Id)   deriving Typeable
-data Bind = Bind Id (Maybe Id)   deriving Typeable
+data Bind = Bind  Expression (Maybe Id)   deriving Typeable
 
 instance T.ToDoc Bind where
     toDoc (Bind e mi) = case mi of
 		  Nothing -> T.toDoc e
-	          Just i  -> T.hsep [ T.toDoc e, T.text "AS", T.toDoc i ]
+	          Just i  -> T.hsep [ T.toDoc e, T.text "as", T.toDoc i ]
 
 instance R.Reader Bind where
     reader = do 
          e <- R.reader
 	 mi <- R.option Nothing $ do 
-               R.my_reserved "AS" <|> R.my_reserved "as" 
+	       -- FIXME: wenn man hier ... <|> R.my_reserved "AS" schreibt,
+	       -- gibt es trotzdem keinen parse für "vorlesung.VNr AS VNr"
+               -- aber mit "vorlesung.VNr as VNr" geht es
+               R.my_reserved "as" 
 	       fmap Just R.reader
 	 return $ Bind e mi 
 
@@ -137,9 +141,6 @@ instance R.Reader Action where
        R.my_reserved "SELECT" ; bs <- reader `R.sepBy` R.my_comma ; return $ Select bs 
           -- TODO: complete this
 
-instance Show Action where show      = render . T.toDoc
-instance Read Action where readsPrec = R.parsec_readsPrec
-
 ----------------------------------------------------------------------------
 
 data Modifier = From [ Id ]
@@ -155,9 +156,6 @@ instance T.ToDoc Modifier where
 instance R.Reader Modifier where
     reader = do { R.my_reserved "FROM" ; ids <- many1 reader ; return $ From ids }
          -- TODO: complete this
-
-instance Show Modifier where show      = render . T.toDoc
-instance Read Modifier where readsPrec = R.parsec_readsPrec
 
 -------------------------------------------------------------------------------
 
@@ -216,16 +214,16 @@ operators =
     in [ map lop [ "*", "/" ]
        , map lop [ "+", "-" ]
        , map lop [ "<", "=", ">" ]
-       , map lop [ "BETWEEN" ] -- ?
        , map lop [ "AND", "OR" ]
+       , map lop [ "BETWEEN" ] 
        ]
 
------------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 class ToEx a where 
       toEx :: a -> Expression
 
------------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 equals :: Expression -> Expression -> Expression
 equals = EBinop "="

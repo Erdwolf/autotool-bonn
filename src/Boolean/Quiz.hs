@@ -8,6 +8,7 @@ import Boolean.Instance
 import Autolib.TES.Type
 import qualified Autolib.TES.Binu as B
 import qualified Autolib.TES.Enum as E
+import Autolib.Choose
 import Autolib.TES.Identifier
 import Autolib.TES.Position
 
@@ -25,7 +26,7 @@ import Inter.Quiz
 roll :: BIC -> IO ( Term Identifier ( Op Bool ))
 roll bic = do
     -- throw term
-    t <- E.choose ( operators_in_instance bic ) ( formula_size bic )
+    t <- choose ( operators_in_instance bic ) ( formula_size bic )
     -- insert negation
     p <- eins $ pos t
     let s = poke t ( p, Node (read "!") [ peek t p ] )

@@ -10,7 +10,15 @@ import Prelude hiding ( all )
 
 -- | alle einsendungen zu dieser aufgabe
 get_anr :: ANr -> IO [ Stud_Aufg ]
-get_anr anr = get_where [ equals ( reed "stud_aufg.ANr" ) ( toEx anr ) ]
+get_anr anr = 
+    get_where [ equals ( reed "stud_aufg.ANr" ) ( toEx anr ) ]
+
+-- | alle einsendungen dieser aufgabe, dieses studenten
+get_snr_anr :: SNr -> ANr -> IO [ Stud_Aufg ]
+get_snr_anr snr anr = 
+    get_where [ equals ( reed "stud_aufg.ANr" ) ( toEx anr ) 
+	      , equals ( reed "stud_aufg.SNr" ) ( toEx snr ) 
+	      ]
 
 get_where :: [ Expression ] -> IO [ Stud_Aufg ]
 get_where wh = do

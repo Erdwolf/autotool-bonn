@@ -13,7 +13,10 @@ import Inter.Store
 import Inter.Login
 import qualified Inter.Param as P
 
-import Control.Types ( toString, fromCGI, Name, Remark, HiLo (..), Time )
+import Control.Types 
+    ( toString, fromCGI, Name, Remark, HiLo (..), Status (..)
+    , Oks (..), Nos (..), Time 
+    )
 
 
 import qualified Inter.Collector
@@ -26,6 +29,7 @@ import Control.Student.CGI
 import Control.Vorlesung.DB
 
 import qualified Control.Aufgabe as A
+import qualified Control.Stud_Aufg as SA
 import qualified Control.Student.Type as S
 import qualified Control.Vorlesung as V
 
@@ -53,10 +57,23 @@ iface mks = do
     ( stud, vnr, tutor ) <- Inter.Login.form
     let snr = S.snr stud
 
-    aufs <- io $ A.get ( Just vnr ) ( not tutor ) -- student darf nur aktuelle
+    -- das sind alle aufgaben
+    aufs <- io $ A.get $ Just vnr
     let opts = do
-                     auf <- aufs
-                     return ( show $ A.name auf , Just $ auf )
+             auf <- aufs
+	     -- student darf nur aktuelle sehen
+	     guard $ tutor || A.current auf
+             return ( toString $ A.name auf , Just $ auf )
+
+    -- siehe funktion statistik ganz unten:
+    -- studen könnte dort neue aufgabe wählen
+    go <- look "go" 
+    case go of 
+	 Just aufgabe -> do
+	      write "Lanr" aufgabe
+	      write "Sanr" "submit"
+	 Nothing -> return ()
+
     ( mauf, del ) <- 
         if tutor
 	   then selector_edit_delete "anr" "Aufgabe" 0 
@@ -92,6 +109,7 @@ iface mks = do
     ( cs, res ) <- solution vnr manr stud' mk auf' 
     -- bewertung in DB (für Stud-Variante)
     when ( not tutor ) $ punkte stud' auf' ( cs, res )
+    when ( not tutor ) $ statistik stud' aufs
     return ()
 
 -------------------------------------------------------------------------
@@ -138,6 +156,15 @@ edit_aufgabe mk mauf vnr manr type_click = do
 		     ( x :: HiLo ) <- [ minBound .. maxBound ]
                      return ( show x, x )
             close -- row
+            open row
+            plain "Status"
+	    ( mstatus :: Maybe Status ) <- selector' "Status"  
+                ( case mauf of Nothing -> "XX"
+		               Just auf -> show $ A.status auf )
+                   $ do
+		     ( x :: Status ) <- [ minBound .. maxBound ]
+                     return ( show x, x )
+            close -- row
             -- FIXME: get now() from DB
             ( von :: Time ) <- fmap fromCGI 
 		    $ defaulted_textfield "von" 
@@ -147,7 +174,6 @@ edit_aufgabe mk mauf vnr manr type_click = do
 		    $ defaulted_textfield "bis" 
 		    $ case mauf of Nothing -> "2004-10-15 11:16:08"
 				   Just auf -> toString $ A.bis auf
-	    close -- table
 
             -- nimm default-config, falls type change
             conf <- editor_submit "conf" "Konfiguration" 
@@ -155,6 +181,7 @@ edit_aufgabe mk mauf vnr manr type_click = do
 			  Just auf | not type_click  -> 
 				 read $ toString $ A.config auf
 			  _ -> ex :: conf
+	    close -- table
 				   
             br
 	    up <- submit "update" "update data base"
@@ -166,8 +193,10 @@ edit_aufgabe mk mauf vnr manr type_click = do
 			       , A.config = fromCGI $ show conf
 			       , A.remark = remark
 			       , A.highscore = fromMaybe Keine mhilo
+			       , A.status = fromMaybe Demo mstatus
 			       , A.von = von
 			       , A.bis = bis
+			       , A.current = False -- ist egal
 			       }
             when up $ io $ A.put manr auf'
             return auf'
@@ -183,7 +212,7 @@ get_stud tutor stud =
 	 -- neu würfeln nur bei änderungen oberhalb von hier
 	 plain "eine gewürfelte Matrikelnummer:"
 	 mat <- with ( show m0 ) $ textfield "mat" ( show m0 )
-         -- falls tutor, dann geht es hier nur im die matrikelnr
+         -- falls tutor, dann geht es hier nur um die matrikelnr
 	 return $ stud { S.mnr = fromCGI mat
 		       , S.snr = error "gibt es nicht"
 		       }
@@ -205,12 +234,10 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
         ini  = initial  (problem var) i
         -- desc = describe (problem var) i
     ( _ , desc :: Html ) <- io $ run $ report (problem var) i
+    br
+    parameter_table auf
     h3 "Aufgabenstellung"
     html desc
-    br
-    plain "Hinweise"
-    pre $ toString $ A.remark auf
-
     hr ---------------------------------------------------------
     h3 "Lösung"
 
@@ -234,13 +261,32 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
     html com
     return ( cs, res )
 
+parameter_table auf = do
+    open btable
+    sequence_ $ do 
+        ( name, thing ) <- 
+	    [ ( "Status", toString $ A.status auf )
+	    , ( "von", toString $ A.von auf )
+	    , ( "bis", toString $ A.bis auf )
+	    , ( "Highscore", toString $ A.highscore auf )
+	    ]
+        return $ do
+	    open row 
+	    plain name
+	    plain thing
+	    close 
+    close
+    br
+    plain "Hinweise"
+    pre $ toString $ A.remark auf 
+
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
 punkte stud auf ( cs, res ) = do
      hr
      let p = ( mkpar stud auf )  { P.input = cs }
      msg <- io $ bank p res
-     plain $ "Eintrag ins Logfile:"
+     h3 "Eintrag ins Logfile:"
      pre msg
      return ()
 
@@ -254,3 +300,52 @@ mkpar stud auf = P.empty
 	    , P.ident = S.snr stud
             }
 
+-- | statistik anzeigen 
+statistik stud aufs = do
+    hr 
+    h3 "Punktestand"
+    -- daten holen
+    score <- io $ sequence $ do
+        auf <- aufs
+	return $ do
+            sas <- SA.get_snr_anr (S.snr stud) (A.anr auf) 
+            let okno = case sas of
+		     [    ] ->  ( Oks 0, Nos 0 )
+		     [ sa ] ->  ( SA.ok sa, SA.no sa )
+	    return ( auf, okno )
+    -- daten anzeigen
+    open btable
+    sequence_ $ do 
+        ( auf, (ok, no) ) <- score
+        return $ do
+	    open row
+            -- der click wird ganz oben explizit gelesen
+            if A.current auf
+               then do submit "go" ( toString $ A.name  auf ) ; return ()
+	       else plain $ toString $ A.name auf
+	    -- TODO: falls current und mandatory und ok == 0, dann rot
+            -- und andere sinnvolle farben
+            plain $ toString $ A.status auf
+	    plain $ show ok 
+	    plain $ show no
+	    close
+    close
+    -- auswerten
+    let goal = sum $ do 
+            ( auf, okno ) <- score
+	    guard $ A.status auf == Mandatory
+	    return ( 1 :: Int )
+	done = sum $ do 
+            ( auf, (ok, no) ) <- score
+	    guard $ A.status auf == Mandatory
+	    guard $ ok > Oks 0
+	    return ( 1 :: Int )
+        percent = ( 100 * done ) `div` goal
+    -- anzeigen
+    when ( goal > 0 ) $ do
+	 plain $ unwords [ "Von", show goal, "Pflicht-Aufgaben" ]
+         br
+	 plain $ unwords [ "haben Sie bis jetzt", show done, "erledigt." ]
+         br
+	 plain $ unwords [ "Das sind", show percent, "Prozent." ]
+    

@@ -3,6 +3,7 @@
 module Control.Types 
 
 ( HiLo (..)
+, Status (..)
 , Wert (..)
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
@@ -50,8 +51,6 @@ data Time = Time String deriving ( Eq, Ord, Typeable )
 
 {-! for Time derive : Reader, ToDoc, Haskell2Xml !-}
 
-instance Show Time where show = render . toDoc
-instance Read Time where readsPrec = parsec_readsPrec
 instance SqlBind Time where 
     fromSqlValue _ s = Just $ Time s
     toSqlValue (Time s) = s
@@ -65,13 +64,17 @@ instance ToString Time where
 
 -------------------------------------------------------------
 
+instance SqlBind Bool where
+    fromSqlValue _ s = return $ "0" /= s
+    toSqlValue f = show $ fromEnum f
+
+-------------------------------------------------------------
+
 data HiLo = Keine | High | Low 
     deriving ( Eq, Ord, Typeable, Bounded, Enum )
 
 {-! for HiLo derive : Reader, ToDoc, Haskell2Xml !-}
 
-instance Show HiLo where show = render . toDoc
-instance Read HiLo where readsPrec = parsec_readsPrec
 instance SqlBind HiLo where 
     fromSqlValue _ s = Just 
         $ fromMaybe Keine 
@@ -83,12 +86,36 @@ instance SqlBind HiLo where
 instance ToEx HiLo where
     toEx x = EString $ show x
 
+instance ToString HiLo where
+    toString = show 
+
+-------------------------------------------------------------
+
+data Status = Demo | Mandatory | Optional
+    deriving ( Eq, Ord, Typeable, Bounded, Enum )
+
+{-! for Status derive : Reader, ToDoc, Haskell2Xml !-}
+
+instance SqlBind Status where 
+    fromSqlValue _ s = Just 
+        $ fromMaybe Demo
+	$ lookup (map toLower s)
+        $ do h <- [ minBound .. maxBound ]
+             return ( map toLower $ show h, h )
+    toSqlValue w = show w
+
+instance ToEx Status where
+    toEx x = EString $ show x
+
+instance ToString Status where
+    toString = show 
+
+-------------------------------------------------------------
+
 data Wert = No | Ok Integer deriving ( Eq, Ord, Typeable )
 
 {-! for Wert derive : Reader, ToDoc, Haskell2Xml !-}
 
-instance Show Wert where show = render . toDoc
-instance Read Wert where readsPrec = parsec_readsPrec
 instance SqlBind Wert where
     fromSqlValue _ _ = error "undefined"
     toSqlValue _ = error "undefined"
@@ -101,8 +128,6 @@ data MNr = MNr Integer deriving ( Eq, Ord, Typeable )
 
 {-! for MNr derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show MNr where show = render . toDoc
-instance Read MNr where readsPrec = parsec_readsPrec
 instance SqlBind MNr where 
     -- fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
     fromSqlValue _ s = Just $ MNr $ read s
