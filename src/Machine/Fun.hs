@@ -11,6 +11,7 @@ where
 import Machine.Class
 import Machine.Vorrechnen
 import Machine.Akzeptieren
+import Machine.History
 
 
 import Monad (guard)
@@ -18,6 +19,7 @@ import Reporter hiding ( output )
 import ToDoc
 import Reader
 import FiniteMap
+import Set
 import Size
 
 numerical_test :: ( Numerical dat, Machine m dat conf )
@@ -61,16 +63,13 @@ inner_fun_test :: (ToDoc e, Machine m dat conf )
      -> Reporter Int
 inner_fun_test cut inputs encode check m = do
     inform $ text $ "Ihre Maschine ist"
-    inform $ toDoc m
+    inform $ nest 4 $ toDoc m
 
     inform $ text "Bei allen folgenden Rechnungen berücksichtige ich"
     inform $ text $ "nur die ersten " ++ show cut ++ " erreichbaren Konfigurationen."
 
---    check m
---    deterministisch m
-
-    inform $ text $ "ich starte die Maschine auf einigen Eingaben"
-    vorrechnens m $ take 4 $ drop 2 $ map encode $ inputs
+    -- inform $ text $ "ich starte die Maschine auf einigen Eingaben"
+    -- vorrechnens m $ take 4 $ drop 2 $ map encode $ inputs
 
     richtige_ergebnisse cut m inputs encode check
 
@@ -100,26 +99,28 @@ re :: ( ToDoc e, Machine m dat conf )
 
 re cut m encode check ein = do
     let s = encode ein
-    let ks = akzeptierend cut m $ s
+    let aks = akzeptierend_oder_ohne_nachfolger cut m $ s
+	ks = filter ( isEmptySet . next m ) aks
     when ( null ks )
-	 $ reject $ fsep [ text  "Bei Eingabe", toDoc ein 
-			     , text "Startkonfiguration", toDoc s
-			     , text "erreicht die Maschine"
-		             , text "keine Endkonfiguration."
-			     ] 
+	 $ reject $ vcat [ fsep [ text  "Bei Eingabe", toDoc ein 
+				, text "Startkonfiguration", toDoc s
+				]
+			 , text "erreicht die Maschine keine Endkonfiguration."
+			 , text "einige (erfolglose) Rechungen sind:"
+			 , nest 4 $ vcat $ map present $ take 3 $ aks
+		         ] 
     sequence_ $ do 
        k <- ks
        return $  do
            let b = Machine.Class.output m k
 	   inform $  fsep [ text "Bei Eingabe", toDoc ein
-			    , text "Startkonfiguration", toDoc s
+			    , text "Startkonfiguration", nest 4 $ toDoc s
 			    , text "erreicht die Maschine"
-			    , text "die Endkonfiguration", toDoc k
+			    , text "die Endkonfiguration", nest 4 $ toDoc k
 			    ]
 	   f <- check ein b
 	   when ( not f ) $ do
-	     inform $ text "so beginnt die fehlerhafte Rechnung:"
-	     vorrechnen m s
-	     reject $ empty
+	     -- vorrechnen m s
+	     reject $ present k
 
   
