@@ -80,6 +80,9 @@ quiz : Graph/Quiz.cgi
 check : Inter/Check.cgi
 	cp $< $(CGIBIN)/
 
+face : Inter/Face.cgi
+	cp $< $(CGIBIN)/
+
 .PHONY : do
 
 ###############################################################################
