@@ -59,11 +59,3 @@ me = Meta { start = [1,2,3]
 	  , diff  = [0,2,2]
 	  , qps = do  n <- [ 1 .. 10 ] ; return ( 0, 4*n )
 	  }
-
--- Althöfer/Bültermann
--- http://www.mathematik.uni-bielefeld.de/sfb343/preprints/abstracts/apre93003.ps.gz
-
-ab = Meta { start = [ 1, 4, 13, 17 ]
-	  , diff  = [ 1, 4, 12, 16 ]
-	  , qps =  [ (17, 118), (26, 675), (35, 2008), (44, 4453) ]
-	  }
