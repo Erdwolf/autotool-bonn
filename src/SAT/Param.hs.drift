@@ -1,0 +1,30 @@
+-- -*- mode: haskell -*-
+
+module SAT.Param where
+
+-- $Id$
+
+import SAT.Types
+
+import Reader
+import ToDoc
+
+import Sets
+
+data Param = 
+     Param { vars :: Set Variable
+	   , clauses :: Int -- anzahl (empfohlen: 3.5 * variablen)
+	   }
+
+p :: Param
+p = let n = 10  :: Int
+	f = 3.5 :: Double
+    in  Param { vars = mkSet $ take 10 $ do c <- [ 'p' .. ] ; return [c]
+	      , clauses = round $ f * fromIntegral n 
+	      }
+
+{-! for Param derive: ToDoc, Reader !-}
+
+instance Show Param where show = render . toDoc
+instance Read Param where readsPrec = parsec_readsPrec
+

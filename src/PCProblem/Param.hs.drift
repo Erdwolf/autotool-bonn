@@ -27,3 +27,4 @@ g = Param { alpha = "abc"
 
 instance Show Param where show = render . toDoc
 instance Read Param where readsPrec = parsec_readsPrec
+
