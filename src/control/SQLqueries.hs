@@ -726,8 +726,10 @@ mglAufgabenDB' isAdmin snr =
     disconnect conn
     return inh
 
--- | liefert (nun und demnaechst mgl). Aufgaben für Student/alle Student (snr=[])
--- ( [header ... ] , [ ( ANr, Name , Subject , Path , Highscore , Von , Bis ) ] )
+-- | liefert (nun und demnaechst mgl). Aufgaben für Student
+
+-- >  bzw. alle Student (snr=[])
+-- > ( [header ... ] , [ ( ANr, Name , Subject , Path , Highscore , Von , Bis ) ] ) 
 mglNextAufgabenDB :: String -> IO ( [String],[[String]])
 mglNextAufgabenDB snr = do
     conn <- myconnect
@@ -776,7 +778,7 @@ mglNextAufgabenDB snr = do
 -- Login des Admins
 -- 
 -- Input:   Name, Passwort
--- Output:  IO True/False
+-- Output:  IO True\/False
 --
 checkAdminNamePasswortDB :: String -> String -> IO Bool
 checkAdminNamePasswortDB nme pas = do
@@ -821,9 +823,9 @@ failDB nme pas = do
 -- |
 -- Liefert Studenten-Daten die auf Vorname,Name,Matrikel,Email und Vorlesung passen.
 --
--- Hinweis: Und-Verknuepfung, wobei leere (="") Parameter ignoriert werden.
--- Input: Vorname,Name,Matrikel,Email,Vorlesungsname
--- Output: IO [ [ SNr, MNr, Vorname , Email, Status ] ]
+-- > Hinweis: Und-Verknuepfung, wobei leere (="") Parameter ignoriert werden.
+-- > Input: Vorname,Name,Matrikel,Email,Vorlesungsname
+-- > Output: IO [ [ SNr, MNr, Vorname , Email, Status ] ]
 --
 -- TODO optinale Teilwort suche (%part%)
 -- TODO optinale or Verknüpfung?
