@@ -8,7 +8,7 @@ import RAM.Check
 import RAM.Builtin
 
 import Prime (prime)
-import Sets (mkSet)
+import Sets (mkSet,union)
 -- import Turing_Fun
 
 import Wort
@@ -32,43 +32,29 @@ import Inter.Wrapper
 checkforall m = do
         return ()
 
+
+stdbuiltins = mkSet [ RAM.Builtin.Copy , RAM.Builtin.Plus , RAM.Builtin.Minus ]
+
+-- ===========================================================
+-- LOOP
+-- ============================================================
+
+loopexample =  -- Wirkung:  x0 := 2 + ( x1 + x1 )
+    [ Builtin { name = Plus , res = "x0" , args = ["x1","x1"] }
+    , Inc "zwei"
+    , Inc "zwei" 
+    , Loop "zwei" [ Inc "x0" ] ]
+
 conformloop bs prog = 
     do
     loopy prog
-    builtins bs prog
-    
+    builtins bs prog    
 
-conformwhile bs prog = 
-    do
-    builtins bs prog
 
-loopexample = [ Loop "x1" [ Dec "x4" ] ]
-
--- ----------------------------------------
--- Standard Machine
--- ---------------------------------------
-loopfib  :: IO ( T.Var N.Computer 
-          ( N.Type Program )
-          ( Program )
-        )
-
--- tmpred  :: IO ( T.Var N.Computer 
---           ( N.Type Program )
---           ( Program )
---         )
--- tmpred = do
---     let it = N.Make
---            { N.fun_info = text "\\ [ x, y ] -> x * y"
---            , N.fun = \ [x, y] -> x * y
---            , N.args = do 
---              x <- [ 0 .. 10 ]
---              y <- [ 0 .. 10 ]
---              return [x, y]
---            , N.cut = 10000
---            , N.check = checkforall
---            , N.start = stepexample
---            }
---     return $ NI.computer "RAM" "Mult" it
+loopfib, loopprim, loopsqrt:: IO ( T.Var N.Computer 
+				   ( N.Type Program )
+				   ( Program )
+				 )
 
 -- -----------------------------------------------------------
 -- LOOP-FIB 
@@ -98,7 +84,7 @@ loopfib = do
              , N.fun      = \ [ x ] -> fibs ! x
              , N.args     = tests
              , N.cut      = 10000
-             , N.check    = conformloop RAM.Builtin.every --RAM.Builtin.none
+             , N.check    = conformloop stdbuiltins -- RAM.Builtin.every --RAM.Builtin.none
              , N.start    = loopexample
              }
     return $ NI.computer "LOOP" "FIB" it
@@ -125,7 +111,7 @@ loopprim = do
              , N.fun      = \ [x]  -> if prime x then 1 else 0
              , N.args     = tests
              , N.cut      = 10000
-             , N.check    = conformloop RAM.Builtin.every -- $ mkSet [ RAM.Builtin.Mod ]
+             , N.check    = conformloop $ union stdbuiltins $ mkSet [ RAM.Builtin.Mod ]
              , N.start    = loopexample
              }
     return $ NI.computer "LOOP" "PRIM" it
@@ -141,10 +127,20 @@ loopsqrt = do
              , N.fun      = \ [ x ] -> truncate $ sqrt $ fromIntegral x
              , N.args     = tests
              , N.cut      = 10000
-             , N.check    = conformloop RAM.Builtin.every -- $ mkSet [ RAM.Builtin.Times ]
+             , N.check    = conformloop $ union stdbuiltins $ mkSet [ RAM.Builtin.Times ]
              , N.start    = loopexample
              }
     return $ NI.computer "LOOP" "SQRT" it
+
+
+-- ===========================================================
+-- WHILE
+-- ============================================================
+conformwhile bs prog = 
+    do
+    builtins bs prog
+
+whileexample = [ While "x1" [ Loop "x2" [ Inc "x0" ],Dec "x1"]]
 
 -- -----------------------------------------------------------
 -- WHILE-DIV
@@ -157,8 +153,8 @@ whilediv = do
              , N.fun      = \ [ x1 , x2 ] -> x1 `div` x2
              , N.args     = tests --foldr1 (++) [ [x1 , x2]  | x1 <- [1 .. 10] ++ [ 21 .. 23] , x2 <- [1 .. 7] ]
              , N.cut      = 10000
-             , N.check    = conformwhile RAM.Builtin.none
-             , N.start    = [ Loop "x1" [ Dec "x4" ] ]
+             , N.check    = conformwhile stdbuiltins
+             , N.start    = whileexample 
              }
     return $ NI.computer "WHILE" "DIV" it
 -- -----------------------------------------------------------
@@ -167,19 +163,22 @@ whilediv = do
 -- -----------------------------------------------------------
 
 iowhiletests :: IO [[Integer]]
-iowhiletests = do
-	let xs = foldr1 (++) [ [ x1 , x2 ] | x1 <- [1 .. 10] ++ [ 21 .. 23] , x2 <- [1 .. 7] ]
- 	return $ map return xs 
+iowhiletests =
+	sequence $ replicate 10 $ do
+	xy <- sequence $ replicate 2 $ randomRIO (1,20)
+	return xy
+--	let xs = foldr1 (++) [ [ x1 , x2 ] | x1 <- [1 .. 10] ++ [ 21 .. 23] , x2 <- [1 .. 7] ]
+--	return $ map return xs 
 
 whilemod = do 
     tests <- iowhiletests
     let it = N.Make
-             { N.fun_info = text "x0 :=  abgerundete Quadratwurzel von x1"
+             { N.fun_info = text "x0 :=  x1 mod x2"
              , N.fun      = \ [ x1 , x2 ] -> x1 `mod` x2
              , N.args     = tests -- foldr1 (++) [ [ x1 , x2 ] | x1 <- [1 .. 10] ++ [ 21 .. 23] , x2 <- [1 .. 7] ]
              , N.cut      = 10000
-             , N.check    = conformwhile RAM.Builtin.none
-             , N.start    = [ Loop "x1" [ Dec "x4" , Dec "x3" ] ]
+             , N.check    = conformwhile stdbuiltins
+             , N.start    = whileexample
              }
     return $ NI.computer "WHILE" "MOD" it
 
@@ -189,9 +188,9 @@ generate :: [ IO T.Variant ]
 generate = 
         [ do i <- loopfib  ; return $ T.Variant i
         , do i <- loopprim  ; return $ T.Variant i
-		, do i <- loopsqrt  ; return $ T.Variant i
-		, do i <- whilemod   ; return $ T.Variant i
-		, do i <- whilediv   ; return $ T.Variant i
+	, do i <- loopsqrt  ; return $ T.Variant i
+       	, do i <- whilemod   ; return $ T.Variant i
+       	, do i <- whilediv   ; return $ T.Variant i
         ]
 
 
