@@ -11,6 +11,7 @@ import Turing.Nachfolger ( folgekonfigurationen )
 import Set
 import Size
 
+
 instance TUM y z => Compute ( Turing y z ) ( Konfiguration y z ) where
     next m k = folgekonfigurationen m k
     accepting m k = zustand k `elementOf` endzustandsmenge m

@@ -1,5 +1,7 @@
 module Turing.Nachfolger 
 
+-- $Id$
+
 ( nachfolger
 , folgekonfigurationen -- brauchen wir nicht?
 )
@@ -26,6 +28,7 @@ folgekonfigurationen m k = mkSet $ do
     let k0 = k { aktuelles_zeichen = y
 	       , zustand = z
 	       , geschichte = k : geschichte k
+	       , schritt = succ $ schritt k
 	       }
 
     let weitere xs = case xs of [] -> []; (y : ys) -> ys

@@ -2,6 +2,8 @@ module Turing.Konfiguration where
 
 -- $Id$
 
+import Machine.History
+
 import Turing
 import ToDoc
 
@@ -11,7 +13,11 @@ data Konfiguration y z =
 		   , band_rechts :: [ y ]
 		   , zustand :: z
 		   , geschichte :: [Konfiguration y z] 
+		   , schritt :: Int
 		   }
+
+instance History ( Konfiguration y z ) where
+    history = geschichte
 
 nummer :: TUM y z
        => Konfiguration y z -> Int
@@ -19,8 +25,9 @@ nummer = length . geschichte
 
 instance TUM y z
 	 => Show (Konfiguration y z) where
-    showsPrec p k = showString $ 
-	           ( show (reverse (band_links k)) )
+    showsPrec p k =  showString $ 
+                   ( show ( schritt k ) ++ ": " )
+	 ++ " " ++ ( show (reverse (band_links k)) )
 	 ++ " " ++ ( show (zustand k, aktuelles_zeichen k) )
 	 ++ " " ++ ( show (         band_rechts k) )
 
@@ -59,6 +66,7 @@ start_konfiguration m xs =
 		  , band_rechts =  case xs of [] -> []
 					      (y : ys) -> ys
 		  , geschichte = []
+		  , schritt = 0
 		  }
 
 
