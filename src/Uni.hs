@@ -1,8 +1,8 @@
-module Inter.Boiler where
+module Inter.Boiler ( boiler ) where
 
 --   $Id$
 
-import qualified Uni.SS04
+import Uni.SS04 ( boiler ) 
 
 
 
