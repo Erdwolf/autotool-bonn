@@ -50,7 +50,9 @@ loginPage mat F0  =
 			hrrow
 			th3 "Hier können Sie Sich in die Übungsgruppen von Logik oder Berechenbarkeit/Komplexität einschreiben."
 			spacerow
-			ttxt "Dazu müssen Sie Sich Neuanmelden und dann eine Gruppe wählen."
+			ttxt "AKTUELL: Gesamtergebnisse (schriftl+autotool) Berechenb./Kompl. SS03"
+			spacerow
+			ttxt "Dazu müssen Sie Sich neuanmelden und dann eine Gruppe wählen."
 			spacerow
 			spacerow
 			ttxt $ concat 
@@ -243,7 +245,7 @@ studStatusPage mat F0 =
 	  let mglAufgs2 = ( tail (fst mglAufgs) , Prelude.map tail (snd mglAufgs))
 	  -- c) Bepunkte Aufgaben holen
 	  result		<- io $ studAufgDB mat
-
+	  gesamtres <- io $ getSerienPunkteDB mat
 	  standardQuery "Übersicht" $ 
 		do 
 			hrline
@@ -259,6 +261,7 @@ studStatusPage mat F0 =
 				tableRow2 (text "Email-Adresse")	( text email )
 				tableRow2 (text "Anmeldestatus") 	( text status )
  				tableRow2 (text "Vorlesung/Gruppe") $ text $ if null grp then "keine" else show grp
+			gesamtergTable gesamtres
 				-- (c)
 			if ( length (snd result)) > 0 
 			   then do { h3 $ text "Ergebnisse" ; ( showAsTable result ) }
@@ -266,8 +269,9 @@ studStatusPage mat F0 =
 			spacerow
 			-- (b)
 			th3 "Moegliche Aufgaben:"
-			showAsTable2 mglAufgs2
-
+			if null (snd mglAufgs2) 
+			   then tr $ td $ text "zur Zeit keine."
+ 			   else showAsTable2 mglAufgs2
 			-- --------------------------------------------------
 			hrline
 			h3 $ text "Hier können Sie :"
@@ -281,6 +285,14 @@ studStatusPage mat F0 =
 				   smallSubButton F0 (studStatusPage mat)			"Übersicht aktualisieren"
 				   smallspacerow
 				   smallSubButton F0 endPage						"beenden"
+		where 
+		gesamtergTable daten = 
+		    do 
+		    hrline
+		    h3 $ text "Gesamtpunkte"
+		    table $ mapM_ lin daten
+		    hrline
+		    where  lin (a,b) = tr $ do { td $ text a; td $ text b  }
 
 -- -----------------
 -- Vorlesung hinzufügen

@@ -82,7 +82,7 @@ studAufgDB mat =
 insertNewStudentDB :: String -> String -> String -> String -> String -> IO ()
 insertNewStudentDB vnm nme mat eml ps1 =
 	do
-	conn <- connect "localhost" "autoan" "test" "test"
+	conn <- myconnect 
 	stat <- query conn
 			( concat
 			  [ "INSERT INTO student \n"
@@ -723,7 +723,7 @@ failDB nme pas = do
 --
 -- Liefert Studenten-Daten die auf Vorname,Name,Matrikel,Email und Vorlesung passen.
 --
--- Hinweis: Und-Verknuepfung, wobei leere (="") Parameter ignorier werden.
+-- Hinweis: Und-Verknuepfung, wobei leere (="") Parameter ignoriert werden.
 -- Input: Vorname,Name,Matrikel,Email,Vorlesungsname
 -- Output: IO [ [ SNr, MNr, Vorname , Email, Status ] ]
 --
@@ -824,7 +824,7 @@ getStudentDB mnr = do
 	return inh
 
 --
--- Liefert Emai und Passwort von Matrikelnr
+-- Liefert Email und Passwort von Matrikelnr
 --
 -- Input: 	Matrikelnr
 -- Output:	(Email,Passwort) 
@@ -878,4 +878,74 @@ getIdMat email = do
 	     _        -> return Nothing
 
 
+
+
+-- ================================================================================
+-- Auswertung
+
+
+
+--
+-- in der Punkte Tabelle stehen alle Punkte
+-- nach Serien zusammengefasst und getrennt 
+-- schriftlichen / autotool
+--
+
+-- liefert Serien Punkte des Studenten
+-- input: 	Matrikel
+-- output: 	IO [(Serie,Punkte)]
+--
+getSerienPunkteDB :: String -> IO [(String,String)]
+getSerienPunkteDB mnr =
+    if null mnr then return []
+    else do
+    conn <- myconnect
+    stat <- query conn $ sqlstr
+    inh  <- collectRows (\ state ->
+                         do
+                                m <- getFieldValue state "Serie"
+                                p <- getFieldValue state "Punkte"
+                                return ( m :: String , p :: String )
+                        ) stat
+    return inh
+
+    where sqlstr =
+              concat [ "SELECT \n" 
+		     , "punkte AS Punkte , \n"
+                     , "rubrik AS Serie \n"
+                     , "FROM punkte \n"
+                     , "WHERE \n" 
+		     , "Mnr = " , filterQuots mnr , " \n"
+                     , "ORDER BY Serie;"
+                     ]
+
+
+-- liefert Serien Punkte von allen Studenten
+--
+getAllSerienPunkteDB :: IO [(String,String,String,String)]
+getAllSerienPunkteDB =
+    do
+    conn <- myconnect
+    stat <- query conn $ sqlstr
+    inh  <- collectRows (\ state ->
+                         do     
+			 	n <- getFieldValue state "Name"
+			 	v <- getFieldValue state "Vorname"
+                                p <- getFieldValue state "Punkte"
+                                s <- getFieldValue state "Serie"
+                                return ( n :: String , v :: String, s :: String , p :: String )
+                        ) stat
+    return inh
+
+    where sqlstr =
+              concat [ "SELECT \n" 
+		     , "s.Name AS Name, \n"
+		     , "s.Vorname AS Vorname, \n"  
+		     , "p.punkte AS Punkte , \n"
+                     , "p.rubrik AS Serie \n"
+                     , "FROM punkte AS p , student AS s \n"
+                     , "WHERE \n" 
+		     , "s.MNr = p.MNr \n" 
+                     , "ORDER BY s.Name, s.Vorname, Serie ;"
+                     ]
 
