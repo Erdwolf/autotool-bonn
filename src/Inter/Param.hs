@@ -25,7 +25,7 @@ data Type =
 	  , conf :: Config
 	  , remark :: Remark
 
-          , minstant :: Maybe String
+          , minstant :: Maybe Text.Html.Html
           , input    :: Maybe String
           , mresult    :: Maybe Wert
           , report    :: Maybe Text.Html.Html

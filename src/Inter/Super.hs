@@ -96,13 +96,13 @@ iface mks = do
 
     when ( tutor && Statistics == action ) $ do
          Just auf <- return mauf 
-	 ( act, sauf ) <- tutor_statistik vnr auf
-         mtriple <- show_previous ( Edit == act ) sauf
+	 ( act, sauf, stud ) <- tutor_statistik vnr auf
+         mtriple <- show_previous ( Edit == act ) vnr mks stud auf sauf
          case mtriple of
 	     Nothing -> return ()
-	     Just ( cs, res, com ) -> do
+	     Just ( inst, inp, res, com ) -> do
                  [ stud ] <- io $ S.get_snr $ SA.snr sauf
-		 punkte stud auf ( cs, res, com )
+		 punkte stud auf ( inst, inp, res, com )
 	 mzero
 
     let manr = fmap A.anr mauf
@@ -133,13 +133,13 @@ iface mks = do
 	    solution vnr manr stud' mk auf' 
 	    return ()
         Solve -> do
-            ( cs, res, com ) <- solution vnr manr stud' mk auf' 
-	    punkte stud' auf' ( cs, Just res, com )
+            ( minst, cs, res, com ) <- solution vnr manr stud' mk auf' 
+	    punkte stud' auf' ( minst, cs, Just res, com )
 	Edit | tutor -> do
-	    find_previous vnr mks True stud' auf'
+	    find_previous True  vnr mks stud' auf'
             return ()
 	View -> do
-	    find_previous vnr mks False stud' auf'
+	    find_previous False vnr mks stud' auf'
             return ()
 
     return ()
@@ -251,65 +251,70 @@ get_stud tutor stud =
 	 return stud
 
 
-find_previous vnr mks edit stud auf = do
+find_previous edit vnr mks stud auf = do
 
     -- kann sein, daß S.anr  error  ergibt (für tutor)
     sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
                    `Control.Exception.catch` \ any -> return []
     case sas of
         [ sa ] -> do
-            inf <- case  SA.input sa of
-		Just file -> return $ Just file
-		Nothing -> io $ do
-                    -- fix location of previous einsendung
-                    let p = mkpar stud auf
-		        d = Inter.Store.location Inter.Store.Input 
-			         p "latest" False
-		    file <- Util.Datei.home d
-	            ex <- System.Directory.doesFileExist file
-                    let inf = fromCGI file
-		    if ex 
-		        then do
-                             -- nur infile-location einschreiben
-			     Control.Punkt.bepunkteStudentDB 
-				      (P.ident p) (P.anr p) 
-                                      Nothing
-				      Nothing (P.highscore p) 
-				      ( Just inf )
-				      Nothing
-			     return $ Just inf
-		        else return $ Nothing
-            inst <- case SA.instant sa of
-		Just file -> return $ Just file
-		Nothing -> 
-                    -- transitional:
-                    -- (try to) re-generate previous instance
-                    let mmk = lookup ( toString $ A.typ auf ) 
-			     $ do mk <- mks ; return ( show mk, mk )
-		    in case mmk of
-		         Nothing -> do
-			     plain "Aufgabenstellung nicht auffindbar"
-			     return Nothing
-			 Just mk -> io $ do
-			     ( _, _, com ) <- make_instant vnr stud mk auf
-                             let p = mkpar stud auf
-		                 d = Inter.Store.location Inter.Store.Instant
-			                p "latest" False
-			     file <- Util.Datei.home d
-			     writeFile file $ show com
-			     let inst = fromCGI file
-			     Control.Punkt.bepunkteStudentDB 
-				      (P.ident p) (P.anr p) 
-                                      ( Just inst )
-				      Nothing (P.highscore p) 
-				      Nothing 
-				      Nothing
-			     return $ Just inst
-	    show_previous edit $ sa { SA.input = inf, SA.instant = inst }
+	    show_previous edit vnr mks stud auf sa 
         _ -> return Nothing
 
+fix_input vnr mks stud auf sa = case  SA.input sa of
+   Just file -> return $ Just file
+   Nothing -> io $ do
+       -- fix location of previous einsendung
+       let p = mkpar stud auf
+           d = Inter.Store.location Inter.Store.Input 
+                    p "latest" False
+       file <- Util.Datei.home d
+       ex <- System.Directory.doesFileExist file
+       let inf = fromCGI file
+       if ex 
+           then do
+                -- nur infile-location einschreiben
+                Control.Punkt.bepunkteStudentDB 
+                         (P.ident p) (P.anr p) 
+                         Nothing
+                         Nothing (P.highscore p) 
+                         ( Just inf )
+                         Nothing
+                return $ Just inf
+           else return $ Nothing
+
+fix_instant vnr mks stud auf sa = case SA.instant sa of
+   Just file -> return $ Just file
+   Nothing -> 
+       -- transitional:
+       -- (try to) re-generate previous instance
+       let mmk = lookup ( toString $ A.typ auf ) 
+                $ do mk <- mks ; return ( show mk, mk )
+       in case mmk of
+            Nothing -> do
+                plain "Aufgabenstellung nicht auffindbar"
+                return Nothing
+            Just ( Make doc fun ex ) -> do
+                ( _, _, com ) <- make_instant vnr stud fun auf
+                let p = mkpar stud auf
+                    d = Inter.Store.location Inter.Store.Instant
+                           p "latest" False
+                file <- io $ Util.Datei.schreiben d $ show com
+                let inst = fromCGI file
+                io $ Control.Punkt.bepunkteStudentDB 
+                         (P.ident p) (P.anr p) 
+                         ( Just inst )
+                         Nothing (P.highscore p) 
+                         Nothing 
+                         Nothing
+                return $ Just inst
+
 -- | TODO: possibly with edit (for tutor)
-show_previous edit sa = do
+show_previous edit vnr mks stud auf sa0 = do
+
+    inf <- fix_input vnr mks stud auf sa0
+    ins <- fix_instant vnr mks stud auf sa0
+    let sa = sa0 { SA.input = inf, SA.instant = ins }
 
     hr ;  h3 "Vorige Einsendung und Bewertung zu dieser Aufgabe"
     -- pre $ show sa
@@ -318,7 +323,7 @@ show_previous edit sa = do
         Just file -> do
             cs <- io $ logged "Super.view" 
     	         $ readFile $ toString file
-    	    pre cs
+    	    html $ primHtml cs
         Nothing -> do
 	    plain "(keine Aufgabe)"
     br ; plain "Einsendung:"
@@ -358,6 +363,7 @@ show_previous edit sa = do
 			]
                close -- table
 	       return $ Just ( Nothing
+			     , Nothing 
 			     , mgrade
 			     , case mgrade of 
 			           Just x | x /= Pending -> 
@@ -366,16 +372,16 @@ show_previous edit sa = do
 			     )
 
 
-make_instant vnr stud 
-         ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+make_instant vnr stud fun auf = do
     let conf = read $ toString $ A.config auf
         var = fun  conf
         p = problem var
     let mat = S.mnr stud
     k <- io $ key var $ toString mat 
-    g <- io $ gen var vnr ( A.ANr auf ) k -- ?
-    let ( Just i  , com :: Doc ) = export g
-    return ( p, i, com )
+    g <- io $ gen var vnr ( Just $ A.anr auf ) k -- ?
+    let ( Just i  , _ :: Html ) = export g
+    ( _, icom :: Html) <- io $ run $ report p i
+    return ( p, i, icom )
 
 data Method = Textarea | Upload
     deriving ( Eq, Show, Typeable )
@@ -384,9 +390,9 @@ data Method = Textarea | Upload
 -- für tutor zum ausprobieren
 -- für student echt
 solution vnr manr stud 
-         mk @ ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+        ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
-    ( p, i, com ) <- make_instant vnr stud mk auf
+    ( p, i, icom ) <- make_instant vnr stud fun auf
 
     let past = mkpar stud auf
 
@@ -395,7 +401,7 @@ solution vnr manr stud
     parameter_table auf
 
     h3 "Aufgabenstellung"
-    embed $ report p i
+    html icom
 
     when ( not $ A.current auf ) vorbei
 
@@ -434,7 +440,7 @@ solution vnr manr stud
     hr ; h3 "Neue Bewertung"
     (res, com :: Html) <- io $ run $ evaluate p i cs
     html com
-    return ( Just cs, fromMaybe No res, Just com )
+    return ( Just icom, Just cs, fromMaybe No res, Just com )
 
 parameter_table auf = do
     h3 $ unwords [ "Aufgabe", toString $ A.name auf ]
@@ -443,12 +449,16 @@ parameter_table auf = do
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
-punkte stud auf ( mcs, mres, com ) = 
+punkte stud auf ( minst, mcs, mres, com ) = 
      if A.current auf
 	then do
              hr ; h3 "Eintrag ins Logfile"
 	     let p = ( mkpar stud auf )  
-		     { P.input = mcs, P.report = com, P.mresult = mres }
+		     { P.minstant = minst
+		     , P.input = mcs
+		     , P.report = com
+		     , P.mresult = mres 
+		     }
 	     msg <- io $ bank p
 	     pre msg
 	     return ()
@@ -478,6 +488,9 @@ data Action = Solve  -- ^ neue Lösung bearbeiten
             | Delete 
      deriving ( Show, Eq, Typeable )
 
+data Display = Current | Old 
+     deriving ( Show, Eq, Typeable )
+
 -- | für Student: statistik aller seiner Aufgaben anzeigen, 
 -- für Tutor: kann Aufgabenlösung sehen und (nach-)korrigieren
 -- mit aufgabenauswahl
@@ -492,7 +505,16 @@ statistik tutor stud aufs = do
             let okno = case sas of
 		     [    ] ->  ( Oks 0, Nos 0 , Nothing )
 		     [ sa ] ->  ( SA.ok sa, SA.no sa, SA.result sa )
-	    return ( auf, okno )
+	    let stat = if A.current auf then Current else Old
+	    return ( auf, stat, okno )
+
+    open btable
+    disp <- click_choice_with_default 0 "Aufgaben anzeigen:"
+	      [ ( "nur aktuelle", [ Current ] )
+	      , ( "alle"   , [ Current, Old ] )
+	      ]
+    close -- btable
+    br
 
     -- daten anzeigen
     let dat = do
@@ -500,11 +522,12 @@ statistik tutor stud aufs = do
             open btable
             open row
             plain "Aufgabe" ; plain "Status" ; plain "Highscore"
-            plain "von" ; plain "bis"
+            plain "bis"
             plain "vorige Bewertung" ; plain "Gesamt-Wertungen"
             close -- row
             sequence_ $ do 
-                ( auf, ( ok, no, mres ) ) <- score
+                ( auf, stat, ( ok, no, mres ) ) <- score
+		guard $ stat `elem` disp
                 let name = toString $ A.name  auf
                 return $ do
             	    open row
@@ -517,9 +540,12 @@ statistik tutor stud aufs = do
                     farbe col $ toString $ A.name auf
                     farbe col $ toString $ A.status auf
                     farbe col $ toString $ A.highscore auf
-                    farbe col $ toString $ A.von auf
-                    farbe col $ toString $ A.bis auf
-                    farbe col $ show mres
+                    farbe col $ if A.current auf
+			        then toString $ A.bis auf
+				else "vorbei"
+                    farbe col $ case mres of
+				  Just res -> show res
+				  Nothing  -> ""
             	    farbe col $ show ( ok , no )
                     sequence_ $ do
 		        ch <- if tutor then        [ View, Edit ]
@@ -530,11 +556,11 @@ statistik tutor stud aufs = do
             end -- mutex
     -- auswerten
     let goal = sum $ do 
-            ( auf, okno ) <- score
+            ( auf, stat, okno ) <- score
 	    guard $ A.status auf == Mandatory
 	    return ( 1 :: Int )
 	done = sum $ do 
-            ( auf, (ok, no, mres) ) <- score
+            ( auf, stat, (ok, no, mres) ) <- score
 	    guard $ A.status auf == Mandatory
 	    guard $ ok > Oks 0
 	    return ( 1 :: Int )
@@ -566,7 +592,7 @@ data Entry = Entry
 
 -- | will return Maybe Stud_Aufg for re-grading
 tutor_statistik :: VNr -> A.Aufgabe 
-		-> Form IO ( Action, SA.Stud_Aufg )
+		-> Form IO ( Action, SA.Stud_Aufg, S.Student )
 tutor_statistik vnr auf = do
     hr
     saufs <- io $ Control.Stud_Aufg.DB.get_anr $ A.anr auf
@@ -595,8 +621,8 @@ tutor_statistik vnr auf = do
 	    click <- case SA.result sauf of
 	        Nothing -> do plain "" ; plain ""
 		Just w  -> do
-		    click ( "View", ( View, sauf ))
-		    click ( "Edit",  ( Edit, sauf ))
+		    click ( "View", ( View, sauf, stud ))
+		    click ( "Edit",  ( Edit, sauf, stud ))
             close -- row
     close -- btable
     end -- mutex
