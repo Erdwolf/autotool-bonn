@@ -24,6 +24,7 @@ data Type m =
 
 instance Informed ( Type m ) where
      info = fun_info
+     informed info m = m { fun_info = info }
 
 instance ToDoc ( Type m ) where
      toDoc = info
