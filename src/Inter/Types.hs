@@ -25,8 +25,8 @@ type Key = String
 data Make = forall conf p i b 
           . ( V p i b 
 	    , Typeable conf -- , Haskell2Xml conf
-	    , ToDoc conf, Show conf
-	    , Reader conf, Read conf
+	    , ToDoc conf -- , Show conf
+	    , Reader conf -- , Read conf
 	    )
 	  => Make String --  description
 		  (conf -> Var p i b) --  maker function
@@ -38,7 +38,8 @@ instance ToDoc Make
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)
 direct :: ( V p i b -- , Haskell2Xml i
-	  , Reader i, Read i )
+	  , Reader i -- , Read i 
+	  )
          => p 
 	 -> i -- ^ example instance
 	 -> Make
@@ -71,18 +72,18 @@ data Var p i b =
       deriving Typeable
 
 class ( Show p, Typeable p
-      , Show i, Typeable i, ToDoc i
+      , Typeable i, ToDoc i
       -- , Haskell2Xml i, Reader i, Read i
-      , Show b, Typeable b
+      , Typeable b
       -- , Haskell2Xml b
       , ToDoc b, Reader b 
       , Partial p i b
       ) => V p i b -- ohne methoden
 instance ( Show p, Typeable p
-      , Roller i i
-      , Show i, Typeable i, ToDoc i
+      -- , Roller i i
+      , Typeable i, ToDoc i
       -- , Haskell2Xml i, Reader i, Read i
-      , Show b, Typeable b
+      , Typeable b
       -- , Haskell2Xml b
       , ToDoc b, Reader b 
       , Partial p i b

@@ -21,7 +21,7 @@ import Autolib.Util.Seed
 import Autolib.Util.Zufall
 
 
-roll :: ( ToDoc [a], Reader [a], Ord a )
+roll :: ( InstanceC a )
      => Config a 
      -> IO ( [a], Instance a )
 roll conf = do

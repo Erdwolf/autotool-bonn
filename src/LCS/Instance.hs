@@ -1,6 +1,12 @@
 {-# OPTIONS -fallow-incoherent-instances #-}
 
-module LCS.Instance where
+module LCS.Instance 
+
+( make_fixed
+, make_quiz
+)
+
+where
 
 --  $Id$
 
@@ -15,14 +21,17 @@ import Inter.Quiz
 import Data.Typeable
 
 import Autolib.ToDoc
+import Autolib.Reader
 import Autolib.Size
 import Autolib.Xml
 import Autolib.Reporter
 
 data LCS = LCS deriving ( Show, Typeable )
 
-instance ( InstanceC a ) 
-    => Partial LCS ( Instance a ) [ a ] where
+instance 
+     ( InstanceC a ) => Partial LCS ( Instance a ) [ a ] 
+    --    Partial LCS ( Instance Char ) String
+    where
 
     describe LCS i =
         vcat [ fsep [ text "Bestimmen Sie eine"  
@@ -33,10 +42,10 @@ instance ( InstanceC a )
 	     , text "und" <+> toDoc ( right i )
 	     ]
 	
-    initial LCS i =
+    initial LCS ( i ) =
         let 
-	    (lo, _) = halves $ left  i
-	    (_, hi) = halves $ right i
+	    (lo , _) = halves $ left  i
+	    (_, hi ) = halves $ right i
 	in  merge lo hi
 
     partial LCS i zs = do
@@ -71,15 +80,17 @@ merge (x : xs) ys = x : merge ys xs
 halves :: [a] -> ([a],[a])
 halves xs = splitAt (length xs `div` 2) xs
 	    
-instance InstanceC a => Measure LCS ( Instance a ) [a] where
+instance Measure LCS ( Instance a ) [a] where
     measure LCS i zs = fromIntegral $ length zs
 
 make_fixed :: Make
-make_fixed = direct LCS LCS.Data.example
+make_fixed = ( direct :: LCS -> Instance Char -> Make ) LCS LCS.Data.example
 
-instance InstanceC a => Generator LCS (Config a) ( [a], Instance a ) where
+
+instance ( Ord a, ToDoc a, Reader a ) 
+        => Generator LCS (Config a) ( [a], Instance a ) where
     generator _ conf key = roll conf
-instance InstanceC a => Project LCS  ( [a], Instance a ) ( Instance a ) where
+instance Project LCS  ( [a], Instance a ) ( Instance a ) where
     project _ ( l, i ) = i
 
 make_quiz :: Make
