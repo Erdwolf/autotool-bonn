@@ -12,17 +12,20 @@ import Grammatik.Type
 
 
 data Ableitung = Ableitung [ String ]
-    deriving (Eq, Ord)
+     -- trick: ableitung steht hierin falschrum
 
--- instance Show Ableitung where
---    showsPrec p (Ableitung xs) =
---        showString $ concat $ intersperse " -> " $ reverse xs
+instance Eq Ableitung where 
+    a == b = car a == car b
+
+instance Ord Ableitung where 
+    a `compare` b = car a `compare` car b
 
 instance ToDoc Ableitung where
-    toDoc (Ableitung xs) = 
-        fsep $ punctuate (text "->") $ map text xs
+    toDoc (Ableitung xs) = toDoc $ reverse xs
 
-instance Show Ableitung where show = render . toDoc
+
+instance Show Ableitung where 
+    show = render . toDoc
 
 
 car  :: Ableitung -> String
@@ -39,24 +42,23 @@ nil = Ableitung []
 
 -------------------------------------------------------------------
 
-schritt :: Maybe Int
-	-> Grammatik -> String -> Set String
-schritt schranke g w = mkSet $ do
+schritt :: Maybe Int -- wörter höchstens so lang
+	-> Grammatik -> Ableitung -> Set Ableitung
+schritt schranke g a = mkSet $ do
+    let w = car a
     (vorn, hinten) <- zerlegungen w
     (links, rechts) <- rules g
     let (mitte, rest) = splitAt (length links) hinten
     guard $ mitte == links    
     let w' = vorn ++ rechts ++ rest
     guard $ case schranke of Nothing -> True; Just n -> length w' <= n
-    return $ w'
+    return $ cons w' a
+
+ableitungen :: Maybe Int -> Grammatik -> [ Set Ableitung ]
+-- erzeugt unendliche Liste (schichten)
+ableitungen schranke g = do
+    let w0 = [ startsymbol g ]
+    schichten (schritt schranke g) $ cons w0 nil
 
 
-
-erzeugte_sprache :: Maybe Int -> Grammatik -> [ String ]
--- erzeugt unendliche Liste
-erzeugte_sprache schranke g = do
-    ws <- schichten (schritt schranke g) [ startsymbol g ]
-    w <- setToList ws
-    guard $ and [ x `elementOf` terminale g | x <- w ]
-    return w
 

@@ -13,9 +13,9 @@ type Tracks = [[ String ]]
 
 nachfolger :: Int -> Grammatik -> String -> Set String
 nachfolger b g u = mkSet $ do
-    vss <- take b $ schichten ( schritt Nothing g ) u
+    vss <- take b $ schichten ( schritt Nothing g ) $ cons u nil
     v <- setToList vss
-    return v
+    return $ car v
 
 jump :: Int -> Grammatik -> (String, String) -> Reporter ()
 jump b g (u, v) = do 
@@ -29,7 +29,7 @@ jump b g (u, v) = do
 jumps :: Int -> Grammatik -> Track -> Reporter ()
 jumps b g us = do
     inform $ text "Ich verifiziere die Kette" <+> toDoc us
-    mapM_ (jump b g) $ zip us $ tail us
+    mapM_ (nested 4 . jump b g) $ zip us $ tail us
     newline
 
 starts :: (Grammatik, Set String) -> Tracks -> Reporter ()
@@ -56,10 +56,9 @@ complete (g, vs) ts = do
 
 trace :: Int -> ( Grammatik, Set String ) -> Tracks -> Reporter Int
 trace b ( g, vs ) ts = do
-    inform $ text "Sie sollen nachweisen, daß in der Grammatik"
-    inform $ toDoc g
-    inform $ text "diese Wörter aus dem Startsymbol ableitbar sind:"
-    inform $ toDoc vs
+    inform $ text "Sie sollen nachweisen,"
+    inform $ text "daß diese Wörter aus dem Startsymbol ableitbar sind:"
+    inform $ nest 4 $ toDoc vs
     newline
 
     inform $ text "In den Ableitungen dürfen Sie jeweils maximal"
@@ -68,11 +67,12 @@ trace b ( g, vs ) ts = do
     newline
 
     inform $ text "Sie haben diese (verkürzten) Ableitungen eingesandt:"
-    inform $ toDoc ts
+    inform $ nest 4 $ toDoc ts
     newline
 
     starts (g, vs) ts
-    mapM_ ( jumps b g ) ts
+    inform $ text "Sind alle Ableitungsketten korrekt?"
+    mapM_ ( nested 4 . jumps b g ) ts
     complete (g, vs) ts
 
     return 0

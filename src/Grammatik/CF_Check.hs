@@ -7,6 +7,8 @@ import Language.Type
 import Grammatik.Trace
 
 import Grammatik.Type
+import Grammatik.Check
+
 import Grammatik.Epsfrei
 import Grammatik.Kettenfrei
 
@@ -63,10 +65,10 @@ cf_check l typ w n ds t mat ( g, ts ) = do
 	    eins ws
     demos  <- mapM handle ds
 
-    reporter $ cf_yeah_noh ( toDoc l ) yeah noh typ (mkSet demos) t ( g, ts )
+    reporter $ cf_yeah_noh l yeah noh typ (mkSet demos) t ( g, ts )
 
 
-cf_yeah_noh :: Doc 
+cf_yeah_noh :: Language
 	    -> [ String ] -- soll produzieren
 	    -> [ String ] -- soll nicht produzieren
 	    -> ( Grammatik -> Reporter () ) -- typ
@@ -74,12 +76,19 @@ cf_yeah_noh :: Doc
 	    -> Int -- schrittweite für trace
 	    -> ( Grammatik, Tracks )  -- eingabe
 	    -> Reporter Int
-cf_yeah_noh doc yeah0 noh0 typ demos t gts @ ( g, ts ) = do
+cf_yeah_noh lang yeah0 noh0 typ demos t gts @ ( g, ts ) = do
+    let doc = text $ abbreviation lang
     inform $ text "Gesucht sind Grammatik und Beispiel-Ableitungen für" <+> doc
-    inform $ text "Sie haben eingesandt:" <+> toDoc gts
+    newline
 
     typ2 g
     typ g
+
+    check lang 12 -- max wortlänge 
+	        7 -- max schichttiefe
+		5 -- max abl anz
+	      100 -- max wörter zurück
+	        g
 
     let arrange = sortBy (\ x y -> compare (length x, x) (length y, y))
     let [ yeah, noh ] = map arrange [ yeah0, noh0 ]

@@ -233,6 +233,7 @@ final msg r = do
       when ( isNothing f ) $ reject 
 	     $ text "Das ist keine" <+> text msg <> text "."
       inform $ text "Das ist eine"  <+> text msg <> text "."
+      newline
 
 ----------------------------------------------------------------------------
 
