@@ -14,6 +14,7 @@ import Baum.Such.Generate
 import Challenger.Partial
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Dot
 import Autolib.Reader
 
 import Inter.Types
@@ -28,21 +29,23 @@ instance ( Tag t baum a ) =>
 instance ( Tag t baum a ) => 
     Partial t ( Instanz baum a ) [ Op a ] where
 
-    describe t ( start, plan, end ) = vcat
-       [ text "Auf den Baum:"
-       , nest 4 $ form start
-       , text "sollen diese Operationen angewendet werden"
-       , text "(wobei Sie  Any  geeignet ersetzen sollen):"
-       , nest 4 $ toDoc plan
-       , text "so daﬂ dieser Baum entsteht:"
-       , nest 4 $ form end
-       ]
+    report t ( start, plan, end ) = do
+       inform $ text "Auf den Baum:"
+       peng start
+       inform $ vcat 
+	      [ text "sollen diese Operationen angewendet werden"
+              , text "(wobei Sie  Any  geeignet ersetzen sollen):"
+              , nest 4 $ toDoc plan
+              , text "so daﬂ dieser Baum entsteht:"
+              ]
+       peng end
 
     initial t ( start, plan, end ) =
         plan
 
     total   t ( start, plan, end ) ops = do
-        inform $ text "Beginne mit" <+> form start
+        inform $ text "Beginne mit"
+	peng start
         c <- steps start plan ops
 	assert ( c `equal` end) $ vcat
 	       [ text "Stimmt ¸berein mit Aufgabenstellung?"

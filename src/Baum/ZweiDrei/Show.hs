@@ -10,7 +10,7 @@ toTree Null = Node "null" []
 toTree ( Baum bks) = 
     let keys = do ( _, This k ) <- bks ; return k
         children = do ( b, _ ) <- bks ; return b
-    in  Node ( show keys ) $ reverse $ map toTree children 
+    in  Node ( show keys ) $ map toTree children 
 
 
 

@@ -7,9 +7,10 @@ import Baum.Such.Op
 
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Dot
+import Autolib.Hash
 
-
-step :: ( Such baum, OpC a )
+step :: ( Such baum, OpC a, ToDot (baum a), Show (baum a), Hash (baum a) )
       => baum a 
       -> Op a
       -> Reporter ( baum a )
@@ -19,10 +20,11 @@ step b op = do
 	 Insert a -> return $ insert b a
 	 Delete a -> return $ delete b a
 	 _        -> reject $ text "ist unbekannt"
-    inform $ text "Resultat:" <+> form c
+    inform $ text "Resultat:"
+    peng c
     return c
 
-steps :: ( Such baum, OpC a )
+steps :: ( Such baum, OpC a, ToDot (baum a), Show (baum a), Hash (baum a) )
       => baum a 
       -> [ Op a ] -- plan (mit Any)
       -> [ Op a ] -- einsendung (ohne Any)

@@ -5,7 +5,6 @@ module Baum.Binary.Ops where
 import Baum.Binary.Type 
 import Baum.Such.Op
 
-
 contains :: Ord a
 	 => Baum a -> a -> Bool
 contains Null k = False
