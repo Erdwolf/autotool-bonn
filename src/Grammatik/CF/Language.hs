@@ -17,14 +17,15 @@ make :: String -- ^ nametag
      -> Grammatik 
      -> Language
 make nam g = 
-     let ch = C.make g
+     let 
 	 l = Language 
 	   { abbreviation = show $ text "L (G) für G = " <+> toDoc g
 	   , nametag = nam
 	   , alphabet = terminale g
 	   , contains = akzeptor g 
 	   , sample = \ c n -> do
-	       let ws = create_ch ch (n+1)
+	       let ws = take (c * c)
+		      $ create g (n+1)
 	       if null ws 
 	   	 then return []
 	   	 else do

@@ -28,7 +28,10 @@ next ch limit g = addListToFM_C union g $ do
 
 -- | erzeuge alle wörter bis zu gegebener länge
 create :: Grammatik -> Int -> [ String ]
-create g limit = create_ch (make g) limit
+create g limit = uniqs $ do
+       let ch = make g
+       n <- [ 0 .. limit ]
+       create_ch ch n
 
 -- | erzeuge alle wörter bis zu gegebener länge
 create_ch :: Ord x 

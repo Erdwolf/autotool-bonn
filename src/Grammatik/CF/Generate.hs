@@ -6,11 +6,15 @@ import qualified Grammatik.Type as G
 
 import Grammatik.CF.Finite
 import Grammatik.CF.Language
+import Grammatik.CF.Create
+import Language.Type ( present, samples )
 
+import Grammatik.Reduziert 
 import Util.Wort
 import Util.Zufall
 
 import Sets
+import Reporter
 import Data.List ( inits )
 
 
@@ -25,14 +29,20 @@ data Config = Config
 	    , max_length_lhs :: Int
 	    }
 
-ex :: Config
-ex = Config
+nontrivial :: G.Grammatik -> Bool
+nontrivial g =  and
+      [ G.regeln (reduktion g) == G.regeln g 
+      , not $ finite g 
+      ]
+
+expl :: Config
+expl = Config
    { terminale = mkSet "ab"
-   , nichtterminale = mkSet "STU"
+   , nichtterminale = mkSet "ST"
    , start = 'S'
-   , min_num_regeln = 2
-   , max_num_regeln = 6
-   , condition = not . finite
+   , min_num_regeln = 4
+   , max_num_regeln = 10
+   , condition = nontrivial
    , min_length_lhs = 1
    , max_length_lhs = 3
    }
@@ -64,3 +74,18 @@ rule vars lhsss = do
      lhs <- eins lhss
      v <- eins vars
      return ( [ v ] , lhs )
+
+test :: IO ()
+test = do
+    mg <- roll expl
+    case mg of
+	 Nothing -> do
+		 putStr "* " 
+		 test
+	 Just g -> do
+	      print g
+	      let l = Grammatik.CF.Language.make "Test" g
+	      -- let ws = create g 10 
+	      ws <- samples l 20 0
+	      print $ take 100 ws
+
