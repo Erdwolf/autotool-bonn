@@ -118,10 +118,6 @@ loop :
 
 # install source archive and executable
 release : SRS/Config/Build.hs SRS/Config/Release.hs
-	( echo "module SRS.Config.Release where" ; \
-	  echo "date = \"$(shell date)\" ; \
-	  echo "uname = \"$(shell uname)\" ) \
-		> SRS/Config/Release.hs
 	cvs commit -m release-$(shell date -I)
 	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXE)
 	bzip2 -v --force --best  $(MATCHBOX_DOWNLOAD)/$(MATCHBOX_EXE)
