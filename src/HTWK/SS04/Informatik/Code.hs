@@ -14,9 +14,9 @@ import Inter.Types
 generates :: [ IO Variant ]
 generates = 
     [ A.make $ A.Config
-             { A.length = (A.Atmost, 6)
-	     , A.size   = (A.Atleast, 10)
-	     , A.distance  = (A.Atleast, 3)
+             { A.length   = (A.Atmost,  6)
+	     , A.size     = (A.Atleast, 5)
+	     , A.distance = (A.Atleast, 3)
 	     , A.optimize = "Größe"
 	     }
     , A.make $ A.Config
