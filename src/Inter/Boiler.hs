@@ -42,7 +42,7 @@ boiler = sequence $
 
        , fmap Variant $ JVM.NUM32.generate
        , fmap Variant $ JVM.NUM42.generate
-       , fmap Variant $ JVM.NUMMAT.generate
+       , fmap Variant $ JVM.NUMAT.generate
 
        , fmap Variant $ PCP.QUIZ.generate
        , fmap Variant $ SAT.QUIZ.generate
