@@ -1,5 +1,3 @@
-{-# OPTIONS -cpp #-}
-
 module Autolib.Util.Datei 
 
 -- -- $Id$
@@ -25,15 +23,9 @@ import Char (isAlphaNum)
 import qualified System.Posix
 import qualified Control.Exception
 
--- alle pfade sind relativ zu $HOME, falls das existiert
--- in CGI-skripten existiert es nicht (?)
--- dann relativ zu /home/$(posix.getloginname)
+import Util.Datei.Base
 
--- änderung: das CGI-skript muß die env-var $HOME setzen
--- damit wir hier nicht vom modul Posix anhängen,
--- das es in hugs nämlich gar nicht gibt.
--- CGI ist ja immer ghc-compiled,
--- aber bei klassischen aufgaben läuft hier hugs
+-- alle pfade sind relativ zu Util.Datei.Base
 
 data Datei = Datei{ pfad :: [String]
                   , name :: String
@@ -78,21 +70,7 @@ internalize cs =
 
 home_dir :: IO FilePath
 home_dir = do
-#ifdef SPACE
-	    return "/space"
-#else
-#ifdef HOME
-	    getEnv "HOME"
-#else
-#ifdef POSIX
-        user <- System.Posix.getEffectiveUserName
-        return $ "/home/" ++ user
-#else            
-        let user = "autotool"
-        return $ "/home/" ++ user
-#endif
-#endif
-#endif
+	    return Util.Datei.Base
 
 sanity :: Datei -> IO ()
 -- mit großer vorsicht: über das argument von Get.cgi

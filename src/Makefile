@@ -1,35 +1,16 @@
 # $Id$
 
+include ../config.mk
 include Makefile-defs
 
-# for deleting/srs: ##################################################
-
-CGIS = SRS/Deleting/Demo.cgi \
-       SRS/Closure/Terminator.cgi 
-
-HTMLS = SRS/Interface/*.html
-
-ifndef CGIDIR
-CGIDIR = $(CGIBIN)/matchbox
-endif
-
 # for autotool: ########################################################
+
+# TODO: configure
 
 PUB =  $(HOME)/public_html
 CGIBIN = $(PUB)/cgi-bin
 
-# for drift ########################################################
-
-# TODO: autoconf
-DrIFT = $(HOME)/space/Autolib-0.0.0/DrIFT-2.0rc3/src/DrIFT
-
-DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
-
 ###############################################################################
-
-# .PHONY: all $(DIRS)
-
-# all: $(DIRS)
 
 all : drift face
 
@@ -81,84 +62,19 @@ haddock :
 .PHONY : haddock
 
 ###############################################################################
-
-MATCHBOX_DIRS = util Util Reporter Inter \
-	GVKnoten Graph Boxing Dot \
-	NFA NFTA Exp TES SRS 
-MATCHBOX_SRC = $(wildcard Makefile* *.hs) \
-	$(shell find $(MATCHBOX_DIRS) -name "*.hs" -print)
-MATCHBOX_DOWNLOAD = $(CGIDIR)/download
-MATCHBOX_STORE = $(MATCHBOX_DOWNLOAD)/archive
-MATCHBOX_ARCHIVE = Matchbox-src-$(shell date -I).tar.bz2
-MATCHBOX_CURRENT_ARCHIVE = $(MATCHBOX_DOWNLOAD)/Matchbox-src-current.tar.bz2
-MATCHBOX_EXE = Matchbox-exe-$(shell date -I)
-MATCHBOX_CURRENT_EXE = $(MATCHBOX_DOWNLOAD)/Matchbox-exe-current
-
-
-SRS/Config/Build.hs : do
-	( echo module SRS.Config.Build where ; \
-	  echo date  = \"$(shell date)\" ; \
-	  echo uname = \"'$(shell uname -a)'\" ) > $@
-
-SRS/Config/Release.hs : do
-	( echo module SRS.Config.Release where ; \
-	  echo date  = \"$(shell date)\" ; \
-	  echo uname = \"'$(shell uname -a)'\" ) > $@
-
-.PHONY : SRS/Config/Build.hs SRS/Config/Release.hs
-
-matchbox : SRS/Config/Build.hs
-	$(GHC_COMMAND) \
-		SRS/Matchbox.hs -o SRS/Matchbox
-
-checker : do
-	$(GHC_COMMAND) \
-		SRS/Checker.hs -o SRS/Checker
-self : do
-	$(GHC_COMMAND) \
-		SRS/Self.hs -o SRS/Self
-loop :
-	$(GHC_COMMAND)  \
-		Exp/Loop.hs -o Exp/Loop
-
-# install source archive and executable
-release : 
-	cvs commit -m release-$(shell date -I)
-	make publish
-
-publish :  SRS/Config/Build.hs SRS/Config/Release.hs
-	$(GHC_COMMAND) SRS/Matchbox.hs -o  $(MATCHBOX_STORE)/$(MATCHBOX_EXE)
-	bzip2 -v --force --best  $(MATCHBOX_STORE)/$(MATCHBOX_EXE)
-	tar -cvjf $(MATCHBOX_STORE)/$(MATCHBOX_ARCHIVE) \
-		-C.. $(patsubst %, autotool/%, $(MATCHBOX_SRC))
-	rm -f $(MATCHBOX_CURRENT_EXE).bz2
-	ln -s $(MATCHBOX_STORE)/$(MATCHBOX_EXE).bz2 $(MATCHBOX_CURRENT_EXE).bz2
-	rm -f $(MATCHBOX_CURRENT_ARCHIVE)
-	ln -s $(MATCHBOX_STORE)/$(MATCHBOX_ARCHIVE) $(MATCHBOX_CURRENT_ARCHIVE)
-
-# install CGI programs and copy web pages
-install-matchbox : do release
-	$(GHC_COMMAND)  \
-		SRS/Closure/Terminator.hs -o $(CGIDIR)/Terminator.cgi
-	$(GHC_COMMAND)  \
-		SRS/Deleting/Demo.hs -o $(CGIDIR)/Demo.cgi
-	cp $(HTMLS) $(CGIDIR)/
-
-
+# for drift 
 ###############################################################################
-# drift
-###############################################################################
+
+DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
 
 %.hs : %.hs.drift
-	DERIVEPATH=$(DP)  $(DrIFT) $< > $@
+	$(AUTODRIFT) $< > $@
 
 drift : $(DRIFT) 
 
 drift-clean :
-	rm ` find . -name "*.drift" -print | sed s/.drift$$// `
+	rm -f `find . -name "*.drift" -print | sed s/.drift$$// `
 
-drift-commit : drift-clean drift
-	cvs commit -m drift-commit $(DRIFT)
 
 ###############################################################################
 # cgi Inter/Face

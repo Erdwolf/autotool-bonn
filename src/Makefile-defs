@@ -1,47 +1,3 @@
-######################################################################
-# install-specific things
-######################################################################
-
-ifeq ($(shell hostname), theo1)
-EXTRA_PACKS = -package hsql
-GHC = ghc-6.2
-CGIDIR = /var/www/matchbox
-endif
-
-ifeq ($(shell hostname), afa)
-EXTRA_PACKS = -package hsql
-GHC = ghc
-endif
-
-ifeq ($(shell hostname), nfa)
-EXTRA_PACKS = -package hsql
-GHC = ghc
-CGIDIR = /var/www/matchbox
-endif
-
-ifeq ($(shell hostname), dfa)
-EXTRA_PACKS = -package hsql
-GHC = ghc 
-HUGS = /usr/lib/hugs
-endif
-
-ifeq ($(shell hostname), aaron)
-# EXTRA_PACKS = -package-conf /home/alf/autotool/autotool.pkg -package hsql
-EXTRA_PACKS = -package hsql
-GHC = ghc-6.2
-endif
-
-
-########################################################################
-# defaults
-########################################################################
-
-ifndef GHC
-GHC = ghc
-endif
-
-# System spezifische Einstellung
-
 #
 # enthält absolute Pfadangaben --> erlaube Überschreibung durch andere Makefiles
 # (besonders aus anderen Verzeichnissen), dazu z.B. in ./control/Makefile
@@ -55,29 +11,13 @@ ifndef RELATIV_TO_MAIN_DIR
 RELATIV_TO_MAIN_DIR =.
 endif
 
-ifndef HUGS
-HUGS = /usr/local/lib/hugs
-endif
-
-ifndef EXTRA_PACKS
-EXTRA_PACKS = -package-conf $(RELATIV_TO_MAIN_DIR)/autotool.pkg -package hsql 
-endif
-
-ifndef DEFINES
-#DEFINES = -DHOME=1
-endif
 
 # erlaube überschreibung, s.o
 ifndef DIRS
 # DIRS = util:wash:control:bridge:challenger:ws03/aus:
 endif
 
-########################################################################
-# ugly ugly ugly : system-spezifische teile des makefiles
-
-########################################################################
-# ghc / ghci : setup
-########################################################################
+#################################################################
 
 
 FLAGS = -fallow-overlapping-instances \
@@ -108,8 +48,6 @@ all:
 # build haskell-cgis, we need hsql stuff too 
 %.cgi : do %.hs
 	$(GHC_COMMAND)  $(EXTRA_PACKS)  $*.hs -o $@
-
-
 
 
 #########################################################################
