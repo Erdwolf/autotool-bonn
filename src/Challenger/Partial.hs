@@ -1,5 +1,12 @@
 -- | Autotool Challenger Partial
-module Challenger.Partial where
+module Challenger.Partial 
+
+( Wert (..)
+, Measure (..)
+, Partial (..)
+)
+
+where
 
 --   $Id$
 
@@ -56,7 +63,13 @@ class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
 
       -- | alles richtig?
       -- vorher wird immer erst partial angewendet
+      -- eine der beiden total, total_neu muß implementiert werden
       total   :: p -> i -> b -> Reporter ()
+      total p i b = do
+          res <- total_neu p i b
+          case res of
+	      Ok _ -> return ()
+              _    -> reject $ toDoc res
 
       -- | liefert (in jedem Fall) einen Wert
       total_neu :: p -> i -> b -> Reporter Wert

@@ -32,7 +32,10 @@ instance C.Partial Upload () Contents where
 	 , text "Die Punkte sehen Sie danach in der Datenbank."
 	 ]
     initial Upload () = Contents "(Ihr Text hier.)"
-    total Upload () _ = reject $ text "Lösung wird off-line bewertet."
+
+    total_neu Upload () _ = do
+        inform $ text "Lösung wird off-line bewertet."
+        return $ C.Pending
 
 
 instance C.Measure Upload () Contents where
