@@ -27,37 +27,92 @@ test = do
     this <- evolve (conf 4) 
     print this
 
+fixed xs conf = 
+    let fix xys = zip xs $ map snd xys
+    in conf { generate = fmap fix $ generate conf
+            , combine  = \ a b -> fmap fix $ combine conf a b
+            , mutate   = \ a   -> fmap fix $ mutate  conf a
+	    }
+
 conf :: Int -> Conf Gene Int
 conf n = Conf 
        { fitness = \ g ->  case shosyn $ mach g of
-	                     w : _ | keinkreis g -> length w
+	                     w : _ | not $ standard g -> length w
 	                     _     -> 0
        , threshold = (n-1) ^ 2
        , generate = sequence $ replicate n $ do
             let qs = [0 .. n-1]
 	    x <- eins qs ; y <- eins qs
             return (x, y)
-       , combine = \ a b -> do
-            return $ zip ( map fst a ) ( map snd b )
-       , mutate = often 2 $ \ a -> entweders
-            [ -- flip two letters (from one state)
-              do i <- randomRIO (0, n-1)
-	         return $ update a (i, \ (x,y) -> (y,x) )
-              -- change direction of one arrow
-	    , do i <- randomRIO (0, n-1)
-	         f <- randomRIO (False, True)
-                 z <- randomRIO (0, n-1)
-                 return $ update a (i, \ (x,y) -> if f then (z,y) else (x,z))
-              -- swap two states
-            , do [i, j] <- einige 2 [0 .. n-1]
-	         return $ pokes a [(i, a!!j), (j, a!!i)]
+       , combine = \ a b -> entweders 
+            [ combine_vertically a b
+	    , combine_horizontally a b
 	    ]
-       , size = 200
-       , num_mutate = 100
-       , num_combine = 100
-       , trace = \ pool -> print $ toDoc $ take 3 $ popul pool
-       , present = \ pool -> schreib n pool
+       , mutate = \ a -> entweders
+            [ reverse_subsequence a
+	    , often 2 change_target a
+	    ]
+       , size = 100
+       , num_mutate = 50
+       , num_combine = 50
+       , num_compact = 5
+       , trace = hush
+       , present = schreib n
        }
+
+-----------------------------------------------------------------------------
+
+hush pool = do
+     print $ toDoc $ take 3 $ popul pool
+     let vs = map fst $ popul pool
+     putStrLn $ "histogram: " ++ show (reverse $ histo vs)
+     putStrLn $ "average  : " 
+              ++ show (  fromIntegral (sum vs) 
+		      / fromIntegral (length vs)
+		      )
+
+combine_horizontally a b = do
+    return $ zip ( map fst a ) ( map snd b )
+
+combine_vertically a b = do
+    k <- randomRIO (0, length a - 1)
+    return $ take k a ++ drop k b
+
+-- | flip two letters (from one state)
+flip_letters a = do
+    let n = length a
+    i <- randomRIO (0, n-1)
+    return $ update a (i, \ (x,y) -> (y,x) )
+
+-- | change target of one arrow
+change_target a = do
+    let n = length a
+    i <- randomRIO (0, n-1)
+    f <- randomRIO (False, True)
+    z <- randomRIO (0, n-1)
+    return $ update a (i, \ (x,y) -> if f then (z,y) else (x,z))
+
+-- | swap two states
+swap_states a = do
+    let n = length a
+    [i, j] <- einige 2 [0 .. n-1]
+    return $ pokes a [(i, a!!j), (j, a!!i)]
+
+-- | reverse subsequence (brutally)
+reverse_subsequence a = do 
+    let n = length a
+    [i, j] <- einige 2 [0 .. n-1]
+    let (lo, hi) = (min i j, max i j)
+        (pre, midpost) = splitAt lo a
+        (mid, post) = splitAt (hi - lo) midpost
+    return $ pre ++ reverse mid ++ post
+
+-----------------------------------------------------------------------
+
+histo :: Ord a => [a] -> [(a, Int)]
+histo xs = fmToList $ addListToFM_C (+) emptyFM $ do
+    x <- xs
+    return (x, 1)
 
 -----------------------------------------------------------------------
 
@@ -77,14 +132,27 @@ tofile fname r = do
         ( _ , out :: Text.Html.Html ) <- Autolib.Reporter.run r
 	writeFile ( fname ++ ".html" ) $ show out
 
+-- | for at least one letter, 
+-- number of states that are changed is larger than 1
+fast_id :: [Int] -> Bool
+fast_id xs = (1 >=) $  length $ do
+              (k, x) <- zip [0..] xs
+	      guard $ k /= x
+              return ()
 
-keinkreis :: Gene -> Bool
-keinkreis g =
+kreis :: [Int] -> Bool
+kreis xs =
     let orbit xs = bfs ( \ k -> unitSet (xs !! k) ) ( head xs )
-        full orb = length orb == length g
-    in  and $ do 
-           f <- [ fst, snd ]
-           return $ not $ full $ orbit $ map f g
+        full orb = length orb == length xs
+    in  full $ orbit xs
+
+standard :: Gene -> Bool
+standard g = 
+    let xs = map fst g
+        ys = map snd g
+    in     ( fast_id xs && kreis ys )
+        || ( fast_id ys && kreis xs )
+
 
 mach g = make $ umform g 
 umform g = [map fst g, map snd g]
@@ -95,13 +163,3 @@ often :: Monad m
       -> (a -> m a)
 often k this = \ a -> foldM ( \ a () -> this a ) a ( replicate k () )
 
-update :: [a] -> (Int, a -> a) -> [a]
-update xs (i, f) = poke xs (i, f $ xs !! i)
-
-poke :: [a] -> (Int, a) -> [a]
-poke xs (i, y) = 
-    let (pre, _ : post) = splitAt i xs
-    in  pre ++ [y] ++ post
-
-pokes :: [a] -> [(Int, a)] -> [a]
-pokes = foldl poke
