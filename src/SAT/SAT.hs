@@ -179,16 +179,6 @@ instance  Interactive SAT Formel Belegung ( Paint String (Maybe Bool) ) where
     let doc = ( C.mkLabel "rechte Maustaste ergibt Popup-Menu" )
 	      { C.ident = C.Ident "doc" }
 
-    -- pop up menu
-    let menu = C.Component
-	     { C.kind = C.Menu
-	     , C.ident = C.Ident "Menu"
-	     , C.options = [ C.Menu_Items 
-		   $ map show ( Nothing : map Just [ False, True ] ) 
-		   ]
-	     , C.bbox = (0,0) -- dummy
-	     }
-
     let handle v = \ ( C.Input cs) -> Paint v $
            case reads cs of
 	        [(mc, "")] -> mc
@@ -200,10 +190,11 @@ instance  Interactive SAT Formel Belegung ( Paint String (Maybe Bool) ) where
 		 let c0 = ( C.mkLabel v ) 
 			  { C.ident = C.Ident $ v ++ "0" 
 			  }
-		 let c1 = ( C.mkButton "??" ) 
-			  { C.ident = C.Ident $ v ++ "1" 
+		 let c1 = ( C.mkChoice $ map show 
+			               $ Nothing : map Just [ False, True ] ) 
+			  { C.ident = C.Ident $ v ++ "1"
 			  , C.action = C.translate ( handle v ) listener
-                          } `C.with_options` [ C.Color (255,255,255) ]
+			  }
 		 return (v, c0, c1)
 
               set = C.splits $ do
@@ -211,7 +202,7 @@ instance  Interactive SAT Formel Belegung ( Paint String (Maybe Bool) ) where
 			return $ C.translate ( \ f -> 
 				      [ C.Text $ show $ lookupFM f v ] )
 			       $ C.changeL c1 
-          in ( C.column [ C.row [ doc, menu ]
+          in ( C.column [ doc
 			, C.grid $ do 
 			     ( v, c0, c1 ) <- vccs
 			     return [ c0, c1 ]
