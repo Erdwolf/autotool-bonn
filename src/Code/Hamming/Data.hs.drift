@@ -1,0 +1,46 @@
+-- -*- mode: haskell -*-
+
+module Code.Hamming.Data 
+
+( Goal (..)
+, Config (..)
+, LR (..), Code
+, attributes
+)
+
+where
+
+import Prelude hiding ( length )
+import Code.Huffman.LR
+
+import Reader
+import ToDoc
+
+-- | damit übernimmt der parser die prüfung darauf,
+-- daß nur zwei buchstaben verwendet werden
+type Code = [[ LR ]]
+
+data Goal = Minimize | Maximize | Fixed Int
+     deriving ( Eq, Ord )
+
+{-! for Goal derive : ToDoc, Reader !-}
+
+instance Show Goal where show = render . toDoc
+instance Read Goal where readsPrec = parsec_readsPrec
+
+data Config = 
+     Config { length :: Goal
+	    , size   :: Goal
+	    , dist   :: Goal
+	    }
+     deriving ( Eq, Ord )
+
+attributes = [ (length, "Länge"), (size, "Größe"), (dist, "Weite") ]
+
+{-! for Config derive : ToDoc, Reader !-}
+
+instance Show Config where show = render . toDoc
+instance Read Config where readsPrec = parsec_readsPrec
+
+
+

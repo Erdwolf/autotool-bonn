@@ -6,13 +6,29 @@ import qualified Code.Huffman.Quiz as H
 import qualified Code.Quiz as C
 import qualified Code.Move_To_Front 
 import qualified Code.Burrows_Wheeler
+import qualified Code.Hamming as A
 
 import Sets
 import Inter.Types
 
 generates :: [ IO Variant ]
 generates = 
-    [ H.make $ H.Config 
+    [ A.make $ A.Config
+             { A.length = A.Fixed 6
+	     , A.size   = A.Maximize
+	     , A.dist  = A.Fixed 3
+	     }
+    , A.make $ A.Config
+             { A.length = A.Minimize
+	     , A.size   = A.Fixed 10
+	     , A.dist  = A.Fixed 2
+	     }
+    , A.make $ A.Config
+             { A.length = A.Fixed 8
+	     , A.size   = A.Fixed 10
+	     , A.dist  = A.Maximize
+	     }
+    , H.make $ H.Config 
 	     { H.alphabet = mkSet [ 'a' .. 'i' ]
 	     , H.range    = ( 1, 50 )
 	     }
