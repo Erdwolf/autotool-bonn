@@ -19,10 +19,11 @@ module SAT.SAT
 
 ( SAT (..)
 , Variable, Literal (..)
-, Klausel, Formel
+, Klausel, Formel, Belegung
 , module FiniteMap
 
 , variablen
+, wert_literal
 )
 
 where
