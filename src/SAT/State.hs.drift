@@ -14,9 +14,14 @@ import FiniteMap
 
 data State = 
      State { assignment :: Belegung -- erfüllend
-	   , formula  :: Formel -- soweit schon gebaut
-	   , unfrequent :: [ Literal ] 
-	   , morefrequent :: [ Literal ]
+	   , satisfying :: Set Literal -- dazu gehörende literale
+	   , todo :: Int -- noch so viele klauseln
+	   , width :: Int -- soviele literale pro klausel
+	   , formula  :: [[Literal]] -- soweit schon gebaut
+	   , clause :: [ Literal ] -- currently built
+	   , csat :: Bool -- klausel ist bereits erfüllt?
+	   , unfrequent :: Set Literal
+	   , morefrequent :: Set Literal
 	   , dependencies :: FiniteMap Variable ( Set Variable )
 	   }
 

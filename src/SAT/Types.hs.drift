@@ -23,6 +23,12 @@ data SAT = SAT deriving Show
 data Literal = Pos Variable | Neg Variable
     deriving (Show,Read,Eq,Ord)
 
+unLiteral ( Pos v ) = v
+unLiteral ( Neg v ) = v
+
+opposite ( Pos v ) = Neg v
+opposite ( Neg v ) = Pos v
+
 {-! for Literal derive : ToDoc, Reader !-}
 
 
