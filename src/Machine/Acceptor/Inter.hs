@@ -24,12 +24,11 @@ acceptor auf ver num =
 	, version = ver
 	, key = \ matrikel -> do
 	      return matrikel
-	, gen = \ matrikel -> do
+	, gen = \ matrikel -> return $ do
 	      inform $ text "Konstruieren Sie eine Maschine,"
 	      inform $ text "welche die Sprache" <+> info num 
 	               <+> text "akzeptiert!"
 	      return num
-	, gen_i = \ matrikel -> num
 	}
 
 {-

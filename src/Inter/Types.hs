@@ -20,11 +20,11 @@ type Key = String
 data Var p i b = 
          Var { problem :: p 
 	     , aufgabe :: String
-	     , var_info :: Doc
 	     , version :: String
+	     -- erzeugt cached version der instanz (o. ä.)
 	     , key :: Matrikel -> IO Key
-	     , gen :: Matrikel -> Reporter i
-	     , gen_i :: Key -> i
+	     -- holt tatsächliche instanz
+	     , gen :: Key -> IO ( Reporter i )
 	     }
      deriving Show
 
@@ -54,7 +54,5 @@ instance ToDoc Variant where
 instance Show Variant where
     show = render . toDoc
 
-instance Informed ( Var p i b ) where
-    info = var_info
-    informed t v = v { var_info = t }
+
 

@@ -18,15 +18,16 @@ wrapper :: T.V p i b
 wrapper v mat b = do
     let p = T.problem v
     k <- T.key  v mat
-    let i = T.gen_i v k
+    generator <- T.gen v k
 
     Reporter.Result.wrapper $ do
         inform $ fsep
-	    [ text "Ihre Einsendung zur Aufgabe"
-	    , text $ T.aufgabe v
-	    , parens ( text "Version:" <+> text ( T.version v ) )
-	    , text "ist:"
-	    ]
+	       [ text "Sie bearbeiten die Aufgabe" , text $ T.aufgabe v
+	       , parens ( text "Version:" <+> text ( T.version v ) )
+	       ]
+        i <- generator
+
+	inform $ text "Ihre Einsendung ist:"
         inform $ nest 4 $ toDoc b
 
         C.partial p i b

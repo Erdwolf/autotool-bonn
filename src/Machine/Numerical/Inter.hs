@@ -24,12 +24,11 @@ computer auf ver num =
 	, version = ver
 	, key = \ matrikel -> do
 	      return matrikel
-	, gen = \ matrikel -> do
+	, gen = \ matrikel -> return $ do
 	      inform $ text "Konstruieren Sie eine Maschine,"
 	      inform $ text "welche die Funktion" <+> info num 
 	               <+> text "berechnet!"
 	      return num
-	, gen_i = \ matrikel -> num
 	}
 
 instance ( Machine m dat conf, Numerical dat )

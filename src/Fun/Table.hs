@@ -21,6 +21,9 @@ import Fun.State
 import ToDoc
 import Array
 
+item_width :: Int
+item_width = 5
+
 table :: Fun -> [[Integer]] -> [([Integer],Integer)]
 table f args = 
     let exps = do arg <- args ; return $ App f $ map Zahl arg
@@ -34,9 +37,11 @@ final s = case step s of
 
 -------------------------------------------------------------------
 
+type Tafel = Array (Integer, Integer) Integer 
+
 tabulate :: Fun 
 	 -> (Integer, Integer) 
-	 -> Array (Integer, Integer) Integer
+	 -> Tafel
 tabulate f (h, w) = 
     let bnd = ((0,0), (h,w))
 	tuple ([x,y], v) = ((x,y), v) ; untuple (x,y) = [x,y]
@@ -51,15 +56,15 @@ frame a = vcat $ do
     let ((0,0), (h,w)) = bounds a
 	contents = do (k,v) <- assocs a ; return (k, show v)
 	topnums = do y <- [ 0 .. w ] ; return ((-2,y), show y)
-	topline = do y <- [-2 .. w ] ; return ((-1,y), "-" )
+	topline = do y <- [-2 .. w ] ; return ((-1,y), replicate item_width '-' )
 	sidenums = do x <- [ 0 .. h ] ; return ((x,-2), show x)
 	sideline = do x <- [-2 .. w ] ; return ((x,-1), "|" )
         b = accumArray ( \ alt neu -> neu ) "" ((-2, -2), (h,w)) 
-	    $ topline ++ sideline ++ topnums ++ sidenums ++ contents
+	    $ sideline ++  topline ++ topnums ++ sidenums ++ contents
     x <- [ -2 .. h ]
     return $ hcat $ do
         y <- [ -2 .. w ]
-	return $ text $ trim 5 $ b ! (x,y)
+	return $ text $ trim item_width $ b ! (x,y)
 
 -- fülle mit leerzeichen auf gesamtbreite w
 trim w cs = 

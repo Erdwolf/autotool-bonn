@@ -53,7 +53,8 @@ iface variants env = do
 	   Variant v -> do
 	      -- key/instanz herstellen und anzeigen
 	      k <- key  v $ P.matrikel par1
-	      let ( Just i, com :: Doc ) = export $ gen v $ P.matrikel par1
+	      generator <- gen v k
+	      let ( Just i, com :: Doc ) = export generator
 	      let inst = p << "Die Aufgabenstellung ist:"
 			 +++ p << pre << render com
 
