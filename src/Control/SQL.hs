@@ -49,7 +49,7 @@ collectRows fun stat = do
 
 logfile = "/tmp/HSQL.log"
 logged cs = do
-    appendFile logfile cs ; appendFile logfile strich 
+    -- appendFile logfile cs ; appendFile logfile strich 
     return ()
 
 strich = "\n--------------------------------\n"
