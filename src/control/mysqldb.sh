@@ -14,7 +14,9 @@ rm -f mysqlconnect.data
 if [ "init" == "$1" ] 
 then
    echo "init database"
+   echo mysql -h "$mysqlhost" -u "$mysqluser" --password="$mysqlpasswd" -D "$mysqldb" <$INITFILE
    mysql -h "$mysqlhost" -u "$mysqluser" --password="$mysqlpasswd" -D "$mysqldb" <$INITFILE
 else
-   mysql -h "$mysqlhost" -u "$mysqluser" --password="$mysqlpasswd" -D "$mysqldb"
+  echo mysql -h "$mysqlhost" -u "$mysqluser" --password="$mysqlpasswd" -D "$mysqldb" 
+  mysql -h "$mysqlhost" -u "$mysqluser" --password="$mysqlpasswd" -D "$mysqldb"
 fi
