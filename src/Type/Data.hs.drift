@@ -63,8 +63,8 @@ supply = do
 
 instance ToDoc Function where
     -- vorsicht: alte syntax ist im cache -- na und?
-    toDoc f = hsep [ -- text "static"
-		     toDoc ( result f )
+    toDoc f = hsep [ text "static"
+		   , toDoc ( result f )
 		   , toDoc ( fname f )
 		   , dutch_tuple $ do
 		         ( t, z ) <- zip ( arguments f ) supply
@@ -73,7 +73,7 @@ instance ToDoc Function where
 
 instance Reader Function where
     reader = do
-        -- my_reserved "static"
+        my_reserved "static"
         r <- reader -- result type
 	n <- reader -- function name
         ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma  -- parameters

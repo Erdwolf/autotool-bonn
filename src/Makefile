@@ -11,8 +11,9 @@ CGIBIN = $(PUB)/cgi-bin
 
 IPROGS = Super
 CPROGS = autoan
-CGIS =	$(patsubst %,Inter/%.cgi,$(IPROGS)) \
-	$(patsubst %,control/%.cgi,$(CPROGS))
+CGIS =	$(patsubst %,Inter/%.cgi,$(IPROGS)) 
+
+#	$(patsubst %,control/%.cgi,$(CPROGS))
 
 all : drift $(CGIS)
 

@@ -3,7 +3,8 @@ module Util.Cache where
 --  $Id$
 
 import Util.Datei
-import Autolib.Util.Debug
+import Debug
+
 
 import Control.Monad ( when )
 import qualified Control.Exception 
