@@ -14,9 +14,15 @@ import Code.Huffman.Partial
 import Code.Huffman.Throw
 
 import Inter.Types
+import Reader
+import ToDoc
 
-make :: Config a -> IO Variant
-make conf = return $ $ Variant 
+make :: ( Ord a
+	, Reader a
+	, Show a, ToDoc a, ToDoc [a]
+	) => Config a 
+	  -> IO Variant
+make conf = return $ Variant 
     $ Var { problem = Huffman
 	  , aufgabe = show Huffman
 	  , version = "Quiz"

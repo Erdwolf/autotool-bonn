@@ -1,0 +1,22 @@
+-- -*- mode: haskell -*-
+
+module Code.Move_To_Front.Data where
+
+import Reader
+import ToDoc
+
+data Coding a = Coding { queue  :: a
+		       , output :: [ Int ]
+		       }
+     deriving ( Eq, Ord )
+
+{-! for Coding derive: Reader, ToDoc !-}
+
+instance ( ToDoc a  ) => Show ( Coding a ) where
+    show = render . toDoc
+instance ( Reader a ) => Read ( Coding a ) where 
+    readsPrec = parsec_readsPrec
+
+
+
+     

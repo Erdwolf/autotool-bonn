@@ -11,9 +11,21 @@ where
 
 import Data.FiniteMap
 import Sets
+import ToDoc
+
+-- | FIXME: das ist unzusammenhängend
+
+data Coder a b =
+     Coder { nametag :: Doc
+	   , encode :: [a] -> b
+	   , decode :: b -> Maybe [a]
+	   , decode_hint :: b -> [a]
+	   }
 
 type Frequency a = FiniteMap a Int
 
 type Code a b = FiniteMap a [ b ]
+
+
 
 
