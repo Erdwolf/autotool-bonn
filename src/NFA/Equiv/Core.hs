@@ -1,12 +1,12 @@
-module NFA.Equiv.Core where
+module Autolib.NFA.Equiv.Core where
 
 -- -- $Id$
 
-import NFA
+import Autolib.NFA
 
-import Reporter
-import ToDoc
-import Util.Fix
+import Autolib.Reporter
+import Autolib.ToDoc
+import Autolib.Util.Fix
 
 import Data.Set
 import Data.FiniteMap

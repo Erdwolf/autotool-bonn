@@ -1,9 +1,9 @@
-module Util.Cache where
+module Autolib.Util.Cache where
 
 --  $Id$
 
-import Util.Datei
-import Util.Debug
+import Autolib.Util.Datei
+import Autolib.Util.Debug
 
 import Control.Monad ( when )
 import qualified Control.Exception 

@@ -1,23 +1,23 @@
-module NFA.Synthese where
+module Autolib.NFA.Synthese where
 
 -- vom regulären Ausdruck zum Automaten
 
 -- -- $Id$
 
-import Exp
-import Exp.Inter
+import Autolib.Exp
+import Autolib.Exp.Inter
 
-import NFA.Type
-import NFA.Eq
+import Autolib.NFA.Type
+import Autolib.NFA.Eq
 import qualified NFA.Example
 import qualified NFA.Check
-import NFA.Restrict
+import Autolib.NFA.Restrict
 
-import Inter.Types
+import Autolib.Inter.Types
 
-import Sets
-import ToDoc
-import Reporter
+import Autolib.Sets
+import Autolib.ToDoc
+import Autolib.Reporter
 
 import qualified Challenger as C
 

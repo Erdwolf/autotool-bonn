@@ -1,16 +1,16 @@
-module NFA.Equiv.Challenger where
+module Autolib.NFA.Equiv.Challenger where
 
 -- -- $Id$
 
-import NFA.Type
-import NFA.Equiv.Core
+import Autolib.NFA.Type
+import Autolib.NFA.Equiv.Core
 
-import ToDoc
-import Reporter
-import Informed
-import Sets
-import Util.Size
-import Letters
+import Autolib.ToDoc
+import Autolib.Reporter
+import Autolib.Informed
+import Autolib.Sets
+import Autolib.Util.Size
+import Autolib.Letters
 
 
 import qualified Challenger as C

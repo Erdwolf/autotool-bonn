@@ -1,25 +1,25 @@
-module NFA.Analyse where
+module Autolib.NFA.Analyse where
 
 -- vom Automaten zum regulären Ausdruck
 
 --  $Id$
 
-import Exp
-import Exp.Inter
+import Autolib.Exp
+import Autolib.Exp.Inter
 
-import NFA.Type
-import NFA.Eq
-import Exp.Example
-import Exp.Einfach
+import Autolib.NFA.Type
+import Autolib.NFA.Eq
+import Autolib.Exp.Example
+import Autolib.Exp.Einfach
 
-import Inter.Types
+import Autolib.Inter.Types
 
-import Sets
-import ToDoc
-import Reporter
+import Autolib.Sets
+import Autolib.ToDoc
+import Autolib.Reporter
 
 import qualified Challenger as C
-import Data.Typeable
+import Autolib.Data.Typeable
 
 data Analyse = Analyse deriving ( Eq, Ord, Show, Read, Typeable )
 

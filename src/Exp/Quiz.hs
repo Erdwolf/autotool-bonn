@@ -1,20 +1,20 @@
-module Exp.Quiz where
+module Autolib.Exp.Quiz where
 
 -- -- $Id$
 
 import qualified Exp.Some
-import NFA.Type
+import Autolib.NFA.Type
 import qualified NFA.Synthese as S
 
-import Util.Seed
-import Util.Datei
-import Util.Cache
+import Autolib.Util.Seed
+import Autolib.Util.Datei
+import Autolib.Util.Cache
 
-import Inter.Types
+import Autolib.Inter.Types
 
-import Sets
-import ToDoc
-import Reporter
+import Autolib.Sets
+import Autolib.ToDoc
+import Autolib.Reporter
 
 data Conf = Conf
          { alpha :: Set Char

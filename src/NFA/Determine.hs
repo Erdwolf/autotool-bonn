@@ -1,28 +1,28 @@
-module NFA.Determine where
+module Autolib.NFA.Determine where
 
 -- vom NFA zum DFA
 
 --  $Id$
 
-import NFA.Type
-import NFA.Eq
+import Autolib.NFA.Type
+import Autolib.NFA.Eq
 import qualified NFA.Example
 import qualified NFA.Check
-import NFA.Restrict
-import NFA.Some
-import NFA.Minimize
-import NFA.Normalize
-import NFA.Det
+import Autolib.NFA.Restrict
+import Autolib.NFA.Some
+import Autolib.NFA.Minimize
+import Autolib.NFA.Normalize
+import Autolib.NFA.Det
 
-import Inter.Types
-import Util.Datei
-import Util.Size
-import Util.Cache
-import Util.Seed
-import Util.Zufall
-import Sets
-import ToDoc
-import Reporter
+import Autolib.Inter.Types
+import Autolib.Util.Datei
+import Autolib.Util.Size
+import Autolib.Util.Cache
+import Autolib.Util.Seed
+import Autolib.Util.Zufall
+import Autolib.Sets
+import Autolib.ToDoc
+import Autolib.Reporter
 
 import qualified Challenger as C
 

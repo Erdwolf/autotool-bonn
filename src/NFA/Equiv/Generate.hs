@@ -1,32 +1,32 @@
-module NFA.Equiv.Generate where
+module Autolib.NFA.Equiv.Generate where
 
 -- -- $Id$
 
-import NFA.Type
+import Autolib.NFA.Type
 
-import NFA.Det (det0)
-import NFA.Normalize
+import Autolib.NFA.Det (det0)
+import Autolib.NFA.Normalize
 
-import NFA.Equiv.Challenger
-import NFA.Equiv.Core
+import Autolib.NFA.Equiv.Challenger
+import Autolib.NFA.Equiv.Core
 
-import NFA.Some
+import Autolib.NFA.Some
 
-import Dot
+import Autolib.Dot
 import System
 
-import Util.Zufall
-import Util.Cache
-import Util.Seed
-import Util.Datei
+import Autolib.Util.Zufall
+import Autolib.Util.Cache
+import Autolib.Util.Seed
+import Autolib.Util.Datei
 
 import Data.Set
-import Size
-import ToDoc
-import Reporter
+import Autolib.Size
+import Autolib.ToDoc
+import Autolib.Reporter
 
-import Inter.Types
-import Informed
+import Autolib.Inter.Types
+import Autolib.Informed
 
 data Conf = Conf { alphabet :: Set Char
 		 , nfa_size :: Int

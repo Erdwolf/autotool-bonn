@@ -1,6 +1,6 @@
 {-# OPTIONS -cpp #-}
 
-module Util.Datei 
+module Autolib.Util.Datei 
 
 -- -- $Id$
 
