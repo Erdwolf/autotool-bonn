@@ -10,15 +10,17 @@ import Autolib.ToDoc
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
+-- | das sollte exactly das sein, was auch in DB-tabelle aufgabe steht
 data Aufgabe  =
      Aufgabe { aufgabe :: ANr
 	     , vorlesung :: VNr
-	     , direction :: HiLo
-	     , von :: ClockTime
-	     , bis :: ClockTime
+	     , name :: Name
              , typ :: Typ
 	     , config :: Config
 	     , remark :: Remark
+	     , direction :: HiLo
+	     , von :: ClockTime
+	     , bis :: ClockTime
 	     }
      deriving ( Eq, Ord, Typeable )
 

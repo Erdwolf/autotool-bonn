@@ -160,6 +160,7 @@ data Expression = EId Id
 		| EInteger Integer
 		-- | ETime ClockTime -- TODO
 		| EString String
+		| EFun Id [ Expression ]
 		| EBinop String Expression Expression -- ^ completely parenthesized
         deriving Typeable
 
@@ -169,15 +170,23 @@ instance T.ToDoc Expression where
     toDoc (EInteger i) = T.toDoc i
 --    toDoc (ETime t) = T.toDoc $ show t
     toDoc (EString s) = T.toDoc s
+    toDoc (EFun fun args) = T.toDoc fun <+> T.dutch_tuple ( map T.toDoc args )
     toDoc (EBinop op x y) = T.parens $ T.fsep [ T.toDoc x, T.text op, T.toDoc y ]
 
 instance R.Reader Expression where
     reader = buildExpressionParser operators atomic
 
-atomic = do { id <- reader ; return $ EId id }
-     R.<|> do { i <- R.my_integer ; return $ EInteger i }
+atomic =   R.my_parens reader
+     R.<|> id_or_fun
      R.<|> do { i <- R.my_integer ; return $ EInteger i }
      R.<|> do { s <- R.my_stringLiteral ; return $ EString s }
+
+id_or_fun = do
+    id <- reader
+    args <- option Nothing $ R.my_parens $ fmap Just $ reader `R.sepBy` R.my_comma
+    return $ case args of
+        Nothing -> EId id 
+	Just xs -> EFun id xs
 
 operators = 
     let lop cs = op cs (EBinop cs) AssocLeft
@@ -186,6 +195,8 @@ operators =
     in [ map lop [ "*", "/" ]
        , map lop [ "+", "-" ]
        , map lop [ "<", "=", ">" ]
+       , map lop [ "BETWEEN" ] -- ?
+       , map lop [ "AND", "OR" ]
        ]
 
 instance Show Expression where show      = render . T.toDoc

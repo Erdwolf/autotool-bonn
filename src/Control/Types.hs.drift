@@ -5,7 +5,7 @@ module Control.Types
 ( HiLo, Wert
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
-, Typ, Config, Remark
+, Typ, Config, Remark, Name
 , Oks, Nos
 , fromCGI
 )
@@ -23,7 +23,7 @@ import Database.MySQL.HSQL
 
 import qualified Exception
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
 -------------------------------------------------------------
 
@@ -108,6 +108,18 @@ instance Read Remark where readsPrec = parsec_readsPrec
 instance SqlBind Remark where 
     fromSqlValue ty s = fmap Remark $ fromSqlValue ty s
     toSqlValue (Remark cs) = toSqlValue cs
+
+
+-- | Aufgaben-Name
+data Name = Name String deriving ( Eq, Ord, Typeable )
+
+{-! for Name derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance Show Name where show = render . toDoc
+instance Read Name where readsPrec = parsec_readsPrec
+instance SqlBind Name where 
+    fromSqlValue ty s = fmap Name $ fromSqlValue ty s
+    toSqlValue (Name cs) = toSqlValue cs
 
 -------------------------------------------------------------
 

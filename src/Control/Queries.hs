@@ -399,43 +399,44 @@ leaveStudGrpDB mat grp =     do
 
 
 -- | liefert (jetzt!)  mgl. Aufgaben für Student
--- [ ( ANr, Name , Subject , Path , Highscore ) ]
+-- FIXME: use Control.Aufgabe type
 
--- feature: wenn nr < 1000 (d. h. admin), dann nicht nach zeit fragen
-
-mglAufgabenDB :: String -> IO [( String, String, String, String,String)]
+mglAufgabenDB :: SNr -> IO [ ( ANr, Name, Typ, HiLo, Remark) ]
 mglAufgabenDB snr = mglAufgabenDB' False snr 
 
-mglAufgabenDB' :: Bool -> String 
-           -> IO [( String, String, String, String,String)]
-mglAufgabenDB' isAdmin snr = 
-	do
-    let timed = if isAdmin 
-				then ""
-				else "AND NOW() BETWEEN Von AND Bis "
+mglAufgabenDB' :: Bool 
+    -> SNr
+           -> IO [( ANr, Name, Typ, HiLo, Remark) ]
+mglAufgabenDB' isAdmin snr = 	do
     conn <- myconnect
-    stat <- query conn
-            ( concat
-              [ "SELECT aufgabe.ANr, aufgabe.Name , aufgabe.Subject , aufgabe.Path , aufgabe.Highscore \n"
-              , "FROM   aufgabe, gruppe , stud_grp \n"
-              , "WHERE \n"
-              , "gruppe.VNr = aufgabe.VNr \n"
-              , "AND gruppe.GNr = stud_grp.GNr \n"
-              , "AND stud_grp.SNr = \"" ++ filterQuots snr ++ "\" \n"
-              -- mit Zeitfenster?
-              , timed
-              , ";"
-              ] )
+    stat <- squery conn $ Query
+	    ( Select $ map reed 
+	             [ "aufgabe.ANr", "aufgabe.Name", "aufgabe.Typ"
+		     , "aufgabe.Highscore", "aufgabe.Remark" 
+		     ]
+	    )
+            [ From $ map reed [ "aufgabe", "gruppe" , "stud_grp" ]
+	    , Where $ ands $
+	            [ equals ( reed "gruppe.VNr" ) ( reed "aufgabe.VNr" )
+		    , equals ( reed "gruppe.GNr" ) ( reed "stud_grp.GNr" )
+		    , equals ( reed "stud_grp.SNr" ) ( toEx snr )
+		    ] ++ 
+		    [ reed "NOW() BETWEEN ( Von AND Bis )"
+		    | not isAdmin
+		    ]
+	    ]
     inh <- collectRows ( \ state -> do
                          a <- getFieldValue state "ANr"
-                         b <- getFieldValue state "Name"
-                         c <- getFieldValue state "Subject"
-                         d <- getFieldValue state "Path"
-                         e <- getFieldValue state "Highscore"
-                         return (  a ,  b , c , d , e )
+                         n <- getFieldValue state "Name"
+                         t <- getFieldValue state "Typ"
+                         h <- getFieldValue state "Highscore"
+			 r <- getFieldValue state "Remark"
+                         return (  a , n, t, h, r )
                        ) stat
     disconnect conn
     return inh
+
+{-
 
 -- | liefert (nun und demnaechst mgl). Aufgaben für Student
 
@@ -449,8 +450,6 @@ mglNextAufgabenDB snr = do
               [ "SELECT aufgabe.ANr, aufgabe.Name AS Typ, aufgabe.Subject AS Nr, aufgabe.Highscore \n"
               , ", DATE_FORMAT( aufgabe.Von , \"%H:%i %a %d. %b %Y\") as Von " 
               , ", DATE_FORMAT( aufgabe.Bis , \"%H:%i %a %d. %b %Y\") as Bis\n"
-                --            , ", aufgabe.Von " 
-                --            , ", aufgabe.Bis "
               , "FROM aufgabe "
               , if null snr 
                 then " \n" 
@@ -480,3 +479,4 @@ mglNextAufgabenDB snr = do
     disconnect conn
     return ( showColTypes stat, inh )
 
+-}
