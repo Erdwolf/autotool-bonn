@@ -12,6 +12,7 @@ where
 import Robots.Data
 import Robots.Konfig
 import Robots.Move
+import Robots.Nice
 
 import FiniteMap
 import ReadFM
@@ -58,7 +59,7 @@ instance Problem Robots
 -- erzeugt den Ausgabestring fuer die HTML Ausgabe der Instanz
 erzInstanz :: Konfig -> String
 erzInstanz rs =
-    "<tr><td><PRE>" ++ show rs ++ "</PRE></td></tr>"	
+    "<tr><td><PRE>" ++ nice rs ++ "</PRE></td></tr>"	
 
 -- erzeugt den AusgabeString fuer die HTML Ausgabe des Beweises 
 erzBeweis :: [Zug] -> String
