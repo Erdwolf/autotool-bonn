@@ -2,16 +2,18 @@ module Shift.Check where
 
 import Shift.Type
 import Shift.Computer
+import Shift.Verify
 
 import Reporter
 import Size
 import ToDoc
 
 
-check :: Int -> Shift -> Reporter Int
-check m sh = do
-    inform $ text "Sie schicken mir dieses NAND-Schiebe-Register:"
-	   <+> toDoc ( pins sh )
+
+
+check :: Int -> Int -> Shift -> Reporter Int
+check m limit sh = do
+    inform $ text "Sie haben eingesandt:" <+> toDoc sh
     newline
 
     inform $ fsep [ text "Das Schaltnetz darf höchstens"
@@ -29,21 +31,4 @@ check m sh = do
 
     let dots = text "..."
 
-    let zs = zustands_folge $ pins sh
-    let (q, p) = find zs
-
-    inform $ text "Sie behaupten, diese Folge hat Vorperiode" 
-	   <+> toDoc (vorperiode sh)
-	   <+> dots
-    when ( vorperiode sh /= q ) $ reject $ text "das ist falsch."
-    inform $ text "OK"
-    newline
-
-    inform $ text "Sie behaupten, diese Folge hat Periode" 
-	   <+> toDoc (periode sh)
-	   <+> dots
-    when ( periode sh /= p ) $ reject $ text "das ist falsch."
-    inform $ text "OK"
-    newline
-
-    return $ size sh
+    verify limit sh

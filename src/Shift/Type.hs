@@ -2,7 +2,7 @@ module Shift.Type where
 
 -- $Id$
 
-import Size
+import Util.Size
 import ToDoc
 
 type Pin = Int
