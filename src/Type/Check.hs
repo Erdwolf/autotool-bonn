@@ -23,7 +23,8 @@ instance C.Partial TypeCheck TI Exp where
 
     describe p i = vcat
         [ text "Gesucht ist ein Ausdruck vom Typ" <+> toDoc (target i)
-	, text "in der Signatur" <+> toDoc (signature i)
+	, text "in der Signatur"
+	, nest 4 $ toDoc (signature i)
 	]
 
     initial p i = read "f(a,g(b))"
