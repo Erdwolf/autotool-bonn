@@ -2,7 +2,7 @@
 
 module RAM.Builtin 
 
-( Table, Entry, Builtin
+( Table, Entry, Builtin (..)
 , table, get
 , none, every
 )

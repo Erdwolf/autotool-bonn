@@ -2,6 +2,7 @@ module RAM
 
 ( module RAM.Type
 , module RAM.State
+, Builtin (..)
 )
 
 where
@@ -11,3 +12,4 @@ where
 import RAM.Type
 import RAM.Machine
 import RAM.State
+import RAM.Builtin
