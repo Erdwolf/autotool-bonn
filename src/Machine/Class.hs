@@ -14,6 +14,13 @@ class ( ToDoc m, Size m
       , Compute m conf
       ) => Machine m dat conf
 
+instance ( ToDoc m, Size m
+      , ToDoc dat, Ord dat
+      , ToDoc conf, Ord conf 
+      , InOut m dat conf
+      , Compute m conf
+      ) => Machine m dat conf
+
 class Numerical dat where
     -- berechnet eine mehrstellige zahlfunktion
     encode :: [ Integer ] -> dat
