@@ -10,6 +10,7 @@ import Exp.Inter
 import NFA.Type
 import NFA.Eq
 import qualified NFA.Example
+import qualified NFA.Check
 
 import Inter.Types
 
@@ -22,21 +23,39 @@ import qualified Challenger as C
 
 data Synthese = Synthese deriving ( Eq, Ord, Show, Read )
 
-instance C.Partial  Synthese ( Exp, Set Char ) ( NFA Char Int )
+data SI = SI { ausdruck :: Exp   
+	     , alphabet :: Set Char
+	     , beschreibung :: Maybe Doc -- falls Nothing, dann ausdruck
+	     , deterministisch :: Bool      -- soll deterministisch sein?
+	     }
+    deriving ( Show )
+
+besch :: SI -> Doc
+besch i = case beschreibung i 
+			      of Just d -> d
+			         Nothing -> toDoc $ ausdruck i
+
+
+instance C.Partial  Synthese SI ( NFA Char Int )
   where
     initial p i   = NFA.Example.example
-    partial p i b = return ()
-    total   p (e, a) b = do
-        let goal = inter (std_sigma $ setToList a) e
-	f <- equ goal b
+    partial p i b = do
+        if  deterministisch i
+	    then NFA.Check.deterministisch b
+            else return ()
+    total   p i b = do
+        let goal = inter (std_sigma $ setToList $ alphabet i) (ausdruck i)
+	f <- equ ( informed ( besch i )                         goal )
+		 ( informed ( text "Sprache Ihres Automaten" )  b    )
+
 	assert f $ text "Stimmen die Sprachen überein?"
         return () 
 
 synthese :: String -- aufgabe (major)
 	 -> String -- aufgabe (minor)
-	 -> ( Exp, Set Char)    -- ausdruck, alphabet
-	 -> Var  Synthese ( Exp, Set Char ) ( NFA Char Int )
-synthese auf ver ( e, a ) = 
+	 -> SI
+	 -> Var  Synthese SI ( NFA Char Int )
+synthese auf ver i = 
     Var { problem = Synthese
 	, aufgabe = auf
 	, version = ver
@@ -44,12 +63,15 @@ synthese auf ver ( e, a ) =
 	      return ""
 	, gen = \ key -> return $ do
 	      inform $ vcat
-	             [ text "Finden Sie einen endlichen Automaten,"
-		     , text "der die Sprache" <+> toDoc e
-		     , text "über dem Alphabet" <+> toDoc a
+	             [     text "Finden Sie einen"
+                       <+> ( if deterministisch i 
+			     then text "deterministischen" else empty )
+	               <+> text "endlichen Automaten,"
+		     , text "der die Sprache" <+> besch i
+		     , text "über dem Alphabet" <+> toDoc ( alphabet i )
 		     , text "akzeptiert."
 		     ]
-	      return ( e, a )
+	      return i
 	}
 
 
