@@ -15,24 +15,33 @@ FLAGS = -fallow-overlapping-instances \
 	-fallow-undecidable-instances 
 
 PACKS = -package text -package data \
-	-package posix -package network \
+	-package posix -package network 
+
+HPACKS = $(PACKS) \
 	-package HToolkit 
-	# -package HaXml
 
 OPT = -O2
 GHC = ghc
 
-BINS = DB/Server.bin DB/Client.bin DB/CGI.cgi
+PUB =  $(HOME)/public_html
+
+
+# for deleting/srs: ##################################################
 
 CGIS = SRS/Deleting/Demo.cgi \
        SRS/Closure/Terminator.cgi 
 
-CGIINDEX = SRS/Interface/index.html
-
-PUB =  $(HOME)/public_html
-CGIBIN = $(PUB)/cgi-bin
+HTMLS = SRS/Interface/*.html
 
 CGIDIR = $(PUB)/bounded
+
+
+# for face: ########################################################
+
+CGIBIN = $(PUB)/cgi-bin
+
+
+# for drift ########################################################
 
 DrIFT = DrIFT-2.0rc3/src/DrIFT
 DRIFT = $(basename $(shell find . -name "*.hs.drift" -print))
@@ -44,7 +53,7 @@ DP = /usr/local/lib/hugs:$(HOME)/autotool/util
 
 # all: $(DIRS)
 
-all : cgi
+all : 
 
 
 # $(DIRS):
@@ -55,13 +64,21 @@ tags :
 
 ###############################################################################
 
+SRS/Bounder : do
+	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $@.hs -o $@
 
-%.bin : do
-	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $*.hs -o $@
+bounded : do
+	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) \
+		SRS/Closure/Terminator.hs -o $(CGIDIR)/Terminator.cgi
+	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) \
+		SRS/Deleting/Demo.hs -o $(CGIDIR)/Demo.cgi
+	cp $(HTMLS) $(CGIDIR)/
 
 
 %.cgi : do
-	$(GHC) --make $(OPT) $(PACKS) $(FLAGS) -i$(DIRS) $*.hs -o $@
+	$(GHC) --make $(OPT) $(HPACKS) $(FLAGS) -i$(DIRS) $*.hs -o $@
+
+
 
 %.hs : %.hs.drift
 	DERIVEPATH=$(DP)  $(DrIFT) $< > $@
@@ -74,14 +91,7 @@ drift-clean :
 drift-commit : drift-clean drift
 	cvs commit -m drift-commit $(DRIFT)
 
-cgi : $(CGIS)
-	cp $(CGIS) $(CGIINDEX) $(CGIDIR)
 
-quiz : Graph/Quiz.cgi
-	cp $< $(CGIBIN)/
-
-check : Inter/Check.cgi
-	cp $< $(CGIBIN)/
 
 face : Inter/Face.cgi
 	cp $< $(CGIBIN)/
