@@ -84,7 +84,8 @@ boiler = sequence $
        , Serie2.generate
 
        ]
-       ++ Serie1.generates 
+	   ++ Serie2.generates
+--       ++ Serie1.generates 
        ++ Sortier.Netz.Check.generates 
        ++ Demo.L.generates
 
