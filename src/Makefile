@@ -51,13 +51,16 @@ tags :
 
 HADDOCK_INPUTS = Expression Grammatik Hanoi NFA NPDA PCP Pump RAM \
 	Reporter Turing Dot Challenger Inter Boxing Machine Language \
-	SRS
+	SRS Exp \
+	ws03 util Util
 HADDOCK_OUTPUT = haddock
 HADDOCK = haddock
-HADDOCK_OPTS = -v -h
+HADDOCK_OPTS = -v \
+-h \
+-s 'http://theo1.informatik.uni-leipzig.de/cgi-bin/cvsweb/autotool/'
 
 haddock : 
-	( ls *.hs && find $(HADDOCK_INPUTS) -name "*.hs" -print ) \
+	( ls *.hs && find $(HADDOCK_INPUTS) -name "*.hs" -not -name "Datei.hs" -print ) \
 	| xargs $(HADDOCK) $(HADDOCK_OPTS) -o $(HADDOCK_OUTPUT)
 
 .PHONY : haddock

@@ -40,11 +40,6 @@ endif
 ########################################################################
 # ugly ugly ugly : system-spezifische teile des makefiles
 
-ifeq ($(shell hostname), theo1)
-EXTRA_PACKS = -package HToolkit
-DEFINES = -DHOME=1
-GHC = ghc-6.0
-endif
 
 ########################################################################
 # ghc / ghci : setup

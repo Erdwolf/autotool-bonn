@@ -9,7 +9,8 @@ CGIBIN = $(PUB)/cgi-bin
 # local modifications ##############################################
 
 LOCAL = uni:ws03/aus:
-COMMON = util:wash:control:bridge:challenger:
+# COMMON = util:wash:control:bridge:challenger:
+COMMON = util:wash:control
 
 DIRS = $(LOCAL)$(COMMON)
 

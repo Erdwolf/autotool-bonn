@@ -209,7 +209,8 @@ iface variants env = do
 					  ]
 			   +++ br 
 			   +++ submit "submit" "submit" +++ " " 
-			   +++ submit "Beispiel" "Beispiel"
+			   +++ submit "previous" "previous" +++ " " 
+			   +++ submit "example" "example"
 
 
           return $ page par2 $ inst +++ motd +++ log +++ status +++ ans
