@@ -29,7 +29,8 @@ instance C.Partial Nachbar () ( Graph Int ) where
 			, text "aus genau einem Knoten."
 			]
 	, text $ "Der Graph soll keine der folgenden Formen haben:"
-	, nest 4 $ vcat [ text "Petersen-Graph"
+	, nest 4 $ vcat [ text "C_5"
+			, text "Petersen-Graph"
 			, text "es gibt einen Knoten, der zu allen anderen benachbart ist"
 			, text "K_x mit Dach"
 			]
@@ -39,8 +40,7 @@ instance C.Partial Nachbar () ( Graph Int ) where
 
     partial p _ g = do
 	validate g
-        -- dieser Test wird durch kx_mit_dach mit abgedeckt:
-        -- check_not_iso (circle [1 :: Int .. 5]) g
+        check_not_iso (circle [1 :: Int .. 5]) g
 	check_not_iso petersen          g
         check_not_dominated             g
         nicht $ kx_mit_dach           g
