@@ -81,7 +81,7 @@ import qualified Control.Exception
 import Data.Typeable
 
 
-import Inter.Timer
+import Autolib.Timer
 import Inter.Logged
 --
 -- hier sind die aufgaben drin:

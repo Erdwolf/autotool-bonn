@@ -3,8 +3,8 @@
 module Boolean.Data 
 
 ( Op, Exp, Identifier
-, module TES.Term
-, module TES.Position
+, module Autolib.TES.Term
+, module Autolib.TES.Position
 )
 
 
@@ -14,10 +14,10 @@ where
 
 import Boolean.Op
 
-import TES.Term
-import TES.Position
-import TES.Identifier
-import TES.In
+import Autolib.TES.Term
+import Autolib.TES.Position
+import Autolib.TES.Identifier
+import Autolib.TES.In
 
 import Autolib.Reader
 

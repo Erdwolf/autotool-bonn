@@ -6,10 +6,10 @@ import Boolean.Op
 import Boolean.Data
 import Boolean.Instance
 
-import TES.Type
-import qualified TES.Enum as E
-import TES.Identifier
-import TES.Position
+import Autolib.TES.Type
+import qualified Autolib.TES.Enum as E
+import Autolib.TES.Identifier
+import Autolib.TES.Position
 
 import Autolib.Util.Zufall
 import Autolib.Util.Wort
@@ -37,7 +37,7 @@ roll i = do
     -- insert variable
     qs <- permutation $ leafpos s
     let qvs = zip qs 
-	    $ do c <- "xxyyz" ; return $ TES.Type.Var $ mknullary [c]
+	    $ do c <- "xxyyz" ; return $ Autolib.TES.Type.Var $ mknullary [c]
     let r = pokes s qvs
     return r
 

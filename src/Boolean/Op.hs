@@ -8,7 +8,7 @@ import Autolib.Hash
 import Autolib.Util.Size
 
 import qualified Autolib.Symbol
-import qualified TES.Parsec
+import qualified Autolib.TES.Parsec
 
 
 import Text.ParserCombinators.Parsec.Expr
@@ -68,10 +68,10 @@ instance Reader Op where
 		   , reservedOpNames = map name sonst
 		   }
        in  do op <- sonst
-	      return $ do TES.Parsec.reservedOp table ( name op )
+	      return $ do Autolib.TES.Parsec.reservedOp table ( name op )
 			  return op
 	++ do op <- nulls
-	      return $ do TES.Parsec.reserved table ( name op )
+	      return $ do Autolib.TES.Parsec.reserved table ( name op )
 			  return op
 
 instance Read Op where
