@@ -246,7 +246,9 @@ solution vnr manr stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
     hr ---------------------------------------------------------
 
+    -- kann sein, daß S.anr  error  ergibt (für tutor)
     sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
+                   `Control.Exception.catch` \ any -> return []
     case sas of
         [ sa ] -> do
             h3 "Vorige Einsendung"

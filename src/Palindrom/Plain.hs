@@ -34,8 +34,10 @@ instance C.Partial Palindrom Int Integer where
 	       $ text "dezimal(x) ist kein Palindrom?"
 
     total Palindrom e x = do
-        assert ( not $ ispali $ x ^ e )
-	       $ text $ "dezimal (x^" ++ show e ++ ") ist kein Palindrom?"
+        let xe = x ^ e
+        inform $ text ( "dezimal (x^" ++ show e ++ ") =" ) <+> toDoc xe
+        assert ( ispali xe )
+	       $ text "ist Palindrom?"
 
 instance C.Measure Palindrom Int Integer where
     measure Palindrom e x = 
