@@ -1,29 +1,28 @@
 -- -*- mode: haskell -*-
 
-module NPDA.Type
+module Autolib.NPDA.Type
 
 -- nicht-deterministischer Kellerautomat
 --   $Id$
 
-( module NPDA.Type
-, module Sets
-, module Data.FiniteMap
+( module Autolib.NPDA.Type
+, module Autolib.Set
+, module Autolib.FiniteMap
 )
 
 where
 
 
-import Sets
-import Data.FiniteMap
-import Schichten
-import Size
+import Autolib.Set
+import Autolib..FiniteMap
+import Autolib.Schichten
+import Autolib.Size
 
-import ToDoc
-import Reader
+import Autolib.ToDoc
+import Autolib.Reader
 
-import ReadFM
-import Maybe
-import Reporter
+import Data.Maybe
+import Autolib.Reporter
 
 class ( Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z )
     => RTO z
@@ -34,11 +33,6 @@ instance ( Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z )
 data RTO z => Modus z = Leerer_Keller | Zustand (Set z) 
 
 {-! for Modus derive: Reader, ToDoc !-}
-
-instance RTO z => Read (Modus z) where
-    readsPrec = parsec_readsPrec
-instance RTO z => Show (Modus z) where
-     show = render . toDoc
 
 class ( RTO x, RTO y, RTO z ) 
     => NPDAC x y z
@@ -52,44 +46,50 @@ data NPDAC x y z => NPDA x y z =
 	  , startzustand     :: z
 	  , startsymbol	     :: y
 	  , akzeptiert	     :: Modus z
-	  , tafel	     :: FiniteMap (Maybe x, z, y) (Set (z, [y]))
+	  , transitionen     :: FiniteMap (Maybe x, z, y) (Set (z, [y]))
 	  }
 
 {-! for NPDA derive: Reader, ToDoc !-}
 
-instance NPDAC x y z => Read (NPDA x y z) where
-    readsPrec = parsec_readsPrec
-instance NPDAC x y z => Show (NPDA x y z) where
-     show = render . toDoc
-
-
--- helpers für weniger klammern in der eingabe
-
-collect :: NPDAC x y z
-	=> [ ((Maybe x, z, y), (z, [y])) ]
-	-> FiniteMap (Maybe x, z, y) (Set (z, [y]))
-collect pairs = addListToFM_C union emptyFM $ do
-    ( x, y ) <- pairs ; return ( x, unitSet y )
-
-unCollect :: FiniteMap (Maybe x, z, y) (Set (z, [y]))
-	  ->  [ ((Maybe x, z, y), (z, [y])) ]
-unCollect fm = do
-    ( x, ys ) <- fmToList fm
-    y <- setToList ys
-    return (x, y)
-
-
 instance NPDAC x y z => Size (NPDA x y z) where
-    size a = sum $ do
-	 ( x, ys ) <- fmToList $ tafel a
-	 y <- setToList ys
-	 return 1
+    size a = length $ unCollect' $ tafel a
 
 ------------------------------------------------------------------------
 
+-- | specialized instances used for finite automata (testing)
+instance  ( NPDAC x y z )
+      => ToDoc (FiniteMap (Maybe x, z, y) (Set (z, [y])) where
+    toDocPrec p fm = docParen (p >= fcp)
+                   $ text "collect" <+> toDocPrec fcp (unCollect' fm)
 
+instance  ( NPDAC x y z )
+        => Reader (FiniteMap (Maybe x, z, y) (Set (z, [y])) where
+    reader = default_reader <|> do
+        my_reserved "collect"
+        xys <- reader
+        return $ collect' xys
+
+-- | collect transition function from list of quintuples
+collect' :: ( NPDAC x y z )
+        => [ (Maybe x, z, y, z, [y]) ] 
+	-> FiniteMap (Maybe x, z, y) (Set (z, [y])) 
+collect' pxqs = addListToFM_C union emptyFM $ do
+    ( mx, z, y, z', ys ) <- pxqs
+    return ( (mx, z, y), unitSet (z', ys) )
+
+-- | represent transition function as list of quintuples
+unCollect' :: NPDAC x y z
+	   => FiniteMap (Maybe x, z, y) (Set (z, [y])) 
+	   -> [ (Maybe x, z, y, z, [y]) ] 
+unCollect fm = do
+    ( (mx, z, y), qs ) <- fmToList fm
+    ( z', ys ) <- setToList qs
+    return ( mx, z, y, z', ys )
+
+------------------------------------------------------------------------
+
+-- | mit absturzgefahr
 the :: Maybe a -> a
--- mit absturzgefahr
 the = fromMaybe ( error "the" )
 
 

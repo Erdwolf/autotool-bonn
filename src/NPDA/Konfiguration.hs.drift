@@ -1,14 +1,13 @@
 -- -*- mode: haskell -*-
 
-module NPDA.Konfiguration where
+module Autolib.NPDA.Konfiguration where
 
 --   $Id$
 
-import NPDA.Type
+import Autolib.NPDA.Type
 
-import ToDoc
-import Sets
-
+import Autolib.ToDoc
+import Autolib.Set
 
 
 data Konfiguration x y z = 
@@ -19,14 +18,11 @@ data Konfiguration x y z =
 		   }
 
 instance NPDAC x y z => ToDoc (Konfiguration x y z) where
-    toDoc k = text "Konfiguration" <+> ( braces $ fsep $ punctuate comma
+    toDoc k = text "Konfiguration" <+> dutch_record
         [ text "eingabe" <+> equals <+> toDoc (eingabe k) 
 	, text "zustand" <+> equals <+> toDoc (zustand k) 
-	, text "keller"  <+> equals <+> toDoc (keller k) 
-	] )
-
-instance NPDAC x y z => Show (Konfiguration x y z) where
-    show = render . toDoc
+	, text "keller"  <+> equals <+> toDoc (keller  k) 
+	] 
 
 -- keine Reader/Read-Instanzen
 
@@ -66,8 +62,3 @@ leere_keller_konfigurationen a = mkSet $ do
 			   , zustand = z
 			   , link = Nothing
 			   }
-
-
-
-
-

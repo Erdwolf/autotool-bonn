@@ -1,4 +1,4 @@
-module NPDA.Nachfolger 
+module Autolib.NPDA.Nachfolger 
 
 --   $Id$
 
@@ -8,11 +8,11 @@ module NPDA.Nachfolger
 
 where
 
-import NPDA.Type
-import NPDA.Konfiguration
+import Autolib.NPDA.Type
+import Autolib.NPDA.Konfiguration
 
-import Schichten
-import Data.Set
+import Autolib.Schichten
+import Autolib.Set
 
 
 

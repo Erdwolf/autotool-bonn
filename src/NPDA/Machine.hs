@@ -6,7 +6,6 @@ import Machine.Class
 import Machine.Akzeptieren
 import Machine.History
 
-import qualified Challenger as C
 import qualified Machine.Acceptor.Type as A
 
 import NPDA.Type

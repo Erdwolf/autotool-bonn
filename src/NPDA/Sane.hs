@@ -1,11 +1,11 @@
-module NPDA.Sane where
+module Autolib.NPDA.Sane where
 
 --   $Id$
 
-import NPDA.Type
-import Reporter
-import qualified Reporter.Checker as C
-import ToDoc
+import Autolib.NPDA.Type
+import Autolib.Reporter
+import qualified Autolib.Reporter.Checker as C
+import Autolib.ToDoc
 
 import Data.Maybe ( isJust )
 
