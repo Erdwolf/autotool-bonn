@@ -3,6 +3,7 @@ module Inter.Variant where
 -- $Id$
 
 import Inter.Types
+import Inter.Error
 import qualified Inter.Param as P
 
 import qualified Passwort
@@ -33,20 +34,22 @@ login par = standardQuery "Login" $ preface par
 preface :: P.Type -> WithHTML CGI ()
 -- das gibts beim ersten aufruf
 preface par = do
-    h2 $ CGI.text "Einstellungen"
+    h2 $ CGI.text "Einstellungen:"
     makeForm $ table $ tr $ do
-        args <- td $ table $ do
+        (matF, pwdF) <- td $ table $ do
             matF <- texti "Matrikelnr:" 
         	    $ (fieldSIZE 30) ## ( fieldVALUE $ P.matrikel par )
             pwdF <- promptedPassword "Passwort:" 
         	    $ (fieldSIZE 30) ## ( fieldVALUE $ P.passwort par )
+	    return (matF, pwdF)
+        (proF, varF) <- td $ table $ do
             proF <- texti "Aufgabentyp:" 
-        	    $ (fieldSIZE 30) ## ( fieldVALUE $ P.problem par )
+        	    $ (fieldSIZE 10) ## ( fieldVALUE $ P.problem par )
             varF <- texti "Variante:" 
-        	    $ (fieldSIZE 30) ## ( fieldVALUE $ P.variant par )
-            return $ F4 matF pwdF proF varF
+        	    $ (fieldSIZE 10) ## ( fieldVALUE $ P.variant par )
+	    return (proF, varF)
+	let args = F4 matF pwdF proF varF 
         td $ ssb args (settings par) "Login/Change"
-    return ()
 
 texti :: String 
       ->  WithHTML CGI ()
@@ -57,10 +60,11 @@ texti txt attrs = tr $ do
 
 ----------------------------------------------------------------------
 
+-- falls neue eingabe der lösung
 evaluator par0 ( F1 txtF ) = 
     computer $ par0 { P.input = value txtF }
     
-
+-- falls neue settings
 settings par0 (F4 matF pwdF proF varF) = 
     computer $ par0 { P.matrikel = value matF
 	       , P.passwort = value pwdF
@@ -69,6 +73,7 @@ settings par0 (F4 matF pwdF proF varF) =
 	       , P.input    = ""
 	       }
 
+-- rechnet alles aus
 computer par = 
     let
 	vvs :: [ Variant ]
@@ -81,26 +86,21 @@ computer par =
 	           return vv
     in case vvs of
          [ vv ] -> handler par vv 
-         _      -> error_handler par 
+         _      -> error_handler par $ preface par
 
-
-error_handler par = standardQuery "Unbekannte Aufgabe" $ do
-    table $ do
-	tr $ td $ CGI.text $ "Die Aufgabe/Variante"
-	tr $ td $ CGI.text $ P.problem par ++ "/" ++ P.variant par
-	tr $ td $ CGI.text $ "ist nicht bekannt oder nicht aktiviert."
-    preface par    
 
 -- wenn kontrolleur gefunden,
 -- dann instanz und nullte lösung berechnen
 handler par0  (Variant v ) =   standardQuery "Computer" $ do
 
+    hr CGI.empty
     preface par0
 
     -- TODO: die folgenden Zeilen mit Cache !
     k <- lift $ unsafe_io $ key v ( P.matrikel par0 )
     inst <- lift $ unsafe_io $ washer $ gen v ( P.matrikel par0 )
 
+    hr CGI.empty
     h2 $ CGI.text "Die Aufgaben-Instanz:"
     Just i <- inst
 
@@ -110,11 +110,16 @@ handler par0  (Variant v ) =   standardQuery "Computer" $ do
 	      then par0 { P.input = show $ Challenger.initial p i }
 	      else par0
 
+    hr CGI.empty
     h2 $ CGI.text "neuer Lösungs-Versuch"    
-    makeForm $ do
-	txtF <- makeTextarea ( P.input par ) CGI.empty
-        ssb ( F1 txtF ) ( evaluator par ) "Compute"
+    makeForm $ table $ tr $ do
+        let height = length $ filter ( == '\n' ) $ P.input par
+	txtF <- td $ makeTextarea ( P.input par ) 
+		   $  attr "rows" ( show $ height + 2 )
+		   ## attr "cols" "60"
+        td $ ssb ( F1 txtF ) ( evaluator par ) "Compute"
 
+    hr CGI.empty
     h2 $ CGI.text "voriger Lösungs-Versuch"
     CGI.pre $ CGI.text $ P.input par
     let b = read $ P.input par
@@ -125,6 +130,8 @@ handler par0  (Variant v ) =   standardQuery "Computer" $ do
     tc <- CGI.p $ Reporter.embed $ Challenger.total   p i b
 
     h3 $ CGI.text $ "Aufgabe gelöst? " ++ show ( isJust pc && isJust tc )
+    hr CGI.empty
+
 
 
 
