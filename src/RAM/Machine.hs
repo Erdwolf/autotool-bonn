@@ -17,7 +17,7 @@ instance Compute Program State where
     accepting p s = null $ todo s
 
 instance InOut Program Memory State where
-    input  p m = State { memory = m, todo = p }
+    input  p m = State { memory = m, todo = p, schritt = 0, past = [] }
     output p s = memory s
 
 instance Numerical Memory where

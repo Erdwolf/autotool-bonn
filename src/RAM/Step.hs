@@ -18,20 +18,24 @@ step s = case todo s of
             let ( ar, fun ) = B.get n
 	    let inputs = map ( get (memory s) ) xs
 	    let output = fun inputs
-	    return $ update ( const output ) s r
-	Inc v -> return $ update succ s v
-	Dec v -> return $ update ( \ n -> max 0 (pred n) ) s v
+	    stepped $ update ( const output ) s r
+	Inc v -> stepped $ update succ s v
+	Dec v -> stepped $ update ( \ n -> max 0 (pred n) ) s v
 	Loop v p -> do
 	    let n = fromIntegral $ get ( memory s ) v
 		-- so oft wird der schleifenkörper ausgeführt
-	    return $  s { todo = concat ( replicate n p ) ++ xs }
-	While v p -> return $  
+	    stepped $  s { todo = concat ( replicate n p ) ++ xs }
+	While v p -> stepped $  
 	    if 0 == get ( memory s ) v
 	    then -- fertig
 		 s { todo = xs } 
 	    else -- einmal ausführen, dann nochmal testen
 		 s { todo = p ++ todo s } 
-	         
+	    
+stepped :: State -> [ State ]     
+stepped s = return $ s { schritt = succ $ schritt s
+		       , past    = s : past s
+		       }
 
 update :: (Integer -> Integer) -> State -> Var -> State
 -- wert einer variablen ändern
