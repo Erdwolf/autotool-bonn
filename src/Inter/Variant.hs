@@ -32,6 +32,11 @@ import Helper
 import Maybe (isJust)
 import Monad ( guard )
 
+input_width :: Int
+-- for textarea
+input_width = 70 
+-- height wird automatisch berechnet
+
 interface :: [ Variant ] -> IO ()
 interface vs = do
     user <- Posix.getEffectiveUserName
@@ -143,15 +148,15 @@ handler par0  (Variant v ) =  do
         let height = length $ filter ( == '\n' ) $ P.input par
 	txtF <- td $ makeTextarea ( P.input par ) 
 		   $  attr "rows" ( show $ height + 2 )
-		   ## attr "cols" "60"
+		   ## attr "cols" ( show input_width )
         td $ ssb ( F1 txtF ) ( evaluator par ) "Compute"
 
     hr CGI.empty
     h2 $ CGI.text "voriger Lösungs-Versuch"
-    CGI.pre $ CGI.text $ P.input par
 
     case parse reader "input"$ P.input par of
         Right b -> do
+	    CGI.pre $ CGI.text $ P.input par
             h3 $ CGI.text "partielle Korrektheit"
             pc <- CGI.p $ Reporter.Wash.embed $ Challenger.partial p i b
             h3 $ CGI.text "totale Korrektheit"
@@ -162,12 +167,15 @@ handler par0  (Variant v ) =  do
 	          CGI.p $ CGI.text $ "Ja."
 		  let s = size b
 		  CGI.p $ CGI.text $ "Größe der Lösung: " ++ show s
-		  -- hier (OK s) in DB eintragen TODO: ermittle Low/High von DB
-		  -- $ io $ bepunkteStudentDB (P.snr par0) (anr!!0) (Helper.Ok s) Helper.Low
+		  -- TODO: ermittle Low/High von DB
+		  lift $ unsafe_io 
+		       $ bepunkteStudentDB (P.snr par0) (anr!!0) 
+		                           (Helper.Ok s) Helper.Low
 	       else do
 	          CGI.p $ CGI.text "Nein."
-		  -- hier (NO) in DB eintragen
-		  --io $ bepunkteStudentDB (P.snr par0) (anr!!0) (Helper.No) Helper.Low
+		  lift $ unsafe_io 
+		       $ bepunkteStudentDB (P.snr par0) (anr!!0) 
+		                           (Helper.No ) Helper.Low
         Left e -> do
 	    h3 $ CGI.text "Syntaxfehler"
 	    CGI.pre $ CGI.text $ render $ errmsg e $ P.input par
@@ -180,14 +188,19 @@ errmsg :: ParseError -> String -> Doc
 errmsg e inp = 
     let css = lines inp
 	p = errorPos e
-	(pre, post) = splitAt (sourceLine p - 2) css
-	it  = replicate (sourceColumn p - 1) '-' ++ "?"
+	(pre, post) = splitAt (sourceLine p - 3) css
+	w = input_width ; c = sourceColumn p - 1
+      	top = replicate c '.' ++ replicate (w-c) '^' ; bot = replicate w '-' 
     in  vcat $ map ToDoc.text 
-	     $ pre ++ [ it ]
-		   ++ [ showErrorMessages "or" "unknown parse error" 
-                              "expecting" "unexpected" "end of input"
+	     $ pre ++ [ top ]
+		   ++ [ showErrorMessages 
+			      "oder" -- "or" 
+			      "unbekannter Parser-Fehler" -- "unknown parse error" 
+                              "möglich ist hier:" -- "expecting" 
+			      "falsches Zeichen:" -- "unexpected" 
+			      "Ende der Eingabe" -- "end of input"
                        (errorMessages e) ]
-		   ++ [ it ]
+		   ++ [ bot ]
 		   ++ post
 
 

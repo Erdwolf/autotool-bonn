@@ -37,12 +37,14 @@ instance Partial TM Laufzeit ( Turing Char Integer ) where
     initial p i =
       Turing 
 	{ eingabealphabet = mkSet "A"
-	, arbeitsalphabet = mkSet "#AB"
+	, arbeitsalphabet = mkSet "#ABC"
 	, leerzeichen = '#'
-	, zustandsmenge = mkSet [ 1 .. 2 ]
+	, zustandsmenge = mkSet [ 1 .. 3 ]
 	, startzustand = 1
-	, endzustandsmenge = mkSet [ 2 ]
-	, tafel = collect [ (('A', 1), ('B', 2, L)) ]
+	, endzustandsmenge = mkSet [ 3 ]
+	, tafel = collect [ (('A', 1), ('B', 2, L)) 
+			  , (('B', 2), ('C', 3, L)) 
+			  ]
 	}		
     total = verifiziereR
 
