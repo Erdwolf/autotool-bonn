@@ -14,7 +14,7 @@ FLAGS = -fallow-overlapping-instances \
 
 PACKS = -package text -package data \
 	-package posix -package network \
-	# -package HToolkit # -package HaXml
+	-package HToolkit # -package HaXml
 
 OPT = -O2
 GHC = ghc

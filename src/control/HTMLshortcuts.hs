@@ -53,13 +53,17 @@ smallSubButton2 subParm subAktion str tdd =
 showAsTable :: ( [ String ] , [ [ StrOrInt ] ]) -> WithHTML CGI ()
 showAsTable inh = 
 	table $ do 
-		attr "border" "1"
+--		attr "border" "1"
  		attr "cellspacing" "2" 
 		attr "cellpadding" "5"
 		tr $ mapM_ ( \ x -> ( th ( text x  ## attr "align" "left") ) ) ( fst inh )  
-		mapM_ sline ( snd inh )
+		sline ( snd inh )
 		where
-			sline xs = tr $ sequence $ Prelude.map textOrInt xs 
+--			sline xs = tr $ sequence $ Prelude.map textOrInt xs 
+			row' x = tr $ sequence $ Prelude.map textOrInt x
+			sline [] = empty
+			sline (x:[]) = row' x >> attr "bgcolor" "white" >> empty
+			sline (x:y:xs) = row' x >> attr "bgcolor" "black" >> ( row' y >> attr "bgcolor" "white") >> sline xs
 
 showAsTable2 :: ( [ String ] , [ [String] ]) -> WithHTML CGI ()
 showAsTable2 inh = 

@@ -43,9 +43,10 @@ clean:
 
 
 install-autoan.cgi:
-	su -c "cp -f autoan.cgi /usr/lib/cgi-bin/autoan.cgi"
+	scp autoan.cgi root@theo1:/usr/lib/cgi-bin/autoan.cgi
+
 install-showgruppen.cgi:
-	su -c "cp -f showgruppen.cgi /usr/lib/cgi-bin/showgruppen.cgi"
+	scp showgruppen.cgi root@theo1:/usr/lib/cgi-bin/showgruppen.cgi
 
 ghci-sql: 
 	ghci $(HINCLUDES) SQLqueries.hs
