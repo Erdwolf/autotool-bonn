@@ -1,7 +1,7 @@
 MAIN = Main
 
 # pfad zu GraphViz und helpers:
-INC = -i..:../util
+INC = -i..:../util 
 
 PACKS = -package data -package text
 
