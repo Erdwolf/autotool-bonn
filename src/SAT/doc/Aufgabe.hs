@@ -24,7 +24,7 @@ student = Aufgabe { problem = SAT
 
 f' :: Formel 
 f' = [(Pos "x", Pos "y", Pos "z")
-    ,(Neg "x", Neg "y", Pos "y")
+    ,(Neg "x", Pos "x", Pos "y")
     ]
 
 
