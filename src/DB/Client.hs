@@ -5,6 +5,7 @@ import DB.Config
 import DB.Data
 import DB.Record
 import DB.Util
+import DB.Action
 
 import Text.XML.HaXml.Haskell2Xml
 import Text.XML.HaXml.Pretty
@@ -53,18 +54,5 @@ main = do
     print c2
 
 	  
-
-
-action :: String -> Int -> Request -> IO Response
-action host port req = do
-    putStrLn $ "connectTo " ++ show (host, port) ; hFlush stdout
-
-    h <- connectTo host ( PortNumber $ fromIntegral port )
-    hWriteXmlUtil h req 
-
-    res <- hReadXmlUtil h 
-    hClose h
-
-    return res
 
 
