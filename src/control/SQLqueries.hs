@@ -986,12 +986,30 @@ getHighscoreCandidatesDB =
     ; return inh
     }
 
+---------------------------------------------------------------------------
+
+{-
+TODO: 
+sowas gehört in ein extra modul
+und sollte für jede SQL-tabelle existieren
+(d. h. alle komponenten enthalten, und instance SQLBind ?)
+-}
+
+data Aufgabe  =
+     Aufgabe { aufgabe :: String
+	       , direction :: ATHighLow
+	       , vorlesung :: String
+	       }
+     deriving ( Eq, Ord, Show, Read )
+
+getHighscoreAufgabeTypesDB :: IO [ Aufgabe ]
 getHighscoreAufgabeTypesDB =
     do
-    { let { sqlstr = foldr1 (\x y -> x ++ " " ++ y) 
+    { let { sqlstr = unwords
               [ "SELECT "
               , " CONCAT(aufgabe.Name,\"-\",aufgabe.Subject ) as aufg"
               , ", Highscore "
+	      , ", VNr"
               , "FROM   aufgabe "
               , "ORDER BY aufg"
               , ";" 
@@ -1003,8 +1021,12 @@ getHighscoreAufgabeTypesDB =
                          do
                                 a <- getFieldValue state "aufg"
                                 b <- getFieldValue state "Highscore"
+				c <- getFieldValue state "VNr"
 
-                                return ( a :: String , b :: String  )
+                                return $ Aufgabe { aufgabe = a
+						   , direction = read b
+						   , vorlesung = c
+						   }
                         ) stat
     ; return inh
     }

@@ -13,7 +13,7 @@ data StrOrInt = S String | I Int deriving ( Show , Read )
 
 data ATBewertung = No | Ok Int deriving ( Show, Read )
 
-data ATHighLow = High | Low | Keine 
+data ATHighLow = High | Low | Keine deriving ( Eq, Ord ) 
 
 instance Show ATHighLow where
     show High = "high" ; show Low = "low" ; show Keine = "keine"
@@ -27,8 +27,7 @@ instance Read ATHighLow where
        it <- case map toLower this of
             "high" -> return High
             "low"  -> return Low
-            "keine" -> return Keine
-            _ -> mzero
+            _ -> return Keine
        return ( it, rest )
 
 
