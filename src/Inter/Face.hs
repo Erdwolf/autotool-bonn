@@ -20,28 +20,16 @@ import Inter.Bank
 import qualified Inter.Param as P
 import qualified Challenger
 
-import qualified LOOP.SQRT
-import qualified LOOP.TIMES
-import qualified LOOP.PRIM
-import qualified LOOP.FIB
-
 import Inter.Types
 import qualified Exception
 
-
+import Inter.Boiler
 
 main :: IO ()
 main = do
-     sqrt <- LOOP.SQRT.generate
-     times <- LOOP.TIMES.generate
-     prim <- LOOP.PRIM.generate
-     fib <- LOOP.FIB.generate
+     vs <- boiler
      wrapper $ \ env -> 
-	 iface [ Variant sqrt 
-	       , Variant times
-	       , Variant prim
-	       , Variant fib
-	       ] env
+	 iface vs env
 	 `Exception.catch` \ err -> return $ p << pre << primHtml ( show err )
 
 ------------------------------------------------------------------------

@@ -3,6 +3,9 @@ module Turing.Machine where
 -- $Id$
 
 import Machine.Class
+import Machine.Akzeptieren
+import qualified Challenger as C
+import qualified Machine.Acceptor.Type as A
 
 import Turing.Type
 import Turing.Konfiguration
@@ -26,6 +29,18 @@ instance Numerical String where
         x <- xs
 	replicate ( fromIntegral x) '1' ++ ","  -- nicht das leerzeichen!
     decode m = fromIntegral $ length m -- eigentlich prüfen, welche zeichen
+
+
+instance TUM y z => 
+        C.Partial A.Acceptor ( A.Type ( Turing y z ) [y] ) 
+	    ( Turing y z ) 
+  where
+    initial p i   = A.start i
+    partial p i b = A.check i b
+    total   p i b = do
+        positiv_liste (A.cut i) b $ A.yeah i
+        negativ_liste (A.cut i) b $ A.noh  i
+        return () -- größe der maschine (hier) ignorieren
 
 
 

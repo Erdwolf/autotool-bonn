@@ -30,7 +30,7 @@ class Numerical dat where
     encode :: [ Integer ] -> dat
     decode :: dat -> Integer
 
-class InOut m dat conf | m -> dat, m -> conf  where
+class InOut m dat conf | m -> conf, m -> dat  where
     -- startkonf. herstellen (tupel von args)
     input  :: m -> dat -> conf
     -- endkonf. lesen (ein einziges arg)
