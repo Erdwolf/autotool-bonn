@@ -44,7 +44,7 @@ instance C.Partial TreeWidth ( Graph Int, Int )
 	      guard $ w < cardinality s
 	      return s
             v = [ 1 .. length c ]  
-	in  ( listToFM $ zip v c , path v )
+	in  ( listToFM $ zip v c , Autolib.Graph.Basic.path v )
 
     partial p (g, w) ( fm, t ) = do
 
@@ -120,5 +120,5 @@ instance C.Partial TreeWidth ( Graph Int, Int )
 
 make :: Make
 make = 
-    let p = path [ 1 .. 4 :: Int ]
+    let p = Autolib.Graph.Basic.path [ 1 .. 4 :: Int ]
     in  direct TreeWidth ( normalize $ grid p p, 3 :: Int )

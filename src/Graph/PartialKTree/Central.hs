@@ -73,7 +73,7 @@ polish g = g { show_labels = True
 make :: Make
 make = 
     let k = 4 :: Int
-        p = path [ 1 .. k ]
+        p = Autolib.Graph.Basic.path [ 1 .. k ]
     in  direct PartialKTree ( normalize $ grid p p, k )
 
 ------------------------------------------------------------------
