@@ -37,6 +37,7 @@ import Data.Typeable
 import Data.Maybe
 import Data.List
 import Control.Monad
+import qualified Control.Exception
 
 import Text.Html ( Html )
 
@@ -64,7 +65,7 @@ iface mks = do
         vor <- vors
         return ( show $ V.name vor , V.vnr vor )
 
-    aufs <- io $ A.get vnr ( not tutor ) -- student darf nur aktuelle
+    aufs <- io $ A.get ( Just vnr ) ( not tutor ) -- student darf nur aktuelle
     let opts = do
                      auf <- aufs
                      return ( show $ A.name auf , Just $ auf )
@@ -101,7 +102,7 @@ iface mks = do
     hr
     ( cs, res ) <- solution stud' mk auf' 
     -- bewertung in DB (für Stud-Variante)
-    when ( not tutor ) $ punkte stud' auf' vnr ( cs, res )
+    when ( not tutor ) $ punkte stud' auf' ( cs, res )
     return ()
 
 -------------------------------------------------------------------------
@@ -204,6 +205,7 @@ get_stud tutor stud =
 -- für tutor zum ausprobieren
 -- für student echt
 solution stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+
             let conf = read $ toString $ A.config auf
                 var = fun  conf
                 p = problem var
@@ -221,8 +223,21 @@ solution stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
             hr ---------------------------------------------------------
 	    h3 "Lösung"
+
             sub <- submit "subsol" "submit"
-            Just cs <- textarea "sol" ( render $ toDoc ini )
+            prev <- submit "subprev" "previous"
+            ex <- submit "subex" "example"
+	    br
+            when ex blank
+
+            let b0 = render $ toDoc ini 
+            def <- io $ if prev 
+		   then Inter.Store.latest (mkpar stud auf)
+                              `Control.Exception.catch` \ _ -> return b0
+		   else return b0
+		
+
+            Just cs <- textarea "sol" def
 
      	    let (res, com :: Html) = export $ evaluate p i cs
             html com
@@ -230,23 +245,23 @@ solution stud ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern
-punkte stud auf vnr ( cs, res ) = do
+punkte stud auf ( cs, res ) = do
      hr
-     let p :: P.Type
-	 p = P.empty 
-            { P.mmatrikel = Just $ S.mnr stud
-	    , P.aufgabe = A.name auf
-	    , P.typ = A.typ auf
-	    , P.anr = A.anr auf
-	    , P.vnr = vnr
-	    , P.highscore = A.highscore auf
-	    , P.input = cs 
-	    , P.ident = S.snr stud
-            }
+     let p = ( mkpar stud auf )  { P.input = cs }
      msg <- io $ bank p res
      plain $ "Eintrag ins Logfile:"
      pre msg
      return ()
+
+mkpar stud auf = P.empty 
+            { P.mmatrikel = Just $ S.mnr stud
+	    , P.aufgabe = A.name auf
+	    , P.typ = A.typ auf
+	    , P.anr = A.anr auf
+	    , P.vnr = A.vnr auf
+	    , P.highscore = A.highscore auf
+	    , P.ident = S.snr stud
+            }
 
 --------------------------------------------------------------------------
 
