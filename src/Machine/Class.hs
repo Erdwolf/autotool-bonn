@@ -7,11 +7,14 @@ import Schichten
 import ToDoc
 import Size
 
+import Machine.History
+
 class ( ToDoc m, Size m
       , ToDoc dat, Ord dat
       , ToDoc conf, Ord conf 
       , InOut m dat conf
       , Compute m conf
+      , History conf
       ) => Machine m dat conf
 
 instance ( ToDoc m, Size m
@@ -19,6 +22,7 @@ instance ( ToDoc m, Size m
       , ToDoc conf, Ord conf 
       , InOut m dat conf
       , Compute m conf
+      , History conf
       ) => Machine m dat conf
 
 class Numerical dat where
@@ -37,7 +41,6 @@ class Ord conf => Compute m conf where
     next   :: m -> conf -> Set conf 
     -- 
     accepting  :: m -> conf -> Bool
-
 
 nachfolger :: Compute m conf
            => m -> conf -> [ conf ]
