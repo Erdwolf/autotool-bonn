@@ -28,6 +28,8 @@ instance Partial PCProblem PCP Folge where
 	     $ text "Oberer Vorsprung:" <+> text cl
 	when ( not $ null cr ) $ reject 
 	     $ text "Unterer Vorsprung:" <+> text cr
+	when ( null lsg ) $ reject
+	     $ text "Das Lösungswort darf nicht leer sein."
 
 
 instance  Step PCProblem PCP Folge ( Select Int ) where
