@@ -4,9 +4,7 @@ module Inter.Boiler where
 
 import Inter.Types
 
-import qualified Inter.Compilerbau
-import qualified Inter.Informatik
-import qualified Inter.Grundlagen
+import qualified Inter.CASE
 
 -- hier steht ALLES machbare drin
 -- in der datenbank steht dann, zu welcher zeit es erlaubt ist.
@@ -14,7 +12,8 @@ import qualified Inter.Grundlagen
 boiler :: IO [ Variant ]
 boiler = sequence 
        -- der erste ist der default-wert!
-       $  Inter.Grundlagen.aufgaben
-       ++ Inter.Compilerbau.aufgaben
-       ++ Inter.Informatik.aufgaben
+       $  []
+       ++ Inter.CASE.aufgaben
+       
+
 
