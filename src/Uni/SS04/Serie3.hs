@@ -16,7 +16,8 @@ import Fun.Table
 
 
 -- Helper
-import qualified Random
+import qualified Uni.SS04.Testliste as TL
+
 import Array
 import Prime
 import Sets (mkSet,union)
@@ -62,15 +63,23 @@ fibs = array ( 0, top ) $ ( 0, 0) : ( 1, 1 ) : do
                           
 funFib :: IO ( T.Var N.Computer ( N.Type Fun ) Fun )
 funFib = do
+    args <- TL.genTestliste 
+                TL.Make 
+                  { TL.arity = 1
+                  , TL.len = 5
+                  , TL.fixs = [[0]]
+                  , TL.randVonBis = (1,10) 
+                  }
+
     let it = N.Make
            { N.fun = \ [ x ] -> fibs ! x
            , N.fun_info = text "\\ x -> fib x"
-           , N.args = do x <- [ 0 .. top ] ; return [x]
+           , N.args = args
            , N.cut = 2000
            , N.check = \ f -> do
                  check_builtins RAM.Builtin.every f
                  check_arity 1 f
-		 anzeig $ tabelle1 f 9
+                 anzeig $ tabelle1 f 9
            , N.start = Fun.Examples.plus
            }
     return $ I.computer "FUN" "FIB" it
@@ -84,22 +93,25 @@ funFib = do
 -- FUN TEILBAR 
 -- --------------------------------------------------
 
--- testlisteTeilbar :: IO [[Integer]]
--- testlisteTeilbar = sequence $ replicate 10 $ do
---     xy <- sequence $ replicate 2 $ Random.randomRIO (0, top)    
---     return xy
 
 funTeilbar :: IO ( T.Var N.Computer ( N.Type Fun ) Fun )
 funTeilbar = do
+    args <- TL.genTestliste 
+                TL.Make 
+                  { TL.arity = 2 
+                  , TL.len = 7
+                  , TL.fixs = []
+                  , TL.randVonBis = (1,20) 
+                  }
     let it = N.Make
            { N.fun = \ [ x , y ] -> if x `mod` y == 0 then 1 else 0
            , N.fun_info = text "if x `mod` y == 0 then 1 else 0"
-           , N.args =  [[x,y] | x <- [ 13 .. 25 ] , y <- [ 2 .. 7 ]]-- testlisteTeilbar
+           , N.args =  args -- [[x,y] | x <- [ 13 .. 25 ] , y <- [ 2 .. 7 ]]-- testlisteTeilbar
            , N.cut = 20000
            , N.check = \ f -> do
                  check_builtins RAM.Builtin.every f
                  check_arity 2 f
-		 anzeig $ tabelle2 f (5, 5)
+                 anzeig $ tabelle2 f (5, 5)
            , N.start = Fun.Examples.plus
            }
     return $ I.computer "FUN" "TEILBAR" it
@@ -108,17 +120,19 @@ funTeilbar = do
 -- FUN TEILBAR2
 -- --------------------------------------------------
 
--- testlisteTeilbar :: IO [[Integer]]
--- testlisteTeilbar = sequence $ replicate 10 $ do
---     xy <- sequence $ replicate 2 $ Random.randomRIO (0, top)    
---     return xy
-
 funTeilbar2 :: IO ( T.Var N.Computer ( N.Type Fun ) Fun )
 funTeilbar2 = do
+    args <- TL.genTestliste 
+                TL.Make 
+                  { TL.arity = 2 
+                  , TL.len = 7
+                  , TL.fixs = []
+                  , TL.randVonBis = (1,20) 
+                  }
     let it = N.Make
            { N.fun = \ [ x , y ] -> if x `mod` y == 0 then 1 else 0
            , N.fun_info = text "if x `mod` y == 0 then 1 else 0"
-           , N.args =  [[x,y] | x <- [ 13 .. 20 ] , y <- [ 2 .. 7 ]]-- testlisteTeilbar
+           , N.args =  args -- [[x,y] | x <- [ 13 .. 20 ] , y <- [ 2 .. 7 ]]-- testlisteTeilbar
            , N.cut = 200000
            , N.check = \ f -> do
                  check_builtins ( mkSet[ RAM.Builtin.Plus 
@@ -126,6 +140,7 @@ funTeilbar2 = do
                                      , RAM.Builtin.Times  
                                      ] ) f
                  check_arity 2 f
+                 anzeig $ tabelle2 f (5,5)
            , N.start = Fun.Examples.plus
            }
     return $ I.computer "FUN" "TEILBAR2" it
@@ -140,6 +155,13 @@ fak x = x * fak ( x - 1 )
 
 funFak :: IO ( T.Var N.Computer ( N.Type Fun ) Fun )
 funFak = do
+    args <- TL.genTestliste 
+                TL.Make 
+                  { TL.arity = 1 
+                  , TL.len = 5
+                  , TL.fixs = []
+                  , TL.randVonBis = (0,10) 
+                  }
     let it = N.Make
            { N.fun = \ [ x ] -> fak x
            , N.fun_info = text "\\ x -> x!"
@@ -148,6 +170,7 @@ funFak = do
            , N.check = \ f -> do
                  check_builtins RAM.Builtin.every f
                  check_arity 1 f
+                 anzeig $ tabelle1 f 9
            , N.start = Fun.Examples.plus
            }
     return $ I.computer "FUN" "FAK" it
@@ -156,23 +179,24 @@ funFak = do
 -- FUN PRIM
 -- --------------------------------------------------
 
-
--- testlistePrim :: IO [[Integer]]
--- testlistePrim = do 
---     let fixed = [ 0 .. 10] ++ [ 23 , 101 ]
---     rnds <- sequence $ replicate 10 $ Random.randomRIO ( 10, 100 )
---     return $ fixed ++ rnds
-
 funPrim :: IO ( T.Var N.Computer ( N.Type Fun ) Fun )
 funPrim = do
+    args <- TL.genTestliste 
+                TL.Make 
+                  { TL.arity = 1 
+                  , TL.len = 10 
+                  , TL.fixs = (map return [0,1,2,7,23,51])
+                  , TL.randVonBis = (10,100) 
+                  }
     let it = N.Make
            { N.fun = \ [ x ] -> if prime x then 1 else 0
            , N.fun_info = text "\\ x -> if istPrimzahl( x ) then 1 else 0"
-           , N.args = [ [x] | x <- ( [ 0 .. 10 ] ++ [ 23 , 101 , 102 ] )]-- testlistePrim
+           , N.args = args
            , N.cut = 20000
            , N.check = \ f -> do
                  check_builtins RAM.Builtin.every f
                  check_arity 1 f
+                 anzeig $ tabelle1 f 9
            , N.start = Fun.Examples.plus
            }
     return $ I.computer "FUN" "PRIM" it
