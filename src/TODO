@@ -1,0 +1,48 @@
+# $Id$
+
+[ ] DOK/INSTALL aktualisieren, TECHPAPER, README, FAQ, ...
+
+[ ] Makefiles überarbeiten, alle Abhängigkeiten der Grader ins
+    Makefile.
+
+[ ] Package(s) erstellen, Monster-Make, configure?
+
+[ ] Test-Modus
+
+[ ] Alte Aufgaben an Architektur anpassen und Monster-Config erstellen
+
+[ ] Fehlermeldungen mit FAQ abgleichen und entsprechende FAQ-Artikel
+    gleich mit versenden. Bei Fehlern ohne FAQ-Artikel eine
+    Information an den Administrator schicken.
+
+[ ] ulimits verstehen und -wenden
+
+[ ] Server, auf den die verschiedenen Interfaces aufsetzen können,
+    "Secure, high performance, large scaleable pure Haskell-Code
+     interface able to use complete autotool power with maximal
+     granularity." (in German: Eierlegendewollmilchsau.)
+
+[ ] Webinterface
+
+[·] Kommandozeileninterface (ohne Aufgaben, Sender, ...), teilweise
+    gelöst durch vorkompilierte Korrekturprogramme, meint nur noch
+    Interface zum Server
+
+[·] En/Dequeuer via Haskell/Sockets
+
+[ ] En/Dequeuer via Shell 
+
+[ ] Timing-Modus, nur wichtig nach Serialisierung, da vorher der
+    GHC-Mode nicht mehr benutzt wird. (werden soll)
+
+[ ] Real Statistik über (mehreren) LOG-Files
+
+# done
+[x] RAM-Beschränkungen für Manager, ...
+[x] Architektur abändern, so dass Einsendungen "ge-showt" werden und das
+    Ergebnis als Eingabe für das *kompilierte* Testprogramm benutzt.
+[x] RES/LOG automatisiert sichern
+[x] top-log für theopc auf Webseite (aktuelle Auslastung auf Webseite)
+[x] Options von Kommandozeile lesen
+[x] Bearbeitungszeit mit ins Log-File
+[x] Scorer unempfindlich machen gg. leere bzw. Kommentarzeilen in der config

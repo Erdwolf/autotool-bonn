@@ -1,0 +1,277 @@
+$Id$
+
+Sorry, das mutiert ein wenig zum Board. (-> TODO)
+
+Das ist eine kurze Anleitung, wie autotool zu Hause installiert werden
+kann, gefolgt von Tips, wie *schnell* Lösungen geprüft werden können.
+
+contact:         autotool-admin@theopc.informatik.uni-leipzig.de
+latest version:  http://theopc.informatik.uni-leipzig.de/~autotool/INSTALL
+contents:        0. Voraussetzungen
+                 1. Sourcen
+                 2. Konfiguration
+                 3. Kompilation
+                 4. Benutzung auf der Kommandozeile
+                 5. Automatisches Verarbeiten von Emails
+                 6. Schnelles Home-Hacking an einer Aufgabe
+
+-------------------------------------------------------------------------------
+
+
+0. Voraussetzungen
+------------------
+
+- ghc (>= 5.00?, wir verwenden 5.00.2)
+- cvs
+- Verbindung zu theopc.informatik.uni-leipzig.de
+- make
+- hugs
+- (mail)
+
+
+1. Sourcen
+----------
+
+Im Moment ist autotool nur per anonymous cvs verfügbar. Zum Download
+sind die folgenden Befehle auszuführen:
+
+CVSROOT=:pserver:anonymous@theopc.informatik.uni-leipzig.de:/home/cvs
+cvs -d $CVSROOT checkout autotool
+
+Da autotool ständig weiterentwickelt wird, ändern sich die Sourcen
+relativ oft. Um eine lokale Kopie zu aktualisieren, muss obige
+Prozedur erneut ausgeführt werden.
+
+
+2. Konfiguration
+----------------
+
+Die allermeisten Einstellungen können dem Manager per Kommandozeile
+übergeben werden.
+
+Es bleibt, in operators.dat einen Eintrag der Form
+
+9        Mirko    Rahn     mai99dla@studserv.uni-leipzig.de        0
+9        Mirko    Rahn     mrahn@theopc.informatik.uni-leipzig.de  0
+9        Mirko    Rahn     mrahn                                   0
+
+einzufügen, wobei die Felder bedeuten: "Id, Vorname, Nachname,
+Emailadresse, Nummer der Übungsgruppe", Separator sind Spaces. Dabei
+gilt, dass Ids kleiner als 1024 nicht vom Statistiktool erfasst
+werden, die Systemports sozusagen.
+
+Das sollte gemacht werden, weil autotool nur mit bekannten
+Emailadressen arbeitet und es sollen ja keine Mails an fremde Leute
+geschickt werden.
+
+
+3. Kompilation
+--------------
+
+- Don't think, just type 'make'.
+
+- Prinzipiell kann es möglich sein, Teile der Software in hugs
+auszuführen oder interaktiv mit ghci ablaufen zu lassen, auf diese
+Möglichkeiten wird hier nicht eingegangen.
+
+- Die einfachste Variante ist ein
+
+make
+
+Das kompiliert (kompilierbare) Aufgaben und die Umgebung. Achtung: Das
+kann dauern, dafür gibt es '-O'.
+
+- Manager, Statistiktool und Scorer werden kompiliert via
+
+make -C bin
+
+Dabei ist nur der Manager für die normale Arbeit erforderlich.
+
+- Die (nur die zu kompilierenden) Aufgaben aus dem Wintersemester
+2001/2002 werden kompiliert via
+
+make -C ws01/compiled
+
+- Einzelne Aufgaben können dabei angegeben werden, also kompiliert
+
+make -C ws01/compiled PUMP2a
+
+nur die Aufgabe PUMP2a. Das ist deshalb interessant, weil im Moment
+nicht alle Abhängigkeiten beachtet werden. Falls also an Modulen
+gearbeitet wird, die u.U. von einem Grading-Programm benutzt werden,
+dann sollte dieses im Zweifelsfall neu kompiliert werden. (-> TODO)
+
+
+4. Benutzung auf der Kommandozeile
+----------------------------------
+
+Wenn bisher alles geklappt hat, kann autotool benutzt werden:
+
+echo "student=[2,4,5,8]" | bin/Manager mrahn CLQ1
+
+Das bedeutet: Pipe eine Lösung in Manager und gib die Absenderadresse
+und Aufgabennummer als Argumente an. Anschliessend sollte autotool die
+Antwort an die angegebene Adresse schicken.
+
+Dabei werden in obigem Aufruf die Default-Einstellungen aus
+bin/Default.hs verwendet. Alle relevanten Einstellungen können dem
+Manager per Kommandozeile übergeben werden, ein Aufruf bin/Manager
+ohne Argumente gibt eine Übersicht über alle bekannten Optionen aus.
+
+Da es viele Optionen gibt und u.U. auch viele benutzt werden,
+empfiehlt es sich, die häufig verwendeten Einstellungen in
+bin/Autotool_Manager.sh fest einzustellen und dann überall statt
+bin/Manager den Wrapper aufzurufen.
+
+
+5. Automatisches Verarbeiten von Emails
+---------------------------------------
+
+Dem Emailsystem muss beigebracht werden, Emails direkt an autotool
+weiterzuleiten. Dazu müssen in der ~/.procmailrc Zeilen wie diese
+
+MAILDIR=$HOME/mails     #you'd better make sure it exists
+DEFAULT=$MAILDIR/mbox   #completely optional
+LOGFILE=$MAILDIR/from   #recommended
+
+:0 b
+* !^Subject:.*Re:
+* !^FROM_DAEMON
+* ^Subject: autotool \/[A-Za-z0-9]*
+| /home/autotool/autotool/bin/Autotool_Manager `formail -rt -xTo:` $MATCH
+
+mit den offensichtlichen Änderungen eingefügt werden. Nun kann autotool
+so benutzt werden:
+
+echo "student=[2,4,5,8]" | mail autotool -s "autotool CLQ1"
+
+Das ist im wesentlichen das Gleiche wie auf der Kommandozeile, nur
+findet jetzt auch die Eingabe per Email statt.
+
+Hier wird der Wrapper verwendet, der Manager kann in der ~/.procmailrc
+natürlich auch direkt verwendet werden, u.U. mit entsprechenden
+Optionen.
+
+
+6. Schnelles Home-Hacking an einer Aufgabe (hier am Beispiel von CF3b):
+-----------------------------------------------------------------------
+
+- Durch die Verwendung von vorkompilierten Korrekturprogrammen teilt
+sich das auf in zwei Teile, A und B, welche Programme das sind, steht
+normalerweise in config/dispatch, im Notfall in ws01/compiled/Makefile.
+
+A: Vorkompilierte Korrekturprogramme:
+
+** Randinfo: Es gibt Korrekturprogramme, die nicht vorkompiliert
+   werden *können*! Das sind solche, wo es keine Instanz Read eines
+   lösenden Datentyps geben kann, z.B. bei Funktionen. (Naja,
+   "kann"="wo eine Instanz Read schwer zu programmieren ist...")
+
+Einfach die zu testende Lösung als pure Daten in ein File schreiben,
+also für CF3b sagt 'cat scratchCF3b'
+
+--o<---------------------------------------------------------------------------
+Grammatik
+        { nichtterminale = mkSet "FNEST"
+        , terminale = mkSet "01"
+        , startsymbol = 'S'
+        , regeln = mkSet 
+                 [ ("F", "0"), ("F", "1")
+                 , ...
+                 ]
+        }
+--o<---------------------------------------------------------------------------
+
+ohne student und ohne imports. Diese Eingabe wird vom
+Korrekturprogramm durch ein 'read' eingelesen und bewertet. Der
+entsprechende Aufruf lautet für CF3b
+
+ws01/compiled/CF3b scratchCF3b
+
+[x] Expliziter Verweis auf Nichtbeachtung einiger Abhängigkeiten bei
+    Kompilation der automatischen Korrekturprogramme.
+
+B: Nichtvorkompilierte Korrekturprogramme:
+
+- Ins Verzeichnis wechseln, wo die Aufgabe definiert ist.
+(ws01/aufgaben)
+
+- Eine .hs-Datei anlegen, die die Lösung enthält, die getestet werden
+soll. (touch LoesungCF3b.hs) Dabei die Lösung so eingeben, wie in den
+entsprechenden Emails an autotool, oben drüber schreiben "module Main
+where" und "import CF3b" (Aufgabe) und unten drunter "main = bewerte
+student". (Im Prinzip macht autotool das auch bloss so.) Also
+z.B. sieht meine LoesungCF3b.hs so aus:
+
+--o<---------------------------------------------------------------------------
+module Main where
+
+import CF3b
+import Grammatik
+import Set
+
+student = Grammatik
+        { nichtterminale = mkSet "FNEST"
+        , terminale = mkSet "01"
+        , startsymbol = 'S'
+        , regeln = mkSet 
+                 [ ("F", "0"), ("F", "1")
+                 , ...
+                 ]
+        }
+
+main = bewerte student
+--o<---------------------------------------------------------------------------
+
+An der Stelle der Punkte stehen dann Eure Regeln, logisch :-)
+
+Nun zuerst mal eine Kompilation, insbesondere aller beteiligten
+Module. Dazu sucht Ihr Euch aus config/dispatch die benötigten Pfade
+raus und tippt dann so etwa:
+
+ghc --make -fallow-overlapping-instances                       \
+           -fallow-undecidable-instances                       \
+           -fglasgow-exts                                      \
+           -i../../hugslib/data/ -i../../hugslib/text/parsec/  \
+           -i../../hugslib/text/                               \
+           -i../../util/ -i../../grammatik/                    \
+           LoesungCF3b.hs
+
+Das heisst soviel wie: Paar krasse Sprachfeatures anschalten, paar
+Pfade setzen (die -i-Dinger, die kommen aus der config/dispatch) und
+dann ab. Es wird ./a.out erzeugt, das Ihr ausführen könnt und (oh
+Wunder) damit eine Ausgabe erzeugt, wie Ihr sie von autotool gewohnt
+seid. Und das ohne den ganzen Emailkrempel :-) 
+
+Aber es kommt noch besser: Ihr müsst nicht jedesmal alles neu
+kompilieren, sondern Ihr könnt den interaktiven Modus des GHC (hihihi,
+ich werd' verrückt) verwenden. Dazu tippt Ihr den Befehl wie eben ein
+und ersetzt vorher "ghc --make" durch "ghci". Es erscheint ein Prompt
+und Ihr tippt einfach
+
+Main> main
+
+und erhaltet wieder diese Ausgabe. Wenn Ihr nun an Eurer Grammatik
+rum-editiert, genügt ein einfaches Reload
+
+Main> :r
+Compiling Main             ( LoesungCF3b.hs, interpreted )
+Ok, modules loaded: Main, CF3b, Primitive, Simple_Zeige, Ableitung,
+CF_Check, Epsfrei, Kettenfrei, CYK, Chomsky, Typen, Grammatik, Size,
+ToDoc, Wort, Auswertung, Wrong, Right, Edit, Sort, Simple_Schichten,
+FilterSet, Relation, Fix, Schichten.
+
+gefolgt von einem neuen 
+
+Main> main
+
+für die neue Ausgabe. Also ich glaube, schneller geht das nicht.
+
+Übrigens könnt Ihr auf das initiale Kompilieren ganz verzichten, dann
+ist aber der interaktive Modus langsamer, da dann (ungefähr)
+interpretiert wird. Der interaktive Modus selber kompiliert nämlich
+nicht, kann aber vorgefundene Kompilate verwenden. Alles klar?
+
+Übrigens rechnet mein AMD-K6II-400Mhz an CF3b weniger als 45 Sekunden.
+
+Big fun, Mirko Rahn

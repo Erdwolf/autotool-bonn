@@ -1,0 +1,12 @@
+#!/bin/bash 
+
+HSLIB=/home/autotool/autotool/hugslib
+LIBS=$HSLIB/data:$HSLIB/text:$HSLIB/text/parsec
+
+# für Automaten:
+# LOCS=../../fa:../../rx:../../util
+
+# für Grammatiken:
+LOCS=..:../..:../../util
+
+hugs -98 +o -P$LIBS:$LOCS: $*
