@@ -11,6 +11,7 @@ import NFA.Type
 import NFA.Eq
 import qualified NFA.Example
 import qualified NFA.Check
+import NFA.Restrict
 
 import Inter.Types
 
@@ -39,10 +40,12 @@ besch i = case beschreibung i
 instance C.Partial  Synthese SI ( NFA Char Int )
   where
     initial p i   = NFA.Example.example
+
     partial p i b = do
-        if  deterministisch i
-	    then NFA.Check.deterministisch b
-            else return ()
+        restrict_states b
+	restrict_alpha ( alphabet i ) b
+        when (  deterministisch i ) $ NFA.Check.deterministisch b
+
     total   p i b = do
         let goal = inter (std_sigma $ setToList $ alphabet i) (ausdruck i)
 	f <- equ ( informed ( besch i )                         goal )
