@@ -1,7 +1,14 @@
 --   $Id$
 
-module Scorer.Util where
+module Scorer.Util 
 
+( module Scorer.Util
+, module Control.Types
+)
+
+where
+
+import Control.Types
 
 import Time
 

@@ -6,20 +6,24 @@ import Scorer.Config
 import Scorer.Einsendung
 import Scorer.Aufgabe
 import Scorer.Util
-import Data.FiniteMap
-import Data.Set
-import Util.Sort
+
+import Control.Types
+import Control.Vorlesung.DB
+
+import Autolib.FiniteMap
+import Autolib.Set
+import Autolib.Util.Sort
+
 import Control.Monad ( guard )
 import System.IO ( hFlush, stdout )
 
-import qualified SQLqueries
 
 -- | druckt Auswertung für alle Aufgaben einer Vorlesung
-emit :: String -> DataFM -> IO ()
+emit :: VNr -> DataFM -> IO ()
 emit vl fm0 = do
 
-    mnrs <- SQLqueries.teilnehmer vl
-    let smnrs = mkSet $ map read mnrs
+    mnrs <- Control.Vorlesung.DB.teilnehmer vl
+    let smnrs = mkSet $ mnrs
     let fm = mapFM ( \ key val -> do
 		  e <- val
 		  guard $ matrikel e `elementOf` smnrs
@@ -28,7 +32,7 @@ emit vl fm0 = do
 
     putStrLn $ unlines
 	     [ "", ""
-	     ,  unwords [ "Auswertung für Lehrveranstaltung", vl, ":" ] 
+	     ,  unwords [ "Auswertung für Lehrveranstaltung", show vl, ":" ] 
 	     ]
 
     mapM_ single $ fmToList fm
@@ -48,14 +52,14 @@ inform = do
 
 realize :: [ Einsendung ] -> [ Einsendung ]
 realize es = take scoreItems -- genau 10 stück
-	   $ filter ( (> 1023) . matrikel) -- keine admins
+	   $ filter ( (> 1023) . read . toString . matrikel) -- keine admins
 	   $ es
     
 -- | druckt Auswertung einer Aufgabe
-single :: ( String, [ Einsendung ] ) -> IO ()
+single :: ( ANr, [ Einsendung ] ) -> IO ()
 single arg @( auf, es ) = do
     let header = unwords 
-	       [ "Aufgabe" , auf
+	       [ "Aufgabe" , show auf
 	       , unwords $ if null es then [] else
 	         [ "( beste bekannte Lösung", show (size $ head es), ")" ]
 	       ]
@@ -83,9 +87,9 @@ totalize fm = do
 
 -- | gesamtliste der highscore
 collect :: DataFM 
-	 ->  [ (Int, Int) ] -- ^ ( Matrikel, Punkt )
+	 ->  [ ( MNr, Int ) ] -- ^ ( Matrikel, Punkt )
 collect fm = take scoreItems
-	   $  sortBy ( \ (m, p) -> negate p ) -- größten zuerst
+	   $ sortBy ( \ (m, p) -> negate p ) -- größten zuerst
 	   $ fmToList
 	   $ addListToFM_C (+) emptyFM
 	   $ do  ( auf, es ) <- fmToList fm

@@ -7,15 +7,17 @@ import Scorer.Einsendung
 import Scorer.Config
 import Scorer.Emit
 
-import Util.Sort
-import SQLqueries ( ATHighLow (..), Aufgabe (..) )
-import Data.FiniteMap
+import Control.Types
+import Control.Aufgabe.Typ
+
+import Autolib.Util.Sort
+import Autolib.FiniteMap
 import Control.Monad ( guard )
 import System ( getArgs )
 
 
 -- | in fm steht abbildung von aufgabe(name) auf inhalt (z. b. direction)
-compute :: ( String, ScoreDefFM ) -> IO ()
+compute :: ( VNr, ScoreDefFM ) -> IO ()
 compute ( vl, aufs ) = do
 
     -- wir lesen die logfiles für jede vorlesung komplett neu ein,
@@ -37,11 +39,11 @@ update :: ScoreDefFM -> DataFM -> Einsendung -> DataFM
 update aufs mappe e = 
     case lookupFM aufs (auf e) of
         Nothing -> mappe -- aufgabe unbekannt
-	Just a -> case direction a of
+	Just a -> case highscore a of
 	    Keine -> mappe -- keine wertung
 	    dir  -> addToFM_C ( collide dir ) mappe (auf e) [ e ]
 
-collide :: ATHighLow 
+collide :: HiLo
 	-> [ Einsendung ] -> [ Einsendung ] 
 	-> [ Einsendung ]
 collide dir schon [ neu ] = 

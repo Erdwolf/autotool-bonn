@@ -4,28 +4,30 @@ module Scorer.Aufgabe where
 
 import Scorer.Einsendung
 
-import Data.FiniteMap
-import ToDoc -- show FM
-import SQLqueries 
+
+import Control.Types
+import Control.Aufgabe.Typ
+import Control.Aufgabe.DB
+
+import Autolib.FiniteMap
 
 -- (aufgabe -> aufgaben-record)
-type ScoreDefFM = FiniteMap String Aufgabe
+type ScoreDefFM = FiniteMap ANr Aufgabe
 
 -- highscoretabelle (aufgabe -> beste sendungen)
-type DataFM = FiniteMap String [ Einsendung ]
+type DataFM = FiniteMap ANr [ Einsendung ]
 
-
-split_vorlesungen :: [ Aufgabe ] -> FiniteMap String ScoreDefFM
-split_vorlesungen scts = 
+split_vorlesungen :: [ Aufgabe ] -> FiniteMap VNr ScoreDefFM
+split_vorlesungen aufs = 
     addListToFM_C ( plusFM_C (error "ScorerDB.plus")) emptyFM $ do
-        sct <- scts
-	return ( vorlesung sct , listToFM [ ( aufgabe sct, sct ) ] )
+        auf <- aufs
+	return ( vnr auf , listToFM [ ( anr auf, auf ) ] )
 
-get :: IO ( FiniteMap String ScoreDefFM )
+get :: IO ( FiniteMap VNr ScoreDefFM )
 get = do
     -- die informationen zu den aufgaben holen
-    sdDB <- getHighscoreAufgabeTypesDB
-    let vls = split_vorlesungen sdDB
+    aufs <- Control.Aufgabe.DB.get Nothing False
+    let vls = split_vorlesungen aufs
     return vls
 
 

@@ -8,14 +8,14 @@ where
 
 --   $Id$
 
-{- so sehen die dinger aus:
+{- so sehen die dinger aus: (3: VNR, 11: ANr)
 
-Fri Nov 28 18:33:49 CET 2003 ( 2425 ) cgi-318 ( 318 ) Ein-Gleich : OK # Size: 7 
+Fri Nov 28 18:33:49 CET 2003 ( 2425 ) cgi-318 ( 318 ) 3-11 : OK # Size: 7 
 -}
 
 import Scorer.Util
 
-import Data.FiniteMap
+import Autolib.FiniteMap
 import Control.Monad ( guard )
 
 -- | das ist die information zu jeweils einer studentischen einsendung
@@ -23,8 +23,9 @@ data Einsendung = Einsendung
           { size     :: Int
 	  , date     :: [Int]
 	  , time     :: String -- ^ original time entry
-	  , matrikel :: Int
-	  , auf	     :: String
+	  , matrikel :: MNr
+	  , auf	     :: ANr
+	  , vor      :: VNr
 	  , pid	     :: String
 	  }	deriving (Eq,Ord)
 
@@ -32,7 +33,7 @@ instance Show Einsendung where
     show i = unwords 
         [ spaci 4 $ abs $ size i
 		, spaci 8 $ matrikel i
-		,    (nulli 2 $ (date i) !! 2) ++ "."
+	,    (nulli 2 $ (date i) !! 2) ++ "."
 		  ++ (nulli 2 $ (date i) !! 1) ++ "."
 		  ++ (nulli 4 $ (date i) !! 0) 
 		,    (nulli 2 $ (date i) !! 3) ++ ":"
@@ -65,6 +66,7 @@ instance Read Einsendung where
             date'   = takeWhile (/="(") wl
             wl      = words line
             aufg    = field 6 line'
+            ( v , '-' : a ) = span (/= '-') aufg
 	    ok	    = field 8 line'
 
 	guard $ ok == "OK"
@@ -77,9 +79,10 @@ instance Read Einsendung where
                        ]
                        ++                                    -- St:Mi:Se
                        [ read x | x <- words $ map mySub (field 4 date') ]
-	      , matrikel = read $ field  4 line'
 	      , size     = read $ field 11 line'
-	      , auf	 = aufg
+	      , matrikel = fromCGI $ field  4 line'
+	      , auf	 = fromCGI a
+	      , vor      = fromCGI v
 	      , pid      = field 8 wl			-- process id
 	      }
 	return ( e, rest )
