@@ -27,18 +27,20 @@ smp = sequence_ . map print
 
 next0 :: Int -> Pins -> [Bool] -> [Bool]
 -- wegen effizienz wird maximum ps nicht immer ausgerechnet
-next0 m ps xs = take m
-		$ not ( and $ do p <- ps ; return $ xs !! (p - 1) )
-		: xs
+next0 m ps xs = ( ( not $! ( and $! do p <- ps ; return $! xs !! (p - 1) ) ) )
+		    : take (m-1) xs 
 
 next :: Pins -> [Bool] -> [Bool]
-next ps = next0 (maximum $ 0 : ps) ps
+next ps = next0 (maximum $ 0 : ps)  ps
 
 zustands_folge :: Pins -> [[ Bool ]]
 zustands_folge ps = 
     let m = maximum (0 : ps)
 	start = replicate m True 
-    in  tail $ iterate_strict (next0 m ps) $ start
+	fun = next0  m ps
+    in  tail -- das ist trivial wahr, erzwingt aber die auswertung der liste
+	     $ takeWhile (( >= 0) . sum . map fromEnum )
+	     $ iterate_strict fun $ start
 
 folge :: Pins -> [ Bool ]
 folge = map head . zustands_folge
