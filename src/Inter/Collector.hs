@@ -52,6 +52,7 @@ import qualified Graph.Circle.Plain
 -- import qualified Graph.Bisekt.Quiz
 
 import qualified Number.Base.Central
+import qualified Number.Float.Central
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -118,4 +119,8 @@ makers = [ Blank.make
 
          , Number.Base.Central.make_fixed
          , Number.Base.Central.make_quiz
+
+         , Number.Float.Central.fixed_from_float
+         , Number.Float.Central.quiz_from_float
+
 	 ]

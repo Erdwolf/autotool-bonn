@@ -4,7 +4,7 @@ module Number.Float.Data where
 
 import Prelude hiding ( exponent )
 import qualified Number.Base.Data as B
-import Number.Base.Data ( Wert, wert, Wert_at, wert_at ) 
+import Number.Wert 
 
 import Autolib.Reader
 import Autolib.ToDoc

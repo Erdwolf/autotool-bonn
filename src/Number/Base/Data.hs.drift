@@ -7,6 +7,7 @@ import Autolib.Reader
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
+import Number.Wert
 import Data.Char
 
 data Ziffer = Ziffer Int
@@ -43,14 +44,6 @@ data Zahl = Zahl { basis :: Int
     deriving ( Eq, Ord, Typeable )
 
 {-! for Zahl derive: Reader, ToDoc, Haskell2Xml !-}
-
--------------------------------------------------------------------
-
-class Num b => Wert a b where 
-    wert :: a -> b
-
-class Num b => Wert_at a b where 
-    wert_at :: Int -> a -> b
 
 instance Wert_at [ Ziffer ] Integer where
     wert_at b zs = 

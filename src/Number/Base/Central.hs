@@ -17,6 +17,7 @@ import Data.Typeable
 import Autolib.Size
 import System.Random
 
+import Number.Wert
 import Number.Base.Data
 import Number.Base.Param
 
@@ -46,7 +47,7 @@ instance Partial Convert (Zahl, Int) Zahl where
 
     total Convert (z, b) x = do
          assert ( (wert z :: Integer) == (wert x :: Integer) )
-                $ text "die Bedeutung der Zahlen sollen übereinstimmen."
+                $ text "Stimmen die Bedeutungen der Zahlen sollen überein?"
 
 
 
