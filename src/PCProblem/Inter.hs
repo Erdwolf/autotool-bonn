@@ -66,7 +66,7 @@ inter (PCP pcp) = do
 		    }
 
     return $ \ listener -> ( above ( row $ pairs listener )
-			           ( column [ top, bot ] )
+			           ( column [ top, mid, bot ] )
 			   , set 
 			   )
 
