@@ -5,11 +5,6 @@ module Inter.Boiler where
 import Inter.Types
 
 
--- vorführen:
-
-import qualified Demo.L
-
-
 -- ws03/aus NFA 
 import qualified Serie1
 import qualified Serie2
@@ -22,10 +17,10 @@ boiler = sequence $
        -- der erste ist der default-wert!
 
        [ 
-       , Serie2.generate
+        Serie2.generate
 
        ]
 	   ++ Serie2.generates
 
-       ++ Demo.L.generates
+
 

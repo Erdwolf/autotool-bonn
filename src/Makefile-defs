@@ -2,7 +2,9 @@
 # defaults
 ########################################################################
 
+ifndef GHC
 GHC = ghc
+endif
 
 # System spezifische Einstellung
 
@@ -31,16 +33,6 @@ endif
 # erlaube überschreibung, s.o
 ifndef DIRS
 DIRS = util:wash:control:bridge:challenger:ss03/bk/aufgaben:ws03/compilerbau:ws03/aus:ws03/informatik
-endif
-
-########################################################################
-# ugly ugly ugly : system-spezifische teile des makefiles
-########################################################################
-
-ifeq ($(shell hostname), theo1)
-EXTRA_PACKS = -package HToolkit
-DEFINES = -DHOME=1
-GHC = ghc-6.0
 endif
 
 ########################################################################

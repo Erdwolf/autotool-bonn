@@ -13,6 +13,12 @@ COMMON = util:wash:control:bridge:challenger:
 
 DIRS = $(LOCAL)$(COMMON)
 
+ifeq ($(shell hostname), theo1)
+EXTRA_PACKS = -package hsql
+DEFINES = -DHOME=1
+GHC = ghc6
+endif
+
 # common parts ############################################################
 
 include Makefile
