@@ -176,6 +176,7 @@ studStatusPage mat F0 =
 				do 
  				attr "cellspacing" "2" 
 				attr "cellpadding" "5"
+				th3 "ACHTUNG: die Email-Ueberpruefung ist noch nicht aktiv."
 				tableRow2 (text "Name") ( text ( vorname ++ ", " ++ name ++ " " ) )
 				tableRow2 (text "Matrikelnr.") (text mat)
 				tableRow2 (text "Email-Adresse") (text email)
