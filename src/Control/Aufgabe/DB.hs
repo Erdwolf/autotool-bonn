@@ -27,7 +27,8 @@ select_where wh = do
         ( Select $ map reed [ "ANr", "VNr", "Name"
 			    , "Typ", "Config", "Remark"
 			    , "Highscore", "Status", "Von" , "Bis"
-			    , "NOW() BETWEEN ( Von AND Bis ) as Current"
+			    , "NOW() < Von as Early"
+			    , "NOW() > Bis as Late"
 			    ]
 	) $
         [ From $ map reed [ "aufgabe" ] 
@@ -48,7 +49,8 @@ common = collectRows $ \ state -> do
         g_status <- getFieldValue state "Status"
         g_von <- getFieldValue state "Von"
         g_bis <- getFieldValue state "Bis"
-	g_current <- getFieldValue state "Current"
+	g_early <- getFieldValue state "Early"
+	g_late <- getFieldValue state "Late"
 
         return $ Aufgabe { anr = g_anr
     			   , vnr = g_vnr
@@ -57,7 +59,7 @@ common = collectRows $ \ state -> do
     			 , status = g_status
     			   , von = g_von
     			   , bis = g_bis
-			  , current = g_current
+			  , timeStatus = timer g_early g_late
     			   , typ = g_typ
     			   , config = g_config
     			   , remark = g_remark

@@ -15,6 +15,10 @@ import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 data Vorlesung =
      Vorlesung { vnr :: VNr
 	       , name :: Name
+	       , einschreibVon :: Time
+	       , einschreibBis :: Time
+	       -- | nicht in DB, aber bei Zugriff ausgerechnet
+	       , einschreib :: TimeStatus
 	       }
 
 {-! for Vorlesung derive: Reader, ToDoc, Haskell2Xml !-}

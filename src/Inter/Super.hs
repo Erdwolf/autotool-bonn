@@ -21,6 +21,8 @@ import Control.Types
     , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr
     )
 
+import qualified Control.Types   
+
 
 import qualified Inter.Collector
 
@@ -240,7 +242,7 @@ edit_aufgabe mk mauf vnr manr type_click = do
 			       , A.status = fromMaybe Demo mstatus
 			       , A.von = von
 			       , A.bis = bis
-			       , A.current = False -- ist egal
+			       , A.timeStatus = Control.Types.Early -- ist egal
 			       }
             when up $ io $ A.put manr auf'
             return auf'

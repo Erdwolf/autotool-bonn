@@ -26,11 +26,16 @@ data Aufgabe  =
 	     -- | das wird bei DB-zugriff berechnet (NOW between VON and BIS)
 	     -- damit wir außerhalb der DB keine Uhr brauchen
 	     -- und keine zeiten vergleichen müssen
-	     , current :: Bool
+	     , timeStatus :: TimeStatus
 	     }
      deriving ( Eq, Ord, Typeable )
 
 {-! for Aufgabe derive: Reader, ToDoc, Haskell2Xml !-}
+
+
+-- | for backwards compatibility
+current :: Aufgabe -> Bool
+current a = Current == timeStatus a
 
 
 

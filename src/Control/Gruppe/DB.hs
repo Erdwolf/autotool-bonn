@@ -1,61 +1,61 @@
-module Control.Vorlesung.DB where
+module Control.Gruppe.DB where
 
 --  $Id$
 
 import Control.SQL
 import Control.Types
-import Control.Vorlesung.Typ
+import Control.Gruppe.Typ
 
 import Prelude hiding ( all )
 
 qq =  Select 
-     $ map reed [ "vorlesung.VNr as VNr" 
-		, "vorlesung.Name as Name"
-		, "vorlesung.EinschreibVon as Von"
-		, "vorlesung.EinschreibBis as Bis"
-	        , "NOW() < vorlesung.EinschreibVon as Early"
-		, "NOW() > vorlesung.EinschreibBis as Late"
+     $ map reed [ "gruppe.VNr as VNr" 
+		, "gruppe.Name as Name"
+		, "gruppe.EinschreibVon as Von"
+		, "gruppe.EinschreibBis as Bis"
+	        , "NOW() < gruppe.EinschreibVon as Early"
+		, "NOW() > gruppe.EinschreibBis as Late"
 		] 
 
--- | get alle vorlesungen aus DB
+-- | get alle gruppeen aus DB
 -- TODO: implementiere filter
-get :: IO [ Vorlesung ]
+get :: IO [ Gruppe ]
 get = do
     conn <- myconnect
     stat <- squery conn $ Query qq
-        [ From $ map reed [ "vorlesung" ] ]
+        [ From $ map reed [ "gruppe" ] ]
     common stat
 
-get_this :: VNr -> IO [ Vorlesung ]
+get_this :: VNr -> IO [ Gruppe ]
 get_this vnr = do
     conn <- myconnect
     stat <- squery conn $ Query qq
-        [ From $ map reed [ "vorlesung" ] 
-        , Where $ equals ( reed "vorlesung.VNr" ) ( toEx vnr )
+        [ From $ map reed [ "gruppe" ] 
+        , Where $ equals ( reed "gruppe.VNr" ) ( toEx vnr )
         ]
     common stat
 
-get_tutored :: SNr -> IO [ Vorlesung ]
+get_tutored :: SNr -> IO [ Gruppe ]
 get_tutored snr = do
     conn <- myconnect
     stat <- squery conn $ Query qq
-        [ From $ map reed [ "tutor", "vorlesung" ] 
+        [ From $ map reed [ "tutor", "gruppe" ] 
 	, Where $ ands
 	        [ equals ( toEx snr ) ( reed "tutor.SNr" ) 
-		, equals ( reed "tutor.VNr" ) ( reed "vorlesung.VNr" )
+		, equals ( reed "tutor.VNr" ) ( reed "gruppe.VNr" )
 		]
 	]
     common stat
 
-get_attended :: SNr -> IO [ Vorlesung ]
+get_attended :: SNr -> IO [ Gruppe ]
 get_attended snr = do
     conn <- myconnect
     stat <- squery conn $ Query qq
-        [ From $ map reed [ "stud_grp", "gruppe", "vorlesung" ] 
+        [ From $ map reed [ "stud_grp", "gruppe", "gruppe" ] 
 	, Where $ ands
 	        [ equals ( toEx snr ) ( reed "stud_grp.SNr" ) 
 		, equals ( reed "stud_grp.GNr" ) ( reed "gruppe.GNr" )
-		, equals ( reed "gruppe.VNr" ) ( reed "vorlesung.VNr" )
+		, equals ( reed "gruppe.VNr" ) ( reed "gruppe.VNr" )
 		]
 	]
     common stat
@@ -69,7 +69,7 @@ common = collectRows $ \ state -> do
         g_bis <- getFieldValue state "Bis"
 	g_early <- getFieldValue state "Early"
 	g_late <- getFieldValue state "Late"
-        return $ Vorlesung { vnr = g_vnr
+        return $ Gruppe { vnr = g_vnr
 			 , name = g_name
 			  , einschreibVon = g_von
 			  , einschreibBis = g_bis
@@ -105,10 +105,10 @@ teilnehmer vnr = do
     return res
 
 -- | put into table:
--- do not evaluate Vorlesung.vnr (it may be undefined!)
+-- do not evaluate Gruppe.vnr (it may be undefined!)
 -- instead use first argument: Just vnr -> update, Nothing -> insert
 put :: Maybe VNr
-    -> Vorlesung
+    -> Gruppe
     -> IO ()
 put mvnr vor = do
     conn <- myconnect 
@@ -119,11 +119,11 @@ put mvnr vor = do
 		 ]
     case mvnr of
 	 Nothing -> squery conn $ Query
-            ( Insert (reed "vorlesung") common ) 
+            ( Insert (reed "gruppe") common ) 
 	    [ ]
          Just vnr -> squery conn $ Query
-            ( Update (reed "vorlesung") common ) 
-	    [ Where $ equals ( reed "vorlesung.VNr" ) ( toEx vnr ) ]
+            ( Update (reed "gruppe") common ) 
+	    [ Where $ equals ( reed "gruppe.VNr" ) ( toEx vnr ) ]
     disconnect conn
 
 -- | delete
@@ -132,7 +132,7 @@ delete :: VNr
 delete vnr = do
     conn <- myconnect 
     squery conn $ Query
-        ( Delete ( reed "vorlesung" ) )
-	[ Where $ equals ( reed "vorlesung.VNr" ) ( toEx vnr ) ]
+        ( Delete ( reed "gruppe" ) )
+	[ Where $ equals ( reed "gruppe.VNr" ) ( toEx vnr ) ]
     disconnect conn
 

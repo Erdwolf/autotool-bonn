@@ -10,6 +10,7 @@ module Control.Types
 , Typ, Config, Remark, Name, File, Email
 , Oks (..), Nos (..)
 , Time
+, TimeStatus (..), timer
 , FromCGI (..)
 , ToString (..)
 )
@@ -61,6 +62,24 @@ instance FromCGI Time where
     fromCGI s = Time s
 instance ToString Time where
     toString (Time x) = x
+
+-------------------------------------------------------------
+
+-- | bezeichnet eigenschaft der aktuellen zeit
+-- mit dem in der DB angegebenen bereich
+-- (es ist zu früh, richtig, zu spät)
+-- bei jedem zugriff auf DB wird das gesetzt,
+-- damit wir außerhalb der DB nie auf die Uhr sehen müssen
+-- (die stimmen nämlich sowieso nicht überein)
+
+data TimeStatus = Early | Current | Late deriving ( Eq, Ord, Typeable )
+
+{-! for TimeStatus derive : Reader, ToDoc, Haskell2Xml !-}
+
+timer :: Bool -> Bool -> TimeStatus
+timer True _ = Early
+timer _ True = Late
+timer False False = Current
 
 -------------------------------------------------------------
 
