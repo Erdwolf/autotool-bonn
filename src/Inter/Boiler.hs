@@ -4,7 +4,7 @@ module Inter.Boiler where
 
 import Inter.Types
 
-import qualified TM.FACTOR
+-- import qualified TM.FACTOR
 
 import qualified LOOP.SQRT
 import qualified LOOP.TIMES
@@ -20,6 +20,8 @@ import qualified FUN.QUIZ
 import qualified PCP.QUIZ
 import qualified SAT.QUIZ
 
+-- ws03/compilerbau:
+
 import qualified JVM.TIMES
 import qualified JVM.EXP1
 import qualified JVM.EXP2
@@ -27,6 +29,13 @@ import qualified JVM.EXP2
 import qualified JVM.NUM32
 import qualified JVM.NUM42
 import qualified JVM.NUMAT
+
+import qualified JVM.FIB
+
+-- ws03/informatik:
+import qualified Sortier.Netz.Check
+
+-- vorführen:
 
 import qualified Demo.L
 
@@ -48,10 +57,12 @@ boiler = sequence $
        , fmap Variant $ JVM.NUM42.generate
        , fmap Variant $ JVM.NUMAT.generate
 
+       , fmap Variant $ JVM.FIB.generate
+
        , fmap Variant $ PCP.QUIZ.generate
        , fmap Variant $ SAT.QUIZ.generate
 
-       , fmap Variant $ TM.FACTOR.generate
+--       , fmap Variant $ TM.FACTOR.generate
 
        , fmap Variant $ LOOP.SQRT.generate
        , fmap Variant $ LOOP.TIMES.generate
@@ -66,5 +77,6 @@ boiler = sequence $
           
        ]
        ++ Serie1.generates 
-       -- ++ Demo.L.generates
+       ++ Sortier.Netz.Check.generates 
+       ++ Demo.L.generates
 
