@@ -17,12 +17,13 @@ data Parameter = Parameter { length :: Int
 
 {-! for Parameter derive: ToDoc, Reader, Haskell2Xml !-}
 
+compute :: Integer -> Parameter
 compute x =
         let xs = takeWhile ( > 1 )
 	       $ iterate ( \ x -> if even x then div x 2 else 3 * x + 1 )
 	       $ x
         in Parameter { length = Prelude.length xs 
-			    , top = maximum xs
+			    , top = foldr max 1 xs
 			    }
 
 one :: Parameter
