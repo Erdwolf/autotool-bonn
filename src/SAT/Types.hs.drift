@@ -8,6 +8,7 @@ import FiniteMap
 import ToDoc
 import Reader
 import ReadFM
+import Sets
 
 -- *****************************************************************
 --Bemerkungen: 
@@ -21,7 +22,7 @@ data SAT = SAT deriving Show
 
 -- Elementare Def.
 data Literal = Pos Variable | Neg Variable
-    deriving (Show,Read,Eq,Ord)
+    deriving (Eq,Ord)
 
 unLiteral ( Pos v ) = v
 unLiteral ( Neg v ) = v
@@ -31,18 +32,46 @@ opposite ( Neg v ) = Pos v
 
 {-! for Literal derive : ToDoc, Reader !-}
 
+instance Show Literal where show = render . toDoc
+instance Read Literal where readsPrec = parsec_readsPrec
 
---Klausel = Tripeln von Literalen
-type Klausel = (Literal,Literal,Literal)
+-- Klausel = Tripeln von Literalen
+-- type Klausel = (Literal,Literal,Literal)
 
---Formeln in 3KNF = Liste von Klauseln
-type Formel = [Klausel]
+data Klausel = Or [ Literal ] deriving ( Eq, Ord )
 
---Variable = String
+literale :: Klausel -> [ Literal ]
+literale (Or lits) = lits
+
+{-! for Klausel derive : ToDoc, Reader !-}
+
+instance Show Klausel where show = render . toDoc
+instance Read Klausel where readsPrec = parsec_readsPrec
+
+-- Formeln in 3KNF = Liste von Klauseln
+-- type Formel = [Klausel]
+data Formel = And [Klausel]
+
+klauseln :: Formel -> [ Klausel ]
+klauseln (And cls) = cls
+
+{-! for Formel derive : ToDoc, Reader !-}
+
+instance Show Formel where show = render . toDoc
+instance Read Formel where readsPrec = parsec_readsPrec
+
+-- Variable = String
 type Variable = String 
 
---Belegung = Variable -> B00l
+-- Belegung = Variable -> B00l
 type Belegung = FiniteMap Variable Bool
-type Map = [(Literal,Literal)]
+-- type Map = [(Literal,Literal)]
 
+
+
+variablen :: Formel -> Set Variable
+variablen (And cls) = mkSet $ do
+    Or lits <- cls
+    lit <- lits
+    return $ case lit of Pos v -> v ; Neg v -> v
 

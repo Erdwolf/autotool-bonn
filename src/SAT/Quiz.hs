@@ -2,13 +2,19 @@ module SAT.Quiz where
 
 -- $Id$
 
-import SAT.Types
+import SAT.SAT
 import SAT.Param
 import SAT.Generator
 
 import Inter.Types
+
 import Reporter
 import ToDoc
+
+import Util.Datei
+import Util.Cache
+import Util.Seed
+
 
 quiz :: String -- Aufgabe
      -> String -- Version
@@ -25,30 +31,18 @@ quiz auf ver par =
 	     -- gen :: Key -> IO ( Reporter i )
 	     , gen = \ key -> do
 	           seed $ read key
-	           ( p, f ) <- cache (  Datei { pfad = [ "autotool", "cache"
+	           ( f, b ) <- cache (  Datei { pfad = [ "autotool", "cache"
 					   , auf, ver
 					   ]
 				  , name = key ++ ".cache" 
 				  }
-			 ) ( generator par )
+			 ) ( hgen2 par )
 	           return $ do
 	               inform $ vcat
-	                  [ text "Finden Sie eine erfüllende Belegung für diese Formel:
-			  , nest 4 $ toDoc p
+	                  [ text "Finden Sie eine erfüllende Belegung für diese Formel:"
+			  , nest 4 $ toDoc f
 			  ]
-	               return p
+	               return f
 	     }
 
-
-var = Var    {  problem = SAT
-	     , variant = "simple"
-	     , key = \ matrikel -> do
-	         -- d. h. jeder bekommt immer die gleiche aufgabe
-	         return matrikel
-	     , gen = \ matrikel -> do
-                 let f = bsp_formel
-	         inform $ text "Finden Sie eine erfüllende Belegung für"
-	         inform $ toDoc f
-	         return f
-	     }
 

@@ -18,6 +18,7 @@ import qualified FUN.FIB
 import qualified FUN.QUIZ
 
 import qualified PCP.QUIZ
+import qualified SAT.QUIZ
 
 import qualified Demo.L
 
@@ -40,6 +41,7 @@ boiler = sequence $
        , fmap Variant $ FUN.QUIZ.generate
 
        , fmap Variant $ PCP.QUIZ.generate
+       , fmap Variant $ SAT.QUIZ.generate
        ]
        ++ Demo.L.generates
 

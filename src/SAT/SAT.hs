@@ -49,13 +49,8 @@ import Number
 import Iso
 
 import SAT.Types
-import SAT.Inter
-
-variablen :: Formel -> Set Variable
-variablen f = mkSet $ do
-    ( l1, l2, l3 ) <- f
-    l <- [ l1, l2, l3 ]
-    return $ case l of Pos v -> v ; Neg v -> v
+import SAT.Wert
+-- import SAT.Inter -- ersetzt durch Quiz
 
 
 ---------------------------------------------------------------------------
@@ -77,15 +72,23 @@ instance Partial SAT Formel Belegung where
 	     ]
 
 	let wrong = do 
-	        klaus <- f
-		False <- maybeToList $ m_wert_klausel klaus b
+	        klaus <- klauseln f
+		False <- maybeToList $ wert klaus b
 		return klaus
 	when ( not $ null wrong ) $ reject $ vcat
 	     [ text "Diese vollständig belegten Klauseln sind nicht erfüllt:"
 	     , nest 4 $ toDoc wrong
 	     ]
 	inform $ text "Alle vollständig belegten Klauseln sind erfüllt."
-	       
+
+        let open = do
+		 klaus <- klauseln f
+		 Nothing <- return $ wert klaus b
+		 return klaus
+	inform $ vcat
+	       [ text "Diese Klauseln noch nicht erfüllt:"
+	       , nest 4 $ toDoc open
+	       ]
 
     total SAT f b = do
         let fehl = minusSet ( variablen f ) ( mkSet $ keysFM b )

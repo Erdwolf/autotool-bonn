@@ -4,11 +4,13 @@ module SAT.Generator where
 
 import SAT.Types
 import SAT.Param
+import SAT.Wert
 import SAT.State
 
 import Random
 import Util.Zufall
 import Util.Sort
+import qualified Relation
 import Set
 import FiniteMap
 import Monad ( guard )
@@ -20,12 +22,14 @@ import Maybe
 hgen2 :: Param -> IO ( Formel, Belegung )
 hgen2 p = do
     Just s <- generate p `repeat_until` isJust
-    let mkf cls = do 
-	    xyz <- setToList cls
-	    let [x,y,z] = sort xyz
-	    return ( x, y, z )
-    return ( mkf $ formula s, assignment s )
-
+    let strat f = And $ sort 
+		$ map ( \ k -> Or $ sort $ literale k ) 
+		$ klauseln f
+	f = strat $ formula s
+	b = assignment s
+    case wert f b of -- sanity check
+         Just True -> return ( f, b )
+	 sonst     -> error $ "SAT.Generator: " ++ show (f, b)
 
 mkBel :: Param -> IO Belegung
 mkBel p = do
@@ -57,26 +61,34 @@ generate p = do
 
 step :: State -> IO (Maybe State)
 step s = do
-     -- print s
-     putStr "*"
+--     putStr $ show ( todo s, length $ literale ( clause s) )
      if 0 == todo s  
 	 then return $ Just s
-         else if length ( clause s ) == width s 
-	 then step $ advance s
+         else if length ( literale $ clause s ) == width s 
+	 then advance s
 	 else do
               let cand = do 
 		  -- condition 1
                   lit <- setToList $ unfrequent s
+		  let var = unLiteral lit -- neu
+		      vars = map unLiteral (literale $ clause s ) -- schon da
 		  -- muß erfüllen
                   let forced = not ( csat s ) 
-			   && length ( clause s ) == pred ( width s ) 
+			   && length vars == pred ( width s ) 
+		  guard $ forced <= ( lit `elementOf` satisfying s )
+
 		  -- condition 2
-                  guard $ not
-			$ unLiteral lit `elem` map unLiteral ( clause s ) 
-		  -- todo: dependencies
+                  guard $ not $ var `elem` vars
+
+		  -- condition 3
+                  let deps = Relation.simages ( dependencies s ) ( mkSet vars )
+		  -- guard $ not $ var `elementOf` deps
+
+		  -- todo: dependencies, condition 4 (too hard for few vars)
+
 		  -- condition 5
-                  guard $  lit `elementOf` satisfying s
-			|| opposite lit `elementOf` morefrequent s
+                  -- guard $  lit `elementOf` satisfying s
+		  --	|| opposite lit `elementOf` morefrequent s
 		  return lit
 	      if null cand 
 		 then return Nothing
@@ -95,12 +107,12 @@ start p = do
 	         return $ if val then Pos var else Neg var
 	   , width = 3
 	   , todo = clauses p
-	   , formula  = emptySet
-	   , clause = []
+	   , formula  = And []
+	   , clause = Or []
 	   , csat = False
 	   , unfrequent = mkLits p
 	   , morefrequent = emptySet
-	   , dependencies = emptyFM
+	   , dependencies = Relation.make []
 	   }
 
 pick :: State -> Literal -> State
@@ -115,22 +127,26 @@ pick s lit =
 		    else s { unfrequent = unf
 			   , morefrequent = mof
 			   }
+         deps = Relation.make $ do 
+                  let v1 = unLiteral lit
+                  v2 <- map unLiteral $ literale ( clause s )
+                  [ (v1, v2), (v2, v1) ]
     in   update 
-	 $ s { clause = lit : clause s
+	 $ s { clause = Or $ lit : literale ( clause s )
 	     , csat = ( lit `elementOf` satisfying s ) || csat s
-	     -- , dependencies 
+	     , dependencies = Relation.plus ( dependencies s ) deps
 	     }
 
-advance :: State -> State
+advance :: State -> IO ( Maybe State )
 -- collect recently built clause
 -- add it to the formula
-advance s = 
-    if clause s `elementOf` formula s
-    then s -- ignore
-    else s { todo = pred $ todo s
-	   , formula = formula s `union` unitSet (clause s)
+advance s = do
+    if clause s `elem` klauseln (formula s)
+        then return Nothing
+        else return $ return $ s { todo = pred $ todo s
+	   , formula = And $ clause s : klauseln ( formula s )
 	   , csat = False
-	   , clause = []
+	   , clause = Or []
 	   }
 
 

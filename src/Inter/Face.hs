@@ -91,6 +91,7 @@ iface variants env = do
 			       , rows $ show $ height + 2
 			       , cols $ show $ P.input_width par2
 			       ]
+	                 +++ submit "submit" "submit"
 
 	      return $ page par2 $ inst +++ log +++ status +++ ans
 
@@ -98,9 +99,8 @@ iface variants env = do
 
 page par msg = 
     let pre = preface par
-	sub = submit "submit" "submit"
     in  header << thetitle << "Inter.Face"
-             +++ body ( form ( pre +++ sub +++ msg )
+             +++ body ( form ( pre +++ msg )
 		      ! [ Text.Html.action "Face.cgi"
 			, method "POST" ]
 		      )

@@ -1,4 +1,4 @@
-module SAT.Inter where
+obsolete module SAT.Inter where
 
 -- $Id$
 

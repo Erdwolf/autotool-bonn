@@ -10,6 +10,7 @@ import ToDoc
 import Reader
 
 import Sets
+import qualified Relation
 import FiniteMap
 
 data State = 
@@ -17,12 +18,12 @@ data State =
 	   , satisfying :: Set Literal -- dazu gehörende literale
 	   , todo :: Int -- noch so viele klauseln
 	   , width :: Int -- soviele literale pro klausel
-	   , formula  :: [[Literal]] -- soweit schon gebaut
-	   , clause :: [ Literal ] -- currently built
+	   , formula  :: Formel -- soweit schon gebaut
+	   , clause :: Klausel -- currently being built
 	   , csat :: Bool -- klausel ist bereits erfüllt?
 	   , unfrequent :: Set Literal
 	   , morefrequent :: Set Literal
-	   , dependencies :: FiniteMap Variable ( Set Variable )
+	   , dependencies :: Relation.Type Variable Variable
 	   }
 
 {-! for State derive: ToDoc, Reader !-}
