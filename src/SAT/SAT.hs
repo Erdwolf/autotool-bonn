@@ -34,7 +34,7 @@ import ReadFM
 import Challenger
 import ToDoc
 import Monad (guard)
-import Set
+import Sets
 import System
 
 import Step
