@@ -84,11 +84,15 @@ loop :
 		Exp/Loop.hs -o Exp/Loop
 
 install-matchbox : do
+	$(GHC_COMMAND) \
+		SRS/Matchbox.hs -o SRS/Matchbox
 	$(GHC_COMMAND)  \
 		SRS/Closure/Terminator.hs -o $(CGIDIR)/Terminator.cgi
 	$(GHC_COMMAND)  \
 		SRS/Deleting/Demo.hs -o $(CGIDIR)/Demo.cgi
 	cp $(HTMLS) $(CGIDIR)/
+	cp SRS/Matchbox $(CGIDIR)/
+	bzip2 -v --force --best $(CGIDIR)/Matchbox
 
 
 ###############################################################################
