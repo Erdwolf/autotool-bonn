@@ -54,13 +54,13 @@ step conf vpool = do
 	    z <- mutate conf x
 	    return $ (fitness conf z, z)
 
-    let vpool' = take (size conf)
+    let vpool' = id -- take (size conf)
 	       $ compact (num_compact conf)
 	       $ combis ++ mutants ++ popul vpool
 
     return $ Pool
 	   { num = succ $ num vpool
-	   , popul = take (size conf) vpool'
+	   , popul = vpool'
            , previous = maximum $ map fst $ popul vpool
 	   }
 

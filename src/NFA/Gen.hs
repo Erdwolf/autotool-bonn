@@ -2,6 +2,8 @@
 
 module NFA.Gen where
 
+--  $Id$
+
 import NFA.Genetic
 import NFA.Synchronize
 
@@ -37,7 +39,7 @@ fixed xs conf =
 conf :: Int -> Conf Gene Int
 conf n = Conf 
        { fitness = \ g ->  case shosyn $ mach g of
-	                     w : _ | not $ standard g -> length w
+	                     w : _ | nohc g -> length w
 	                     _     -> 0
        , threshold = (n-1) ^ 2
        , generate = sequence $ replicate n $ do
@@ -49,8 +51,9 @@ conf n = Conf
 	    , combine_horizontally a b
 	    ]
        , mutate = \ a -> entweders
-            [ reverse_subsequence a
-	    , often 2 change_target a
+            [ often  1 reverse_subsequence a
+	    , often  1 change_target       a
+	    , shift a 
 	    ]
        , size = 100
        , num_mutate = 50
@@ -77,6 +80,14 @@ combine_horizontally a b = do
 combine_vertically a b = do
     k <- randomRIO (0, length a - 1)
     return $ take k a ++ drop k b
+
+-- | rotate (cyclically) by one
+shift g = do
+    let xs = map fst g ; ys = map snd g
+    f <- randomRIO (False, True)
+    case f of
+	 False -> return $ zip (rotate xs) ys
+	 True  -> return $ zip xs (rotate ys)
 
 -- | flip two letters (from one state)
 flip_letters a = do
@@ -132,6 +143,16 @@ tofile fname r = do
         ( _ , out :: Text.Html.Html ) <- Autolib.Reporter.run r
 	writeFile ( fname ++ ".html" ) $ show out
 
+------------------------------------------------------------------------------
+
+both_kein_perm :: Gene -> Bool
+both_kein_perm g =
+    kein_perm ( map fst g ) && kein_perm ( map snd g )
+
+kein_perm :: [Int] -> Bool
+kein_perm xs = 
+    cardinality (mkSet xs) < length xs
+
 -- | for at least one letter, 
 -- number of states that are changed is larger than 1
 fast_id :: [Int] -> Bool
@@ -146,6 +167,10 @@ kreis xs =
         full orb = length orb == length xs
     in  full $ orbit xs
 
+nohc :: Gene -> Bool
+nohc g = not (kreis $ map fst g)
+      && not (kreis $ map snd g)
+
 standard :: Gene -> Bool
 standard g = 
     let xs = map fst g
@@ -153,6 +178,7 @@ standard g =
     in     ( fast_id xs && kreis ys )
         || ( fast_id ys && kreis xs )
 
+----------------------------------------------------------------------------
 
 mach g = make $ umform g 
 umform g = [map fst g, map snd g]
