@@ -13,7 +13,8 @@ module Graph.Util
 where
 
 import Autolib.Graph.Type hiding ( iso )
-import Autolib.Graph.Ops ( restrict )
+import Autolib.Graph.Ops ( restrict , unlinks )
+import Autolib.Graph.Util ( isZusammen , anzKnoten )
 import Autolib.Reporter 
 import Autolib.Reporter.Set
 
@@ -112,3 +113,81 @@ no_fixed_layout g = g { graph_layout = emptyFM
 		      , layout_hints = []
 		      }
 
+-------------------------------------------------------------------------------
+
+-- | radius und durchmesser in einem rutsch
+
+rad_diam :: Ord a => Graph a -> (Int,Int)
+rad_diam g = let suc = nachbarn g
+		 ls = map ( pred . length . schichten suc ) $ lknoten g
+             in ( minimum ls , maximum ls )
+
+-- | radius
+
+rad :: Ord a => Graph a -> Int
+rad = fst . rad_diam
+
+-- | durchmesser
+
+diam :: Ord a => Graph a -> Int
+diam = snd . rad_diam
+
+-------------------------------------------------------------------------------
+
+-- | artikulationspunkte: knoten, die durch entfernen zu einem
+-- | nicht-zusammenhängenden graphen führen. beachte: wenn der
+-- | ausgangsgraph nicht zusammenhängend ist, dann sind alle knoten
+-- | artikulationspunkte!
+
+artikulationen :: GraphC a => Graph a -> [a]
+artikulationen g = filter ( \ n -> not $ isZusammen 
+		          $ restrict (delFromSet (knoten g) n) g 
+			  )
+		   $ setToList $ knoten g
+
+-------------------------------------------------------------------------------
+
+-- | einfach zusammenhängende komponenten als liste von graphen
+
+komponenten :: GraphC a => Graph a -> [Graph a]
+komponenten g
+    | isEmptySet rs_quer = [g]
+    | otherwise          = restrict rs g : komponenten (restrict rs_quer g)
+    where v       = knoten g
+	  x       = head $ setToList v
+	  rs      = reachables g x
+	  rs_quer = knoten g `minusSet` rs
+
+-------------------------------------------------------------------------------
+
+-- | bisektion: eine kantenmenge wird entfernt, sodass der
+-- | resultierende graph in zwei teilgraphen (nicht komponenten!)
+-- | zerfällt, die sich um höchstens eins in der knotenzahl
+-- | unterscheiden und zwischen denen keine kanten verlaufen
+
+bisektionen :: GraphC a => Graph a -> [ Set (Kante a) ]
+bisektionen g = filter ( ist_bisektiert . unlinks g . setToList 
+		       ) $ subsets $ kanten g
+
+ist_bisektiert :: Ord a => Graph a -> Bool
+ist_bisektiert g = let n  = anzKnoten g
+		       ns = teilmengen (div n 2) (knoten g)
+		   in any (bisektierend g) ns
+
+bisektierend :: Ord a => Graph a -> Set a -> Bool
+bisektierend g ns = all ( \ k -> not $ or
+			  [ and [       von  k `elementOf` ns
+				, not $ nach k `elementOf` ns 
+				]
+			  , and [       nach k `elementOf` ns
+				, not $ von  k `elementOf` ns 
+				]
+			  ]
+			) $ lkanten g
+
+
+-- | bisektionsweite: minimale anzahl kanten die zur bisektion
+-- | entfernt werden muss -> maß für zuverlässigkeit von netzen
+
+bisektionsweite :: GraphC a => Graph a -> Int
+bisektionsweite = cardinality . head . bisektionen
