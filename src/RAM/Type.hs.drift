@@ -1,0 +1,45 @@
+-- -*- mode: haskell -*-
+
+module RAM.Type where
+
+-- $Id$
+
+import RAM.Builtin
+
+import ToDoc
+import Reader
+import Size
+
+type Var = String
+
+data Statement = Inc Var
+	 | Dec Var
+	 | Loop Var Program
+	 | While Var Program
+	 | Builtin { name :: Builtin, res :: Var, args :: [ Var ] }
+    deriving ( Eq, Ord )
+
+type Program = [ Statement ]
+
+instance Size Program where 
+    size = sum . map size
+instance Size Statement where
+    size ( Loop v p ) = succ $ size p
+    size ( While v p ) = succ $ size p
+    size _ = 1
+
+flatten :: Program -> Program
+flatten ps = do
+    p <- ps
+    p : case p of Loop v q -> flatten q
+		  While v q -> flatten q
+		  _ -> []
+
+{-! for Statement derive: ToDoc, Reader !-}
+
+instance Show Statement where
+    show = render . toDoc
+
+instance Read Statement where
+    readsPrec = parsec_readsPrec
+
