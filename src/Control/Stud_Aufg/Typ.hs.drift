@@ -15,7 +15,6 @@ import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 data Stud_Aufg  =
      Stud_Aufg { snr :: SNr
 	     , anr :: ANr
-	     , name :: Name
              , ok :: Oks
 	     , no :: Nos
              -- ignored: size, scoretime

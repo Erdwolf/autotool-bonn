@@ -7,6 +7,7 @@ import qualified System.Posix
 import qualified Inter.Param as P
 
 import Control.Types (toString)
+import Inter.Logged
 
 import Data.Maybe
 
@@ -15,7 +16,7 @@ store ::  P.Type -> Maybe Int -> IO String
 -- d. h. überschreibt immer
 -- von richtigen einsendungen: speicher in "$pid.input"
 -- d. h. eigentlich kein überschreiben
-store p mres = do
+store p mres = logged "Inter.store" $ do
     let flag = isJust mres
     pid <- if flag then fmap show $ System.Posix.getProcessID 
 	           else return "latest"
@@ -23,11 +24,11 @@ store p mres = do
     return $ pid
 
 latest :: P.Type -> IO String
-latest p = do
+latest p = logged "Inter.latest" $ do
     lesen ( location p "latest" False ) 
 
 load :: P.Type -> String -> Bool -> IO String
-load p pid flag = do
+load p pid flag = logged "Inter.load" $ do
     lesen ( location p pid flag )
     
 

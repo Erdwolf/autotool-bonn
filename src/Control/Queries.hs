@@ -549,4 +549,3 @@ mglNextAufgabenDB snr = wrapped "mglNextAufgabenDB" $ do
 
 
 
-

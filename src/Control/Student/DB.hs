@@ -37,9 +37,10 @@ get mnr = do
                     ) stat
     return inh
 
+
 -- | put into table:
--- do not evaluate Student.anr (it may be undefined!)
--- instead use first argument: Just anr -> update, Nothing -> insert
+-- do not evaluate Student.snr (it may be undefined!)
+-- instead use first argument: Just snr -> update, Nothing -> insert
 put :: Maybe SNr 
     -> Student
     -> IO ()

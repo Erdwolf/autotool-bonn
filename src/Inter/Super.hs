@@ -10,6 +10,7 @@ import Inter.Evaluate
 import Inter.Make 
 import Inter.Bank
 import Inter.Store 
+import Inter.Login
 import qualified Inter.Param as P
 
 import Control.Types ( toString, fromCGI, Name, Remark, HiLo (..), Time )
@@ -48,22 +49,9 @@ main = Inter.CGI.execute "Super.cgi"
 iface :: [ Make ] -> Form IO ()
 iface mks = do
 
-    stud <- Control.Student.CGI.login
-    let snr = S.snr stud
-    hr
     open btable
- 
-    tvors <- io $ V.get_tutored snr
-    -- unterschiede: tutor darf "alles",
-    -- student darf keine aufgaben ändern und nur aktuelle aufgaben sehen
-    let tutor = not $ null tvors
-    vors <- if tutor 
-            then return tvors
-	    else io $ V.get_attended snr
-
-    vnr <- selector_submit "vnr" "Vorlesung" 0 $ do
-        vor <- vors
-        return ( show $ V.name vor , V.vnr vor )
+    ( stud, vnr, tutor ) <- Inter.Login.form
+    let snr = S.snr stud
 
     aufs <- io $ A.get ( Just vnr ) ( not tutor ) -- student darf nur aktuelle
     let opts = do
@@ -74,7 +62,8 @@ iface mks = do
 	   then selector_edit_delete "anr" "Aufgabe" 0 
                    $ ( "(neue Aufgabe)", Nothing ) : opts
            else do 
-		( mauf, _ ) <- selector_submit_click "anr" "Aufgabe" Nothing $ opts
+		( mauf, _ ) <- selector_submit_click 
+			"anr" "Aufgabe" Nothing $ opts
                 return ( mauf, False )
     let manr = fmap A.anr mauf
     close -- table
@@ -263,101 +252,3 @@ mkpar stud auf = P.empty
 	    , P.ident = S.snr stud
             }
 
---------------------------------------------------------------------------
-
--- TODO: move to separate module (chop Control.CGI into pieces as well)
-
-defaulted_selector tag def opts = do
-    open row
-    plain tag
-    ms <- selector tag def opts
-    close
-    return $ fromMaybe ( snd $ opts !! def ) ms
-
-defaulted_textfield tag def = do
-    open row
-    plain tag
-    ms <- textfield tag def
-    close -- row
-    return $ fromMaybe def ms
-
-defaulted_textarea tag def = do
-    open row
-    plain tag
-    ms <- textarea tag def
-    close -- row
-    return $ fromMaybe def ms
-
-selector_submit tag title def opts = do
-    open row
-    plain title
-    mopt <- selector ("L" ++ tag) def opts
-    sopt <- submit   ("S" ++ tag) "submit"
-    close -- row
-    case mopt of
-	 Nothing -> case opts of
-              [( name, opt) ] -> return opt
-	      _       -> mzero
-	 Just opt -> do
-	      when sopt blank
-	      return opt
-
-selector_edit_delete tag title def opts = do
-    open row
-    plain title
-    mopt <- selector ("L" ++ tag) def opts
-    sopt <- submit   ("S" ++ tag) "edit"
-    dopt <- submit   ("D" ++ tag) "delete"
-    close -- row
-    case mopt of
-	 Nothing -> mzero
-	 Just opt -> do
-	      when sopt blank
-	      return ( opt, dopt )
-
-
--- | if default is Nothing, then stop here, else continue with default
-selector_submit_click :: Monad m
-	         => Tag 
-		 -> String 
-		 -> Maybe String -- ^ possible default
-		 -> [(String, a) ] 
-		 -> Form m (a, Bool)
-selector_submit_click tag title def opts = do
-    open row
-    plain title
-    mopt <- selector' ("L" ++ tag) (fromMaybe "XX" def) opts
-    sopt <- submit   ("S" ++ tag) "submit"
-    close
-    case mopt of
-	 Nothing -> case def of
-	      Nothing -> mzero
-	      Just d -> case lookup d opts of
-		   Nothing -> mzero
-                   Just opt -> return ( opt, False )
-	 Just opt -> do
-	      when sopt blank
-	      return ( opt, sopt )
-
-selector_submit' tag title def opts = do
-    ( opt, sopt ) <- selector_submit_click tag title def opts
-    return opt
-
-editor_submit :: ( ToDoc a, Reader a, Monad m )
-	      => Tag -- ^ tag
-	      -> String -- ^ title
-	      -> a -- ^ default
-	      -> Form m a
-editor_submit tag title ex = do
-    open row
-    plain title
-    sconf <- submit ("S" ++ tag) "submit"
-    mconf <- editor ("E" ++ tag) ex
-    close -- row
-    case mconf of
-	 Nothing -> do
-	     -- mzero
-	     return ex
-	 Just conf -> do
-             when sconf blank
-	     return conf
