@@ -32,7 +32,7 @@ instance ToDoc (Folge) where
 -- Instanz: PCP [(a,(String,String))]
 -- Beweis: Folge 
 
-instance (ToDoc PCP, Show PCP, Read PCP, Iso PCP
+instance (ToDoc PCP, Show PCP, Read PCP
          , ToDoc Folge, Show Folge, Read Folge)
     => Problem PCProblem PCP Folge where
 

@@ -45,7 +45,7 @@ data Graceful = Graceful deriving Show
 instance
     ( Ord knoten, Show knoten, ShowText knoten, ToDoc knoten
     , ToDoc (Graph knoten), Show (Graph knoten), Read (Graph knoten)
-    , Number (Graph knoten) (Graph Int), Show (Graph Int), Read (Graph Int), Iso (Graph knoten)
+--    , Number (Graph knoten) (Graph Int), Show (Graph Int), Read (Graph Int)
     , ToDoc (Labeling knoten), Show (Labeling knoten), Read (Labeling knoten)
     )
     => Problem Graceful (Graph knoten) (Labeling knoten) where

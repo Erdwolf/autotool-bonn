@@ -29,10 +29,10 @@ instance (ToDoc [a])=> ToDoc (Klassen a) where
 
 
 instance
-	(ToDoc ((Graph a, Integer)), Show ((Graph a, Integer)), Read ((Graph a, Integer)), Iso ((Graph a, Integer))
+	(ToDoc ((Graph a, Integer)), Show ((Graph a, Integer)), Read ((Graph a, Integer))
 	, ToDoc (Klassen a),Show (Klassen a), Read (Klassen a), Ord a, ToDoc a
 	, Show a, ShowText a)
-	=> Problem Col (Graph a, Integer) (Klassen a) where
+	=> Problem Col ((Graph a), Integer) (Klassen a) where
 
 	validiere Col (g,anzahl) lsg =
 		let
