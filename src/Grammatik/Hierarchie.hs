@@ -240,5 +240,5 @@ typ3 = combine "Typ3"
        $ [ typ0, kontextfrei, linear, rechtslinear ]
 
 immergut :: C.Type
-immergut = C.make "" empty $ \ g -> return ()
+immergut = C.make "G" empty $ \ g -> return ()
 

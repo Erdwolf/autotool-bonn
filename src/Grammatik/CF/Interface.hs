@@ -4,6 +4,7 @@ module Grammatik.CF.Interface where
 
 import Language.Type
 import Grammatik.Type
+
 import qualified Grammatik.Checker as C
 
 import qualified Grammatik.CF.Instance.Config as I
@@ -29,12 +30,14 @@ import List (partition, nub)
 data CFG = CFG deriving ( Eq, Ord, Show, Read )
 
 instance Partial CFG I.Config Grammatik where
+
     describe p i = vcat
 	   [ text "Gesucht ist eine kontextfreie Grammatik für die Sprache"
 	   , nest 4 $ text $ abbreviation $ I.lang i
 	   , text "über dem Alphabet" <+> toDoc ( alphabet $ I.lang i )
 	   , C.condition $ I.typ i
 	   ]
+
     initial  p i = Grammatik 
 	   { terminale = alphabet $ I.lang i
 	   , nichtterminale = mkSet "ST"
@@ -59,8 +62,8 @@ make = return . Variant . make0
 make0 :: P.Config 
 	 -> Var CFG I.Config Grammatik
 make0 c = Var { problem = CFG
-        , aufgabe = "G"
-        , version = nametag ( P.lang c )
+        , aufgabe = C.nametag ( P.typ c )
+        , version = L.nametag ( P.lang c )
         , key = \ matrikel -> do 
           return matrikel
         , gen = \ key -> do
