@@ -41,6 +41,22 @@ data NPDA x y z =
 	  }
      deriving (Read)
 
+-- helpers für weniger klammern in der eingabe
+
+collect :: ( Ord x, Ord y, Ord z )
+	=> [ ((Maybe x, z, y), (z, [y])) ]
+	-> FiniteMap (Maybe x, z, y) (Set (z, [y]))
+collect pairs = addListToFM_C union emptyFM $ do
+    ( x, y ) <- pairs ; return ( x, unitSet y )
+
+unCollect :: FiniteMap (Maybe x, z, y) (Set (z, [y]))
+	  ->  [ ((Maybe x, z, y), (z, [y])) ]
+unCollect fm = do
+    ( x, ys ) <- fmToList fm
+    y <- setToList ys
+    return (x, y)
+
+
 instance (ToDoc (Maybe x), ToDoc x, ToDoc y, ToDoc z,
 	 ToDoc [x], ToDoc [y], ToDoc [z]) 
 	 => ToDoc (NPDA x y z) where

@@ -1,24 +1,16 @@
-module Beispiel where
+module NPDA.Beispiel where
 
--- $Log$
--- Revision 1.1  2003-01-13 23:20:05  joe
--- NPDA revamped
---
--- Revision 1.1.1.1  2002/05/24 10:46:48  challenger
--- start
---
--- Revision 1.2  2002/01/13 23:03:33  autotool
--- kellerautomaten: nutze toDoc, akzeptanzmodus sichtbar
---
+-- $Id$
 
 -- Skript Seite 56
 
 import NPDA
-import Akzeptieren
+
+-- import Akzeptieren
 import Set
 import ToDoc
 
-import Seite56
+-- import Seite56
 
 
 -- der Automat soll { w w^R  |  w  in  {0, 1}* }
