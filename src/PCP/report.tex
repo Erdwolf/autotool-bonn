@@ -2,12 +2,6 @@
 
 \usepackage{amsmath}
 
-\renewcommand{\baselinestretch}{1.1}
-\parskip 1mm
-\parindent 0mm
-\textheight 25cm \voffset -1in
-\textwidth 16cm \hoffset -.5in
-
 \newcommand{\PCP}{\operatorname{PCP}}
 \newcommand{\from}{\leftarrow}
 
@@ -58,7 +52,7 @@ Restrict to $w = 0x1$. Then any solution starts with $A$ and ends with $C$,
 and cannot \"uberholen:
 
 For instances  $[(w,0),(0,1),(1,w)]$,
-and any $u\in\Gamma^*$, we have $|g(u)| - |h(u)| \equiv 0 \pmod |w|-1$.
+and any $u\in\Gamma^*$, we have $|g(u)| - |h(u)| \equiv 0 \pmod{|w|-1}$.
 
 Instance $I=(g,h)$ defines relation $\to_I$ on $\Sigma^*$ by
 \[
@@ -126,24 +120,12 @@ Let $w = 0x1$. Looking for $0x \to_R^* u \sim v \from_R^* x1$.
 In fact, distinguish a few cases:
 $x = \epsilon, x=0, x=1, x=0y0, x=0y1, x=1y0, x=1y1$.
 
-Example $w=0x1=00y11$:
+%% arrays computed via PCP.Symbolic
 
-\[
-\begin{array}{cllllll}
-        & \fbox{0} 0 y   1 \\
-  \to_R & \fbox{1} 1 y_+ 2 & 2 0 y   1 \\
-  \to_R & 2 \fbox{2} y_- 0 & 0 1 y_+ 2 & 2 0 y   1 \\
-  \to_R & 2 0 0 y & 1 \fbox{1} y_- 0   & 0 1 y_+ 2 & 2 0 y   1 \\
-  \to_R & 2 0 0 y & 1 2 2 y_- & 0 \fbox{0} y_- 0 & 0 1 y_+ 2 & 2 0 y   1 \\
-  \to_R & 2 0 0 y & 1 2 2 y_- & 0 1 1 y_+ & 2 2 y_- 0 & 0 1 y_+ 2 & 2 0 y   1 \\
-  \sim      & 0 y 1 2 & 2 y_- 0 1 & 1 y_+  2 2 & y_- 0  0 1 & y_+ 2 2 0 & y   1 1 2 \\
-  \from_R   & 0 y 1 2 & 2 y_- 0 1 & 1 y_+  \fbox{1} 1 & y_+ 2 2 0 & y   1 1 2 \\
-  \from_R   & 0 y 1 2 & 2 y_- 0 1 & 1 y_+  \fbox{0} 0 & y   1 1 2 \\
-  \from_R   & 0 y 1 2 & 2 y_- 0 1 & 1 y_+  \fbox{2} 2 \\
-  \from_R   & 0 y 1 2 & 2 y_- 0 \fbox{0} \\
-  \from_R   & 0 y 1 \fbox{1}
-\end{array}
-\]
+Case $w = 0x1 = 00y01$: \[ \input{00y01} \]
+Case $w=0x1=00y11$: \[ \input{00y11} \]
+Case $w=0x1=01y01$: \[ \input{01y01} \]
+Case $w = 0x1 = 01y11$: \[ \input{01y11} \]
 
 
 \section{Conclusion and Open Problems}

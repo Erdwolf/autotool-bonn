@@ -84,17 +84,19 @@ runit = sequence_ $ do
     let w = [0] ++ w' ++ [1]
 	spiegel = reverse . map ( 1 - )
     guard $ w <= spiegel w
-    return $ do
-         line
-	 pft ("parameter", w)
-         let f = concat $ map show w
-	 pft ("instance", form f)
-	 blank
-         let ntd @ (n, t, d) : _ = topdown w
-	 pft $ ntd
-         let l = length w - 1
-	 print ("form", look tops $ analyze l t, look bots $ analyze l d, f)
-	 line
+    return $ handle w
+
+handle w = do
+     line
+     pft ("parameter", w)
+     let f = concat $ map show w
+     pft ("instance", form f)
+     blank
+     let ntd @ (n, t, d) : _ = topdown w
+     pft $ ntd
+     let l = length w - 1
+     print ("form", look tops $ analyze l t, look bots $ analyze l d, f)
+     line
 
 
 printf x = do print x ; hFlush stdout
@@ -194,6 +196,7 @@ tops = [ [(0,0),(0,0),(0,1),(0,1),(1,1),(2,1)] -- 0
        , [(0,0),(0,0),(0,1),(1,1),(2,1)]       -- 2
        , [(0,0),(0,0),(0,1),(1,1)]             -- 3
        , []                                    -- 4
+       , [(0,0),(0,0),(0,1),(1,1),(2,1),(3,0)] -- 5
        ]
 
 bots = [ [(1,1),(1,1),(1,1),(0,1)]                   -- 0
@@ -202,6 +205,7 @@ bots = [ [(1,1),(1,1),(1,1),(0,1)]                   -- 0
        , [(2,-2),(2,-2),(2,-2),(1,-2),(0,-2),(0,-2)] -- 3
        , [(2,1),(2,1),(2,1),(1,1),(0,1),(0,1)]       -- 4
        , []                                          -- 5
+       , [(3,-2),(3,-2),(3,-2),(2,-2),(1,-1),(0,-1)] -- 6
        ]
 
 -- patterns occuring: 
