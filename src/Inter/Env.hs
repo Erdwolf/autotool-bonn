@@ -7,6 +7,8 @@ module Inter.Env where
 import qualified Inter.Param as P
 import qualified Control.Passwort
 
+import Control.Types ( fromCGI )
+
 import Inter.Click
 
 import Control.Exception
@@ -37,12 +39,12 @@ get_with env def =
 			then throw $ AssertionFailed "Keine Aufgabe gewaehlt!" 
 			else words $ map mySub $ item env "Wahl" 
 		  -- aus env-variablen
-		  else map ( item env ) [ "Problem", "Aufgabe", "Version" ]
-        in P.empty { P.matrikel = item env "Matrikel" 
+		  else map ( item env ) [ "Problem", "Typ", "Aufgabe" ]
+        in P.empty { P.matrikel = fromCGI $ item env "Matrikel" 
                    , P.passwort = read $ item env "Passwort"
                    , P.problem  = pav !! 0
-                   , P.aufgabe  = pav !! 1
-                   , P.version  = pav !! 2
+                   , P.typ  = fromCGI $ pav !! 1
+                   , P.aufgabe  = fromCGI $ pav !! 2
                    , P.input    = item env "Input"
 		   , P.click    = read $ item env "Click"
                    }

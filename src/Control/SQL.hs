@@ -1,6 +1,7 @@
 module Control.SQL 
 
-( squery, query, logged, collectRows, disconnect
+( squery, query, logged, reed
+, myconnect, collectRows, disconnect
 , Statement, getFieldValue, getFieldsTypes 
 , Query (..), Action (..), Modifier (..)
 , Id (..), Bind (..)
@@ -17,6 +18,8 @@ import Autolib.ToDoc  as T
 import Data.List
 import Data.Typeable
 import Text.ParserCombinators.Parsec.Expr
+
+import Mysqlconnect
 
 import Database.MySQL.HSQL hiding ( query, collectRows )
 import qualified Database.MySQL.HSQL
@@ -51,6 +54,14 @@ logged cs = do
 
 strich = "\n--------------------------------\n"
 
+reed cs = case readsPrec 0 cs of
+    [(x, "")] -> x
+    ( sonst :: [(a,String)] ) -> 
+	error $ unlines [ "kein parse."
+			, "für eingabe:", cs 
+			, "für typ:" , show (typeOf (undefined::a)) 
+			, "readsPrec:" , show sonst
+			]
 
 --------------------------------------------------------------------------------
 

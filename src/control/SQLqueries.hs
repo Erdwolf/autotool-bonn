@@ -6,7 +6,7 @@
 -- DB Helper
 
 
-module SQLqueries 
+-- module SQLqueries 
 
 ( module SQLqueries
 , ATHighLow (..)

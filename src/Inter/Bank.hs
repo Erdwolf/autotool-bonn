@@ -2,7 +2,8 @@ module Inter.Bank where
 
 -- -- $Id$
 
-import Control.Queries
+import Control.Punkt
+import Control.Types
 import qualified System.Posix
 
 import System.Time
@@ -35,8 +36,8 @@ bank p res = do
 
 logline time pid p res = unwords [ time
 		      , "(",  pid, ")"
-		      , "cgi-" ++ P.matrikel p
-		     , "(", P.matrikel p, ")"
+		      , "cgi-" ++ P.smatrikel p
+		     , "(", P.smatrikel p, ")"
 		      , P.subject p , ":"
 		     , Autolib.Reporter.Result.result_string res
 		     , "\n"

@@ -31,8 +31,8 @@ load p pid flag = do
 location :: P.Type -> String -> Bool -> Datei
 location p pid flag =  
     Datei { pfad = [ "autotool", "done"
-			    , P.aufgabe p, P.version p
-			    , P.matrikel p
+			    , P.styp p,  P.saufgabe p
+			    , P.smatrikel p
 			    , if flag then "OK" else "NO"
 			    ]
                    , name = pid

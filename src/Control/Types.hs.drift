@@ -2,12 +2,14 @@
 
 module Control.Types 
 
-( HiLo, Wert
+( HiLo (..)
+, Wert (..)
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
 , Typ, Config, Remark, Name
 , Oks, Nos
 , fromCGI
+, toString
 )
 
 where
@@ -28,6 +30,7 @@ import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 -------------------------------------------------------------
 
 class FromCGI a where fromCGI :: String -> a
+class ToString a where toString :: a -> String
 
 -------------------------------------------------------------
 
@@ -72,6 +75,8 @@ instance FromCGI MNr where
     fromCGI cs = MNr $ case readsPrec 0 cs of
               [(i, rest)] -> i
 	      sonst -> error $ "FromCGI MNr:" ++ show sonst -- FIXME: error checking
+instance ToString MNr where
+    toString (MNr i) = show i
 
 
 -- | Aufgaben-Typ
@@ -86,6 +91,10 @@ instance SqlBind Typ where
     toSqlValue (Typ cs) = toSqlValue cs
 instance ToEx Typ where
     toEx x = EString $ show x
+instance FromCGI Typ where
+    fromCGI cs = Typ cs
+instance ToString Typ where 
+    toString (Typ cs) = cs
 
 -- | Aufgaben-Config
 data Config = Config String deriving ( Eq, Ord, Typeable )
@@ -120,6 +129,10 @@ instance Read Name where readsPrec = parsec_readsPrec
 instance SqlBind Name where 
     fromSqlValue ty s = fmap Name $ fromSqlValue ty s
     toSqlValue (Name cs) = toSqlValue cs
+instance ToString Name where 
+    toString (Name cs) = cs
+instance FromCGI Name where
+    fromCGI cs = Name cs
 
 -------------------------------------------------------------
 

@@ -60,6 +60,8 @@ import Inter.Bank
 import Inter.Store ( latest )
 import Inter.Click
 
+import Control.Types ( fromCGI, toString )
+
 --
 -- der Monster-Parameter darin sind alle wesentlichen Daten
 -- fuer die aktuelle Session:
@@ -130,8 +132,8 @@ iface variants env = do
 	-- default Parameter füllen, bekommt man beim start
 		let def = P.empty  
 			{ P.problem = show ( Inter.Types.problem var )
-			, P.aufgabe = Inter.Types.aufgabe var
-			, P.version = Inter.Types.version var
+			, P.typ = fromCGI $ Inter.Types.aufgabe var
+			, P.aufgabe = fromCGI $ Inter.Types.version var
 			}
 		in Inter.Env.get_with env def
 
@@ -157,7 +159,7 @@ iface variants env = do
 
           -- key (für persönliche Aufgabe) und Aufgaben-Instanz
           -- herstellen und anzeigen
-          k <- key  v $ P.matrikel par1
+          k <- key  v $ P.smatrikel par1
           generator <- gen v k
 	  -- TODO: das com sollte eigentlich leer sein
 	  -- (Beschreibung ist jetzt in report/describe)
@@ -226,8 +228,8 @@ iface variants env = do
 			   +++ reset  "Click" ( show Reset    ) 
 
                            +++ hidden "Problem" ( P.problem par2 ) 
-                           +++ hidden "Aufgabe" ( P.aufgabe par2 ) 
-                           +++ hidden "Version" ( P.version par2 ) 
+                           +++ hidden "Aufgabe" ( P.saufgabe par2 ) 
+                           +++ hidden "Typ" ( P.styp par2 ) 
 
 
           return $ page par2 
@@ -257,7 +259,7 @@ page par msg =
          
 preface par = table << aboves 
      [ besides
-	$ txtf' "10" "Matrikel" ( P.matrikel par )
+	$ txtf' "10" "Matrikel" ( P.smatrikel par )
    	++ pwdf "Passwort" ( P.passwort par )
    	++ varselector par 
 	++ [ td << submit "Click" ( show Change ) ]

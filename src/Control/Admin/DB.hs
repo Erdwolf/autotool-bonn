@@ -266,36 +266,3 @@ studVorlDB mnr =
        return inh
 
 
--- |
--- Login des Studenten Version 2
---
--- Input:   Matrikelnr., Passwort
--- Output:  IO Just SNr zurück, wenn (mnr,pass) in DB
---
-loginDBx :: String -> String -> IO (Maybe String)
--- loginDB "" "" = return $ Nothing
-loginDBx mnr pass =
-    do
-       conn <- myconnect
-       stat <- query conn
-               ( concat
-                 [ "SELECT "
-                 , "SNr, Passwort \n"
-                 , "FROM    student \n"
-                 , "WHERE   student.MNr = \"" ++ (filterQuots mnr)++ "\" "
-                 -- , "AND student.Passwort = \"" ++ (quoteQuots pass)++ "\" "
-                 , ";"
-                 ] )
-       inhs <- collectRows ( \ state -> do
-                            a <- getFieldValue state "SNr"
-                            p <- getFieldValue state "Passwort"
-                            return (a :: String, read p)
-                          ) stat
-       disconnect conn
-
-       return $ case inhs of
-           [ (a, p) ] -> do
-		 guard $  Inter.Crypt.compare p pass
-		 return a
-           _ -> Nothing
-

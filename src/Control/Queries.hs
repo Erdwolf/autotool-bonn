@@ -10,6 +10,7 @@ import Inter.Crypt
 
 import Control.Monad ( guard )
 import Data.Maybe ( maybeToList )
+import Data.List ( intersperse )
 import Data.Typeable
 
 import Helper
@@ -19,11 +20,6 @@ import Mysqlconnect
 showColTypes :: Statement -> [ String ]
 showColTypes stat = [ s | (s,t,b) <- getFieldsTypes stat ]
 
-
-reed cs = case readsPrec 0 cs of
-    [(x, "")] -> x
-    ( sonst :: [(a,String)] ) -> error $ unwords [ "kein parse für", cs , show sonst, "type"
-			     , show (typeOf (undefined::a)) ]
 
 --  ------------------------------------------------------------------------------
 -- DB Funktionen
@@ -401,18 +397,18 @@ leaveStudGrpDB mat grp =     do
 -- | liefert (jetzt!)  mgl. Aufgaben für Student
 -- FIXME: use Control.Aufgabe type
 
-mglAufgabenDB :: SNr -> IO [ ( ANr, Name, Typ, HiLo, Remark) ]
+mglAufgabenDB :: SNr -> IO [ (( ANr, Name, Typ),( Config, HiLo, Remark)) ]
 mglAufgabenDB snr = mglAufgabenDB' False snr 
 
 mglAufgabenDB' :: Bool 
     -> SNr
-           -> IO [( ANr, Name, Typ, HiLo, Remark) ]
+           -> IO [(( ANr, Name, Typ), ( Config, HiLo, Remark)) ]
 mglAufgabenDB' isAdmin snr = 	do
     conn <- myconnect
     stat <- squery conn $ Query
 	    ( Select $ map reed 
 	             [ "aufgabe.ANr", "aufgabe.Name", "aufgabe.Typ"
-		     , "aufgabe.Highscore", "aufgabe.Remark" 
+		     , "aufgabe.Config", "aufgabe.Highscore", "aufgabe.Remark" 
 		     ]
 	    )
             [ From $ map reed [ "aufgabe", "gruppe" , "stud_grp" ]
@@ -429,12 +425,17 @@ mglAufgabenDB' isAdmin snr = 	do
                          a <- getFieldValue state "ANr"
                          n <- getFieldValue state "Name"
                          t <- getFieldValue state "Typ"
+                         c <- getFieldValue state "Config"
                          h <- getFieldValue state "Highscore"
 			 r <- getFieldValue state "Remark"
-                         return (  a , n, t, h, r )
+                         return ( ( a , n, t), (c, h, r) )
                        ) stat
     disconnect conn
     return inh
+
+
+----------------------------------------------------------------------------------
+
 
 {-
 

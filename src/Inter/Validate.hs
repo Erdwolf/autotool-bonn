@@ -11,7 +11,10 @@ import qualified Inter.Param as S
 
 import Text.Html
 -- import SQLqueries hiding ( logged )
+
+import Control.Types 
 import Control.Queries
+import Control.Punkt ( loginDB )
 
 import Control.Monad ( guard )
 import Autolib.ToDoc
@@ -19,21 +22,20 @@ import Autolib.ToDoc
 validate :: P.Type -> IO ( Either Html P.Type )
 validate par = do
     -- passwort vergleich mit db
-    let matrikel = P.matrikel par
     let passwort = show $ P.passwort par
-    mbsnr <- logged ( show [ "loginDB", matrikel, passwort ] ) 
-	   $ loginDB matrikel passwort    
+    mbsnr <- logged ( show [ "loginDB", P.smatrikel par, "<passwort>" ] ) 
+	   $ loginDB (P.matrikel par) passwort    
 
     let msgstr = 
-            if length matrikel > 0 || length passwort > 0
+            if {- length P.smatrikel > 0 || -} length passwort > 0
             then "Passwort paßt nicht"
-            else "Bitte Matrikelnr., Passwort eingeben und Problem/Aufgabe/Version wählen."
+            else "Bitte Matrikelnummer und Passwort eingeben sowie Problem/Aufgabe/Version wählen."
 
     case mbsnr of 
      -- nein 
      Nothing -> return $ Left $ p << msgstr 
      -- gut nun Aufgaben-Varianten fuer User (ident) 
-     -- aus ( Inter.Boiler ) holen und mit Eingaben Vergleichen
+     -- aus ( Inter.Boiler ) holen und mit Eingaben vergleichen
      Just ident -> 
         do 
         let vvs :: [ Variant ]
@@ -47,8 +49,8 @@ validate par = do
                       -- wenn OK -> return vv
                       -- Abbruch bei Fehler (=wenn guard fehlschlaegt) return []
                       guard $ P.problem par == show ( Inter.Types.problem v )
-                      guard $ P.aufgabe par ==        Inter.Types.aufgabe v
-                      guard $ P.version par ==        Inter.Types.version v
+                      guard $ P.styp par ==         Inter.Types.aufgabe v
+                      guard $ P.saufgabe par ==       Inter.Types.version v
                       return vv
         case vvs of
                  [ vv ] -> continue $ par { P.ident = ident
@@ -61,19 +63,23 @@ validate par = do
                                  +++ pre << render ( toDoc $ P.variants par )
 
 continue :: P.Type -> IO ( Either Html P.Type )
-continue set = do
-   let is_admin = read ( S.matrikel set ) < 1024
+continue set = do 
+   let is_admin = read ( S.smatrikel set ) < 1024 -- FIXME: remove explicit number
    aufs <- mglAufgabenDB' is_admin $ S.ident set
    let matching = 
            do
-           auf @ ( anr, name, subject, path, highscore ) <- aufs
-           guard $ name == S.aufgabe set && subject == S.version set
+           auf @ ( (anr, name, typ), (conf, highscore, remark) ) <- aufs
+           guard $ name == S.aufgabe set && typ == S.typ set
            return auf
    case matching of
-     [ auf @ ( anr, name, subject, path, highscore ) ] -> 
+     [ auf @ ( (anr, name, typ),( conf, highscore, remark )) ] -> 
                  return 
                  $ Right 
-                 $ set { S.anr = anr , S.highscore = read highscore }
+                 $ set { S.anr = anr
+		       , S.conf = conf
+		       , S.highscore = highscore 
+		       , S.remark = remark
+		       }
 
      -- new sub-case: aufgabe ist noch nicht in db,
      -- aber nutzer ist admin: also darf er das
@@ -81,7 +87,7 @@ continue set = do
      _ | is_admin ->
                  return 
                  $ Right 
-                 $ set { S.anr = "0" , S.highscore = Keine }
+                 $ set { S.anr = read "0" , S.highscore = Keine }
 
      -- fall-through: aufgabe gibt es nicht
      _ -> return $ Left

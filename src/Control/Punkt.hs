@@ -1,11 +1,45 @@
+-- | werden von Face.cgi benutzt: login zum aufgabenlösen und scoring
+
 module Control.Punkt where
 
------------------------------------------------------------------------------------------
+--  $Id$
 
--- | fürs AUTOTOOL
+import Control.SQL
+import Control.Types
+import Inter.Crypt
 
+import Control.Monad
+
+-- | Login des Studenten Version 2
 --
--- erhöht von Student, für Aufgabe (Ok,Size) / No 
+-- Input:   Matrikelnr., Passwort
+-- Output:  IO Just SNr zurück, wenn (mnr,pass) in DB
+--
+loginDB :: MNr -> String -> IO (Maybe SNr)
+-- loginDB "" "" = return $ Nothing
+loginDB mnr pass =
+    do
+       conn <- myconnect
+       stat <- squery conn $ Query
+	       ( Select $ map reed [ "SNr, Passwort" ] )
+	       [ From $ map reed [ "student" ]
+	       , Where $ equals ( reed "student.MNr" ) ( toEx mnr )
+	       ]
+       inhs <- collectRows ( \ state -> do
+                            s <- getFieldValue state "SNr"
+                            p <- getFieldValue state "Passwort"
+                            return (s, reed p) -- FIXME: instance Sqlbind Crypt
+                          ) stat
+       disconnect conn
+
+       return $ case inhs of
+           [ (s, p) ] -> do
+		 guard $ Inter.Crypt.compare p pass
+		 return s
+           _ -> Nothing
+
+
+-- | erhöht von Student, für Aufgabe (Ok,Size) / No 
 --
 -- Input: (SNr,ANr,{No,Ok size}, {High,Low,Keine} )
 -- Output: IO ()
@@ -16,56 +50,54 @@ module Control.Punkt where
 bepunkteStudentDB :: SNr -> ANr -> Wert -> HiLo -> IO ()
 bepunkteStudentDB snr anr bewert highlow = do
    conn <- myconnect
-   stat <- query conn ("SELECT SNr FROM stud_aufg \n" ++ 
-                        "WHERE SNr = \"" ++ filterQuots snr ++ "\" "++
-                        "AND ANr = \"" ++ filterQuots anr ++ "\" " ++
-                        ";"
-                       )
+   stat <- squery conn $ Query 
+	   ( Select [ reed "SNr" ] )
+	   [ From [ reed "stud_aufg" ]
+	   , Where $ ands
+	           [ equals (reed "SNr") ( toEx snr )
+		   , equals (reed "ANr") ( toEx anr )
+		   ]
+	   ]
    inh <- collectRows ( \ state -> do
-                        b <- getFieldValue state "SNr"
-                        return (b :: String)
+                        ( b :: SNr ) <- getFieldValue state "SNr"
+                        return b
                       ) stat
 
-   --
-   -- wenn (snr,anr) bereits in db -> update der Zeile sonst insert Zeile
-   --
-   let tim s = case highlow of 
-			   Keine -> "0,\"0000-00-00 00:00:00\""
-			   _     -> show s ++ ", NOW()" 
-   let insertsql = 
-		   concat [ "INSERT INTO stud_aufg (SNr,ANr,Ok,No,Size,Scoretime) VALUES \n" 
-				  , "( \"" ++ filterQuots snr ++ "\" "
-				  , ", \"" ++ filterQuots anr ++ "\""
-				  , "," 
-					-- 
-				  , case bewert of 
-					No    -> "0,1,NULL,\"0000-00-00 00:00:00\"" 
-					Ok s  -> "1,0," ++ tim s
-				  , " )"
-				  , ";"
-				  ] 
-   if null inh  
-      then  -- insert 
+   -- prepare for scoring: make empty entry
+   when ( null inh ) $ do 
+       stat <- squery conn $ Query 
+	   ( Insert (reed "stud_aufg") 
+	            [ ( reed "SNr", toEx snr )
+		    , ( reed "ANr", toEx anr )
+		    , ( reed "Ok" , reed "0" ) 
+		    , ( reed "No" , reed "0" )
+		    ] 
+	   ) 
+	   [] 
+       return ()
 
-      query conn insertsql
-
-                
-      else  -- update
-      query conn
-                ( concat 
-                  [ "UPDATE stud_aufg \n"
-                  , "SET \n"
-                  , case bewert of 
-                    No  -> "No = No + 1 "
-                    Ok s   -> "Ok = Ok + 1 " -- ++ sizetime s
-                  , " \n"
-                  , "WHERE SNr = \"" ++ filterQuots snr ++ "\" "
-                  , "AND ANr = \"" ++ filterQuots anr ++ "\" "
-                  , ";"
-                  ] )
+   squery conn $ Query 
+	   ( Update ( reed "stud_aufg" )
+	            ( case bewert of
+                         No -> [ ( reed "No" , reed "No + 1" )
+			       ]
+	                 Ok s -> [ ( reed "Ok" , reed "Ok + 1" )
+                               -- FIXME (see historic code below): 
+                               -- , ( reed "Size" , EInteger s )
+                               -- , ( reed "Scoretime" , reed "NOW()" )
+			       ] 
+		    )
+	   ) 
+           [ Where $ ands
+	           [ equals ( reed "SNr" ) ( toEx snr )
+		   , equals ( reed "ANr" ) ( toEx anr )
+                   ]
+	   ]
    disconnect conn 
    return ()
 
+
+{- -- historic code:
      where sizetime s =
              case highlow of 
              Keine   -> " " 
@@ -77,5 +109,6 @@ bepunkteStudentDB snr anr bewert highlow = do
                     ++ ", Scoretime = IF( IFNULL(Size, "++ show s ++" + 1 ) > " ++ show s
                    ++ " ,Now(), Scoretime )"
                    ++ ", Size = LEAST( Size," ++ show s ++ ")" 
+-}
 
 
