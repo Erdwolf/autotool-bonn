@@ -121,7 +121,7 @@ re cut m encode check ein = do
        k <- ks
        return $  do
            let b = Machine.Class.output m k
-	   inform $  fsep [ text "Bei Eingabe", toDoc ein
+	   inform $  vcat [ text "Bei Eingabe", toDoc ein
 			    , text "Startkonfiguration", nest 4 $ toDoc s
 			    , text "erreicht die Maschine"
 			    , text "die Endkonfiguration", nest 4 $ toDoc k
