@@ -19,6 +19,7 @@ data BI =
         , formula :: Exp
 	, operators :: Set Op
 	}
+     deriving ( Show )
 
 instance Partial Boolean BI Exp where
 
