@@ -26,6 +26,8 @@ import qualified CGI
 
 -- control
 import HTMLshortcuts 
+import SQLqueries
+import Helper
 
 import Maybe (isJust)
 import Monad ( guard )
@@ -75,12 +77,19 @@ evaluator par0 ( F1 txtF ) =
     
 -- falls neue settings
 settings par0 (F4 matF pwdF proF varF) = 
-    computer $ par0 { P.matrikel = value matF
-	       , P.passwort = value pwdF
-	       , P.problem  = value proF
-	       , P.variant  = value varF
-	       , P.input    = ""
-	       }
+	let par = par0 { P.matrikel = value matF 
+				   , P.passwort = value pwdF
+				   , P.problem  = value proF
+				   , P.variant  = value varF
+				   , P.input    = ""
+				   }
+	in do  
+	   mbsnr <- io $ loginDB (P.matrikel par) (show (P.passwort par))
+	   case mbsnr of 
+			Nothing  -> standardQuery "Login" $ CGI.text $ "Fehlgeschlagen!"
+			Just snr -> computer $ par { P.snr = snr }
+
+
 
 -- rechnet alles aus
 computer par = 
@@ -100,8 +109,17 @@ computer par =
 
 -- wenn kontrolleur gefunden,
 -- dann instanz und nullte lösung berechnen
-handler par0  (Variant v ) =   standardQuery "Computer" $ do
-
+handler par0  (Variant v ) =  do  
+	-- mgl. Aufgaben aus DB für snr aus DB
+	-- und Aufgaben Number ermittlen
+  mglAufgaben <- io $ mglAufgabenDB (P.snr par0)
+  let anr = [ a | (a,name,subj,_,_) <- mglAufgaben
+			, (P.problem par0) == name 
+			, (P.variant par0) == subj
+			]
+  if null anr then standardQuery "Fehler" $ CGI.text "keine Variante des Students"
+   else 
+	standardQuery "Computer" $ do
     hr CGI.empty
     preface par0
 
@@ -110,7 +128,7 @@ handler par0  (Variant v ) =   standardQuery "Computer" $ do
     inst <- lift $ unsafe_io $ washer $ gen v ( P.matrikel par0 )
 
     hr CGI.empty
-    h2 $ CGI.text "Die Aufgaben-Instanz:"
+    h2 $ CGI.text $ "Die Aufgaben-Instanz: Nr." ++ anr!!0
     Just i <- inst
 
     let p = Inter.Types.problem v
@@ -144,10 +162,12 @@ handler par0  (Variant v ) =   standardQuery "Computer" $ do
 	          CGI.p $ CGI.text $ "Ja."
 		  let s = size b
 		  CGI.p $ CGI.text $ "Größe der Lösung: " ++ show s
-		  -- hier (OK s) in DB eintragen
+		  -- hier (OK s) in DB eintragen TODO: ermittle Low/High von DB
+		  -- $ io $ bepunkteStudentDB (P.snr par0) (anr!!0) (Helper.Ok s) Helper.Low
 	       else do
 	          CGI.p $ CGI.text "Nein."
 		  -- hier (NO) in DB eintragen
+		  --io $ bepunkteStudentDB (P.snr par0) (anr!!0) (Helper.No) Helper.Low
         Left e -> do
 	    h3 $ CGI.text "Syntaxfehler"
 	    CGI.pre $ CGI.text $ render $ errmsg e $ P.input par
