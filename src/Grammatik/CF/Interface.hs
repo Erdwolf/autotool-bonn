@@ -75,7 +75,7 @@ make0 c = Var { problem = CFG
 
           let l = P.lang c ; w = P.min_sample_length c ; n = P.num_samples c
           -- die kleinen sollten ja auch schnell zu testen sein
-	  let klein = take 100 $ do 
+	  let klein = take 40 $ do 
 		 n <- [0 .. ]
 		 alle ( setToList $ alphabet l ) n
 		 

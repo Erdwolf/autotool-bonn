@@ -86,6 +86,9 @@ import Inter.Boiler
 import qualified Posix
 import Informed
 
+patience :: Int
+patience = 15 -- seconds
+
 main :: IO ()
 main = do
      vs <- boiler
@@ -165,7 +168,7 @@ iface variants env = do
 	  
           -- neu (11. 11. 03): IO-Aktion ausführen
           ( res :: Maybe Int , com :: Doc ) 
-	      <- timed 15 ( Nothing, text "timer expired" ) $
+	      <- timed patience ( Nothing, text "timer expired" ) $
                      run $ do
 	  	         -- TODO: set default dir
 	                 evaluate ( problem v ) i par2
