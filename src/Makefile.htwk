@@ -8,7 +8,7 @@ CGIBIN = $(PUB)/cgi-bin
 
 # local modifications ##############################################
 
-LOCAL = htwk:ws03/compilerbau:ws03/informatik:
+LOCAL = htwk:
 COMMON = util:wash:control:bridge:challenger:
 
 DIRS = $(LOCAL)$(COMMON)
