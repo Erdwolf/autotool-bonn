@@ -40,7 +40,7 @@ import Data.Maybe
 ---------------------------------------------------------------------------
 
 typ0 :: C.Type Grammatik
-typ0 = C.make "Typ0" ( text "Die Grammatik soll vom Typ-0 sein." ) $ \ g -> do
+typ0 = C.make "Typ0" ( text "Die Grammatik soll vom Typ 0 sein." ) $ \ g -> do
 
     let us = sfilter ( \ (l, r) -> 
 	    any ( not . ( `elementOf` ( terminale g `union` nichtterminale g ) ) ) 
@@ -207,12 +207,13 @@ greibach = C.make "Greibach" ( text "Die Grammatik soll in Greibach-Normalform s
 ---------------------------------------------------------------------------
 
 verboten :: ToDoc a => Bool -> String -> a -> Reporter ()
-verboten f msg d = do
-    when f $ reject $ fsep
+verboten f msg d = 
+    if f 
+    then reject $ fsep
 	 [ text "Diese Regeln", text msg, text ":"
 	 , toDoc d
 	 ]
-    inform $ text "Ja." 
+    else inform $ text "Ja." 
 
 combine :: String -> [ C.Type Grammatik ] -> C.Type Grammatik
 combine msg cs = C.make msg 
@@ -222,10 +223,9 @@ combine msg cs = C.make msg
 	    [ text "Das ist", text (if f then "" else "k" ) <>  text "eine" 
 	    , text msg <> text "-Grammatik."
 	    ]
-      when ( isNothing f ) $ reject 
-	     $ answer False 
-      inform $ answer True
-      newline
+      if ( isNothing f ) 
+         then   reject $ answer False 
+         else   inform $ answer True
 
 ----------------------------------------------------------------------------
 

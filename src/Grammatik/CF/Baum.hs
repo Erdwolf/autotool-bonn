@@ -1,3 +1,5 @@
+-- | derivation trees
+
 module Grammatik.CF.Baum where
 
 --  $Id$
@@ -14,7 +16,7 @@ import Autolib.FiniteMap
 
 import Control.Monad ( guard )
 
--- Boolean tag is true for Variables that have been replaced by Epsilon
+-- | Boolean tag is true for Variables that have been replaced by Epsilon
 type Baum = Term Char ( Char, Bool )
 
 instance ToDoc Baum where
@@ -26,7 +28,7 @@ patch ( Var v ) =
 patch ( Node ( f, tag ) args ) = 
     Node ( mknullary [ f ] ) 
 	$ if tag && null args 
-	  then [ Var $ mknullary "Eps"  ]
+	  then [ Var $ mknullary $ show ""  ]
 	  else map patch args
  
 next :: Grammatik -> Baum -> [ Baum ]

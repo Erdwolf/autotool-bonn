@@ -28,6 +28,7 @@ data Type
      | Power Int
      | NoPower Int
      | Vielfache Int
+     | Form String
 
      | Komplement Type
    deriving ( Eq, Ord, Typeable )

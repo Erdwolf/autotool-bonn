@@ -24,6 +24,7 @@ import Data.Maybe (isJust)
 form :: [ Char ] -> Language
 form vs = mutate $ Language
 	{ abbreviation = "aussagenlogische Formeln mit A(ND), O(R), N(OT) und Variablen " ++ intersperse ',' vs
+	, nametag = "Form(" ++ vs ++ ")"
 	, alphabet     = mkSet $ "AON()," ++ vs
 	, contains     = is_form vs
 	, sample       = sam vs

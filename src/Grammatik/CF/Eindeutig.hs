@@ -14,6 +14,8 @@ import qualified Autolib.Reporter.Checker as C
 import Autolib.Reporter
 import Autolib.ToDoc
 
+import Beside
+
 eindeutig :: Int
           -> C.Type Grammatik
 eindeutig cut = 
@@ -27,8 +29,8 @@ eindeutig cut =
              , text "d. h. die Ableitungen können zu Terminalwörtern fortgesetzt werden):"
              , nest 4 $ vcat $ do
                    (b, b') <- take 4 $ dups
-                   return $ vcat
-                          [ toDoc $ yield b
-                          , nest 4 $ vcat $ map toDoc [ b, b' ]
+                   return $ vcat 
+                          [ toDoc $ yield b 
+                          , nest 4 $ besides $ map toDoc [ b, b' ]
                           ]
              ]

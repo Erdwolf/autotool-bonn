@@ -1,3 +1,5 @@
+-- | context free parsing (using CYK)
+
 module Grammatik.CF.Yeah_Noh where
 
 -- -- $Id$
@@ -8,6 +10,8 @@ import Grammatik.Type
 import qualified Grammatik.Ableitung as A
 
 import Grammatik.CF.Instance.Config
+
+import Grammatik.CF.Zeige
 import Grammatik.Check
 
 import qualified Grammatik.CF.Chomsky as C
@@ -38,13 +42,8 @@ import Grammatik.CF.DPL_CYK
 cf_yeah_noh :: Config -> Grammatik -> Reporter ()
 cf_yeah_noh c g = do
 
-    -- first, some simple checks (not CF-specific)
-    let conf = A.Config
-	  { A.max_length = 12
-	  , A.max_depth = 7
-	  , A.max_width = 100
-	  } 
-    check ( inter $ lang c ) conf g
+    ws <- zeige 100 g
+    check ( inter $ lang c ) ws
 
     let arrange = sortBy length
     let [ yeahs, nohs ] = map arrange [ unLong $ yeah c, unLong $ noh c ]

@@ -7,7 +7,7 @@ import Language.Type
 
 import  Language.ABCdiff
 import  Language.Gleich
--- import  Language.AK
+import  Language.AK
 
 -- import  Language.AmBnCmDn
 -- import  Language.BinCompare
@@ -28,6 +28,7 @@ import  Language.Power
 inter :: Language.Syntax.Type 
       -> Language
 inter l = case l of
+    Form vs -> form vs
     ABCdiff -> abcdiff
     Gleich vs -> gleich vs
     Ordered_Gleich vs -> ordered_gleich vs

@@ -20,13 +20,9 @@ import Autolib.ToDoc
 import Data.List (partition)
 
 check :: Language
-      -> Config
-      -> Grammatik 
-      -> Reporter Int
-check lang conf g = do
-
-     ws <- zeige conf g
-
+      -> [ String ]
+      -> Reporter ()
+check lang ws = do
      inform $ text
 	    $ "Gehören diese Wörter zur Sprache " ++ abbreviation lang ++ " ?"
      let ( yeah, noh ) = partition ( contains lang ) ws
@@ -35,5 +31,4 @@ check lang conf g = do
 	  , nest 4 $ toDoc $ take 10 $ noh
 	  ]
      inform $ text "OK."
-     newline
-     return $ size g
+

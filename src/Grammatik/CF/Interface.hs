@@ -12,6 +12,7 @@ import qualified Grammatik.CF.Instance.Config as I
 import qualified Grammatik.CF.Problem.Config as P
 
 import Grammatik.CF.Yeah_Noh
+import Grammatik.CF.Baum
 
 import Grammatik.Property
 
@@ -60,7 +61,9 @@ instance Partial CFG I.Config Grammatik where
           cf_yeah_noh i b
           mapM_ ( \ p -> Grammatik.Property.check p b ) ( I.properties i )
 
+
 ---------------------------------------------------------------------------
+
 
 instance Project CFG I.Config I.Config where
     project _ i = i
