@@ -27,7 +27,7 @@ wurzel e n =
 	f x = (n + (ee-1) * x ^ e) `div` ( ee * x ^ (ee-1) )
 	settle (x : y : ys) = if abs (x - y) <= 1 then x else settle (y : ys)
 	d = settle $ iterate f c
-    in	case ( do x <- reverse [ d - 1  .. d + 1 ]
+    in	case ( do x <- reverse [ d - 2  .. d + 1 ]
 		  let y = x ^ e
 		  guard $ y <= n
 		  return x )
