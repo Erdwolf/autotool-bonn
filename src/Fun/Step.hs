@@ -46,7 +46,7 @@ step s = case todo s of
 	App (Succ 1) [ arg ] ->
             s { todo = arg : Builtin_ 1 Suc : marked x : xs }
 	App (Decr 1) [ arg ] ->
-            s { todo = arg : Builtin_ 1 Dec : marked x : xs }
+            s { todo = arg : Builtin_ 1 Pre : marked x : xs }
 	App (Builtin i b) args ->
 	    s { todo = args ++ Builtin_ i b : marked x : xs }
 
