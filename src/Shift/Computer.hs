@@ -27,19 +27,25 @@ smp = sequence_ . map print
 
 next0 :: Int -> Pins -> [Bool] -> [Bool]
 -- wegen effizienz wird maximum ps nicht immer ausgerechnet
-next0 m ps xs = ( ( not $! ( and $! do p <- ps ; return $! xs !! (p - 1) ) ) )
-		    : take (m-1) xs 
+next0 m ps xs = 
+    let this = not $ and $ do p <- ps ; return $ xs !! (p - 1) 
+    in  this `seq` this : take (m-1) xs 
 
 next :: Pins -> [Bool] -> [Bool]
 next ps = next0 (maximum $ 0 : ps)  ps
+
+strictly :: [[Bool]] -> [[Bool]]
+-- das ist trivial wahr, erzwingt aber die auswertung der liste
+strictly = takeWhile (( >= 0) . sum . map fromEnum )
+
 
 zustands_folge :: Pins -> [[ Bool ]]
 zustands_folge ps = 
     let m = maximum (0 : ps)
 	start = replicate m True 
 	fun = next0  m ps
-    in  tail -- das ist trivial wahr, erzwingt aber die auswertung der liste
-	     $ takeWhile (( >= 0) . sum . map fromEnum )
+    in  tail 
+	     $ strictly
 	     $ iterate_strict fun $ start
 
 folge :: Pins -> [ Bool ]
@@ -63,23 +69,27 @@ find xs =
 -------------------------------------------------------------------
 
 
-{-# SPECIALIZE ffind :: ([Bool] -> [Bool]) -> [Bool] -> Int #-}
 
-ffind :: Eq a => (a -> a) -> a -> Int
+-- ffind :: Eq a => (a -> a) -> a -> Int
+ffind :: ([Bool] -> [Bool]) -> [Bool] -> Int 
+
 -- etwas more tricky:
 -- vergleicht die folgen  f x0, f f x0, ..., f^k x0
 --                   und  f f x0, f f f f x0, ..., f^{2k} x0
 ffind next x0 =
-    let slow = iterate_strict next x0
-	fast = iterate_strict (next . next) x0
-	link = tail $ zip3 [0..] slow fast
+    let slow = strictly $ iterate_strict next x0
+	fast = strictly $ iterate_strict (\ x -> next $! next $! x ) x0
 
 	-- c ist das kleinste c mit f^c x0 == f^{2c} x0
-	( c, x, y ) = head $ filter ( \ (c,x,y) -> x == y ) $ link
+	x = head $ do
+		   ( x ,y ) <- tail $ zip slow fast
+		   guard $ x == y
+		   return x
 
 	-- bestimme das erste vorkommen von x danach 
 	-- (ergibt kleinste periodenlänge)
-	d = head $ do (i, y) <- tail $ zip [0..] $ iterate_strict next x
+	d = head $ do (i, y) <- tail $ zip [0..] 
+		                     $ strictly $ iterate_strict next x
 		      guard $ y == x
 		      return i
     in	d

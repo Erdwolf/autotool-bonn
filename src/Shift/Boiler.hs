@@ -1,16 +1,12 @@
 module Shift.Boiler where
 
+import Shift.Type
+import Shift.Generate ( pee )
+import Shift.Meta ( vector )
 
-import Shift.Computer ( folge, smp )
-import Shift.Linear
-import Shift.Repeater hiding ( repeater )
+import Shift.Computer ( smp )
 
-import List ( group )
-import ToDoc
+m = Meta { start = [2,3,6,8], diff = [2,3,5,7] }
+mm = do k <- [ 0 .. ] ; return $ pee $ vector m k
 
-
-ak k = folge [2*k, 3*k, 5*k+1, 7*k+1]
-ex k = map Item 
-   $ map ( \ x -> if x then '+' else '-' ) 
-   $ ak k
 
