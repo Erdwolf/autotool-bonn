@@ -16,10 +16,12 @@ module HTWK.SS04.Informatik where
 
 import qualified HTWK.SS04.Informatik.Boolean
 import qualified HTWK.SS04.Informatik.Code
+import qualified HTWK.SS04.Informatik.Crypt
 
 aufgaben = []
        ++ HTWK.SS04.Informatik.Boolean.generates
        ++ HTWK.SS04.Informatik.Code.generates
+       ++ HTWK.SS04.Informatik.Crypt.generates
 
 {-
        ++ Baum.Quiz.generates

@@ -1,6 +1,5 @@
 -- | Korrekturfunktion für Faktorisierung
 
---
 -- joe@informatik.uni-leipzig.de
 -- benutzt code für challenger/PCProblem
 -- von Markus Kreuz  mai99byv@studserv.uni-leipzig.de
@@ -9,65 +8,48 @@ module Faktor.Faktor (
      Faktor (..)
     ) where
 
+--  $Id$
 
-import Challenger
+import Challenger.Partial
 import ToDoc
-import Number
-import Iso
+import Reporter
+import Ana
 
-import System
+-- import Number
+-- import Iso
+-- import System
 
 
 data Faktor = Faktor deriving Show
 
-instance Number Integer Integer where number = id
+-- instance Number Integer Integer where number = id
 
+instance Partial Faktor Integer ( Integer, Integer ) where
 
+    describe Faktor x = vcat
+	   [ text "Gesucht sind Zahlen (y, z) mit y > 1, z > 1"
+	   , text "und y * z =" <+> toDoc x
+	   ]
 
-instance Problem Faktor Integer ( Integer, Integer ) where
+    initial Faktor x = 
+        let -- do something silly to get candidates of useful size
+            b = 3
+	    xs = based b x
+	    (ys, zs) = splitAt (length xs `div` 2) xs
+	in  (unbased b ys, unbased b zs)
 
-    validiere Faktor x (y, z) = 
-	   if x < 2
-	   then ( False, text "Die Zahl soll größer als 1 sein." )
-	   else if y == 1 || z == 1
-	   then ( False, text "Kein Faktor darf gleich 1 sein." )
-	   else ( True, text "OK" )
+    partial Faktor x (y, z) = do
+           assert (x > 1) $ text "Die Zahl soll > 1 sein."
+	   assert (y > 1 && z > 1) $ text "Jeder Faktor soll > sein."
 
-    verifiziere Faktor x (y, z) = 
+    total Faktor x (y, z) = do
         let yz = y * z  
-        in if x /= yz
-	   then ( False, fsep [ text "Das Produkt der beiden Zahlen"
+        assert (x == yz) $ fsep
+     	                      [ text "Das Produkt der beiden Zahlen"
 			      , toDoc y, text "und", toDoc z
 			      , text "ist" , toDoc yz
 			      , text "und nicht", toDoc x
-			      ] )				
-	   else ( True, text "Das ist eine korrekte Faktorisierung" )
-
-    -- Erzeugt HTML-File zur Visualisierung
-    getInstanz Faktor x (y, z) dateiName =
-	 do 
-	  writeFile (dateiName ++ ".html") 
-		    ("<br><table borders><caption>Diese Zahl ist zu faktorisieren:</caption>" ++ (erzInstanz x) ++ "</table>")
-	  return (dateiName ++ ".html","html",ExitSuccess)
-        
-    -- Erzeugt HTML-File zur Visualisierung
-    getBeweis Faktor x (y, z) dateiName =
-	 do 
-	  writeFile (dateiName ++ ".html") (erzBeweis (y, z))
-	  return (dateiName ++ ".html","html",ExitSuccess)
-
----------------------------------------------------------------------------
-
--- erzeugt den Ausgabestring fuer die HTML Ausgabe der Instanz
-erzInstanz :: Integer -> String
-erzInstanz x = "<tr><td>" ++ show x ++ "</td></tr>"
-
-	
-
--- erzeugt den AusgabeString fuer die HTML Ausgabe des Beweises 
-erzBeweis :: (Integer, Integer) -> String
-erzBeweis (y, z) = 
-    "<tr><td>" ++ show y ++ "</td><td>" ++ show z ++ "</td></tr>"
+			      ]
 
 
 
