@@ -104,7 +104,9 @@ expos :: Pumping z
       -> [ Int ]
 -- die exponenten, deren inflation nicht in der sprache ist
 expos l n z = do
-     i <- [ 0 .. 20 ] -- ARBITRARY
+     -- ARBITRARY
+     -- tatsächlich, für ABCdiff war der feste Wert 20 zu klein
+     i <- [ 0 .. length ( inflate 2 z ) ] 
      let w' = inflate i z
      guard $ not $ contains l w'
      return i
