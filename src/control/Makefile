@@ -21,7 +21,7 @@ SRCAN =		$(SRCCMN) Main.hs
 SRCAD =		$(SRCCMN) autoadmin.hs
 SRCSG =		$(SRCCMN) showgruppen.hs
 
-all: autoan.cgi autoadmin.cgi
+all: autoan.cgi autoadmin.cgi showgruppen.cgi
 
 autoan.cgi: $(SRCAN)
 	$(HMAKE) $(HMAKEFLAGS) Main.hs -o $@
@@ -41,9 +41,8 @@ clean:
 	$(RM) *.hi
 	$(RM) $(TARGET)
 
-install-cgi:
-	su -c "cp -f /home/alf/autotool/control/autoan.cgi /usr/lib/cgi-bin/autoan.cgi"
-	su -c "cp -f /home/alf/autotool/control/showgruppen.cgi /usr/lib/cgi-bin/showgruppen.cgi"
+install-cgi: autoan.cgi showgruppen.cgi
+	su -c "cp -fi autoan.cgi showgruppen.cgi /usr/lib/cgi-bin/"
 
 ghci-sql: 
 	ghci $(HINCLUDES) SQLqueries.hs

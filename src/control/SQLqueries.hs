@@ -6,6 +6,10 @@ import Char -- toLower
 
 import Helper
 
+
+-- TODO:
+-- Schluessel zum Studenten nur noch SNr nicht mehr Mat
+
 -- DB Helper
 -- Header extrahieren aus SQL 
 showColTypes :: Statement -> [ String ]
@@ -100,6 +104,28 @@ checkPasswdMNrDB maybePass mnr =
 						  ) stat
 	   disconnect conn 
 	   return inh
+
+-- liefert IO Maybe SNr zurück, wenn (mnr,pass) in DB
+loginDB :: String -> String -> IO (Maybe String)
+loginDB mnr pass = 
+	do
+	   conn <- connect "localhost" "autoan" "test" "test"
+	   stat <- query conn 
+			   ( concat 
+				 [ "SELECT "
+				 , "SNr \n"
+				 , "FROM	autoan.student \n"
+				 , "WHERE	student.MNr = \"" ++ (filterQuots mnr)++ "\" "
+				 , "AND student.Passwort = \"" ++ (quoteQuots pass)++ "\" "
+				 , ";"
+				 ] )
+	   inh <- collectRows ( \ state -> do
+							a <- getFieldValue state "SNr"
+							return (a :: String)
+						  ) stat
+	   disconnect conn 
+	   return $ if null inh then Nothing else Just $ inh !! 0
+
 
 -- Registrierung Vorabcheck auf Duplikate in Mnr, Email
 -- return ( mnr Duplikat :: Bool , email Duplikat ::Bool)
@@ -429,7 +455,96 @@ changeStudGrpDB mat grp =
 		 }
 
 -- ================================================================================
+-- fürs AUTOTOOL 
+
+-- erhöht von Student, für Aufgabe (Ok,Size) / No 
+bepunkteStudentDB :: String -> String -> ATBewertung -> ATHighLow -> IO ()
+bepunkteStudentDB snr anr bewert highlow = do
+   conn <- connect "localhost" "autoan" "test" "test"
+   -- wenn (snr,anr) bereits in db -> update der Zeile sonst insert Zeile
+   stat <- query conn ("SELECT SNr FROM stud_aufg \n" ++ 
+					   "WHERE SNr = \"" ++ filterQuots snr ++ "\" "++
+					   "AND ANr = \"" ++ filterQuots anr ++ "\" " ++
+					   ";"
+					  )
+   inh <- collectRows ( \ state -> do
+						b <- getFieldValue state "SNr"
+						return (b :: String)
+					  ) stat
+
+   if null inh  
+	  then  -- insert 
+	    query conn 
+			  ( concat 
+				[ "INSERT INTO stud_aufg (SNr,ANr,Ok,No,Size) VALUES \n" 
+				, "( \"" ++ filterQuots snr ++ "\" "
+				, ", \"" ++ filterQuots anr ++ "\""
+				, "," 
+				, case bewert of 
+				  No	-> "0,1,0" 
+				  Ok s	-> "1,0," ++ 
+					( case highlow of 
+					  Keine	-> "0"
+					  _		-> show s
+					)
+				, " )"
+				, ";"
+				] 
+			  )
+	  else	-- update
+		query conn
+			 ( concat 
+			   [ "UPDATE stud_aufg \n"
+			   , "SET \n"
+			   , case bewert of 
+				 No		-> "No = No + 1 "
+				 Ok s	-> "Ok = Ok + 1 " ++
+					(	case highlow of 
+						Keine	-> " " 
+						High	-> ", Size = GREATEST( Size," ++ show s ++ ")"
+						Low		-> ", Size = LEAST( Size," ++ show s ++ ")" 
+					)
+			   , " \n"
+			   , "WHERE SNr = \"" ++ filterQuots snr ++ "\" "
+			   , "AND ANr = \"" ++ filterQuots anr ++ "\" "
+			   , ";"
+			 ] )
+   disconnect conn 
+   return ()
+
+	
+
+-- liefert (jetzt!)  mgl. Aufgaben für Student 
+-- [ ( ANr, Name , Subject , Path , Highscore ) ]
+mglAufgabenDB :: String -> IO [(String, String, String, String,String)]
+mglAufgabenDB snr = do
+	conn <- connect "localhost" "autoan" "test" "test"
+	stat <- query conn 
+			( concat 
+			  [ "SELECT aufgabe.ANr, aufgabe.Name , aufgabe.Subject , aufgabe.Path , aufgabe.Highscore \n"
+			  , "FROM	aufgabe, gruppe , stud_grp \n"
+			  , "WHERE \n"
+			  , "gruppe.VNr = aufgabe.VNr \n"
+			  , "AND gruppe.GNr = stud_grp.GNr \n"
+			  , "AND stud_grp.SNr = \"" ++ filterQuots snr ++ "\" \n"
+			  , "AND NOW() BETWEEN Von AND Bis "
+			  , ";"
+			  ] )
+	inh <- collectRows ( \ state -> do
+						 a <- getFieldValue state "ANr"
+						 b <- getFieldValue state "Name"
+						 c <- getFieldValue state "Subject"
+						 d <- getFieldValue state "Path"
+						 e <- getFieldValue state "Highscore"
+						 return (  a ,  b , c , d , e )
+					   ) stat
+	disconnect conn 
+	return inh
+
+		
+-- ================================================================================
 checkAdminNamePasswortDB :: String -> String -> IO Bool
+-- ADMIN
 checkAdminNamePasswortDB nme pas = do 
 	   conn <- connect "localhost" "autoan" "test" "test"
 	   stat <- query conn 
