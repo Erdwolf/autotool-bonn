@@ -1,0 +1,159 @@
+\documentclass{llncs}
+
+\usepackage{amsmath}
+
+\renewcommand{\baselinestretch}{1.1}
+\parskip 1mm
+\parindent 0mm
+\textheight 25cm \voffset -1in
+\textwidth 16cm \hoffset -.5in
+
+\newcommand{\PCP}{\operatorname{PCP}}
+\newcommand{\from}{\leftarrow}
+
+\author{Mario Schmidt \inst{1}
+  \and 
+  Johannes Waldmann \inst{2}
+}
+\institute{
+  Universit\"at Leipzig
+  \and
+  HTWK Leipzig
+}
+\title{Post's Correspondence Problem \\
+  for Instances $[(w,0),(0,1),(1,w)]$
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  We determine the solvability of Post's Correspondence Problem
+  for instances of the form  $[(w,0),(0,1),(1,w)]$ 
+  with $w \in\Sigma^*$ for $\Sigma= \{0,1\}$.
+  These instances are unsolvable 
+  if and only if $w \in 0 \Sigma^* 0 \cup 1 \Sigma^* 1$.
+\end{abstract}
+
+\section{Introduction}
+
+$\PCP(2)$ decidable, $\PCP(7)$ undecidable, what about $\PCP(3)$?
+How difficult can it get? Look for \emph{busy beavers} ---
+one of them is $[(001,0),(0,1),(1,001)]$, found by brute force enumeration.
+Therefore, investigate instances  $[(w,0),(0,1),(1,w)]$.
+Indeed, some have long shortest solutions (TODO: Bespiele).
+
+\section{Notation and Preliminaries}
+
+Word, morphism. 
+
+$\PCP$ \emph{instance} is a pair $(g,h)$ of morphisms $\Gamma\to\Sigma$.
+A \emph{solution} of  $(g,h)$ is $w\in\Gamma^+$ such that $g(w)=h(w)$.
+
+$\PCP(k)$ is set of instances with $|\Gamma|=k$.
+
+\section{One-Sided Differences}
+
+Restrict to $w = 0x1$. Then any solution starts with $A$ and ends with $C$,
+and cannot \"uberholen:
+
+For instances  $[(w,0),(0,1),(1,w)]$,
+and any $u\in\Gamma^*$, we have $|g(u)| - |h(u)| \equiv 0 \pmod |w|-1$.
+
+Instance $I=(g,h)$ defines relation $\to_I$ on $\Sigma^*$ by
+\[
+   u \to_I v \iff \exists x\in\Gamma: u g(x) = h(x) v.
+\]
+
+Then $I$ solvable iff $\epsilon \to_I^+ \epsilon$.
+
+
+\section{Extended Alphabet}
+
+Set $\Sigma_2 = \{0,1,2\} = \Sigma\cup\{2\}$.
+
+For given instance $I=[(w,0),(0,1),(1,w)]$, define new instance
+\[
+  I_2 = [(w,0),(0,1),(1,w),(2,0),(1,2)].
+\]
+To each solution of $I_2$ there corresponds a solution of $I$.
+
+
+\section{Separated Solutions}
+
+Looking for solutions of $I_2$ of the form
+\[
+  \{ (w,0),(0,1),(2,0),(1,2) \}^*  \{ (1, w),(0,1),(2,0),(1,2) \}^*,
+\]
+that is, all applications of $(w,0)$ are to the left
+of all applications of $(1,w)$.
+
+
+\section{Cycling}
+
+Note that $[(0,1),(2,0),(1,2)]$ is a cycle of length three.
+More efficient notation by doing all computations ``modulo 3''.
+
+Denote by $(\cdot)_+$ 
+the alphabetic morphism $0 \mapsto 1, 1 \mapsto 2, 2 \mapsto 0$,
+and by $(\cdot)_-$ its inverse.
+
+Let $\sim$ be \emph{cyclic conjugacy}:
+the reflexive and transitive closure of the relation
+$\{ (xy, y_+x) \mid x,y\in\Sigma_2^* \}$.
+
+Claim. $u \sim v$ iff $u \to_I'^* v$ for $I'=[(0,1),(2,0),(1,2)]$.
+
+\section{Rewriting}
+
+For fixed $w$ (from the instance),
+define rewriting system $R = \{ 0 \to w_+, 1 \to w_-, 2 \to w \}$.
+
+Claim. $u \to_R v$ implies $u \to_{I_2} v$.
+
+(note: $\to_R$ is the rewriting relation,
+$\to_{I_2}$ is the ``rotating differences'' relation.)
+
+Proof. Example: let $u \to_R v$ by $u = p 1 q, p w_- q = v$.
+Then $u = p 1 q \to_I^* 1 q p_+ \to_I q p_+ 2 \to_I^* 2 q_+ p
+\to_I q_+ p 0 \to_i^* 0 q p_+ \to_I q p_+ w \to_I^* p_+ w q_+
+\to_I^* p_- w_+ q_- \to_I^* p w_- q = v$.
+
+\section{Types of Separated Solutions}
+
+Let $w = 0x1$. Looking for $0x \to_R^* u \sim v \from_R^* x1$.
+
+In fact, distinguish a few cases:
+$x = \epsilon, x=0, x=1, x=0y0, x=0y1, x=1y0, x=1y1$.
+
+Example $w=0x1=00y11$:
+
+\[
+\begin{array}{cllllll}
+        & \fbox{0} 0 y   1 \\
+  \to_R & \fbox{1} 1 y_+ 2 & 2 0 y   1 \\
+  \to_R & 2 \fbox{2} y_- 0 & 0 1 y_+ 2 & 2 0 y   1 \\
+  \to_R & 2 0 0 y & 1 \fbox{1} y_- 0   & 0 1 y_+ 2 & 2 0 y   1 \\
+  \to_R & 2 0 0 y & 1 2 2 y_- & 0 \fbox{0} y_- 0 & 0 1 y_+ 2 & 2 0 y   1 \\
+  \to_R & 2 0 0 y & 1 2 2 y_- & 0 1 1 y_+ & 2 2 y_- 0 & 0 1 y_+ 2 & 2 0 y   1 \\
+  \sim      & 0 y 1 2 & 2 y_- 0 1 & 1 y_+  2 2 & y_- 0  0 1 & y_+ 2 2 0 & y   1 1 2 \\
+  \from_R   & 0 y 1 2 & 2 y_- 0 1 & 1 y_+  \fbox{1} 1 & y_+ 2 2 0 & y   1 1 2 \\
+  \from_R   & 0 y 1 2 & 2 y_- 0 1 & 1 y_+  \fbox{0} 0 & y   1 1 2 \\
+  \from_R   & 0 y 1 2 & 2 y_- 0 1 & 1 y_+  \fbox{2} 2 \\
+  \from_R   & 0 y 1 2 & 2 y_- 0 \fbox{0} \\
+  \from_R   & 0 y 1 \fbox{1}
+\end{array}
+\]
+
+
+\section{Conclusion and Open Problems}
+
+Only linear complexity for $[(w,0),(0,1),(1,w)]$.
+Confirms the conjecture that $\PCP(3)$ complexity is at most quadratic.
+
+$\PCP(3)$ as a whole remains open.
+Perhaps treat the case $[(u,0),(0,1),(1,v)]$ next.
+Can adapt the ``morphistic'' approach.
+
+\end{document}
+
