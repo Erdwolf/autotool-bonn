@@ -1,5 +1,7 @@
 module SQLqueries where
 
+-- $Id$
+
 import Database.MySQL.HSQL
 import IO
 import Char -- toLower
@@ -668,4 +670,33 @@ getStudentDB mnr = do
 					   ) stat
 	disconnect conn 
 	return inh
+
+--
+-- input: email-adresse
+-- output: ( Id, Matrikel )
+--
+getIdMat :: String -> IO ( Maybe ( String, String ))
+getIdMat email = do 
+	conn <- connect "localhost" "autoan" "test" "test"
+	putStrLn $ "connected"
+	stat <- query conn $ unlines
+	   [ "SELECT SNr, Email, MNr"
+	   , "FROM	autoan.student"
+	   , "WHERE	Email = \"" ++ (filterQuots email)++ "\""
+	   -- kein semikolon? sonst absturz?
+	   ] 
+	putStrLn $ "queried"
+	inh <- collectRows ( \ state -> do
+	     a <- getFieldValue state "SNr"
+	     b <- getFieldValue state "MNr"
+	     return (  a, b )
+					   ) stat
+	putStrLn $ "collected"
+	disconnect conn 
+	putStrLn $ "disconnected"
+	case inh of
+	     [ line ] -> return $ Just line
+	     _        -> return Nothing
+
+
 
