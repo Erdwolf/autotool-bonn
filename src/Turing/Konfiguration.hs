@@ -4,7 +4,7 @@ module Turing.Konfiguration where
 
 import Machine.History
 
-import Turing
+import Turing.Type
 import ToDoc
 
 data Konfiguration y z = 

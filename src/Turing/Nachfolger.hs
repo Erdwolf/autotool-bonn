@@ -8,7 +8,7 @@ module Turing.Nachfolger
 
 where
 
-import Turing
+import Turing.Type
 import Turing.Konfiguration
 import Schichten
 

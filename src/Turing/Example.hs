@@ -4,7 +4,7 @@ module Turing.Example where
 
 import Turing
 
-student :: Turing Char Integer
+student :: Turing Char Int
 student = Turing 
 	             {eingabealphabet = mkSet "1", 
         arbeitsalphabet = mkSet "01",

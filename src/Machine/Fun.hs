@@ -57,9 +57,13 @@ fun_test :: ( Machine m dat conf , Out m dat conf )
 fun_test cut pairs m = do
     let fm = listToFM pairs
     let check ein aus = do
-	    inform $ text "wird die geforderte Endkonfiguration"
-		     <+> toDoc aus <+> text "erreicht?"
-	    return $ lookupFM fm ein == Just aus
+            let Just wanted = lookupFM fm ein
+		res = wanted == aus
+	    inform $ vcat [ text "wird die geforderte Endkonfiguration"
+			    <+> toDoc wanted <+> text "erreicht?"
+			  , nest 4 $ toDoc res
+			  ]
+	    return res
     inner_fun_test cut ( map fst pairs ) id check m	    
 
 

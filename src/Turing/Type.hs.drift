@@ -4,7 +4,7 @@ module Turing.Type
 
 ( module Turing.Type
 , module Sets
-, module FiniteMap
+, module Data.FiniteMap
 )
 
 where
@@ -73,6 +73,3 @@ instance ( TUM y z )
     => Read (Turing y z) where
     readsPrec = parsec_readsPrec
 
-lookupset :: Ord a => FiniteMap a (Set b) -> a -> Set b
-lookupset fm x = case lookupFM fm x of
-    Just m -> m; Nothing -> emptySet

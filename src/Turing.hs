@@ -10,6 +10,7 @@ where
 --   $Id$
 
 import Turing.Type
+import Turing.Machine
 import Turing.Check
 import Turing.Dot
 import Dot.Dot

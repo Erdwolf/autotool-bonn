@@ -26,11 +26,11 @@ instance ( ToDoc m, Size m
       ) => Machine m dat conf 
 
 class In m dat conf | m -> dat, m -> conf where -- strong dependencies ??
-    -- startkonf. herstellen (tupel von args)
+    -- | startkonf. herstellen (tupel von args)
     input  :: m -> dat -> conf
 
 class Ord conf => Compute m conf where
-    -- alle direkten nachfolger ( nichtdeterministisch )
+    -- | alle direkten nachfolger ( nichtdeterministisch )
     next   :: m -> conf -> Set conf 
     -- 
     accepting  :: m -> conf -> Bool
@@ -43,7 +43,7 @@ nachfolger a k = concat $ map setToList $
 
 
 class Out m dat conf  | m -> dat, m -> conf where
-    -- endkonf. lesen (ein einziges arg)
+    -- | endkonf. lesen (ein einziges arg)
     output :: m -> conf -> dat
 
 
@@ -54,7 +54,7 @@ instance ( In m dat conf, Out m dat conf )
       => InOut m dat conf
 
 class Numerical dat where
-    -- berechnet eine mehrstellige zahlfunktion
+    -- | berechnet eine mehrstellige zahlfunktion
     encode :: [ Integer ] -> dat
     decode :: dat -> Integer
 
