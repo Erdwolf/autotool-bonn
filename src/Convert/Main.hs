@@ -14,33 +14,56 @@ import qualified Challenger as C
 import Data.Typeable
 import Autolib.Reporter
 
-data Convert_To_NFA = Convert_To_NFA deriving ( Eq, Ord, Show, Read, Typeable )
+import Autolib.NFA
+import Autolib.NFA.Example
+import Autolib.NFA.Eq
+import Autolib.Size
 
-instance C.Partial Convert_To_NFA Convert ( NFA Char Int ) where
+import NFA.Property
+import NFA.Test
+import Convert.Input
 
-    describe Convert_To_NFA con = vcat
+data Convert_To_NFA = Convert_To_NFA 
+    deriving ( Eq, Ord, Show, Read, Typeable )
+
+instance C.Partial Convert_To_NFA 
+                   ( Convert , [ Property Char ] ) 
+		   ( NFA Char Int ) 
+  where
+
+    describe Convert_To_NFA ( from, props ) = vcat
         [ text "Gesucht ist ein endlicher Automat,"
-	, text "der die Sprache" <+> text "TODO" <+> text "akzeptiert"
+	, text "der die Sprache" <+> form from <+> text "akzeptiert"
 	, text "und folgende Eigenschaften hat:"
-	, indent 4 $ toDoc $ wanted con
+	, nest 4 $ toDoc props
         ]
 
-    initial Convert_To_NFA con = Autolib.NFA.example
+    initial Convert_To_NFA ( from, props ) = 
+        let [ alpha ] = do Alphabet a <- props ; return a
+	in  Autolib.NFA.Example.example_sigma alpha
 
-    partial Convert_To_NFA ( Convert { wanted = NFA props } ) aut = do
+    partial Convert_To_NFA ( from, props ) aut = do
         inform $ text "Sind alle Eigenschaften erfüllt?"
         mapM_ ( flip test aut ) props
 
-    total Convert_To_NFA ( Convert { input = i } ) aut = do
+    total Convert_To_NFA ( from, props ) aut = do
         inform $ text "Akzeptiert der Automat die richtige Sprache?"
-        -- todo
+        let [ alpha ] = do Alphabet a <- props ; return a
+        True <- nested 4 $ equ ( eval alpha from ) aut
+	return ()
 
-instance C.Measure Convert_To_NFA con aut where
+instance C.Measure Convert_To_NFA 
+                   ( Convert, [ Property Char ] ) 
+		   ( NFA Char Int ) 
+  where
     measure _ _ aut = fromIntegral $ size aut
 
 make :: Make
 make = direct Convert_To_NFA 
-     $ Convert { name = Nothing
-	       , input = Fixed_RX $ read "a (a+b)^* b"
-	       , wanted = NFA NFA.Property.example
+     ( Convert { name = Nothing
+	       , input = Exp $ read "a (a+b)^* b"
 	       }
+     , NFA.Property.example
+     )
+
+

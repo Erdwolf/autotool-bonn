@@ -10,13 +10,27 @@ import Text.XML.HaXml.Haskell2Xml
 import qualified Convert.Input
 import qualified Convert.Wanted
 
+import Autolib.Exp.Inter
+import Autolib.Exp
+import Autolib.NFA hiding ( alphabet )
+import Autolib.Set
 
 data Convert =
      Convert { name :: Maybe String -- if Nothing, use (show input)
              , input :: Convert.Input.Input
-             , wanted :: Convert.Wanted.Wanted Char
 	     }
     deriving ( Typeable )
 
 {-! for Convert derive: Reader, ToDoc, Haskell2Xml !-}
+
+form :: Convert -> Doc
+form conv = case name conv of
+    Nothing -> toDoc $ input conv
+    Just cs -> text cs
+
+eval :: Set Char -> Convert -> NFA Char Int
+eval alpha conv = case input conv of
+    Convert.Input.NFA aut -> aut
+    Convert.Input.Exp exp -> inter ( std_sigma $ setToList alpha ) exp
+
 

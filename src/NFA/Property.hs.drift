@@ -11,7 +11,8 @@ import Autolib.Set
 import Autolib.NFA
 
 
-data NFAC c Int => Property c = Min_Size Int
+data NFAC c Int => Property c 
+              = Min_Size Int
 	      | Max_Size Int
 	      | Alphabet ( Set c )
 	      | Deterministic
