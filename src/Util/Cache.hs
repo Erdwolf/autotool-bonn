@@ -4,20 +4,22 @@ module Util.Cache where
 
 import Util.Datei
 
+import Util.Debug
+
 cache :: (Show a, Read a) => Datei -> IO a -> IO a
 -- falls schon vorhanden, dann lesen
 -- sonst erzeugen und schreiben
 cache d action = 
-    catch ( do putStr $ "lies cache-file " ++ show d ++ " ... "
+    catch ( do debug $ "lies cache-file " ++ show d ++ " ... "
 	       cs <- lesen d
-	       putStrLn $ "OK"
+	       debug $ "OK"
 	       return $ read cs
 	  ) 
 	  ( \ _ -> do 
-		putStr $ "nicht vorhanden, schreibe cache ... "
+		debug $ "nicht vorhanden, schreibe cache ... "
 	        x <- action
 		schreiben d $ show x
-		putStrLn $ "OK"
+		debug $ "OK"
 		return x
 	  )
 
