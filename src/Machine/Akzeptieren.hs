@@ -35,6 +35,7 @@ positiv_liste cut m  xss = do
 	     inform $ text "diese Eingaben der Positiv-Liste wurden nicht akzeptiert:"
 	     inform $ toDoc xss
 	     vorrechnens m xss
+	     reject $ empty
 
 
 negativ_liste :: ( Machine m dat conf, ToDoc [dat] )
@@ -52,6 +53,7 @@ negativ_liste cut m xss = do
 	     inform $ text "diese Eingaben der Negativ-Liste wurden doch akzeptiert:"
 	     inform $ toDoc xss
 	     vorrechnens m xss
+	     reject $ empty
 
 
 
