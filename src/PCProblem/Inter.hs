@@ -44,7 +44,7 @@ inter :: PCP
 inter (PCP pcp) = do
 
     let top = ( mkLabel "leer" ) { ident = Ident "top" }
-        mid = ( mkLabel "leer" ) { ident = Ident "mid" }
+        -- mid = ( mkLabel "leer" ) { ident = Ident "mid" }
         bot = ( mkLabel "leer" ) { ident = Ident "bot" }
 
         topword m = do x <- m; fst (pcp !! fromIntegral (x-1))
@@ -52,7 +52,7 @@ inter (PCP pcp) = do
 
         set = splits
 	    [ translate ( \ m -> [ Text $ topword m ] ) $ changeL top
-	    , translate ( \ m -> [ Text $ show m    ] ) $ changeL mid
+	    -- , translate ( \ m -> [ Text $ show m    ] ) $ changeL mid
 	    , translate ( \ m -> [ Text $ botword m ] ) $ changeL bot
 	    ]
 
@@ -67,7 +67,7 @@ inter (PCP pcp) = do
 
     return $ \ listener -> ( above ( row $ pairs listener )
 			           ( column [ top
-					    , mid
+					    -- , mid
 					    , bot ] )
 			   , set 
 			   )
