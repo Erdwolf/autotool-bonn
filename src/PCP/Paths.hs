@@ -282,6 +282,7 @@ instance NFAC c Int => Show  (Net c) where
 instance NFAC c Int => ToDot (Net c) where
     toDot = toDot . net
     toDotProgram _ = "neato"
+    toDotOptions _ = "-Gsize=8,11 -Gratio=fill" 
 
 automate :: (  NFAC c Int )
     => Config c Int 
