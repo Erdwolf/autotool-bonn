@@ -13,12 +13,14 @@ main = do
                      if exitCode == ExitSuccess
                        then do exitCode <- system ("rm " ++ (fst(span(/= '.')file))
                                                    ++".dot")
+                               exitCode2 <- system ("gv " ++ file ++ " &")
                                putStrLn ("Ausgabe ist in Datei: " ++ file)
                        else putStrLn ("Fehler bei der Benutzung von GraphViz")
              else do ( file, _, exitCode ) <- buildTree argv "" 
                      if exitCode == ExitSuccess
                        then do exitCode <- system ("rm " ++ (fst(span(/= '.')file))
                                                    ++".dot")
+                               exitCode2 <- system ("gv " ++ file ++ " &")
                                putStrLn ("Ausgabe ist in Datei: " ++ file)
                        else putStrLn ("Fehler bei der Benutzung von GraphViz")
 
