@@ -1,8 +1,12 @@
 module Mysqlconnect where 
 
+#ifdef HSQL14
+import Database.HSQL.MySQL
+#else
 import Database.MySQL.HSQL
+#endif
 
--- Mysql                                                                                                                       
+-- Mysql
 mysqlhost="localhost"
 mysqldb="autoan"
 mysqluser="user"
