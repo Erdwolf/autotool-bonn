@@ -16,7 +16,7 @@ import Challenger.Partial
 import Inter.Types
 
 import Control.Student.CGI
-import Control.Tutor
+import Control.Vorlesung.DB
 
 import Inter.Make 
 import Inter.Evaluate
