@@ -76,7 +76,6 @@ import Inter.Types
 import qualified Exception
 
 import Inter.Timer
-import Concurrent
 
 --
 -- hier sind die aufgaben drin:
@@ -92,8 +91,8 @@ main = do
 
      vs <- boiler
      wrapper $ \ env -> ( do
-	 forkIO $ timer 10 -- will raise exception after that many seconds
-	 iface vs env
+	 let msg =  p << pre << primHtml "timer expired"
+	 timed 10 msg $ iface vs env
        ) `Exception.catch` \ err -> return $ p << pre << primHtml ( show err )
 
 ------------------------------------------------------------------------

@@ -21,7 +21,7 @@ eindeutig schranke =
         let g = reduktion g0
         inform $ vcat 
 	       [ text "Hier sind einige Links-Ableitungen:"
-	       , nest 4 $ toDoc $ take 10 $ links_ableitungen schranke g
+	       , nest 4 $ toDoc $ take 4 $ links_ableitungen schranke g
 	       ]
         let wrong = mehrdeutige_links_ableitungen schranke g 
 	let interesting (x, y) = cadr x /= cadr y -- aber car x == car y
