@@ -19,14 +19,19 @@ import Autolib.NFA.Example
 import Autolib.NFA.Eq
 import Autolib.NFA.Restrict
 import Autolib.Size
+import Autolib.Set
 import Autolib.Dot ( peng )
 import Autolib.Informed
 
 import NFA.Property
 import NFA.Test
 import NFA.Quiz
+import Autolib.NFA.Type
 import Exp.Roll
 import Convert.Input
+
+import Text.XML.HaXml.Haskell2Xml
+import Text.XML.HaXml.Pretty
 
 data Convert_To_NFA = Convert_To_NFA 
     deriving ( Eq, Ord, Show, Read, Typeable )

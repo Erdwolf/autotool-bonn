@@ -3,10 +3,6 @@
 include ../config.mk
 include Makefile-defs
 
-# for autotool: ########################################################
-
-CGIBIN = $(CGI)/cgi-bin
-
 ###############################################################################
 
 IPROGS = Super
@@ -53,7 +49,7 @@ HAXML_DESC = /usr/local/share/ghc-6.2/html/libraries/HaXml
 AUTOLIB_LINK = http://141.57.11.163/auto/lib/haddock
 AUTOLIB_DESC = /usr/local/share/ghc-6.2/html/libraries/AutoLib
 
-HADDOCK_OUTPUT = $(WWW)/auto/tool/haddock
+HADDOCK_OUTPUT = $(PUB)/auto/tool/haddock
 HADDOCK_OPTS = -v \
 --html \
 --title=auto/tool \
@@ -93,17 +89,10 @@ drift-clean :
 
 
 install : $(CGIS)
-	cp $(CGIS) $(CGIBIN)/
-
-
-
-
-
-
+	cp $(CGIS) $(CGIDIR)/
 
 install-face : $(INTER_FACE_CGI)
 	scp $(INTER_FACE_CGI)  $(INTER_FACE_TARGET)
-
 
 ghci-face:
 	$(GHCI_COMMAND)  $(EXTRA_PACKS)  $(INTER_FACE_WITH_PATH)
