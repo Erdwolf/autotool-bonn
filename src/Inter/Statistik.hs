@@ -60,6 +60,7 @@ studenten vnr = do
 
 resultate vnr only_mandatory = do
     close -- btable
+
     t <- io $ Control.Vorlesung.DB.teilnehmer vnr
     let fmt = listToFM t -- snr to (mnr, vorname,  name)
 
@@ -92,7 +93,8 @@ resultate vnr only_mandatory = do
     sequence_ $ do
         anr <- setToList anrs
 	return $ plain $ case lookupFM fma anr of
-	    Just name -> toString name
+	    Just name -> ( if only_mandatory then take 3 else id )
+			 $ toString name
 	    Nothing   -> show anr
     plain "total"
     close -- row
@@ -110,7 +112,9 @@ resultate vnr only_mandatory = do
                 let result = lookupFM stud_aufg (snr, anr) 
 		return $ do
 		     plain $ case result of
-		         Just ( Oks o, Nos n ) -> show (o, n)
+		         Just ( Oks o, Nos n ) -> 
+			     if only_mandatory 
+			     then show o else show (o, n)
 		         Nothing -> "-"
 		     return $ case result of
 			 Just ( Oks o, _ ) | o > 0 -> 1
