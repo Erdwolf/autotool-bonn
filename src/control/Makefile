@@ -1,5 +1,5 @@
 HC=			ghc
-HC_SPEC_FLAGS=	 # -fglasgow-exts		# -cpp -package posix -package data
+HC_SPEC_FLAGS= -fglasgow-exts		# -cpp -package posix -package data
 HCLOADFLAGS=
 
 #OPT=		-fvia-C -O2-for-C 
@@ -10,7 +10,8 @@ HCFLAGS=	$(OPT) $(HC_SPEC_FLAGS) $(HINCLUDES)
 
 HMAKE=		ghc --make 			# hmake
 HMAKEFLAGS=	$(HCFLAGS) $(HINCLUDES)
-HINCLUDES=	-i../wash -package"HToolkit" -package"lang"
+# HINCLUDES=	-i../wash -package"HToolkit" -package"lang"
+HINCLUDES=	-i../wash -i../HToolkit -package lang
 HAPPY=		happy
 HAPPYFLAGS=	-i
 RM=			rm -f

@@ -9,39 +9,34 @@ import Turing.Konfiguration
 import Turing.Nachfolger
 import Schichten
 
+import Reporter
+import ToDoc
+
 vorrechnen :: TUM y z
-	   => Turing y z -> [y] -> Strings
-vorrechnen a xs = let cut = 10 in
-    [ ""
-    , "mit Eingabe " ++ show xs ++ " erreicht der Automat folgende Konfigurationen:"
-    , "(ich zeige maximal die ersten " ++ show cut ++ " Schritte)"
-    ] ++ ( indent 4 $ do
-        (i, ks) <- zip [0..] 
+	   => Turing y z -> [y]
+	   -> Reporter ()
+vorrechnen a xs = do
+    let cut = 10
+    inform $ fsep [ text "mit Eingabe", toDoc xs
+		  , text "erreicht der Automat folgende Konfigurationen:"
+		  , parens (text "ich zeige maximal die ersten" 
+			    <+> toDoc cut <+> text "Schritte")
+		  ]
+    inform $ vcat $ do
+        (i, ks) <- zip [0 :: Int .. ] 
 		$ take cut
 		$ map setToList 
-		$ schichten (folgekonfigurationen a   )
+		$ schichten ( folgekonfigurationen a )
 		$ start_konfiguration a xs
-	( "nach " ++ show i ++ " Schritten:" )
-	       : ( indent 4 $ do k <- ks; text k )
-    )
+	return  $ text "nach" <+> toDoc i <+> text "Schritten:"
+	        $$ ( vcat $ do k <- ks; return $ toDoc k )
+
     
 vorrechnens :: TUM y z
-	   => Turing y z -> [[y]] -> IO ()
-vorrechnens a = putStrLn . unlines . concat . map (vorrechnen a)
+	   => Turing y z -> [[y]]
+	   -> Reporter ()
+vorrechnens a = mapM_ (vorrechnen a)
 
------------------------------------------------------------------------
 
-type Strings = [ String ]
-class Text a where text :: a -> Strings
 
-indent :: Int -> Strings  -> Strings
-indent i lines = do
-    let prefix = take i $ repeat ' '
-    l <- lines
-    return $ prefix ++ l
-
-instance  TUM y z
-	  => Text (Konfiguration y z) where text k = [ show k ]
-instance  TUM y z
-	  => Text (Turing y z) where text a = lines (show a)
 

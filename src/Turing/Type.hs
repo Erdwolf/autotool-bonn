@@ -14,6 +14,7 @@ where
 -- $Id$
 
 import Sets
+import Size
 import FiniteMap
 import ReadFM
 import ToDoc
@@ -43,6 +44,8 @@ data (UM y, UM z) => Turing y z =
 	    }
 
 {-! for Turing derive : ToDoc, Reader !-}
+
+instance TUM y z => Size (Turing y z) where size = size . zustandsmenge
 
 unCollect :: TUM y z
 	=> FiniteMap (y, z) (Set (y, z, Bewegung))

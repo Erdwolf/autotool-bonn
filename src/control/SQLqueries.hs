@@ -1,4 +1,11 @@
-module SQLqueries where
+module SQLqueries 
+
+( module SQLqueries
+, ATHighLow (..)
+, ATBewertung (..)
+)
+
+where
 
 -- $Id$
 

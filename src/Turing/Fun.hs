@@ -13,36 +13,71 @@ import Turing.Konfiguration
 import Turing.Akzeptieren (akzeptierend)
 import Turing.Vorrechnen
 
-import Auswertung
-import Right
+
 import Monad (guard)
-import Random
+import Reporter
+import ToDoc
+import Reader
+import Size
 
 
-fun_test :: TUM y z
+fun_test :: (Reader [y], TUM y z)
      => Int -> [([y],[y])]  -- Liste von Paaren von Eingabe/Ausgabe
      -> Turing y z 
-     -> IO String
+     -> Reporter Int
 
 fun_test cut pairs m = do
-    putStrLn $ "Ihre Turingmaschine ist"
-    putStrLn $ show m
+    inform $ text $ "Ihre Turingmaschine ist"
+    inform $ toDoc m
 
-    putStrLn $ "Bei allen folgenden Rechnungen berücksichtige ich"
-    putStrLn $ "nur die ersten " ++ show cut ++ " erreichbaren Konfigurationen."
+    inform $ text "Bei allen folgenden Rechnungen berücksichtige ich"
+    inform $ text $ "nur die ersten " ++ show cut ++ " erreichbaren Konfigurationen."
 
-    muss (check m) $ do
+    check m
+    deterministisch m
 
-      putStrLn $ "ich starte die Maschine auf einigen Eingaben\n"
-      ws <- sequence $ take 4 $ repeat $ do 
-	    i <- randomRIO ( 0 , length pairs - 1 )
-	    return $ fst $ pairs !! i
-      vorrechnens m ws
+    inform $ text $ "ich starte die Maschine auf einigen Eingaben"
+    vorrechnens m $ take 4 $ drop 2 $ map fst pairs
 
-      muss (richtige_ergebnisse cut m pairs) $
+    richtige_ergebnisse cut m pairs
 
-	  right
+    return $ size m
 
+
+richtige_ergebnisse :: ( Reader [y] , TUM y z )
+	      => Int -> Turing y z -> [([y],[y])] 
+              -> Reporter ()
+richtige_ergebnisse cut m  pairs = do
+    let fehler = take 3 $ do 
+          (ein, aus) <- pairs
+          let ks = akzeptierend cut m ein
+          if null ks 
+	      then return (ein, reject $ fsep [ text  "Bei Eingabe", toDoc ein 
+			     , text "erreicht die Maschine"
+		             , text "keine Endkonfiguration." 
+			     ] )
+	      else do
+	          k <- ks
+	          let b = bandinhalt m k
+	          guard $ b /= aus
+	          return (ein, reject $ fsep [ text "Bei Eingabe", toDoc ein
+			    , text "erreicht die Maschine"
+			    , text "die Endkonfiguration", toDoc k
+			    , text "gefordert ist aber der Bandinhalt"
+			    , toDoc aus
+			    ] )
+
+    sequence_ $ map snd $ fehler
+    if null fehler 
+        then do
+	     inform $ text "zu allen Eingaben wurde"
+	     inform $ text "die richtige Ausgabe berechnet"
+	else do
+	     inform $ text "zu diesen Eingaben wurde"
+             inform $ text "keine oder eine falsche Ausgabe berechnet:"
+	     vorrechnens m $ map fst fehler
+
+  
 
 bandinhalt :: TUM y z 
 	   => Turing y z -> Konfiguration y z -> [ y ]
@@ -52,32 +87,4 @@ bandinhalt m k =
 	strip_rechts = reverse . strip_links . reverse
 	band = reverse ( band_links  k ) ++ aktuelles_zeichen k : band_rechts k
     in	strip_links . strip_rechts $ band
-
-richtige_ergebnisse :: TUM y z
-	      => Int -> Turing y z -> [([y],[y])] -> Either String String
-richtige_ergebnisse cut m  pairs = case take 3 $
-    do (ein, aus) <- pairs
-       let ks = akzeptierend cut m ein
-       if null ks 
-	  then return ( ein
-		      ,  "Bei Eingabe " ++ show ein ++ " erreicht die Maschine"
-		      ++ " keine Endkonfiguration." 
-		      )
-	  else do
-	      k <- ks
-	      let b = bandinhalt m k
-	      guard $ b /= aus
-	      return ( ein
-		     , "Bei Eingabe " ++ show ein ++ " erreicht die Maschine"
-		     ++ " die Endkonfiguration " ++ show k ++ ",\n"
-		     ++ " gefordert ist aber der Bandinhalt " ++ show aus
-		     )
-  of []  -> Right $ "zu allen Eingaben wurde die richtige Ausgabe berechnet"
-     ems -> Left  $ unlines 
-		  $ ( "zu diesen Eingaben wurde keine oder eine falsche Ausgabe berechnet:"
-		    : do { (ein, msg) <- ems; return msg }
-		    ++ concat ( map (vorrechnen m) ( map fst ems ) )
-		    )
-
-  
 

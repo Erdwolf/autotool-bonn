@@ -6,7 +6,7 @@
 # DIRS = $(BINDIR) $(EXERCISEDIRS)
 
 # neu: fa/ nicht mehr im pfad (steht jetzt alles in NFA.*)
-DIRS = util:wash:control:challenger:bridge
+DIRS = util:wash:control:challenger:bridge:HToolkit
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
@@ -14,7 +14,7 @@ FLAGS = -fallow-overlapping-instances \
 
 PACKS = -package text -package data \
 	-package posix -package network \
-	-package HToolkit # -package HaXml
+	# -package HToolkit # -package HaXml
 
 OPT = -O2
 GHC = ghc

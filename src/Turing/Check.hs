@@ -3,70 +3,70 @@ module Turing.Check where
 -- $Id$
 
 import Turing.Type
+
+import Reporter
+import ToDoc
+
 import Monad ( guard )
 
 check :: TUM y z
-      => Turing y z -> Either String String
-check m = case 
+      => Turing y z -> Reporter ()
+check m = do
+      when ( isEmptySet $ eingabealphabet m ) 
+	   $ reject $ text "das Eingabe-Alphabet ist leer"
+      when ( leerzeichen m `elementOf` eingabealphabet m )
+           $ reject $ text "das Leerzeichen gehört zum Eingabealphabet"
+      when ( not ( leerzeichen m `elementOf` arbeitsalphabet m) ) 
+           $ reject $ text "das Leerzeichen gehört nicht zum Arbeitsalphabet" 
+      let e = eingabealphabet m
+          a = arbeitsalphabet m      
+      when ( not (isEmptySet (e `minusSet` a)) )
+	   $ reject $ fsep [ text "das Eingabealphabet", toDoc e 
+	       , text "ist keine Teilmenge des Arbeitsalphabets", toDoc a
+			     ]
 
-      [ "das Eingabe-Alphabet ist leer" 
-      | isEmptySet (eingabealphabet m) 
-      ]
-      ++ 
-      [ "das Leerzeichen gehört zum Eingabealphabet "	
-      | leerzeichen m `elementOf` eingabealphabet m
-      ]
-      ++ 
-      [ "das Leerzeichen gehört nicht zum Arbeitsalphabet "	
-      | not ( leerzeichen m `elementOf` arbeitsalphabet m)
-      ]
-      ++
-      [ "das Eingabealphabet " ++ show e 
-	++ " ist keine Teilmenge des Arbeitsalphabets " ++ show a
-      | let e = eingabealphabet m
-      , let a = arbeitsalphabet m
-      , not (isEmptySet (e `minusSet` a))
-      ]
-      ++
-      [ "Fehler in der Programmregel " ++ show r ++ ": " ++ msg
-      | r @ ((y,z),yzbs) <- fmToList $ tafel m
-      , (y',z',b) <- setToList yzbs
-      , msg <- [ show t ++ " gehört nicht zum Arbeitsalphabet" 
-	       | t <- [ y, y' ] 
-	       , not ( t `elementOf` arbeitsalphabet m )
-	       ] 
-	       ++ 
-	       [ show t ++ " gehört nicht zur Zustandsmenge" 
-	       | t <- [ z, z' ]
-	       , not ( t `elementOf` zustandsmenge m )
-	       ]
-      ]
-      ++ 
-      [ "der Startzustand " ++ show z ++ " gehört nicht zur Zustandsmenge"
-      | let z = startzustand m
-      , not (z `elementOf` zustandsmenge m)
-      ]
-      ++ 
-      [ "der Endzustand " ++ show z ++ " gehört nicht zur Zustandsmenge"
-      | z <- setToList $ endzustandsmenge m
-      , not (z `elementOf` zustandsmenge m)
-      ]
+      let check_regel (r, ((y,z), (y',z',b)) ) = do
+           let ca t = do
+	         when ( not ( t `elementOf` arbeitsalphabet m ) ) $ do
+		      inform $ text "Fehler in Regel" <+> toDoc r
+		      reject $ text "Zeichen" <+> toDoc t 
+			    <+> text "gehört nicht zum Arbeitsalphabet" 
+	   mapM_ ca [ y, y' ] 
+	   let cz t = do
+		 when ( not ( t `elementOf` zustandsmenge m ) ) $ do
+		      inform $ text "Fehler in Regel" <+> toDoc r
+		      reject $ text "Zustand" <+> toDoc t 
+			    <+> text "gehört nicht zur Zustandsmenge" 
+	   mapM_ cz [ z, z' ]
+      mapM_ check_regel $ do
+          r @ ((y,z),yzbs) <- fmToList $ tafel m
+          (y',z',b) <- setToList yzbs
+	  return (r, ((y,z), (y',z',b)) )
 
-  of  []  -> Right "Das ist wirklich eine nichtdeterministische Turingmaschine."
-      msg -> Left $ unlines 
-	  $ [ "Das ist keine nichtdeterministische Turingmaschine." ]
-	    ++ msg
+      let z = startzustand m
+      when ( not (z `elementOf` zustandsmenge m) )
+	   $ reject $ text "Startzustand " <+> toDoc z <+>
+		 text "gehört nicht zur Zustandsmenge"
+
+      let ce z = do
+          when ( not (z `elementOf` zustandsmenge m))
+	       $ reject $ text "Endzustand" <+> toDoc z
+		    <+> text "gehört nicht zur Zustandsmenge"
+      mapM_ ce $ setToList $ endzustandsmenge m
+      inform $ text "Das ist wirklich eine nichtdeterministische Turingmaschine."
 
 deterministisch :: TUM y z
-      => Turing y z -> Either String String
-deterministisch m = 
+      => Turing y z 
+      -> Reporter ()
+deterministisch m = do
     let mehr = do
 	    r @ ( yz, s ) <- fmToList $ tafel m
 	    guard $ cardinality s > 1
 	    return r
-    in	case mehr of
-	    [] -> Right "diese Maschinen ist deterministisch"
-	    rs -> Left  $ unlines 
-			( "diese Regeln sind nicht deterministisch:"
-			: map show rs )
+    case mehr of
+	    [] -> inform $ text "diese Maschinen ist deterministisch"
+	    rs -> do
+		  inform $ text "diese Regeln sind nicht deterministisch:"
+		  reject $ toDoc rs
+
 

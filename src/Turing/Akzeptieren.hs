@@ -10,6 +10,8 @@ import Turing.Nachfolger
 import Turing.Vorrechnen
 
 import Monad (guard)
+import Reporter
+import ToDoc
 
 akzeptierend
     :: (TUM y z)
@@ -21,30 +23,36 @@ akzeptierend cut m xs = do
 
 
 positiv_liste :: (TUM y z)
-	      => Int -> Turing y z -> [[y]] -> Either String String
-positiv_liste cut m  xss = case take 3 $
-    do xs <- xss
-       let ks = akzeptierend cut m xs
-       guard $ null ks -- d. h. fälschlicherweise nicht akzeptiert
-       return xs
-  of []  -> Right $ "alle Wörter aus der Positiv-Liste wurden akzeptiert"
-     xss -> Left  $ unlines 
-		  $ [ "diese Wörter der Positiv-Liste wurden nicht akzeptiert:"
-		    , unwords $ map show xss
-		    ] 
-		    ++ concat ( map (vorrechnen m) xss )
+	      => Int -> Turing y z -> [[y]]
+	      -> Reporter ()
+positiv_liste cut m  xss = do
+     let fehler = take 3 $ do 
+            xs <- xss
+            let ks = akzeptierend cut m xs
+            guard $ null ks -- d. h. fälschlicherweise nicht akzeptiert
+            return xs
+     case fehler of
+          []  -> inform $ text "alle Wörter aus der Positiv-Liste wurden akzeptiert"
+          xss -> do
+	     inform $ text "diese Wörter der Positiv-Liste wurden nicht akzeptiert:"
+	     inform $ toDoc xss
+	     vorrechnens m xss
+
 
 negativ_liste :: (TUM y z)
-	      => Int -> Turing y z -> [[y]] -> Either String String
-negativ_liste cut m xss = case take 3 $
-    do xs <- xss
-       let ks = akzeptierend cut m xs
-       guard $ not $ null ks -- d. h. fälschlicherweise akzeptiert
-       return xs
-  of []  -> Right $ "jedes Wort aus der Negativ-Liste wurden nicht akzeptiert"
-     xss -> Left  $ unlines 
-		  $ [ "diese Wörter der Negativ-Liste wurden doch akzeptiert:"
-		    , unwords $  map show xss
-		    ]  
-		    ++ concat ( map (vorrechnen m) xss )
+	      => Int -> Turing y z -> [[y]] 
+              -> Reporter ()
+negativ_liste cut m xss = do
+    let fehler = take 3 $ do 
+         xs <- xss
+         let ks = akzeptierend cut m xs
+         guard $ not $ null ks -- d. h. fälschlicherweise akzeptiert
+         return xs
+    case fehler of 
+	 []  -> inform $ text $ "jedes Wort aus der Negativ-Liste wurden nicht akzeptiert"
+         xss -> do 
+	     inform $ text "diese Wörter der Negativ-Liste wurden doch akzeptiert:"
+	     inform $ toDoc xss
+	     vorrechnens m xss
+
 

@@ -3,7 +3,7 @@ module Turing.Konfiguration where
 -- $Id$
 
 import Turing
-
+import ToDoc
 
 data Konfiguration y z = 
      Konfiguration { band_links :: [ y ]
@@ -23,6 +23,9 @@ instance TUM y z
 	           ( show (reverse (band_links k)) )
 	 ++ " " ++ ( show (zustand k, aktuelles_zeichen k) )
 	 ++ " " ++ ( show (         band_rechts k) )
+
+instance TUM y z => ToDoc  (Konfiguration y z) where
+    toDoc = text . show
 
 
 showlinks :: TUM y z

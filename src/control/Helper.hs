@@ -9,7 +9,7 @@ import Char -- toLower
 
 data StrOrInt = S String | I Int deriving ( Show , Read )
 data ATBewertung = No | Ok Int deriving ( Show , Read )
-data ATHighLow = High | Low | Keine
+data ATHighLow = High | Low | Keine deriving ( Show , Read )
 
 space a b	= a ++ " " ++ b
 
