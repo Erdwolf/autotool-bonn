@@ -26,8 +26,9 @@ check soll n = do
 	       $ reject $ vcat
 	       [ text "Diese Eingabe wird nicht korrekt geordnet:"
 	       , nest 4 $ toDoc xs
+	       , text "Das Netz berechnet die Ausgabe:"
+	       , nest 4 $ toDoc $ last xss
 	       , text "Die Rechung des Netzes ist:"
-	       -- , nest 4 $ toDoc xss
 	       , nest 4 $ toDoc $ toBild ( n , xss )
 	       ]
     mapM_ verify $ Util.Wort.alle [ 0, 1 ] soll
