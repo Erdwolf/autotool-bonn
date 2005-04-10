@@ -27,7 +27,8 @@ endif
 
 FLAGS = -fallow-overlapping-instances \
 	-fglasgow-exts \
-	-fallow-undecidable-instances 
+	-fallow-undecidable-instances \
+	-hide-package network
 
 # PACKS = -package text -package data -package posix -package network 
 # PACKS = -package Autolib
