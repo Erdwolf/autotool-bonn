@@ -89,7 +89,7 @@ drift-clean :
 
 
 install : $(CGIS)
-	cp $(CGIS) $(CGIDIR)/
+	cp $(CGIS) $(CGI)/
 
 install-face : $(INTER_FACE_CGI)
 	scp $(INTER_FACE_CGI)  $(INTER_FACE_TARGET)

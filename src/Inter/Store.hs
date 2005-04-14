@@ -22,7 +22,7 @@ data Type = Instant | Input | Report deriving ( Eq, Ord, Show )
 store :: Type -> P.Type -> IO ( String, Maybe File )
 store ty p = logged "Inter.store" $ do
     pid <- fmap show $ System.Posix.getProcessID 
-    let flag = case P.mresult p of Just (Ok _) -> True ; _ -> False
+    let flag = case P.mresult p of Just (Okay {}) -> True ; _ -> False
         mthing = case ty of 
                    Input -> P.input p
                    Instant -> fmap show $ P.minstant p

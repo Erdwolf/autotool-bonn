@@ -381,12 +381,15 @@ show_previous edit vnr mks stud auf sa0 = do
                mcom <- textarea h
                let com = fromMaybe h mcom   
                open table
-               mgrade <- click_choice0  "Grade" 
+               mgrade <- click_choice0  "Grade" $
 			[ ("(none)", Nothing )
 			, ("Pending", Just Pending)
-			, ("Ok", Just $ Ok 1)
 			, ("No", Just No) 
-			]
+                        ] ++ do
+                           v <- [ 1 .. 10 ]
+                           let w = Okay { value = v, size = 1 }
+			   return (show w, Just $ w)
+			
                close -- table
 	       return $ Just ( Nothing
 			     , Nothing 

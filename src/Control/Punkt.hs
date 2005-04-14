@@ -98,7 +98,7 @@ bepunkteStudentDB snr anr minstant mbewert highlow minput mreport = do
    let okno = case mbewert of
            Just Reset   -> [ ( reed "Ok", reed "0" )      ]
            Just No      -> [ ( reed "No", reed "No + 1" ) ]
-	   Just (Ok s)  -> [ ( reed "Ok", reed "Ok + 1" ) ]
+	   Just (Okay {})  -> [ ( reed "Ok", reed "Ok + 1" ) ]
 	   _            -> [ ]
        rest = maybeToList $ do
                 bewert <- mbewert

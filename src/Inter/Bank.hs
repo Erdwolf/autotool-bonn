@@ -58,7 +58,8 @@ result_string :: Wert -> String
 result_string mres = case mres of
     Pending -> "Pending"
     No -> "NO"
-    Ok i  -> "OK # Size: " ++ show i
+    Okay {} -> "OK # Size: " ++ show (size mres)
+                 ++ " Value: " ++ show (value mres)
 
 datum :: IO [ String ]
 datum = do

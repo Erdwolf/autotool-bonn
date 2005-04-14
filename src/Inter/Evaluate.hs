@@ -37,7 +37,6 @@ evaluate' p i b = do
        Challenger.demonstrate p i b
        inform $ text "total korrekt?"
        code <- Challenger.total_neu       p i b
-       -- let m = Challenger.measure p i b 
        inform $ text "Bewertung der Einsendung:" <+> toDoc code
        return $ code
 

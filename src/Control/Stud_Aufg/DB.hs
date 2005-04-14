@@ -3,7 +3,7 @@ module Control.Stud_Aufg.DB where
 --  $Id$
 
 import Control.SQL
-import Control.Types
+import Control.Types hiding ( ok )
 import Control.Stud_Aufg.Typ
 
 import Prelude hiding ( all )

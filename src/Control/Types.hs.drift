@@ -4,7 +4,7 @@ module Control.Types
 
 ( HiLo (..)
 , Status (..)
-, Wert (..)
+, Wert ( Reset, Pending, No, Okay ), ok, size, value
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
 , Typ, Config, Remark, Name, File, Email
@@ -23,7 +23,7 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import System.Time
-import Control.SQL
+import Control.SQL hiding ( equals )
 import Inter.Crypt
 import Data.Char ( toLower )
 import Data.Maybe ( fromMaybe )
@@ -142,14 +142,27 @@ instance ToString Status where
 data Wert = Reset 
 	  | Pending
 	  | No 
-	  | Ok Integer 
+	  | Ok Integer
+          | Okay { value :: Integer, size :: Integer } 
     deriving ( Eq, Ord, Typeable )
+
+-- nice try, but constructors cannot be deprecated it seems
+-- {-# DEPRECATED Ok "Use 'Okay' resp. smart constructor 'ok' instead" #-}
+
+ok :: Integer -> Wert
+ok s = Okay { value = 1, size = s }
+
+-- | replace OK constructor by Okay
+renovate :: Wert -> Wert
+renovate w = case w of
+    Ok s -> ok s
+    _    -> w
 
 {-! for Wert derive : Reader, ToDoc, Haskell2Xml !-}
 
 instance SqlBind Wert where 
     fromSqlValue _ s = Just $ case reads s of
-        [ (x, "") ] -> x
+        [ (x, "") ] -> renovate x
 	_           -> Pending
     toSqlValue w = show w
 

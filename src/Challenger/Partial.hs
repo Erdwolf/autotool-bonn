@@ -16,7 +16,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
 
-import Control.Types ( Wert (..) )
+import Control.Types ( Wert (..), ok )
 
 class Measure p i b where
       measure :: p -> i -> b -> Integer
@@ -25,7 +25,7 @@ class Measure p i b where
 -- das ist schlecht, falls dadurch aufwendige Rechnungen
 -- wiederholt werden müssen (siehe z. B. Graph.Cross)
 instance Size b => Measure p i b where
-      measure _ _ b = fromIntegral $ size b
+      measure _ _ b = fromIntegral $ Autolib.Size.size b
       
 -- | Klasse: Partial
 class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
@@ -70,7 +70,7 @@ class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
       total p i b = do
           res <- total_neu p i b
           case res of
-	      Ok _ -> return ()
+	      Okay {} -> return ()
               _    -> reject $ toDoc res
 
       -- | liefert (in jedem Fall) einen Wert
@@ -79,7 +79,7 @@ class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
           mres <- wrap $ total p i b
 	  return $ case mres of
 	       Nothing -> No
-	       Just () -> Ok $ measure p i b
+	       Just () -> ok $ measure p i b
 
 ---------------------------------------------------------------------
 
