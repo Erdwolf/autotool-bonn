@@ -89,11 +89,9 @@ timer False False = Current
 
 -------------------------------------------------------------
 
-#ifdef HSQL12
 instance SqlBind Bool where
     fromSqlValue _ s = return $ "0" /= s
     toSqlValue f = show $ fromEnum f
-#endif
 
 -------------------------------------------------------------
 

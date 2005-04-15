@@ -48,8 +48,11 @@ import qualified Graph.Bi.Plain
 import qualified Graph.Circle.Quiz
 import qualified Graph.Circle.Plain
 
--- import qualified Graph.Bisekt.Plain
--- import qualified Graph.Bisekt.Quiz
+import qualified Graph.Bisekt.Plain
+import qualified Graph.Bisekt.Quiz
+
+import qualified Graph.Way.Plain
+import qualified Graph.Way.Quiz
 
 import qualified Number.Base.Central
 import qualified Number.Float.From
@@ -117,8 +120,8 @@ makers = [ Blank.make
 	 , Graph.Circle.Quiz.make
 	 , Graph.Circle.Plain.make
 
---	 , Graph.Bisekt.Plain.make
---	 , Graph.Bisekt.Quiz.make
+	 , Graph.Bisekt.Plain.make
+	 , Graph.Bisekt.Quiz.make
 
          , Number.Base.Central.make_fixed
          , Number.Base.Central.make_quiz
@@ -131,4 +134,6 @@ makers = [ Blank.make
          , LCS.Instance.make_fixed
          , LCS.Instance.make_quiz
 
+	 , Graph.Way.Plain.make
+	 , Graph.Way.Quiz.make
 	 ]

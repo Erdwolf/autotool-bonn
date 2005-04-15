@@ -72,7 +72,8 @@ reachables g x = unionManySets $ schichten ( nachbarn g ) x
 -- | echte nachfolger (nicht reflexive nachfolger-hülle)
 
 sucs :: Ord a => Graph a -> a -> Set a
-sucs g = unionManySets . fixL . tail . schichten_with_loops (nachbarn g)
+sucs g = last . fixL . scanl union emptySet . tail 
+	                                    . schichten_with_loops (nachbarn g)
 
 -- | echte nachfolger, die genau n>0 schritte entfernt sind, n=0 -> keine!
 
@@ -120,8 +121,10 @@ gen_egraph f g = mkGraph (knoten g)
 degree :: Ord a => Graph a -> a -> Int
 degree g x = cardinality $ nachbarn g x
 
-lkanten g = setToList $ kanten g
-lknoten g = setToList $ knoten g
+lkanten :: Graph a -> [Kante a]
+lknoten :: Graph a -> [a]
+lkanten = setToList . kanten
+lknoten = setToList . knoten
 
 is_clique :: ( ToDoc [a], Ord a ) => Graph a -> Set a -> Bool
 is_clique g s = 
@@ -133,7 +136,6 @@ is_clique g s =
 is_independent :: GraphC a => Graph a -> Set a -> Bool
 is_independent g s = 
     let h = restrict s g
-	n = cardinality $ knoten h
 	m = cardinality $ kanten h
     in  0 == m
 
