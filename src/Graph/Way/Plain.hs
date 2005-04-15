@@ -25,7 +25,7 @@ instance C.Partial Way (Int,[Integer]) (Graph Int)  where
 	 ]
 
     initial _ (n,_) = 
-	let ns = [1..n]
+	let ns = [1..pred n]
         in mkGraph (mkSet ns) (mkSet $ map (uncurry kante) $ zip ns $ tail ns)
 
     partial _ (n,_) g = do
@@ -63,4 +63,4 @@ instance C.Measure Way (Int,[Integer]) (Graph Int) where
 -------------------------------------------------------------------------------
 
 make :: Make
-make = direct Way (3::Int,[1,0,0,0,1,0,0,0,1::Integer])
+make = direct Way (3::Int,[1,1,0,1,1,0,0,0,1::Integer])
