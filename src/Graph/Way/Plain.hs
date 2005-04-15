@@ -32,7 +32,7 @@ instance C.Partial Way (Int,[Integer]) (Graph Int)  where
 
         let n' = cardinality $ knoten g
 
-        inform $ text "Stimmt die Kotenanzahl?"
+        inform $ text "Stimmt die Knotenanzahl?"
 
         when ( n /= n' ) $ reject $ text "Nein."
 
@@ -58,7 +58,7 @@ instance C.Partial Way (Int,[Integer]) (Graph Int)  where
         inform $ text "Ja."
 
 instance C.Measure Way (Int,[Integer]) (Graph Int) where
-    measure _ (n,_) _ = fromIntegral n
+    measure _ _ g = fromIntegral $ cardinality $ kanten g
 
 -------------------------------------------------------------------------------
 
