@@ -4,7 +4,7 @@ module Control.Types
 
 ( HiLo (..)
 , Status (..)
-, Wert ( Reset, Pending, No, Okay ), ok, size, value
+, Wert ( Reset, Pending, No, Okay ), ok, size, punkte
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
 , Typ, Config, Remark, Name, File, Email
@@ -141,14 +141,14 @@ data Wert = Reset
 	  | Pending
 	  | No 
 	  | Ok Integer
-          | Okay { value :: Integer, size :: Integer } 
+          | Okay { punkte :: Integer, size :: Integer } 
     deriving ( Eq, Ord, Typeable )
 
 -- nice try, but constructors cannot be deprecated it seems
 -- {-# DEPRECATED Ok "Use 'Okay' resp. smart constructor 'ok' instead" #-}
 
 ok :: Integer -> Wert
-ok s = Okay { value = 1, size = s }
+ok s = Okay { punkte = 1, size = s }
 
 -- | replace OK constructor by Okay
 renovate :: Wert -> Wert

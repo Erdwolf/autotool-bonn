@@ -127,7 +127,7 @@ iface mks = do
                  [ stud ] <- io $ S.get_snr $ SA.snr sauf
                  -- das muß auch nach Einsendeschluß gehen,
                  -- weil es der Tutor ausführt
-		 punkte tutor stud auf ( inst, inp, res, com )
+		 Main.punkte tutor stud auf ( inst, inp, res, com )
 	 mzero
 
     let manr = fmap A.anr mauf
@@ -159,7 +159,7 @@ iface mks = do
 	    return ()
         Solve -> do
             ( minst, cs, res, com ) <- solution vnr manr stud' mk auf' 
-	    punkte False stud' auf' ( minst, cs, Just res, com )
+	    Main.punkte False stud' auf' ( minst, cs, Just res, com )
 	Edit | tutor -> do
 	    find_previous True  vnr mks stud' auf'
             return ()
@@ -386,8 +386,8 @@ show_previous edit vnr mks stud auf sa0 = do
 			, ("Pending", Just Pending)
 			, ("No", Just No) 
                         ] ++ do
-                           v <- [ 1 .. 10 ]
-                           let w = Okay { value = v, size = 1 }
+                           p <- [ 1 .. 10 ]
+                           let w = Okay { Control.Types.punkte = p, size = 1 }
 			   return (show w, Just $ w)
 			
                close -- table
