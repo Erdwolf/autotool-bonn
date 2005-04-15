@@ -7,7 +7,7 @@ import Scorer.Einsendung
 import Scorer.Config
 import Scorer.Emit
 
-import Control.Types
+import Control.Types hiding ( size )
 import Control.Aufgabe.Typ
 
 import Autolib.Util.Sort

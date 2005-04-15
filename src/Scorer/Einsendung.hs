@@ -13,7 +13,7 @@ where
 Fri Nov 28 18:33:49 CET 2003 ( 2425 ) cgi-318 ( 318 ) 3-11 : OK # Size: 7 
 -}
 
-import Scorer.Util
+import Scorer.Util hiding ( size )
 
 import Autolib.FiniteMap
 import Control.Monad ( guard )

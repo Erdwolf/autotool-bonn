@@ -5,9 +5,9 @@ module Scorer.Emit where
 import Scorer.Config
 import Scorer.Einsendung
 import Scorer.Aufgabe
-import Scorer.Util
+import Scorer.Util hiding ( size )
 
-import Control.Types
+import Control.Types hiding ( size )
 import Control.Vorlesung.DB
 import Control.Aufgabe.DB
 import qualified Control.Vorlesung.Typ as V
