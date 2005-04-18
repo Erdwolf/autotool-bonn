@@ -29,6 +29,19 @@ data Einsendung = Einsendung
 	  , pid	     :: String
 	  }	deriving (Eq,Ord)
 
+instance Show ( SNr , Einsendung ) where
+    show (s,i) = unwords 
+        [ spaci 4 $ abs $ size i
+	, spaci 12 $ s
+	,    (nulli 2 $ (date i) !! 2) ++ "."
+		  ++ (nulli 2 $ (date i) !! 1) ++ "."
+		  ++ (nulli 4 $ (date i) !! 0) 
+	,    (nulli 2 $ (date i) !! 3) ++ ":"
+		  ++ (nulli 2 $ (date i) !! 4) ++ ":"
+		  ++ (nulli 2 $ (date i) !! 5)
+		]
+    
+
 instance Show Einsendung where
     show i = unwords 
         [ spaci 4 $ abs $ size i

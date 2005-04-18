@@ -25,7 +25,12 @@ compute ( vl, aufs ) = do
     -- gleich wieder weghauen können
 
     args <- getArgs
-    contents <- mapM readFile args
+
+    let (decorate,fileargs) = if head args == "DECORATE"
+			      then (True,tail args)
+			      else (False,args)
+
+    contents <- mapM readFile fileargs
     let einsendungen = slurp $ concat contents
 
     let total = foldl ( update aufs ) emptyFM einsendungen
@@ -33,7 +38,7 @@ compute ( vl, aufs ) = do
     -- damit wir "best known" anzeigen können
     -- vor der bepunktung müssen die aber raus
 
-    emit vl total
+    emit decorate vl total
 
 update :: ScoreDefFM -> DataFM -> Einsendung -> DataFM
 update aufs mappe e = 

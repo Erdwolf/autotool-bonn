@@ -1,6 +1,6 @@
 module Main where
 
-import Wash.HTMLMonad 
+import Wash.HTMLMonad
 import Wash.CGI hiding ( io )
 import qualified Wash.CGI
 import qualified Wash.CGIMonad
@@ -9,6 +9,8 @@ import IO
 import Data.Char ( toLower )
 import qualified Exception
 import System -- system
+
+import qualified Data.List ( head )
 
 import Control.Monad ( guard )
 import Data.Maybe
@@ -257,6 +259,7 @@ studStatusPage ( mat :: MNr ) F0 =
                                 tableRow2 (text "Name") ( text ( vorname ++ ", " ++ name ++ " " ) )
                                 tableRow2 (text "Matrikelnr.")   ( text $ show mat )
                                 tableRow2 (text "Email-Adresse") ( text email )
+                                tableRow2 (text "Interne Kennung")   ( text $ show $ Data.List.head snrs )
                                 tableRow2 (text "Übungsgruppen") ( grptab grp )
                                 -- gesamtergTable gesamtres
                                 -- (c)

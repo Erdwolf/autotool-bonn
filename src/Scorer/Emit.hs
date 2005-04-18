@@ -12,18 +12,19 @@ import Control.Vorlesung.DB
 import Control.Aufgabe.DB
 import qualified Control.Vorlesung.Typ as V
 import qualified Control.Aufgabe.Typ as A
+import qualified Control.Student.DB
 
 import Autolib.FiniteMap hiding ( collect )
 import Autolib.Set
 import Autolib.Util.Sort
 
-import Control.Monad ( guard )
+import Control.Monad ( guard , liftM )
 import System.IO ( hFlush, stdout )
 
 
 -- | druckt Auswertung für alle Aufgaben einer Vorlesung
-emit :: VNr -> DataFM -> IO ()
-emit vnr fm0 = do
+emit :: Bool -> VNr -> DataFM -> IO ()
+emit deco vnr fm0 = do
     vs <- Control.Vorlesung.DB.get_this vnr
     let name = case vs of
           [v] -> toString $ V.name v 
@@ -42,8 +43,8 @@ emit vnr fm0 = do
 	     ,  unwords [ "Auswertung für Lehrveranstaltung", name, ":" ] 
 	     ]
 
-    mapM_ single $ fmToList fm
-    totalize fm
+    mapM_ (single deco) $ fmToList fm
+    totalize deco fm
     inform
 
 
@@ -63,8 +64,8 @@ realize es = take scoreItems -- genau 10 stück
 	   $ es
     
 -- | druckt Auswertung einer Aufgabe
-single :: ( ANr, [ Einsendung ] ) -> IO ()
-single arg @( anr, es ) = do
+single :: Bool -> ( ANr, [ Einsendung ] ) -> IO ()
+single deco arg @( anr, es ) = do
     aufs <- Control.Aufgabe.DB.get_this anr
     let name = case aufs of
           [a] -> toString $ A.name a 
@@ -76,27 +77,51 @@ single arg @( anr, es ) = do
 	       ]
 	strich = replicate (length header) '-'
 
+    let realized = realize es
 
+    decorated <- if deco then mapM (liftM show . decorate) realized 
+		         else return $ map show realized
 
-    putStrLn $ unlines 
-	     $ [ header
-	       , strich
-	       ] ++ map show ( realize es )
+    putStrLn $ unlines $ [ header , strich ] ++ decorated
 
+decorate :: Einsendung -> IO ( SNr , Einsendung )
+decorate e = Control.Student.DB.snr_by_mnr ( matrikel e ) >>= \ (s:_) -> 
+	     return ( s , e )
 
-totalize :: DataFM -> IO ()
-totalize fm = do
-    let mps = collect fm
+totalize :: Bool -> DataFM -> IO ()
+totalize deco fm = do
+
+    let eps = collect fm
+
+    mps <- if deco then mapM ( \ (e,p) -> do
+			       (s,_) <- decorate e
+			       return (show s,p)
+			     ) eps 
+                   else return $ do
+				 (e,p) <- eps
+				 return ( show $ matrikel e , p )
+
     putStrLn $ unlines
 	     $ [ "Top Ten"
 	       , "-----------------------------------"
 	       ] ++ do ( m, p ) <- mps
 		       return $ unwords [ stretch 10 $ show p
 					, ":"
-					, stretch 10 $ show m 
+					, stretch 10 m
 					]
 
 -- | gesamtliste der highscore
+collect :: DataFM 
+	 ->  [ ( Einsendung , Int ) ] -- ^ ( Matrikel, Punkt )
+collect fm = take scoreItems
+	   $ sortBy ( \ (_, p) -> negate p ) -- größten zuerst
+	   $ fmToList
+	   $ addListToFM_C (+) emptyFM
+	   $ do  ( auf, es ) <- fmToList fm
+		 ( e, p ) <- zip ( realize es ) scorePoints 
+		 return ( e, p )
+
+{-
 collect :: DataFM 
 	 ->  [ ( MNr, Int ) ] -- ^ ( Matrikel, Punkt )
 collect fm = take scoreItems
@@ -106,5 +131,4 @@ collect fm = take scoreItems
 	   $ do  ( auf, es ) <- fmToList fm
 		 ( e, p ) <- zip ( realize es ) scorePoints 
 		 return ( matrikel e, p )
-
-
+-}

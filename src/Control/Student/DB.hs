@@ -4,27 +4,30 @@ module Control.Student.DB where
 
 import Control.SQL
 import Control.Types
-import Control.Student.Type
+import qualified Control.Student.Type as CST
 
 import Prelude hiding ( all )
 
 -- | get alle passenden studenten aus DB
 -- TODO: implementiere filter
-get_mnr  :: MNr -> IO [ Student ]
+get_mnr  :: MNr -> IO [ CST.Student ]
 get_mnr mnr = get_where $ equals ( reed "student.MNr" ) ( toEx mnr )
 
-get_snr  :: SNr -> IO [ Student ]
+get_snr  :: SNr -> IO [ CST.Student ]
 get_snr snr = get_where $ equals ( reed "student.SNr" ) ( toEx snr )
 
-get_where :: Expression -> IO [ Student ]
-get_where exp = do
+snr_by_mnr :: MNr -> IO [ SNr ]
+snr_by_mnr mnr = get_mnr mnr >>= return . map CST.snr
+
+get_where :: Expression -> IO [ CST.Student ]
+get_where ex = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "SNr", "MNr", "Name", "Vorname" 
 			    , "Email", "Passwort" 
 			    ] )
         [ From $ map reed [ "student" ] 
-        , Where $ exp 
+        , Where $ ex
 	]
     inh  <- collectRows (\ state -> do
         s_snr <- getFieldValue state "SNr"
@@ -33,13 +36,13 @@ get_where exp = do
         s_vorname <- getFieldValue state "Vorname"
         s_email <- getFieldValue state "Email"
         s_passwort <- getFieldValue state "Passwort"
-        return $ Student { snr = s_snr
-    			   , mnr = s_mnr
-			 , name = s_name
-			 , vorname = s_vorname
-			   , email = s_email
-			   , passwort = s_passwort
-    			   }
+        return $ CST.Student { CST.snr = s_snr
+    			     , CST.mnr = s_mnr
+			     , CST.name = s_name
+			     , CST.vorname = s_vorname
+			     , CST.email = s_email
+			     , CST.passwort = s_passwort
+    			     }
                     ) stat
     return inh
 
@@ -48,19 +51,20 @@ get_where exp = do
 -- do not evaluate Student.snr (it may be undefined!)
 -- instead use first argument: Just snr -> update, Nothing -> insert
 put :: Maybe SNr 
-    -> Student
+    -> CST.Student
     -> IO ()
 put msnr stud = do
     conn <- myconnect 
-    let common = [ ( reed "Name", toEx $ name stud )
-		 , ( reed "Vorname", toEx $ vorname stud )
-		 , ( reed "Email", toEx $ email stud )
-		 , ( reed "Passwort", toEx $ passwort stud )
+    let common = [ ( reed "Name", toEx $ CST.name stud )
+		 , ( reed "Vorname", toEx $ CST.vorname stud )
+		 , ( reed "Email", toEx $ CST.email stud )
+		 , ( reed "Passwort", toEx $ CST.passwort stud )
 		 ]
-    stat <- case msnr of
+    -- stat <- case msnr of
+    case msnr of
 	 Nothing -> squery conn $ Query
             ( Insert (reed "student") 
-	      $ ( reed "MNr" , toEx $ mnr stud ) : common 
+	      $ ( reed "MNr" , toEx $ CST.mnr stud ) : common 
             ) 
 	    [ ]
          Just snr -> squery conn $ Query
