@@ -26,9 +26,11 @@ compute ( vl, aufs ) = do
 
     args <- getArgs
 
-    let (decorate,fileargs) = if head args == "DECORATE"
-			      then (True,tail args)
-			      else (False,args)
+    let (decorate,fileargs) = if null args then (False,[])
+			      else ( if head args == "DECORATE"
+			             then (True,tail args)
+			             else (False,args)
+				   )
 
     contents <- mapM readFile fileargs
     let einsendungen = slurp $ concat contents
