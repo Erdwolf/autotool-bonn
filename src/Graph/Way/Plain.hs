@@ -2,10 +2,10 @@ module Graph.Way.Plain where
 
 --  $Id$
 
-import Graph.Util hiding ( wegematrix )
+import Graph.Util
 
 import Autolib.Dot ( peng, Layout_Program (..) )
-import Autolib.Graph.Adj ( schoen , wegematrix )
+import Autolib.Graph.Adj ( schoen , warshall )
 
 import Inter.Types ( Make , direct )
 import Data.Typeable ( Typeable )
@@ -40,7 +40,7 @@ instance C.Partial Way (Int,[Integer]) (Graph Int)  where
     
     total _ (_,vs) g = do
 
-        let w = wegematrix g
+        let w = warshall g
 
         inform $ text "Ihr Graph hat die Gestalt:"
 
