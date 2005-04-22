@@ -37,7 +37,6 @@ instance C.Partial MST (Int,Graph Int,Weight) (Int,Graph Int)  where
 
         when ( case w of Random _ -> True ; _ -> False ) $ inform $ vcat
 	  [ text "ACHTUNG!! Random hat bei direkten Aufgaben keinen Sinn!!"
-	  , error "abnormal abort due to bad input..."
 	  ]
 
         inform $ vcat 
