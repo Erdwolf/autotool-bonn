@@ -60,6 +60,9 @@ import qualified Number.Float.To
 
 import qualified LCS.Instance
 
+import qualified Graph.MST.Plain
+import qualified Graph.MST.Quiz
+
 makers :: [ Make ]
 makers = [ Blank.make
 	 , Upload.make
@@ -136,4 +139,7 @@ makers = [ Blank.make
 
 	 , Graph.Way.Plain.make
 	 , Graph.Way.Quiz.make
+
+	 , Graph.MST.Plain.make
+	 , Graph.MST.Quiz.make
 	 ]

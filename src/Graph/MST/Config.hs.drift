@@ -1,0 +1,34 @@
+-- -*- mode: haskell -*-
+
+-- $Id$
+
+module Graph.MST.Config where
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Weight = Sum | Product | Random Int deriving ( Typeable )
+
+data Config = Config 
+	    { nodes       :: Int
+	    , edges       :: Int
+	    , weight_type :: Weight
+	    , comment     :: String
+	    }
+     deriving ( Typeable )
+
+{-! for Weight derive: Reader, ToDoc, Haskell2Xml !-}
+{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+
+rc :: Config
+rc = Config { nodes       = 15
+	    , edges       = 30
+	    , weight_type = Random 12
+	    , comment     = foldl1 (++) 
+	                    [ "weitere gewichtstypen: "
+			    , show [Sum,Product]
+			    ]
+	    }
