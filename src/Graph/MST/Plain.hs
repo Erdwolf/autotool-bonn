@@ -11,6 +11,7 @@ import Autolib.Graph.Util ( isZusammen , anzKanten , anzKnoten )
 import Autolib.Graph.SpanTree ( weight )
 import qualified Autolib.Reporter.Set ( eq , subeq )
 import Autolib.Hash ( Hash , hash )
+import Autolib.FiniteMap ( FiniteMap , listToFM )
 
 import Inter.Types ( Make , direct )
 import Data.Typeable ( Typeable )
@@ -22,11 +23,8 @@ data MST = MST deriving ( Eq, Ord, Show, Read, Typeable )
 
 -- | to just satisfy peng's constraints
 
-finite :: (Graph Int,Kante Int->Int) -> (Graph Int,Weight)
-finite (g,w) = ( g , Direct $ listToFM $ do
-		 k <- setToList $ kanten g
-		 return (k,w k)
-	       )
+finite :: (Graph Int,Kante Int -> Int) -> (Graph Int,FiniteMap (Kante Int) Int)
+finite (g,w) = (g,listToFM $ do k <- setToList (kanten g); return (k,w k))
 
 instance Eq (Graph Int,Kante Int -> Int) where x == y = finite x == finite y
 instance Hash (Graph Int,Kante Int -> Int) where hash = hash . finite
