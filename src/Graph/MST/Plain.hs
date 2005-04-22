@@ -66,14 +66,12 @@ instance C.Partial MST (Int,Graph Int,W) (Int,Graph Int)  where
 
 	Autolib.Reporter.Set.subeq ka_t ka_g
 
-        let real_wt = weight t (wfun w)
-
         inform $ vcat [ text "Stimmen das von Ihnen berechnete Gesamtgewicht"
 		      , nest 4 $ toDoc wt
-		      , text "und das Gesamtgewicht Ihrer Einsendung"
-		      , nest 4 $ toDoc real_wt
-		      , text "überein?"
+		      , text "und das Gesamtgewicht Ihrer Einsendung überein?"
 		      ]
+
+        let real_wt = weight t (wfun w)
 
         when ( real_wt /= wt ) $ reject $ text "Nein."
 
