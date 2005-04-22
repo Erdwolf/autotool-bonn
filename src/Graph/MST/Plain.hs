@@ -4,11 +4,12 @@ module Graph.MST.Plain where
 
 import Graph.Util
 
+import Graph.MST.Weight ( Weight (..) , wfun )
+
 import Autolib.Dot ( peng, Layout_Program (..) )
 import Autolib.Graph.Util ( isZusammen , anzKanten , anzKnoten )
 import Autolib.Graph.SpanTree ( weight )
 import qualified Autolib.Reporter.Set ( eq , subeq )
-import Autolib.FiniteMap ( FiniteMap , listToFM , lookupWithDefaultFM )
 import Autolib.Hash ( Hash , hash )
 
 import Inter.Types ( Make , direct )
@@ -19,15 +20,10 @@ import qualified Challenger as C
 
 data MST = MST deriving ( Eq, Ord, Show, Read, Typeable )
 
-type W = FiniteMap (Kante Int) Int
-
-wfun :: W -> Kante Int -> Int
-wfun w = lookupWithDefaultFM w (error "Gewichte nicht vollständig!")
-
 -- | to just satisfy peng's constraints
 
-finite :: (Graph Int,Kante Int->Int) -> (Graph Int,W)
-finite (g,w) = ( g , listToFM $ do
+finite :: (Graph Int,Kante Int->Int) -> (Graph Int,Weight)
+finite (g,w) = ( g , Direct $ listToFM $ do
 		 k <- setToList $ kanten g
 		 return (k,w k)
 	       )
@@ -35,9 +31,14 @@ finite (g,w) = ( g , listToFM $ do
 instance Eq (Graph Int,Kante Int -> Int) where x == y = finite x == finite y
 instance Hash (Graph Int,Kante Int -> Int) where hash = hash . finite
 
-instance C.Partial MST (Int,Graph Int,W) (Int,Graph Int)  where
+instance C.Partial MST (Int,Graph Int,Weight) (Int,Graph Int)  where
 
     report _ (_,g,w) = do
+
+        when ( case w of Random _ -> True ; _ -> False ) $ inform $ vcat
+	  [ text "ACHTUNG!! Random hat bei direkten Aufgaben keinen Sinn!!"
+	  , error "abnormal abort due to bad input..."
+	  ]
 
         inform $ vcat 
 	 [ text "Gesucht ist ein minimaler spannender Baum des Graphen"
@@ -118,7 +119,7 @@ instance C.Partial MST (Int,Graph Int,W) (Int,Graph Int)  where
 
         inform $ text "Ja."
 
-instance C.Measure MST (Int,Graph Int,W) (Int,Graph Int) where
+instance C.Measure MST (Int,Graph Int,Weight) (Int,Graph Int) where
     measure _ _ (_,g) = fromIntegral $ cardinality $ kanten g
 
 -------------------------------------------------------------------------------
@@ -130,7 +131,5 @@ make = let g = mkGraph (mkSet [1,2,3,4,5,6])
 		       ) :: Graph Int
        in direct MST ( 34 :: Int
 		     , g
-		     , listToFM $ do
-		       k@(Kante {von=v,nach=n}) <- setToList $ kanten g
-		       return $ (k,v+n)
+		     , Summe
 		     )
