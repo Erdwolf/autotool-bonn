@@ -53,7 +53,7 @@ instance C.Partial Way (Int,[Integer]) (Graph Int)  where
 
         inform $ text "Ist diese Matrix die geforderte?"
 
-        when ( vs /= elems w ) $ reject $ text "Nein."
+        when ( vs /= Data.Array.elems w ) $ reject $ text "Nein."
 
         inform $ text "Ja."
 

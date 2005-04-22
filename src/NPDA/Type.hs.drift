@@ -76,7 +76,8 @@ instance  ( NPDAC x y z )
 
 instance  ( NPDAC x y z )
         => Reader (FiniteMap (Maybe x, z, y) (Set (z, [y]))) where
-    reader = default_reader <|> do
+    atomic_readerPrec p = default_readerPrec p <|> do
+        guard $ p < 9
         my_reserved "collect"
         xys <- reader :: Parser  [ (Maybe x, z, y, z, [y]) ]
         return $ collect' xys

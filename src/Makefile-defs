@@ -32,7 +32,7 @@ FLAGS = -fallow-overlapping-instances \
 #	-hide-package network
 
 # PACKS = -package text -package data -package posix -package network 
-# PACKS = -package Autolib
+PACKS = -hide-package network
 
 OPT = -O2 -fvia-C -funbox-strict-fields # -fnumbers-strict # -fdicts-strict
 

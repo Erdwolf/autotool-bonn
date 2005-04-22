@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances #-}
 
 -- $Id$
 
@@ -29,21 +29,6 @@ data Weight = Summe
 	    | Direct (FiniteMap (Kante Int) Int)
 	      deriving ( Eq, Typeable )
 
-instance Reader Weight where
-    readerPrec d = readerParen (d > 9)
-        ((my_reserved "Summe" >> return Summe)
-	 <|>
-	 (my_reserved "Produkt" >> return Produkt)
-	 <|>
-	 (my_reserved "Delta" >> return Delta)
-	 <|>
-	 (my_reserved "Hamming" >> readerPrec 0 >>= return . Hamming)
-	 <|>
-	 (my_reserved "Random" >> readerPrec 0 >>= return . Random)
-	 <|>
-	 (my_reserved "Direct" >> my_parens (readerPrec 0) >>= return . Direct)
-	)
-
 instance Hash Weight where
     hash Summe = 7
     hash Produkt = 11
@@ -67,4 +52,9 @@ wfun (Direct fm) k = lookupWithDefaultFM fm (error "gewichte nicht komplett!?") 
 direct :: Weight -> [Kante Int] -> Weight
 direct f ks = Direct $ listToFM $ do k <- ks ; return (k,wfun f k)
 
-{-! for Weight derive: ToDoc, Haskell2Xml !-}
+{-! for Weight derive: Reader, ToDoc, Haskell2Xml !-}
+
+-- Local Variables:
+-- mode: haskell
+-- End:
+

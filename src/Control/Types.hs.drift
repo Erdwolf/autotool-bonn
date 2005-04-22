@@ -1,5 +1,3 @@
--- -*- mode: haskell -*-
-
 module Control.Types 
 
 ( HiLo (..)
@@ -89,9 +87,11 @@ timer False False = Current
 
 -------------------------------------------------------------
 
+#ifdef HSQL12
 instance SqlBind Bool where
     fromSqlValue _ s = return $ "0" /= s
     toSqlValue f = show $ fromEnum f
+#endif
 
 -------------------------------------------------------------
 
@@ -377,4 +377,9 @@ instance ToString Nos where
     toString (Nos x) = show x
 
 -------------------------------------------------------------
+
+-- Local Variables:
+-- mode: haskell
+-- End:
+
 
