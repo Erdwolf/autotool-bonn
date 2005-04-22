@@ -25,8 +25,15 @@ wfun :: W -> Kante Int -> Int
 wfun w = lookupWithDefaultFM w (error "Gewichte nicht vollständig!")
 
 -- | to just satisfy peng's constraints
-instance Eq (Graph Int,Kante Int -> Int) where (x,_) == (y,_) = x == y
-instance Hash (Graph Int,Kante Int -> Int) where hash (g,_) = hash g
+
+finite :: (Graph Int,Kante Int->Int) -> (Graph Int,W)
+finite (g,w) = ( g , listToFM $ do
+		 k <- setToList $ kanten g
+		 return (k,w k)
+	       )
+
+instance Eq (Graph Int,Kante Int -> Int) where x == y = finite x == finite y
+instance Hash (Graph Int,Kante Int -> Int) where hash = hash . finite
 
 instance C.Partial MST (Int,Graph Int,W) (Int,Graph Int)  where
 
