@@ -88,7 +88,7 @@ instance T.ToDoc Id where
     toDoc (Id ids) = hcat $ intersperse (T.char '.') $ map text ids
 
 instance R.Reader Id where
-    reader = do
+    atomic_reader = do
         ids <- R.my_identifier `R.sepBy1` R.my_dot 
         return $ Id ids
 
@@ -101,7 +101,7 @@ instance T.ToDoc Query where
 		     , ( T.nest 4 $ T.vcat $ map T.toDoc ms ) T.<+> T.char ';'
 		     ]
 instance R.Reader Query where
-    reader = do
+    atomic_reader = do
         a <- reader
         ms <- R.many reader
 	R.my_semi
@@ -117,7 +117,7 @@ instance T.ToDoc Bind where
 	          Just i  -> T.hsep [ T.toDoc e, T.text "as", T.toDoc i ]
 
 instance R.Reader Bind where
-    reader = do 
+    atomic_reader = do 
          e <- R.reader
 	 mi <- R.option Nothing $ do 
 	       -- FIXME: wenn man hier ... <|> R.my_reserved "AS" schreibt,
@@ -151,7 +151,7 @@ instance T.ToDoc Action where
     toDoc (Delete tab) = T.text "DELETE" <+> T.text "FROM" <+> T.toDoc tab
 
 instance R.Reader Action where
-    reader = do 
+    atomic_reader = do 
        R.my_reserved "SELECT" ; bs <- reader `R.sepBy` R.my_comma ; return $ Select bs 
           -- TODO: complete this
 
@@ -168,7 +168,7 @@ instance T.ToDoc Modifier where
     toDoc (Using b)  = T.text "USING" <+> T.sepBy T.comma ( map T.toDoc b )
 
 instance R.Reader Modifier where
-    reader = do { R.my_reserved "FROM" ; ids <- many1 reader ; return $ From ids }
+    atomic_reader = do { R.my_reserved "FROM" ; ids <- many1 reader ; return $ From ids }
          -- TODO: complete this
 
 -------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ instance T.ToDoc Expression where
     toDoc (EBinop op x y) = T.parens $ T.fsep [ T.toDoc x, T.text op, T.toDoc y ]
 
 instance R.Reader Expression where
-    reader = buildExpressionParser operators atomic
+    atomic_reader = buildExpressionParser operators atomic
 
 atomic =   R.my_parens reader
      R.<|> do { R.my_reserved "NULL" ; return $ ENull }
