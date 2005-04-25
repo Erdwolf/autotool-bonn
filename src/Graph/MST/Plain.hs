@@ -122,11 +122,18 @@ instance C.Measure MST (Int,Graph Int,Weight) (Int,Graph Int) where
 -------------------------------------------------------------------------------
 
 make :: Make
-make = let g = mkGraph (mkSet [1,2,3,4,5,6]) 
-                       (mkSet $ map (uncurry kante)
-			[(1,5),(2,5),(2,3),(3,3),(5,6),(4,5),(4,6),(1,6)]
-		       ) :: Graph Int
-       in direct MST ( 34 :: Int
-		     , g
-		     , Summe
-		     )
+make = direct MST ( 96 :: Int
+		  , gr
+		  , Summe
+		  )
+
+gr :: Graph Int
+gr = mkGraph (mkSet [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ])
+             (mkSet [ kante 1 8, kante 1 9, kante 1 10, kante 2 7
+		    , kante 2 9, kante 2 10, kante 3 7, kante 3 8, kante 3 9
+		    , kante 3 10, kante 4 7, kante 4 8, kante 4 9, kante 4 10
+		    , kante 5 7, kante 5 8, kante 5 9, kante 5 10, kante 6 7, kante 6 8
+		    , kante 6 9, kante 6 10, kante 7 8, kante 7 9, kante 7 10
+		    , kante 8 9, kante 8 10, kante 9 10
+		    ]
+	     )
