@@ -1,0 +1,28 @@
+module Partition.Param where
+
+--   $Id$
+
+import Autolib.Reader
+import Autolib.ToDoc
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Param = 
+     Param { elements :: Int
+	   , bounds :: ( Integer, Integer )
+	   }
+     deriving ( Typeable )
+
+p :: Param
+p =  Param { elements = 20
+	   , bounds :: ( 20, 30 )
+	   }
+
+
+{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
+
+-- Local Variables:
+-- mode: haskell 
+-- End:
+
