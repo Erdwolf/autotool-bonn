@@ -91,35 +91,36 @@ decorate e = Control.Student.DB.snr_by_mnr ( matrikel e ) >>= \ (s:_) ->
 totalize :: Bool -> DataFM -> IO ()
 totalize deco fm = do
 
-    let eps = collect fm
-
-    mps <- if deco then mapM ( \ (e,p) -> do
-			       (s,_) <- decorate e
-			       return (show s,p)
-			     ) eps 
-                   else return $ do
-				 (e,p) <- eps
-				 return ( show $ matrikel e , p )
+    infos <- collect deco fm
 
     putStrLn $ unlines
 	     $ [ "Top Ten"
 	       , "-----------------------------------"
-	       ] ++ do ( m, p ) <- mps
+	       ] ++ do (i,p) <- infos
 		       return $ unwords [ stretch 10 $ show p
 					, ":"
-					, stretch 10 m
+					, stretch 10 i
 					]
 
 -- | gesamtliste der highscore
-collect :: DataFM 
-	 ->  [ ( Einsendung , Int ) ] -- ^ ( Matrikel, Punkt )
-collect fm = take scoreItems
+collect :: Bool 
+	-> DataFM 
+	->  IO [ ( String , Int ) ] -- ^ ( Matrikel, Punkt )
+collect deco fm = do
+
+    let nice (e,p) = if deco then do (s,_) <- decorate e
+				     return (show s,p)
+			     else return (show $ matrikel e,p)
+
+    infos <- mapM nice $ do
+	     (auf,es) <- fmToList fm
+	     (e,p) <- zip (realize es) scorePoints
+	     return (e,p)
+
+    return $ take scoreItems
 	   $ sortBy ( \ (_, p) -> negate p ) -- größten zuerst
 	   $ fmToList
-	   $ addListToFM_C (+) emptyFM
-	   $ do  ( auf, es ) <- fmToList fm
-		 ( e, p ) <- zip ( realize es ) scorePoints 
-		 return ( e, p )
+	   $ addListToFM_C (+) emptyFM infos
 
 {-
 collect :: DataFM 
