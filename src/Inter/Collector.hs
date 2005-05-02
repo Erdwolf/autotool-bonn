@@ -63,6 +63,8 @@ import qualified LCS.Instance
 import qualified Graph.MST.Plain
 import qualified Graph.MST.Quiz
 
+import qualified Partition.Central
+
 makers :: [ Make ]
 makers = [ Blank.make
 	 , Upload.make
@@ -142,4 +144,7 @@ makers = [ Blank.make
 
 	 , Graph.MST.Plain.make
 	 , Graph.MST.Quiz.make
+
+         , Partition.Central.make_fixed
+         , Partition.Central.make_quiz
 	 ]
