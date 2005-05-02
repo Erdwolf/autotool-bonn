@@ -1,7 +1,7 @@
 module Partition.Beispiel where
 
-import Autolib.MultiSet
+import Autolib.Set
 
-mm :: MultiSet Integer
-mm = mkMultiSet [ 4,5,7,8,10 ]
+mm :: Set Integer 
+mm =  mkSet [ 4,5,7,8,10 ]
 

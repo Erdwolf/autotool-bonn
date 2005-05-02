@@ -16,11 +16,19 @@ import Inter.Quiz
 
 import Partition.Beispiel
 import Partition.Roll
+import Partition.Param
 
 import Autolib.ToDoc
 import Autolib.Set
-
+import Autolib.FiniteMap
+import Autolib.Informed
 import Autolib.Reporter
+import Autolib.Reporter.Set
+
+import Data.Typeable
+
+data Partition = Partition
+    deriving ( Eq, Typeable, Show, Read )
 
 instance Partial Partition 
 	         ( Set Integer ) 
@@ -37,20 +45,18 @@ instance Partial Partition
             dist [] = ( [], [] )
 	    dist (x : xs) = let (here, there) = dist xs 
                             in  (x : there, here)
-            ( this, that ) = dist $ toList s
+            ( this, that ) = dist $ setToList s
 	in  ( mkSet this
 	    , mkSet that 
 	    )
 
-    partial Partition s0 (l0, r0) = do
-        let s = informed ( text "S" ) s0
-	    l = informed ( text "L" ) l0
-	    r = informed ( text "R" ) r0
-        equals s ( plus l r )
+    partial Partition s (l, r) = do
+        eq ( text "S" , s )
+	   ( text "L + R" , union l r )
 
     total Partition s (l, r) = do
-        sl = sum $ toList l
-	sr = sum $ toList r
+        let sl = sum $ setToList l
+	let sr = sum $ setToList r
         inform $ vcat
 	       [ text "sum" <+> parens ( toDoc l ) 
 	       , nest 4 $ text "=" <+> toDoc sl
@@ -64,19 +70,30 @@ make_fixed :: Make
 make_fixed = direct Partition Partition.Beispiel.mm
 
 instance Generator  Partition 
-	         ( Set Integer ) 
-	         ( Set Integer, Set Integer ) where
+	            Param
+	         ( Set Integer ) where
 
-    generator Partition conf key = hgen2 conf
+    generator Partition p key = do
+        let ( lo, hi ) = Partition.Param.bounds p
+        xs <- Partition.Roll.rand 
+                    ( Partition.Param.elements p ) 
+                    ( fromIntegral hi )
+        let mkuni xs = mkSet $ do
+             let fm = addListToFM_C (+) emptyFM $ do
+                          x <- xs ; return ( x, 1 )
+             ( x, count ) <- fmToList fm
+             guard $ odd count
+             return $ fromIntegral x
+        return $ mkuni xs
 
 instance Project  Partition 
 	         ( Set Integer ) 
-	         ( Set Integer,  Set Integer ) where
+	         ( Set Integer ) where
 
-    project Partition ( f, b ) = f
+    project Partition f = f
 
 make_quiz :: Make
-make_quiz = quiz Partition $ Partition.Param.p 5
+make_quiz = quiz Partition $ Partition.Param.p 
 
 
 
