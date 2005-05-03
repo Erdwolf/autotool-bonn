@@ -75,9 +75,11 @@ instance Generator  Partition
 
     generator Partition p key = do
         let ( lo, hi ) = Partition.Param.bounds p
-        xs <- Partition.Roll.rand 
+        xs <- Partition.Roll.rand
                     ( Partition.Param.elements p ) 
+                    ( fromIntegral lo )
                     ( fromIntegral hi )
+{- rand always returns a list from distinct elements
         let mkuni xs = mkSet $ do
              let fm = addListToFM_C (+) emptyFM $ do
                           x <- xs ; return ( x, 1 )
@@ -85,6 +87,8 @@ instance Generator  Partition
              guard $ odd count
              return $ fromIntegral x
         return $ mkuni xs
+-}
+        return $ mkSet $ map fromIntegral xs
 
 instance Project  Partition 
 	         ( Set Integer ) 

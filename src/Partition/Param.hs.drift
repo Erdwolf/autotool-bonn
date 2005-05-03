@@ -15,8 +15,8 @@ data Param =
      deriving ( Typeable )
 
 p :: Param
-p =  Param { elements = 20
-	   , bounds = ( 20, 30 )
+p =  Param { elements = 15
+	   , bounds = ( 5, 25 )
 	   }
 
 
