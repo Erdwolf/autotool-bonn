@@ -65,6 +65,8 @@ import qualified Graph.MST.Quiz
 
 import qualified Partition.Central
 
+import qualified Knapsack.Central
+
 makers :: [ Make ]
 makers = [ Blank.make
 	 , Upload.make
@@ -147,4 +149,7 @@ makers = [ Blank.make
 
          , Partition.Central.make_fixed
          , Partition.Central.make_quiz
+
+         , Knapsack.Central.make_fixed
+         , Knapsack.Central.make_quiz
 	 ]
