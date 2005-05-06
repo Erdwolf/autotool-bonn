@@ -93,6 +93,7 @@ instance Generator CFG P.Config I.Config where
 		 , I.noh  = I.Long $ map I.Long nohs
                  }
 
+
 make :: Make
 make = quiz CFG P.example
 

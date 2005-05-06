@@ -80,7 +80,8 @@ instance ToDoc Config where
     toDoc k = text "make" <+> toDoc ( robots k )
 
 instance Reader Config where
-    reader = do
+    atomic_readerPrec p = do
+        guard $ p < 9
         my_reserved "make"
         arg <- reader
         return $ make arg

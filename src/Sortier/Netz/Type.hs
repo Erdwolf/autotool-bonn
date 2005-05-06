@@ -35,19 +35,13 @@ instance Size Netz where
     size = length . comps
 
 instance Reader Netz where
-    reader = do
+    atomic_readerPrec p = do
+        guard $ p < 9
         my_reserved "mkNetz"
         xys <-  reader
         return $ mkNetz xys
-
-instance Read Netz where
-    readsPrec = parsec_readsPrec
-
 instance ToDoc Netz where
     toDoc n = text "mkNetz" <+> toDoc (comps n)
-
-instance Show Netz where
-    show = render . toDoc
 
 instance Haskell2Xml Netz where
     toContents s = toContents $ XmlNetz $ comps s
