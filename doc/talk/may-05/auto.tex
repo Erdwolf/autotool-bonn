@@ -1,0 +1,24 @@
+\begin{slide}{Endliche Automaten}
+
+\begin{small}
+\begin{verbatim}
+NFA { alphabet = mkSet "ab" , states = mkSet [ 1, 2, 3 ]
+    , starts = mkSet [ 2 ] , finals = mkSet [ 2 ]
+    , trans = collect 
+          [ ( 1, 'a', 2 ), ( 2, 'a', 1 )
+          , ( 2, 'a', 3 ), ( 2, 'b', 3 ), ( 3, 'b', 2 )
+          ]
+    }
+\end{verbatim}
+\end{small}  
+
+Eigenschaften 
+(für Test der Einsendungen und ggf. Konfiguration der Generatoren)
+
+\begin{verbatim}
+   Min_Size Int | Max_Size Int 
+ | Alphabet ( Set c )
+ | Deterministic | Minimal | Complete | Reduced 
+\end{verbatim}
+  
+\end{slide}

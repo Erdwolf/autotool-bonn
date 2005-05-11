@@ -1,0 +1,21 @@
+\begin{slide}{Grammatiken}
+
+\begin{small}
+\begin{verbatim}
+Grammatik { terminale = mkSet "01"
+          , variablen = mkSet "ST"
+	  , start = 'S'
+	  , regeln = mkSet [ ( "S", "" ), ( "S", "T0S" ), ( "T", "11" ) ]
+	  }
+\end{verbatim}
+\end{small}  
+
+Eigenschaften:
+\begin{itemize}
+\item monoton, kontextsensitiv, kontextfrei, linear, rechts/links-linear, 
+\item für CFG: epsilon-frei, ketten-frei, Chomsky-normal, Greibach-normal
+\item eindeutig (natürlich nur Test)
+\end{itemize}
+
+
+\end{slide}
