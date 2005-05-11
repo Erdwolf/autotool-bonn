@@ -1,10 +1,40 @@
-\documentclass[landscape]{slides}
+\documentclass[pdf,mpa]{prosper}
+
+\FontText{\usefont{T1}{phv}{m}{n}\fontsize{16.4pt}{16pt}%
+  \selectfont}{%
+  \usefont{T1}{phv}{m}{n}\fontsize{16.4pt}{16pt}\selectfont}
+
+\NewSlideStyle[14cm]{t}{5.2,3.5}{}
+
+
 \input{macros}
 
+\title{
+  Das System \autotool\ zur automatischenKontrolle
+  von Übungsaufgaben zur (Theoretischen) Informatik
+}
+\author{ 
+  Mirko Rahn, Uni Karlsruhe \\
+  Alf Richter, Uni Leipzig \\
+  \emph{Johannes Waldmann}, HTWK Leipzig
+}  
+\slideCaption{Seminar Uni Leipzig 11. Mai 05}
+
+
 \begin{document}
-\input{titel}
-\input{teile}
+\maketitle
+
 \input{use}
+\input{einsatz}
+\input{wert}
+\input{teile}
 \input{themen}
+\input{erfahr}
+\input{score}
+\input{verify}
+\input{intern}
+\input{wickel}
+\input{run}
+
 
 \end{document}
