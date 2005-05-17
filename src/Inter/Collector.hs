@@ -37,6 +37,7 @@ import qualified Faktor.Faktor
 import qualified NFA.Convert
 import qualified NFA.Equiv.Challenger
 import qualified Exp.Convert
+import qualified Exp.Smaller
 import qualified Grammatik.CF.Interface
 import qualified NPDA.Inter
 import qualified SAT.SAT
@@ -105,6 +106,7 @@ makers = [ Blank.make
 	 , NFA.Convert.qmake
 	 , Exp.Convert.make
 	 , Exp.Convert.qmake
+	 , Exp.Smaller.make
 	 , NFA.Equiv.Challenger.make
 	 , NFA.Equiv.Challenger.qmake
 
