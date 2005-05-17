@@ -17,6 +17,7 @@ import qualified Graph.MinSep
 import qualified Robots.Interface
 import qualified Graph.Col.Plain
 import qualified Graph.Col.Quiz
+
 import qualified Graph.Cage.Central
 import qualified Graph.Graceful.Central
 import qualified Collatz.Plain
@@ -25,8 +26,10 @@ import qualified Hanoi.Semantik
 import qualified Hanoi.Quiz
 import qualified Type.Check
 import qualified Type.Quiz
+
 -- import qualified Object.Check
 -- import qualified Object.Quiz
+
 import qualified Palindrom.Plain
 
 import qualified Faktor.Faktor
@@ -63,6 +66,8 @@ import qualified LCS.Instance
 import qualified Graph.MST.Plain
 import qualified Graph.MST.Quiz
 
+import qualified Graph.VC.Central
+import qualified Graph.VC.VCSAT
 import qualified Partition.Central
 
 import qualified KnapsackFraction.Central
@@ -152,4 +157,9 @@ makers = [ Blank.make
 
          , KnapsackFraction.Central.make_fixed
          , KnapsackFraction.Central.make_quiz
+
+         , Graph.VC.Central.make_fixed
+         , Graph.VC.Central.make_quiz
+         , Graph.VC.VCSAT.make_fixed
+         , Graph.VC.VCSAT.make_quiz
 	 ]
