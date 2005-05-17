@@ -66,7 +66,18 @@ instance Partial KnapsackFraction Inp Pack where
 
         eq ( text "vorhandene Objekte" , objekte inp )
 	   ( text "Objekte in Ihrer Packung" , mkSet $ keysFM packFM )
-     
+
+        inform $ text "Sind alle Bruchteile zwischen 0 und 1?"
+
+        let badFM = filterFM ( \ _ v -> or [ v < 0 , v > 1 ] ) packFM
+
+        when ( sizeFM badFM > 0 ) $ reject $ vcat
+	     [ text "Nein. Diese Bruchteile sind nicht möglich:"
+	     , nest 4 $ toDoc badFM
+	     ]
+
+        inform $ text "Ja."
+
         inform $ vcat 
 	       [ text "Stimmen der von Ihnen berechnete Gesamtwert"
 	       , nest 4 $ toDoc value
