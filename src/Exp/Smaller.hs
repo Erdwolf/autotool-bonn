@@ -95,23 +95,3 @@ make = direct Exp_Smaller
      , [ Exp.Property.Simple , Exp.Property.Alphabet (mkSet "ab") ] :: [ Property Char ]
      )
 
-{-
-instance Generator Convert_To_Exp ( Quiz Char ) 
-           ( RX Char, [ Property Char ] ) where
-    generator p quiz key = do
-        aut <- roll $ generate quiz
-        return ( Convert { name = Nothing
-			 , input = NFA aut 
-			 }
-	       , solve quiz
-	       )
-
-instance Project  Convert_To_Exp 
-                  ( Convert, [ Property Char ] ) 
-                  ( Convert, [ Property Char ] )  where
-    project p x = x
-
-
-qmake :: Make
-qmake = quiz Convert_To_Exp Exp.Quiz.example
--}

@@ -15,7 +15,7 @@ import Autolib.NFA hiding ( alphabet )
 import Autolib.Set
 
 data Convert =
-     Convert { name :: Maybe String -- if Nothing, use (show input)
+     Convert { name :: Maybe [String] -- if Nothing, use (show input)
              , input :: Convert.Input.Input Char
 	     }
     deriving ( Typeable )
@@ -24,8 +24,8 @@ data Convert =
 
 form :: Convert -> Doc
 form conv = case name conv of
-    Nothing -> Convert.Input.lang $ input conv
-    Just cs -> text cs
+    Nothing  -> Convert.Input.lang $ input conv
+    Just css -> vcat $ map text css
 
 eval :: Set Char -> Convert -> NFA Char Int
 eval alpha conv = case input conv of

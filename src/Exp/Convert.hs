@@ -81,7 +81,7 @@ instance C.Measure Convert_To_Exp
 
 make :: Make
 make = direct Convert_To_Exp 
-     ( Convert { name = Just "Wörter über {a,b}, die mit  a  beginnen und mit  b  enden"
+     ( Convert { name = Just ["Wörter über {a,b}, die mit  a  beginnen und mit  b  enden"]
 	       , input = Exp $ read "a (a+b)^* b"
 	       }
      , Exp.Property.example
