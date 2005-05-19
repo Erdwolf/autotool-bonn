@@ -15,9 +15,10 @@ import SAT.Types
 
 import Graph.Util
 import Autolib.Graph.Ops ( normalize )
-import Autolib.Dot ( peng, Layout_Program (..) )
+import Autolib.Dot ( peng , Layout_Program ( Dot ) )
 import qualified Autolib.Reporter.Set ( subeq )
 import Autolib.Util.Zufall ( eins , genau )
+import Autolib.FiniteMap ( isEmptyFM )
 
 import Inter.Quiz ( Generator , generator , Project , project , quiz )
 import Inter.Types ( Make , direct )
@@ -41,9 +42,10 @@ instance C.Partial VC (Graph Int,Int) (Set Int) where
 	       , text "Knoten des Graphen"
 	       , nest 4 $ toDoc g
 	       ]
-        peng $ g { layout_program = Dot
-		 , layout_hints = [ "-Nshape=ellipse" ]
-		 } 
+        peng g { layout_program = if isEmptyFM (graph_layout g) 
+		                  then Dot
+		                  else layout_program g
+	       }
         inform $ text "an!"
 
     initial VC (g,c) = head $ teilmengen (pred c) (knoten g)
@@ -84,9 +86,9 @@ instance C.Measure VC (Graph Int,Int) (Set Int) where
     measure VC _ ns = fromIntegral $ cardinality ns
 
 make_fixed :: Make
-make_fixed = let (g,c) = vc  $ And [ Or [ Pos "x" , Pos "y" , Pos "z" ] 
-				   , Or [ Neg "x" , Pos "y" , Neg "z" ]
-				   ]
+make_fixed = let (g,c) = vc 6 $ And [ Or [ Pos "x" , Pos "y" , Pos "z" ] 
+				    , Or [ Neg "x" , Pos "y" , Neg "z" ]
+				    ]
              in direct VC ( normalize g , c )
 
 instance Generator VC P.Param ( Graph Int , Int , Set Int ) where

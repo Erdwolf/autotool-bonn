@@ -103,11 +103,14 @@ pin :: GraphC a
     => Graph a
     -> Karte a
     -> Graph a
-pin g f =
+pin = pinN 7
+
+pinN :: GraphC a => Position -> Graph a -> Karte a -> Graph a
+pinN sz g f =
     let 
         h = mapFM ( \ k v -> toPos v ) f
         ( ul, or ) = minimax $ eltsFM h
-	scale = 7 / abs ( or - ul )
+	scale = sz / abs ( or - ul )
     in  g { graph_layout = mapFM ( \ k p -> ( p - ul ) * scale ) h
 	  , bounding = or
 	  , show_labels = True

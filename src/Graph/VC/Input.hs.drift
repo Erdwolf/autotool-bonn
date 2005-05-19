@@ -1,0 +1,26 @@
+module Graph.VC.Input where
+
+-- $Id$
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+import SAT.Types
+
+data Input = Input
+	    { formel          :: Formel
+	    , anzeige_groesse :: Int	
+	    }
+     deriving ( Typeable )
+
+{-! for Input derive: Reader, ToDoc, Haskell2Xml !-}
+
+i0 :: Input
+i0 = Input { formel          =  And [ Or [ Pos "x" , Pos "y" , Pos "z" ] 
+				    , Or [ Neg "x" , Pos "y" , Neg "z" ]
+				    ]
+	   , anzeige_groesse = 6 
+	   }
