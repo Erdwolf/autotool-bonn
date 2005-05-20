@@ -54,7 +54,8 @@ instance C.Partial Exp_Smaller
 	in  Autolib.Exp.Example.example alpha
 
     partial Exp_Smaller ( rx, props ) exp = do
-        sanity_keys ( mkSet [ "Eps", "Empty" ] ) exp
+-- als property definiert
+--        sanity_keys ( mkSet [ "Eps", "Empty" ] ) exp
         inform $ text "Sind alle Eigenschaften erfüllt?"
         nested 4 $ mapM_ ( flip test exp ) props
 

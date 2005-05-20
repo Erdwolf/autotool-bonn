@@ -17,6 +17,7 @@ data ( Ord c, ToDoc [c], Reader [c] )
 	      | Alphabet ( Set c )
 	      | Simple
 	      | Extended
+	      | AllowedKeys (Set String)
      deriving ( Typeable )
 
 {-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
@@ -24,4 +25,5 @@ data ( Ord c, ToDoc [c], Reader [c] )
 example :: [ Property Char ]
 example = [ Min_Size 4 , Max_Size 6
 	  , Alphabet $ mkSet "abc"
+	  , AllowedKeys $ mkSet [ "Eps", "Empty", "Sigma", "All" ]
 	  ]

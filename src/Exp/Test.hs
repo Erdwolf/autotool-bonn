@@ -36,6 +36,9 @@ test (Simple) exp = do
 test (Extended) exp = do
     ist_erweitert exp
 
+test (AllowedKeys ks) exp = do
+    sanity_keys ks exp
+
 test prop exp = do
     reject $ fsep [ text "test für", toDoc prop
 		  , text "noch nicht implementiert"

@@ -58,7 +58,8 @@ instance C.Partial Convert_To_Exp
 	in  Autolib.Exp.Example.example alpha
 
     partial Convert_To_Exp ( from, props ) exp = do
-        sanity_keys ( mkSet [ "Eps", "Empty", "Sigma", "All" ] ) exp
+-- als property definiert
+--        sanity_keys ( mkSet [ "Eps", "Empty", "Sigma", "All" ] ) exp
         inform $ text "Sind alle Eigenschaften erfüllt?"
         nested 4 $ mapM_ ( flip test exp ) props
 
