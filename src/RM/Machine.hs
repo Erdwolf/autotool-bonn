@@ -18,11 +18,12 @@ instance Compute Program State where
     depth _ = schritt
 
 instance In Program Memory State where
-    input p m = State { schritt = 0
-		      , program = Just p
-		      , memory  = m
-		      , past    = []
-		      }
+    input p m = State 
+	      { schritt = 0
+	      , program = Just p
+	      , memory  = m
+	      , past    = []
+	      }
 
 instance Out Program Memory State where
     output_reporter _ s = do 

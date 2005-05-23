@@ -38,7 +38,7 @@ make ( defcon :: Con.Config c m ) =
 	    ) defcon
 
 
-fnum ::  ( Con.Check c m , Con.ConfigC c m , Machine m dat conf )
+fnum ::  ( Show c , Con.Check c m , Con.ConfigC c m , Machine m dat conf )
      => Con.Config c m 
      -> String
      -> IO ( Reporter ( N.Type m ))
@@ -50,7 +50,12 @@ fnum conf key = do
                       A.eval ( mkargs xs key ) ( Con.op conf ) 
 	      , N.fun_info = fsep 
 		     [ text "\\" , toDoc xs , text "->", toDoc $ Con.op conf ]
-	      , N.extra_info = vcat $ map text (Con.conditions conf)
+	      , N.extra_info = vcat $
+		(text "Die Maschine soll die folgenden Bedingungen erfüllen:") 
+		 : 
+		(do c <- (show $ Con.checks conf) : Con.conditions conf
+		    return $ nest 4 $ text $ "* " ++ c
+		)
 	      , N.args = xss
 	    , N.cut = Con.cut conf
 	    , N.check = check_all $ Con.checks conf
