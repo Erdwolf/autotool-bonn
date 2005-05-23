@@ -33,6 +33,7 @@ instance  ( Reader [c], Reader m, Reader c
 
 data  ConfigC c m => Config c m = 
      Config { name :: String
+	    , conditions :: [String] -- extra bedingungen
 	    , arity :: Int
 	    , op :: Exp Integer -- zu berechnende funktion
 	      , num_args :: Int	      -- zum Testen: anzahl 

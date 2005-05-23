@@ -40,8 +40,12 @@ numerical_test :: ( Numerical dat, Machine m dat conf, Out m dat conf )
 	 -> Reporter Int
 numerical_test cut inputs fun m = do
     let check ein conf = do
-	    let a = decode $ Machine.Class.output m conf
+
+            r <- Machine.Class.output_reporter m conf
+
+	    let a = decode r
 	    let a' = fun ein
+
 	    inform $ vcat
 		   [ text "Die Endkonfiguration enthält das Resultat", toDoc a
 		   , text "gefordert war", toDoc a'

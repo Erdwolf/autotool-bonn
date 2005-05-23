@@ -73,6 +73,8 @@ import qualified Partition.Central
 
 import qualified KnapsackFraction.Central
 
+import qualified RM.Make
+
 makers :: [ Make ]
 makers = [ Blank.make
 	 , Upload.make
@@ -164,4 +166,6 @@ makers = [ Blank.make
          , Graph.VC.Central.make_quiz
          , Graph.VC.VCSAT.make_fixed
          , Graph.VC.VCSAT.make_quiz
+
+         , RM.Make.make
 	 ]

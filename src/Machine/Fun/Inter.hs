@@ -39,7 +39,7 @@ instance ( Machine m dat conf, InOut m dat conf )
          => C.Partial F.Computer (F.Type m dat) m where
     describe p i =
 	    vcat [ text "Konstruieren Sie eine Maschine,"
-		 , text "welche die Funktion" <+> info i
+		 , text "die die Funktion" <+> info i
 	               <+> text "berechnet!"
 		 , text "Einige (Argument,Wert)-Paare dieser Funktion sind:"
 		 , nest 4 $ toDoc $ take 5 $ F.pairs i

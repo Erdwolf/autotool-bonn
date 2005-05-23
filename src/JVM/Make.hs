@@ -21,6 +21,7 @@ import qualified Autolib.Reporter.Checker as R
 make :: Make
 make = M.make $ C.Config
      { C.name = "JVM"
+     , C.conditions = []
      , C.arity = 2
      , C.op = read "x1 * x2" 
      , C.num_args = 10

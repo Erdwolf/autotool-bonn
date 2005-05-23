@@ -19,16 +19,17 @@ data Computer = Computer
 
 data Type m = 
      Make { fun ::  [ Integer ] -> Integer -- zu berechnende funktion
-	      , fun_info :: Doc	      -- funktions-name/-erklärung
-	      , args :: [[ Integer ]]	      -- argumente zum testen
-	    , cut :: Int -- höchstens soviele schritte
-	    , check :: m -> Reporter () -- sonstige Bedingungen an Maschine
-	    , start :: m -- damit soll der student anfangen
-	      }
+	  , fun_info :: Doc	      -- funktions-name/-erklärung
+	  , extra_info :: Doc -- extra erklärung/bedingung
+	  , args :: [[ Integer ]]	      -- argumente zum testen
+	  , cut :: Int -- höchstens soviele schritte
+	  , check :: m -> Reporter () -- sonstige Bedingungen an Maschine
+	  , start :: m -- damit soll der student anfangen
+	  }
      deriving Typeable
 
 instance Informed ( Type m ) where
-     info = fun_info
+     info m = fun_info m
      informed info m = m { fun_info = info }
 
 instance ToDoc ( Type m ) where

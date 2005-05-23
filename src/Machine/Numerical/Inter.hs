@@ -39,8 +39,9 @@ instance ( Machine m dat conf, Numerical dat, Reader m )
          => C.Partial N.Computer (N.Type m) m where
     describe p i =
 	    vcat [ text "Konstruieren Sie eine Maschine,"
-		 , text "welche die Funktion" <+> info i
-	               <+> text "berechnet!"
+		 , text "die die Funktion" <+> info i
+	           <+> text "berechnet!"
+		 , N.extra_info i
 		 ]
 
     initial p i   = N.start i

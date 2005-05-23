@@ -13,14 +13,13 @@ import qualified Autolib.Reporter.Checker as Checker
 
 import Autolib.ToDoc
 import Autolib.Reporter
-import Data.List ( intersperse )
+import Data.List ( intersperse , nub )
 import Random
 
 testliste :: Int -> Int -> Integer -> IO [[Integer]]
 testliste len ari hei = sequence $ replicate len $ do
     xs <- sequence $ replicate ari $ randomRIO (0, hei)
-    return xs
-
+    return $ nub xs
 
 {-
 make :: ( Con.Check c m , Con.ConfigC c m , Machine m dat conf )
@@ -51,6 +50,7 @@ fnum conf key = do
                       A.eval ( mkargs xs key ) ( Con.op conf ) 
 	      , N.fun_info = fsep 
 		     [ text "\\" , toDoc xs , text "->", toDoc $ Con.op conf ]
+	      , N.extra_info = vcat $ map text (Con.conditions conf)
 	      , N.args = xss
 	    , N.cut = Con.cut conf
 	    , N.check = check_all $ Con.checks conf
