@@ -5,22 +5,24 @@ import RM.Ceh ( conc )
 
 -------------------------------------------------------------------------------
 
--- | zweistellige Programme für die Standardform: Eingabe in 1+2, Ausgabe in 3
-
-add, sub, mult, quad, exp, div, divMod :: Program
-add    = read $ conc [ clear 3, clear 4, gen_add 1 2 3 4 ]
-sub    = read $ conc [ clear 3, clear 4, gen_sub 1 2 3 4 ]
-mult   = read $ conc [ clear 3, clear 4, clear 5 , gen_mult 1 2 3 4 5 ]
-quad   = read $ conc [ clear 2, clear 3, clear 4 , gen_mult 1 1 2 3 4 ]
+add, sub, mult, quad, exp, div, divMod, fib, sqrt, fac, min :: Program
+add    = read $ conc [ clear 3, clear 4, gen_add 1 2 0 4 ]
+sub    = read $ conc [ clear 3, clear 4, gen_sub 1 2 0 4 ]
+mult   = read $ conc [ clear 3, clear 4, clear 5 , gen_mult 1 2 0 4 5 ]
+quad   = read $ conc [ clear 2, clear 3, clear 4 , gen_mult 1 1 0 2 4 ]
 exp    = read $ conc [ clear 3, clear 4, clear 5, clear 6, clear 7 
-		     , gen_exp 1 2 3 4 5 6 7
+		     , gen_exp 1 2 0 4 5 6 7
 		     ]
 div    = read $ conc [ clear 3, clear 4, clear 5, clear 6
-		     , gen_div 1 2 3 4 5 6 
+		     , gen_div 1 2 0 4 5 6 
 		     ]
 divMod = read $ conc [ clear 3, clear 4, clear 5, clear 6, clear 7, clear 8
-		     , clear 9, gen_divMod 1 2 3 4 5 6 7 8 9
+		     , clear 9, gen_divMod 1 2 0 4 5 6 7 8 9
 		     ]
+fib  = read "a2(s1a3(s0a4)0(s2a0a4)2(s4a2)4)1(s3a1)3(s2)2"
+sqrt = read "(s1a0a2)1(s2a1)2a4(s4(s0a3a4)0(s4a0)4(s3(s0a2a4)0(s4a0)4)3(s1s2a3)1(s3a1)3(s2(s4)4a4)2(s4s0a3)4(s3a4)3)4"
+fac  = read "a0((s0a2)0(s2(s1a0a3)1(s3a1)3)2a4s1)1(s4a1)4"
+min  = read "(s2a3a4)2(s4a2)4(s1s3a4)1(s4a1)4(s3(s4)4a4)3a5(s4s5(s1a0a3)1(s3a1)3)4(s5(s2a0a3)2(s3a2)3)5"
 
 -------------------------------------------------------------------------------
 

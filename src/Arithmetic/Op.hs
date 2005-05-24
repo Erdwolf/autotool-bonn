@@ -37,7 +37,7 @@ unary = [ Op { name = "negate" , arity = 1
 	     }
 	, Op { name = "sqrt" , arity = 1
 	     , precedence = Just 10 , assoc = AssocNone
-	     , inter = \ [x] -> ceiling $ sqrt (fromIntegral x)
+	     , inter = \ [x] -> floor $ sqrt (fromIntegral x)
 	     }
 	, Op { name = "fac" , arity = 1
 	     , precedence = Just 10 , assoc = AssocNone
@@ -56,19 +56,19 @@ binary = [ Op { name = "*" , arity = 2
 	      } 
 	 , Op { name = "/" , arity = 2
 	      , precedence = Just 8, assoc = AssocLeft
-	      , inter = \ [x,y] -> div x (max 1 y)
+	      , inter = \ [x,y] -> if y == 0 then 0 else div x y
 	      }
 	 , Op { name = "`div`" , arity = 2
 	      , precedence = Just 8, assoc = AssocLeft
-	      , inter = \ [x,y] -> div x (max 1 y)
+	      , inter = \ [x,y] -> if y == 0 then 0 else div x y
 	      }
 	 , Op { name = "%" , arity = 2
 	      , precedence = Just 4, assoc = AssocLeft
-	      , inter = \ [x, y] -> mod x y
+	      , inter = \ [x, y] -> if y == 0 then 0 else mod x y
 	      }
 	 , Op { name = "`mod`" , arity = 2
 	      , precedence = Just 4, assoc = AssocLeft
-	      , inter = \ [x, y] -> mod x y
+	      , inter = \ [x, y] -> if y == 0 then 0 else mod x y
 	      }
 	 , Op { name = "^" , arity = 2
 	      , precedence = Just 2, assoc = AssocLeft

@@ -44,10 +44,13 @@ data Program = Add Register
 
 {-! for Program derive: Haskell2Xml !-}
 
+measure :: Program -> Int
+measure (While _ p) = succ $ measure p
+measure (Conc ps  ) = sum $ map measure ps
+measure _           = 1
+
 instance Size Program where
-    size (While _ p) = succ $ size p
-    size (Conc ps)   = sum $ map size ps
-    size _           = 1
+    size p = cardinality (regs p) * measure p
 
 instance Show Program where
     show (Add n)     = "a" ++ show n

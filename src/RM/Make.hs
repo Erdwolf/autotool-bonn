@@ -16,9 +16,10 @@ make :: Make
 make = M.make $ C.Config
        { C.name = "RM"
        , C.conditions = 
-	 [ "Die Eingabe erfolgt in den Registern 1 und 2 und"
-	 , "die Ausgabe soll im Register 0 stehen."
+	 [ "Die Eingabe erfolgt in den Registern 1 und 2."
+	 , "Die Ausgabe soll im Register 0 erfolgen."
 	 , "Die Werte der Eingaberegister sollen erhalten bleiben."
+	 , "Die Werte der benutzten Register sollen auf 0 zurückgesetzt werden."
 	 ]
        , C.arity = 2
        , C.op = read "x1 + x2"
@@ -26,5 +27,5 @@ make = M.make $ C.Config
        , C.max_arg = 20
        , C.cut = 1000
        , C.checks = [ NumReg 4 ]
-       , C.start = read "(s4)4" :: Program
+       , C.start = read "a4(s4a0)4" :: Program
        }

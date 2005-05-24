@@ -5,7 +5,7 @@ module RM.Memory where
 import RM.Type ( Register )
 
 import Autolib.FiniteMap ( FiniteMap , emptyFM , lookupWithDefaultFM , addToFM
-			 , listToFM
+			 , listToFM , delFromFM
 			 )
 
 -------------------------------------------------------------------------------

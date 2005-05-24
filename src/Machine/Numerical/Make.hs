@@ -13,13 +13,13 @@ import qualified Autolib.Reporter.Checker as Checker
 
 import Autolib.ToDoc
 import Autolib.Reporter
-import Data.List ( intersperse , nub )
+import Data.List ( intersperse )
 import Random
 
 testliste :: Int -> Int -> Integer -> IO [[Integer]]
 testliste len ari hei = sequence $ replicate len $ do
     xs <- sequence $ replicate ari $ randomRIO (0, hei)
-    return $ nub xs
+    return xs
 
 {-
 make :: ( Con.Check c m , Con.ConfigC c m , Machine m dat conf )

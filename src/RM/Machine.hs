@@ -12,6 +12,8 @@ import Autolib.FiniteMap
 import Autolib.Reporter
 import Autolib.ToDoc
 
+import Control.Monad ( guard )
+
 instance Compute Program State where
     next _ = mkSet . step
     accepting _ = ( == Nothing ) . program
@@ -37,6 +39,21 @@ instance Out Program Memory State where
 			  return $ lookupFM m r == Just v
 
         when ( not ok ) $ reject $ nest 4 $ text "Nein."
+
+        inform $ nest 4 $ text "Ja."
+
+        inform $ nest 4 $ text "Sind alle benutzten Register zurückgesetzt?"
+
+        let rs  = 0 : keysFM m0
+        let bad = do b@(r,v) <- fmToList m
+		     guard $ not $ elem r rs
+		     guard$ v /= 0
+		     return b
+
+        when ( not $ null bad ) $ reject $ nest 4 $ vcat
+		 [ text "Nein. Diese Register enthalten noch Werte:"
+		 , toDoc bad
+		 ]
 
         inform $ nest 4 $ text "Ja."
 
