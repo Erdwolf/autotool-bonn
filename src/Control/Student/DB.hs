@@ -44,6 +44,7 @@ get_where ex = do
 			     , CST.passwort = s_passwort
     			     }
                     ) stat
+    disconnect conn
     return inh
 
 

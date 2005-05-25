@@ -85,8 +85,12 @@ single deco arg @( anr, es ) = do
     putStrLn $ unlines $ [ header , strich ] ++ decorated
 
 decorate :: Einsendung -> IO ( SNr , Einsendung )
-decorate e = Control.Student.DB.snr_by_mnr ( matrikel e ) >>= \ (s:_) -> 
-	     return ( s , e )
+decorate e = do
+
+   xs <- Control.Student.DB.snr_by_mnr ( matrikel e ) 
+
+   case xs of []    -> return ( read "SNr 0" , e )
+              (s:_) -> return (            s , e )
 
 totalize :: Bool -> DataFM -> IO ()
 totalize deco fm = do

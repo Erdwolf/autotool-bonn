@@ -224,11 +224,11 @@ edit_aufgabe mk mauf vnr manr type_click = do
             -- FIXME: get now() from DB
             ( von :: Time ) <- fmap fromCGI 
 		    $ defaulted_textfield "von" 
-		    $ case mauf of Nothing -> "2004-10-15 11:16:08"
+		    $ case mauf of Nothing -> "2005-05-25 10:00:00"
 				   Just auf -> toString $ A.von auf
             ( bis ::Time ) <- fmap fromCGI
 		    $ defaulted_textfield "bis" 
-		    $ case mauf of Nothing -> "2004-10-15 11:16:08"
+		    $ case mauf of Nothing -> "2005-06-01 10:00:00"
 				   Just auf -> toString $ A.bis auf
 
             -- nimm default-config, falls type change

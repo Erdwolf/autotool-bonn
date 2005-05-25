@@ -23,7 +23,7 @@ data ( Ord c, ToDoc [c], Reader [c] )
 {-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: [ Property Char ]
-example = [ Min_Size 4 , Max_Size 6
-	  , Alphabet $ mkSet "abc"
-	  , AllowedKeys $ mkSet [ "Eps", "Empty", "Sigma", "All" ]
+example = [ Simple
+	  , Alphabet $ mkSet "ab"
+	  , AllowedKeys $ mkSet [ "Empty" ]
 	  ]
