@@ -51,6 +51,7 @@ instance Partial Partition
 	    )
 
     partial Partition s (l, r) = do
+        disjoint ("L", l) ("R", r)
         eq ( text "S" , s )
 	   ( text "L + R" , union l r )
 
@@ -65,6 +66,21 @@ instance Partial Partition
 	       ]
 	assert ( sl == sr )
 	       $ text "Stimmen die Summen überein?"
+
+disjoint ( ix, x ) ( iy, y ) = do
+    inform $ vcat
+	   [ text "sind die Mengen"
+	   , nest 4 $ text ix <+> equals <+> toDoc x
+	   , text "und"
+	   , nest 4 $ text iy <+> equals <+> toDoc y
+	   , text "disjunkt?"
+	   ]
+    let xy = intersect x y
+    if isEmptySet xy
+       then inform $ text "ja."
+       else reject $ text "nein, der Durchschnitt ist"
+		   $$ toDoc xy
+
 
 make_fixed :: Make
 make_fixed = direct Partition Partition.Beispiel.mm

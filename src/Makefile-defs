@@ -51,6 +51,7 @@ else
 endif
 endif
 
+
 GHC_COMMAND = $(GHC) --make \
 	$(WARN) $(OPT) $(PROF) $(PACKS) $(FLAGS) $(DEFINES) -i$(DIRS)
 

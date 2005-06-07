@@ -62,15 +62,17 @@ import qualified Control.Exception
 import Text.Html ( Html, primHtml )
 
 main :: IO ()
-main = do
+main = Inter.CGI.execute "Super.cgi" $ do
+   wrap $ iface Inter.Collector.makers
+   scores <- io slink
+   footer scores
 
+slink = do
     e <- doesFileExist "link.scores"
-    scores <- if e then readFile "link.scores" >>= return . head . lines
+    scores <- if e 
+              then readFile "link.scores" >>= return . head . lines
               else return "http://www.imn.htwk-leipzig.de/~autotool/scores"
-
-    Inter.CGI.execute "Super.cgi" $ do
-     wrap $ iface Inter.Collector.makers
-     footer scores
+    return scores
 
 iface :: [ Make ] -> Form IO ()
 iface mks = do
