@@ -9,7 +9,7 @@ import Data.FiniteMap
 import Data.List
 import Control.Monad
 import qualified Autolib.Reporter.Checker as C
-import qualified Autolib.Reporter.Subset
+import qualified Autolib.Reporter.Set
 import Autolib.Reporter
 
 istotal :: ( ToDoc [b], ToDoc [a], ToDoc a, Ord a )
@@ -21,7 +21,7 @@ istotal xs code = do
 	   [ text "ist", toDoc code, text "vollständig"
 	   , text "für", toDoc xs, text "?"
 	   ]
-    nested 4 $ Autolib.Reporter.Subset.check 
+    nested 4 $ Autolib.Reporter.Set.subeq
 	     ( text "zu codierende Buchstaben" , xs )
 	     ( text "tatsächlich codierte Buchstaben", mkSet $ keysFM code )
 
@@ -33,9 +33,13 @@ isprefix code = do
     sequence_ $ do
         (x, cs) <- fmToList code
         (y, ds) <- fmToList code
+        let msg (x, cs) = text "code" <+> parens ( toDoc x) 
+                          <+> equals <+> toDoc cs
 	guard $ x /= y
 	return $ do
-            when ( isPrefixOf cs ds ) $ reject
-	       $ text "Nein:" <+> toDoc (x, cs) <+> toDoc (y, ds)
+            when ( isPrefixOf cs ds ) $ reject $ fsep
+	       [ text "Nein:"
+               , msg (x, cs) , text "ist Präfix von", msg (y, ds)
+               ]
     inform $ text "Ja."
 

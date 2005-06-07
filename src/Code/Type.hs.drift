@@ -1,7 +1,7 @@
 module Code.Type 
 
 ( module Code.Type
-, module Data.FiniteMap
+, module Autolib.FiniteMap
 , module Autolib.Set
 )
 
@@ -9,11 +9,10 @@ where
 
 --  $Id$
 
-import Data.FiniteMap
 
 import Data.Typeable
-import Autolib.TypeableFM
 
+import Autolib.FiniteMap
 import Autolib.Set
 import Autolib.ToDoc
 

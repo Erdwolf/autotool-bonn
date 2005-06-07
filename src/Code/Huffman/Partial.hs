@@ -1,3 +1,5 @@
+{-# OPTIONS -fallow-undecidable-instances -fglasgow-exts -fallow-overlapping-instances #-}
+
 module Code.Huffman.Partial where
 
 --  $Id$
@@ -12,11 +14,13 @@ import Challenger.Partial
 import Data.Typeable
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Reader
 
 
 data Huffman = Huffman deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance ( ToDoc a, ToDoc [a], Ord a, ToDoc [ (a, [ LR ] )] ) 
+instance -- ( ToDoc a, ToDoc [a], Ord a, ToDoc [ (a, [ LR ] )] ) 
+     ( Reader a, ToDoc a, ToDoc [a], Ord a )
 	 => Partial Huffman ( Frequency a ) ( Code a LR ) where
 
     describe p i = vcat

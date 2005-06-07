@@ -21,6 +21,8 @@ import Autolib.ToDoc
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
+
+
 make :: ( Ord a
 	, Reader a
 	, Show a, ToDoc a, ToDoc [a]

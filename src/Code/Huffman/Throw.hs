@@ -3,14 +3,15 @@ module Code.Huffman.Throw where
 --  $Id$
 
 import Code.Type
-import Random
+import Code.Huffman.Config
 
-data Config a = 
-     Config { alphabet :: Set a
-	    , range    :: (Int, Int)
-	    }
+import Autolib.Reader
+import Autolib.ToDoc
 
-throw :: Ord a 
+import System.Random
+
+
+throw :: ( Ord a , ToDoc [a], Reader [a] )
       => Config a 
       -> IO ( Frequency a )
 throw conf = do

@@ -75,6 +75,8 @@ import qualified KnapsackFraction.Central
 
 import qualified RM.Make
 
+import qualified Code.Huffman.Boiler
+
 makers :: [ Make ]
 makers = [ Blank.make
 	 , Upload.make
@@ -168,4 +170,7 @@ makers = [ Blank.make
          , Graph.VC.VCSAT.make_quiz
 
          , RM.Make.make
+
+         , Code.Huffman.Boiler.make_fixed
+         , Code.Huffman.Boiler.make_quiz
 	 ]
