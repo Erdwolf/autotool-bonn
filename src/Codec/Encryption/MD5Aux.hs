@@ -1,4 +1,8 @@
---  (c) Ian Lynagh
+--  | (c) Ian Lynagh
+--
+--  see <http://www.complete.org/fs/hclr/crypto/Codec.Encryption.MD5Aux.html>
+-- <http://web.comlab.ox.ac.uk/oucl/work/ian.lynagh/md5/>
+-- 
 --  with patches by Johannes Waldmann
 
 --   $Id$
@@ -43,7 +47,7 @@ newtype Str = Str String
 newtype BoolList = BoolList [Bool]
 newtype WordList = WordList ([Word32], Zord64)
 
--- Anything we want to work out the MD5 of must be an instance of class MD5
+-- | Anything we want to work out the MD5 of must be an instance of class MD5
 
 class MD5 a where
  get_next :: a -> ([Word32], Int, a) -- get the next blocks worth
@@ -121,20 +125,20 @@ instance Num ABCD where
 -- ===================== EXPORTED FUNCTIONS ========================
 
 
--- The simplest function, gives you the MD5 of a string as 4-tuple of
+-- | The simplest function, gives you the MD5 of a string as 4-tuple of
 -- 32bit words.
 
 md5 :: (MD5 a) => a -> ABCD
 md5 m = md5_main False 0 magic_numbers m
 
 
--- Returns a hex number ala the md5sum program
+-- | Returns a hex number ala the md5sum program
 
 md5s :: (MD5 a) => a -> String
 md5s = abcd_to_string . md5
 
 
--- Returns an integer equivalent to the above hex number
+-- | Returns an integer equivalent to the above hex number
 
 md5i :: (MD5 a) => a -> Integer
 md5i = abcd_to_integer . md5
@@ -143,7 +147,7 @@ md5i = abcd_to_integer . md5
 -- ===================== THE CORE ALGORITHM ========================
 
 
--- Decides what to do. The first argument indicates if padding has been
+-- | Decides what to do. The first argument indicates if padding has been
 -- added. The second is the length mod 2^64 so far. Then we have the
 -- starting state, the rest of the string and the final state.
 
@@ -165,7 +169,7 @@ md5_main padded ilen abcd m
        abcd' = md5_do_block abcd m16'
 
 
--- md5_do_block processes a 512 bit block by calling md5_round 4 times to
+-- | md5_do_block processes a 512 bit block by calling md5_round 4 times to
 -- apply each round with the correct constants and permutations of the
 -- block
 
@@ -197,7 +201,7 @@ md5_do_block abcd0 w = abcd4
        abcd4 = md5_round md5_i abcd3 (perm7 w) r4
 
 
--- md5_round does one of the rounds. It takes an auxiliary function and foldls
+-- | md5_round does one of the rounds. It takes an auxiliary function and foldls
 -- (md5_inner_function f) to repeatedly apply it to the initial state with the
 -- correct constants
 
@@ -213,7 +217,7 @@ md5_round f abcd s ns = foldl (md5_inner_function f) abcd ns'
  where ns' = zipWith (\x (y, z) -> (y, x + z)) s ns
 
 
--- Apply one of the functions md5_[fghi] and put the new ABCD together
+-- | Apply one of the functions md5_[fghi] and put the new ABCD together
 
 md5_inner_function :: (XYZ -> Word32)    -- Auxiliary function
                    -> ABCD               -- Initial state
@@ -226,7 +230,7 @@ md5_inner_function f (ABCD (a, b, c, d)) (s, ki) = ABCD (d, a', b, c)
        a' = b + rot_a
 
 
--- The 4 auxiliary functions
+-- | The 4 auxiliary functions
 
 md5_f :: XYZ -> Word32
 md5_f (x, y, z) = z `xor` (x .&. (y `xor` z))
@@ -243,13 +247,13 @@ md5_i :: XYZ -> Word32
 md5_i (x, y, z) = y `xor` (x .|. (complement z))
 
 
--- The magic numbers from the RFC.
+-- | The magic numbers from the RFC.
 
 magic_numbers :: ABCD
 magic_numbers = ABCD (0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476)
 
 
--- The 4 lists of (rotation, additive constant) tuples, one for each round
+-- | The 4 lists of (rotation, additive constant) tuples, one for each round
 
 rounds :: ([(Rotation, Word32)],
            [(Rotation, Word32)],
@@ -301,14 +305,14 @@ rounds = (r1, r2, r3, r4)
 -- ===================== CONVERSION FUNCTIONS ========================
 
 
--- Turn the 4 32 bit words into a string representing the hex number they
+-- | Turn the 4 32 bit words into a string representing the hex number they
 -- represent.
 
 abcd_to_string :: ABCD -> String
 abcd_to_string (ABCD (a,b,c,d)) = concat $ map display_32bits_as_hex [a,b,c,d]
 
 
--- Split the 32 bit word up, swap the chunks over and convert the numbers
+-- | Split the 32 bit word up, swap the chunks over and convert the numbers
 -- to their hex equivalents.
 
 display_32bits_as_hex :: Word32 -> String
@@ -318,7 +322,7 @@ display_32bits_as_hex w = swap_pairs cs
        swap_pairs (x1:x2:xs) = x2:x1:swap_pairs xs
        swap_pairs _ = []
 
--- Convert to an integer, performing endianness magic as we go
+-- | Convert to an integer, performing endianness magic as we go
 
 abcd_to_integer :: ABCD -> Integer
 abcd_to_integer (ABCD (a,b,c,d)) = rev_num a * 2^(96 :: Int)
@@ -332,7 +336,7 @@ rev_num i = toInteger j `mod` (2^(32 :: Int))
  where j = foldl (\so_far next -> shiftL so_far 8 + (shiftR i next .&. 255))
                  0 [0,8,16,24]
 
--- Used to convert a 64 byte string to 16 32bit words
+-- | Used to convert a 64 byte string to 16 32bit words
 
 string_to_word32s :: String -> [Word32]
 string_to_word32s "" = []
@@ -341,7 +345,7 @@ string_to_word32s ss = this:string_to_word32s ss'
        this = foldr (\c w -> shiftL w 8 + (fromIntegral.ord) c) 0 s
 
 
--- Used to convert a list of 512 bools to 16 32bit words
+-- | Used to convert a list of 512 bools to 16 32bit words
 
 bools_to_word32s :: [Bool] -> [Word32]
 bools_to_word32s [] = []
@@ -355,7 +359,7 @@ bools_to_word32s bs = this:bools_to_word32s rest
        boolss_to_word32 = foldr (\w8 w -> shiftL w 8 + bools_to_word8 w8) 0
 
 
--- Convert the size into a list of characters used by the len_pad function
+-- | Convert the size into a list of characters used by the len_pad function
 -- for strings
 
 length_to_chars :: Int -> Zord64 -> String

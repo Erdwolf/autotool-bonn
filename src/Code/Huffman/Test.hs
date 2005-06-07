@@ -13,7 +13,7 @@ import Code.Huffman.Make
 import Code.Measure
 
 import Autolib.Util.Sort
-import Data.FiniteMap
+import Autolib.FiniteMap
 import Autolib.Reporter
 import Autolib.ToDoc
 

@@ -7,7 +7,7 @@ import qualified Wash.CGIMonad
 
 import IO
 import Data.Char ( toLower )
-import qualified Exception
+import qualified Control.Exception
 import System -- system
 
 import qualified Data.List ( head )
@@ -30,7 +30,7 @@ import Helper
 -- Seiten Struktur rausziehen: stdpage ttl bdy menu
 main :: IO ()
 main =  run [] ( loginPage "" F0 ) --mainCGI 
-     `Exception.catch` \ ex -> putStrLn $ "\n\n" ++ show ex 
+     `Control.Exception.catch` \ ex -> putStrLn $ "\n\n" ++ show ex 
 
 
 io :: (Show a, Read a) =>

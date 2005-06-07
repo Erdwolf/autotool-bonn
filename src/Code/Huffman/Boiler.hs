@@ -21,7 +21,7 @@ make_fixed = direct Huffman
 make_quiz :: Make
 make_quiz = quiz Huffman Code.Huffman.Config.example
 
-instance ( ToDoc a, Reader a, Reader [a], ToDoc [a], Ord a )
+instance ( Show a, ToDoc a, Reader a, Reader [a], ToDoc [a], Ord a )
     => Generator Huffman ( Config a ) ( Frequency a ) where
        generator _ conf key = throw conf
         

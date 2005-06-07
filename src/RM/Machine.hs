@@ -1,5 +1,7 @@
 module RM.Machine where
 
+--  $Id$
+
 import Machine.Class
 
 import RM.Type
@@ -60,7 +62,7 @@ instance Out Program Memory State where
         return m
 
 instance Encode Memory where
-    encode xs = fromList $ zip [1..] xs
+    encode xs = RM.Memory.fromList $ zip [1..] xs
 
 instance Decode Memory where
     decode m = get m 0

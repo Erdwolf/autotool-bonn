@@ -3,14 +3,16 @@ module Code.Check where
 --  $Id$
 
 import Code.Type
+
 import Autolib.ToDoc
 import Autolib.Set
-import Data.FiniteMap
-import Data.List
-import Control.Monad
+import Autolib.FiniteMap
 import qualified Autolib.Reporter.Checker as C
 import qualified Autolib.Reporter.Set
 import Autolib.Reporter
+
+import Data.List
+import Control.Monad
 
 istotal :: ( ToDoc [b], ToDoc [a], ToDoc a, Ord a )
       => Set a
