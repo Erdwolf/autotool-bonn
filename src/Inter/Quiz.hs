@@ -19,7 +19,7 @@ import Text.XML.HaXml.Haskell2Xml
 -- | generator könnte noch zusätzliche information erzeugen
 -- (und in cache schreiben) bsp. zu PCP-instanz auch die lösung
 -- mit project holt man sich die instanz
-class ( Read k, Show k ) => Generator p conf k | p conf -> k where
+class ( Read k, ToDoc k ) => Generator p conf k | p conf -> k where
       generator :: p -> conf -> String -> IO k
 
 class Project p k i | p k -> i where
