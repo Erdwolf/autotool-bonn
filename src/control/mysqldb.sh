@@ -13,7 +13,10 @@ echo "export mysqlhost mysqluser mysqlpasswd mysqldb" >> mysqlconnect.data
 rm -f mysqlconnect.data
 
 
-if [ "init" == "$1" ] 
+if [ "dump" == "$1" ]
+then
+  mysqldump -h "$mysqlhost" -u "$mysqluser" --password="$mysqlpasswd" "$mysqldb"
+elif [ "init" == "$1" ] 
 then
    echo "init database"
    echo mysql -h "$mysqlhost" -u "$mysqluser" --password="$mysqlpasswd" -D "$mysqldb" <$INITFILE
