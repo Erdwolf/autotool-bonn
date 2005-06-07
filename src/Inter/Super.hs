@@ -10,6 +10,7 @@ module Main where
 import Inter.CGI
 import Inter.Evaluate
 import Inter.Make 
+import Inter.Motd
 import Inter.Bank
 import Inter.Store 
 import Inter.Login
@@ -168,6 +169,10 @@ iface mks = do
 	View -> do
 	    find_previous False vnr mks stud' auf'
             return ()
+
+    hr
+    con <- io $ Inter.Motd.contents
+    html con
 
     return ()
 
@@ -666,7 +671,6 @@ footer scores = do
     hr ; h3 "Informationen zum autotool"
     let entry name url =
             O.Beside ( O.Text name ) ( O.Link url )
-
     embed $ output
           $ O.Itemize
 	      [ entry "home: " 
