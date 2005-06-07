@@ -29,7 +29,8 @@ import Data.Maybe ( fromMaybe )
 #ifdef HSQL14
 import Database.HSQL.MySQL
 import Database.HSQL.Types
-#else
+#endif
+#ifdef HSQL12
 import Database.MySQL.HSQL
 #endif
 
@@ -87,11 +88,9 @@ timer False False = Current
 
 -------------------------------------------------------------
 
-#ifdef HSQL12
-instance SqlBind Bool where
-    fromSqlValue _ s = return $ "0" /= s
-    toSqlValue f = show $ fromEnum f
-#endif
+-- NOTE: instance SqlBind Bool wird NICHT benutzt,
+-- weil das eigentlich Int sein müßte (siehe Control.Vorlesung.DB)
+-- aber in HSQL14 anders definiert ist
 
 -------------------------------------------------------------
 

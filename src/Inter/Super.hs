@@ -65,7 +65,7 @@ import Text.Html ( Html, primHtml )
 main :: IO ()
 main = Inter.CGI.execute "Super.cgi" $ do
    wrap $ iface Inter.Collector.makers
-   scores <- io slink
+   scores <- io $ slink `Control.Exception.catch` \ e -> return ( show e )
    footer scores
 
 slink = do

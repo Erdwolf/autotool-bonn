@@ -6,6 +6,8 @@ module Control.SQL
 , Query (..), Action (..), Modifier (..)
 , Id (..), Bind (..)
 , Expression (..), ToEx (..), Control.SQL.equals, ands
+
+, sqlExceptions
 )
 
 where
@@ -26,12 +28,14 @@ import Mysqlconnect
 #ifdef HSQL14
 import Database.HSQL.MySQL hiding ( query, collectRows )
 import qualified Database.HSQL.MySQL
-#else
+#endif
+#ifdef HSQL12
 import Database.MySQL.HSQL hiding ( query, collectRows )
 import qualified Database.MySQL.HSQL
 #endif
 
 import Control.Monad ( when )
+import Control.Exception ( catch, catchDyn )
 
 -------------------------------------------------------------------------------
 
@@ -45,20 +49,22 @@ query con com = do
     logged com
 #ifdef HSQL14
     Database.HSQL.MySQL.query con com
-#else
+#endif
+#ifdef HSQL12
     Database.MySQL.HSQL.query con com
 #endif
-            `catchSql` \ e -> do 
+            `catchSql` \ e -> do  
                    logged $ "query: " ++ (show e) 
 		   error $ "SQLqueries.error in query:" ++ (show e) 
 
 collectRows fun stat = do
 #ifdef HSQL14
     i <- Database.HSQL.MySQL.collectRows fun stat
-#else
+#endif
+#ifdef HSQL12
     i <- Database.MySQL.HSQL.collectRows fun stat
 #endif
-            `catchSql` \ e -> do 
+            `catchSql` \ e -> do  
                    logged $ "collectRows: " ++ (show e) 
 		   error $ "SQLqueries.error in collectRows: " ++ (show e) 
     logged ( show i )
@@ -66,6 +72,7 @@ collectRows fun stat = do
 
 logfile = "/tmp/HSQL.log"
 logged cs = when ( Local.debug ) $ do 
+    appendFile logfile "logged:"
     appendFile logfile cs
     appendFile logfile strich 
 

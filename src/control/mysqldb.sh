@@ -4,7 +4,7 @@ INITFILE=autotool-init.sql
 
 # extract mysql connect data from Mysqlconnect.hs
 test -f mysqlconnect.data && rm -f mysqlconnect.data
-head -n 9 Mysqlconnect.hs | tail -n 4 > mysqlconnect.data
+head -n 14 Mysqlconnect.hs | tail -n 4 > mysqlconnect.data
 echo "export mysqlhost mysqluser mysqlpasswd mysqldb" >> mysqlconnect.data
 # cat mysqlconnect.data
 
