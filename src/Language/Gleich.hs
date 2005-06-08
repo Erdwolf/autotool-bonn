@@ -2,13 +2,14 @@ module Language.Gleich
 
 -- -- $Id$
 
-
+{-
 ( gleich 
 , ordered_gleich
 , ordered_ungleich
 
 , edits, edit
 ) 
+-}
 
 -- TODO: allgemeineres interface schreiben für
 -- { a^i b^j c^k | p(i,j,k) }
@@ -29,30 +30,44 @@ import Control.Monad
 
 -----------------------------------------------------------------------------
 
-gleich :: String -> Language
-gleich xs = Language 
+gleich :: String -> [Int] -> Language
+gleich xs vs = Language 
        { nametag = "Gleich"
-       , abbreviation = "{ w : " ++ concat ( intersperse " = "
-			[ "|w|_" ++ [x] | x <- xs ] ) ++ " }"
+       , abbreviation = foldl1 (++) [ "{ w : "
+				    , concat $ intersperse " = " $ do
+				      (x,v) <- zip xs vs
+				      return $ case v of 
+				             1 ->           "|w|_" ++ [x]
+				             n -> show n ++ "|w|_" ++ [x]
+				    , " }"
+				    ]
        , alphabet     = mkSet xs
-       , sample       = gleich_sam xs
-       , anti_sample  = anti (gleich_sam xs) (gleich_con xs)
-       , contains     = gleich_con xs
+       , sample       = gleich_sam xs vs
+       , anti_sample  = anti (gleich_sam xs vs) (gleich_con xs vs)
+       , contains     = gleich_con xs vs
        }
 
-gleich_sam :: String -> Int -> Int -> IO [ String ]
-gleich_sam xs c n = 
-    let (q, r) = divMod n (length xs)
+gleich_sam :: String -> [Int] -> Int -> Int -> IO [ String ]
+gleich_sam _  _  _ 0 = return [[]]
+gleich_sam xs vs c n = 
+    let p = product vs
+	ggT = foldl1 gcd vs
+	kvG = div p ggT
+	vs' = zipWith div (repeat kvG) vs
+        ( q , r ) = divMod n $ sum vs'
     in	if 0 == r
-	then do ws <- sequence $ replicate c $ genau [ (x, q) | x <- xs ]
+	then do ws <- sequence $ replicate c $ genau $ do
+		      (x,v) <- zip xs vs'
+		      return (x,q * v)
 		return $ nub ws
 	else return []
 
-gleich_con :: String -> String -> Bool
-gleich_con xs w = 
+gleich_con :: String -> [Int] -> String -> Bool
+gleich_con _ _ [] = True
+gleich_con xs vs w = 
     let count x = length ( filter (== x) w )
-	c : cs = map count xs
-    in	all (== c) cs
+	c : cs = zipWith (*) vs $ map count xs
+    in	all ( == c ) cs
 
 -----------------------------------------------------------------------------
 

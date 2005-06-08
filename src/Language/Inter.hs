@@ -30,7 +30,7 @@ inter :: Language.Syntax.Type
 inter l = case l of
     Form vs -> form vs
     ABCdiff -> abcdiff
-    Gleich vs -> gleich vs
+    Gleich vs cs -> gleich vs cs
     Ordered_Gleich vs -> ordered_gleich vs
     Ordered_Ungleich vs -> ordered_ungleich vs
 --    Form vs -> form vs
@@ -44,8 +44,8 @@ inter l = case l of
     Pali -> pali
     NoPali -> nopali
 --    Potenzen i -> potenzen i
-    Power i -> power i
-    NoPower i -> nopower i
+    Power vs i -> power vs i
+    NoPower vs i -> nopower vs i
 --    Vielfache i -> vielfache i
     Komplement l -> komplement ( inter l )
 

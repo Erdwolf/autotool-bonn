@@ -104,7 +104,7 @@ cf_yeah_noh c g = do
 --------------------------------------------------------------------
 
 test = do
-     let s = Gleich "ab"
+     let s = Gleich "ab" [2,1]
          l = inter s
      y <-      samples l 50 4
      n <- anti_samples l 50 4
@@ -115,9 +115,11 @@ test = do
 		 , noh  = Long $ map Long n
                  }
      let g = Grammatik 
-                 { terminale = mkSet "ab", variablen = mkSet "ST"
+                 { terminale = mkSet "ab", variablen = mkSet "S"
 	         , start = 'S'
-	         , regeln = mkSet [ ( "S", "" ),("S","aSbS"),("S", "bSaS") ]
+	         , regeln = mkSet [ ( "S", "" )    ,("S","aSbSbS")
+				  , ( "S","bSaSbS"),("S","bSbSaS") 
+				  ]
 	         }
 
      let ch = C.make g

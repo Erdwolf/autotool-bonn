@@ -11,7 +11,7 @@ import Data.Typeable
 
 data Type
      = ABCdiff
-     | Gleich String
+     | Gleich String [Int]
      | Ordered_Gleich String
      | Ordered_Ungleich String
      | AK String
@@ -25,8 +25,8 @@ data Type
      | Pali
      | NoPali
      | Potenzen Int
-     | Power Int
-     | NoPower Int
+     | Power String Int
+     | NoPower String Int
      | Vielfache Int
      | Form String
 

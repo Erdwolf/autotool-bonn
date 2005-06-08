@@ -13,39 +13,53 @@ import Language.Type
 
 import Autolib.Set
 import Autolib.Util.Wort
-import Data.List (nub)
+import Data.List (intersperse)
 
 
-power :: Int -> Language
-power k = Language
+power :: String -> Int -> Language
+power sigma k 
+      = Language
 	{ nametag = "Power" ++ show k
-	, abbreviation = "{ w^" ++ show k ++ " : w in {0, 1}^* }"
-	, alphabet     = mkSet "01"
+	, abbreviation = foldl1 (++) 
+	               [ "{ w^"
+		       , show k
+		       , " : w in {"
+		       , intersperse ',' sigma
+		       , "}^* }"
+		       ]
+	, alphabet     = mkSet sigma
 	, contains     = is_power k
-	, sample       = sam k
-	, anti_sample  = sample ( nopower k )
+	, sample       = sam sigma k
+	, anti_sample  = sample ( nopower sigma k )
 	}
 
 
-nopower :: Int -> Language
-nopower k = Language
-	{ nametag      = "Com" ++ nametag ( power k )
-	, abbreviation = "Komplement von { w^" ++ show k ++ " : w in {0,1}^* }"
-	, alphabet     = mkSet "01"
+nopower :: String -> Int -> Language
+nopower sigma k = 
+        Language
+	{ nametag      = "Com" ++ nametag ( power sigma k )
+	, abbreviation = foldl1 (++) 
+	               [ "Komplement von { w^"
+		       , show k
+		       , " : w in {"
+		       , intersperse ',' sigma
+		       , "}^* }"
+		       ]
+	, alphabet     = mkSet sigma
 	, contains     = not . is_power k
-	, sample       = random_sample ( nopower k )
-	, anti_sample  = sample ( power k )
+	, sample       = random_sample ( nopower sigma k )
+	, anti_sample  = sample ( power sigma k )
 	}
 
 -------------------------------------------------------------------------
 
-sam :: Int -> Int -> Int -> IO [ String ]
-sam k c n = do
-    let (q, r) = divMod n k
+sam :: String -> Int -> Int -> Int -> IO [ String ]
+sam sigma k c n = do
+    let q = div n k
     ws <- sequence $ replicate c $ do
-	     w <- someIO "01" q
+	     w <- someIO sigma q
 	     return $ concat $ replicate k w
-    let w = do c <- [1 .. k]; r <- "01"; replicate q r
+    let w = do _ <- [1 .. k]; r <- sigma; replicate q r
     return $ w : ws
 
 ----------------------------------------------------------------------------
@@ -59,7 +73,7 @@ is_power expo w =
 		 || ( (0 == r) &&  all (== p) ps )
 	       
 splits :: Int -> [a] -> [[a]]
-splits d [] = []
+splits _ [] = []
 splits d xs = 
        let (pre, post) = splitAt d xs
        in  pre :  splits d post
