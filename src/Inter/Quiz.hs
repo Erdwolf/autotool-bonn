@@ -13,6 +13,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Maybe
+import Data.Char
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
@@ -25,6 +26,7 @@ class ( Read k, ToDoc k ) => Generator p conf k | p conf -> k where
 class Project p k i | p k -> i where
       project :: p -> k -> i
 
+
 make :: ( Generator p conf k, Project p k i , Partial p i b 
 	, V p i b
 	)
@@ -33,7 +35,7 @@ make :: ( Generator p conf k, Project p k i , Partial p i b
      -> Var p i b
 make ( p :: p ) ( conf :: conf ) =  
          Var { problem = p
-	     , tag = show (toDoc p) ++ "-" ++ "Quiz"
+	     , tag = dashed p ++ "-" ++ "Quiz"
 	     -- erzeugt cached version der instanz (o. ä.)
 	     -- key :: Matrikel -> IO Key
 	     , key = \ mat -> return mat
@@ -44,7 +46,7 @@ make ( p :: p ) ( conf :: conf ) =
                    k <- cache 
 	               (  Datei { pfad = [ "autotool", "cache"
 			   , toString vnr
-			   , fromMaybe (show $ toDoc p) $ fmap toString manr
+			   , fromMaybe (dashed p) $ fmap toString manr
 			     ]
 		          , name = key
 			  , extension = "cache" 
@@ -63,7 +65,7 @@ quiz :: ( Generator p conf k , Project p k i,  Partial p i b
      -> conf -- ^ default configuration
      -> Make
 quiz ( p :: p ) ( conf0 :: conf ) = Make 
-    ( show (toDoc p) ++ "-Quiz" )
+    ( dashed p ++ "-Quiz" )
     ( \ conf -> make p conf )
     conf0
 

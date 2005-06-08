@@ -1,21 +1,27 @@
-module Code.Move_To_Front where
+{-# OPTIONS -fallow-overlapping-instances -fallow-undecidable-instances #-}
+
+module Code.Move_To_Front ( Move_To_Front (..) ) where
 
 --  $Id$
 
 import qualified Code.Type as T
 
-import Code.Move_To_Front.Work
+import qualified Code.Move_To_Front.Work as W
 import Code.Move_To_Front.Data
 
-import Autolib.ToDoc
+import Code.Type
+import Code.Param
 
-coder :: Ord a
-      => T.Coder a ( Coding [a] )
-coder = T.Coder
-      { T.nametag = text "MTF"
-      , T.encode  = encode
-      , T.decode = \ c -> Just $ decode c
-      , T.decode_hint = \ c -> take 2 $ queue c
-      }
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+
+instance ( Typeable a, Ord a, ToDoc [a], Reader [a] ) 
+        => Coder Move_To_Front a ( Coding [a] ) where
+      encode c = W.encode
+      decode c it = Just $ W.decode it
+      decode_hint c it = take 2 $ queue it
+      
 
 

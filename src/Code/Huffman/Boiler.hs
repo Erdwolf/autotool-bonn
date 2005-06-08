@@ -1,3 +1,5 @@
+{-# OPTIONS -fallow-undecidable-instances #-}
+
 module Code.Huffman.Boiler where
 
 --  $Id$

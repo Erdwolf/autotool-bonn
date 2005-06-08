@@ -1,12 +1,17 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
 
 module Code.Move_To_Front.Data where
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Size
 
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
+
+data Move_To_Front = Move_To_Front deriving ( Eq, Ord, Typeable )
+
+{-! for Move_To_Front derive: Reader, ToDoc, Haskell2Xml !-}
 
 data Coding a = Coding { queue  :: a
 		       , output :: [ Int ]
@@ -15,10 +20,13 @@ data Coding a = Coding { queue  :: a
 
 {-! for Coding derive: Reader, ToDoc, Haskell2Xml !-}
 
-instance ( ToDoc a  ) => Show ( Coding a ) where
-    show = render . toDoc
-instance ( Reader a ) => Read ( Coding a ) where 
-    readsPrec = parsec_readsPrec
+instance Size (Coding a) where 
+    size c = length $ output c
+
+-- Local variables:
+-- mode: haskell
+-- End:
+
 
 
 

@@ -1,8 +1,12 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
+
 module Code.Class where
 
 --  $Id$
 
 import Code.Type
+import Code.Param
+import Inter.Types
 
 import Challenger.Partial
 import Autolib.ToDoc
@@ -11,51 +15,48 @@ import Autolib.Reporter
 
 import Data.Typeable
 
-data Encode a b = Encode ( Coder a b ) deriving ( Typeable )
 
-instance Show ( Encode a b ) where
-    show ( Encode c ) = "Encode"
+instance Coder c a b
+	 => Partial ( Encode c ) [ a ] b where
 
-instance ( ToDoc [a], ToDoc b, Eq b, Size b ) 
-	 => Partial ( Encode a b ) [a] b where
-
-    describe ( Encode p ) i = vcat    
+    describe ( Encode c ) i = vcat    
         [ text "Gesucht ist das Ergebnis der Kodierung von"
 	, nest 4 $ toDoc i
 	, text "nach dem Verfahren"
-	, nest 4 $ nametag p
+	, nest 4 $ toDoc c
 	]
 
-    initial ( Encode p ) i = encode p $ take 2 i
+    initial ( Encode c ) i = encode c $ take 2 i
 
-    total ( Encode p ) i b = do
-        let out = encode p i
+    total ( Encode c ) i b = do
+        let out = encode c i
 	if ( b == out ) 
 	   then inform $ text "Das Ergebnis ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
 
+enc c = direct (Encode c) "abracadabra"
 
-data Decode a b = Decode ( Coder a b )  deriving ( Typeable )
+instance Coder c a b
+	 => Partial ( Decode c ) b [ a ] where
 
-instance Show ( Decode a b ) where
-    show (Decode c) = "Decode"
-
-instance ( ToDoc b, Eq b , ToDoc [a], Size [a] )
-	 => Partial ( Decode a b ) b [ a ] where
-
-    describe ( Decode p ) i = vcat
+    describe ( Decode c ) i = vcat
         [ text "Gesucht ist eine Eingabe,"
-	, text "aus der das Verfahren" <+> nametag p 
+	, text "aus der das Verfahren" <+> toDoc c 
 	, text "diese Ausgabe erzeugt:"
 	, nest 4 $ toDoc i
 	]
 
-    initial ( Decode p ) i = decode_hint p i
+    initial ( Decode c ) i = decode_hint c i
 
-    total ( Decode p ) i b = do
-        let out = encode p b
+    total ( Decode c ) i b = do
+        let out = encode c b
 	if ( i == out ) 
 	   then inform $ text "Die Eingabe ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
 	 
-    measure ( Decode p ) i b = length b
+dec c = direct (Decode c) "abracadabra"
+
+instance Measure ( Decode c ) b [ a]  where
+    measure ( Decode c ) b xs = fromIntegral $ length xs
+
+

@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Code.Type 
 
 ( module Code.Type
@@ -10,21 +12,27 @@ where
 --  $Id$
 
 
+import Code.Param
+
 import Data.Typeable
 
 import Autolib.FiniteMap
 import Autolib.Set
+import Autolib.Size
 import Autolib.ToDoc
+import Autolib.Reader
 
 -- | FIXME: das ist unzusammenhängend
 
-data Coder a b =
-     Coder { nametag :: Doc
-	   , encode :: [a] -> b
-	   , decode :: b -> Maybe [a]
-	   , decode_hint :: b -> [a]
-	   }
-     deriving ( Typeable )
+class  ( Typeable a, Typeable b, Typeable c
+       , ToDoc [a], ToDoc b
+       , Reader [a]
+       , Ord a , Eq b, Size b 
+       ) 
+       => Coder c a b | c a -> b, c b -> a where
+     encode      :: c -> [a] -> b
+     decode      :: c -> b -> Maybe [a]
+     decode_hint :: c -> b ->       [a]
 
 type Frequency a = FiniteMap a Int
 

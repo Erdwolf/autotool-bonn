@@ -76,6 +76,12 @@ import qualified KnapsackFraction.Central
 import qualified RM.Make
 
 import qualified Code.Huffman.Boiler
+import qualified Code.Quiz
+import qualified Code.Class
+import qualified Code.Param
+import qualified Code.Move_To_Front as MTF
+import qualified Code.Burrows_Wheeler as BW
+
 
 makers :: [ Make ]
 makers = [ Blank.make
@@ -173,4 +179,11 @@ makers = [ Blank.make
 
          , Code.Huffman.Boiler.make_fixed
          , Code.Huffman.Boiler.make_quiz
+
+         , Code.Class.enc BW.Burrows_Wheeler
+
+         , Code.Quiz.enc MTF.Move_To_Front
+         , Code.Quiz.enc BW.Burrows_Wheeler
+         , Code.Quiz.dec MTF.Move_To_Front
+         , Code.Quiz.dec BW.Burrows_Wheeler
 	 ]

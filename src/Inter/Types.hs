@@ -15,11 +15,16 @@ import  Autolib.Reader
 import  Autolib.Informed
 
 import Data.Typeable
+import Data.Char
 -- import Text.XML.HaXml.Haskell2Xml
 
 type Matrikel = String
 
 type Key = String
+
+dashed :: Show p => p -> String
+dashed p = map ( \ c -> if isSpace c then '-' else c ) 
+	 $ unwords $ words $ show  p
 
 -- | Make name (maker function) example
 data Make = forall conf p i b 
@@ -44,9 +49,9 @@ direct :: ( V p i b -- , Haskell2Xml i
 	 -> i -- ^ example instance
 	 -> Make
 direct p i = Make 
-             (show p ++ "-Direct") 
+             (dashed p ++ "-Direct") 
 	     ( \ i -> Var { problem = p
-		   , tag = show p ++ "-Direct"
+		   , tag = dashed p ++ "-Direct"
 		   , key = \ mat -> return mat
 		   , gen = \ vnr manr key -> return $ return i
 		   }
