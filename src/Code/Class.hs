@@ -10,13 +10,14 @@ import Inter.Types
 
 import Challenger.Partial
 import Autolib.ToDoc
+import Autolib.Reader
 import Autolib.Size
 import Autolib.Reporter
 
 import Data.Typeable
 
 
-instance Coder c a b
+instance ( ToDoc c, Reader b, Coder c a b )
 	 => Partial ( Encode c ) [ a ] b where
 
     describe ( Encode c ) i = vcat    
@@ -34,9 +35,10 @@ instance Coder c a b
 	   then inform $ text "Das Ergebnis ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
 
+enc :: ( Reader b, ToDoc c, Coder c Char b ) => c -> Make
 enc c = direct (Encode c) "abracadabra"
 
-instance Coder c a b
+instance ( ToDoc c,  Coder c a b )
 	 => Partial ( Decode c ) b [ a ] where
 
     describe ( Decode c ) i = vcat
@@ -54,6 +56,7 @@ instance Coder c a b
 	   then inform $ text "Die Eingabe ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
 	 
+dec :: (ToDoc c, Coder c a String ) => c -> Make
 dec c = direct (Decode c) "abracadabra"
 
 instance Measure ( Decode c ) b [ a]  where

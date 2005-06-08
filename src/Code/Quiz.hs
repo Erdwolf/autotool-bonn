@@ -32,7 +32,7 @@ throw conf = do
     w <- someIO ( setToList $ alphabet conf ) l
     return w
 
-instance ( Reader a , Read a, Reader [a], Coder c a b ) 
+instance ( Reader a , Read a, Reader [a], Reader b, ToDoc c, Coder c a b ) 
      => Generator (Encode c) (Config a) [a] where
     generator _ conf key = do
         input <- throw conf
@@ -41,7 +41,7 @@ instance ( Reader a , Read a, Reader [a], Coder c a b )
 instance Project (Encode c) [a] [a] where
     project _ = id
 
-enc :: ( Show c, Coder c Char b ) => c -> Make
+enc :: ( ToDoc c, Reader b, Coder c Char b ) => c -> Make
 enc c = quiz (Encode c) Code.Param.example
 
 
@@ -52,7 +52,7 @@ instance Coder Foo Char Int where
 
 
 instance ( Read a, Reader a, Reader [a], ToDoc a
-	 , Read b
+	 , Read b, ToDoc c
 	 , Coder c a b 
 	 )
      => Generator (Decode c) (Config a) b where
@@ -64,7 +64,7 @@ instance ( Read a, Reader a, Reader [a], ToDoc a
 instance Project (Decode c) b b where
     project _ = id
 
-dec :: ( Show c, Read b, Coder c Char b ) 
+dec :: ( ToDoc c, Read b, Coder c Char b ) 
       => c -> Make
 dec c = quiz (Decode c) Code.Param.example
 
