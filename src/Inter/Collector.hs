@@ -181,6 +181,7 @@ makers = [ Blank.make
          , Code.Huffman.Boiler.make_quiz
 
          , Code.Class.enc BW.Burrows_Wheeler
+         , Code.Class.dec BW.Burrows_Wheeler ( "abracadabra", 2 )
 
          , Code.Quiz.enc MTF.Move_To_Front
          , Code.Quiz.enc BW.Burrows_Wheeler

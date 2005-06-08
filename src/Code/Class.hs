@@ -56,8 +56,8 @@ instance ( ToDoc c,  Coder c a b )
 	   then inform $ text "Die Eingabe ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
 	 
-dec :: (ToDoc c, Coder c a String ) => c -> Make
-dec c = direct (Decode c) "abracadabra"
+dec :: (Reader b, ToDoc c, Coder c a b ) => c -> b -> Make
+dec c b = direct (Decode c) b
 
 instance Measure ( Decode c ) b [ a]  where
     measure ( Decode c ) b xs = fromIntegral $ length xs
