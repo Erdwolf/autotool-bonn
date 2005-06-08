@@ -135,6 +135,7 @@ getAutoPunkteDB i =
 			 	p <- getFieldValue state "Punkte"
 			 	return ( m :: String , p :: String )
 			) stat
+    disconnect conn
     return inh
     where sqlstr = 
 	      concat [ "SELECT s.MNr , \n"
@@ -274,6 +275,7 @@ getAllSerienPunkteDB2 =
                                 s <- getFieldValue state "Serie"
                                 return ( n :: String , v :: String, m :: String, s :: String , p :: String )
                         ) stat
+    disconnect conn
     return inh
 
     where sqlstr =

@@ -25,6 +25,7 @@ getSerienPunkteDB mnr =
                          p <- getFieldValue state "Punkte"
                          return ( m :: String , p :: String )
                         ) stat
+    disconnect conn
     return inh
 
     where sqlstr =
@@ -54,6 +55,7 @@ getAllSerienPunkteDB =
                  s <- getFieldValue state "Serie"
                  return ( n :: String , v :: String, s :: String , p :: String )
                 ) stat
+    disconnect conn
     return inh
 
     where sqlstr =
@@ -99,6 +101,7 @@ getHighscoreCandidatesDB =
 
                                 return ( a :: String , b :: String , c :: String , d :: String )
                         ) stat
+    ; disconnect conn 
     ; return inh
     }
 

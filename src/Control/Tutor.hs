@@ -17,6 +17,7 @@ turored snr = do
     inh  <- collectRows (\ state -> do
         getFieldValue state "VNr"
                     ) stat
+    disconnect conn
     return inh
 
 

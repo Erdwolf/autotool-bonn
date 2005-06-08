@@ -23,7 +23,9 @@ get = do
     conn <- myconnect
     stat <- squery conn $ Query qq
         [ From $ map reed [ "gruppe" ] ]
-    common stat
+    res <- common stat
+    disconnect conn
+    return res
 
 get_this :: VNr -> IO [ Gruppe ]
 get_this vnr = do
@@ -32,7 +34,9 @@ get_this vnr = do
         [ From $ map reed [ "gruppe" ] 
         , Where $ equals ( reed "gruppe.VNr" ) ( toEx vnr )
         ]
-    common stat
+    res <- common stat
+    disconnect conn
+    return res
 
 common = collectRows $ \ state -> do
     	g_gnr <- getFieldValue state "GNr"

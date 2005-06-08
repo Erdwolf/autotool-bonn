@@ -24,7 +24,9 @@ get = do
     conn <- myconnect
     stat <- squery conn $ Query qq
         [ From $ map reed [ "vorlesung" ] ]
-    common stat
+    res <- common stat
+    disconnect conn
+    return res
 
 get_this :: VNr -> IO [ Vorlesung ]
 get_this vnr = do
@@ -33,7 +35,9 @@ get_this vnr = do
         [ From $ map reed [ "vorlesung" ] 
         , Where $ equals ( reed "vorlesung.VNr" ) ( toEx vnr )
         ]
-    common stat
+    res <- common stat
+    disconnect conn
+    return res
 
 get_tutored :: SNr -> IO [ Vorlesung ]
 get_tutored snr = do
@@ -45,7 +49,9 @@ get_tutored snr = do
 		, equals ( reed "tutor.VNr" ) ( reed "vorlesung.VNr" )
 		]
 	]
-    common stat
+    res <- common stat
+    disconnect conn
+    return res
 
 get_attended :: SNr -> IO [ Vorlesung ]
 get_attended snr = do
@@ -58,7 +64,9 @@ get_attended snr = do
 		, equals ( reed "gruppe.VNr" ) ( reed "vorlesung.VNr" )
 		]
 	]
-    common stat
+    res <- common stat
+    disconnect conn
+    return res
 
 
 
