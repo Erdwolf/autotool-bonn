@@ -67,15 +67,14 @@ common = collectRows $ \ state -> do
         g_name <- getFieldValue state "Name"
         g_von <- getFieldValue state "Von"
         g_bis <- getFieldValue state "Bis"
-        -- NOTE: the SQL type of a boolean expression is still int
-	( g_early :: Int ) <- getFieldValue state "Early"
-	( g_late  :: Int ) <- getFieldValue state "Late"
+        -- NOTE: the SQL type of a boolean expression is still int (in 1.4)
+	g_early  <- getFieldValue state "Early"
+	g_late   <- getFieldValue state "Late"
         return $ Vorlesung { vnr = g_vnr
 			 , name = g_name
 			  , einschreibVon = g_von
 			  , einschreibBis = g_bis
-			  , einschreib = timer (toEnum g_early)
-					       (toEnum g_late )
+			  , einschreib = timer g_early g_late 
     			   }
 
 

@@ -49,8 +49,8 @@ common = collectRows $ \ state -> do
         g_status <- getFieldValue state "Status"
         g_von <- getFieldValue state "Von"
         g_bis <- getFieldValue state "Bis"
-	( g_early :: Int ) <- getFieldValue state "Early"
-	( g_late  :: Int ) <- getFieldValue state "Late"
+	g_early <- getFieldValue state "Early"
+	g_late  <- getFieldValue state "Late"
 
         return $ Aufgabe { anr = g_anr
     			   , vnr = g_vnr
@@ -59,8 +59,7 @@ common = collectRows $ \ state -> do
     			 , status = g_status
     			   , von = g_von
     			   , bis = g_bis
-			  , timeStatus = timer ( toEnum g_early )	
-					       ( toEnum g_late  )
+			  , timeStatus = timer g_early g_late  
     			   , typ = g_typ
     			   , config = g_config
     			   , remark = g_remark
