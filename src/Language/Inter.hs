@@ -25,6 +25,9 @@ import  Language.Power
 -- import  Language.Vielfache
 -- import  Language.WWRW
 
+import Language.RX
+import Language.Center
+
 inter :: Language.Syntax.Type 
       -> Language
 inter l = case l of
@@ -41,11 +44,13 @@ inter l = case l of
     NoLukas -> nolukas
     Dyck -> dyck
     NoDyck -> nodyck
-    Pali -> pali
-    NoPali -> nopali
+    Pali sigma -> pali sigma
+    NoPali sigma -> nopali sigma
 --    Potenzen i -> potenzen i
     Power vs i -> power vs i
     NoPower vs i -> nopower vs i
+    Reg sigma rx -> regular sigma $ read rx
+    Center sigma c -> center sigma c
 --    Vielfache i -> vielfache i
     Komplement l -> komplement ( inter l )
 

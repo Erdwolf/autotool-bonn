@@ -22,13 +22,15 @@ data Type
      | NoLukas
      | Dyck
      | NoDyck
-     | Pali
-     | NoPali
+     | Pali String
+     | NoPali String
      | Potenzen Int
      | Power String Int
      | NoPower String Int
      | Vielfache Int
      | Form String
+     | Reg String String
+     | Center String Char
 
      | Komplement Type
    deriving ( Eq, Ord, Typeable )
