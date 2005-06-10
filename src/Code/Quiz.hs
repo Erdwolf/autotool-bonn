@@ -11,13 +11,13 @@ import Code.Param
 import Inter.Types
 import Inter.Quiz
 
-import Random
 import Autolib.Util.Wort
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Util.Size
 import Autolib.Util.Seed
 
+import System.Random
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
@@ -44,10 +44,6 @@ instance Project (Encode c) [a] [a] where
 enc :: ( ToDoc c, Reader b, Coder c Char b ) => c -> Make
 enc c = quiz (Encode c) Code.Param.example
 
-
--- testing
-data Foo = Foo deriving ( Show, Typeable )
-instance Coder Foo Char Int where
 
 
 

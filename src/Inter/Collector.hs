@@ -81,6 +81,8 @@ import qualified Code.Class
 import qualified Code.Param
 import qualified Code.Move_To_Front as MTF
 import qualified Code.Burrows_Wheeler as BW
+import qualified Code.LZ
+import qualified Code.Compress
 
 
 makers :: [ Make ]
@@ -187,4 +189,6 @@ makers = [ Blank.make
          , Code.Quiz.enc BW.Burrows_Wheeler
          , Code.Quiz.dec MTF.Move_To_Front
          , Code.Quiz.dec BW.Burrows_Wheeler
+
+         , Code.Compress.make_quiz Code.LZ.Lempel_Ziv_Welch
 	 ]

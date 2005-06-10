@@ -30,7 +30,7 @@ instance ( ToDoc c, Reader b, Coder c a b )
     initial ( Encode c ) i = encode c $ take 2 i
 
     total ( Encode c ) i b = do
-        let out = encode c i
+        out <- silent $ encodeR c i
 	if ( b == out ) 
 	   then inform $ text "Das Ergebnis ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
@@ -51,7 +51,7 @@ instance ( ToDoc c,  Coder c a b )
     initial ( Decode c ) i = decode_hint c i
 
     total ( Decode c ) i b = do
-        let out = encode c b
+        out <- silent $ encodeR c b
 	if ( i == out ) 
 	   then inform $ text "Die Eingabe ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."

@@ -1,0 +1,47 @@
+{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
+
+module Code.LZ.Data where
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Autolib.Size
+import Autolib.FiniteMap
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Lempel_Ziv_Welch  = Lempel_Ziv_Welch  deriving ( Eq, Ord, Typeable )
+data Lemple_Ziv_77 = Lempel_Ziv_77 deriving ( Eq, Ord, Typeable )
+
+{-! for Lempel_Ziv_Welch derive: Reader, ToDoc, Haskell2Xml !-}
+{-! for Lemple_Ziv_77 derive: Reader, ToDoc, Haskell2Xml !-}
+
+data Code_Letter a = Letter a
+                   | Entry Int -- in dictionary
+                   | Block Int Int -- (start, end) position in stream
+     deriving ( Eq, Ord, Typeable )
+
+{-! for Code_Letter derive: Reader, ToDoc, Haskell2Xml !-}
+
+instance Size (Code_Letter a) where
+    -- FIXME: eigentlich die Anzahl der Bits
+    -- in den Entry- und Block-Argumenten
+    size c = 1
+
+data ( ToDoc [a], ToDoc [b], Ord a, Reader [a], Reader [b] ) 
+    => Cache a b = Cache
+          { -- | Numbers are consecutive, starting from 0
+            book :: FiniteMap [ a ] Int
+          , output  :: [ b ] 
+          }
+
+
+blank ::  ( ToDoc [a], ToDoc [b], Ord a, Reader [a], Reader [b] ) 
+      => Cache a b
+blank = Cache { book = emptyFM, output = [] }
+
+{-! for Cache derive: Reader, ToDoc, Haskell2Xml !-}
+
+-- Local variables:
+-- mode: haskell
+-- End:
