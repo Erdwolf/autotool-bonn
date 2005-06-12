@@ -190,6 +190,6 @@ makers = [ Blank.make
          , Code.Quiz.dec MTF.Move_To_Front
          , Code.Quiz.dec BW.Burrows_Wheeler
 
-         , Code.Class.enc Code.LZ.Lempel_Ziv_Welch
          , Code.Compress.make_quiz Code.LZ.Lempel_Ziv_Welch
+         , Code.Compress.make_quiz Code.LZ.Lempel_Ziv_77
 	 ]

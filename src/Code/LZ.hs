@@ -1,6 +1,8 @@
 module Code.LZ 
 
-( Lempel_Ziv_Welch (..) )
+( Lempel_Ziv_Welch (..) 
+, Lempel_Ziv_77 (..)
+)
 
 where
 
@@ -32,6 +34,51 @@ instance ( Typeable a, Ord a, ToDoc a, Reader a, ToDoc [a], Reader [a] )
     decode_hint lzw ys = take 3 
                        $ fromJust (error "decode_hint") $ decode lzw ys
 
+instance ( Typeable a, Ord a, ToDoc a, Reader a, ToDoc [a], Reader [a] )
+    => Coder Lempel_Ziv_77 a [ Code_Letter a ] where
+    encode _ xs = enc77 [] xs
+    encode_hint lz77 xs = take 3 $ encode lz77 xs
+
+    decodeR _ xs       = dec77 [] xs
+    decode_hint lz77 ys = take 3 
+                       $ fromJust (error "decode_hint") $ decode lz77 ys
+
+-- | cache represent the output so far, in reverse order
+-- so we can just attach new items in front
+dec77 :: (  ToDoc a, ToDoc [a] )
+      =>  [a] -> [Code_Letter a] -> Reporter [a]
+dec77 cache [] = do
+    return $ reverse cache
+dec77 cache (x @ (Letter l) : xs) = do
+    inform $ text "nächstes Zeichen:" <+> toDoc x
+    dec77 (l : cache) xs
+dec77 cache (x @ (Block {}) : xs) = do
+    inform $ text "nächstes Zeichen:" <+> toDoc x
+    let w = take ( width x ) $ drop ( dist x) cache
+    inform $ text "entspricht:" <+> toDoc ( reverse w )
+    dec77 (w ++ cache) xs
+
+enc77 :: ( Ord a, ToDoc a, ToDoc [a] )
+      => [a] -> [a] -> [ Code_Letter a ]
+enc77 done []  = []
+enc77 done todo = 
+    let pairs = do
+            start <- [ 0 .. length done ]
+	    let cp = common_prefix (drop start done) todo
+	    guard $ length cp > 1
+	    return ( length cp, start )
+        ( x, l ) = case pairs of
+            [] -> ( Letter $ head todo, 1 )
+            ps -> let ( l, s ) = maximum ps
+		  in  ( Block { width = l , dist = length done - l - s }, l )
+        ( here, there ) = splitAt l todo
+    in  x : enc77 ( done ++ here ) there
+
+common_prefix :: Eq a => [a] -> [a] -> [a]
+common_prefix (x : xs) (y : ys) | x == y = x : common_prefix xs ys
+common_prefix _ _ = []
+
+-------------------------------------------------------------------------
 
 -- | insert word into book
 -- precondition: word is not in book

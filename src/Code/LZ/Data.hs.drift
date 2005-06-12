@@ -12,14 +12,15 @@ import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
 data Lempel_Ziv_Welch  = Lempel_Ziv_Welch  deriving ( Eq, Ord, Typeable )
-data Lemple_Ziv_77 = Lempel_Ziv_77 deriving ( Eq, Ord, Typeable )
+data Lempel_Ziv_77 = Lempel_Ziv_77 deriving ( Eq, Ord, Typeable )
 
 {-! for Lempel_Ziv_Welch derive: Reader, ToDoc, Haskell2Xml !-}
-{-! for Lemple_Ziv_77 derive: Reader, ToDoc, Haskell2Xml !-}
+{-! for Lempel_Ziv_77 derive: Reader, ToDoc, Haskell2Xml !-}
 
 data Code_Letter a = Letter a
-                   | Entry Int -- num in dict, next letter (not in dict)
-                   | Block Int Int -- (start, end) position in stream
+                   | Entry Int -- ^ num in dict
+                   | Block { width :: Int, dist :: Int } 
+                      -- ^ relative position in stream
      deriving ( Eq, Ord, Typeable )
 
 {-! for Code_Letter derive: Reader, ToDoc, Haskell2Xml !-}
@@ -27,7 +28,7 @@ data Code_Letter a = Letter a
 instance Size (Code_Letter a) where
     size (Letter _) = 1
     size (Entry i) = bits i
-    size (Block from to) = bits from + bits to
+    size (Block { dist = d, width = w })  = bits d + bits w
 
 bits :: Int -> Int
 bits x | x > 1 = 1 + bits (x `div` 2 )
