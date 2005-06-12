@@ -15,6 +15,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
 import Autolib.Reporter
+import Autolib.Util.Zufall
 
 import Data.Typeable
 
@@ -48,10 +49,11 @@ instance ( ToDoc c, Reader b, Coder c a b )
                ]
         when ( fromIntegral you > bound ) $ reject $ text "Das ist zuviel."
 
-instance ( Reader a , Read a, Reader [a], Reader b, ToDoc c, Coder c a b ) 
+instance ( Reader a , Read a, Reader [a], ToDoc c, Coder c a b, Size b ) 
      => Generator (Compress c) (Config a) [a] where
-    generator _ conf key = do
-        input <- throw conf
+    generator method conf key = do
+        input <- throw conf `repeat_until`
+            ( \ w -> measure method (encode method w) < length w )
 	return input
 
 instance Project (Compress c) [a] [a] where
