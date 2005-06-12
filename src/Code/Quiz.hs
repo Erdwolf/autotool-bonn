@@ -53,6 +53,10 @@ instance ( Read a, Reader a, Reader [a], ToDoc a
 	 )
      => Generator (Decode c) (Config a) b where
     generator (Decode c) conf key = do
+
+        -- advance Random generator (w.r.t. Encode)
+        sequence_ $ replicate 10 $ randomRIO (False, True)
+
         input <- throw conf
 	let output = encode c input
 	return output

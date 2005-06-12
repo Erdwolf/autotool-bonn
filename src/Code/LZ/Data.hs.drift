@@ -5,6 +5,7 @@ module Code.LZ.Data where
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
+import Autolib.Set
 import Autolib.FiniteMap
 
 import Data.Typeable
@@ -17,30 +18,45 @@ data Lemple_Ziv_77 = Lempel_Ziv_77 deriving ( Eq, Ord, Typeable )
 {-! for Lemple_Ziv_77 derive: Reader, ToDoc, Haskell2Xml !-}
 
 data Code_Letter a = Letter a
-                   | Entry Int -- in dictionary
+                   | Entry Int -- num in dict, next letter (not in dict)
                    | Block Int Int -- (start, end) position in stream
      deriving ( Eq, Ord, Typeable )
 
 {-! for Code_Letter derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance Size (Code_Letter a) where
-    -- FIXME: eigentlich die Anzahl der Bits
-    -- in den Entry- und Block-Argumenten
-    size c = 1
+    size (Letter _) = 1
+    size (Entry i) = bits i
+    size (Block from to) = bits from + bits to
+
+bits :: Int -> Int
+bits x | x > 1 = 1 + bits (x `div` 2 )
+bits _ = 1
+
+data ( ToDoc [a], Ord a, Reader [a] ) 
+    => Book a = Book
+          { short  :: Set a 
+          , long :: FiniteMap [a] Int
+          }
+    deriving ( Eq, Ord, Typeable )
+
+{-! for Book derive: Reader, ToDoc, Haskell2Xml !-}
+
+leer :: ( ToDoc [a], Reader [a], Ord a ) => Book a
+leer = Book { short = emptySet , long = emptyFM }
 
 data ( ToDoc [a], ToDoc [b], Ord a, Reader [a], Reader [b] ) 
     => Cache a b = Cache
-          { -- | Numbers are consecutive, starting from 0
-            book :: FiniteMap [ a ] Int
+          { book :: Book a
           , output  :: [ b ] 
           }
 
+{-! for Cache derive: Reader, ToDoc, Haskell2Xml !-}
 
 blank ::  ( ToDoc [a], ToDoc [b], Ord a, Reader [a], Reader [b] ) 
       => Cache a b
-blank = Cache { book = emptyFM, output = [] }
+blank = Cache { book = leer , output = [] }
 
-{-! for Cache derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- Local variables:
 -- mode: haskell
