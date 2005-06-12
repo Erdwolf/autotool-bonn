@@ -49,11 +49,12 @@ instance ( ToDoc c, Reader b, Coder c a b )
                ]
         when ( fromIntegral you > bound ) $ reject $ text "Das ist zuviel."
 
-instance ( Reader a , Read a, Reader [a], ToDoc c, Coder c a b, Size b ) 
+instance ( Reader a , Read a, Reader [a]
+	 , ToDoc c, Coder c a b, Size b ) 
      => Generator (Compress c) (Config a) [a] where
-    generator method conf key = do
-        input <- throw conf `repeat_until`
-            ( \ w -> measure method (encode method w) < length w )
+    generator (Compress c) conf key = do
+        input <- throw conf `repeat_until` \ w ->
+            measure c w (encode c w) < fromIntegral (length w ) 
 	return input
 
 instance Project (Compress c) [a] [a] where
