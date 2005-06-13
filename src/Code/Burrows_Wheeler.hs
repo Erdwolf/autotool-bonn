@@ -28,3 +28,5 @@ instance ( Typeable a, Ord a, ToDoc [a] , Reader [a], Size a)
       decode c = error "Burrows-Wheeler.decode"
       decode_hint c = \ ( w, i ) -> reverse $ take 3 w
 
+instance Size a => T.BitSize ( [a], Int ) where
+    bitSize ( xs, i ) = fromIntegral $ size xs

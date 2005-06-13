@@ -2,6 +2,8 @@
 
 module Code.LZ.Data where
 
+import Code.Type ( BitSize (..))
+
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
@@ -25,12 +27,20 @@ data Code_Letter a = Letter a
 
 {-! for Code_Letter derive: Reader, ToDoc, Haskell2Xml !-}
 
-instance Size (Code_Letter a) where
-    size (Letter _) = 1
-    size (Entry i) = bits i
-    size (Block { dist = d, width = w })  = bits d + bits w
+instance Size ( Code_Letter a ) where
+    size _ = 1 -- not used
 
-bits :: Int -> Int
+instance Ord a => BitSize [ Code_Letter a ] where
+    bitSize xs = 
+        let alpha = mkSet $ do Letter x <- xs ; return x
+            weight ( Letter _ ) = 1 + bits ( cardinality alpha )
+            weight ( Entry i )  = 1 + bits i
+            weight ( Block { dist = d, width = w }) 
+                                = 1 + bits d + bits w
+        in  sum $ map weight xs
+
+bits :: ( Integral a, Integral b ) 
+     => a -> b
 bits x | x > 1 = 1 + bits (x `div` 2 )
 bits _ = 1
 

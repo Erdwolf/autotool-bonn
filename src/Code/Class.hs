@@ -35,6 +35,9 @@ instance ( ToDoc c, Reader b, Coder c a b )
 	   then inform $ text "Das Ergebnis ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
 
+instance BitSize b => Measure ( Encode c ) [ a ] b  where
+    measure ( Encode c ) xs b = bitSize b
+
 enc :: ( Reader b, ToDoc c, Coder c Char b ) => c -> Make
 enc c = direct (Encode c) "abracadabra"
 
@@ -59,7 +62,7 @@ instance ( ToDoc c,  Coder c a b )
 dec :: (Reader b, ToDoc c, Coder c a b ) => c -> b -> Make
 dec c b = direct (Decode c) b
 
-instance Measure ( Decode c ) b [ a]  where
+instance Measure ( Decode c ) b [ a ]  where
     measure ( Decode c ) b xs = fromIntegral $ length xs
 
 

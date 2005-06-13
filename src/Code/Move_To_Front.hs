@@ -14,6 +14,7 @@ import Code.Param
 
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Size
 
 import Data.Typeable
 

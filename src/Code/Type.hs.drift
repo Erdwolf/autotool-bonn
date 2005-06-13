@@ -30,7 +30,7 @@ import Data.Maybe
 class  ( Typeable a, Typeable b, Typeable c
        , ToDoc [a], ToDoc b
        , Reader [a]
-       , Ord a , Eq b, Size b 
+       , Ord a , Eq b, BitSize b 
        ) 
        => Coder c a b | c a -> b, c b -> a where
 
@@ -72,6 +72,9 @@ class  ( Typeable a, Typeable b, Typeable c
              Nothing -> do
                  reject $ text "ist nicht möglich."
 
+class Size b => BitSize b where
+      bitSize :: b -> Integer
+      bitSize = fromIntegral . size
 
 type Frequency a = FiniteMap a Int
 

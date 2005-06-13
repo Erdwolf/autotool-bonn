@@ -2,6 +2,8 @@
 
 module Code.Move_To_Front.Data where
 
+import Code.Type ( BitSize (..) )
+
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
@@ -21,7 +23,11 @@ data Coding a = Coding { queue  :: a
 {-! for Coding derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance Size (Coding a) where 
-    size c = length $ output c
+    size = length . output 
+
+instance BitSize (Coding a) where
+    bitSize  = fromIntegral . size 
+
 
 -- Local variables:
 -- mode: haskell
