@@ -37,7 +37,8 @@ unary = [ Op { name = "negate" , arity = 1
 	     }
 	, Op { name = "sqrt" , arity = 1
 	     , precedence = Just 10 , assoc = AssocNone
-	     , inter = \ [x] -> floor $ sqrt (fromIntegral x)
+	     , inter = \ [x] ->
+                  floor $ (sqrt (fromIntegral x) :: Double)
 	     }
 	, Op { name = "fac" , arity = 1
 	     , precedence = Just 10 , assoc = AssocNone
