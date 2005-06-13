@@ -2,7 +2,7 @@
 
 module Code.LZ.Data where
 
-import Code.Type ( BitSize (..))
+import Code.Type ( BitSize (..), bits )
 
 import Autolib.Reader
 import Autolib.ToDoc
@@ -38,11 +38,6 @@ instance Ord a => BitSize [ Code_Letter a ] where
             weight ( Block { dist = d, width = w }) 
                                 = 1 + bits d + bits w
         in  sum $ map weight xs
-
-bits :: ( Integral a, Integral b ) 
-     => a -> b
-bits x | x > 1 = 1 + bits (x `div` 2 )
-bits _ = 1
 
 data ( ToDoc [a], Ord a, Reader [a] ) 
     => Book a = Book

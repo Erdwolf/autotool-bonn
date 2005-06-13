@@ -76,6 +76,11 @@ class Size b => BitSize b where
       bitSize :: b -> Integer
       bitSize = fromIntegral . size
 
+bits :: ( Integral a, Integral b ) 
+     => a -> b
+bits x | x > 1 = 1 + bits (x `div` 2 )
+bits _ = 1
+
 type Frequency a = FiniteMap a Int
 
 type Code a b = FiniteMap a [ b ]

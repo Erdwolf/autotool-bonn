@@ -18,8 +18,11 @@ import Autolib.Reporter
 import Autolib.Util.Zufall
 
 import Data.Typeable
+import Data.IORef
+import Data.Maybe
+import Data.Ratio
 
-instance ( ToDoc c, Reader b, Coder c a b )
+instance ( ToDoc c, Reader b, Coder c a b, BitSize b )
 	 => Partial ( Compress c ) [ a ] b where
 
     describe ( Compress c ) i = vcat    
@@ -29,6 +32,13 @@ instance ( ToDoc c, Reader b, Coder c a b )
 	, nest 4 $ toDoc c
         , text "d. h. eine möglichst kurze Nachricht,"
         , text "deren Dekompression wieder das Original ergibt."
+        , let me  = bitSize ( encode c i ) :: Integer
+              bound = ( fromIntegral me :: Double ) * 1.1 -- FIXME: arbitrary
+          in nest 4 $ vcat
+                    [ text "Es gibt eine Lösung der Bit-Größe" <+> toDoc me
+                    , text "Ihre Nachricht darf höchstens Bit-Größe"
+                               <+> toDoc bound <+> text "haben."
+                    ]
 	]
 
     initial ( Compress c ) i = encode c $ take 2 i
@@ -38,24 +48,33 @@ instance ( ToDoc c, Reader b, Coder c a b )
 	if ( i == guess ) 
 	   then inform $ text "Das Ergebnis ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
-        let me  = measure c i $ encode c i 
-            you = measure c i b
+        let me  = bitSize $ encode c i 
             bound = fromIntegral me * 1.1 -- FIXME: arbitrary
-        inform $ vcat
-               [ text "Es gibt eine Lösung der Größe" <+> toDoc me
-               , text "Ihre Nachricht darf höchstens Größe" <+> toDoc bound 
-                           <+> text "haben."
-               , text "Ihre Nachricht hat die Größe" <+> toDoc you
-               ]
+            you = bitSize b
+        inform $ text "Ihre Nachricht hat die Größe" <+> toDoc you
         when ( fromIntegral you > bound ) $ reject $ text "Das ist zuviel."
 
 instance ( Reader a , Read a, Reader [a]
 	 , ToDoc c, Coder c a b, Size b ) 
      => Generator (Compress c) (Config a) [a] where
     generator (Compress c) conf key = do
-        input <- throw conf `repeat_until` \ w ->
-            measure c w (encode c w) < fromIntegral (length w ) 
-	return input
+        best_w <- newIORef []
+        best_k <- newIORef Nothing
+        let action =  do
+               w <- throw conf 
+               let a = bits $ cardinality $ mkSet w
+               let k = fromIntegral (a * length w) % bitSize (encode c w) 
+               k0 <- readIORef best_k
+               when ( k > 1 && Just k > k0 ) $ do
+                   writeIORef best_k $ Just k
+                   writeIORef best_w $ w
+            block = ( do 
+               sequence_ $ replicate 1000 $ action
+               readIORef best_k
+              ) `repeat_until` \ bk -> isJust bk
+        block     
+        readIORef best_w
+        
 
 instance Project (Compress c) [a] [a] where
     project _ = id
