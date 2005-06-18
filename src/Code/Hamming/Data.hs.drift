@@ -3,14 +3,15 @@
 module Code.Hamming.Data 
 
 ( Goal (..)
+, Attribut (..)
 , Config (..)
 , LR (..), Code
-, attributes
+-- , attributes
+, example
 )
 
 where
 
-import Prelude hiding ( length )
 import Code.Huffman.LR
 
 import Data.Typeable
@@ -29,28 +30,26 @@ data Goal = Fixed
 
 {-! for Goal derive : ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Goal where show = render . toDoc
-instance Read Goal where readsPrec = parsec_readsPrec
-
 data Config = 
-     Config { length :: ( Goal, Int )
+     Config { width  :: ( Goal, Int )
 	    , size   :: ( Goal, Int )
 	    , distance :: ( Goal, Int )
-	    , optimize :: String
+	    , optimize :: Attribut
 	    }
      deriving ( Eq, Ord, Typeable )
 
-attributes = [ (length, "Länge"), (size, "Größe"), (distance, "Weite") ]
+data Attribut = Width | Size | Distance deriving ( Eq, Ord, Typeable )
+
+{-! for Attribut derive : ToDoc, Reader, Haskell2Xml !-}
+
+attributes = [ (width, "Breite"), (size, "Größe"), (distance, "Abstand") ]
 
 {-! for Config derive : ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Config where show = render . toDoc
-instance Read Config where readsPrec = parsec_readsPrec
-
-demo = Config { size = ( Atleast, 5 )
-	      , length = ( Fixed,  4 )
+example = Config { size = ( Atleast, 5 )
+	      , width = ( Fixed,  4 )
 	      , distance = ( Atleast, 2 )
-	      , optimize = "Weite"
+	      , optimize = Size
 	      }
 
 

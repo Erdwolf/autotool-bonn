@@ -35,23 +35,24 @@ instance Partial Hamming Config Code where
         let Just l = result $ equal_length code
             (d, _) = minimum_distance code
             helper what flag tag x v = assert (flag x v)
-			    $ fsep [ text "die", text what , text "soll"
+			    $ fsep [ text "die", toDoc what , text "soll"
 				   , text tag, toDoc x, text "sein" 
 				   ]
 	    check what target value = case target of
                  (Fixed ,  x ) -> helper what (==) "genau"      x value
                  (Atleast, x ) -> helper what (<=) "wenigstens" x value
                  (Atmost,  x ) -> helper what (>=) "höchstens"  x value
-        check "Länge" (Code.Hamming.Data.length conf) l
-        check "Größe" (size   conf) (Prelude.length code)
-        check "Weite" (distance   conf) d
+        check Width (Code.Hamming.Data.width conf) l
+        check Size (Code.Hamming.Data.size   conf) (length code)
+        check Distance (Code.Hamming.Data.distance   conf) d
 
+instance Measure Hamming Config Code where
     measure Hamming conf code = 
         let Just l = result ( equal_length code )
             (d, _) = minimum_distance code
-            s      = Prelude.length code
-        in  case optimize conf of
-	        "Länge" -> l
-		"Größe" -> s
-		"Weite" -> d
+            s      = length code
+        in  fromIntegral $ case optimize conf of
+	        Width    -> l
+		Size     -> s
+		Distance -> d
 

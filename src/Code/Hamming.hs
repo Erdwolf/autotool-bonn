@@ -22,13 +22,14 @@ import Code.Hamming.Partial
 import Inter.Types
 import Control.Monad ( mzero )
 
+{-    
+
 version_tag :: Config -> String
 version_tag conf = do
     ( f, tag ) <- attributes
     case f conf of
         (_, i) -> take 1 tag ++ show i
 
-    
 make :: Config
      -> IO Variant
 make conf = return $ Variant
@@ -38,4 +39,7 @@ make conf = return $ Variant
            , gen = \ _ -> do
                  return $ return conf
 	   }
+-}
 
+make :: Make
+make = direct Hamming Code.Hamming.Data.example
