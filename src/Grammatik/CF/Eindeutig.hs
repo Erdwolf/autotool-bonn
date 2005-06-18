@@ -14,8 +14,6 @@ import qualified Autolib.Reporter.Checker as C
 import Autolib.Reporter
 import Autolib.ToDoc
 
-import Beside
-
 eindeutig :: Int
           -> C.Type Grammatik
 eindeutig cut = 

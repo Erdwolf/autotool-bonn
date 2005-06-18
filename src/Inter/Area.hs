@@ -87,6 +87,6 @@ parser a continue = case parse (parse_complete reader) (name a) $ contents a of
  	    return $ primHtml "gelesen:" +++ pre << show (toDoc x) +++ c
 
 buttons :: Area -> Text.Html.Html
-buttons a = (<<) table $ aboves $ return $ besides $ do
+buttons a = (<<) table $ aboves $ return $ Text.Html.besides $ do
                act <- [ Submit, Example ]
                return $ td <<  submit (button_name a) ( show act )
