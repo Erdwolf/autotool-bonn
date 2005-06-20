@@ -13,9 +13,12 @@ module Control.Types
 
 , ok, size, punkte
 
-, MNr, SNr, ANr, GNr, VNr -- abstrakt
+-- , MNr, SNr, ANr, GNr, VNr -- abstrakt
+, MNr(..), SNr(..), ANr(..), GNr(..), VNr(..) -- not abstrakt, see above
+
 , ClockTime
-, Typ, Config, Remark, Name, File, Email
+-- , Typ, Config, Remark, Name, File, Email
+, Typ, Config, Remark, Name(..), File, Email(..)
 , Oks (..), Nos (..)
 , Time
 , TimeStatus (..), timer
