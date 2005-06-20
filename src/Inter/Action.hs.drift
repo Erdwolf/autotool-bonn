@@ -1,0 +1,133 @@
+{-# OPTIONS -fth -fallow-overlapping-instances -fglasgow-exts #-}
+
+-- | Interface für externe Korrektoren
+
+module Inter.Action where
+
+import Control.Types
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+import Inter.TH
+import Network.XmlRpc.Internals
+
+-- | die Nummer dessen, der sich einloggt (Tutor)
+data Actor
+     = Actor { matrikel :: String
+		      , password :: String 
+		      }
+     deriving ( Eq, Ord, Typeable )
+
+{-! for Actor derive: ToDoc, Reader, Haskell2Xml !-}
+
+$(Inter.TH.helper ''Actor)
+
+data Problem
+     = Problem { vorlesung :: String 
+	       , aufgabe :: String
+	       }
+     deriving ( Eq, Ord, Typeable )
+
+{-! for Problem derive: ToDoc, Reader, Haskell2Xml !-}
+
+$(Inter.TH.helper ''Problem)
+
+-- | list of such will be returned from List
+data Student = 
+     Student { vorname :: String
+	     , nachname :: String
+	     , nummer :: String
+	     }
+     deriving ( Eq, Ord, Typeable )
+
+{-! for Student derive: ToDoc, Reader, Haskell2Xml !-}
+
+$(Inter.TH.helper ''Student)
+
+-- | will be returned from Get
+data Input = 
+     Input { icontents :: String } -- CDATA
+     deriving ( Eq, Ord, Typeable )
+
+{-! for Input derive: ToDoc, Reader, Haskell2Xml !-}
+
+$(Inter.TH.helper ''Input)
+
+data Answer =
+     Answer { wert :: Wert
+	    , kommentar :: String
+	    }
+     deriving ( Eq, Ord, Typeable )
+
+$(Inter.TH.helper ''Answer)
+
+{-! for Answer derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance XmlRpcType Wert where
+    toValue w = case w of
+        Reset   -> toValue [("tag", toValue "Reset")]
+        Pending -> toValue [("tag", toValue "Pending")]
+        No -> toValue [("tag", toValue "No")]
+        Ok s -> toValue [("tag", toValue "OK"), ("size", toValue s) ]
+	Okay {punkte=p, size=s} -> toValue [("tag", toValue "Okay")
+                  , ("punkte", toValue p), ("size", toValue s) ]
+    fromValue v = do
+        it <- fromValue v
+	tag <- getField "tag" it
+	case tag of
+	    "Reset" -> return Reset
+	    "Pending" -> return Pending
+	    "No" -> return No
+	    "Ok" -> do s <- getField "size" it ; return $ ok s
+	    "Okay" -> do 
+               p <- getField "punkte" it; s <- getField "size" it
+	       return $ Okay { punkte = p , size = s }
+    getType _ = TStruct
+
+-- FIXME
+instance XmlRpcType Integer where
+    toValue = toValue . ( fromIntegral :: Integer -> Int ) 
+    fromValue = fmap ( fromIntegral :: Int -> Integer ) . fromValue
+    getType _ = TInt -- FIXME
+
+
+-- | bezieht sich auf Matrikelnummern von Studenten
+-- (Aufgabenlösern)
+data Action
+     = List_All 
+     | List_Pending
+     | Get { student :: String }
+     | Put { answer :: Answer }
+     deriving ( Eq, Ord, Typeable )
+
+{-! for Action derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance XmlRpcType Action where
+    toValue w = case w of
+        List_All -> toValue [("tag", toValue "List_All")]
+        List_Pending -> toValue [("tag", toValue "List_Pending")]
+	Get {student = s} -> toValue [("tag", toValue "Get")
+				     , ("student", toValue s) ]
+	Put {answer = a} -> toValue [("tag", toValue "Put")
+				     , ("answer", toValue a) ]
+    fromValue v = do
+        it <- fromValue v
+	tag <- getField "tag" it
+	case tag of
+	    "List_All" -> return List_All
+	    "List_Pending" -> return List_Pending
+	    "Get" -> do 
+	        s <- getField "student" it
+                return $ Get { student = s }
+	    "Put" -> do
+	        a <- getField "answer" it
+                return $ Put { answer = a }
+    getType _ = TStruct
+
+-- Local Variables:
+-- mode: haskell
+-- End:

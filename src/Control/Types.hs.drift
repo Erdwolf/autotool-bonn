@@ -2,7 +2,17 @@ module Control.Types
 
 ( HiLo (..)
 , Status (..)
-, Wert ( Reset, Pending, No, Okay ), ok, size, punkte
+
+, Wert ( Reset, Pending, No, Okay )
+-- 
+-- break abstraction because Inter.Action needs to see details.
+-- Eigentlich sollte die instance XmlRpcType Wert hier in Inter.Types stehen,
+-- aber das würde import import Network.XmlRpc.Internals erfordern,
+-- d. h. jeder müßte erst haskell-XML-rpc installieren
+, Wert ( Ok )
+
+, ok, size, punkte
+
 , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , ClockTime
 , Typ, Config, Remark, Name, File, Email
