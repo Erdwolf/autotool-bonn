@@ -33,6 +33,7 @@ import qualified Type.Quiz
 import qualified Palindrom.Plain
 
 import qualified Faktor.Faktor
+import qualified Faktor.Euklid
 
 import qualified NFA.Convert
 import qualified NFA.Equiv.Challenger
@@ -140,6 +141,8 @@ makers = [ Blank.make
 
          , Faktor.Faktor.make_fixed
          , Faktor.Faktor.make_quiz
+         , Faktor.Euklid.make_fixed
+         , Faktor.Euklid.make_quiz
 
 	 , Graph.Bi.Quiz.make
 	 , Graph.Bi.Plain.make
