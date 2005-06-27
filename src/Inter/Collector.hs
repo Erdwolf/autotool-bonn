@@ -196,6 +196,7 @@ makers = [ Blank.make
 
          , Code.Compress.make_quiz Code.LZ.Lempel_Ziv_Welch
          , Code.Compress.make_quiz Code.LZ.Lempel_Ziv_77
+         , Code.Compress.make_fixed Code.LZ.Lempel_Ziv_77
 
          , Code.Hamming.make
 	 ]

@@ -54,6 +54,10 @@ instance ( ToDoc c, Reader b, Coder c a b, BitSize b )
         inform $ text "Ihre Nachricht hat die Größe" <+> toDoc you
         when ( fromIntegral you > bound ) $ reject $ text "Das ist zuviel."
 
+make_fixed :: ( ToDoc c, Reader b, Coder c Char b ) => c -> Make
+make_fixed c = direct ( Compress c ) "01001010010010100101001001010010"
+
+
 instance ( Reader a , Read a, Reader [a]
 	 , ToDoc c, Coder c a b, Size b ) 
      => Generator (Compress c) (Config a) [a] where
@@ -78,6 +82,7 @@ instance ( Reader a , Read a, Reader [a]
 
 instance Project (Compress c) [a] [a] where
     project _ = id
+
 
 make_quiz :: ( ToDoc c, Reader b, Coder c Char b ) => c -> Make
 make_quiz c = quiz (Compress c) Code.Param.example
