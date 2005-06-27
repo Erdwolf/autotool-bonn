@@ -8,6 +8,21 @@ import Control.Stud_Aufg.Typ
 
 import Prelude hiding ( all )
 
+put_blank :: SNr -> ANr -> IO Stud_Aufg
+put_blank snr anr = do
+    conn <- myconnect 
+    let common = [ ( reed "SNr", toEx $ snr )
+		 , ( reed "ANr", toEx $ anr )
+		 , ( reed "OK", toEx $ Oks 0 )
+		 , ( reed "NO", toEx $ Nos 0 )
+		 ]
+    squery conn $ Query
+            ( Insert (reed "stud_aufg") common ) 
+	    [ ]
+    disconnect conn
+    [ sauf ] <- get_snr_anr snr anr
+    return sauf
+
 -- | alle einsendungen zu dieser aufgabe
 get_anr :: ANr -> IO [ Stud_Aufg ]
 get_anr anr = 

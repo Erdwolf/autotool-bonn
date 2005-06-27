@@ -5,6 +5,8 @@ module Control.Vorlesung.DB where
 import Control.SQL
 import Control.Types
 import Control.Vorlesung.Typ
+import qualified Control.Student.Type as CST
+import qualified Control.Student.DB
 
 import Prelude hiding ( all )
 
@@ -86,32 +88,42 @@ common = collectRows $ \ state -> do
     			   }
 
 
-teilnehmer :: VNr -> IO [ ( SNr, (MNr, Name, Name) ) ]
-teilnehmer vnr = do
+snr_teilnehmer :: VNr -> IO [ SNr ]
+snr_teilnehmer vnr = do
     conn <- myconnect
     stat <- squery conn $ Query
-        ( Select $ map reed [ "student.SNr as SNr" 
-			    , "student.MNr as MNr" 
-			    , "student.Vorname as Vorname" 
-			    , "student.Name as Name" 
+        ( Select $ map reed [ "stud_grp.SNr as SNr" 
 			    ] 
 	)
-        [ From $ map reed [ "student", "stud_grp", "gruppe" ] 
+        [ From $ map reed [ "stud_grp", "gruppe" ] 
 	, Where $ ands
 	        [ equals ( toEx vnr )  ( reed "gruppe.VNr" )
 		, equals ( reed "gruppe.GNr" ) ( reed "stud_grp.GNr" )
-		, equals ( reed "stud_grp.SNr" ) ( reed "student.SNr" )
 		]
 	]
     res <- collectRows ( \ state -> do
-        s <- getFieldValue state "SNr" 
-        m <- getFieldValue state "MNr" 
-	v <- getFieldValue state "Vorname"
-	n <- getFieldValue state "Name"
-	return ( s, (m, v, n ))
+        getFieldValue state "SNr" 
       ) stat
     disconnect conn
     return res
+    
+
+steilnehmer :: VNr -> IO [ CST.Student ]
+steilnehmer vnr = do
+    snrs <- snr_teilnehmer vnr
+    items <- sequence $ do
+        snr <- snrs
+        return $ Control.Student.DB.get_snr snr
+    return $ concat items
+
+teilnehmer :: VNr -> IO [ ( SNr, (MNr, Name, Name) ) ]
+teilnehmer vnr = do
+    studs <- steilnehmer vnr
+    return $ do
+        stud <- studs
+        return ( CST.snr stud
+               , ( CST.mnr stud, CST.vorname stud, CST.name stud )
+               )
 
 -- | put into table:
 -- do not evaluate Vorlesung.vnr (it may be undefined!)

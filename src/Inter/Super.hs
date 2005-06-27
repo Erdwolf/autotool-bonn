@@ -17,6 +17,8 @@ import Inter.Login
 import Inter.Logged
 import qualified Inter.Param as P
 
+import Autolib.Set
+
 import Control.Types 
     ( toString, fromCGI, Name, Remark, HiLo (..), Status (..)
     , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr
@@ -644,6 +646,7 @@ tutor_statistik vnr auf = do
     plain "Action"
     close -- row
 
+    -- erstmal die, die wirklich was eingesandt haben
     sequence_ $ do
         sauf <- saufs
         return $ do
@@ -655,13 +658,30 @@ tutor_statistik vnr auf = do
             plain $ toString $ SA.ok sauf
 	    plain $ toString $ SA.no sauf
 	    plain $ show $ SA.result sauf
-	    click <- case SA.result sauf of
-	        Nothing -> do plain "" ; plain ""
-		Just w  -> do
-		    click ( "View", ( View, sauf, stud ))
-		    click ( "Edit",  ( Edit, sauf, stud ))
-		    click ( "Clear_Cache",  ( Clear_Cache, sauf, stud ))
+	    click ( "View", ( View, sauf, stud ))
+	    click ( "Edit",  ( Edit, sauf, stud ))
+	    click ( "Clear_Cache",  ( Clear_Cache, sauf, stud ))
             close -- row
+    
+    -- dann die, die noch gar nichts geschickt haben
+    all_studs <- io $ Control.Vorlesung.DB.steilnehmer vnr
+    let done = mkSet $ map SA.snr saufs
+    sequence_ $ do
+          stud <- all_studs
+          guard $ not $ S.snr stud `elementOf` done
+          return $ do
+              open row
+	      plain $ toString $ S.mnr stud
+	      plain $ toString $ S.vorname stud
+	      plain $ toString $ S.name stud
+              plain $ "--"
+	      plain $ "--"
+	      plain $ "--"
+              sauf <- io $ Control.Stud_Aufg.DB.put_blank 
+                              (S.snr stud) (A.anr auf)
+	      click ( "Edit",  ( Edit, sauf, stud ))
+              close -- row
+
     close -- btable
     end -- mutex
 

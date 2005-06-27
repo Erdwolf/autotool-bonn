@@ -387,6 +387,8 @@ data Oks = Oks Int deriving ( Eq, Ord, Typeable )
 instance SqlBind Oks where 
     fromSqlValue ty s = Just $ Oks $ read s
     toSqlValue (Oks i) = toSqlValue i
+instance ToEx Oks where
+    toEx (Oks i) = EInteger $ fromIntegral i
 instance ToString Oks where
     toString (Oks x) = show x
 
@@ -399,7 +401,8 @@ data Nos = Nos Int deriving ( Eq, Ord, Typeable )
 instance SqlBind Nos where 
     fromSqlValue ty s = Just $ Nos $ read s
     toSqlValue (Nos i) = toSqlValue i
-
+instance ToEx Nos where
+    toEx (Nos i) = EInteger $ fromIntegral i
 instance ToString Nos where
     toString (Nos x) = show x
 

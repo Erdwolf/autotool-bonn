@@ -15,7 +15,7 @@ roll :: Param -> IO Integer
 roll p = do
     let ps = dropWhile ( < fromIntegral ( von p ) ) 
 	   $ takeWhile ( < fromIntegral ( bis p ) ) 
-	   $ primes ( 317 :: Integer )
+	   $ primes ( 1000 :: Integer )
     w <- someIO ps ( anzahl p )
     return $ product w
 
