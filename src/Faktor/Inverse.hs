@@ -51,14 +51,20 @@ instance Measure Inverse ( Integer, Integer ) ( Maybe Integer ) where
     measure Inverse ( a, b ) Nothing = 0
     measure Inverse ( a, b ) (Just i) = i
         
-instance Generator Inverse Param ( Integer, Integer ) where
+instance Generator Inverse Param ( Integer, Integer , Integer ) where
     generator _ conf key = 
         do a <- randomRIO ( von conf , bis conf )
            b <- randomRIO ( von conf , bis conf )
-           return (a, b)
+	   p <- randomRIO ( 1 , 100 :: Integer )
+           return (a, b, p)
+        `repeat_until` \ (a,b,p) -> 
+	    or [ p > hat_inverses_in_faellen_von_hundert conf
+	       , inverse a b /= Nothing 
+	       ]
 
-instance Project Inverse ( Integer, Integer ) ( Integer , Integer ) where
-    project _ = id
+instance Project Inverse ( Integer, Integer , Integer ) 
+                         ( Integer , Integer ) where
+    project Inverse (a,b,_) = (a,b)
 
 
 make_quiz :: Make
