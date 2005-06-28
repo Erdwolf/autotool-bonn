@@ -28,10 +28,16 @@ instance Partial Inverse ( Integer, Integer ) ( Maybe Integer ) where
 	, text "(Eingabe: \"Nothing\" oder \"Just i\".)"
         ]
     initial Inverse (a, b) = Just a
+
     partial Inverse (a, b) Nothing = 
         when ( inverse a b /= Nothing ) $ reject $ 
 	     text "Sie behaupten, es gäbe kein Inverses, aber es gibt eins!"
-    partial Inverse (a, b) (Just i) = inform $ text "Ja."
+    partial Inverse (a, b) (Just i) = do
+        when ( abs i > b ) $ reject $ 
+	     text $ "Der Betrag des Inversen soll höchstens " ++ show (b-1) ++ " sein!"
+
+        inform $ text "Ja."
+
     total Inverse (a, b) Nothing = do
         when ( inverse a b == Nothing ) $ inform $ text "Ja."
     total Inverse (a, b) (Just i) = do
