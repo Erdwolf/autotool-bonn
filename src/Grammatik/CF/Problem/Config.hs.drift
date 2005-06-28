@@ -27,7 +27,7 @@ data Config =
 example :: Config
 example = Config
 	{ lang = Lukas
-        , properties = [ Greibach_Normal ]
+        , properties = [ Kontextfrei ]
 	, num_samples = 50
 	, min_sample_length = 4
 	, max_sample_length = 40

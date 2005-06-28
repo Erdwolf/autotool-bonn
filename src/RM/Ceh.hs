@@ -31,7 +31,7 @@ cehs p = let m = succ $ max_reg p
 		  , indent 1 $ command [ "int" , "a", "=" , "0" ]
 		  , indent 1 $ command [ "int" , "s", "=" , "0" ]
 		  , ""
-		  , for 1 ("1",show m) [ command [ regS "i", "=", "0" ] ] 
+		  , for 1 ("0",show m) [ command [ regS "i", "=", "0" ] ] 
 		  , if_ 1 [ "argc" , ">" , show m ]
 		    [ command [ "fprintf" , "(" , "stderr" , ","
 			      , "\"zu viele argumente\\n\""
@@ -55,7 +55,7 @@ cehs p = let m = succ $ max_reg p
 		    , "\"Registerinhalte vor Programstart:\\n\""
 		    , ")"
 		    ]
-		  , for 1 ("1",show m) 
+		  , for 1 ("0",show m) 
 		    [ command [ "printf" , "(" 
 			      , "\"" ++ regS "%d" , "=" , "%d\\n\""
 			      , "," , "i" , "," , regS "i"
@@ -68,7 +68,7 @@ cehs p = let m = succ $ max_reg p
 		    , "\"Registerinhalte nach Programmende:\\n\""
 		    , ")"
 		    ]
-		  , for 1 ("1",show m) 
+		  , for 1 ("0",show m) 
 		    [ command [ "printf" , "(" 
 			      , "\"" ++ regS "%d" , "=" , "%d\\n\""
 			      , "," , "i" , "," , regS "i"

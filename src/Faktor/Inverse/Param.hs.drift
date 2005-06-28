@@ -1,0 +1,25 @@
+-- -*- mode: haskell -*-
+
+module Faktor.Inverse.Param where
+
+--   $Id$
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+data Param = 
+     Param { von :: Integer
+	   , bis :: Integer
+	   }
+     deriving ( Typeable )
+
+p :: Param
+p = Param { von = 1000
+	  , bis = 5000
+	  }
+
+{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
+
+
