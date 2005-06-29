@@ -55,7 +55,7 @@ query con com = do
 #endif
             `catchSql` \ e -> do  
                    logged $ "query: " ++ (show e) 
-		   error $ "SQLqueries.error in query:" ++ (show e) 
+		   error $ "SQLqueries.error in query:" ++ (show e) ++ com
 
 collectRows fun stat = do
 #ifdef HSQL14

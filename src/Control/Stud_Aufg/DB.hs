@@ -6,6 +6,8 @@ import Control.SQL
 import Control.Types hiding ( ok )
 import Control.Stud_Aufg.Typ
 
+import qualified Control.Exception as E ( try )
+
 import Prelude hiding ( all )
 
 put_blank :: SNr -> ANr -> IO Stud_Aufg
@@ -16,9 +18,9 @@ put_blank snr anr = do
 		 , ( reed "OK", toEx $ Oks 0 )
 		 , ( reed "NO", toEx $ Nos 0 )
 		 ]
-    squery conn $ Query
-            ( Insert (reed "stud_aufg") common ) 
-	    [ ]
+    E.try $ squery conn $ Query
+	                  ( Insert (reed "stud_aufg") common ) 
+			  [ ]
     disconnect conn
     [ sauf ] <- get_snr_anr snr anr
     return sauf
