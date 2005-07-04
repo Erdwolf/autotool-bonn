@@ -17,30 +17,57 @@ import Autolib.Letters
 
 import Random
 import Data.Maybe
+import Data.List ( nub )
 import Autolib.Set
 
 import Inter.Quiz
 
 gen :: Param -> IO PCP
-gen g = do
+gen p = do
+{- hier kamen noch doppelte paare und/oder paare mit identischen strings vor
     uvs <- sequence $ do 
-           k <- [ 1 .. paare g ]
+           k <- [ 1 .. paare p ]
 	   return $ do
-	       l <- randomRIO (1, breite g)
+	       l <- randomRIO (1, breite p)
 	       [u, v] <- sequence $ replicate 2 $ someIO ( alpha g ) l
 	       return ( u, v )
+-}
+    uvs <- ( sequence $ replicate ( paare p ) $ pair p )
+	   `repeat_until` 
+	   \ uvs -> and [ -- | alle paare verschieden 
+			  uvs == nub uvs
+
+                          -- | alle buchstaben kommen vor
+			, let (l,r) = unzip uvs
+			  in length ( nub $ concat $ l ++ r ) 
+			     == 
+			     length ( alpha p )
+
+                          -- | es gibt mindestens ein wort mit
+                          -- | (mindestens) der geforderten breite
+                        , any ( \ (u,v) -> or [ length u >= breite p
+					      , length v >= breite p 
+					      ] 
+			      ) uvs 
+			]
     let (u1, v1) : (u2, v2) : rest = uvs
     -- hackerei für anfang und ende
     let uvs' = ( v1 ++ u1, v1 ) : ( u2 , v2 ++ u2 ) : rest
     xys <- permutation uvs'
     return $ PCP xys
 
+pair :: Param -> IO (String,String)
+pair p = ( do l <- randomRIO (1,breite p)
+	      [u,v] <- sequence $ replicate 2 $ someIO ( alpha p ) l
+	      return (u,v)
+	 ) `repeat_until` ( uncurry (/=) )
+
 
 sol :: Param -> IO ( PCP, Maybe Folge )
 -- nur eine kürzeste lösung
-sol g = do
-    i <- gen g -- Instanz
-    let fs = solutions ( viel g ) ( fern g ) i
+sol p = do
+    i <- gen p -- Instanz
+    let fs = solutions ( viel p ) ( fern p ) i
     return ( i, listToMaybe $ take 1 $ fs )
 
 triviale_instanz :: PCP -> Bool
@@ -57,12 +84,16 @@ count :: Eq a => a -> [a] -> Int
 count x = length . filter ( == x ) 
 
 instance Generator PCProblem Param ( PCP, Folge ) where
-   generator p conf key = do
-       ( i, Just f ) <- sol g `repeat_until` \ ( p, mf ) -> 
-           not ( triviale_instanz p ) && 
+   generator _ conf key = do
+       ( i, Just f ) <- sol conf `repeat_until` \ ( i, mf ) -> 
+           not ( triviale_instanz i ) && 
            case mf of
 	       Nothing -> False
-	       Just f  -> nah g <= length f && length f <= fern g
+	       Just f  -> and [ nah conf <= length f 
+			      , length f <= fern conf
+                                -- | alle paare sollen in der lösung vorkommen
+			      , length (nub f) == paare conf
+			      ]
        return ( i, f )
 
 instance Project PCProblem ( PCP, Folge ) PCP where
