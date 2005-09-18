@@ -12,10 +12,14 @@ import Autolib.Size
 import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
+import Help
+
 type Scheibe = Integer
 
 data Turm = A | B | C | D
     deriving ( Eq, Ord, Enum, Typeable )
+
+instance Source Turm where source _ = __FILE__
 
 {-! for Turm derive: Reader, ToDoc, Haskell2Xml !-}
 

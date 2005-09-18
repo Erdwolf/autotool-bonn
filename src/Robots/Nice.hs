@@ -12,8 +12,8 @@ import Data.Maybe
 import Data.Char
 
 -- | hübsches layout
-nice :: Config -> Doc
-nice k = vcat $ do
+instance Nice Config where
+  nice k = vcat $ do
     let bereich @ ((l,u), (r,o)) = hull_with_goals k
                                      -- ^ this is important here, since...
     let a = array bereich $ do p <- range bereich

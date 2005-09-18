@@ -17,9 +17,6 @@ data LR = L | R
 
 {-! for LR derive : ToDoc, Reader, Haskell2Xml !-}
 
-instance Show LR where show = render . toDoc
-instance Read LR where readsPrec = parsec_readsPrec
-
 data Ord a => Letter a = Letter 
 	      { weight :: Int
 	      , codes  :: Code a LR
@@ -27,10 +24,6 @@ data Ord a => Letter a = Letter
      
 {-! for Letter derive : ToDoc, Reader !-}
 
-instance ( Ord a, ToDoc a ) => Show ( Letter a ) where
-    show = render . toDoc
-instance ( Ord a, Reader a ) => Read ( Letter a ) where 
-    readsPrec = parsec_readsPrec
 
 
 
