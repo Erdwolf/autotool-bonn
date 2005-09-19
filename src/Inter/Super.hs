@@ -20,6 +20,7 @@ import qualified Inter.Param as P
 import Help
 
 import Autolib.Set
+import qualified Autolib.Output
 
 import Control.Types 
     ( toString, fromCGI, Name, Remark, HiLo (..), Status (..)
@@ -471,7 +472,7 @@ solution vnr manr stud
             sol <- textarea def
 	    close -- row
 	    open row
-	    pre $ show $ help ini
+            html $ Autolib.Output.render $ help ini
 	    close -- row
 	    close -- table
             return sol
