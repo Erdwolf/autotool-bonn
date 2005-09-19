@@ -19,7 +19,7 @@ type Scheibe = Integer
 data Turm = A | B | C | D
     deriving ( Eq, Ord, Enum, Typeable )
 
-instance Source Turm where source _ = __FILE__
+instance Source Turm where source _ = drift __FILE__
 
 {-! for Turm derive: Reader, ToDoc, Haskell2Xml !-}
 
@@ -34,12 +34,16 @@ data HI = HI { start :: Hof
 	     }
     deriving ( Typeable )
 
+instance Source HI where source _ = drift __FILE__
+
 {-! for HI derive: Reader, ToDoc, Haskell2Xml !-}
 
 data Conf = Conf { scheiben :: Int
 		 , turme :: Int
 		 }
      deriving ( Typeable )
+
+instance Source Conf where source _ = drift __FILE__
 
 {-! for Conf derive: Reader, ToDoc, Haskell2Xml !-}
 

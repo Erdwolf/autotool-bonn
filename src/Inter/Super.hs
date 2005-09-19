@@ -17,6 +17,8 @@ import Inter.Login
 import Inter.Logged
 import qualified Inter.Param as P
 
+import Help
+
 import Autolib.Set
 
 import Control.Types 
@@ -464,7 +466,14 @@ solution vnr manr stud
 	      then Inter.Store.latest Inter.Store.Input past
                       `Control.Exception.catch` \ _ -> return b0
 	      else return b0
+	    open table
+	    open row
             sol <- textarea def
+	    close -- row
+	    open row
+	    pre $ show $ help ini
+	    close -- row
+	    close -- table
             return sol
 
 	Upload -> do
