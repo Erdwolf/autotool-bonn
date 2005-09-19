@@ -1,6 +1,7 @@
 module Inter.Collector where
 
 import Inter.Types
+import Data.Tree
 
 import qualified Blank
 import qualified Upload
@@ -89,117 +90,137 @@ import qualified Code.Hamming
 
 
 makers :: [ Make ]
-makers = [ Blank.make
-	 , Upload.make
-	 , PCProblem.Quiz.make_quiz
-	 , PCProblem.Quiz.make_fixed
-	 , Boolean.Instance.make
-	 , Boolean.Quiz.make
-	 , Sortier.Netz.Check.make
-	 , JVM.Make.make
-	 , Graph.Selfcom.make
-	 , Graph.Nachbar.make
-	 , Graph.Cross.make
-	 , Graph.MinSep.make
-	 , Robots.Interface.make
-	 , Robots.Interface.qmake
-	 , Graph.Col.Plain.make
-	 , Graph.Col.Quiz.make
-	 , Graph.Cage.Central.make
-	 , Graph.Graceful.Central.make
-	 , Collatz.Plain.make
-	 , Collatz.Plain.qmake
-	 , Collatz.Inverse.make
-	 , Collatz.Inverse.qmake
-	 , Hanoi.Semantik.make
-	 , Hanoi.Quiz.make
-	 , Type.Check.make
-	 , Type.Quiz.make
-	 , Palindrom.Plain.make
+makers = do Right make <- flatten tmakers ; return make
 
-	 , NFA.Convert.make
-	 , NFA.Convert.qmake
-	 , Exp.Convert.make
-	 , Exp.Convert.qmake
-	 , Exp.Smaller.make
-	 , NFA.Equiv.Challenger.make
-	 , NFA.Equiv.Challenger.qmake
+heading :: h -> [ Tree ( Either h i ) ] -> Tree ( Either h i )
+heading h ts = Node ( Left h ) ts
 
-         , Grammatik.CF.Interface.make
-	 , NPDA.Inter.make
+item :: i -> Tree ( Either h i )
+item i = Node ( Right i ) []
 
-         , SAT.SAT.make_fixed
-         , SAT.SAT.make_quiz
+tmakers :: Tree ( Either String Make )
+tmakers = 
+    heading "Aufgaben" 
+         [ item Blank.make
+	 , item Upload.make
+         , heading "Formale Sprachen" 
+                [ item PCProblem.Quiz.make_quiz 
+	        , item PCProblem.Quiz.make_fixed
+                ]
+         , heading "Logik"
+                [ item Boolean.Instance.make
+	        , item Boolean.Quiz.make
+                , item SAT.SAT.make_fixed
+                , item SAT.SAT.make_quiz
+                ]
+         , heading "Kombinatorik"
+                [ item Sortier.Netz.Check.make
+	        , item Robots.Interface.make
+	        , item Robots.Interface.qmake
+	        , item Hanoi.Semantik.make
+	        , item Hanoi.Quiz.make
+                , item LCS.Instance.make_fixed
+                , item LCS.Instance.make_quiz
+                ]
+         , heading "Berechenungsmodelle"
+                [ item JVM.Make.make
+                ]
+         , heading "Graphen"
+                [ item Graph.Selfcom.make
+                , item Graph.Nachbar.make
+	        , item Graph.Cross.make
+	        , item Graph.MinSep.make
+	        , item Graph.Col.Plain.make
+	        , item Graph.Col.Quiz.make
+	        , item Graph.Cage.Central.make
+	        , item Graph.Graceful.Central.make
+                , item Graph.TreeWidth.make
+                , item Graph.PartialKTree.make
+                , item Graph.PartialKTree.qmake
+	        , item Graph.Bi.Quiz.make
+	        , item Graph.Bi.Plain.make
+	        , item Graph.Circle.Quiz.make
+	        , item Graph.Circle.Plain.make
+	        , item Graph.Bisekt.Plain.make
+	        , item Graph.Bisekt.Quiz.make
+                , item Graph.Way.Plain.make
+	        , item Graph.Way.Quiz.make
+	        , item Graph.MST.Plain.make
+	        , item Graph.MST.Quiz.make
+                ]
+         , heading "Programmierung"
+                [ item Type.Check.make
+	        , item Type.Quiz.make
+                ]
+         , heading "Zahlensysteme"
+                [ item Number.Base.Central.make_fixed
+                , item Number.Base.Central.make_quiz
+                , item Number.Float.From.make_fixed
+                , item Number.Float.From.make_quiz
+                , item Number.Float.To.make_fixed
+                , item Number.Float.To.make_quiz
+                ]
+         , heading "Datenstrukturen"
+                [ item Baum.Reconstruct.make_fixed
+                , item Baum.Reconstruct.make_quiz
+                , item Baum.Binary.make_quiz
+                , item Baum.ZweiDrei.make_quiz
+                ]
+         , heading "Zahlentheorie"
+                [ item Collatz.Plain.make
+	        , item Collatz.Plain.qmake
+	        , item Collatz.Inverse.make
+	        , item Collatz.Inverse.qmake
+                , item Faktor.Faktor.make_fixed
+                , item Faktor.Faktor.make_quiz
+                , item Faktor.Euklid.make_fixed
+                , item Faktor.Euklid.make_quiz
+                , item Faktor.Inverse.make_fixed
+                , item Faktor.Inverse.make_quiz
+                ]
 
-         , Baum.Reconstruct.make_fixed
-         , Baum.Reconstruct.make_quiz
-         , Baum.Binary.make_quiz
-         , Baum.ZweiDrei.make_quiz
 
-         , Graph.TreeWidth.make
-         , Graph.PartialKTree.make
-         , Graph.PartialKTree.qmake
+         , heading "Codierung und Kompression"
+              [ heading "Codierung"
+                    [ item Code.Huffman.Boiler.make_fixed
+                    , item Code.Huffman.Boiler.make_quiz
+                    , item $ Code.Class.enc BW.Burrows_Wheeler
+                    , item $ Code.Class.dec BW.Burrows_Wheeler 
+                               ( "abracadabra",  2 )
+                    , item $ Code.Quiz.enc MTF.Move_To_Front
+                    , item $ Code.Quiz.enc BW.Burrows_Wheeler
+                    , item $ Code.Quiz.dec MTF.Move_To_Front
+                    , item $ Code.Quiz.dec BW.Burrows_Wheeler
+                    , item Code.Hamming.make
+                    ]
+              , heading "Kompression"
+                    [ item $ Code.Compress.make_quiz Code.LZ.Lempel_Ziv_Welch
+                    , item $ Code.Compress.make_quiz Code.LZ.Lempel_Ziv_77
+                    , item $ Code.Compress.make_fixed Code.LZ.Lempel_Ziv_77
+                    ]
+              ]
 
-         , Faktor.Faktor.make_fixed
-         , Faktor.Faktor.make_quiz
-         , Faktor.Euklid.make_fixed
-         , Faktor.Euklid.make_quiz
-         , Faktor.Inverse.make_fixed
-         , Faktor.Inverse.make_quiz
+         , heading "noch nicht eingeordnet"
+                [ item Palindrom.Plain.make
+                , item NFA.Convert.make
+	        , item NFA.Convert.qmake
+	        , item Exp.Convert.make
+	        , item Exp.Convert.qmake
+	        , item Exp.Smaller.make
+	        , item NFA.Equiv.Challenger.make
+	        , item NFA.Equiv.Challenger.qmake
+                , item Grammatik.CF.Interface.make
+	        , item NPDA.Inter.make
+                , item Partition.Central.make_fixed
+                , item Partition.Central.make_quiz
+                , item KnapsackFraction.Central.make_fixed
+                , item KnapsackFraction.Central.make_quiz
+                , item Graph.VC.Central.make_fixed
+                , item Graph.VC.Central.make_quiz
+                , item Graph.VC.VCSAT.make_fixed
+                , item Graph.VC.VCSAT.make_quiz               
+                , item RM.Make.make
+                ]
+          ]
 
-	 , Graph.Bi.Quiz.make
-	 , Graph.Bi.Plain.make
 
-	 , Graph.Circle.Quiz.make
-	 , Graph.Circle.Plain.make
-
-	 , Graph.Bisekt.Plain.make
-	 , Graph.Bisekt.Quiz.make
-
-         , Number.Base.Central.make_fixed
-         , Number.Base.Central.make_quiz
-
-         , Number.Float.From.make_fixed
-         , Number.Float.From.make_quiz
-         , Number.Float.To.make_fixed
-         , Number.Float.To.make_quiz
-
-         , LCS.Instance.make_fixed
-         , LCS.Instance.make_quiz
-
-	 , Graph.Way.Plain.make
-	 , Graph.Way.Quiz.make
-
-	 , Graph.MST.Plain.make
-	 , Graph.MST.Quiz.make
-
-         , Partition.Central.make_fixed
-         , Partition.Central.make_quiz
-
-         , KnapsackFraction.Central.make_fixed
-         , KnapsackFraction.Central.make_quiz
-
-         , Graph.VC.Central.make_fixed
-         , Graph.VC.Central.make_quiz
-         , Graph.VC.VCSAT.make_fixed
-         , Graph.VC.VCSAT.make_quiz
-
-         , RM.Make.make
-
-         , Code.Huffman.Boiler.make_fixed
-         , Code.Huffman.Boiler.make_quiz
-
-         , Code.Class.enc BW.Burrows_Wheeler
-         , Code.Class.dec BW.Burrows_Wheeler ( "abracadabra", 2 )
-
-         , Code.Quiz.enc MTF.Move_To_Front
-         , Code.Quiz.enc BW.Burrows_Wheeler
-         , Code.Quiz.dec MTF.Move_To_Front
-         , Code.Quiz.dec BW.Burrows_Wheeler
-
-         , Code.Compress.make_quiz Code.LZ.Lempel_Ziv_Welch
-         , Code.Compress.make_quiz Code.LZ.Lempel_Ziv_77
-         , Code.Compress.make_fixed Code.LZ.Lempel_Ziv_77
-
-         , Code.Hamming.make
-	 ]

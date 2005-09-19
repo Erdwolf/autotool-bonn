@@ -61,6 +61,7 @@ import System.Random
 import System.Directory
 import Data.Typeable
 import Data.Maybe
+import Data.Tree
 import Data.List ( partition )
 import Control.Monad
 import qualified Control.Exception
@@ -69,7 +70,7 @@ import Text.Html ( Html, primHtml )
 
 main :: IO ()
 main = Inter.CGI.execute "Super.cgi" $ do
-   wrap $ iface Inter.Collector.makers
+   wrap $ iface $ subForest Inter.Collector.tmakers
    scores <- io $ slink `Control.Exception.catch` \ e -> return ( show e )
    footer scores
 
@@ -80,8 +81,10 @@ slink = do
               else return "http://www.imn.htwk-leipzig.de/~autotool/scores"
     return scores
 
-iface :: [ Make ] -> Form IO ()
-iface mks = do
+iface :: [ Tree ( Either String Make ) ] -> Form IO ()
+iface tmks = do
+
+    let mks = do tmk <- tmks ; Right mk <- flatten tmk ; return mk
 
     h3 "Login und Auswahl der Vorlesung"
     -- für Student und Tutor gleicher Start
@@ -93,6 +96,7 @@ iface mks = do
 
     -- das sind alle aufgaben 
     aufs <- io $ A.get $ Just vnr
+
     let opts = do
              auf <- aufs
              return ( toString $ A.name auf , Just $ auf )
@@ -146,7 +150,7 @@ iface mks = do
         plain $ unwords [ "Aufgabe", show anr, "gelöscht." ]
 	mzero
 
-    ( mk, type_click ) <- find_mk mks tutor mauf
+    ( mk, type_click ) <- find_mk tmks tutor mauf
 
     auf' <- if tutor 
             then do
@@ -186,22 +190,27 @@ iface mks = do
 -- | bestimme aufgaben-typ (maker)
 -- für tutor: wählbar
 -- für student: fixiert (ohne dialog)
-find_mk mks tutor mauf = do
+find_mk tmks tutor mauf = do
     let pre_mk = fmap (toString . A.typ) mauf
-    let handler pre_mk opts = 
-            if tutor 
+    if tutor 
             then do
 		 hr
 		 h3 "Parameter dieser Aufgabe:"
 		 open btable -- will be closed in edit_aufgabe (tutor branch)
-		 selector_submit_click "Typ" pre_mk opts
+		 -- selector_submit_click "Typ" pre_mk opts
+                 it <- tree_choice $ map ( fmap ( \ n -> case n of
+                                 Right mk -> Right ( show mk, mk )
+                                 Left heading -> Left $ heading ++ " .."
+                                    ) ) tmks
+                 return ( it, True ) -- FIXME
             else do
 		 Just pre <- return $ pre_mk
-		 Just it  <- return $ lookup pre opts
+                 let mks = do 
+                        tmk <- tmks
+                        Right mk <- flatten tmk
+                        return ( show mk, mk )
+		 Just it  <- return $ lookup pre mks
 		 return ( it, False )
-    handler pre_mk $ do
-        mk <- mks
-	return ( show mk, mk )
 
 -- | ändere aufgaben-konfiguration (nur für tutor)
 edit_aufgabe mk mauf vnr manr type_click = do

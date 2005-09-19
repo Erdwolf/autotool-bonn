@@ -39,6 +39,9 @@ data Make = forall conf p i b
 		  (conf -> Var p i b) --  maker function
                   conf --  example
 
+instance Typeable Make where 
+    typeOf _ = mkTyConApp ( mkTyCon "Inter.Types.Make" ) []
+
 instance ToDoc Make 
     where toDoc ( Make doc fun ex ) = text doc
 
