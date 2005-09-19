@@ -469,10 +469,13 @@ solution vnr manr stud
 	      else return b0
 	    open table
 	    open row
-            sol <- textarea def
+            html $ Autolib.Output.render 
+                 $ Autolib.Output.Beside
+                      ( Autolib.Output.Text "ein Ausdruck vom Typ" )
+                      ( help ini )
 	    close -- row
 	    open row
-            html $ Autolib.Output.render $ help ini
+            sol <- textarea def
 	    close -- row
 	    close -- table
             return sol
