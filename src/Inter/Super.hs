@@ -154,7 +154,7 @@ iface tmk = do
 
     auf' <- if tutor 
             then do
-		 edit_aufgabe mk mauf vnr manr type_click
+		 edit_aufgabe mks mk mauf vnr manr type_click
 	    else -- kein tutor 
                 case mauf of
 		  Nothing -> do 
@@ -212,7 +212,7 @@ find_mk tmk tutor mauf = do
 		 return ( it, False )
 
 -- | ändere aufgaben-konfiguration (nur für tutor)
-edit_aufgabe mk mauf vnr manr type_click = do
+edit_aufgabe mks mk mauf vnr manr type_click = do
     case mk of 
         Make doc ( fun :: conf -> Var p i b ) ex -> do
             ( name :: Name ) <- fmap fromCGI 
@@ -251,10 +251,22 @@ edit_aufgabe mk mauf vnr manr type_click = do
 		    $ case mauf of Nothing -> "2005-07-06 10:00:00"
 				   Just auf -> toString $ A.bis auf
 
-            -- nimm default-config, falls type change
+
+            others <- io $ A.get_typed $ fromCGI $ show mk
+
+            moth <- 
+                click_choice_with_default 0 "import" $  ("default", mauf) : do
+                     oth <- others
+                     return ( toString $ A.name oth , Just oth )
+            let mproto = case moth of
+                   Just oth -> moth
+                   Nothing  -> mauf
+
+            -- nimm default-config, falls type change 
+            -- FIXME: ist das sinnvoll bei import?
             conf <- editor_submit "Konfiguration" 
-		    $ case mauf of 
-			  Just auf | not type_click  -> 
+		    $ case mproto of 
+			  Just auf {- | not type_click -}  -> 
 				 read $ toString $ A.config auf
 			  _ -> ex :: conf
 	    close -- table

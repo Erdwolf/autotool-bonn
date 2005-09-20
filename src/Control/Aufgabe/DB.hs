@@ -21,6 +21,11 @@ get mvnr = select_where $
 		| vnr <- maybeToList mvnr
 		] 
 
+get_typed :: Typ -> IO [ Aufgabe ]
+get_typed ty = select_where 
+	        [ equals ( reed "aufgabe.Typ" ) ( toEx ty ) 
+		] 
+
 select_where wh = do
     conn <- myconnect
     stat <- squery conn $ Query
