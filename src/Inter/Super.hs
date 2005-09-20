@@ -255,9 +255,10 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
             others <- io $ A.get_typed $ fromCGI $ show mk
 
             moth <- 
-                click_choice_with_default 0 "import" $  ("default", mauf) : do
-                     oth <- others
-                     return ( toString $ A.name oth , Just oth )
+                click_choice_with_default 0 "import" 
+                     $  ("(default)", mauf) : do
+                           oth <- others
+                           return ( toString $ A.name oth , Just oth )
             let mproto = case moth of
                    Just oth -> moth
                    Nothing  -> mauf
