@@ -15,7 +15,8 @@ module Control.Types
 
 -- , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , MNr(..), SNr(..), ANr(..), GNr(..), VNr(..) -- not abstrakt, see above
-, Schule(..), UNr(..)
+-- , Schule(..)
+, UNr(..)
 
 , ClockTime
 -- , Typ, Config, Remark, Name, File, Email
@@ -216,23 +217,6 @@ instance ToEx MNr where
     toEx (MNr i) = EString i
 
 -------------------------------------------------------------
-
--- | Schule
-data Schule = Schule String deriving ( Eq, Ord, Typeable )
-
-{-! for Schule derive: ToDoc, Reader, Haskell2Xml !-}
-
-instance SqlBind Schule where 
-    fromSqlValue _ s = Just $ Schule $ s
-    toSqlValue (Schule i) = toSqlValue i
-instance FromCGI Schule where
-    fromCGI cs = Schule cs
-instance ToString Schule where
-    toString (Schule i) = i
-instance ToEx Schule where
-    toEx (Schule i) = EString i
-
--------------------------------------------------------------------
 
 -- | Aufgaben-Typ
 data Typ = Typ String deriving ( Eq, Ord, Typeable )

@@ -2,7 +2,7 @@
 
 module Control.Schule.Typ where
 
-import Control.Types
+import Control.Types ( UNr, Name )
 
 import Autolib.Reader
 import Autolib.ToDoc
@@ -16,5 +16,6 @@ data Schule =
      Schule { unr :: UNr
 	    , name :: Name
 	    }
+	deriving ( Typeable )
 
 {-! for Schule derive: Reader, ToDoc, Haskell2Xml !-}

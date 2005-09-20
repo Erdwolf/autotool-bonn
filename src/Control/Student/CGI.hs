@@ -7,6 +7,7 @@ import Inter.CGI
 import Inter.Crypt
 import Control.Student.Type as T
 import Control.Student.DB
+import qualified Control.Schule
 
 import Control.Monad
 
@@ -18,6 +19,10 @@ login = do
     click    <- submit    "Login:"
 
     open table
+    us <- io $ Control.Schule.get 
+    u <- click_choice "Schule" $ do
+        u <- us
+	return ( toString $ Control.Schule.name u , u )
     open row
     plain "Matrikel:"
     Just mnr <- textfield ""
@@ -29,7 +34,8 @@ login = do
     close -- table
 
     when click blank
-    [ stud ] <- io $ Control.Student.DB.get_mnr $ fromCGI mnr
+    [ stud ] <- io $ Control.Student.DB.get_unr_mnr 
+		        ( Control.Schule.unr u , fromCGI mnr )
     guard $ Inter.Crypt.compare ( passwort stud ) pwd
     close -- row
     return stud

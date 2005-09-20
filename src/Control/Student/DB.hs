@@ -10,14 +10,18 @@ import Prelude hiding ( all )
 
 -- | get alle passenden studenten aus DB
 -- TODO: implementiere filter
-get_mnr  :: MNr -> IO [ CST.Student ]
-get_mnr mnr = get_where $ equals ( reed "student.MNr" ) ( toEx mnr )
+get_unr_mnr  :: ( UNr , MNr ) -> IO [ CST.Student ]
+get_unr_mnr ( unr , mnr ) = 
+    get_where $ ands
+	      [ equals ( reed "student.UNr" ) ( toEx unr )
+	      , equals ( reed "student.MNr" ) ( toEx mnr )
+	      ]
 
 get_snr  :: SNr -> IO [ CST.Student ]
 get_snr snr = get_where $ equals ( reed "student.SNr" ) ( toEx snr )
 
-snr_by_mnr :: MNr -> IO [ SNr ]
-snr_by_mnr mnr = get_mnr mnr >>= return . map CST.snr
+snr_by_unr_mnr :: ( UNr, MNr ) -> IO [ SNr ]
+snr_by_unr_mnr um = get_unr_mnr um >>= return . map CST.snr
 
 get_where :: Expression -> IO [ CST.Student ]
 get_where ex = do

@@ -29,7 +29,7 @@ qq =  Select
 common = collectRows $ \ state -> do
     	g_unr <- getFieldValue state "UNr"
         g_name <- getFieldValue state "Name"
-        return $ Schule { vnr = g_unr
+        return $ Schule { unr = g_unr
 			 , name = g_name
     			   }
 
@@ -52,7 +52,7 @@ put munr vor = do
     disconnect conn
 
 -- | delete
-delete :: Unr
+delete :: UNr
     -> IO ()
 delete unr = do
     conn <- myconnect 
