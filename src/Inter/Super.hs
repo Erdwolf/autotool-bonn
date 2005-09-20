@@ -723,14 +723,15 @@ tutor_statistik vnr auf = do
 
 footer scores = do
     hr ; h3 "Informationen zum autotool"
-    let entry name url =
-            O.Beside ( O.Text name ) ( O.Link url )
+    let entry name url = O.Named_Link name url
     embed $ output
-          $ O.Itemize
-	      [ entry "home: " 
+          $ foldr1 O.Beside
+	      [ entry "autotool home" 
 		      "http://dfa.imn.htwk-leipzig.de/auto/"
-	      , entry "bugs (bekannte ansehen und neue melden): " 
-		      "http://dfa.imn.htwk-leipzig.de/bugzilla/buglist.cgi?value-0-0-0=autotool"
-	      , entry "scores: " scores
+              , O.Text "/"
+	      , entry "bugs (ansehen und melden)" 
+		      "http://dfa.imn.htwk-leipzig.de/bugzilla/buglist.cgi?component=autotool&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED"
+              , O.Text "/"
+	      , entry "highscores" scores
 	      ]
     hr
