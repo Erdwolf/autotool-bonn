@@ -15,6 +15,7 @@ module Control.Types
 
 -- , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , MNr(..), SNr(..), ANr(..), GNr(..), VNr(..) -- not abstrakt, see above
+, Schule(..), UNr(..)
 
 , ClockTime
 -- , Typ, Config, Remark, Name, File, Email
@@ -200,25 +201,36 @@ instance ToString Wert where
 -------------------------------------------------------------
 
 -- | Matrikel-Nummer
--- FIXME: sollte das lieber ein String sein? School fehlt auch noch.
-data MNr = MNr Integer deriving ( Eq, Ord, Typeable )
+data MNr = MNr String deriving ( Eq, Ord, Typeable )
 
 {-! for MNr derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind MNr where 
-    -- fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
-    fromSqlValue _ s = Just $ MNr $ read s
+    fromSqlValue _ s = Just $ MNr $ s
     toSqlValue (MNr i) = toSqlValue i
-
 instance FromCGI MNr where
-    fromCGI cs = MNr $ case readsPrec 0 cs of
-              [(i, rest)] -> i
-	      sonst -> error $ "FromCGI MNr:" ++ show sonst -- FIXME: error checking
+    fromCGI cs = MNr cs
 instance ToString MNr where
-    toString (MNr i) = show i
-
+    toString (MNr i) = i
 instance ToEx MNr where
-    toEx (MNr i) = EInteger i
+    toEx (MNr i) = EString i
+
+-------------------------------------------------------------
+
+-- | Schule
+data Schule = Schule String deriving ( Eq, Ord, Typeable )
+
+{-! for Schule derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance SqlBind Schule where 
+    fromSqlValue _ s = Just $ Schule $ s
+    toSqlValue (Schule i) = toSqlValue i
+instance FromCGI Schule where
+    fromCGI cs = Schule cs
+instance ToString Schule where
+    toString (Schule i) = i
+instance ToEx Schule where
+    toEx (Schule i) = EString i
 
 -------------------------------------------------------------------
 
@@ -347,6 +359,22 @@ instance ToString ANr where
     toString (ANr i) = show i
 instance FromCGI ANr where
     fromCGI cs = ANr $ read cs
+
+-- | Schul-Nummer
+
+data UNr = UNr Int deriving ( Eq, Ord, Typeable )
+
+{-! for UNr derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance SqlBind UNr where 
+    fromSqlValue _ s = Just $ UNr $ read s -- FIXME: check SqlType
+    toSqlValue (UNr i) = toSqlValue i
+instance ToEx UNr where
+    toEx (UNr x) = EString $ show x
+instance ToString UNr where
+    toString (UNr i) = show i
+instance FromCGI UNr where
+    fromCGI cs = UNr $ read cs
 
 -- | Gruppen-Nummer
 

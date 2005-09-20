@@ -13,6 +13,7 @@ import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
 data Student =
      Student { snr :: SNr
+	     , unr :: UNr
 	     , mnr :: MNr
 	     , name :: Name
 	     , vorname :: Name
@@ -23,6 +24,4 @@ data Student =
 
 {-! for Student derive: Reader, ToDoc, Haskell2Xml !-}
 
-instance Show Student where show = render . toDoc
-instance Read Student where readsPrec = parsec_readsPrec
 

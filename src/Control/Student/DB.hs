@@ -23,7 +23,7 @@ get_where :: Expression -> IO [ CST.Student ]
 get_where ex = do
     conn <- myconnect
     stat <- squery conn $ Query
-        ( Select $ map reed [ "SNr", "MNr", "Name", "Vorname" 
+        ( Select $ map reed [ "SNr", "UNr", "MNr", "Name", "Vorname" 
 			    , "Email", "Passwort" 
 			    ] )
         [ From $ map reed [ "student" ] 
@@ -31,12 +31,14 @@ get_where ex = do
 	]
     inh  <- collectRows (\ state -> do
         s_snr <- getFieldValue state "SNr"
+    	s_unr <- getFieldValue state "UNr"
     	s_mnr <- getFieldValue state "MNr"
         s_name <- getFieldValue state "Name"
         s_vorname <- getFieldValue state "Vorname"
         s_email <- getFieldValue state "Email"
         s_passwort <- getFieldValue state "Passwort"
         return $ CST.Student { CST.snr = s_snr
+    			     , CST.unr = s_unr
     			     , CST.mnr = s_mnr
 			     , CST.name = s_name
 			     , CST.vorname = s_vorname
