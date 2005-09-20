@@ -70,7 +70,7 @@ import Text.Html ( Html, primHtml )
 
 main :: IO ()
 main = Inter.CGI.execute "Super.cgi" $ do
-   wrap $ iface $ subForest Inter.Collector.tmakers
+   wrap $ iface $ Inter.Collector.tmakers
    scores <- io $ slink `Control.Exception.catch` \ e -> return ( show e )
    footer scores
 
@@ -81,10 +81,10 @@ slink = do
               else return "http://www.imn.htwk-leipzig.de/~autotool/scores"
     return scores
 
-iface :: [ Tree ( Either String Make ) ] -> Form IO ()
-iface tmks = do
+iface :: Tree ( Either String Make ) -> Form IO ()
+iface tmk = do
 
-    let mks = do tmk <- tmks ; Right mk <- flatten tmk ; return mk
+    let mks = do Right mk <- flatten tmk ; return mk
 
     h3 "Login und Auswahl der Vorlesung"
     -- für Student und Tutor gleicher Start
@@ -150,7 +150,7 @@ iface tmks = do
         plain $ unwords [ "Aufgabe", show anr, "gelöscht." ]
 	mzero
 
-    ( mk, type_click ) <- find_mk tmks tutor mauf
+    ( mk, type_click ) <- find_mk tmk tutor mauf
 
     auf' <- if tutor 
             then do
@@ -190,7 +190,7 @@ iface tmks = do
 -- | bestimme aufgaben-typ (maker)
 -- für tutor: wählbar
 -- für student: fixiert (ohne dialog)
-find_mk tmks tutor mauf = do
+find_mk tmk tutor mauf = do
     let pre_mk = fmap (toString . A.typ) mauf
     if tutor 
             then do
@@ -198,15 +198,14 @@ find_mk tmks tutor mauf = do
 		 h3 "Parameter dieser Aufgabe:"
 		 open btable -- will be closed in edit_aufgabe (tutor branch)
 		 -- selector_submit_click "Typ" pre_mk opts
-                 it <- tree_choice $ map ( fmap ( \ n -> case n of
+                 it <- tree_choice pre_mk $ fmap ( \ n -> case n of
                                  Right mk -> Right ( show mk, mk )
                                  Left heading -> Left $ heading ++ " .."
-                                    ) ) tmks
+                                    ) tmk
                  return ( it, True ) -- FIXME
             else do
 		 Just pre <- return $ pre_mk
                  let mks = do 
-                        tmk <- tmks
                         Right mk <- flatten tmk
                         return ( show mk, mk )
 		 Just it  <- return $ lookup pre mks
@@ -718,7 +717,7 @@ footer scores = do
 	      [ entry "home: " 
 		      "http://dfa.imn.htwk-leipzig.de/auto/"
 	      , entry "bugs (bekannte ansehen und neue melden): " 
-		      "http://dfa.imn.htwk-leipzig.de/cgi-bin/bugzilla/buglist.cgi?value-0-0-0=autotool"
+		      "http://dfa.imn.htwk-leipzig.de/bugzilla/buglist.cgi?value-0-0-0=autotool"
 	      , entry "scores: " scores
 	      ]
     hr
