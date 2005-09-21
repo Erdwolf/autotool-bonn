@@ -1,0 +1,18 @@
+Name:           Autotool
+Version:        0.0
+License:        GPL
+Author:         Mirko Rahn, Alf Richter, Johannes Waldmann
+Homepage:       http://dfa.imn.htwk-leipzig.de/auto/
+Category:       Testing
+Build-Depends:  base, lang, data, parsec, HSQL, HaXml, Autolib
+Synopsis:       Interactive (CGI) exercises in theoretical computer science
+
+Executable: Super.cgi
+Main-is: Inter/Super.hs
+Hs-source-dirs:	src src/control
+Extensions: CPP, MultiParamTypeClasses, 
+   FunctionalDependencies,
+   AllowOverlappingInstances, 
+   AllowUndecidableInstances
+Ghc-options: -O2 -fvia-C -optc-O4 -funbox-strict-fields -DHSQL14
+
