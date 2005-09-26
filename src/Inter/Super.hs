@@ -66,10 +66,10 @@ import Data.List ( partition )
 import Control.Monad
 import qualified Control.Exception
 
-import Text.Html ( Html, primHtml )
+import qualified Text.Html
 
 main :: IO ()
-main = Inter.CGI.execute "Super.cgi" $ do
+main = Inter.CGI.execute "Super.cgi#hotspot" $ do
    wrap $ iface $ Inter.Collector.tmakers
    scores <- io $ slink `Control.Exception.catch` \ e -> return ( show e )
    footer scores
@@ -382,7 +382,7 @@ show_previous edit vnr mks stud auf sa0 = do
         Just file -> do
             cs <- io $ logged "Super.view" 
     	         $ readFile $ toString file
-    	    html $ primHtml cs
+    	    html $ Text.Html.primHtml cs
         Nothing -> do
 	    plain "(keine Aufgabe)"
     br ; plain "Einsendung:"
@@ -407,7 +407,7 @@ show_previous edit vnr mks stud auf sa0 = do
 		 Nothing -> return "(keine Eingabe)"
     case edit of
 	 False -> do
-             html $ primHtml h
+             html $ Text.Html.primHtml h
              blank -- ??
 	     return Nothing
          True  -> do
@@ -429,7 +429,7 @@ show_previous edit vnr mks stud auf sa0 = do
 			     , mgrade
 			     , case mgrade of 
 			           Just x | x /= Pending -> 
-			                 Just $ primHtml com 
+			                 Just $ Text.Html.primHtml com 
 			           _ -> Nothing
 			     )
 
@@ -441,8 +441,8 @@ make_instant vnr manr stud fun auf = do
     let mat = S.mnr stud
     k <- io $ key var $ toString mat 
     g <- io $ gen var vnr manr k 
-    let ( Just i  , _ :: Html ) = export g
-    ( _, icom :: Html) <- io $ run $ report p i
+    let ( Just i  , _ :: Text.Html.Html ) = export g
+    ( _, icom :: Text.Html.Html) <- io $ run $ report p i
     return ( p, i, icom )
 
 data Method = Textarea | Upload
@@ -468,6 +468,9 @@ solution vnr manr stud
     when ( not $ A.current auf ) vorbei
 
     ---------------------------------------------------------
+    html $ Text.Html.anchor Text.Html.! [ Text.Html.name "hotspot" ]
+         Text.Html.<< ""
+
     h3 "Neue Einsendung"
 
     open table
@@ -510,7 +513,7 @@ solution vnr manr stud
 
     Just cs <- return mcs
     hr ; h3 "Neue Bewertung"
-    (res, com :: Html) <- io $ run $ evaluate p i cs
+    (res, com :: Text.Html.Html) <- io $ run $ evaluate p i cs
     html com
     return ( Just icom, Just cs, fromMaybe No res, Just com )
 

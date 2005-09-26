@@ -14,5 +14,7 @@ Extensions: CPP, MultiParamTypeClasses,
    FunctionalDependencies,
    AllowOverlappingInstances, 
    AllowUndecidableInstances
-Ghc-options: -O2 -fvia-C -optc-O4 -funbox-strict-fields -DHSQL14
+Ghc-options: -O2 -DHSQL14
+
+-- Ghc-options: -O2 -fvia-C -optc-O4 -funbox-strict-fields -DHSQL14
 
