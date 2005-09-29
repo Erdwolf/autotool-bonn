@@ -13,9 +13,11 @@ import Data.Maybe ( maybeToList )
 import Data.List ( intersperse )
 import Data.Typeable
 
-#ifdef HSQL14
+#ifdef HSQL16
 import Database.HSQL.MySQL ( SqlBind )
-#else
+#elif HSQL14
+import Database.HSQL.MySQL ( SqlBind )
+#elif HSQL12
 import Database.MySQL.HSQL ( SqlBind )
 #endif
 

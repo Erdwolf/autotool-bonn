@@ -41,13 +41,13 @@ tags :
 
 GHC_LIBS = base haskell98 parsec unix network readline
 GHC_LINK = http://www.haskell.org/ghc/docs/6.2/html/libraries
-GHC_DESC = /usr/local/share/ghc-6.2/html/libraries
+GHC_DESC = /usr/local/share/ghc-6.4/html/libraries
 
 HAXML_LINK = http://www.cs.york.ac.uk/fp/HaXml
-HAXML_DESC = /usr/local/share/ghc-6.2/html/libraries/HaXml
+HAXML_DESC = /usr/local/share/ghc-6.4/html/libraries/HaXml
 
 AUTOLIB_LINK = http://141.57.11.163/auto/lib/haddock
-AUTOLIB_DESC = /usr/local/share/ghc-6.2/html/libraries/AutoLib
+AUTOLIB_DESC = /usr/local/share/ghc-6.4/html/libraries/AutoLib
 
 HADDOCK_OUTPUT = $(WWW)/auto/tool/haddock
 HADDOCK_OPTS = -v \
@@ -59,11 +59,16 @@ $(foreach lib,$(GHC_LIBS), \
 --read-interface=$(HAXML_LINK)/HaXml,$(HAXML_DESC)/HaXml.haddock \
 --read-interface=$(AUTOLIB_LINK),$(AUTOLIB_DESC)/AutoLib.haddock 
 
+GHC_DEFINES = $(shell ./ghc-defs.sh)
 
-
-haddock : 
-	( find . -name "*.hi" -print | sed -e 's/hi$$/hs/' ) \
+haddock :
+	mkdirhier $(HADDOCK_OUTPUT)
+	for file in `find . -name "*.hi" -print | sed -e 's/hi$$/hs/'`; \
+		do cpp -P -traditional $(GHC_DEFINES) $(HDDEFS) $$file >$$file.uncpp; \
+		done
+	( find . -name "*.uncpp" -print ) \
 	| xargs $(HADDOCK) $(HADDOCK_OPTS) -o $(HADDOCK_OUTPUT)
+	-rm `find . -name "*.uncpp" -print`
 
 .PHONY : haddock
 
@@ -115,8 +120,3 @@ objclean:
 
 clean: objclean
 #	$(call forall,$@)
-
-
-
-
-

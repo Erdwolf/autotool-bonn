@@ -15,8 +15,6 @@ module Control.Types
 
 -- , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , MNr(..), SNr(..), ANr(..), GNr(..), VNr(..) -- not abstrakt, see above
--- , Schule(..)
-, UNr(..)
 
 , ClockTime
 -- , Typ, Config, Remark, Name, File, Email
@@ -41,11 +39,13 @@ import Inter.Crypt
 import Data.Char ( toLower )
 import Data.Maybe ( fromMaybe )
 
-#ifdef HSQL14
+#ifdef HSQL16
 import Database.HSQL.MySQL
 import Database.HSQL.Types
-#endif
-#ifdef HSQL12
+#elif HSQL14
+import Database.HSQL.MySQL
+import Database.HSQL.Types
+#elif HSQL12
 import Database.MySQL.HSQL
 #endif
 
@@ -96,30 +96,35 @@ data TimeStatus = Early | Current | Late deriving ( Eq, Ord, Typeable )
 
 {-! for TimeStatus derive : Reader, ToDoc, Haskell2Xml !-}
 
-#ifdef HSQL12
+#ifdef HSQL16
+timer :: Int -> Int -> TimeStatus
+timer 1 _ = Early
+timer _ 1 = Late
+timer 0 0 = Current
+#elif HSQL14
+timer :: Int -> Int -> TimeStatus
+timer 1 _ = Early
+timer _ 1 = Late
+timer 0 0 = Current
+#elif HSQL12
 timer :: Bool -> Bool -> TimeStatus
 timer True _ = Early
 timer _ True = Late
 timer False False = Current
 #endif
-#ifdef HSQL14
-timer :: Int -> Int -> TimeStatus
-timer 1 _ = Early
-timer _ 1 = Late
-timer 0 0 = Current
-#endif
 
 -------------------------------------------------------------
 
-#ifdef HSQL12
+#ifdef HSQL16
+-- this HAS an Bool instance already
+-- but we are not going to use it
+#elif HSQL14
+-- this HAS an Bool instance already
+-- but we are not going to use it
+#elif HSQL12
 instance SqlBind Bool where
     fromSqlValue _ s = return $ "0" /= s
     toSqlValue f = show $ fromEnum f
-#endif
-
-#ifdef HSQL14
--- this HAS an Bool instance already
--- but we are not going to use it
 #endif
 
 -------------------------------------------------------------
@@ -202,21 +207,27 @@ instance ToString Wert where
 -------------------------------------------------------------
 
 -- | Matrikel-Nummer
-data MNr = MNr String deriving ( Eq, Ord, Typeable )
+-- FIXME: sollte das lieber ein String sein? School fehlt auch noch.
+data MNr = MNr Integer deriving ( Eq, Ord, Typeable )
 
 {-! for MNr derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind MNr where 
-    fromSqlValue _ s = Just $ MNr $ s
+    -- fromSqlValue ty s = fmap MNr $ fromSqlValue ty s
+    fromSqlValue _ s = Just $ MNr $ read s
     toSqlValue (MNr i) = toSqlValue i
-instance FromCGI MNr where
-    fromCGI cs = MNr cs
-instance ToString MNr where
-    toString (MNr i) = i
-instance ToEx MNr where
-    toEx (MNr i) = EString i
 
--------------------------------------------------------------
+instance FromCGI MNr where
+    fromCGI cs = MNr $ case readsPrec 0 cs of
+              [(i, rest)] -> i
+	      sonst -> error $ "FromCGI MNr:" ++ show sonst -- FIXME: error checking
+instance ToString MNr where
+    toString (MNr i) = show i
+
+instance ToEx MNr where
+    toEx (MNr i) = EInteger i
+
+-------------------------------------------------------------------
 
 -- | Aufgaben-Typ
 data Typ = Typ String deriving ( Eq, Ord, Typeable )
@@ -343,22 +354,6 @@ instance ToString ANr where
     toString (ANr i) = show i
 instance FromCGI ANr where
     fromCGI cs = ANr $ read cs
-
--- | Schul-Nummer
-
-data UNr = UNr Int deriving ( Eq, Ord, Typeable )
-
-{-! for UNr derive: ToDoc, Reader, Haskell2Xml !-}
-
-instance SqlBind UNr where 
-    fromSqlValue _ s = Just $ UNr $ read s -- FIXME: check SqlType
-    toSqlValue (UNr i) = toSqlValue i
-instance ToEx UNr where
-    toEx (UNr x) = EString $ show x
-instance ToString UNr where
-    toString (UNr i) = show i
-instance FromCGI UNr where
-    fromCGI cs = UNr $ read cs
 
 -- | Gruppen-Nummer
 

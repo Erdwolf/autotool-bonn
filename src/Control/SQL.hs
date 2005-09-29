@@ -25,11 +25,13 @@ import Text.ParserCombinators.Parsec.Expr
 
 import Mysqlconnect
 
-#ifdef HSQL14
+#ifdef HSQL16
 import Database.HSQL.MySQL hiding ( query, collectRows )
 import qualified Database.HSQL.MySQL
-#endif
-#ifdef HSQL12
+#elif HSQL14
+import Database.HSQL.MySQL hiding ( query, collectRows )
+import qualified Database.HSQL.MySQL
+#elif HSQL12
 import Database.MySQL.HSQL hiding ( query, collectRows )
 import qualified Database.MySQL.HSQL
 #endif
@@ -47,10 +49,11 @@ squery con scom = query con (show scom)
 query :: Connection -> String -> IO Statement
 query con com = do
     logged com
-#ifdef HSQL14
+#ifdef HSQL16
     Database.HSQL.MySQL.query con com
-#endif
-#ifdef HSQL12
+#elif HSQL14
+    Database.HSQL.MySQL.query con com
+#elif HSQL12
     Database.MySQL.HSQL.query con com
 #endif
             `catchSql` \ e -> do  
@@ -58,10 +61,11 @@ query con com = do
 		   error $ "SQLqueries.error in query:" ++ (show e) ++ com
 
 collectRows fun stat = do
-#ifdef HSQL14
+#ifdef HSQL16
     i <- Database.HSQL.MySQL.collectRows fun stat
-#endif
-#ifdef HSQL12
+#elif HSQL14
+    i <- Database.HSQL.MySQL.collectRows fun stat
+#elif HSQL12
     i <- Database.MySQL.HSQL.collectRows fun stat
 #endif
             `catchSql` \ e -> do  
