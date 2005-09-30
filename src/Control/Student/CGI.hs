@@ -34,11 +34,19 @@ login = do
     close -- table
 
     when click blank
-    [ stud ] <- io $ Control.Student.DB.get_unr_mnr 
+    studs <- io $ Control.Student.DB.get_unr_mnr 
 		        ( Control.Schule.unr u , fromCGI mnr )
-    guard $ Inter.Crypt.compare ( passwort stud ) pwd
     close -- row
-    return stud
+    case studs of
+         [ stud ] ->
+             if Inter.Crypt.compare ( passwort stud ) pwd
+                then return stud
+                else do
+                     plain "Passwort falsch."
+                     mzero
+         [ ] -> do
+             plain "Account existiert nicht."
+             mzero
 
 edit :: Student -> Form IO ()
 edit s = do
