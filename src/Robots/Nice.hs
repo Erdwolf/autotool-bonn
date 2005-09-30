@@ -15,13 +15,13 @@ import Data.Char
 instance Nice Config where
   nice k = vcat $ do
     let bereich @ ((l,u), (r,o)) = hull_with_goals k
-                                     -- ^ this is important here, since...
+                                     --  this is important here, since...
     let a = array bereich $ do p <- range bereich
 			       return ( p, '.' )
     let b = a // do r <- robots k
 		    return ( position r, head $ name r )
     let c = b // do r <- robots k
-                                    -- | ... we depend on it :-)
+                                    --  ... we depend on it :-)
 		    z <- maybeToList $ ziel r
 		    return ( z, toLower $ head $ name r )
     y <- reverse [ u .. o ]
