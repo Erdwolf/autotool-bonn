@@ -1,12 +1,12 @@
-module Partition.Roll where
+-- | (c) M. Rahn,  see Garey\/Johnson
 
--- | (c) M. Rahn,  see Garey/Johnson
-
--- | PARTITION_INT: 
--- | Input: Set A of numbers.
--- | Question: Exists A' \subseteq A with sum(A')=sum(A\A')?
+-- PARTITION_INT: 
+-- Input: Set A of numbers.
+-- Question: Exists B subseteq A with sum(B)=sum(A - B)?
 
 -- $Id$
+
+module Partition.Roll where
 
 import Control.Monad ( when , guard )
 import Control.Monad.ST ( ST , runST )
@@ -38,7 +38,7 @@ randP :: Int -> Int -> Int -> IO P
 randP l i = sequence . replicate l . randomRIO . (,) i
 
 -------------------------------------------------------------------------------
--- | algorithm: Garey/Johson, computers and intractability, sec 42., p. 90
+-- | algorithm: Garey\/Johson, computers and intractability, sec 42., p. 90
 
 type A s = STUArray s (Int,Int) Bool
 

@@ -34,17 +34,17 @@ gen p = do
 -}
     uvs <- ( sequence $ replicate ( paare p ) $ pair p )
 	   `repeat_until` 
-	   \ uvs -> and [ -- | alle paare verschieden 
+	   \ uvs -> and [ --  alle paare verschieden 
 			  uvs == nub uvs
 
-                          -- | alle buchstaben kommen vor
+                          --  alle buchstaben kommen vor
 			, let (l,r) = unzip uvs
 			  in length ( nub $ concat $ l ++ r ) 
 			     == 
 			     length ( alpha p )
 
-                          -- | es gibt mindestens ein wort mit
-                          -- | (mindestens) der geforderten breite
+                          --  es gibt mindestens ein wort mit
+                          --  (mindestens) der geforderten breite
                         , any ( \ (u,v) -> or [ length u >= breite p
 					      , length v >= breite p 
 					      ] 
@@ -63,16 +63,16 @@ pair p = ( do l <- randomRIO (1,breite p)
 	 ) `repeat_until` ( uncurry (/=) )
 
 
+-- | nur eine kürzeste lösung
 sol :: Param -> IO ( PCP, Maybe Folge )
--- nur eine kürzeste lösung
 sol p = do
     i <- gen p -- Instanz
     let fs = solutions ( viel p ) ( fern p ) i
     return ( i, listToMaybe $ take 1 $ fs )
 
-triviale_instanz :: PCP -> Bool
--- falls ein buchstabe nur einseitige differenzen hat,
+-- | falls ein buchstabe nur einseitige differenzen hat,
 -- dann nützt er in der lösung nicht viel (?? - check)
+triviale_instanz :: PCP -> Bool
 triviale_instanz i @ ( PCP uvs ) = or $ do
     x <- setToList $ letters i
     let diffs = do 
@@ -91,7 +91,7 @@ instance Generator PCProblem Param ( PCP, Folge ) where
 	       Nothing -> False
 	       Just f  -> and [ nah conf <= length f 
 			      , length f <= fern conf
-                                -- | alle paare sollen in der lösung vorkommen
+                                -- alle paare sollen in der lösung vorkommen
 			      , length (nub f) == paare conf
 			      ]
        return ( i, f )
