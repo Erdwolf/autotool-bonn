@@ -66,7 +66,8 @@ GHC_DEFINES = $(shell ./ghc-defs.sh)
 haddock :
 	mkdirhier $(HADDOCK_OUTPUT)
 	for file in `find . -name "*.hi" -print | sed -e 's/hi$$/hs/'`; \
-		do cpp -P -traditional $(GHC_DEFINES) $(HDDEFS) $$file >$$file.uncpp; \
+		do cpp -P -traditional $(GHC_DEFINES) $(HDDEFS) $$file \
+			| grep -v "Id: " >$$file.uncpp; \
 		done
 	( find . -name "*.uncpp" -print ) \
 	| xargs $(HADDOCK) $(HADDOCK_OPTS) -o $(HADDOCK_OUTPUT)

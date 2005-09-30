@@ -5,7 +5,7 @@
 -- von Markus Kreuz  mai99byv@studserv.uni-leipzig.de
 
 module Faktor.Faktor (
-     , make_fixed 
+      make_fixed 
      , make_quiz
     ) where
 

@@ -22,7 +22,7 @@ instance Generator MST Config ( (Int,Graph Int,Weight) , (Int,Graph Int) ) where
 
        perm <- permutation ns
 
-       -- | ks0 sichert den zusammenhang des graphen
+       --  ks0 sichert den zusammenhang des graphen
        let ks0 = map (uncurry kante) $ zip perm (tail perm)
 
        ks <- sequence $ replicate (edges conf) $ do

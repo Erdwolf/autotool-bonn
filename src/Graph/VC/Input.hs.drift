@@ -1,6 +1,6 @@
 module Graph.VC.Input where
 
--- $Id$
+--  $Id$
 
 import Autolib.ToDoc
 import Autolib.Reader

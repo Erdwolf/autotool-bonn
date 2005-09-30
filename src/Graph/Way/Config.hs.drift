@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
 
--- $Id$
+--  $Id$
 
 module Graph.Way.Config where
 

@@ -2,7 +2,7 @@
 
 module Graph.VC.SAT ( vc ) where
 
--- $Id$
+--  $Id$
 
 import Autolib.Graph.Type
 import Autolib.Set ( mkSet )

@@ -1,7 +1,7 @@
 -- | Umwandlung von Zahldarstellungen zu verschiedenen Basen
 
 module Number.Base.Central (
-     , make_fixed 
+      make_fixed 
      , make_quiz
     ) where
 

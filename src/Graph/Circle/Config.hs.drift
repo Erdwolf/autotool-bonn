@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
 
--- $Id$
+--  $Id$
 
 module Graph.Circle.Config where
 

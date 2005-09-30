@@ -1,6 +1,6 @@
 module Graph.Bi.Proof where
 
--- $Id$
+--  $Id$
 
 import Autolib.Graph.Graph
 import Autolib.Set

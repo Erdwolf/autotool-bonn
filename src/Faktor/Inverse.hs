@@ -1,5 +1,5 @@
 module Faktor.Inverse (
-     , make_fixed
+       make_fixed
      , make_quiz
 ) where
 

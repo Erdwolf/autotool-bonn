@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances #-}
 
--- $Id$
+--  $Id$
 
 module Graph.MST.Weight where
 
