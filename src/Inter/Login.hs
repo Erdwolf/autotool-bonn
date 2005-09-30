@@ -15,7 +15,7 @@ form = do
 
     open btable
     stud <- Control.Student.CGI.login
-    close
+    close -- btable
     let snr = S.snr stud
  
     tvors <- io $ V.get_tutored snr
