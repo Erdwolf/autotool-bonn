@@ -10,27 +10,35 @@ import qualified Control.Vorlesung as V
 import qualified Control.Student.CGI
 import qualified Control.Student.Type as S
 
-form :: Form IO ( S.Student, VNr, Bool )
+-- | returns ( s, v, ist_tutor, ist_eingeschrieben )
+-- unterschiede: tutor darf "alles",
+-- student darf keine aufgaben ändern und nur aktuelle aufgaben sehen
+form :: Form IO ( S.Student, V.Vorlesung, Bool , Bool )
 form = do
 
-    open btable
+    -- open btable
     stud <- Control.Student.CGI.login
-    close -- btable
+    -- close -- btable
     let snr = S.snr stud
- 
+
+    -- alle vorlesungen an dieser Schule
+    vors <- io $ V.get_at_school ( S.unr stud )
+    -- hierfür ist er tutor:
     tvors <- io $ V.get_tutored snr
-    -- unterschiede: tutor darf "alles",
-    -- student darf keine aufgaben ändern und nur aktuelle aufgaben sehen
-    let tutor = not $ null tvors
-    vors <- if tutor 
-            then return tvors
-	    else io $ V.get_attended snr
+    -- hierfür ist er eingeschrieben:
+    avors <- io $ V.get_attended snr
+ 
+    open btable
+    vor <- click_choice "Vorlesung" $ do
+        vor <- vors
+        return ( toString $ V.name vor , vor )
+    close -- btable
+
+    let tutor = V.vnr vor `elem` map V.vnr tvors
+	attends = V.vnr vor `elem` map V.vnr avors
 
     open btable
-    vnr <- click_choice "Vorlesung" $ do
-        vor <- vors
-        return ( toString $ V.name vor , V.vnr vor )
     when ( not tutor ) close -- risky
 
-    return ( stud, vnr, tutor )
+    return ( stud, vor, tutor, attends )
 

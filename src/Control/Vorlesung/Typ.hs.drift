@@ -21,6 +21,7 @@ data Vorlesung =
 	       -- | nicht in DB, aber bei Zugriff ausgerechnet
 	       , einschreib :: TimeStatus
 	       }
+     deriving Typeable
 
 {-! for Vorlesung derive: Reader, ToDoc, Haskell2Xml !-}
 

@@ -46,6 +46,8 @@ import qualified Control.Aufgabe as A
 import qualified Control.Stud_Aufg as SA
 import qualified Control.Student as S
 import qualified Control.Vorlesung as V
+import qualified Control.Gruppe as G
+import qualified Control.Stud_Grp as SG
 
 import Autolib.Reporter.Type hiding ( wrap, initial )
 import Autolib.ToDoc
@@ -81,16 +83,126 @@ slink = do
               else return "http://www.imn.htwk-leipzig.de/~autotool/scores"
     return scores
 
+
+
 iface :: Tree ( Either String Make ) -> Form IO ()
 iface tmk = do
 
-    let mks = do Right mk <- flatten tmk ; return mk
+    new <- click_choice_with_default 0 "Aktion" 
+        [ ( "Account benutzen", False ) 
+	, ( "Account anlegen", True )
+	]
 
-    h3 "Login und Auswahl der Vorlesung"
+    if new 
+       then edit_create Nothing
+       else use_account tmk
+
+use_account tmk = do
+
+    h3 "Login"
     -- für Student und Tutor gleicher Start
 
-    ( stud, vnr, tutor ) <- Inter.Login.form
-    -- tutor ist True, falls derjenige einer ist.
+    svt @ ( stud, vor, tutor, attends ) <- Inter.Login.form
+
+    open btable
+    arb <- click_choice_with_default 0 "Aktion" $
+           [ ("Aufgaben", True ) | attends ]
+	++ [ ("Übungsgruppen",  False ) ]
+    close -- btable 
+
+    if arb 
+       then aufgaben tmk ( stud, V.vnr vor, tutor )
+       else veranstaltungen ( stud, vor, tutor )
+
+-- | alle Übungen,
+-- markiere besuchte Übungen
+-- one-click für verlassen/besuchen 
+veranstaltungen :: ( S.Student , V.Vorlesung , Bool ) -> Form IO ()
+veranstaltungen ( stud , vor, False ) = do
+    -- alle Gruppen für diese Vorlesung
+    gs <- io $ G.get_this $ V.vnr vor
+    pre $ show $ vcat
+		 [ text "die Übungsgruppen dieser Vorlesung sind:"
+		 , nest 4 $ vcat $ map toDoc gs
+		 ]
+    -- dieser student für diese Vorlesung
+    ags <- io $ G.get_attended ( V.vnr vor ) ( S.snr stud )
+    pre $ show $ vcat
+		 [ text "Sie sind eingeschrieben für die Übungsgruppe:"
+		 , nest 4 $ vcat $ map toDoc ags
+		 ]
+    when ( Control.Types.Current /= V.einschreib vor ) $ do
+	 plain $ unlines [ "Das Ein/Ausschreiben ist"
+			 , "nur von " ++ show ( V.einschreibVon vor )
+			 , "bis " ++ show ( V.einschreibBis vor )
+			 , "möglich."
+			 ]
+	 mzero
+    opts <- sequence $ do
+        g <- gs
+	return $ do
+	    att <- io $ SG.attendance ( G.gnr g )
+	    let here = G.gnr g `elem` map G.gnr ags
+		msg  = toString ( G.name g )
+		     ++ if here then "verlassen" else "besuchen"
+	    return ( msg , ( G.gnr g, here, att >= G.maxStudents g ) )
+    open btable 
+    ( g, here, full ) <- click_choice "Gruppe" $ opts
+    close -- btable
+    if here 
+       then do 
+	   plain $ "click auf besuchte Gruppe: abmelden"
+           io $ SG.delete ( S.snr stud ) ( g )
+       else do
+           plain $ "click auf nicht besuchte Gruppe: anmelden"
+	   
+	   when full $ do
+	        plain $ "Diese Gruppe ist voll."
+		mzero
+           io $ SG.insert ( S.snr stud ) ( g )
+           sequence_ $ do
+		a <- ags
+		return $ io $ SG.delete ( S.snr stud ) ( G.gnr a )
+    return ()
+
+veranstaltungen ( stud , vor, True ) = do
+    plain "Daten der Vorlesung"
+    V.edit ( V.unr vor ) ( Just vor )
+    
+    plain "Übungsgruppen zu dieser Vorlesung:"
+    gs <- io $ G.get_this $ V.vnr vor
+
+    act <- click_choice "Aktion:"
+        [ ("anzeigen", View )
+        , ("erzeugen", Add )
+	, ("bearbeiten", Edit )
+	, ("löschen", Delete )
+	]
+    case act of
+	 View -> do
+	         pre $ show $ vcat
+		     [ text "die Übungsgruppen dieser Vorlesung sind:"
+		     , nest 4 $ vcat $ map toDoc gs
+		     ]
+	 Add -> do
+	     G.edit ( V.vnr vor ) Nothing
+	 Edit -> do
+             g <- click_choice "Gruppe" $ do
+	         g <- gs
+		 return ( toString $ G.name g , g )
+	     G.edit ( V.vnr vor ) ( Just g )
+	 Delete -> do
+             g <- click_choice "Gruppe" $ do
+	         g <- gs
+		 return ( toString $ G.name g , g )
+	     click <- submit "löschen"
+	     io $ G.delete $ G.gnr g
+
+
+----------------------------------------------------------------------------
+
+aufgaben tmk ( stud, vnr, tutor ) = do
+    let mks = do Right mk <- flatten tmk ; return mk
 
     let snr = S.snr stud
 
@@ -562,6 +674,7 @@ data Action = Solve  -- ^ neue Lösung bearbeiten
 	    | Statistics 
 	    | Config
             | Delete 
+            | Add
      deriving ( Show, Eq, Typeable )
 
 data Display = Current | Old 

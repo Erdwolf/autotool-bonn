@@ -31,6 +31,17 @@ get = do
     disconnect conn
     return res
 
+get_at_school :: UNr -> IO [ Vorlesung ]
+get_at_school unr = do
+    conn <- myconnect
+    stat <- squery conn $ Query qq
+        [ From $ map reed [ "vorlesung" ] 
+        , Where $ equals ( reed "vorlesung.UNr" ) ( toEx unr )
+        ]
+    res <- common stat
+    disconnect conn
+    return res
+
 get_this :: VNr -> IO [ Vorlesung ]
 get_this vnr = do
     conn <- myconnect

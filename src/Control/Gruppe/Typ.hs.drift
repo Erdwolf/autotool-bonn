@@ -16,9 +16,10 @@ data Gruppe =
      Gruppe { gnr :: GNr
 	       , vnr :: VNr
 	       , name :: Name
-	       , maxStudents :: Int
-	       , referent :: String
+	       , maxStudents :: Integer
+	       , referent :: Name
 	       }
+     deriving ( Typeable )
 
 {-! for Gruppe derive: Reader, ToDoc, Haskell2Xml !-}
 

@@ -61,6 +61,11 @@ class ToString a where toString :: a -> String
 
 -------------------------------------------------------------
 
+instance FromCGI Integer where fromCGI = read
+instance ToString Integer where toString = show
+
+-------------------------------------------------------------
+
 instance ToEx Crypt where 
     toEx c = EString ( unCrypt c )
 instance SqlBind Crypt where 

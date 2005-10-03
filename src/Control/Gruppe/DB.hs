@@ -38,6 +38,21 @@ get_this vnr = do
     disconnect conn
     return res
 
+get_attended :: VNr -> SNr -> IO [ Gruppe ]
+get_attended vnr snr = do
+    conn <- myconnect
+    stat <- squery conn $ Query qq
+        [ From $ map reed [ "gruppe", "stud_grp" ] 
+        , Where $ ands
+		[  equals ( reed "gruppe.VNr" ) ( toEx vnr )
+		, equals ( reed "gruppe.GNr" ) ( reed "stud_grp.gnr" )
+		, equals ( reed "stud_grp.snr" ) ( toEx snr )
+		]
+        ]
+    res <- common stat
+    disconnect conn
+    return res
+
 common = collectRows $ \ state -> do
     	g_gnr <- getFieldValue state "GNr"
     	g_vnr <- getFieldValue state "VNr"
@@ -88,7 +103,7 @@ put mgnr gruppe = do
     let common = [ ( reed "VNr", toEx $ vnr gruppe )
 		 , ( reed "Name", toEx $ name gruppe )
 		 , ( reed "Referent", toEx $ referent gruppe )
-		 , ( reed "MaxStudents", toEx $ maxStudents gruppe )
+		 , ( reed "MaxStudents", EInteger $ maxStudents gruppe )
 		 ]
     case mgnr of
 	 Nothing -> squery conn $ Query

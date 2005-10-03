@@ -62,7 +62,8 @@ put :: Maybe SNr
     -> IO ()
 put msnr stud = do
     conn <- myconnect 
-    let common = [ ( reed "Name", toEx $ CST.name stud )
+    let common = [ ( reed "UNr", toEx $ CST.unr stud )
+		 , ( reed "Name", toEx $ CST.name stud )
 		 , ( reed "Vorname", toEx $ CST.vorname stud )
 		 , ( reed "Email", toEx $ CST.email stud )
 		 , ( reed "Passwort", toEx $ CST.passwort stud )
