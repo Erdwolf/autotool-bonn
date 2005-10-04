@@ -16,6 +16,7 @@ import Data.Char ( isAlphaNum )
 import Data.Maybe ( isNothing )
 
 import Autolib.Util.Zufall
+import qualified Debug
 
 login :: Form IO Student
 login = do
@@ -46,6 +47,16 @@ login = do
                 then return stud
                 else do
                      plain "Passwort falsch."
+                     par
+                     plain $ unlines
+                           [ "Falls Sie Ihr Passwort vergessen haben,"
+                           , "dann kann ein neues erzeugt"
+                           , "und Ihnen per email an"
+                           , toString $ email stud
+                           , "geschickt werden."
+                           ]
+                     click <- submit "neues Passwort"
+                     when click $ do pwmail stud
                      mzero
          [ ] -> do
              plain "Account existiert nicht."
@@ -191,6 +202,35 @@ generator0 must = do
            close -- row
            return Nothing
 
+-- | generate new password,
+-- put ciphertext in db
+-- send plaintext to known email address
+-- be very very careful not to allow shell code injection
+pwmail stud = do
+    let e = toString $ email stud
+    is_an_email "Email" e
+    let m = toString $ mnr stud
+    is_a_word "Matrikel" m    
+
+    p <- io $ pass
+    is_a_word "Passwort" p    
+    c <- io $ encrypt p
+    io $ Control.Student.DB.put ( Just $ T.snr stud )
+	      $ stud { T.passwort = c }
+
+    let cmd = unwords
+           [ "echo", "Matrikel:", m, "Passwort:", p
+           , "|"
+           , "/usr/bin/mail"
+           , "-s", show "neues autotool-passwort"
+           , "-a", show "Reply-To: autotool@imn.htwk-leipzig.de"
+           , e
+           ]
+    pre $ "running: " ++ cmd
+    res <- io $ Debug.system cmd
+    pre $ "Exit code: " ++ show res
+
+----------------------------------------------------------------
  
 vokale = "aeiouy"
 konsonanten = "bcdfghjklmnpqrstvwxz"
