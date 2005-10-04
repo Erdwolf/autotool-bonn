@@ -166,18 +166,20 @@ veranstaltungen ( stud , vor, False ) = do
     return ()
 
 veranstaltungen ( stud , vor, True ) = do
-    plain "Daten der Vorlesung"
+    h3 "Daten der Vorlesung"
     V.edit ( V.unr vor ) ( Just vor )
     
-    plain "Übungsgruppen zu dieser Vorlesung:"
+    h3 "Übungsgruppen zu dieser Vorlesung:"
     gs <- io $ G.get_this $ V.vnr vor
 
+    open btable
     act <- click_choice "Aktion:"
         [ ("anzeigen", View )
         , ("erzeugen", Add )
 	, ("bearbeiten", Edit )
 	, ("löschen", Delete )
 	]
+    close -- btable
     case act of
 	 View -> do
 	         pre $ show $ vcat
@@ -195,7 +197,7 @@ veranstaltungen ( stud , vor, True ) = do
              g <- click_choice "Gruppe" $ do
 	         g <- gs
 		 return ( toString $ G.name g , g )
-	     click <- submit "löschen"
+	     click <- submit "wirklich löschen"
 	     io $ G.delete $ G.gnr g
 
 
