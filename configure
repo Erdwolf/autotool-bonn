@@ -271,7 +271,7 @@ PACKAGE_VERSION='0.0'
 PACKAGE_STRING='autotool 0.0'
 PACKAGE_BUGREPORT=''
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os GHC GHC_PKG AUTODRIFT HADDOCK HSQL BASE WWW CGI DEBUG CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AR LD DEP_LIBS LIB_DIRS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os GHC GHC_PKG AUTODRIFT HADDOCK HSQL BASE WWW CGI DEBUG CGINAME CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CPP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA AR LD DEP_LIBS LIB_DIRS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1714,6 +1714,13 @@ if test "${with_debug+set}" = set; then
 
 fi;
 
+
+
+if test "$DEBUG" = "True"; then
+   CGINAME="Super_Debug.cgi"
+else
+   CGINAME="Super.cgi"
+fi
 
 
 
@@ -3727,6 +3734,7 @@ s,@BASE@,$BASE,;t t
 s,@WWW@,$WWW,;t t
 s,@CGI@,$CGI,;t t
 s,@DEBUG@,$DEBUG,;t t
+s,@CGINAME@,$CGINAME,;t t
 s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t

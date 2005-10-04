@@ -165,6 +165,13 @@ AC_ARG_WITH(debug,
 
 AC_SUBST(DEBUG)
 
+if test "$DEBUG" = "True"; then
+   CGINAME="Super_Debug.cgi"
+else
+   CGINAME="Super.cgi"
+fi
+AC_SUBST(CGINAME)
+
 
 dnl ***********************************************
 dnl other progs
