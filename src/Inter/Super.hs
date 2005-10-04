@@ -16,6 +16,7 @@ import Inter.Store
 import Inter.Login
 import Inter.Logged
 import qualified Inter.Param as P
+import qualified Inter.Statistik
 
 import Help
 
@@ -98,6 +99,9 @@ iface tmk = do
        then edit_create Nothing
        else use_account tmk
 
+data Code = Stat | Auf | Einsch
+   deriving ( Show, Eq, Typeable )
+
 use_account tmk = do
 
     h3 "Login"
@@ -110,13 +114,15 @@ use_account tmk = do
 
     open btable
     arb <- click_choice_with_default 0 "Aktion" $
-           [ ("Aufgaben", True ) | attends || tutor ]
-	++ [ ("Einschreibung",  False ) ]
+           [ ("Aufgaben", Auf ) | attends || tutor ]
+	++ [ ("Einschreibung",  Einsch ) ]
+        ++ [ ("Statistiken", Stat ) | tutor ]
     close -- btable 
 
-    if arb 
-       then aufgaben tmk ( stud, V.vnr vor, tutor )
-       else veranstaltungen ( stud, vor, tutor )
+    case arb of
+       Auf ->  aufgaben tmk ( stud, V.vnr vor, tutor )
+       Einsch ->  veranstaltungen ( stud, vor, tutor )
+       Stat -> Inter.Statistik.main svt
 
 -- | alle Übungen,
 -- markiere besuchte Übungen

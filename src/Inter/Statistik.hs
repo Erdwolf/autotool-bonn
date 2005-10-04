@@ -1,6 +1,6 @@
 -- |  Statistik
 
-module Main where
+module Inter.Statistik where
 
 import Inter.CGI
 import Inter.Login
@@ -10,11 +10,15 @@ import qualified Control.Aufgabe.Typ as A
 import qualified Control.Aufgabe.DB
 
 import qualified Control.Vorlesung.DB
+import qualified Control.Vorlesung.Typ as V
 
 import Control.Stud_Aufg.Typ
 import Control.Stud_Aufg.DB
 import Control.Student.DB
 import Control.Student.CGI
+
+import qualified Control.Student as S
+import Control.Stud_Aufg as SA
 
 import Autolib.ToDoc
 import Autolib.FiniteMap
@@ -23,46 +27,45 @@ import Autolib.Util.Sort
 
 import Control.Monad
 
-main :: IO ()
-main = Inter.CGI.execute "Statistik.cgi" $ iface 
+-- main :: IO ()
+-- main = Inter.CGI.execute "Statistik.cgi" $ iface 
 
-iface :: Form IO ()
-iface = do
+main svt @ ( stud, vor, tutor, attends ) = do
 
     h3 "autotool: Statistiken"
-    open btable
-    svt @ ( stud, vnr, tutor ) <- Inter.Login.form
-    close -- btable
 
     guard $ tutor
 
     open btable
     ( action, _ ) <- selector_submit_click "zeige" Nothing
-           [ ("Resultate (mandatory)", resultate vnr True ) 
-           , ("Resultate (alle)"     , resultate vnr False) 
-	   , ("Studenten", studenten vnr)
+           [ ("Resultate (mandatory)", resultate vor True ) 
+           , ("Resultate (alle)"     , resultate vor False) 
+	   , ("Studenten", studenten vor)
 	   ]
     action
 
 --------------------------------------------------------------------------
 
-studenten vnr = do
-    t <- io $ Control.Vorlesung.DB.teilnehmer vnr
-    ( mnr, _ ) <- selector_submit_click "bearbeite" Nothing $ do
-        (mnr, v, n) <- sortBy (\(m,v,n) -> n) $ map snd t
-        let s = unwords [ toString mnr , toString v, toString n ]
-        return (s, mnr)
+studenten vor = do
+    studs <- io $ Control.Vorlesung.DB.steilnehmer $ V.vnr vor
+    ( stud , _ ) <- selector_submit_click "bearbeite" Nothing $ do
+        stud <- sortBy S.mnr studs
+        let s = unwords [ toString $ S.mnr stud
+                        , toString $ S.vorname stud
+                        , toString $ S.name stud
+                        ]
+        return (s, stud)
     close -- btable
-    [ stud ] <- io $ Control.Student.DB.get_mnr mnr
     Control.Student.CGI.edit stud
     
 --------------------------------------------------------------------------
 
-resultate vnr only_mandatory = do
+resultate vor only_mandatory = do
+    let vnr = V.vnr vor
     close -- btable
 
-    t <- io $ Control.Vorlesung.DB.teilnehmer vnr
-    let fmt = listToFM t -- snr to (mnr, vorname,  name)
+    studs <- io $ Control.Vorlesung.DB.steilnehmer vnr
+    -- let fmt = listToFM t -- snr to (mnr, vorname,  name)
 
     aufs0 <- io $ Control.Aufgabe.DB.get ( Just vnr )
     let aufs = do 
@@ -79,9 +82,10 @@ resultate vnr only_mandatory = do
         auf <- aufs
 	return $ io $ Control.Stud_Aufg.DB.get_anr $ A.anr auf
    
-    let stud_aufg = listToFM $ do
+    let stud_aufg :: FiniteMap ( SNr, ANr ) ( Oks, Nos )
+        stud_aufg = listToFM $ do
           its <- items ; it <- its
-          return ( (snr it, anr it) , ( ok it, no it ))
+          return ( (SA.snr it, SA.anr it) , ( SA.ok it, SA.no it ))
     let keys = mkSet $ keysFM stud_aufg
 	snrs = smap fst keys
 	anrs = smap snd keys
@@ -99,17 +103,18 @@ resultate vnr only_mandatory = do
     plain "total"
     close -- row
     sequence_ $ do
-        snr <- setToList $ snrs
-	let (mnr, vorname, name) = case lookupFM fmt snr of
-	       Just (mnr, vorname, name) 
-		   -> (toString mnr, toString vorname, toString name)
-	       Nothing -> ( "??", "??", "??" )
+        stud <- studs
+	let mnr = S.mnr stud
+            vorname = S.vorname stud
+            name = S.name stud
 	return $ do
 	    open row 
-	    plain mnr ; plain vorname ; plain name
+	    plain $ toString mnr
+            plain $ toString vorname
+            plain $ toString name
 	    nums <- sequence $ do
 	        anr <- setToList $ anrs
-                let result = lookupFM stud_aufg (snr, anr) 
+                let result = lookupFM stud_aufg (S.snr stud, anr) 
 		return $ do
 		     plain $ case result of
 		         Just ( Oks o, Nos n ) -> 

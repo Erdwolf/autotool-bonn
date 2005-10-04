@@ -47,7 +47,8 @@ login = do
                 then return stud
                 else do
                      plain "Passwort falsch."
-                     par
+                     mzero
+                     par -- nicht erreichbarer code:
                      plain $ unlines
                            [ "Falls Sie Ihr Passwort vergessen haben,"
                            , "dann kann ein neues erzeugt"
