@@ -58,6 +58,7 @@ import Autolib.FiniteMap
 
 import qualified Util.Datei as D
 import Debug
+import qualified Local
 
 import System.Random
 import System.Directory
@@ -71,7 +72,7 @@ import qualified Control.Exception
 import qualified Text.Html
 
 main :: IO ()
-main = Inter.CGI.execute "Super.cgi#hotspot" $ do
+main = Inter.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
    wrap $ iface $ Inter.Collector.tmakers
    scores <- io $ slink `Control.Exception.catch` \ e -> return ( show e )
    footer scores
@@ -104,10 +105,13 @@ use_account tmk = do
 
     svt @ ( stud, vor, tutor, attends ) <- Inter.Login.form
 
+    when tutor $ do
+        h3 "Sie sind Tutor für diese Vorlesung."
+
     open btable
     arb <- click_choice_with_default 0 "Aktion" $
-           [ ("Aufgaben", True ) | attends ]
-	++ [ ("Übungsgruppen",  False ) ]
+           [ ("Aufgaben", True ) | attends || tutor ]
+	++ [ ("Einschreibung",  False ) ]
     close -- btable 
 
     if arb 
@@ -116,22 +120,24 @@ use_account tmk = do
 
 -- | alle Übungen,
 -- markiere besuchte Übungen
--- one-click für verlassen/besuchen 
+-- one-click für verlassen\/besuchen 
 veranstaltungen :: ( S.Student , V.Vorlesung , Bool ) -> Form IO ()
 veranstaltungen ( stud , vor, False ) = do
-    -- alle Gruppen für diese Vorlesung
-    gs <- io $ G.get_this $ V.vnr vor
-    pre $ show $ vcat
-		 [ text "die Übungsgruppen dieser Vorlesung sind:"
-		 , nest 4 $ vcat $ map toDoc gs
-		 ]
+    h3 "Einschreibung"
+
     -- dieser student für diese Vorlesung
     ags <- io $ G.get_attended ( V.vnr vor ) ( S.snr stud )
-    pre $ show $ vcat
-		 [ text "Sie sind eingeschrieben für die Übungsgruppe:"
-		 , nest 4 $ vcat $ map toDoc ags
-		 ]
+
+    case ags of
+        [] -> plain "Sie sind in keine Übungsgruppe eingeschrieben."
+        _  -> show_gruppen "Sie sind eingeschrieben in Übungsgruppe:" ags
+
+    -- alle Gruppen für diese Vorlesung
+    gs <- io $ G.get_this $ V.vnr vor
+    show_gruppen "alle Übungsgruppen zu dieser Vorlesung:" gs
+
     when ( Control.Types.Current /= V.einschreib vor ) $ do
+         br
 	 plain $ unlines [ "Das Ein/Ausschreiben ist"
 			 , "nur von " ++ show ( V.einschreibVon vor )
 			 , "bis " ++ show ( V.einschreibBis vor )
@@ -144,6 +150,7 @@ veranstaltungen ( stud , vor, False ) = do
 	    att <- io $ SG.attendance ( G.gnr g )
 	    let here = G.gnr g `elem` map G.gnr ags
 		msg  = toString ( G.name g )
+                     ++ " "
 		     ++ if here then "verlassen" else "besuchen"
 	    return ( msg , ( G.gnr g, here, att >= G.maxStudents g ) )
     open btable 
@@ -151,9 +158,11 @@ veranstaltungen ( stud , vor, False ) = do
     close -- btable
     if here 
        then do 
+           par
 	   plain $ "click auf besuchte Gruppe: abmelden"
            io $ SG.delete ( S.snr stud ) ( g )
        else do
+           par
            plain $ "click auf nicht besuchte Gruppe: anmelden"
 	   
 	   when full $ do
@@ -182,28 +191,54 @@ veranstaltungen ( stud , vor, True ) = do
     close -- btable
     case act of
 	 View -> do
-	         pre $ show $ vcat
-		     [ text "die Übungsgruppen dieser Vorlesung sind:"
-		     , nest 4 $ vcat $ map toDoc gs
-		     ]
+             show_gruppen "Übungsgruppen zu dieser Vorlesung:" gs
 	 Add -> do
 	     G.edit ( V.vnr vor ) Nothing
 	 Edit -> do
+             open btable
              g <- click_choice "Gruppe" $ do
 	         g <- gs
 		 return ( toString $ G.name g , g )
+             close
 	     G.edit ( V.vnr vor ) ( Just g )
 	 Delete -> do
+             open btable
              g <- click_choice "Gruppe" $ do
 	         g <- gs
 		 return ( toString $ G.name g , g )
-	     click <- submit "wirklich löschen"
+             open row
+	     click <- submit "wirklich löschen?"
+             close
+             close
 	     io $ G.delete $ G.gnr g
+
+show_gruppen header gs = do
+     plain $ header
+     open btable
+     open row
+     plain "Name" ; plain "Referent"
+     plain "Studenten (jetzt)"
+     plain "Studenten (maximal)"
+     close
+     sequence_ $ do
+         g <- gs
+         return $ do
+             open row
+             plain $ toString $ G.name g
+             plain $ toString $ G.referent g
+             c <- io $ SG.attendance $ G.gnr g
+             plain $ show c
+             plain $ toString $ G.maxStudents g
+             close -- row
+     close -- btable
+    
 
 
 ----------------------------------------------------------------------------
 
 aufgaben tmk ( stud, vnr, tutor ) = do
+    h3 "Aufgaben"
+
     let mks = do Right mk <- flatten tmk ; return mk
 
     let snr = S.snr stud
@@ -218,7 +253,7 @@ aufgaben tmk ( stud, vnr, tutor ) = do
     ( mauf , action ) <- 
         if tutor
 	   then do 
-                -- btable has been opened in Inter.Login.form
+                open btable 
 	        mauf <- click_choice "Aufgabe"
                          $ ( "(neue Aufgabe)", Nothing ) : opts
                 action <- click_choice "Action"

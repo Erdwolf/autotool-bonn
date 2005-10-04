@@ -5,11 +5,7 @@ include Makefile-defs
 
 ###############################################################################
 
-IPROGS = Super
-CPROGS = autoan
-CGIS =	$(patsubst %,Inter/%.cgi,$(IPROGS)) 
-
-#	$(patsubst %,control/%.cgi,$(CPROGS))
+MAIN = Inter/Super.cgi
 
 all : drift $(CGIS)
 
@@ -96,15 +92,8 @@ drift-clean :
 ###############################################################################
 
 
-install : $(CGIS)
-	cp $(CGIS) $(CGI)/
-
-install-face : $(INTER_FACE_CGI)
-	scp $(INTER_FACE_CGI)  $(INTER_FACE_TARGET)
-
-ghci-face:
-	$(GHCI_COMMAND)  $(EXTRA_PACKS)  $(INTER_FACE_WITH_PATH)
-
+install : $(MAIN)
+	cp $(MAIN) $(CGI)/$(CGINAME)
 
 
 .PHONY : do

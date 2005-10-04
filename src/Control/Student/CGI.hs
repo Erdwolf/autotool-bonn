@@ -28,17 +28,19 @@ login = do
 	return ( toString $ Control.Schule.name u , u )
     mnr <- defaulted_textfield "Matrikel" ""
     pwd <- defaulted_password  "Passwort" ""
-    open row
-    click <- submit "Login"
-    close -- row
+
+    change <- click_choice_with_default 0 "Aktion"
+           [ ("Login", False)
+           , ( "persönliche Daten ändern", True) 
+           ]
+
     close -- btable
 
-    when click blank
     studs <- io $ Control.Student.DB.get_unr_mnr 
 		        ( U.unr u , fromCGI mnr )
     -- close -- row
 
-    case studs of
+    stud <- case studs of
          [ stud ] ->
              if Inter.Crypt.compare ( passwort stud ) pwd
                 then return stud
@@ -48,6 +50,12 @@ login = do
          [ ] -> do
              plain "Account existiert nicht."
              mzero
+
+
+    when change $ do
+        Control.Student.CGI.edit stud
+
+    return stud
 
 -----------------------------------------------------------------------
 
@@ -82,21 +90,28 @@ complain css = do
 	return $ do
 	    plain cs
     close -- row
+    open row
+    blank
+    submit "try again"
+    close -- row
     mzero    
 
 -- | falls 'Just Student', dann editieren
 -- falls 'Nothing', dann anlegen
 edit_create :: Maybe Student -> Form IO ()
 edit_create ms = do
+
     open btable
     let dtf label select = 
            defaulted_textfield label $ case ms of
                 Just s -> toString $ select s ; Nothing -> ""
     
     us <- io $ Control.Schule.get 
-    u <- click_choice "Schule" $ do
-        u <- us
-	return ( toString $ Control.Schule.name u , u )
+    u <- case ms of
+        Just s -> return $ T.unr s -- darf Schule nicht ändern
+        Nothing -> click_choice "Schule" $ do
+            u <- us
+	    return ( toString $ Control.Schule.name u , U.unr u )
 
     mnr <- dtf "matrikel" T.mnr
     vorname <- dtf "vorname" T.vorname
@@ -109,7 +124,7 @@ edit_create ms = do
        Nothing -> p
 
     open row
-    check <- submit "check"
+    -- check <- submit "check"
     close -- row
 
     is_a_word "Matrikel" mnr    
@@ -129,8 +144,11 @@ edit_create ms = do
     close -- row
     close -- btable
 
-    schon <- io $ get_unr_mnr ( U.unr u , fromCGI mnr )
-    when ( not $ null schon ) $ do
+    schon <- io $ get_unr_mnr ( u , fromCGI mnr )
+    let others = case ms of
+            Just s -> filter ( \ s' -> T.snr s' /= T.snr s ) schon
+            Nothing -> schon
+    when ( not $ null others ) $ do
 	plain "diese Matrikelnummer ist bereits in Benutzung"
 	mzero
 
@@ -139,7 +157,7 @@ edit_create ms = do
 	   $ T.Student { T.mnr = fromCGI mnr
                , T.unr = case ms of
                      Just s -> T.unr s
-                     Nothing -> U.unr u
+                     Nothing -> u
 	       , T.vorname = fromCGI vorname
 	       , T.name = fromCGI name
 	       , T.email = fromCGI email

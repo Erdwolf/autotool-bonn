@@ -5,4 +5,7 @@ module Local where
 debug :: Bool
 debug = @DEBUG@
 
+cgi_name :: String
+cgi_name = "@CGINAME@"
+
 

@@ -19,6 +19,10 @@ form = do
     -- open btable
     stud <- Control.Student.CGI.login
     -- close -- btable
+
+    aule stud
+
+aule stud = do
     let snr = S.snr stud
 
     -- alle vorlesungen an dieser Schule
