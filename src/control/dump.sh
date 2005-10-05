@@ -10,11 +10,19 @@ echo "export mysqlhost mysqluser mysqlpasswd mysqldb" >> mysqlconnect.data
 . mysqlconnect.data
 rm -f mysqlconnect.data
 
-fname=dump/$(date -I).dump
+fname=dump/$(date +"%F_%T").dump
 
 mysqldump \
     -h "$mysqlhost" -u "$mysqluser" --password="$mysqlpasswd" "$mysqldb" \
     > $fname
-bzip2 -9 $fname
+
+if ( diff dump/latest.dump $fname )
+then
+    rm $fname
+else
+    cp $fname dump/latest.dump
+    bzip2 -9 $fname
+fi
+
 
 
