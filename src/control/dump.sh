@@ -16,7 +16,7 @@ mysqldump \
     -h "$mysqlhost" -u "$mysqluser" --password="$mysqlpasswd" "$mysqldb" \
     > $fname
 
-if ( diff dump/latest.dump $fname )
+if ( diff -q dump/latest.dump $fname )
 then
     rm $fname
 else
