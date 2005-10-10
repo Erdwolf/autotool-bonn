@@ -103,9 +103,24 @@ tmakers =
     heading "Aufgaben" 
          [ item Blank.make
 	 , item Upload.make
-         , heading "Formale Sprachen" 
-                [ item PCProblem.Quiz.make_quiz 
-	        , item PCProblem.Quiz.make_fixed
+         , heading "Automaten und Formale Sprachen" 
+                [ heading "endliche Automaten"
+                     [ item NFA.Convert.make
+	             , item NFA.Convert.qmake
+	             , item NFA.Equiv.Challenger.make
+	             , item NFA.Equiv.Challenger.qmake
+                     ]
+                , heading "reguläre Ausdrücke"
+	             [ item Exp.Convert.make
+	             , item Exp.Convert.qmake
+	             , item Exp.Smaller.make
+                     ]
+                , heading "kontextfreie Grammatiken"
+                     [ item Grammatik.CF.Interface.make
+                     ]
+                , heading "Kellerautomaten"
+	             [ item NPDA.Inter.make
+                     ]
                 ]
          , heading "Logik"
                 [ item Boolean.Instance.make
@@ -114,7 +129,9 @@ tmakers =
                 , item SAT.SAT.make_quiz
                 ]
          , heading "Kombinatorik"
-                [ item Sortier.Netz.Check.make
+                [ item PCProblem.Quiz.make_quiz 
+	        , item PCProblem.Quiz.make_fixed
+                , item Sortier.Netz.Check.make
 	        , item Robots.Interface.make
 	        , item Robots.Interface.qmake
 	        , item Hanoi.Semantik.make
@@ -178,8 +195,6 @@ tmakers =
                 , item Faktor.Inverse.make_fixed
                 , item Faktor.Inverse.make_quiz
                 ]
-
-
          , heading "Codierung und Kompression"
               [ heading "Codierung"
                     [ item Code.Huffman.Boiler.make_fixed
@@ -199,18 +214,8 @@ tmakers =
                     , item $ Code.Compress.make_fixed Code.LZ.Lempel_Ziv_77
                     ]
               ]
-
          , heading "noch nicht eingeordnet"
                 [ item Palindrom.Plain.make
-                , item NFA.Convert.make
-	        , item NFA.Convert.qmake
-	        , item Exp.Convert.make
-	        , item Exp.Convert.qmake
-	        , item Exp.Smaller.make
-	        , item NFA.Equiv.Challenger.make
-	        , item NFA.Equiv.Challenger.qmake
-                , item Grammatik.CF.Interface.make
-	        , item NPDA.Inter.make
                 , item Partition.Central.make_fixed
                 , item Partition.Central.make_quiz
                 , item KnapsackFraction.Central.make_fixed
