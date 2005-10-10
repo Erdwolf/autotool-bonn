@@ -37,7 +37,7 @@ main svt @ ( stud, vor, tutor, attends ) = do
     guard $ tutor
 
     open btable
-    ( action, _ ) <- selector_submit_click "zeige" Nothing
+    action <- click_choice_indexed "zeige" 
            [ ("Resultate (mandatory)", resultate vor True ) 
            , ("Resultate (alle)"     , resultate vor False) 
 	   , ("Studenten", studenten vor)
