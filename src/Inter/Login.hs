@@ -10,6 +10,8 @@ import qualified Control.Vorlesung as V
 import qualified Control.Student.CGI
 import qualified Control.Student.Type as S
 
+import qualified Text.Html
+
 -- | returns ( s, v, ist_tutor, ist_eingeschrieben )
 -- unterschiede: tutor darf "alles",
 -- student darf keine aufgaben ändern und nur aktuelle aufgaben sehen
@@ -37,6 +39,12 @@ aule stud = do
         vor <- vors
         return ( toString $ V.name vor , vor )
     close -- btable
+
+    let motd =  V.motd vor
+    when ( not $ null motd ) $ do
+        par 
+        plain motd
+        par
 
     let tutor = V.vnr vor `elem` map V.vnr tvors
 	attends = V.vnr vor `elem` map V.vnr avors

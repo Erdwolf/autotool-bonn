@@ -18,6 +18,7 @@ qq =  Select
 		, "vorlesung.EinschreibBis as Bis"
 	        , "NOW() < vorlesung.EinschreibVon as Early"
 		, "NOW() > vorlesung.EinschreibBis as Late"
+                , "vorlesung.motd as Motd"
 		] 
 
 -- | get alle vorlesungen aus DB
@@ -93,12 +94,14 @@ common = collectRows $ \ state -> do
         -- NOTE: the SQL type of a boolean expression is still int (in 1.4)
 	g_early  <- getFieldValue state "Early"
 	g_late   <- getFieldValue state "Late"
+        g_motd   <- getFieldValue state "Motd"
         return $ Vorlesung { vnr = g_vnr
 			   , unr = g_unr
 			 , name = g_name
 			  , einschreibVon = g_von
 			  , einschreibBis = g_bis
 			  , einschreib = timer g_early g_late 
+                          , motd = g_motd
     			   }
 
 

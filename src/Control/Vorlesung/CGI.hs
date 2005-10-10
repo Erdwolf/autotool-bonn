@@ -9,12 +9,17 @@ import Control.Monad
 edit :: UNr -> Maybe Vorlesung -> Form IO ()
 edit u mv = do
     open btable    
-    let dtf label select =
+    let dtf0 label select =
            defaulted_textfield label $ case mv of
-                Just v -> toString $ select v ; Nothing -> "?"
+                Just v -> select v ; Nothing -> "?"
+        dtf label select = dtf0 label ( toString . select )
+        dta0 label select =
+           defaulted_textarea label $ case mv of
+                Just v -> select v ; Nothing -> ""
     n <- dtf "Name" T.name
     v <- dtf "einschreiben von" T.einschreibVon
-    b <- dtf "einschreiben von" T.einschreibBis
+    b <- dtf "einschreiben bis" T.einschreibBis
+    m <- dta0 "message of the day" T.motd
     close -- btable
     up <- submit "update"
     when up $ do
@@ -25,4 +30,5 @@ edit u mv = do
 		       , name = fromCGI n
 		       , einschreibVon = fromCGI v
 		       , einschreibBis = fromCGI b
+                       , motd = m
 		       }
