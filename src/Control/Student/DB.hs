@@ -23,14 +23,24 @@ get_snr snr = get_where $ equals ( reed "student.SNr" ) ( toEx snr )
 snr_by_unr_mnr :: ( UNr, MNr ) -> IO [ SNr ]
 snr_by_unr_mnr um = get_unr_mnr um >>= return . map CST.snr
 
-get_where :: Expression -> IO [ CST.Student ]
-get_where ex = do
+-- so findet man die Waisenkinder:
+-- select student.* -- oder sogar *
+-- from student left join stud_grp ON student.snr=stud_grp.snr 
+-- where stud_grp.gnr is null;  
+
+-- | alle, die in keiner Übungsgruppe sind
+orphans :: UNr -> IO [ CST.Student ]
+orphans unr = 
+    let from = reed "student LEFT JOIN stud_grp ON student.snr = stud_grp.snr"
+    in  get_from_where [ from ] $ equals ( reed "student.UNr" ) ( toEx unr )
+
+get_from_where from ex = do
     conn <- myconnect
     stat <- squery conn $ Query
-        ( Select $ map reed [ "SNr", "UNr", "MNr", "Name", "Vorname" 
+        ( Select $ map reed [ "student.SNr", "UNr", "MNr", "Name", "Vorname" 
 			    , "Email", "Passwort" 
 			    ] )
-        [ From $ map reed [ "student" ] 
+        [ From $ from
         , Where $ ex
 	]
     inh  <- collectRows (\ state -> do
@@ -53,6 +63,8 @@ get_where ex = do
     disconnect conn
     return inh
 
+get_where :: Expression -> IO [ CST.Student ]
+get_where ex = get_from_where ( map reed [ "student" ] ) ex
 
 -- | put into table:
 -- do not evaluate Student.snr (it may be undefined!)

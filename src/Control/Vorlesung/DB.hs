@@ -105,6 +105,7 @@ common = collectRows $ \ state -> do
     			   }
 
 
+
 snr_teilnehmer :: VNr -> IO [ SNr ]
 snr_teilnehmer vnr = do
     conn <- myconnect

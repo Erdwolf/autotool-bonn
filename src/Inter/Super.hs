@@ -25,7 +25,7 @@ import qualified Autolib.Output
 
 import Control.Types 
     ( toString, fromCGI, Name, Remark, HiLo (..), Status (..)
-    , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr
+    , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr, UNr
     )
 
 import qualified Control.Types   
@@ -49,6 +49,7 @@ import qualified Control.Student as S
 import qualified Control.Vorlesung as V
 import qualified Control.Gruppe as G
 import qualified Control.Stud_Grp as SG
+import qualified Control.Schule as U
 
 import Autolib.Reporter.Type hiding ( wrap, initial )
 import Autolib.ToDoc
@@ -113,16 +114,23 @@ use_account tmk = do
         h3 "Sie sind Tutor für diese Vorlesung."
 
     open btable
-    arb <- click_choice_with_default 0 "Aktion" $
-           [ ("Aufgaben", Auf ) | attends || tutor ]
-	++ [ ("Einschreibung",  Einsch ) ]
-        ++ [ ("Statistiken", Stat ) | tutor ]
+    aktion <- click_choice_with_default 0 "Aktion" $
+           [ ("Aufgaben",  aufgaben tmk ( stud, V.vnr vor, tutor )  ) 
+                 | attends || tutor ]
+	++ [ ("Einschreibung", veranstaltungen ( stud, vor, tutor )  ) ]
+        ++ [ ("Statistiken",   Inter.Statistik.main svt  ) | tutor ]
+        ++ [ ("Waisenkinder", waisenkinder $ S.unr stud ) | tutor ]
     close -- btable 
+    aktion
 
-    case arb of
-       Auf ->  aufgaben tmk ( stud, V.vnr vor, tutor )
-       Einsch ->  veranstaltungen ( stud, vor, tutor )
-       Stat -> Inter.Statistik.main svt
+-- | Studenten behandeln, die in keiner Übungsgruppe sind
+waisenkinder :: UNr -> Form IO ()
+waisenkinder u = do
+    h3 $ "Waisenkinder"
+    plain $  "Studenten Ihrer Schule, die keine Übungsgruppe gewählt haben"
+    studs <- io $ S.orphans $ u
+    open btable
+    Inter.Statistik.edit_studenten studs
 
 -- | alle Übungen,
 -- markiere besuchte Übungen

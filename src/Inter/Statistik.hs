@@ -37,7 +37,7 @@ main svt @ ( stud, vor, tutor, attends ) = do
     guard $ tutor
 
     open btable
-    action <- click_choice_indexed "zeige" 
+    action <- click_choice "zeige" 
            [ ("Resultate (mandatory)", resultate vor True ) 
            , ("Resultate (alle)"     , resultate vor False) 
 	   , ("Studenten", studenten vor)
@@ -48,6 +48,9 @@ main svt @ ( stud, vor, tutor, attends ) = do
 
 studenten vor = do
     studs <- io $ Control.Vorlesung.DB.steilnehmer $ V.vnr vor
+    edit_studenten studs
+
+edit_studenten studs = do
     ( stud , _ ) <- selector_submit_click "bearbeite" Nothing $ do
         stud <- sortBy S.mnr studs
         let s = unwords [ toString $ S.mnr stud

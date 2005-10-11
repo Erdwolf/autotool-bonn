@@ -166,9 +166,37 @@ instance R.Reader Action where
        R.my_reserved "SELECT" ; bs <- reader `R.sepBy` R.my_comma ; return $ Select bs 
           -- TODO: complete this
 
+
 ----------------------------------------------------------------------------
 
-data Modifier = From [ Id ]
+-- | note: arguments to Left_Join should be Table_References, not Ids
+data Table_Reference = Table_Id Id
+                     | Left_Join Id 
+                                 Id
+                                 Expression -- ^ join condition
+     deriving Typeable
+
+instance T.ToDoc Table_Reference where
+    toDoc (Table_Id id) = T.toDoc id
+    toDoc (Left_Join l r c) = 
+        T.hsep [ T.toDoc l , T.text "LEFT", T.text "JOIN", T.toDoc r
+               , T.text "ON", T.toDoc c
+               ]
+
+instance R.Reader Table_Reference where
+    atomic_reader = do
+        l <- R.reader 
+        option ( Table_Id l ) $ do
+                R.my_reserved "LEFT"
+                R.my_reserved "JOIN"
+                r <- R.reader
+                R.my_reserved "ON"
+                c <- R.reader
+                return $ Left_Join l r c
+
+----------------------------------------------------------------------------
+
+data Modifier = From [ Table_Reference ]
 	      | Where Expression
               | Using [ Bind ]
      deriving Typeable
