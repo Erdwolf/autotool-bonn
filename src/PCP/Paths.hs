@@ -25,11 +25,16 @@ import PCP.Examples
 import Control.Monad.State
 import Control.Monad.Identity
 import Data.Maybe
-import Data.FiniteMap
+
 
 -- | check dis
 
 test = check simple $ take 4 ssimple
+
+app p xs = 
+    let top  = do x <- xs ; fst $ p !! x
+	down = do x <- xs ; snd $ p !! x
+    in  ( top, down )
 
 emit fname pcp sol 
    = writeFile ( fname ++ ".dot" ) 
@@ -61,6 +66,8 @@ data Config c a = Config
 		, cut :: a
 		, time :: Int
 		}
+instance ToDoc [c] => ToDoc ( Config c a ) where
+    toDoc = toDoc . wesen
 
 wesen :: Config c a -> (Int, [c])
 wesen conf = ( time conf, strip $ border conf )
@@ -304,7 +311,7 @@ instance NFAC c a => Show  (Net c a) where
     show = render . toDoc
 instance NFAC c a => ToDot (Net c a) where
     toDot = toDot . net
-    toDotProgram _ = "neato"
+    toDotProgram _ = Neato
     toDotOptions _ = unwords 
          $ [ "-Nshape=point",  "-Nfixedsize=true"
 	   -- , "-Gsize=9,14", "-Gratio=fill"
@@ -322,7 +329,7 @@ instance Hash a => Hash (Label a) where
 
 instance ToDoc (Label a) where toDoc = tag
 instance Reader (Label a) -- dummy
-instance Show (Label a) where show = render . toDoc
+
 
 {-
 automate :: (  NFAC c Int )
