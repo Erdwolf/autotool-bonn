@@ -270,6 +270,7 @@ operators =
     in [ map lop [ "*", "/" ]
        , map lop [ "+", "-" ]
        , map lop [ "<", "=", ">" ]
+       , map lop [ "IS" ]
        , map lop [ "AND", "OR" ]
        , map lop [ "BETWEEN" ] 
        ]

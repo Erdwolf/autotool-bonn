@@ -32,7 +32,10 @@ snr_by_unr_mnr um = get_unr_mnr um >>= return . map CST.snr
 orphans :: UNr -> IO [ CST.Student ]
 orphans unr = 
     let from = reed "student LEFT JOIN stud_grp ON student.snr = stud_grp.snr"
-    in  get_from_where [ from ] $ equals ( reed "student.UNr" ) ( toEx unr )
+    in  get_from_where [ from ] $ ands
+            [ equals ( reed "student.UNr" ) ( toEx unr )
+	    , reed "stud_grp.gnr IS NULL"
+	    ]
 
 get_from_where from ex = do
     conn <- myconnect
