@@ -752,7 +752,7 @@ statistik tutor stud aufs = do
     open btable
     disp <- click_choice_with_default 0 "Aufgaben anzeigen:"
 	      [ ( "nur aktuelle", [ Current ] )
-	      , ( "alle"   , [ Late, Current, Early ] )
+	      , ( "alle"   , [ Late, Current ] ++ [ Early | tutor ] )
 	      ]
     close -- btable
     br
