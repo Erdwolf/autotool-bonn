@@ -26,6 +26,7 @@ import qualified Autolib.Output
 import Control.Types 
     ( toString, fromCGI, Name, Remark, HiLo (..), Status (..)
     , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr, UNr
+    , TimeStatus (..)
     )
 
 import qualified Control.Types   
@@ -728,8 +729,8 @@ data Action = Solve  -- ^ neue Lösung bearbeiten
             | Add
      deriving ( Show, Eq, Typeable )
 
-data Display = Current | Old 
-     deriving ( Show, Eq, Typeable )
+-- data Display = Current | Old 
+--     deriving ( Show, Eq, Typeable )
 
 -- | für Student: statistik aller seiner Aufgaben anzeigen, 
 -- für Tutor: kann Aufgabenlösung sehen und (nach-)korrigieren
@@ -745,13 +746,13 @@ statistik tutor stud aufs = do
             let okno = case sas of
 		     [    ] ->  ( Oks 0, Nos 0 , Nothing )
 		     [ sa ] ->  ( SA.ok sa, SA.no sa, SA.result sa )
-	    let stat = if A.current auf then Current else Old
+	    let stat = if A.current auf then Current else Late
 	    return ( auf, stat, okno )
 
     open btable
     disp <- click_choice_with_default 0 "Aufgaben anzeigen:"
 	      [ ( "nur aktuelle", [ Current ] )
-	      , ( "alle"   , [ Current, Old ] )
+	      , ( "alle"   , [ Late, Current, Early ] )
 	      ]
     close -- btable
     br
@@ -762,12 +763,12 @@ statistik tutor stud aufs = do
             open btable
             open row
             plain "Aufgabe" ; plain "Status" ; plain "Highscore"
-            plain "bis"
+            plain "Bearbeitungszeit"
             plain "vorige Bewertung" ; plain "Gesamt-Wertungen"
             close -- row
             sequence_ $ do 
-                ( auf, stat, ( ok, no, mres ) ) <- score
-		guard $ stat `elem` disp
+                ( auf, _ , ( ok, no, mres ) ) <- score
+		guard $ A.timeStatus auf `elem` disp
                 let name = toString $ A.name  auf
                 return $ do
             	    open row
@@ -780,9 +781,10 @@ statistik tutor stud aufs = do
                     farbe col $ toString $ A.name auf
                     farbe col $ toString $ A.status auf
                     farbe col $ toString $ A.highscore auf
-                    farbe col $ if A.current auf
-			        then toString $ A.bis auf
-				else "vorbei"
+                    farbe col $ case A.timeStatus auf of
+                        Early -> "erst ab " ++ toString ( A.von auf )
+                        Current -> "noch bis " ++ toString ( A.bis auf )
+                        Late -> "vorbei seit " ++  toString ( A.bis auf )
                     farbe col $ case mres of
 				  Just res -> show res
 				  Nothing  -> ""
@@ -796,11 +798,11 @@ statistik tutor stud aufs = do
             end -- mutex
     -- auswerten
     let goal = sum $ do 
-            ( auf, stat, okno ) <- score
+            ( auf, _ , okno ) <- score
 	    guard $ A.status auf == Mandatory
 	    return ( 1 :: Int )
 	done = sum $ do 
-            ( auf, stat, (ok, no, mres) ) <- score
+            ( auf, _ , (ok, no, mres) ) <- score
 	    guard $ A.status auf == Mandatory
 	    guard $ ok > Oks 0
 	    return ( 1 :: Int )
