@@ -752,7 +752,7 @@ statistik tutor stud aufs = do
     open btable
     disp <- click_choice_with_default 0 "Aufgaben anzeigen:"
 	      [ ( "nur aktuelle", [ Current ] )
-	      , ( "alle"   , [ Late, Current ] ++ [ Early | tutor ] )
+	      , ( "alle"   , [ Late, Current , Early ] )
 	      ]
     close -- btable
     br
@@ -790,8 +790,10 @@ statistik tutor stud aufs = do
 				  Nothing  -> ""
             	    farbe col $ show ( ok , no )
                     sequence_ $ do
-		        ch <- if tutor then        [ View, Edit ]
-			               else [ Solve, View ]
+		        ch <- case A.timeStatus auf of
+			        _ | tutor -> [ View, Edit ]
+			        Early     -> []
+				_         -> [ Solve, View ]
                         return $ click ( show ch , ( ch, auf ))
             	    close -- row
             close -- table
