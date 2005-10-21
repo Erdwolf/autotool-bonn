@@ -8,44 +8,42 @@ import Scorer.Aufgabe
 import Scorer.Util hiding ( size )
 
 import Control.Types hiding ( size )
-import Control.Vorlesung.DB
-import Control.Aufgabe.DB
-import qualified Control.Vorlesung.Typ as V
-import qualified Control.Aufgabe.Typ as A
-import qualified Control.Student.DB
+
+import qualified Control.Vorlesung as V
+import qualified Control.Aufgabe as A
+import qualified Control.Student as S
+import qualified Control.Schule as U
 
 import Autolib.FiniteMap hiding ( collect )
 import Autolib.Set
 import Autolib.Util.Sort
 
-import Control.Monad ( guard , liftM )
+import Control.Monad ( guard , liftM, when )
 import System.IO ( hFlush, stdout )
 
 
 -- | druckt Auswertung für alle Aufgaben einer Vorlesung
-emit :: Bool -> VNr -> DataFM -> IO ()
-emit deco vnr fm0 = do
-    vs <- Control.Vorlesung.DB.get_this vnr
-    let name = case vs of
-          [v] -> toString $ V.name v 
-          _   -> show vnr
+emit :: Bool -> U.Schule -> V.Vorlesung -> DataFM -> IO ()
+emit deco u vor fm0 = do
 
-    mnrs <- Control.Vorlesung.DB.teilnehmer vnr
-    let smnrs = mkSet $ map ( \ (_,(mnr,_,_)) -> mnr ) mnrs
+    studs <- V.steilnehmer $ V.vnr vor
+    let smnrs = mkSet $ map S.mnr studs
     let fm = mapFM ( \ key val -> do
 		  e <- val
 		  guard $ matrikel e `elementOf` smnrs
 		  return e
 	      ) fm0
-
-    putStrLn $ unlines
+                                  
+    when ( 0 < sizeFM fm ) $ do
+        putStrLn $ unlines
 	     [ "", ""
-	     ,  unwords [ "Auswertung für Lehrveranstaltung", name, ":" ] 
+             , unwords [ toString $ U.name u ]
+	     ,  unwords [ "Auswertung für Lehrveranstaltung"
+                        , toString $ V.name vor, ":" ] 
 	     ]
-
-    mapM_ (single deco) $ fmToList fm
-    totalize deco fm
-    inform
+        mapM_ (single deco (V.unr vor)) $ fmToList fm
+        totalize deco (V.unr vor) fm
+        inform
 
 
 inform :: IO ()
@@ -64,14 +62,11 @@ realize es = take scoreItems -- genau 10 stück
 	   $ es
     
 -- | druckt Auswertung einer Aufgabe
-single :: Bool -> ( ANr, [ Einsendung ] ) -> IO ()
-single deco arg @( anr, es ) = do
-    aufs <- Control.Aufgabe.DB.get_this anr
-    let name = case aufs of
-          [a] -> toString $ A.name a 
-          _   -> show anr
+single :: Bool -> UNr -> ( ANr, [ Einsendung ] ) -> IO ()
+single deco u arg @( anr, es ) = do
+    [ auf ] <- A.get_this anr
     let header = unwords 
-	       [ "Aufgabe" , name
+	       [ "Aufgabe" , toString $ A.name auf
 	       , unwords $ if null es then [] else
 	         [ "( beste bekannte Lösung", show (size $ head es), ")" ]
 	       ]
@@ -79,23 +74,24 @@ single deco arg @( anr, es ) = do
 
     let realized = realize es
 
-    decorated <- if deco then mapM (liftM show . decorate) realized 
+    decorated <- if deco then mapM (liftM show . decorate u) realized 
 		         else return $ map show realized
 
     putStrLn $ unlines $ [ header , strich ] ++ decorated
 
-decorate :: Einsendung -> IO ( SNr , Einsendung )
-decorate e = do
+decorate :: UNr -> Einsendung -> IO ( SNr , Einsendung )
+decorate u e = do
 
-   xs <- Control.Student.DB.snr_by_mnr ( matrikel e ) 
+   studs <- S.get_unr_mnr ( u , matrikel e ) 
 
-   case xs of []    -> return ( read "SNr 0" , e )
-              (s:_) -> return (            s , e )
+   case studs of 
+       []    -> return ( read "SNr 0" , e )
+       (s:_) -> return ( S.snr s , e )
 
-totalize :: Bool -> DataFM -> IO ()
-totalize deco fm = do
+totalize :: Bool -> UNr -> DataFM -> IO ()
+totalize deco u fm = do
 
-    infos <- collect deco fm
+    infos <- collect deco u fm
 
     putStrLn $ unlines
 	     $ [ "Top Ten"
@@ -103,18 +99,19 @@ totalize deco fm = do
 	       ] ++ do (i,p) <- infos
 		       return $ unwords [ stretch 10 $ show p
 					, ":"
-					, stretch 10 i
+					, stretch 10 $ i
 					]
 
 -- | gesamtliste der highscore
 collect :: Bool 
+        -> UNr
 	-> DataFM 
 	->  IO [ ( String , Int ) ] -- ^ ( Matrikel, Punkt )
-collect deco fm = do
+collect deco u fm = do
 
-    let nice (e,p) = if deco then do (s,_) <- decorate e
+    let nice (e,p) = if deco then do (s,_) <- decorate u e
 				     return (show s,p)
-			     else return (show $ matrikel e,p)
+			     else return (toString $ matrikel e,p)
 
     infos <- mapM nice $ do
 	     (auf,es) <- fmToList fm

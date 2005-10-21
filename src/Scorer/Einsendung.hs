@@ -31,9 +31,9 @@ data Einsendung = Einsendung
 
 instance Show ( SNr , Einsendung ) where
     show (s,i) = unwords 
-        [ spaci 4 $ abs $ size i
-	, spaci 12 $ s
-	,    (nulli 2 $ (date i) !! 2) ++ "."
+        [ spaci 4 $ show $ abs $ size i
+	, spaci 12 $ toString s
+	,    (nulli 2 $ date i !! 2) ++ "."
 		  ++ (nulli 2 $ (date i) !! 1) ++ "."
 		  ++ (nulli 4 $ (date i) !! 0) 
 	,    (nulli 2 $ (date i) !! 3) ++ ":"
@@ -44,9 +44,9 @@ instance Show ( SNr , Einsendung ) where
 
 instance Show Einsendung where
     show i = unwords 
-        [ spaci 4 $ abs $ size i
-	, spaci 12 $ matrikel i
-	,    (nulli 2 $ (date i) !! 2) ++ "."
+        [ spaci 4 $ show $ abs $ size i
+	, spaci 12 $ toString $ matrikel i
+	,    (nulli 2 $ date i !! 2) ++ "."
 		  ++ (nulli 2 $ (date i) !! 1) ++ "."
 		  ++ (nulli 4 $ (date i) !! 0) 
 	,    (nulli 2 $ (date i) !! 3) ++ ":"
@@ -54,8 +54,8 @@ instance Show Einsendung where
 		  ++ (nulli 2 $ (date i) !! 5)
 		]
 
-spaci :: Show a => Int -> a -> String
-spaci n = stretch n . show
+spaci :: Int -> String -> String
+spaci n = stretch n 
 
 nulli :: Show a => Int -> a -> String
 nulli n = stretchWith '0' n . show

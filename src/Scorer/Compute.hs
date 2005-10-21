@@ -10,6 +10,9 @@ import Scorer.Emit
 import Control.Types hiding ( size )
 import Control.Aufgabe.Typ
 
+import qualified Control.Vorlesung as V
+import qualified Control.Schule as U
+
 import Autolib.Util.Sort
 import Autolib.FiniteMap
 import Control.Monad ( guard )
@@ -17,8 +20,8 @@ import System ( getArgs )
 
 
 -- | in fm steht abbildung von aufgabe(name) auf inhalt (z. b. direction)
-compute :: ( VNr, ScoreDefFM ) -> IO ()
-compute ( vl, aufs ) = do
+compute :: U.Schule -> ( V.Vorlesung, ScoreDefFM ) -> IO ()
+compute u ( vor, aufs ) = do
 
     -- wir lesen die logfiles für jede vorlesung komplett neu ein,
     -- damit wir die entries, die wir nicht brauchen, 
@@ -40,7 +43,7 @@ compute ( vl, aufs ) = do
     -- damit wir "best known" anzeigen können
     -- vor der bepunktung müssen die aber raus
 
-    emit decorate vl total
+    emit decorate u vor total
 
 update :: ScoreDefFM -> DataFM -> Einsendung -> DataFM
 update aufs mappe e = 
@@ -53,14 +56,15 @@ update aufs mappe e =
 collide :: HiLo
 	-> [ Einsendung ] -> [ Einsendung ] 
 	-> [ Einsendung ]
-collide dir schon [ neu ] = 
+collide dir schon neus = 
     let fun = case dir of
-            Low -> id ; High -> negate
+            Low -> id ; High -> negate 
     in    take ( scoreItems + 5 ) -- platz lassen für admins (s. o.)
 	$ nubBy matrikel -- nur eine lösung je student
-        $ insertBy ( \ e -> ( fun ( size e ) -- erst nach größe
+        $ mergeBy ( \ e -> ( fun ( size e ) -- erst nach größe
 			    , date e )        -- dann nach zeit
-		   ) neu schon
+		   ) neus schon
 
+mergeBy fun xs ys = sortBy fun (xs ++ ys) -- FIXME
 
 
