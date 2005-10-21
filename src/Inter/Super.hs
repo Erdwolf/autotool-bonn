@@ -81,10 +81,11 @@ main = Inter.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
    footer scores
 
 slink = do
-    e <- doesFileExist "link.scores"
-    scores <- if e 
-              then readFile "link.scores" >>= return . head . lines
-              else return "http://www.imn.htwk-leipzig.de/~autotool/scores"
+--    e <- doesFileExist "link.scores"
+    scores <- 
+        if False 
+        then readFile "link.scores" >>= return . head . lines
+        else return "http://autotool.imn.htwk-leipzig.de/high/scores.text"
     return scores
 
 
