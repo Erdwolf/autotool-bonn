@@ -728,6 +728,7 @@ data Action = Solve  -- ^ neue Lösung bearbeiten
 	    | Config
             | Delete 
             | Add
+            | Rescore Wert
      deriving ( Show, Eq, Typeable )
 
 -- data Display = Current | Old 
@@ -849,7 +850,8 @@ tutor_statistik vnr auf = do
     open row
     plain "Matrikel" ; plain "Vorname" ; plain "Name" 
     plain "Oks" ; plain "Nos" ; plain "Result"
-    plain "Action"
+    plain "Action" ; plain "Action" ; plain "Action"
+    plain "Edit (experimental)"
     close -- row
 
     -- erstmal die, die wirklich was eingesandt haben
@@ -867,6 +869,7 @@ tutor_statistik vnr auf = do
 	    click ( "View", ( View, sauf, stud ))
 	    click ( "Edit",  ( Edit, sauf, stud ))
 	    click ( "Clear_Cache",  ( Clear_Cache, sauf, stud ))
+            radio_score sauf stud
             close -- row
     
     -- dann die, die noch gar nichts geschickt haben
@@ -890,6 +893,14 @@ tutor_statistik vnr auf = do
 
     close -- btable
     end -- mutex
+
+-- | input widget for a score
+radio_score sauf stud = do
+    p <- radiogroup $ do p <- [ 0 .. 5 ] ; return ( show p, p )
+    let w =  case p of
+            0 -> Nothing
+            p -> Okay { Control.Types.punkte = p, size = 1 }
+    return ( Rescore  w , sauf, stud )
 
 -----------------------------------------------------------------------------
 
