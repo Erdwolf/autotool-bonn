@@ -4,14 +4,15 @@ module Pump.Type where
 
 --   $Id$
 
-import ToDoc
-import Reader
+import Autolib.ToDoc
+import Autolib.Reader
 
-import Reporter
+import Autolib.Reporter
 
-import Size
-import Data.FiniteMap
+import Autolib.Size
+import Autolib.FiniteMap
 
+import Data.Typeable
 
 --------------------------------------------------------------------------
 
@@ -36,15 +37,9 @@ data Pumping z =>
 	     { n :: Int
 	     , zerlege :: FiniteMap String z
 	     }
+    deriving ( Typeable )
 
 {-! for Pump derive: Reader, ToDoc !-}     
-
-
-instance Pumping z => Show ( Pump z ) where 
-    show = render . toDoc
-instance Pumping z => Read ( Pump z ) where
-    readsPrec = parsec_readsPrec
-
 
 instance Pumping z => Size ( Pump z ) where
     size p @ Nein {} = sum [ length $ w | (n,w) <- fmToList $ wort p ]

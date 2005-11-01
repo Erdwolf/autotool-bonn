@@ -11,14 +11,14 @@ import Pump.Type
 import Language.Type
 
 
-import ToDoc
-import Reporter
+import Autolib.ToDoc
+import Autolib.Reporter
 import Control.Monad (guard)
-import Data.FiniteMap
-import Maybe ( isNothing )
+import Autolib.FiniteMap
+import Data.Maybe ( isNothing )
 import Data.List ( nub, sort )
 
-import Size
+import Autolib.Size
 
 negativ :: Pumping z 
 	=> Language -> Pump z 

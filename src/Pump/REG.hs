@@ -4,6 +4,7 @@ module Pump.REG
 
 ( Zerlegung (..)
 , Pump (..)
+, module Autolib.FiniteMap
 )
 
 where
@@ -13,10 +14,10 @@ where
 import Pump.Type
 import Pump.REG.Type
 
-import Util.Splits
-import Data.FiniteMap
-import Reporter
-import ToDoc
+import Autolib.Util.Splits
+import Autolib.FiniteMap
+import Autolib.Reporter
+import Autolib.ToDoc
 
 
 instance Pumping Zerlegung where

@@ -1,3 +1,5 @@
+{-# OPTIONS -fallow-overlapping-instances -fallow-incoherent-instances #-}
+
 module Pump.Inter where
 
 -- -- $Id$
@@ -6,34 +8,45 @@ import Pump.Type
 import Pump.Positiv
 import Pump.Negativ
 
-import Language.Type
+import Language.Syntax
+import Language.Inter
+import Language
+
+import qualified Pump.Quiz
 
 import Challenger.Partial
 
-import Util.Sort
-import Util.Seed
+import Autolib.Util.Sort
+import Autolib.Util.Seed
 
-import Data.FiniteMap
+import Autolib.FiniteMap
 import Inter.Types
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
+
+import qualified Pump.REG as REG
+import qualified Pump.CF as CF
+
+import Inter.Quiz
+
+import Data.Typeable
 
 ------------------------------------------------------------------------
 
-data PUMP = PUMP deriving ( Eq, Ord, Show, Read )
+data PUMP = PUMP deriving ( Eq, Ord, Show, Read, Typeable )
 
 data Conf z = Conf { lang :: Language
 		 , samp :: [ String ]
 		 , typo :: z -- unused, nur zur Typ-information
 		 , ja_bound :: Int
 		 }
-     deriving Show -- ??
+     deriving Typeable
 
 instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
     describe PUMP conf = vcat 
 	     [ text $ "Untersuchen Sie, ob die Sprache  L = "
 	     , nest 4 $ toDoc (lang conf)
-	     , text $ "die " ++ tag (typo conf) ++ " erfüllt."
+	     , text $ "die " ++ Pump.Type.tag (typo conf) ++ " erfüllt."
 	     , text ""
 	     , nest 4 $ parens
 	              $ text "Ja-Einsendungen werden bei dieser Aufgabe"
@@ -42,6 +55,7 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 	     , text "Zu dieser Sprache gehören unter anderem die Wörter:"
 	     , nest 4 $ toDoc $ take 10 $ samp conf
 	     ]
+
     initial PUMP conf = 
 	let e = exempel
 	    w = inflate 1 e
@@ -62,28 +76,24 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 	positiv ( lang conf ) p ws
 	return ()
 
- 
-type VP z = Var PUMP ( Conf z ) ( Pump z )
+---------------------------------------------------------------------- 
 
-make :: Pumping z
-     => Language
-     -> VP z
-make l = 
-    Var { problem = PUMP
-	, aufgabe = "P"
-	, version = nametag l
-	, key = \ matrikel -> return matrikel
-	, gen = \ key -> do
-	      seed $ read key
-	      -- TODO: cache this:
-	      wss <- sequence $ do
-	           c <- [ 10 .. 30 ]
-	           return $ samples l 2 c
-	      return $ return 
-	             $ Conf { lang = l
+instance Generator PUMP ( Pump.Quiz.Conf z ) ( Conf z ) where
+    generator p c key = do
+        let l = Language.Inter.inter $ Pump.Quiz.lang c
+      	wss <- sequence $ do
+	    c <- [ 10 .. 30 ]
+	    return $ samples l 2 c
+	return $ Conf { lang = l
 			    , samp = nub $ concat wss
-			    , typo = undefined :: z
+			    , typo = undefined 
 			    , ja_bound = 5
 			    }
-	}
 
+instance Project PUMP ( Conf z ) ( Conf z ) where
+    project p c = c
+
+---------------------------------------------------------------------- 
+
+reg = quiz PUMP ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )
+cf  = quiz PUMP ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )

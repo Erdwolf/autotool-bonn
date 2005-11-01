@@ -896,10 +896,10 @@ tutor_statistik vnr auf = do
 
 -- | input widget for a score
 radio_score sauf stud = do
-    p <- radiogroup $ do p <- [ 0 .. 5 ] ; return ( show p, p )
+    p <- radiogroup "0" $ do p <- [ 0 .. 5 ] ; return ( show p, p )
     let w =  case p of
-            0 -> Nothing
-            p -> Okay { Control.Types.punkte = p, size = 1 }
+            Just p | p > 0 -> Okay { Control.Types.punkte = p, size = 1 }
+            _              -> No
     return ( Rescore  w , sauf, stud )
 
 -----------------------------------------------------------------------------

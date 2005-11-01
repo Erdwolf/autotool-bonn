@@ -9,16 +9,16 @@ where
 import Pump.Type
 import Language.Type
 
-import Util.Seed
-import ToDoc
-import Size
+import Autolib.Util.Seed
+import Autolib.ToDoc
+import Autolib.Size
 import Control.Monad ( guard )
 
-import Reporter
-import Data.FiniteMap
-import Data.Set
+import Autolib.Reporter
+import Autolib.FiniteMap
+import Autolib.Set
 import Data.List ( sort, nub )
-import Maybe ( isNothing )
+import Data.Maybe ( isNothing )
 
 positiv :: Pumping z
 	=> Language -> Pump z -> [ String ]

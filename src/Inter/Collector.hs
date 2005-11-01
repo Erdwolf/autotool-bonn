@@ -41,8 +41,12 @@ import qualified NFA.Convert
 import qualified NFA.Equiv.Challenger
 import qualified Exp.Convert
 import qualified Exp.Smaller
+
+import qualified Pump.Inter
+
 import qualified Grammatik.CF.Interface
 import qualified NPDA.Inter
+
 import qualified SAT.SAT
 import qualified Baum.Reconstruct
 import qualified Baum.Binary
@@ -120,6 +124,10 @@ tmakers =
                      ]
                 , heading "Kellerautomaten"
 	             [ item NPDA.Inter.make
+                     ]
+                , heading "Pumping-Lemma"
+                     [ item Pump.Inter.reg
+                     , item Pump.Inter.cf
                      ]
                 ]
          , heading "Logik"

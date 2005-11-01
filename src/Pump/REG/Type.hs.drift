@@ -4,26 +4,20 @@ module Pump.REG.Type where
 
 --   $Id$
 
+import Autolib.Size
+import Autolib.Reader
+import Autolib.ToDoc
 
 
-
-import Size
-import Reader
-import ToDoc
-
-
-import Util.Splits
+import Autolib.Util.Splits
 import Control.Monad (guard)
-
+import Data.Typeable
 
 data Zerlegung = Zerlegung
 	       { u :: String, v :: String, w :: String }
-     deriving (Eq, Ord)
+     deriving (Eq, Ord, Typeable)
 
 {-! for Zerlegung derive: ToDoc, Reader !-}
-
-instance Show Zerlegung where show = render . toDoc
-instance Read Zerlegung where readsPrec = parsec_readsPrec
 
 --------------------------------------------------------------------------
 
