@@ -285,34 +285,48 @@ aufgaben tmk ( stud, vnr, tutor ) = do
          Just auf <- return mauf 
 	 ( act, sauf, stud ) <- tutor_statistik vnr auf
 
-         when ( act == Clear_Cache ) $ do
-            let d =  D.Datei { D.pfad = [ "autotool", "cache"
+	 case act of 
+	     Rescore rsc -> do
+		  sequence_ $ do
+		      ( w, sauf, stud ) <- rsc
+		      return $ do
+		          Main.punkte tutor stud auf
+			      ( Nothing, Nothing, Just w
+			      , Just $ Text.Html.primHtml 
+					    "Bewertung durch Tutor"  
+			      )
+
+             Clear_Cache -> do
+                  let d =  D.Datei { D.pfad = [ "autotool", "cache"
 				   , toString vnr
 				   , toString $ SA.anr sauf
 				   ]
 			  , D.name = toString $ S.mnr stud 
 			  , D.extension = "cache"
 			  } 
-            io $ D.loeschen d `catch` \ any -> return ()
-            plain $ "geloescht: " ++ show d
-	    mzero
+		  io $ D.loeschen d `catch` \ any -> return ()
+		  plain $ "geloescht: " ++ show d
 
-         mtriple <- show_previous ( Edit == act ) vnr mks stud auf sauf
-         case mtriple of
-	     Nothing -> return ()
-	     Just ( inst, inp, res, com ) -> do
-                 [ stud ] <- io $ S.get_snr $ SA.snr sauf
-                 -- das muß auch nach Einsendeschluß gehen,
-                 -- weil es der Tutor ausführt
-		 Main.punkte tutor stud auf ( inst, inp, res, com )
+             _ -> do
+                  mtriple <- show_previous ( Edit == act ) 
+                                 vnr mks stud auf sauf
+		  case mtriple of
+		      Nothing -> return ()
+		      Just ( inst, inp, res, com ) -> do
+                           [ stud ] <- io $ S.get_snr $ SA.snr sauf
+			   -- das muß auch nach Einsendeschluß gehen,
+			   -- weil es der Tutor ausführt
+			   Main.punkte tutor stud auf ( inst, inp, res, com )
 	 mzero
 
     let manr = fmap A.anr mauf
     
     when ( Delete == action ) $ do
         Just anr <- return manr
-        io $ A.delete anr
-        plain $ unwords [ "Aufgabe", show anr, "gelöscht." ]
+	wirk <- submit "wirklich löschen?"
+	when wirk $ do
+            io $ A.delete anr
+            plain $ unwords [ "Aufgabe", show anr, "gelöscht." ]
 	mzero
 
     ( mk, type_click ) <- find_mk tmk tutor mauf
@@ -723,12 +737,12 @@ vorbei = do
 data Action = Solve  -- ^ neue Lösung bearbeiten
 	    | View -- ^ alte Lösung + Bewertung ansehen
 	    | Edit -- ^ alte Lösung + Bewertung ändern
+	    | Rescore [ ( Wert, SA.Stud_Aufg, S.Student ) ] 
             | Clear_Cache
 	    | Statistics 
 	    | Config
             | Delete 
             | Add
-            | Rescore Wert
      deriving ( Show, Eq, Typeable )
 
 -- data Display = Current | Old 
@@ -855,7 +869,7 @@ tutor_statistik vnr auf = do
     close -- row
 
     -- erstmal die, die wirklich was eingesandt haben
-    sequence_ $ do
+    rscores1 <- sequence $ do
         sauf <- saufs
         return $ do
             [ stud ] <- io $ Control.Student.DB.get_snr $ SA.snr sauf
@@ -869,13 +883,14 @@ tutor_statistik vnr auf = do
 	    click ( "View", ( View, sauf, stud ))
 	    click ( "Edit",  ( Edit, sauf, stud ))
 	    click ( "Clear_Cache",  ( Clear_Cache, sauf, stud ))
-            radio_score sauf stud
+            rs <- radio_score sauf stud
             close -- row
-    
+	    return rs    
+
     -- dann die, die noch gar nichts geschickt haben
     all_studs <- io $ Control.Vorlesung.DB.steilnehmer vnr
     let done = mkSet $ map SA.snr saufs
-    sequence_ $ do
+    rscores2 <- sequence $ do
           stud <- all_studs
           guard $ not $ S.snr stud `elementOf` done
           return $ do
@@ -889,18 +904,32 @@ tutor_statistik vnr auf = do
               sauf <- io $ Control.Stud_Aufg.DB.put_blank 
                               (S.snr stud) (A.anr auf)
 	      click ( "Edit",  ( Edit, sauf, stud ))
+              rs <- radio_score sauf stud
               close -- row
+	      return rs
 
     close -- btable
+    click ( "Edits ausführen"
+	  , ( Rescore ( concat $ rscores1 ++ rscores2 ) 
+	    , error "sa" :: SA.Stud_Aufg
+	    , error "s" :: S.Student
+	    )
+	  )
     end -- mutex
 
 -- | input widget for a score
 radio_score sauf stud = do
-    p <- radiogroup "0" $ do p <- [ 0 .. 5 ] ; return ( show p, p )
-    let w =  case p of
-            Just p | p > 0 -> Okay { Control.Types.punkte = p, size = 1 }
-            _              -> No
-    return ( Rescore  w , sauf, stud )
+    p <- radiogroup "keep" 
+            $ ( "keep", [] )
+	    : ( "No"  , [ ( No, sauf, stud ) ] )
+	    : do p <- [ 1 .. 5 ] 
+		 return ( show p
+			, [ ( Okay { Control.Types.punkte = p, size = 1 } 
+			    , sauf, stud
+			    )
+			  ] 
+			)
+    return $ concat $ maybeToList p
 
 -----------------------------------------------------------------------------
 
