@@ -12,6 +12,7 @@ import Language.Syntax
 import Language.Inter
 import Language
 
+import Pump.Conf
 import qualified Pump.Quiz
 
 import Challenger.Partial
@@ -35,18 +36,13 @@ import Data.Typeable
 
 data PUMP = PUMP deriving ( Eq, Ord, Show, Read, Typeable )
 
-data Conf z = Conf { lang :: Language
-		 , samp :: [ String ]
-		 , typo :: z -- unused, nur zur Typ-information
-		 , ja_bound :: Int
-		 }
-     deriving Typeable
 
 instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
-    describe PUMP conf = vcat 
+
+    describe PUMP ( conf :: Conf z ) = vcat 
 	     [ text $ "Untersuchen Sie, ob die Sprache  L = "
-	     , nest 4 $ toDoc (lang conf)
-	     , text $ "die " ++ Pump.Type.tag (typo conf) ++ " erfüllt."
+	     , nest 4 $ toDoc (inter $ lang conf)
+	     , text $ "die " ++ Pump.Type.tag ( undefined :: z ) ++ " erfüllt."
 	     , text ""
 	     , nest 4 $ parens
 	              $ text "Ja-Einsendungen werden bei dieser Aufgabe"
@@ -57,14 +53,15 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 	     ]
 
     initial PUMP conf = 
-	let e = exempel
-	    w = inflate 1 e
-	in  Ja { n = 3, zerlege = listToFM [ (w, e) ] }
+	    Ja { n = 3, zerlege = listToFM $ do 
+	           w <- take 3 $ samp conf
+		   return ( w, exem w )
+	       }
 
     -- partial p conf z =
 
     total   PUMP conf p @ ( Nein {} ) = do
-	negativ ( lang conf ) p
+	negativ ( inter $ lang conf ) p
 	return ()
 
     total   PUMP conf p @ ( Ja   {} ) = do
@@ -73,21 +70,20 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 	let ws = take 5 
 	       $ filter ( (n p <= ) . length ) 
 	       $ samp conf
-	positiv ( lang conf ) p ws
+	positiv ( inter $ lang conf ) p ws
 	return ()
 
 ---------------------------------------------------------------------- 
-
-instance Generator PUMP ( Pump.Quiz.Conf z ) ( Conf z ) where
+ 
+instance ToDoc z => Generator PUMP ( Pump.Quiz.Conf z ) ( Conf z ) where
     generator p c key = do
-        let l = Language.Inter.inter $ Pump.Quiz.lang c
+        let l = Pump.Quiz.lang c
       	wss <- sequence $ do
 	    c <- [ 10 .. 30 ]
-	    return $ samples l 2 c
+	    return $ samples ( inter l ) 2 c
 	return $ Conf { lang = l
 			    , samp = nub $ concat wss
-			    , typo = undefined 
-			    , ja_bound = 5
+			    , ja_bound = Pump.Quiz.ja_bound c
 			    }
 
 instance Project PUMP ( Conf z ) ( Conf z ) where
@@ -96,4 +92,4 @@ instance Project PUMP ( Conf z ) ( Conf z ) where
 ---------------------------------------------------------------------- 
 
 reg = quiz PUMP ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )
-cf  = quiz PUMP ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )
+cf  = quiz PUMP ( Pump.Quiz.example :: Pump.Quiz.Conf CF.Zerlegung )

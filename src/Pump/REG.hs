@@ -46,6 +46,11 @@ instance Pumping Zerlegung where
 
     exempel = Zerlegung { u = "", v = "", w = "" }
 
+    exem z = let d = length z `div` 3
+	         ( a, bc ) = splitAt d z
+		 ( b, c ) = splitAt d bc
+	     in  Zerlegung { u = a, v = b, w = c }
+
 
 
 

@@ -6,7 +6,7 @@ module Boolean.Eval where
 import Boolean.Op 
 import Expression.Op
 
-import Data.FiniteMap
+import Autolib.FiniteMap
 import Autolib.Util.Wort
 import Autolib.Set
 

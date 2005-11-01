@@ -28,7 +28,7 @@ positiv l ( p @ Ja {} :: Pump z ) ws = do
     let fodder = undefined :: z
 	
     inform $ vcat $ map text
-	     [ "Guten Tag. Sie möchten nachweisen, daß die Sprache  L = "
+	     [ "Sie möchten nachweisen, daß die Sprache  L = "
 	     , show l
 	     , "die " ++ tag fodder ++ " erfüllt."
 	     , ""

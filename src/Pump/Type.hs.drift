@@ -27,6 +27,7 @@ class ( Ord z,  Show z, ToDoc z, ToDoc [z], Reader z ) => Pumping z where
     zerlegungen :: String -> Int -> [ z ]
 
     exempel :: z
+    exem :: String -> z
 
 --------------------------------------------------------------------------
 

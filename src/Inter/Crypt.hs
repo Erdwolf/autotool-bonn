@@ -14,16 +14,17 @@ import Codec.Encryption.Utils ( Octet )
 
 import Control.SQL
 
-import Random
+import System.Random
 import Data.Word
 import Data.Typeable
 import Autolib.Xml
+import Autolib.ToDoc
 
 data Crypt = Crypt { unCrypt :: String }    
     deriving ( Eq, Ord, Typeable )
  
 -- brauchen kein quote Quots?
-instance Show Crypt where show = unCrypt
+instance ToDoc Crypt where toDoc = text . unCrypt
 instance Read Crypt where readsPrec p cs = [(Crypt cs, [])]
 
 instance Container Crypt String where

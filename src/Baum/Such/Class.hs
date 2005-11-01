@@ -21,7 +21,7 @@ class Such baum where
     equal :: Eq a => baum a -> baum a -> Bool
     contents :: Ord a => baum a -> [a]
 
-class ( Show t, ToDoc t, Typeable t
+class ( Show t, Typeable t
       , Such baum, OpC a
       , ToTree baum
       , ToDoc (baum a), Show ( baum a ), Read ( baum a ) 

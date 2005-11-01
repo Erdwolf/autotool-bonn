@@ -28,7 +28,7 @@ negativ l ( p @ Nein {} :: Pump z ) = do
     let checked =  [ 1, 2, 4, 8, 10 ]
 
     inform $ vcat $ map text
-	     [ "Guten Tag. Sie möchten nachweisen, daß die Sprache "
+	     [ "Sie möchten nachweisen, daß die Sprache "
 	     , show l
 	     , "die " ++ tag ( undefined :: z ) ++ " NICHT erfüllt."
 	     , ""

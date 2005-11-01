@@ -28,7 +28,7 @@ instance Size b => Measure p i b where
       measure _ _ b = fromIntegral $ Autolib.Size.size b
       
 -- | Klasse: Partial
-class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
+class ( Show p, ToDoc i, Reader b, ToDoc b, Measure p i b )
 --    => Partial p i b | p i -> b , p b -> i where
     => Partial p i b | p i -> b  where
       -- | Beschreibung der Aufgabe herstellen
@@ -38,7 +38,7 @@ class ( ToDoc p, ToDoc i, Reader b, ToDoc b, Measure p i b )
       -- und kann trotzdem schon was ausgeben)
       describe :: p -> i -> Doc
       describe p i = vcat
-          [ text "Problem" <+> toDoc p
+          [ text "Problem" <+> text ( show p )
 	  , text "Instanz" <+> toDoc i
 	  ]
 

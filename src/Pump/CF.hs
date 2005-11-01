@@ -26,6 +26,13 @@ instance Pumping Zerlegung where
 
     exempel = Zerlegung "" "" "" "" ""
 
+    exem z = let h = length z `div` 5
+	         ( a, bcde ) = splitAt h z
+		 ( b, cde ) = splitAt h bcde
+		 ( c, de ) = splitAt h cde
+		 ( d, e ) = splitAt h de
+	     in  Zerlegung { u = a, v = b, x = c, y = d, z = e }
+
     inflate_show i z = "u v^" ++ show i ++ " x y^" ++ show i ++ " z"
     inflate_show_i z = "u v^i x y^i z"
 
