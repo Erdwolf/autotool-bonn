@@ -52,5 +52,7 @@ inter l = case l of
     Reg sigma rx -> regular sigma $ read rx
     Center sigma c -> center sigma c
 --    Vielfache i -> vielfache i
+
+    Uneps l -> uneps ( inter l )
     Komplement l -> komplement ( inter l )
 

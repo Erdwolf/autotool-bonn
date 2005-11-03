@@ -32,6 +32,7 @@ data Type
      | Reg String String
      | Center String Char
 
+     | Uneps Type
      | Komplement Type
    deriving ( Eq, Ord, Typeable )
 
