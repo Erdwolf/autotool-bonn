@@ -30,6 +30,14 @@ data Language = Language
 
 	      }
 
+uneps :: Language -> Language
+uneps l = l  { nametag = "Uneps" ++ nametag l
+             , abbreviation = abbreviation l ++ " ohne Epsilon"
+             , contains = \ w -> not (null w) && contains l w
+             , sample = \ c n -> do ws <- sample l c n ;  return $ filter ( not . null ) ws
+             , anti_sample = \ c n -> do ws <- anti_sample l c n ; return $ "" : ws
+             }
+
 komplement :: Language -> Language
 komplement l = l { nametag = "Com" ++ nametag l
 		 , abbreviation = "Komplement von " ++ abbreviation l
