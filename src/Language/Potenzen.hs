@@ -41,7 +41,8 @@ ist_wurzel :: Int -> Integer -> Bool
 ist_wurzel e n = n == (wurzel e n) ^ e
 
 potenzen :: Int -> Language
-potenzen e = Language
+potenzen e =
+   l where l = Language
 	    { abbreviation = "{ dezimal(n^" ++ show e ++ ") : n >= 0 }"
 	    , alphabet	   = mkSet alpha
 	    , contains	   = \ w 
@@ -49,10 +50,11 @@ potenzen e = Language
 	          && all isDigit w 
 	          && ( ist_wurzel e (read w :: Integer) )
 	    , sample       = \ c n -> sequence $ replicate c $ sam e n
+            , anti_sample = sample $ komplement l
 	    }
 
+-- | würfelt ein Wort von ungefähr passender Länge
 sam :: Int -> Int -> IO String
--- würfelt ein Wort von ungefähr passender Länge
 sam e l = do
     w <- zahl l
     let n = read w
