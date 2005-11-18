@@ -14,7 +14,7 @@ data Type
      | Gleich String [Int]
      | Ordered_Gleich String
      | Ordered_Ungleich String
-     | AK String
+
      | AmBnCmDn
      | BinCompare
      | Cee Char Type
@@ -27,7 +27,7 @@ data Type
      | Potenzen Int
      | Power String Int
      | NoPower String Int
-     | Vielfache Int
+     | Vielfache Integer
      | Form String
      | Reg String String
      | Center String Char

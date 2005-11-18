@@ -7,10 +7,11 @@ where
 import Language.Type
 import Language.Zahl
 
-import Data.Set
-import Random
+import Autolib.Set
+import System.Random
+
 import Control.Monad ( guard )
-import Char
+import Data.Char
 
 alpha = [ '0' .. '9' ]
 

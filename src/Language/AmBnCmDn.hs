@@ -3,14 +3,16 @@ module Language.AmBnCmDn (ambncmdn) where
 -- -- $Id$
 
 import Language
-import Data.Set
+import Autolib.Set
 import Control.Monad ( guard )
 
 ambncmdn :: Language
-ambncmdn = Language 
+ambncmdn = l where 
+    l = Language 
        { abbreviation = "{ a^m b^n c^m d^n : n, m >= 0 }" 
        , alphabet     = mkSet "abcd"
        , sample       = sam
+       , anti_sample  = sample $ komplement l
        , contains     = con
        }
 

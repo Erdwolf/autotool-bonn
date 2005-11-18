@@ -7,9 +7,9 @@ where
 import Language.Type
 import Language.Zahl
 
-import Data.Set
-import Random
-import Char
+import Autolib.Set
+import System.Random
+import Data.Char
 
 alpha = [ '0' .. '9' ]
 
