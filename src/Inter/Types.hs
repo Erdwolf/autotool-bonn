@@ -9,6 +9,7 @@ import Help
 import Challenger.Partial
 
 import Control.Types
+import Control.TH
 
 import  Autolib.ToDoc
 import  Autolib.Reader
@@ -18,6 +19,8 @@ import  Autolib.Informed
 import Data.Typeable
 import Data.Char
 -- import Text.XML.HaXml.Haskell2Xml
+import Network.XmlRpc.Internals
+
 
 type Matrikel = String
 
@@ -34,6 +37,7 @@ data Make = forall conf p i b
 	    , ToDoc conf , Show conf
 	    , Reader conf , Read conf
 	    , Help conf, Help i, Help b
+            , XmlRpcType i, XmlRpcType b
 	    )
 	  => Make String --  description
 		  (conf -> Var p i b) --  maker function
@@ -45,11 +49,13 @@ instance Typeable Make where
 instance ToDoc Make 
     where toDoc ( Make doc fun ex ) = text doc
 
+
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)
 direct :: ( V p i b -- , Haskell2Xml i
 	  , Reader i , Read i , Show i
 	  , Help i, Help b
+            , XmlRpcType i, XmlRpcType b
 	  )
          => p 
 	 -> i -- ^ example instance

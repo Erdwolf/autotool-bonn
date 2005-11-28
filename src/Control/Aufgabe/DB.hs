@@ -21,6 +21,16 @@ get mvnr = select_where $
 		| vnr <- maybeToList mvnr
 		] 
 
+get_current :: VNr 
+    -> IO [ Aufgabe ]
+get_current vnr = select_where $
+	        [ equals ( reed "aufgabe.VNr" ) ( toEx vnr ) 
+		, reed "NOW() < Bis"
+                , reed "Von < NOW()"
+		] 
+
+
+
 get_typed :: Typ -> IO [ Aufgabe ]
 get_typed ty = select_where 
 	        [ equals ( reed "aufgabe.Typ" ) ( toEx ty ) 

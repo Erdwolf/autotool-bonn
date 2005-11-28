@@ -1,9 +1,9 @@
 {-# OPTIONS -fallow-overlapping-instances -fth #-}
 
-module Control.Student.TH where
+module Control.Aufgabe.TH where
 
-import Control.Student.Type
+import Control.Aufgabe.Type
 import Control.TH
 import Network.XmlRpc.THDeriveXmlRpcType
 
-$(asXmlRpcStruct ''Student)
+$(asXmlRpcStruct ''Aufgabe)

@@ -2,10 +2,27 @@
 
 module Control.TH where
 
-import Inter.TH
+
 import Inter.Crypt
 import Control.Types
+
+import Network.XmlRpc.THDeriveXmlRpcType
 import Network.XmlRpc.Internals
+
+-- should be overridden by more specific instances
+instance ( Read a, Show a ) => XmlRpcType a where
+    toValue i = toValue ( show i )
+    fromValue v = do s <- fromValue v ; return $ read s 
+    getType _ = TString
+
+instance ( XmlRpcType a, XmlRpcType b ) => XmlRpcType ( a, b ) where
+    toValue ( a, b ) = ValueArray [ toValue a, toValue b ]
+    fromValue v = do
+        ValueArray [ a, b ] <- return v
+        x <- fromValue a
+        y <- fromValue b
+        return ( x, y )
+    getType _ = TArray
 
 -- Strings
 
@@ -19,7 +36,7 @@ instance XmlRpcType Name where
     fromValue v = do s <- fromValue v ; return $ Name s
     getType _ = TString
 
-$(Inter.TH.helper ''Crypt)
+$(asXmlRpcStruct ''Crypt)
 
 -- Show
 
@@ -48,6 +65,11 @@ instance XmlRpcType VNr where
 instance XmlRpcType SNr where
     toValue ( SNr s ) = toValue s
     fromValue v = do s <- fromValue v ; return $ SNr s
+    getType _ = TInt
+
+instance XmlRpcType UNr where
+    toValue ( UNr s ) = toValue s
+    fromValue v = do s <- fromValue v ; return $ UNr s
     getType _ = TInt
 
 

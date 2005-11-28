@@ -21,6 +21,18 @@ get = do
     disconnect conn
     return res
 
+gets :: String -> IO [ Schule ]
+gets n = do
+    conn <- myconnect
+    stat <- squery conn $ Query qq
+        [ From $ map reed [ "schule" ] 
+        , Where $ equals ( reed "Name" ) ( EString n )
+        ]
+    res <- common stat
+    disconnect conn
+    return res
+
+
 qq =  Select 
      $ map reed [ "schule.UNr as UNr" 
 		, "schule.Name as Name"

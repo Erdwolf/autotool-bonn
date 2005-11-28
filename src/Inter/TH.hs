@@ -7,4 +7,5 @@ import Network.XmlRpc.THDeriveXmlRpcType
 import Language.Haskell.TH
 
 helper name = 
-    asXmlRpcStruct ( ( reify name ) >>= ( \ (TyConI dec) -> return dec ))
+--    asXmlRpcStruct ( ( reify name ) >>= ( \ (TyConI dec) -> return dec ))
+    asXmlRpcStruct name
