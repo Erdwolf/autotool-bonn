@@ -44,6 +44,7 @@ import qualified Exp.Smaller
 
 import qualified Pump.Inter
 
+-- import qualified Grammatik.Interface
 import qualified Grammatik.CF.Interface
 import qualified NPDA.Inter
 
@@ -119,8 +120,9 @@ tmakers =
 	             , item Exp.Convert.qmake
 	             , item Exp.Smaller.make
                      ]
-                , heading "kontextfreie Grammatiken"
+                , heading "Grammatiken"
                      [ item Grammatik.CF.Interface.make
+                     -- , item Grammatik.Interface.make
                      ]
                 , heading "Kellerautomaten"
 	             [ item NPDA.Inter.make
