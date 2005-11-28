@@ -105,6 +105,7 @@ frage auf =
             stud <- alogin auf actor
             ( p, i, icom ) <- make_instant stud make auf
             return i
+        _ -> fun ( return "RPC service not available" :: IO String )
 
 antwort auf =
    case filter ( \ mk -> show mk == toString ( A.typ auf ) ) 
@@ -121,6 +122,7 @@ antwort auf =
 		     }
 	    msg <- bank p
             return $ res
+        _ -> fun ( return "RPC service not available" :: IO String )
 
 make_instant stud fun auf = do
     let conf = read $ toString $ A.config auf
