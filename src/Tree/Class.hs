@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-overlapping-instances #-}
+
 module Tree.Class where
 
 --  $Id$

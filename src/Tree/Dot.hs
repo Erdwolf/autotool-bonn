@@ -1,3 +1,5 @@
+{-# OPTIONS -fallow-overlapping-instances #-}
+
 -- | Layout routine for Data.Tree
 --  $Id$
 
@@ -26,6 +28,7 @@ make t =
             , Autolib.Dot.Graph.name = "foo"
             , Autolib.Dot.Graph.nodes = nodes it
             , Autolib.Dot.Graph.edges = edges it
+            , Autolib.Dot.Graph.attributes = []
             }
 	    
 -------------------------------------------------------------------------
