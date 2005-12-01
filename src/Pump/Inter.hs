@@ -91,7 +91,9 @@ instance Project PUMP ( Conf z ) ( Conf z ) where
 
 ---------------------------------------------------------------------- 
 
-reg = named_quiz "Pump-Reg" PUMP 
+-- | name is for backward compatibility
+reg = named_quiz "PUMP-Quiz" PUMP 
       ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )
+
 cf  = named_quiz "Pump-CF" PUMP 
       ( Pump.Quiz.example :: Pump.Quiz.Conf CF.Zerlegung )
