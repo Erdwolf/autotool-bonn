@@ -66,8 +66,23 @@ quiz :: ( Generator p conf k , Project p k i,  Partial p i b
      => p -- ^ problem type
      -> conf -- ^ default configuration
      -> Make
-quiz ( p :: p ) ( conf0 :: conf ) = Make 
-    ( dashed p ++ "-Quiz" )
+quiz ( p :: p ) ( conf0 :: conf ) = 
+    named_quiz
+        ( dashed p ++ "-Quiz" )
+        p
+        conf0
+
+named_quiz :: ( Generator p conf k , Project p k i,  Partial p i b 
+	, V p i b
+	, Typeable conf, Reader conf, ToDoc conf
+	-- , Haskell2Xml conf
+	, Show conf, Read conf
+	)
+     => String -- ^  explicit name
+     -> p -- ^ problem type
+     -> conf -- ^ default configuration
+     -> Make
+named_quiz name p conf0 =  Make 
+    name
     ( \ conf -> make p conf )
     conf0
-

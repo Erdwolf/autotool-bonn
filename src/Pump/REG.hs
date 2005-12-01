@@ -1,6 +1,6 @@
 module Pump.REG 
 
--- -- $Id$
+--  $Id$
 
 ( Zerlegung (..)
 , Pump (..)
