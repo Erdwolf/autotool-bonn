@@ -5,6 +5,7 @@
 module Inter.Action where
 
 import Control.Types
+import Control.TH
 
 import Autolib.ToDoc
 import Autolib.Reader
@@ -70,11 +71,6 @@ instance XmlRpcType Wert where
 	       return $ Okay { punkte = p , size = s }
     getType _ = TStruct
 
--- FIXME
-instance XmlRpcType Integer where
-    toValue = toValue . ( fromIntegral :: Integer -> Int ) 
-    fromValue = fmap ( fromIntegral :: Int -> Integer ) . fromValue
-    getType _ = TInt -- FIXME
 
 -- Local Variables:
 -- mode: haskell

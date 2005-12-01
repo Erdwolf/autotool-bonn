@@ -5,7 +5,6 @@ import Inter.Crypt
 import qualified Inter.Param as P
 import Inter.Util
 import Inter.Types
-import Inter.Collector ( makers )
 
 import Challenger.Partial
 import Autolib.Reporter
@@ -30,6 +29,17 @@ import Network.XmlRpc.Server
 import Network.XmlRpc.Internals
 
 import Control.Monad ( when, guard )
+
+
+import qualified Baum.Reconstruct
+import qualified Baum.Binary
+import qualified Baum.ZweiDrei
+import qualified Collatz.Plain
+import qualified Collatz.Inverse
+import qualified Faktor.Faktor
+import qualified Faktor.Euklid
+import qualified Faktor.Inverse
+
 
 main :: IO ()
 main = do
@@ -99,8 +109,7 @@ alogin auf actor = do
      return stud
 
 frage auf = 
-    case filter ( \ mk -> show mk == toString ( A.typ auf ) )  
-             $ Inter.Collector.makers  of
+    case filter ( \ mk -> show mk == toString ( A.typ auf ) ) $ makers  of
         [ Make n make default_conf ] -> fun $ \ actor -> do
             stud <- alogin auf actor
             ( p, i, icom ) <- make_instant stud make auf
@@ -108,8 +117,7 @@ frage auf =
         _ -> fun ( return "RPC service not available" :: IO String )
 
 antwort auf =
-   case filter ( \ mk -> show mk == toString ( A.typ auf ) ) 
-             $ Inter.Collector.makers  of
+   case filter ( \ mk -> show mk == toString ( A.typ auf ) ) $ makers  of
         [ Make n make default_conf ] -> fun $ \ actor b -> do
             stud <- alogin auf actor
             ( p, i, icom :: Text.Html.Html ) <- make_instant stud make auf
@@ -135,6 +143,25 @@ make_instant stud fun auf = do
     ( _, icom :: Text.Html.Html ) <- run $ report p i
     return ( p, i, icom )
 
+----------------------------------------------------------
+
+makers =
+      [ Baum.Reconstruct.make_fixed
+      , Baum.Reconstruct.make_quiz
+      , Baum.Binary.make_quiz
+      , Baum.ZweiDrei.make_quiz
+
+      , Collatz.Plain.make
+      , Collatz.Plain.qmake
+      , Collatz.Inverse.make
+      , Collatz.Inverse.qmake
+      , Faktor.Faktor.make_fixed
+      , Faktor.Faktor.make_quiz
+      , Faktor.Euklid.make_fixed
+      , Faktor.Euklid.make_quiz
+      , Faktor.Inverse.make_fixed
+      , Faktor.Inverse.make_quiz
+      ]
          
     
 --------------------------------------------------------------------------
