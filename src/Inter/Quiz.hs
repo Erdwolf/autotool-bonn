@@ -18,6 +18,7 @@ import Data.Maybe
 import Data.Char
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
+import Network.XmlRpc.Internals
 
 -- | generator könnte noch zusätzliche information erzeugen
 -- (und in cache schreiben) bsp. zu PCP-instanz auch die lösung
@@ -30,6 +31,7 @@ class Project p k i | p k -> i where
 
 
 make :: ( Generator p conf k, Project p k i , Partial p i b 
+        , XmlRpcType i, XmlRpcType b
 	, V p i b
 	)
      => p
@@ -59,6 +61,7 @@ make ( p :: p ) ( conf :: conf ) =
 
 quiz :: ( Generator p conf k , Project p k i,  Partial p i b 
 	, V p i b
+        , XmlRpcType i, XmlRpcType b
 	, Typeable conf, Reader conf, ToDoc conf
 	-- , Haskell2Xml conf
 	, Show conf, Read conf
@@ -74,6 +77,7 @@ quiz ( p :: p ) ( conf0 :: conf ) =
 
 named_quiz :: ( Generator p conf k , Project p k i,  Partial p i b 
 	, V p i b
+        , XmlRpcType i, XmlRpcType b
 	, Typeable conf, Reader conf, ToDoc conf
 	-- , Haskell2Xml conf
 	, Show conf, Read conf

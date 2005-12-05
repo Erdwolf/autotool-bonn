@@ -15,6 +15,18 @@ instance ( Read a, Show a ) => XmlRpcType a where
     fromValue v = do s <- fromValue v ; return $ read s 
     getType _ = TString
 
+instance XmlRpcType Integer where
+    toValue i = toValue $ show i
+    fromValue v = do s <- fromValue v ; return $ read s
+    getType _ = TString
+
+instance XmlRpcType a => XmlRpcType ( Maybe a ) where
+    toValue Nothing    = ValueArray [ toValue "Nothing"             ]
+    toValue ( Just x ) = ValueArray [ toValue "Just"    , toValue x ]
+    fromValue ( ValueArray [ _ ] ) = return $ Nothing
+    fromValue ( ValueArray [ _, x ] ) = do a <- fromValue x ; return $ Just a
+    getType _ = TArray
+
 instance ( XmlRpcType a, XmlRpcType b ) => XmlRpcType ( a, b ) where
     toValue ( a, b ) = ValueArray [ toValue a, toValue b ]
     fromValue v = do
@@ -37,6 +49,32 @@ instance XmlRpcType Name where
     getType _ = TString
 
 $(asXmlRpcStruct ''Crypt)
+
+--  $(asXmlRpcStruct ''Wert)
+
+-- | wieso steht das hier?
+instance XmlRpcType Wert where
+    toValue w = case w of
+        Reset   -> toValue [("tag", toValue "Reset")]
+        Pending -> toValue [("tag", toValue "Pending")]
+        No -> toValue [("tag", toValue "No")]
+        Ok s -> toValue [("tag", toValue "OK"), ("size", toValue s) ]
+	Okay {punkte=p, size=s} -> toValue [("tag", toValue "Okay")
+                  , ("punkte", toValue p), ("size", toValue s) ]
+    fromValue v = do
+        it <- fromValue v
+	tag <- getField "tag" it
+	case tag of
+	    "Reset" -> return Reset
+	    "Pending" -> return Pending
+	    "No" -> return No
+	    "Ok" -> do s <- getField "size" it ; return $ ok s
+	    "Okay" -> do 
+               p <- getField "punkte" it; s <- getField "size" it
+	       return $ Okay { punkte = p , size = s }
+    getType _ = TStruct
+
+
 
 -- Show
 

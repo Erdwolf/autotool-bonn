@@ -31,9 +31,7 @@ import Network.XmlRpc.Internals
 import Control.Monad ( when, guard )
 
 
-import qualified Baum.Reconstruct
-import qualified Baum.Binary
-import qualified Baum.ZweiDrei
+
 import qualified Collatz.Plain
 import qualified Collatz.Inverse
 import qualified Faktor.Faktor
@@ -53,6 +51,7 @@ listing =
      , ("aufgaben", fun aufgaben)
      , ("check_tuple", fun check_tuple )
      , ("check_list", fun check_list )
+     , ("reverse", fun revs )
      ]
 
 check_tuple :: IO ( Int, Int )
@@ -60,6 +59,10 @@ check_tuple = return ( 4, 5 )
 
 check_list :: IO [ Int ]
 check_list = return  [1 .. 7]
+
+
+revs :: [ Integer ] -> IO [ Integer ]
+revs xs = return $ reverse xs
 
 
 vorlesungen :: Actor -> IO [ ( VNr, String ) ]
@@ -110,16 +113,20 @@ alogin auf actor = do
 
 frage auf = 
     case filter ( \ mk -> show mk == toString ( A.typ auf ) ) $ makers  of
-        [ Make n make default_conf ] -> fun $ \ actor -> do
+        [ Make n ( make :: conf -> Var p i b ) default_conf ] 
+          -> fun $ \ actor -> do
             stud <- alogin auf actor
             ( p, i, icom ) <- make_instant stud make auf
-            return i
+            appendFile "/tmp/Server.log" $ "F: " ++ show i
+            return ( i :: i )
         _ -> fun ( return "RPC service not available" :: IO String )
 
 antwort auf =
    case filter ( \ mk -> show mk == toString ( A.typ auf ) ) $ makers  of
-        [ Make n make default_conf ] -> fun $ \ actor b -> do
+        [ Make n ( make :: conf -> Var p i b ) default_conf ] 
+          -> fun $ \ actor ( b :: b ) -> do
             stud <- alogin auf actor
+            appendFile "/tmp/Server.log" $ "A:" ++ show b
             ( p, i, icom :: Text.Html.Html ) <- make_instant stud make auf
             ( res, com :: Text.Html.Html ) <- run $ evaluate' p i b
 	    let p = ( mkpar stud auf )  
@@ -128,6 +135,7 @@ antwort auf =
 		     , P.report = Just $ com
 		     , P.mresult = res 
 		     }
+            appendFile "/tmp/Server.log" $ "A:" ++ show res
 	    msg <- bank p
             return $ res
         _ -> fun ( return "RPC service not available" :: IO String )
@@ -146,12 +154,7 @@ make_instant stud fun auf = do
 ----------------------------------------------------------
 
 makers =
-      [ Baum.Reconstruct.make_fixed
-      , Baum.Reconstruct.make_quiz
-      , Baum.Binary.make_quiz
-      , Baum.ZweiDrei.make_quiz
-
-      , Collatz.Plain.make
+      [ Collatz.Plain.make
       , Collatz.Plain.qmake
       , Collatz.Inverse.make
       , Collatz.Inverse.qmake
@@ -163,62 +166,3 @@ makers =
       , Faktor.Inverse.make_quiz
       ]
          
-    
---------------------------------------------------------------------------
-
-tutor_functions = 
-     [ ( "list_all", fun list_all )
-     , ( "list_pending", fun list_pending )
-     , ( "get_student", fun get_student )
---     , ( "get_input", fun get_input )
---     , ( "put_answer", fun put_answer )
-     ]
-
-
-tutor_login act prob = do
-    tut <- login act
-    vors <- V.get_tutored $ S.snr tut
-    let vor = case filter ( \ vor -> V.name vor == fromCGI (vorlesung prob )) 
-                  vors of
-            [] -> error $ "no vorlesungen for " ++ show (act, prob)
-            [vor] -> vor
-            vors -> error "more than one vorlesung for you"
-    aufs <- A.get $ Just $ V.vnr vor
-    let auf = case filter ( \ auf -> A.name auf == fromCGI (aufgabe prob)) 
-                  aufs of
-            [] -> error $ "no such aufgabe " ++ show (act, prob)
-            [auf] -> auf
-            aufs -> error "more than one aufgabe"
-    return auf
-    
-
--- | all students that have sent in a solution to given problem
-list_all :: Actor -> Problem -> IO [ SNr ]
-list_all act prob = do
-    auf <- tutor_login act prob
-    saufs <- SA.get_anr $ A.anr auf
-    return $ map SA.snr saufs
-
--- | all students that have sent in a solution to given problem
--- and whose status is Pending
-list_pending :: Actor -> Problem -> IO [ SNr ]
-list_pending act prob = do
-    auf <- tutor_login act prob
-    saufs <- SA.get_anr $ A.anr auf
-    return $ map SA.snr 
-	   $ filter ( \ sauf -> SA.result sauf == Just Pending )
-	   $ saufs
-    
-get_student :: Actor -> Problem -> SNr -> IO S.Student
-get_student act prob snr = do
-    tutor_login act prob
-    [ stud ] <- S.get_snr snr
-    return stud
-    
-get_input :: Actor -> Problem -> IO String
-get_input = undefined
-
-send_answer :: Actor -> Problem -> Answer -> IO ()
-send_answer = undefined
-
-

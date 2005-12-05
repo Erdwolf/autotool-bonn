@@ -49,29 +49,6 @@ $(asXmlRpcStruct ''Answer)
 {-! for Answer derive: ToDoc, Reader, Haskell2Xml !-}
 
 
--- | wieso steht das hier?
-instance XmlRpcType Wert where
-    toValue w = case w of
-        Reset   -> toValue [("tag", toValue "Reset")]
-        Pending -> toValue [("tag", toValue "Pending")]
-        No -> toValue [("tag", toValue "No")]
-        Ok s -> toValue [("tag", toValue "OK"), ("size", toValue s) ]
-	Okay {punkte=p, size=s} -> toValue [("tag", toValue "Okay")
-                  , ("punkte", toValue p), ("size", toValue s) ]
-    fromValue v = do
-        it <- fromValue v
-	tag <- getField "tag" it
-	case tag of
-	    "Reset" -> return Reset
-	    "Pending" -> return Pending
-	    "No" -> return No
-	    "Ok" -> do s <- getField "size" it ; return $ ok s
-	    "Okay" -> do 
-               p <- getField "punkte" it; s <- getField "size" it
-	       return $ Okay { punkte = p , size = s }
-    getType _ = TStruct
-
-
 -- Local Variables:
 -- mode: haskell
 -- End:
