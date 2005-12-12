@@ -36,8 +36,7 @@ roll conf = do
                      return ( v, t )
         let sub = listToFM ts
         trs <- R.roll_trs $ system_roller conf
-        let pairs = drop 20 
-                  $ take 100 
+        let pairs = take 100 
                   $ takeWhile ( \ p -> size ( rhs p ) < max_size conf )
                   $ Autolib.TES.OC.ocs $ Rewriting.TRS.pack trs
         let ls = map ( apply sub ) $ map lhs pairs

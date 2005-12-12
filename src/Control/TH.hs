@@ -15,11 +15,6 @@ instance ( Read a, Show a ) => XmlRpcType a where
     fromValue v = do s <- fromValue v ; return $ read s 
     getType _ = TString
 
-instance XmlRpcType Integer where
-    toValue i = toValue $ show i
-    fromValue v = do s <- fromValue v ; return $ read s
-    getType _ = TString
-
 instance XmlRpcType a => XmlRpcType ( Maybe a ) where
     toValue Nothing    = ValueArray [ toValue "Nothing"             ]
     toValue ( Just x ) = ValueArray [ toValue "Just"    , toValue x ]
