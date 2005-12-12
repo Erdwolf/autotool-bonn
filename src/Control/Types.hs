@@ -1,4 +1,6 @@
 {-# LINE 1 "Control/Types.hs.drift" #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+
 module Control.Types 
 
 ( HiLo (..)
