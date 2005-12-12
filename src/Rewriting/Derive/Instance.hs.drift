@@ -1,0 +1,32 @@
+{-# OPTIONS -fglasgow-exts -fallow-incoherent-instances -fallow-overlapping-instances #-}
+
+module Rewriting.Derive.Instance where
+
+import Rewriting.TRS
+
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.FiniteMap
+
+import Data.Typeable
+
+
+data ( Symbol c, Symbol v ) => Instance v c = Instance
+        { system :: TRS v c
+        , from   :: Term v c
+        , to     :: Term v c
+        }
+    deriving ( Eq, Ord, Typeable )
+
+example :: Instance Identifier Identifier
+example = Instance
+        { system = Rewriting.TRS.example
+        , from = read "f(a,f(a,b))"
+        , to = read "f(f(b,a),a)"
+        }
+
+{-! for Instance derive: Reader, ToDoc !-}
+
+-- local variables:
+-- mode: haskell
+-- end;

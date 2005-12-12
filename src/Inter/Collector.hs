@@ -93,6 +93,7 @@ import qualified Code.LZ
 import qualified Code.Compress
 import qualified Code.Hamming
 
+import qualified Rewriting.Derive
 
 makers :: [ Make ]
 makers = do Right make <- flatten tmakers ; return make
@@ -151,6 +152,10 @@ tmakers =
                 ]
          , heading "Berechenungsmodelle"
                 [ item JVM.Make.make
+                ]
+         , heading "Termersetzung"
+                [ item Rewriting.Derive.make_fixed
+                , item Rewriting.Derive.make_quiz
                 ]
          , heading "Graphen"
                 [ item Graph.Selfcom.make

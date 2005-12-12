@@ -6,6 +6,8 @@ import Robots.Data
 import Robots.Config
 import Robots.Hull
 
+import Robots.Examples
+
 import Autolib.ToDoc
 import Data.Array
 import Data.Maybe
