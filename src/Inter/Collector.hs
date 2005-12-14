@@ -34,6 +34,7 @@ import qualified Type.Quiz
 import qualified Palindrom.Plain
 
 import qualified Faktor.Faktor
+import qualified Faktor.Times
 import qualified Faktor.Euklid
 import qualified Faktor.Inverse
 
@@ -203,6 +204,8 @@ tmakers =
 	        , item Collatz.Plain.qmake
 	        , item Collatz.Inverse.make
 	        , item Collatz.Inverse.qmake
+                , item Faktor.Times.make_fixed
+                , item Faktor.Times.make_quiz
                 , item Faktor.Faktor.make_fixed
                 , item Faktor.Faktor.make_quiz
                 , item Faktor.Euklid.make_fixed

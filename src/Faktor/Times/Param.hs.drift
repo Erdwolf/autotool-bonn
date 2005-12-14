@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
 
-module Faktor.Param where
+module Faktor.Times.Param where
 
 --   $Id$
 
@@ -11,19 +11,16 @@ import Autolib.Set
 import Text.XML.HaXml.Haskell2Xml
 
 data Param = 
-     Param { von :: Int
-	   , bis :: Int
-	   , anzahl :: Int
+     Param { anzahl :: Int
+           , stellen :: Int
 	   }
      deriving ( Typeable )
 
-p :: Param
-p = Param { von = 100
-	  , bis = 1000
-	  , anzahl = 3
+example :: Param
+example = Param { anzahl = 4
+	  , stellen = 20
 	  }
 
 {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
-
 
 
