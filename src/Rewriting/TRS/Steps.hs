@@ -80,8 +80,6 @@ exec trs t step = do
            , text "auf den Term"
            , nest 4 $ toDoc t
            ]
-    peng t
-
     let k = rule_number step
     inform $ text "die Regel Nummer" <+> toDoc k
     rule <- if k < length ( regeln trs )
@@ -114,6 +112,8 @@ exec trs t step = do
     let res = poke t ( p,  srhs )
     inform $ text "der resultierende Term ist" 
            $$ ( nest 4 $ toDoc res )
+    peng res
+
     return res
 
 -------------------------------------------------------------------------

@@ -25,8 +25,8 @@ import Data.Typeable
 data Derive = Derive 
     deriving ( Eq, Ord, Show, Typeable )
 
-instance ( Symbol v, Symbol c )
-    => Partial Derive ( Instance v c ) [ Step v c ] where
+instance (  Symbol c )
+    => Partial Derive ( Instance c c ) [ Step c c ] where
 
     report Derive inst = do 
         inform $ vcat
@@ -45,16 +45,38 @@ instance ( Symbol v, Symbol c )
         [ Step { rule_number = 2
                , position = [0,2]
                , substitution = listToFM 
-                              $ zip ( firstvar $  system inst )
+                              $ zip ( variablen $ system inst )
                               $ drop 2 $ subterms $ from inst
                }
         ]
 
     total Derive inst steps = do
-        t <- foldM ( exec $ system inst ) ( from inst ) steps
+        sys <- patch $ system inst
+        t <- foldM ( exec sys ) ( from inst ) steps
         assert ( t == to inst )
                $ text "stimmt mit Ziel überein?"
 
+-- | upon reading, the parser does not know what is a variable
+-- so the system has to be patched
+patch :: ( Symbol c ) 
+      => TRS c c -> Reporter ( TRS c c )
+patch trs = do
+    let handle t @ ( Node f xs ) =
+           if f `elem` variablen trs 
+              then if null xs 
+                   then return $ Rewriting.TRS.Var f
+                   else reject $ text "Variable darf keine Argumente haben:" 
+                               <+> toDoc t
+              else do
+                   ys <- mapM handle xs
+                   return $ Node f ys
+    rules <- sequence $ do
+        rule <- regeln trs
+        return $ do
+            ll <- handle $ lhs rule
+            rr <- handle $ rhs rule
+            return $ rule { lhs = ll, rhs = rr }
+    return $ trs { regeln = rules }   
 
 make_fixed :: Make
 make_fixed = direct Derive Rewriting.Derive.Instance.example

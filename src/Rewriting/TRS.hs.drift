@@ -27,6 +27,7 @@ data ( Symbol c, Symbol v ) => TRS v c =
          }
     deriving ( Eq, Ord, Typeable )
 
+
 example :: TRS Identifier Identifier
 example = TRS { variablen = read "[x, y]"
               , regeln = [ read "f(x,y) -> f(y,x)" ]
