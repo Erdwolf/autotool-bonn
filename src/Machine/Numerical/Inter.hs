@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+
 module Machine.Numerical.Inter where
 
 --   $Id$

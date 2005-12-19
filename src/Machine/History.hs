@@ -8,7 +8,7 @@ detail :: Int
 detail = 7
 
 class History conf where
-    -- ergibt den Pfad im Berechnungsbaum, der zu der Konfiguration führt
+    -- | ergibt den Pfad im Berechnungsbaum, der zu der Konfiguration führt
     -- (in falscher reihenfolge, d. h. wurzel des baums kommt zuletzt)
     -- konfiguration selbst ist nicht in der liste
     history :: conf -> [ conf ]

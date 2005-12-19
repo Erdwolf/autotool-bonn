@@ -95,6 +95,7 @@ import qualified Code.Compress
 import qualified Code.Hamming
 
 import qualified Rewriting.Derive
+import qualified Rewriting.Numerical
 
 makers :: [ Make ]
 makers = do Right make <- flatten tmakers ; return make
@@ -157,6 +158,7 @@ tmakers =
          , heading "Termersetzung"
                 [ item Rewriting.Derive.make_fixed
                 , item Rewriting.Derive.make_quiz
+                , item Rewriting.Numerical.make
                 ]
          , heading "Graphen"
                 [ item Graph.Selfcom.make

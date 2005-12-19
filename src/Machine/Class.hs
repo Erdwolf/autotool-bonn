@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts  -fallow-undecidable-instances #-}
+
 module Machine.Class where
 
 --   $Id$

@@ -34,6 +34,15 @@ steps rs t = do
            , substitution = sub
            }
 
+successors :: ( Symbol v, Symbol c )
+      => TRS v c
+      -> Term v c
+      -> [ Term v c ]
+successors rs t = do
+    s <- steps rs t
+    let Just t' = result $ exec rs t s
+    return t'
+
 data Derivation v c = 
     Derivation { goal :: Term v c
                , actions :: [ Step v c ]
