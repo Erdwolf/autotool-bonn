@@ -14,6 +14,7 @@ import Autolib.Size
 
 import Rewriting.Machine
 import Rewriting.TRS
+import Rewriting.Check
 
 import qualified Machine.Numerical.Config as C
 import qualified Machine.Numerical.Make as M
@@ -26,8 +27,6 @@ instance ( Symbol c, Symbol v ) => Size ( TRS v c ) where
         t <- [ lhs r, rhs r ]
         return $ size t
 
-instance C.Check () ( TRS v c ) -- dummy
-
 make :: Make
 make = M.make $ C.Config
      { C.name = "TRS"
@@ -37,7 +36,7 @@ make = M.make $ C.Config
      , C.num_args = 10
      , C.max_arg = 20
      , C.cut = 1000
-     , C.checks = [ ] :: [ () ]
+     , C.checks = [ ] :: [ Check ]
      , C.start = Rewriting.TRS.example
      }
 

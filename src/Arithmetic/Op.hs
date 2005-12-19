@@ -8,6 +8,7 @@ where
 --  $Id$
 
 import Expression.Op
+
 import Autolib.TES.Identifier
 import Autolib.TES.Term (tfold)
 import Autolib.FiniteMap
@@ -30,6 +31,10 @@ unary = [ Op { name = "negate" , arity = 1
 	     , precedence = Just 10 , assoc = AssocNone
 	     , inter = \ [x] -> negate x
 	     }
+        , Op { name = "abs" , arity = 1
+	     , precedence = Just 10 , assoc = AssocNone
+	     , inter = \ [x] -> abs x
+	     }
 	, Op { name = "fib" , arity = 1
 	     , precedence = Just 10 , assoc = AssocNone
 	     , inter = let fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
@@ -39,6 +44,11 @@ unary = [ Op { name = "negate" , arity = 1
 	     , precedence = Just 10 , assoc = AssocNone
 	     , inter = \ [x] ->
                   floor $ (sqrt (fromIntegral x) :: Double)
+	     }
+	, Op { name = "log2" , arity = 1
+	     , precedence = Just 10 , assoc = AssocNone
+	     , inter = \ [x] ->
+                  floor $ (logBase 2 (fromIntegral x) :: Double)
 	     }
 	, Op { name = "fac" , arity = 1
 	     , precedence = Just 10 , assoc = AssocNone

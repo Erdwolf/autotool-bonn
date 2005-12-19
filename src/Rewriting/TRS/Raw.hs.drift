@@ -28,7 +28,10 @@ data ( Symbol c, Symbol v ) => TRS v c =
 
 {-! for TRS derive: Reader, ToDoc !-}
 
+
 instance Haskell2Xml ( TRS v c  ) --- dummy
+
+
 
 -- local variables:
 -- mode: haskell
