@@ -1,17 +1,10 @@
 {-# OPTIONS -fglasgow-exts -fallow-incoherent-instances -fallow-overlapping-instances #-}
 
-module Rewriting.TRS 
-( module Rewriting.TRS
-, module Autolib.Symbol
-, module Autolib.TES.Term
-, module Autolib.TES.Position
-, module Autolib.TES.Rule
-, module Autolib.TES.Identifier
-) where
+module Rewriting.TRS.Raw where
 
 import Autolib.Symbol
 import Autolib.TES.Term
-import Autolib.TES.Position
+
 import Autolib.TES.Rule
 import Autolib.TES.Identifier
 import qualified Autolib.TES
@@ -32,15 +25,6 @@ data ( Symbol c, Symbol v ) => TRS v c =
     deriving ( Eq, Ord, Typeable )
 
 
-example :: TRS Identifier Identifier
-example = TRS { variablen = read "[x, y]"
-              , regeln = [ read "f(x,y) -> f(y,x)" ]
-              }
-
-pack :: ( Symbol c, Symbol v ) 
-     => TRS v c -> Autolib.TES.RS c ( Term v c )
-pack trs = Autolib.TES.from_strict_rules False 
-         $ do r <- regeln trs ; return ( lhs r, rhs r )
 
 {-! for TRS derive: Reader, ToDoc !-}
 
