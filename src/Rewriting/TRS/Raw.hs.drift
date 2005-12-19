@@ -22,6 +22,9 @@ import Autolib.Reader
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
+-- | this is the raw type,
+-- needs to be processed because what should be variables
+-- will be parsed as nullary symbols by the derived parser
 data ( Symbol c, Symbol v ) => TRS v c = 
      TRS { variablen :: [ v ]
          , regeln :: [ Rule ( Term v c ) ]
