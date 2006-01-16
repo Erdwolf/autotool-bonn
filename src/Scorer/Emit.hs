@@ -20,6 +20,7 @@ import Autolib.Util.Sort
 
 import Control.Monad ( guard , liftM, when )
 import System.IO ( hFlush, stdout )
+import Data.Char
 
 
 -- | druckt Auswertung für alle Aufgaben einer Vorlesung
@@ -58,9 +59,17 @@ inform = do
 
 realize :: [ Einsendung ] -> [ Einsendung ]
 realize es = take scoreItems -- genau 10 stück
-	   $ filter ( (> 1023) . read . toString . matrikel) -- keine admins
+	   $ filter ( not . isadmin . matrikel) -- keine admins
 	   $ es
     
+-- | FIXME: this is badly broken
+-- und zwar für Matrikelnummern, die keine Zahlen sind
+isadmin m = 
+    let cs = toString m
+    in  if all isDigit cs
+        then 1023 > read cs
+        else False
+
 -- | druckt Auswertung einer Aufgabe
 single :: Bool -> UNr -> ( ANr, [ Einsendung ] ) -> IO ()
 single deco u arg @( anr, es ) = do
