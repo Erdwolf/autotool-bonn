@@ -24,9 +24,6 @@ import Autolib.Util.Edit
 import Autolib.Util.Uniq
 
 import Autolib.Set
-import Autolib.ToDoc
-import Autolib.FiniteMap
-
 import Data.List (intersperse, nub, group, sort)
 import System.Random
 import Control.Monad
@@ -34,20 +31,16 @@ import Control.Monad
 -----------------------------------------------------------------------------
 
 gleich :: String -> [Int] -> Language
-gleich xs vs = 
-    let al = dutch_record $ map char xs
-    in Language 
+gleich xs vs = Language 
        { nametag = "Gleich"
-       , abbreviation = showDoc $ braces $ hsep
-            [ text "w", text ":"
-            , text "w", text "in", al <> text "^*"
-            , text "und"
-            , sepBy equals $ do
-		      (x,v) <- zip xs vs
-		      return $ text $ case v of 
-		             1 ->           "|w|_" ++ [x]
-		             n -> show n ++ "|w|_" ++ [x]
-            ]
+       , abbreviation = foldl1 (++) [ "{ w : "
+				    , concat $ intersperse " = " $ do
+				      (x,v) <- zip xs vs
+				      return $ case v of 
+				             1 ->           "|w|_" ++ [x]
+				             n -> show n ++ "|w|_" ++ [x]
+				    , " }"
+				    ]
        , alphabet     = mkSet xs
        , sample       = gleich_sam xs vs
        , anti_sample  = anti (gleich_sam xs vs) (gleich_con xs vs)
@@ -69,15 +62,12 @@ gleich_sam xs vs c n =
 		return $ nub ws
 	else return []
 
-
 gleich_con :: String -> [Int] -> String -> Bool
-
 gleich_con _ _ [] = True
 gleich_con xs vs w = 
     let count x = length ( filter (== x) w )
 	c : cs = zipWith (*) vs $ map count xs
-        wrong = filter ( not . ( `elem` xs ) ) w
-    in	null wrong && all ( == c ) cs
+    in	all ( == c ) cs
 
 -----------------------------------------------------------------------------
 

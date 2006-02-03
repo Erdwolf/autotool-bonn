@@ -25,5 +25,6 @@ p = Param { von = 100
 
 {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
-
+instance Show Param where show = render . toDoc
+instance Read Param where readsPrec = parsec_readsPrec
 

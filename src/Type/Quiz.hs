@@ -64,10 +64,8 @@ roll conf = do
     let vfs = do 
           (f, (p, (c, qs))) <- zip fs $ Relation.pairs $ trans au
           if null qs 
-	     then return $ Variable_Tag  
-                         $ Variable { vstatic = False, vname = f, vtype = p }
-	     else return $ Method_Tag 
-                         $ Method { mstatic = True , mname = f
+	     then return $ Left  $ Variable { vname = f, vtype = p }
+	     else return $ Right $ Function { fname = f
 					    , arguments = qs
 					    , result = p
 					    }

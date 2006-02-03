@@ -4,7 +4,6 @@ module Type.Infer where
 
 import Type.Data
 import Type.Tree
-import Type.Lookup
 
 import Autolib.Reporter.Type hiding ( result )
 import Autolib.ToDoc
@@ -12,41 +11,43 @@ import Autolib.ToDoc
 import Autolib.TES.Term
 import Autolib.TES.Identifier
 
-import Control.Monad ( guard, when )
+import Control.Monad ( guard )
 
-type Exp = Term Qualified_Name Qualified_Name
+type Exp = Term Identifier Identifier
 
 infer :: Signature -> Exp -> Reporter Type
-infer sig ( Var v ) = error "Type.Infer: Var" -- darf nicht vorkommen
-infer sig exp @ ( Node n args ) = do
+infer sig exp = do
     inform $ text "berechne Typ für Ausdruck:" <+> toDoc exp
-    tags <- look_deep sig sig n
-    nested 2 $ do
-        inform $ text "der Name" <+> toDoc n <+> text "..."
-        nested 2 $ case tags of
-            [ Class_Tag c ] -> reject $ text "bezeichnet eine Klasse"
-            [ Method_Tag m ] -> infer_method sig m args
-            [ Variable_Tag v ] -> infer_variable sig v args
-            [] -> reject $ text "ist nicht deklariert"
-            tags -> reject $ text "ist mehrfach deklariert"
-
-infer_variable sig v args = do
-    inform $ text "bezeichnet die Variable mit Deklaration:" <+> toDoc v
-    when ( not $ null args ) $ reject 
-         $ text "eine Variable darf keine Argumentliste haben"
-    return $ vtype v
-
-infer_method sig m args = do
-    inform $ text "Methode hat Deklaration:" <+> toDoc m
-    assert ( length args == length ( arguments m ) )
-	   $ text "Anzahl der Argumente stimmt mit Deklaration überein?" 
-    sequence_ $ do
-        ( k, arg ) <- zip [1..] args
-        return $ do
-           inform $ text "prüfe Argument Nr." <+> toDoc k
-           t <- nested 4 $ infer sig arg
-	   assert ( t == arguments m !! (k-1) )
-                  $ text "Argument-Typ stimmt mit Deklaration überein?"
-    inform $ text "Resultat hat Typ:" <+> toDoc ( result m )
-    return $ result m
+    t <- nested 4 $ case exp of
+	Node n [] ->
+            case do v <- variables sig ; guard $ vname v == n ; return v
+            of  [ v ] -> do
+                    inform $ text "ist Variable mit Deklaration:" <+> toDoc v
+		    return $ vtype v
+	        [   ] -> reject $ text "ist nicht deklarierte Variable."
+		vs -> reject $ vcat
+		         [ text "ist mehrfach deklarierte Variable:"
+			 , toDoc vs
+			 ]
+        Node n args -> 
+	    case do f <- functions sig ; guard $ fname f == n ; return f
+	    of  [ f ] -> do
+		    inform $ text "Funktion hat Deklaration:" <+> toDoc f
+		    assert ( length args == length ( arguments f ) )
+			   $ text "Anzahl der Argumente stimmt mit Deklaration überein?" 
+		    sequence_ $ do
+		        ( k, arg ) <- zip [1..] args
+                        return $ do
+                            inform $ text "prüfe Argument Nr." <+> toDoc k
+			    t <- nested 4 $ infer sig arg
+			    assert ( t == arguments f !! (k-1) )
+				   $ text "Argument-Typ stimmt mit Deklaration überein?"
+		    return $ result f
+                [   ] -> reject $ text "ist nicht deklarierte Funktion."
+		fs    -> reject $ vcat
+		         [ text "ist mehrfach deklarierte Funktion:"
+			 , toDoc fs
+			 ]
+    inform $ text "hat Typ:" <+> toDoc t
+    return t
 

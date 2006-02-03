@@ -15,8 +15,6 @@ import Inter.Bank
 import Inter.Store 
 import Inter.Login
 import Inter.Logged
-import Inter.Util
-
 import qualified Inter.Param as P
 import qualified Inter.Statistik
 
@@ -719,6 +717,16 @@ punkte tutor stud auf ( minst, mcs, mres, com ) =
 	     pre msg
 	     return ()
         else vorbei
+
+mkpar stud auf = P.empty 
+            { P.mmatrikel = Just $ S.mnr stud
+	    , P.aufgabe = A.name auf
+	    , P.typ = A.typ auf
+	    , P.anr = A.anr auf
+	    , P.vnr = A.vnr auf
+	    , P.highscore = A.highscore auf
+	    , P.ident = S.snr stud
+            }
 
 vorbei = do
     h3 "Einsendeschluß dieser Aufgabe ist überschritten"

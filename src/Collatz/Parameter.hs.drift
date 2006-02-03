@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fth #-}
-
 -- -*- mode: haskell -*-
 
 module Collatz.Parameter where
@@ -10,12 +8,7 @@ import qualified Prelude
 import Autolib.Reader
 import Autolib.ToDoc
 import Text.XML.HaXml.Haskell2Xml
-
-import Network.XmlRpc.THDeriveXmlRpcType
-import Network.XmlRpc.Internals
-
 import Data.Typeable
-import Control.TH
 
 data Parameter = Parameter { length :: Int
 		   , top :: Integer
@@ -23,8 +16,6 @@ data Parameter = Parameter { length :: Int
     deriving ( Eq, Ord, Typeable )
 
 {-! for Parameter derive: ToDoc, Reader, Haskell2Xml !-}
-
-$(asXmlRpcStruct ''Parameter)
 
 compute :: Integer -> Parameter
 compute x =

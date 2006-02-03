@@ -5,7 +5,6 @@
 module Inter.Action where
 
 import Control.Types
-import Control.TH
 
 import Autolib.ToDoc
 import Autolib.Reader
@@ -13,20 +12,19 @@ import Autolib.Reader
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
+import Inter.TH
 import Network.XmlRpc.Internals
-import Network.XmlRpc.THDeriveXmlRpcType
 
-
+-- | die Nummer dessen, der sich einloggt (Tutor)
 data Actor
-     = Actor { schule :: String
-              , matrikel :: String
+     = Actor { matrikel :: String
 		      , passwort :: String 
 		      }
      deriving ( Eq, Ord, Typeable )
 
 {-! for Actor derive: ToDoc, Reader, Haskell2Xml !-}
- 
-$(asXmlRpcStruct ''Actor)
+
+$(Inter.TH.helper ''Actor)
 
 data Problem
      = Problem { vorlesung :: String 
@@ -36,7 +34,7 @@ data Problem
 
 {-! for Problem derive: ToDoc, Reader, Haskell2Xml !-}
 
-$(asXmlRpcStruct ''Problem)
+$(Inter.TH.helper ''Problem)
 
 data Answer =
      Answer { wert :: Wert
@@ -44,10 +42,36 @@ data Answer =
 	    }
      deriving ( Eq, Ord, Typeable )
 
-$(asXmlRpcStruct ''Answer)
+$(Inter.TH.helper ''Answer)
 
 {-! for Answer derive: ToDoc, Reader, Haskell2Xml !-}
 
+instance XmlRpcType Wert where
+    toValue w = case w of
+        Reset   -> toValue [("tag", toValue "Reset")]
+        Pending -> toValue [("tag", toValue "Pending")]
+        No -> toValue [("tag", toValue "No")]
+        Ok s -> toValue [("tag", toValue "OK"), ("size", toValue s) ]
+	Okay {punkte=p, size=s} -> toValue [("tag", toValue "Okay")
+                  , ("punkte", toValue p), ("size", toValue s) ]
+    fromValue v = do
+        it <- fromValue v
+	tag <- getField "tag" it
+	case tag of
+	    "Reset" -> return Reset
+	    "Pending" -> return Pending
+	    "No" -> return No
+	    "Ok" -> do s <- getField "size" it ; return $ ok s
+	    "Okay" -> do 
+               p <- getField "punkte" it; s <- getField "size" it
+	       return $ Okay { punkte = p , size = s }
+    getType _ = TStruct
+
+-- FIXME
+instance XmlRpcType Integer where
+    toValue = toValue . ( fromIntegral :: Integer -> Int ) 
+    fromValue = fmap ( fromIntegral :: Int -> Integer ) . fromValue
+    getType _ = TInt -- FIXME
 
 -- Local Variables:
 -- mode: haskell

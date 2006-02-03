@@ -10,21 +10,19 @@ import Autolib.Reader
 import Autolib.Size 
 
 import Autolib.TES.Identifier
-import Autolib.Symbol
 import Autolib.Xml
 import Autolib.Hash
 import Autolib.Size
 
 import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
-import Data.List ( intersperse )
 
 instance Container Identifier String where
      label _ = "Identifier"
      pack = show 
      unpack = mknullary
 
-data Type = Type Qualified_Name
+data Type = Type Identifier 
      deriving ( Eq, Ord, Typeable )
 
 instance Hash Type where hash (Type t) = hash t
@@ -35,59 +33,24 @@ instance Reader Type where
 
 {-! for Type derive: Haskell2Xml !-}
 
-data Tag = Class_Tag Class
-         | Method_Tag Method
-         | Variable_Tag Variable
-
-{-! for Tag derive: ToDoc !-}
-
 data Variable = 
-     Variable { vstatic :: Bool
-              , vname :: Identifier
+     Variable { vname :: Identifier
 	      , vtype :: Type
 	      }
      deriving ( Eq, Ord, Typeable )
 
 instance ToDoc Variable where
-    toDoc v = hsep
-            [ dstatic ( vstatic v ) 
-            , toDoc (vtype v)
-            , toDoc (vname v)
-            ]
+    toDoc v = toDoc (vtype v) <+> toDoc (vname v)
 instance Reader Variable where
     reader = do
-        s <- pstatic
         t <- reader -- type
         n <- reader -- name
-        return $ Variable { vstatic = s,  vname = n, vtype = t }
+        return $ Variable { vname = n, vtype = t }
 
 {-! for Variable derive: Haskell2Xml !-}
 
-data Qualified_Name = Qualified_Name [ Identifier ]
-     deriving ( Eq, Ord, Typeable )
-
-instance Hash Qualified_Name where
-    hash ( Qualified_Name ids ) = hash ids
-
-instance ToDoc Qualified_Name where
-    toDoc ( Qualified_Name ids ) = 
-        hcat $ intersperse ( text "." ) $ map toDoc ids
-
-instance Reader Qualified_Name where
-    reader = do
-        ids <- reader `Autolib.Reader.sepBy` my_dot 
-        return $ Qualified_Name ids
-
-instance Symbol Qualified_Name where
-    set_arity a s = s
-
-instance Size Qualified_Name where size = const 1
-
-{-! for Qualified_Name derive: Haskell2Xml !-}
-
-data Method = 
-     Method { mstatic :: Bool
-              , mname :: Identifier
+data Function = 
+     Function { fname :: Identifier
 	      , arguments :: [ Type ] 
 	      , result :: Type
 	      }
@@ -95,96 +58,59 @@ data Method =
 
 supply :: [ Identifier ]
 supply = do
-    v <- "xyzpqrst" ++ error "too many parameters in method"
+    v <- "xyzpqrst" ++ error "too many parameters in function"
     return $ mknullary [v]
 
-pstatic :: Parser Bool
-pstatic = option False 
-        $ do my_reserved "static" ; return True
-
-dstatic :: Bool -> Doc
-dstatic f = if f then text "static" else empty
-
-instance ToDoc Method where
-    toDoc f = hsep [ dstatic $ mstatic f
+instance ToDoc Function where
+    -- vorsicht: alte syntax ist im cache -- na und?
+    toDoc f = hsep [ text "static"
 		   , toDoc ( result f )
-		   , toDoc ( mname f )
+		   , toDoc ( fname f )
 		   , dutch_tuple $ do
 		         ( t, z ) <- zip ( arguments f ) supply
 		         return $ toDoc t <+> toDoc z
 		   ]
 
-instance Reader Method where
+instance Reader Function where
     reader = do
-        s <- pstatic
+        my_reserved "static"
         r <- reader -- result type
-	n <- reader -- method name
-        ps <- my_parens 
-           $ reader `Autolib.Reader.sepBy` my_comma  -- parameters
-        return $ Method { mstatic = s
-                         , mname = n
+	n <- reader -- function name
+        ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma  -- parameters
+        return $ Function { fname = n
 			  , arguments = map vtype ps
 			  , result = r 
 			  }
 
-{-! for Method derive: Haskell2Xml !-}
-
-data Class = 
-     Class { cname :: Identifier
-           , csignature :: Signature
-           }
-    deriving ( Typeable )
-
-instance ToDoc Class where
-    toDoc c = vcat 
-          [ text "class" <+> toDoc ( cname c ) <+> text "{"
-          , nest 2 $ toDoc $ csignature c
-          , text "}"
-          ]
-
-instance Reader Class where
-    reader = do
-        my_reserved "class"
-        cn <- reader -- name
-        cs <- my_braces reader -- signature
-        return $ Class { cname = cn , csignature = cs }
-
-{-! for Class derive: Haskell2Xml !-}
+{-! for Function derive: Haskell2Xml !-}
 
 data Signature =
-     Signature { methods :: [ Method ]
+     Signature { functions :: [ Function ]
 	       , variables :: [ Variable ]
-               , classes   :: [ Class    ]
 	       }
   deriving ( Typeable )
 
-esig :: Signature
-esig = Signature { methods = []
-                 , variables = []
-                 , classes = []
-                 }
-
 instance Size Signature where
-     size s = length (methods s) + length (variables s)
+     size s = length (functions s) + length (variables s)
 
 instance ToDoc Signature where
     toDoc sig = vcat 
        $  do v <- variables sig ; return $ toDoc v <> semi
-       ++ do f <- methods sig ; return $ toDoc f <> semi
-       ++ do c <- classes sig ; return $ toDoc c <> semi
+       ++ do f <- functions sig ; return $ toDoc f <> semi
 
 instance Reader Signature where
     reader = do
-        let up tag = do f <- try reader ; return $ tag f 
-            ups = up Class_Tag <|> up Method_Tag <|> up Variable_Tag
-        tags <- many $ do x <- ups ; my_semi ; return x
-        return $ sammel tags
+        let vf =  
+                 do f <- try reader ; return $ Right f -- function
+             <|> do v <-     reader ; return $ Left  v -- variable
+        vfs <- many $ do x <- vf ; my_semi ; return x
+        return $ sammel vfs
 
-sammel tags = Signature 
-    { variables = do Variable_Tag v <- tags ; return v
-    , methods   = do Method_Tag m   <- tags ; return m
-    , classes   = do Class_Tag   c  <- tags ; return c
-    }
+sammel vfs = Signature
+	       { functions = do Right f <- vfs ; return f
+	       , variables = do Left  v <- vfs ; return v
+	       }
+
 
 {-! for Signature derive: Haskell2Xml !-}
 
@@ -205,13 +131,12 @@ data Conf = Conf { max_arity :: Int
     deriving ( Typeable )
 
 conf :: Conf
-conf = Conf 
-     { max_arity = 3
-     , types = read "[ int, boolean, char, String, Foo, Bar ]"
-     , min_symbols = 4
-     , max_symbols = 10
-     , min_size = 5
-     , max_size = 10
-     }
+conf = Conf { max_arity = 3
+	    , types = read "[ int, boolean, char, String, Foo, Bar ]"
+	    , min_symbols = 4
+	    , max_symbols = 10
+	    , min_size = 5
+	    , max_size = 10
+	    }
 
 {-! for Conf derive: ToDoc, Reader, Haskell2Xml !-}

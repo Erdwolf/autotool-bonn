@@ -2,7 +2,7 @@
 
 module Pump.Inter where
 
---  $Id$
+-- -- $Id$
 
 import Pump.Type
 import Pump.Positiv
@@ -91,9 +91,5 @@ instance Project PUMP ( Conf z ) ( Conf z ) where
 
 ---------------------------------------------------------------------- 
 
--- | name is for backward compatibility
-reg = named_quiz "PUMP-Quiz" PUMP 
-      ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )
-
-cf  = named_quiz "Pump-CF" PUMP 
-      ( Pump.Quiz.example :: Pump.Quiz.Conf CF.Zerlegung )
+reg = quiz PUMP ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )
+cf  = quiz PUMP ( Pump.Quiz.example :: Pump.Quiz.Conf CF.Zerlegung )

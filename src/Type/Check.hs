@@ -18,8 +18,7 @@ import Data.Typeable
 import Inter.Types
 import qualified Challenger as C
 
-data TypeCheck = TypeCheck 
-         deriving ( Eq, Ord, Show, Read, Typeable )
+data TypeCheck = TypeCheck deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance C.Partial TypeCheck TI Exp where
 
