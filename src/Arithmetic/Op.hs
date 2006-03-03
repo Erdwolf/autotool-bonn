@@ -14,6 +14,8 @@ import Autolib.TES.Term (tfold)
 import Autolib.FiniteMap
 import Autolib.Prime (prime)
 
+import Data.Char ( isDigit )
+import Control.Monad ( guard )
 
 instance (Enum a, Num a, Integral a ) => Ops a where
     ops = nullary ++ unary ++ binary
@@ -114,9 +116,9 @@ binary = [ Op { name = "*" , arity = 2
 	 ]
 
 eval :: FiniteMap Identifier Integer -> Exp Integer -> Integer
-eval b =  
-    let find b = case lookupFM i of
-          Just b -> b
+eval fm =  
+    let find b = case lookupFM fm b of
+          Just i -> i
           Nothing | all isDigit $ show b -> read $ show b
           Nothing -> error $ "Arithmetic.Op.eval: " ++ show b 
     in tfold ( find ) ( inter )
