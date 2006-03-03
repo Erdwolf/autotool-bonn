@@ -18,8 +18,10 @@ import Autolib.Prime (prime)
 instance (Enum a, Num a, Integral a ) => Ops a where
     ops = nullary ++ unary ++ binary
 
+
 nullary :: ( Enum a, Num a ) => [ Op a ]
 nullary = do
+    guard $ False -- das machen wir anders
     i <- [ 0 .. 9 ]
     return $ Op { name = show i, arity = 0
 		, precedence = Nothing , assoc = AssocNone
@@ -112,9 +114,12 @@ binary = [ Op { name = "*" , arity = 2
 	 ]
 
 eval :: FiniteMap Identifier Integer -> Exp Integer -> Integer
-eval b =  tfold ( lookupWithDefaultFM b (error "Arithmetic.Op.eval") )
-          ( inter )
-
+eval b =  
+    let find b = case lookupFM i of
+          Just b -> b
+          Nothing | all isDigit $ show b -> read $ show b
+          Nothing -> error $ "Arithmetic.Op.eval: " ++ show b 
+    in tfold ( find ) ( inter )
 
 bind :: [ (String, Integer) ] -> FiniteMap Identifier Integer
 bind xvs = listToFM $ do (x, v) <- xvs ; return ( mknullary x, v )
