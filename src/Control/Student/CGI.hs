@@ -17,6 +17,7 @@ import Data.Maybe ( isNothing )
 
 import Autolib.Util.Zufall
 import qualified Debug
+import qualified Local
 
 
 login :: Form IO Student
@@ -69,19 +70,8 @@ use_next_passwort alt = do
 
 wrong_password stud = do
     plain "Passwort falsch."
-    mzero
-
-    par -- nicht erreichbarer code:
-    plain $ unlines
-          [ "Falls Sie Ihr Passwort vergessen haben,"
-          , "dann kann ein neues erzeugt"
-          , "und Ihnen per email an"
-          , toString $ email stud
-          , "geschickt werden."
-          ]
-    click <- submit "neues Passwort"
-    when click $ do pwmail stud
-    mzero
+    par 
+    ask_pwmail stud
 
 -----------------------------------------------------------------------
 
@@ -117,6 +107,8 @@ is_an_email_for_school u label cs = do
         complain [ label, "es sind nur Mailadressen gestattet, die auf"
                  , suf, "enden."
                  ]
+
+-----------------------------------------------------------------------
 
 complain css = do
     open row
@@ -157,56 +149,74 @@ edit_create ms = do
     name <- dtf "name" T.name
     email <- dtf "email" T.email 
     
-    p <- io $ pass
-    pw <- defaulted_textfield "password" $ case ms of
-       Just _ -> ""
-       Nothing -> p
-
-    open row
-    -- check <- submit "check"
-    close -- row
-
     is_a_word "Matrikel" mnr    
     is_a_word "Vorname" vorname
     is_a_word "Name" name
     is_an_email_for_school u "Email" email
-
-    c <- if null pw 
-	 then case ms of
-	      Nothing -> complain [ "Passwort", "darf nicht leer sein" ]
-	      Just s  -> do
-                  plain "Passwort wurde nicht geändert"
-                  return $ T.passwort s
-	 else do
-	      is_a_word "Passwort" pw
-	      io $ encrypt pw
-    open row
-    up <- submit "update"
-    close -- row
-    close -- btable
 
     schon <- io $ get_unr_mnr ( U.unr u , fromCGI mnr )
     let others = case ms of
             Just s -> filter ( \ s' -> T.snr s' /= T.snr s ) schon
             Nothing -> schon
     when ( not $ null others ) $ do
+        open row
 	plain "diese Matrikelnummer ist bereits in Benutzung"
+        close
 	mzero
 
-    when up $ do
-        io $ Control.Student.DB.put ( fmap T.snr ms )
-	   $ T.Student { T.mnr = fromCGI mnr
-               , T.unr = case ms of
+    let stud0 = case ms of
+          Just s -> s
+          Nothing -> T.Student -- cannot log in
+                     { T.passwort = Crypt "" 
+                     , T.next_passwort = Crypt ""
+                     } 
+    let stud = stud0
+             { T.mnr = fromCGI mnr
+             , T.unr = case ms of
                      Just s -> T.unr s
                      Nothing -> U.unr u
-	       , T.vorname = fromCGI vorname
-	       , T.name = fromCGI name
-	       , T.email = fromCGI email
-               , T.passwort = c
-               , T.next_passwort = Crypt ""
-	       }
-        plain "update ausgeführt"
+	     , T.vorname = fromCGI vorname
+	     , T.name = fromCGI name
+	     , T.email = fromCGI email
+             -- NOTE: passwords are not set here
+             }
 
+    -- password handling
+    case ms of
+        Nothing -> do -- neuer Account: passwort würfeln und mailen,
+            open row
+            click <- submit "Account anlegen?"
+            close -- row
+            when click $ do
+                close -- table
+                io $ Control.Student.DB.put Nothing stud
+                [ stud ] <- io $ Control.Student.DB.get_unr_mnr 
+                            ( T.unr stud , T.mnr stud )
+                pwmail $ stud
+            mzero -- never returns
+
+        Just s -> do -- bestehender Account: passwort ändern 
+           pw <- defaulted_textfield "password" ""
+           c <- if null pw 
+	        then do 
+                    plain "(keine Eingabe: Passwort wird nicht geändert)"
+                    return $ T.passwort s
+	        else do
+	            is_a_word "Passwort" pw
+	            io $ encrypt pw
+           open row
+           up <- submit "update"
+           close -- row
+           when up $ do
+                io $ Control.Student.DB.put Nothing 
+                   $ stud { T.passwort = c
+                          , T.next_passwort = Crypt ""
+                          }
+                plain "update ausgeführt"
+
+    close -- btable
+
+-------------------------------------------------------------------------
 
 -- | generate, display and encode "random" passwort
 generator s = do
@@ -233,6 +243,21 @@ generator0 must = do
            close -- row
            return Nothing
 
+-- | ask if user wants new password,
+-- if yes, then generate and mail,
+-- then stop
+ask_pwmail stud = do
+    open row
+    plain $ unlines
+          [ "Ein neues Passwort erzeugen und per email an"
+          , toString $ email stud
+          , "schicken?"
+          ]
+    click <- submit "Ja."
+    close -- row
+    when click $ pwmail stud
+    mzero
+
 -- | generate new password,
 -- put ciphertext in db
 -- send plaintext to known email address
@@ -247,19 +272,44 @@ pwmail stud = do
     is_a_word "Passwort" p    
     c <- io $ encrypt p
     io $ Control.Student.DB.put ( Just $ T.snr stud )
-	      $ stud { T.passwort = c }
+       $ stud { T.next_passwort = c }
+
+    let echo = texter
+            [ "Sie haben ein neues Passwort"
+            , "für das E-Learning-System autotool angefordert."
+            , unwords [ "Es lautet:", "Matrikel:", m, "Passwort:", p ]
+            , "Es wird durch seine erste Benutzung aktiviert,"
+            , "Sie können es danach ändern."
+            , "Sie können aber auch Ihr bisheriges Passwort weiter benutzen"
+            , "und diese Mail ignorieren."
+            ]
 
     let cmd = unwords
-           [ "echo", "Matrikel:", m, "Passwort:", p
+           [ echo
            , "|"
            , "/usr/bin/mail"
            , "-s", show "neues autotool-passwort"
-           , "-a", show "Reply-To: autotool@imn.htwk-leipzig.de"
+           , "-a", show "From: autotool"
            , e
            ]
-    pre $ "running: " ++ cmd
+    when Local.debug $ pre $ "running: " ++ cmd
     res <- io $ Debug.system cmd
-    pre $ "Exit code: " ++ show res
+    when Local.debug $ pre $ "Exit code: " ++ show res
+
+    pre $ unlines
+        [ "Ein neues Passwort wurde an Ihre Adresse"
+        , e
+        , "gemailt."
+        ]
+
+    return ()
+
+-- | writes text using echo shell commands (ugly ugly)
+texter :: [ String ] -> String
+texter lines = 
+    let parens cs = "( " ++ cs ++ " )"
+        handle line = " echo " ++ line ++ " ; "
+    in  parens $ unlines $ map handle lines
 
 ----------------------------------------------------------------
  
