@@ -11,12 +11,13 @@ import Control.Student.DB
 import qualified Control.Schule
 
 import Control.Monad
-import Data.List ( partition )
+import Data.List ( partition, isSuffixOf )
 import Data.Char ( isAlphaNum )
 import Data.Maybe ( isNothing )
 
 import Autolib.Util.Zufall
 import qualified Debug
+
 
 login :: Form IO Student
 login = do
@@ -45,29 +46,42 @@ login = do
          [ stud ] ->
              if Inter.Crypt.compare ( passwort stud ) pwd
                 then return stud
-                else do
-                     plain "Passwort falsch."
-                     mzero
-                     par -- nicht erreichbarer code:
-                     plain $ unlines
-                           [ "Falls Sie Ihr Passwort vergessen haben,"
-                           , "dann kann ein neues erzeugt"
-                           , "und Ihnen per email an"
-                           , toString $ email stud
-                           , "geschickt werden."
-                           ]
-                     click <- submit "neues Passwort"
-                     when click $ do pwmail stud
-                     mzero
+                else if Inter.Crypt.compare ( next_passwort stud ) pwd
+                then use_next_passwort stud
+                else wrong_password stud
+
          [ ] -> do
              plain "Account existiert nicht."
              mzero
 
-
     when change $ do
         Control.Student.CGI.edit stud
-
     return stud
+
+use_next_passwort alt = do
+    plain "Sie haben Ihr neues Passwort verwendet."
+    let neu = alt { T.passwort = T.next_passwort alt
+                  , T.next_passwort = Crypt ""
+                  }
+    io $ Control.Student.DB.put ( Just $ T.snr alt ) neu
+    plain "Das vorherige ist damit ungültig."
+    return neu
+
+wrong_password stud = do
+    plain "Passwort falsch."
+    mzero
+
+    par -- nicht erreichbarer code:
+    plain $ unlines
+          [ "Falls Sie Ihr Passwort vergessen haben,"
+          , "dann kann ein neues erzeugt"
+          , "und Ihnen per email an"
+          , toString $ email stud
+          , "geschickt werden."
+          ]
+    click <- submit "neues Passwort"
+    when click $ do pwmail stud
+    mzero
 
 -----------------------------------------------------------------------
 
@@ -95,6 +109,15 @@ is_an_email label cs = do
     when ( not $ null bad ) $ do
 	 complain [ label , "diese Zeichen sind nicht erlaubt:", show bad ]
 
+is_an_email_for_school :: Monad m => U.Schule -> String -> String -> Form m ()
+is_an_email_for_school u label cs = do
+    is_an_email label cs
+    let suf = toString $ U.mail_suffix u
+    when ( not $ isSuffixOf suf cs ) $ do
+        complain [ label, "es sind nur Mailadressen gestattet, die auf"
+                 , suf, "enden."
+                 ]
+
 complain css = do
     open row
     sequence_ $ do
@@ -120,10 +143,14 @@ edit_create ms = do
     
     us <- io $ Control.Schule.get 
     u <- case ms of
-        Just s -> return $ T.unr s -- darf Schule nicht ändern
+        -- Student darf Schule nicht ändern
+        Just s -> return $ head $ do
+            u <- us
+            guard $ U.unr u == T.unr s 
+            return u
         Nothing -> click_choice "Schule" $ do
             u <- us
-	    return ( toString $ Control.Schule.name u , U.unr u )
+	    return ( toString $ Control.Schule.name u , u )
 
     mnr <- dtf "matrikel" T.mnr
     vorname <- dtf "vorname" T.vorname
@@ -142,12 +169,14 @@ edit_create ms = do
     is_a_word "Matrikel" mnr    
     is_a_word "Vorname" vorname
     is_a_word "Name" name
-    is_an_email "Email" email
+    is_an_email_for_school u "Email" email
 
     c <- if null pw 
 	 then case ms of
 	      Nothing -> complain [ "Passwort", "darf nicht leer sein" ]
-	      Just s  -> return $ T.passwort s
+	      Just s  -> do
+                  plain "Passwort wurde nicht geändert"
+                  return $ T.passwort s
 	 else do
 	      is_a_word "Passwort" pw
 	      io $ encrypt pw
@@ -156,7 +185,7 @@ edit_create ms = do
     close -- row
     close -- btable
 
-    schon <- io $ get_unr_mnr ( u , fromCGI mnr )
+    schon <- io $ get_unr_mnr ( U.unr u , fromCGI mnr )
     let others = case ms of
             Just s -> filter ( \ s' -> T.snr s' /= T.snr s ) schon
             Nothing -> schon
@@ -169,11 +198,12 @@ edit_create ms = do
 	   $ T.Student { T.mnr = fromCGI mnr
                , T.unr = case ms of
                      Just s -> T.unr s
-                     Nothing -> u
+                     Nothing -> U.unr u
 	       , T.vorname = fromCGI vorname
 	       , T.name = fromCGI name
 	       , T.email = fromCGI email
                , T.passwort = c
+               , T.next_passwort = Crypt ""
 	       }
         plain "update ausgeführt"
 

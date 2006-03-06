@@ -4,6 +4,7 @@ module Control.Student.DB where
 
 import Control.SQL
 import Control.Types
+import Inter.Crypt
 import qualified Control.Student.Type as CST
 
 import Prelude hiding ( all )
@@ -98,6 +99,19 @@ put msnr stud = do
 	    [ Where $ equals ( reed "student.SNr" ) ( toEx snr ) ]
     disconnect conn
 
+-- not used
+switch_passwort :: CST.Student -> IO ()
+switch_passwort stud = do
+    conn <- myconnect
+    squery conn $ Query
+           ( Update ( reed "student" )
+                    [ ( reed "Passwort", reed "Next_Passwort" ) ] )
+           [ Where $ equals ( reed "student.SNr" ) ( toEx $ CST.snr stud ) ]
+    squery conn $ Query
+           ( Update ( reed "student" )
+                    [ ( reed "Passwort", toEx $ Crypt "" ) ] )
+           [ Where $ equals ( reed "student.SNr" ) ( toEx $ CST.snr stud ) ]
+    disconnect conn
 
 
 
