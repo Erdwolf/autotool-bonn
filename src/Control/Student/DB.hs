@@ -41,7 +41,7 @@ get_from_where from ex = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "student.SNr", "UNr", "MNr", "Name", "Vorname" 
-			    , "Email", "Passwort" 
+			    , "Email", "Passwort", "Next_Passwort" 
 			    ] )
         [ From $ from
         , Where $ ex
@@ -54,6 +54,7 @@ get_from_where from ex = do
         s_vorname <- getFieldValue state "Vorname"
         s_email <- getFieldValue state "Email"
         s_passwort <- getFieldValue state "Passwort"
+        s_next_passwort <- getFieldValue state "Next_Passwort"
         return $ CST.Student { CST.snr = s_snr
     			     , CST.unr = s_unr
     			     , CST.mnr = s_mnr
@@ -61,6 +62,7 @@ get_from_where from ex = do
 			     , CST.vorname = s_vorname
 			     , CST.email = s_email
 			     , CST.passwort = s_passwort
+			     , CST.next_passwort = s_next_passwort
     			     }
                     ) stat
     disconnect conn
@@ -82,6 +84,7 @@ put msnr stud = do
 		 , ( reed "Vorname", toEx $ CST.vorname stud )
 		 , ( reed "Email", toEx $ CST.email stud )
 		 , ( reed "Passwort", toEx $ CST.passwort stud )
+		 , ( reed "Next_Passwort", toEx $ CST.next_passwort stud )
 		 ]
     -- stat <- case msnr of
     case msnr of

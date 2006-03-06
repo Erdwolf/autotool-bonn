@@ -15,6 +15,9 @@ import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 data Schule =
      Schule { unr :: UNr
 	    , name :: Name
+            , mail_suffix :: Name
+                  -- ^ Studenten werden nur akzeptiert,
+                  -- wenn email so endet
 	    }
 	deriving ( Typeable )
 

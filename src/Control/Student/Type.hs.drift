@@ -19,6 +19,7 @@ data Student =
 	     , vorname :: Name
              , email :: Email
 	     , passwort :: Crypt
+             , next_passwort :: Crypt
 	     }
      deriving ( Eq, Ord, Typeable )
 
