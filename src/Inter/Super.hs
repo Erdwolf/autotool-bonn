@@ -7,7 +7,7 @@
 
 module Main where
 
-import Inter.CGI
+import Gateway.CGI
 import Inter.Evaluate
 import Inter.Make 
 import Inter.Motd
@@ -18,7 +18,7 @@ import Inter.Logged
 import qualified Inter.Param as P
 import qualified Inter.Statistik
 
-import Help
+import Gateway.Help
 
 import Autolib.Set
 import qualified Autolib.Output
@@ -75,7 +75,7 @@ import qualified Control.Exception
 import qualified Text.Html
 
 main :: IO ()
-main = Inter.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
+main = Gateway.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
    wrap $ iface $ Inter.Collector.tmakers
    scores <- io $ slink `Control.Exception.catch` \ e -> return ( show e )
    footer scores

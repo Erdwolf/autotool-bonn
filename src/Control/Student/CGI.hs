@@ -3,7 +3,7 @@ module Control.Student.CGI where
 --  $Id$
 
 import Control.Types
-import Inter.CGI
+import Gateway.CGI
 import Inter.Crypt
 import Control.Schule as U
 import Control.Student.Type as T

@@ -2,7 +2,7 @@
 
 module Inter.Statistik where
 
-import Inter.CGI
+import Gateway.CGI
 import Inter.Login
 import Control.Types
 

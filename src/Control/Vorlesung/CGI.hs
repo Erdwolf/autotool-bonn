@@ -1,7 +1,7 @@
 module Control.Vorlesung.CGI where
 
 import Control.Types
-import Inter.CGI
+import Gateway.CGI
 import Control.Vorlesung.Typ as T
 import Control.Vorlesung.DB
 import Control.Monad

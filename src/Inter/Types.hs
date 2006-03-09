@@ -3,7 +3,7 @@ module Inter.Types where
 --   $Id$
 
 import Autolib.Reporter
-import Help
+import Gateway.Help
 
 -- import Challenger.Problem
 import Challenger.Partial

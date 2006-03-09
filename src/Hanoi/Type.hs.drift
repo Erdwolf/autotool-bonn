@@ -12,7 +12,7 @@ import Autolib.Size
 import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
-import Help
+import Gateway.Help
 
 type Scheibe = Integer
 

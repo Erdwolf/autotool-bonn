@@ -2,7 +2,7 @@
 
 module Inter.Login where
 
-import Inter.CGI
+import Gateway.CGI
 import Control.Types ( VNr, toString )
 import Control.Monad ( when )
 

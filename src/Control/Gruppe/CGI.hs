@@ -1,7 +1,7 @@
 module Control.Gruppe.CGI where
 
 import Control.Types
-import Inter.CGI
+import Gateway.CGI
 import Control.Gruppe.Typ as T
 import Control.Gruppe.DB
 import Control.Monad
