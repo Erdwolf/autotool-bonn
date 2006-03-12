@@ -5,7 +5,7 @@ module Inter.Evaluate where
 import Inter.Area
 
 import Inter.Types
-import Inter.Errmsg
+import Gateway.Errmsg
 import qualified Inter.Param as P
 
 import Control.Types ( Wert (..) )

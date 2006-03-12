@@ -2,7 +2,7 @@
 
 module Inter.Area where
 
-import Inter.Errmsg
+import Gateway.Errmsg
 import Inter.Env
 import Inter.Click
 import Autolib.Reader
