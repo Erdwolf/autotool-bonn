@@ -12,6 +12,8 @@ import qualified Control.Student.Type as S
 
 import qualified Text.Html
 
+import Autolib.Util.Sort
+
 -- | returns ( s, v, ist_tutor, ist_eingeschrieben )
 -- unterschiede: tutor darf "alles",
 -- student darf keine aufgaben ändern und nur aktuelle aufgaben sehen
@@ -28,7 +30,8 @@ aule stud = do
     let snr = S.snr stud
 
     -- alle vorlesungen an dieser Schule
-    vors <- io $ V.get_at_school ( S.unr stud )
+    vors0 <- io $ V.get_at_school ( S.unr stud )
+    let vors = reverse $ sortBy V.einschreibVon vors0
     -- hierfür ist er tutor:
     tvors <- io $ V.get_tutored snr
     -- hierfür ist er eingeschrieben:

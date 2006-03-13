@@ -55,6 +55,11 @@ login = do
              plain "Account existiert nicht."
              mzero
 
+         xs -> do
+             plain "Mehrere Studenten mit dieser Matrikelnummer?"
+             plain $ show $ map T.snr xs
+             mzero
+
     when change $ do
         Control.Student.CGI.edit stud
     return stud
@@ -119,7 +124,7 @@ complain css = do
     close -- row
     open row
     blank
-    submit "try again"
+    submit "absenden"
     close -- row
     mzero    
 
@@ -144,14 +149,14 @@ edit_create ms = do
             u <- us
 	    return ( toString $ Control.Schule.name u , u )
 
-    mnr <- dtf "matrikel" T.mnr
-    vorname <- dtf "vorname" T.vorname
-    name <- dtf "name" T.name
-    email <- dtf "email" T.email 
+    mnr <- dtf "Matrikelnummer" T.mnr
+    vorname <- dtf "Vorname" T.vorname
+    name <- dtf "Nachname" T.name
+    email <- dtf "Email" T.email 
     
-    is_a_word "Matrikel" mnr    
+    is_a_word "Matrikelnummer" mnr    
     is_a_word "Vorname" vorname
-    is_a_word "Name" name
+    is_a_word "Nachname" name
     is_an_email_for_school u "Email" email
 
     schon <- io $ get_unr_mnr ( U.unr u , fromCGI mnr )
@@ -185,10 +190,11 @@ edit_create ms = do
     case ms of
         Nothing -> do -- neuer Account: passwort würfeln und mailen,
             open row
-            click <- submit "Account anlegen?"
+            submit "Account ..."
+            click <- submit "... anlegen?"
             close -- row
+            close -- table
             when click $ do
-                close -- table
                 io $ Control.Student.DB.put Nothing stud
                 [ stud ] <- io $ Control.Student.DB.get_unr_mnr 
                             ( T.unr stud , T.mnr stud )
@@ -208,7 +214,7 @@ edit_create ms = do
            up <- submit "update"
            close -- row
            when up $ do
-                io $ Control.Student.DB.put Nothing 
+                io $ Control.Student.DB.put ( Just $ T.snr s )
                    $ stud { T.passwort = c
                           , T.next_passwort = Crypt ""
                           }
@@ -249,9 +255,8 @@ generator0 must = do
 ask_pwmail stud = do
     open row
     plain $ unlines
-          [ "Ein neues Passwort erzeugen und per email an"
-          , toString $ email stud
-          , "schicken?"
+          [ "Ein neues Passwort erzeugen und per email zustellen?"
+          -- , toString $ email stud
           ]
     click <- submit "Ja."
     close -- row
@@ -277,7 +282,7 @@ pwmail stud = do
     let echo = texter
             [ "Sie haben ein neues Passwort"
             , "für das E-Learning-System autotool angefordert."
-            , unwords [ "Es lautet:", "Matrikel:", m, "Passwort:", p ]
+            , unwords [ "Es lautet:", "Matrikelnummer:", m, "Passwort:", p ]
             , "Es wird durch seine erste Benutzung aktiviert,"
             , "Sie können es danach ändern."
             , "Sie können aber auch Ihr bisheriges Passwort weiter benutzen"
