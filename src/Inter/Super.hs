@@ -661,7 +661,7 @@ solution vnr manr stud
         Textarea -> do
 	    ex    <- submit "Beispiel laden"
 	    prev  <- submit "vorige Einsendung laden"
-	    esub  <- submit "Textfeld absenden"
+	    -- esub  <- submit "Textfeld absenden"
 	    br
 	    when ( ex || prev ) blank
 
@@ -679,6 +679,7 @@ solution vnr manr stud
 	    close -- row
 	    open row
             sol <- textarea def
+	    esub  <- submit "Textfeld absenden"
 	    close -- row
 	    close -- table
             return sol
