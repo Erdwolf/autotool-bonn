@@ -19,7 +19,7 @@ edit u mv = do
     n <- dtf "Name" T.name
     v <- dtf "einschreiben von" T.einschreibVon
     b <- dtf "einschreiben bis" T.einschreibBis
-    m <- dta0 "message of the day" T.motd
+    m <- dtf "message of the day" T.motd
     close -- btable
     up <- submit "update"
     when up $ do
@@ -30,5 +30,5 @@ edit u mv = do
 		       , name = fromCGI n
 		       , einschreibVon = fromCGI v
 		       , einschreibBis = fromCGI b
-                       , motd = m
+                       , motd = fromCGI m
 		       }

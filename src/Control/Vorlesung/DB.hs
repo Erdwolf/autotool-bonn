@@ -153,6 +153,7 @@ put mvnr vor = do
     conn <- myconnect 
     let common = [ ( reed "VNr", toEx $ vnr vor )
 		 , ( reed "Name", toEx $ name vor )
+		 , ( reed "Motd", toEx $ motd vor )
 		 , ( reed "EinschreibVon", toEx $ einschreibVon vor )
 		 , ( reed "EinschreibBis", toEx $ einschreibBis vor )
 		 ]

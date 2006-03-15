@@ -20,7 +20,7 @@ data Vorlesung =
 	       , einschreibBis :: Time
 	       -- | nicht in DB, aber bei Zugriff ausgerechnet
 	       , einschreib :: TimeStatus
-               , motd :: String -- ^ message of the day
+               , motd :: Name -- ^ message of the day
 	       }
      deriving Typeable
 

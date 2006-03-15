@@ -43,7 +43,7 @@ aule stud = do
         return ( toString $ V.name vor , vor )
     close -- btable
 
-    let motd =  V.motd vor
+    let motd = toString $ V.motd vor
     when ( not $ null motd ) $ do
         par 
         plain motd
