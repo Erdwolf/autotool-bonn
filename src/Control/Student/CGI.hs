@@ -294,14 +294,14 @@ pwmail stud = do
            , "|"
            , "/usr/bin/mail"
            , "-s", show "neues autotool-passwort"
-           , "-a", show "From: autotool"
+           -- , "-a", show "From: autotool"
            , e
            ]
     when Local.debug $ pre $ "running: " ++ cmd
     res <- io $ Debug.system cmd
     when Local.debug $ pre $ "Exit code: " ++ show res
 
-    pre $ unlines
+    pre $ unwords
         [ "Ein neues Passwort wurde an Ihre Adresse"
         , e
         , "gemailt."
