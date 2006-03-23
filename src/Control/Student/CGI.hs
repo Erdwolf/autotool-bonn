@@ -46,7 +46,7 @@ login = do
     stud <- case studs of
          [ stud ] ->
              if Inter.Crypt.compare ( passwort stud ) pwd
-                then return stud
+                then use_first_passwort stud
                 else if Inter.Crypt.compare ( next_passwort stud ) pwd
                 then use_next_passwort stud
                 else wrong_password stud
@@ -64,10 +64,24 @@ login = do
         Control.Student.CGI.edit stud
     return stud
 
+use_first_passwort stud = 
+    if ( Inter.Crypt.is_empty $ next_passwort stud ) 
+    then return stud -- ändert sich nichts
+    else do
+        plain $ unlines 
+              [ "Sie hatten eine Email mit einem neuen Passwort erhalten,"
+              , "aber Sie haben jetzt Ihr altes Passwort benutzt."
+              , "Das Passwort aus der Email wird dadurch ungültig,"
+              , "Ihr bestehendes (jetzt benutztes) Passwort bleibt gültig."
+              ]
+        let neu = stud { T.next_passwort = Inter.Crypt.empty }
+        io $ Control.Student.DB.put ( Just $ T.snr stud ) neu
+        return neu
+
 use_next_passwort alt = do
     plain "Sie haben Ihr neues Passwort verwendet."
     let neu = alt { T.passwort = T.next_passwort alt
-                  , T.next_passwort = Crypt ""
+                  , T.next_passwort = Inter.Crypt.empty
                   }
     io $ Control.Student.DB.put ( Just $ T.snr alt ) neu
     plain "Das vorherige ist damit ungültig."
@@ -76,7 +90,13 @@ use_next_passwort alt = do
 wrong_password stud = do
     plain "Passwort falsch."
     par 
-    ask_pwmail stud
+    if ( Inter.Crypt.is_empty $ next_passwort stud )
+       then ask_pwmail stud
+       else plain $ unlines
+                  [ "Sie haben eine Email mit einem neuen Passwort erhalten,"
+                  , "aber Sie haben dieses neue Passwort noch nicht benutzt."
+                  ]
+    mzero
 
 -----------------------------------------------------------------------
 
@@ -172,8 +192,8 @@ edit_create ms = do
     let stud0 = case ms of
           Just s -> s
           Nothing -> T.Student -- cannot log in
-                     { T.passwort = Crypt "" 
-                     , T.next_passwort = Crypt ""
+                     { T.passwort = Inter.Crypt.empty
+                     , T.next_passwort = Inter.Crypt.empty
                      } 
     let stud = stud0
              { T.mnr = fromCGI mnr
@@ -216,7 +236,7 @@ edit_create ms = do
            when up $ do
                 io $ Control.Student.DB.put ( Just $ T.snr s )
                    $ stud { T.passwort = c
-                          , T.next_passwort = Crypt ""
+                          , T.next_passwort = Inter.Crypt.empty
                           }
                 plain "update ausgeführt"
 
@@ -302,9 +322,9 @@ pwmail stud = do
     when Local.debug $ pre $ "Exit code: " ++ show res
 
     pre $ unwords
-        [ "Ein neues Passwort wurde an Ihre Adresse"
-        , e
-        , "gemailt."
+        [ "Ein neues Passwort wurde an Ihre Mail-Adresse"
+        -- , e
+        , "gesendet."
         ]
 
     return ()

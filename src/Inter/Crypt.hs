@@ -3,6 +3,7 @@ module Inter.Crypt
 ( Crypt (..)
 , encrypt
 , Inter.Crypt.compare
+, is_empty, empty
 )
 
 where
@@ -18,11 +19,17 @@ import System.Random
 import Data.Word
 import Data.Typeable
 import Autolib.Xml
-import Autolib.ToDoc
+import Autolib.ToDoc hiding ( empty )
 
 data Crypt = Crypt { unCrypt :: String }    
     deriving ( Eq, Ord, Typeable )
  
+is_empty :: Crypt -> Bool
+is_empty = null . unCrypt
+
+empty :: Crypt
+empty = Crypt ""
+
 -- brauchen kein quote Quots?
 instance ToDoc Crypt where toDoc = text . unCrypt
 instance Read Crypt where readsPrec p cs = [(Crypt cs, [])]
