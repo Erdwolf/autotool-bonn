@@ -4,6 +4,8 @@ module Number.Float.Config where
 
 import Prelude hiding ( exponent )
 
+import qualified Number.Base.Data as B
+
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
@@ -36,6 +38,11 @@ conforms :: Config -> F.Zahl -> Reporter ()
 conforms c z = do
     assert ( basis c == F.basis z )
 	   $ text "Ist die Basis gleich" <+> toDoc (basis c) <+> text "?"
+
+    inform $ text "Sind alle Ziffern im erlaubten Bereich?"
+    B.range ( basis c ) z 
+    inform $ text "Ja."
+           
     when True -- ( normalisiert c )
 	 $ assert ( F.ist_normalisiert z ) 
 	 $ text "Ist die Zahl normalisiert?"

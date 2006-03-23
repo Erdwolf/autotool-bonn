@@ -3,6 +3,7 @@
 module Number.Base.Data where
 
 import Autolib.ToDoc
+import Autolib.Reporter
 import Autolib.Reader
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
@@ -51,3 +52,21 @@ instance Wert_at [ Ziffer ] Integer where
 
 instance Wert Zahl Integer where
   wert z = wert_at (basis z) (ziffern z)
+
+--------------------------------------------------------------------------
+
+class Range a where range :: Int -> a -> Reporter ()
+
+instance Range [ Ziffer ] where
+    range b zs = silent $ do
+        inform $ fsep 
+               [ text "teste Ziffern", toDoc zs
+               , text "bezüglich der Basis", toDoc b
+               ]
+        nested 4 $ sequence_ $ do
+            z <- zs
+            return $ when ( not ( ( Ziffer 0 <= z ) && ( z < Ziffer b ) ) ) 
+               $ reject $ fsep 
+               [ text "die Ziffer", toDoc z
+               , text "liegt nicht im erlaubten Bereich."
+               ]

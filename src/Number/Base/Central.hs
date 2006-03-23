@@ -43,7 +43,7 @@ instance Partial Convert (Zahl, Int) Zahl where
          silent $ sequence_ $ do
              Ziffer i <- ziffern x
              return $ assert ( 0 <= i && i < b )
-                    $ text "falsch für:" <+> toDoc (Ziffer i)
+                    $ text "richtig für:" <+> toDoc (Ziffer i)
 
     total Convert (z, b) x = do
          assert ( (wert z :: Integer) == (wert x :: Integer) )

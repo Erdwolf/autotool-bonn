@@ -8,8 +8,10 @@ import Number.Wert
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Reporter
 import Autolib.Size
-import Ratio
+
+import Data.Ratio
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
@@ -27,6 +29,14 @@ instance ( Num b, Wert_at a b ) => Wert_at (Signed a) b where
 
 instance Size a => Size (Signed a) where 
     size s = size (contents s)
+
+instance ( ToDoc a, B.Range a ) => B.Range ( Signed a ) where
+    range b s = silent $ do
+        inform $ fsep
+               [ text "teste Ziffern von", toDoc s
+               , text "bezüglich Basis", toDoc b
+               ]
+        nested 4 $ B.range b $ contents s
 
 instance ToDoc a => ToDoc (Signed a) where
     toDoc s = ( if negative s then Autolib.ToDoc.char '-' else empty ) 
@@ -54,6 +64,14 @@ instance Wert_at Natural Integer where
 
 instance Size Natural where
     size n = length $ ziffern n
+
+instance B.Range Natural where
+    range b n = silent $ do
+        inform $ fsep
+               [ text "teste Ziffern von", toDoc n
+               , text "bezüglich Basis", toDoc b
+               ]
+        nested 4 $ B.range b $ ziffern n
 
 instance ToDoc Natural where
     toDoc n = hcat $ map toDoc $ ziffern n
@@ -83,6 +101,15 @@ instance Wert_at Fixed Rational where
 
 instance Size Fixed where
     size f = size (pre f) + size (post f)
+
+instance B.Range Fixed where
+    range b f = silent $ do
+        inform $ fsep
+               [ text "teste Ziffern von", toDoc f
+               , text "bezüglich Basis", toDoc b
+               ]
+        nested 4 $ B.range b $ pre f
+        nested 4 $ B.range b $ post f
 
 instance ToDoc Fixed where
     toDoc f = 
@@ -123,6 +150,10 @@ instance Wert Zahl Rational where
             we = wert_at b $ exponent z
         in  wm *  fromIntegral b ^^ we
 
+instance B.Range Zahl where
+    range b z = do
+        B.range b $ mantisse z
+        B.range b $ exponent z
 
 instance Size Zahl where
     size z = size ( mantisse z ) + size ( exponent z )
