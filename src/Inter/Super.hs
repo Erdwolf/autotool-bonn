@@ -110,10 +110,20 @@ use_account tmk = do
     h3 "Login"
     -- für Student und Tutor gleicher Start
 
-    svt @ ( stud, vor, tutor, attends ) <- Inter.Login.form
+    svt @ ( stud, vor, tutor0, attends0 ) <- Inter.Login.form
 
-    when tutor $ do
-        h3 "Sie sind Tutor für diese Vorlesung."
+    ( tutor, attends ) <- 
+        if tutor0
+        then do
+            h3 "Sie sind Tutor für diese Vorlesung."
+            open btable
+            result <- click_choice_with_default 0 "Arbeiten als..."
+                  [ ("Tutor", ( tutor0, attends0 ) ) 
+                  , ("Student", ( False, True ) )
+                  ]
+            close
+            return result
+        else return ( False, attends0 )
 
     open btable
     aktion <- click_choice_with_default 0 "Aktion" $
