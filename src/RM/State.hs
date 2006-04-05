@@ -6,6 +6,7 @@ import RM.Memory
 import Machine.History
 
 import Autolib.ToDoc
+import Data.Typeable
 
 data State =
      State { schritt :: Int
@@ -13,7 +14,7 @@ data State =
 	   , memory  :: Memory
 	   , past    :: [State]
 	   }
-     deriving ( Eq , Ord )
+     deriving ( Eq , Ord, Typeable )
 
 instance ToDoc State where
     toDoc st = text "State" <+> dutch_record

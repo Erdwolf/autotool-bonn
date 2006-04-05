@@ -138,6 +138,9 @@ tmakers =
                      [ item Pump.Inter.reg
                      , item Pump.Inter.cf
                      ]
+                , heading "Turing-Maschine (als Akzeptor)"
+                     [ item Turing.Make.acceptor
+                     ]
                 ]
          , heading "Logik"
                 [ item Boolean.Instance.make

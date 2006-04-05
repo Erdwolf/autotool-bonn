@@ -39,7 +39,7 @@ instance ( Condition prop m , Reader m,  Machine m dat conf
 	 , ToDoc [ dat ], ToDoc [prop]  , ToDoc prop
 	 , Reader [ dat ], Reader [prop]  , Reader prop
 	 ) 
-         => C.Partial A.Acceptor ( A.Type m dat prop ) m where
+         => C.Partial ( A.Acceptor ) ( A.Type m dat prop ) m where
     describe p i  = vcat
 	          [ text "Gesucht ist ein" <+> A.machine_desc i 
 		  , text "für die Sprache" <+> A.data_desc i

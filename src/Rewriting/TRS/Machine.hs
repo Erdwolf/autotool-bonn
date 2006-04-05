@@ -18,7 +18,11 @@ import Data.Array
 import Data.Maybe
 import Data.List ( tails )
 
-data Derive v c = Derive [ Term v c ]
+import Data.Typeable
+
+
+data Derive v c = Derive [ Term v c ] deriving Typeable
+
 instance ( Eq v, Eq c ) => Eq ( Derive v c ) where
     Derive (x : xs)  == Derive (y : ys) = x == y
 instance ( Ord v, Ord c ) => Ord ( Derive v c ) where
@@ -44,10 +48,10 @@ instance Symbol v
 
 instance Symbol v
         => In  ( TRS v Identifier ) ( Term v Identifier ) ( Derive v Identifier ) where
-    input trs t = Derive [t]
+    input_reporter trs t = return $ Derive [t]
 instance Symbol v
      => Out ( TRS v Identifier ) ( Term v Identifier ) ( Derive v Identifier ) where
-    output trs (Derive ( x:xs)) = x
+    output_reporter trs (Derive ( x:xs)) = return $ x
 
 instance ToDoc v => Encode ( Term v Identifier )  where
     -- put argument list as term  f(x1, x2, ...)

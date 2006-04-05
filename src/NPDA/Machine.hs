@@ -20,7 +20,7 @@ instance NPDAC x y z
 	 => In ( NPDA x y z ) [x] ( Konfiguration x y z ) where
     -- startkonf. herstellen (tupel von args)
     -- input  :: m -> dat -> conf
-    input m xs = start_konfiguration m xs
+    input_reporter m xs = return $ start_konfiguration m xs
 
 
 instance NPDAC x y z 
@@ -30,7 +30,7 @@ instance NPDAC x y z
     
     -- TODO: wouzu ist diese Instanz eigentlich nötig?
     -- NPDA soll doch  nur rechnen und akzeptieren, nichts ausgeben?
-    output m k = eingabe k -- sollte verbraucht sein
+    output_reporter m k = return $ eingabe k -- sollte verbraucht sein
 
 
 instance NPDAC x y z 

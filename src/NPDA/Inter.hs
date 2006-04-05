@@ -25,10 +25,10 @@ import Inter.Quiz
 
 type Accept = A.Type ( NPDA Char Char Int ) String Property
 
-instance Project A.Acceptor Accept Accept where 
+instance Project ( A.Acceptor ) Accept Accept where 
     project _ i = i
 
-instance Generator A.Acceptor Config Accept where
+instance Generator ( A.Acceptor ) Config Accept where
     generator _ config key = do
         let l = inter $ lang config
     	    m = max_num config
@@ -47,5 +47,5 @@ instance Generator A.Acceptor Config Accept where
     	   }
 
 make :: Make
-make = quiz A.Acceptor NPDA.Config.example
+make = quiz ( A.Acceptor "NPDA" ) NPDA.Config.example
 

@@ -7,6 +7,8 @@ import Machine.History
 import Turing.Type
 import Autolib.ToDoc
 
+import Data.Typeable
+
 data Konfiguration y z = 
      Konfiguration { band_links :: [ y ]
 		   , aktuelles_zeichen :: y
@@ -15,6 +17,7 @@ data Konfiguration y z =
 		   , geschichte :: [Konfiguration y z] 
 		   , schritt :: Int
 		   }
+    deriving Typeable
 
 instance History ( Konfiguration y z ) where
     history = geschichte

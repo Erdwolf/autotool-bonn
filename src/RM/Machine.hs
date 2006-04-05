@@ -22,7 +22,7 @@ instance Compute Program State where
     depth _ = schritt
 
 instance In Program Memory State where
-    input p m = State 
+    input_reporter p m = return $ State 
 	      { schritt = 0
 	      , program = Just p
 	      , memory  = m

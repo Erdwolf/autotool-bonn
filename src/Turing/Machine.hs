@@ -35,7 +35,7 @@ instance TuringC y z => In  ( Turing y z ) [ y ] ( Konfiguration y z ) where
         return $ start_konfiguration m ys
 
 instance TuringC y z => Out  ( Turing y z ) [ y ] ( Konfiguration y z ) where
-    output m k = bandinhalt m k
+    output_reporter m k = return $ bandinhalt m k
 
 instance Encode String where
     -- unär

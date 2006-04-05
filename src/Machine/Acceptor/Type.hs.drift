@@ -15,9 +15,20 @@ import Machine.Class
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
-data Acceptor = Acceptor deriving Typeable
+data Acceptor = Acceptor String -- include machine type ??
+    deriving Typeable
 
-{-! for Acceptor derive : ToDoc, Reader, Haskell2Xml !-}
+instance ToDoc Acceptor where
+    toDoc ( Acceptor kind ) = text $ "Acceptor-" ++ kind
+
+instance Reader Acceptor where
+    reader = do
+        my_reserved "Acceptor"
+        Autolib.Reader.char '-'
+        cs <- many alphaNum
+        return $ Acceptor cs
+
+{-! for Acceptor derive :  Haskell2Xml !-}
 
 class ( Reader [dat], ToDoc [dat], Reader [prop], ToDoc [prop]  ) 
       => Class dat prop 

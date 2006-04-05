@@ -6,10 +6,12 @@ import JVM.Type
 import JVM.Memory
 
 import Machine.History
-import Data.Array
 
 import Autolib.ToDoc
 import Autolib.FiniteMap
+
+import Data.Array
+import Data.Typeable
 
 data State =
      State { schritt :: Int
@@ -19,7 +21,7 @@ data State =
 	   , memory  :: Memory
 	   , past :: [State] -- vorige zustände
 	   }
-     deriving ( Eq, Ord )
+     deriving ( Eq, Ord, Typeable )
 
 instance ToDoc State where
     toDoc st = text "State" <+> dutch_record 

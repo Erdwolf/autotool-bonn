@@ -11,6 +11,7 @@ import JVM.Step
 
 import Autolib.Set
 import Autolib.Size
+
 import Data.Array
 
 instance Compute Program State where
@@ -20,7 +21,8 @@ instance Compute Program State where
     depth p s = schritt s
 
 instance In Program Memory State where
-    input  p m = State { code = listArray (0, pred $ length p) p
+    input_reporter p m = return $ State 
+          { code = listArray (0, pred $ length p) p
 		       , pc = 0
 		       , stack = []
 		       , memory = m
@@ -28,7 +30,7 @@ instance In Program Memory State where
 		       , past = [] 
 		       }
 instance Out Program Memory State where
-    output p s = memory s
+    output_reporter p s = return $ memory s
 
 instance Encode Memory where
     -- put argument list in x1, x2, ...

@@ -42,8 +42,8 @@ check_item ::   ( Machine m dat conf, ToDoc dat )
 	      -> Int -> m -> dat
 	      -> Reporter ()
 check_item acc cut m x = nested 4 $ do
-     let ks = akzeptierend_oder_ohne_nachfolger cut m 
-	    $ input m x
+     ip <- input_reporter m x
+     let ks = akzeptierend_oder_ohne_nachfolger cut m ip
 	 as = filter ( accepting m ) ks
 	 logs = if null as then ks else as
 	 ok = acc == not (null as)
