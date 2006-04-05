@@ -10,7 +10,10 @@ import qualified PCProblem.Quiz
 import qualified Boolean.Instance
 import qualified Boolean.Quiz
 import qualified Sortier.Netz.Check 
+
 import qualified JVM.Make
+import qualified Turing.Make
+
 import qualified Graph.Selfcom
 import qualified Graph.Nachbar
 import qualified Graph.Cross
@@ -48,6 +51,7 @@ import qualified Pump.Inter
 -- import qualified Grammatik.Interface
 import qualified Grammatik.CF.Interface
 import qualified NPDA.Inter
+-- import qualified Turing.Inter
 
 import qualified SAT.SAT
 import qualified Baum.Reconstruct
@@ -154,6 +158,8 @@ tmakers =
                 ]
          , heading "Berechenungsmodelle"
                 [ item JVM.Make.make
+                , item Turing.Make.computer
+                , item RM.Make.make
                 ]
          , heading "Termersetzung"
                 [ item Rewriting.Derive.make_fixed
@@ -244,7 +250,6 @@ tmakers =
                 , item Graph.VC.Central.make_quiz
                 , item Graph.VC.VCSAT.make_fixed
                 , item Graph.VC.VCSAT.make_quiz               
-                , item RM.Make.make
                 ]
           ]
 
