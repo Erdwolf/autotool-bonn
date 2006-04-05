@@ -1,0 +1,48 @@
+-- -*- mode: haskell -*-
+
+module Turing.Property where
+
+import Turing.Type
+import Turing.Check
+
+import Condition
+
+import Autolib.Reporter
+import Autolib.Reporter.Type
+import qualified Autolib.Reporter.Checker as C
+import qualified Machine.Numerical.Config 
+
+import Autolib.ToDoc
+import Autolib.Reader
+import Text.XML.HaXml.Haskell2Xml
+
+import Data.Typeable
+
+data Property = Det
+	      | Sane
+    deriving ( Eq, Ord, Typeable )
+
+{-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
+
+instance Condition  Property ( Turing Char Int ) where
+    condition p a = C.run ( Turing.Property.check p ) a
+    explain p = C.condition ( Turing.Property.check p )
+
+instance Machine.Numerical.Config.Check Property ( Turing Char Int ) where
+    check p m = C.investigate ( Turing.Property.check p ) m
+
+check :: Property -> C.Type  ( Turing Char Int )
+check p = case p of
+	 Sane ->  C.Make 
+            { C.nametag = ""
+            , C.condition = 
+                 text "Der Turingmaschine soll konsistent definiert sein."
+            , C.investigate = Turing.Check.check
+            }
+         Det ->  C.Make 
+            { C.nametag = ""
+            , C.condition = 
+                 text "Die Turingmaschine soll deterministisch sein."
+            , C.investigate = Turing.Check.deterministisch
+            }
+
