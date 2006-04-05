@@ -71,3 +71,37 @@ instance Container (x, y, z) (x, (y, z)) where
     label _ = "Triple"
     pack (x,y,z) = (x,(y,z))
     unpack (x,(y,z)) = (x,y,z)
+
+-- | specialized instances used for finite automata (testing)
+
+instance  ( TuringC y z )
+      => ToDoc (FiniteMap (y,z ) (Set (y,z,Bewegung))) where
+    toDocPrec p fm = docParen (p >= fcp)
+                   $ text "collect" <+> toDocPrec fcp (unCollect' fm)
+
+instance  ( TuringC y z )
+        => Reader (FiniteMap  (y,z ) (Set (y,z,Bewegung))) where
+    atomic_readerPrec p = default_readerPrec p <|> do
+        guard $ p < 9
+        my_reserved "collect"
+        xys <- reader :: Parser  [ (y, z, y, z, Bewegung) ]
+        return $ collect' xys
+
+-- | collect transition function from list of quintuples
+collect' :: ( TuringC y z )
+        =>  [ (y, z, y, z, Bewegung) ]
+        -> FiniteMap (y,z ) (Set (y,z,Bewegung))
+collect' pxqs = addListToFM_C union emptyFM $ do
+    ( y, z, y', z', b ) <- pxqs
+    return ( (y, z), unitSet (y', z', b) )
+
+-- | represent transition function as list of quintuples
+unCollect' :: TuringC y z
+           => FiniteMap  (y,z ) (Set (y,z,Bewegung))
+           ->  [ (y, z, y, z, Bewegung) ]
+unCollect' fm = do
+    ((y,z), yzbs ) <- fmToList fm
+    ( y', z', b ) <- setToList yzbs
+    return ( y, z, y', z', b ) 
+
+
