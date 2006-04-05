@@ -4,25 +4,28 @@
 module Turing.Dot where
 
 import Turing.Type
-import Dot.Dot
+import Autolib.Dot.Dot
 
-import qualified NFA as N
-import qualified NFA.Compact as C
-import ToDoc
+import qualified Autolib.NFA as N
+import qualified Autolib.NFA.Compact as C
+import Autolib.ToDoc
 
 type Triple y = ( y,  y, Bewegung )
 
 convert :: ( N.NFAC (Triple Char) z , UM z ) 
 	=> Turing Char z -> N.NFA (Triple Char ) z
 convert tm = 
-    N.NFA { N.nfa_info = text "converted from Turing"
-	, N.states   = zustandsmenge tm
-	, N.starts   = unitSet $ startzustand tm
-	, N.finals   = endzustandsmenge tm
-	, N.trans    = N.collect $ do
+    let transitions = do
 	      ( (input, p), next ) <- fmToList $ tafel tm
 	      ( output, q, move )  <- setToList next
 	      return ( p, (input, output, move) , q )
+    in N.NFA 
+        { N.alphabet = mkSet $ do ( p, t, q ) <- transitions; return t
+        , N.nfa_info = text "converted from Turing"
+	, N.states   = zustandsmenge tm
+	, N.starts   = unitSet $ startzustand tm
+	, N.finals   = endzustandsmenge tm
+	, N.trans    = N.collect transitions
 	}
 
 instance ToDoc [ Triple Char ] where
@@ -31,7 +34,7 @@ instance Show  [ Triple Char ] where
     show = render . toDoc
 
 
-instance ( N.NFAC (Triple Char) z , N.NFAC [Triple Char] z , TUM Char z ) 
+instance ( N.NFAC (Triple Char) z , N.NFAC [Triple Char] z , TuringC Char z ) 
     => ToDot ( Turing Char z ) where
     toDot tm = toDot 
 	     --   $ parallel_compact 

@@ -4,12 +4,12 @@ module Turing.Check where
 
 import Turing.Type
 
-import Reporter
-import ToDoc
+import Autolib.Reporter
+import Autolib.ToDoc
 
 import Control.Monad ( guard )
 
-check :: TUM y z
+check :: TuringC y z
       => Turing y z -> Reporter ()
 check m = do
       when ( isEmptySet $ eingabealphabet m ) 
@@ -55,7 +55,7 @@ check m = do
       mapM_ ce $ setToList $ endzustandsmenge m
       inform $ text "Das ist wirklich eine Turingmaschine."
 
-deterministisch :: TUM y z
+deterministisch :: TuringC y z
       => Turing y z 
       -> Reporter ()
 deterministisch m = do

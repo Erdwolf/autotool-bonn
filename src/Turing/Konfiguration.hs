@@ -5,7 +5,7 @@ module Turing.Konfiguration where
 import Machine.History
 
 import Turing.Type
-import ToDoc
+import Autolib.ToDoc
 
 data Konfiguration y z = 
      Konfiguration { band_links :: [ y ]
@@ -19,11 +19,11 @@ data Konfiguration y z =
 instance History ( Konfiguration y z ) where
     history = geschichte
 
-nummer :: TUM y z
+nummer :: TuringC y z
        => Konfiguration y z -> Int
 nummer = length . geschichte
 
-instance TUM y z
+instance TuringC y z
 	 => Show (Konfiguration y z) where
     showsPrec p k =  showString $ 
                    ( show ( schritt k ) ++ ": " )
@@ -31,11 +31,11 @@ instance TUM y z
 	 ++ " " ++ ( show (zustand k, aktuelles_zeichen k) )
 	 ++ " " ++ ( show (         band_rechts k) )
 
-instance TUM y z => ToDoc  (Konfiguration y z) where
+instance TuringC y z => ToDoc  (Konfiguration y z) where
     toDoc = text . show
 
 
-showlinks :: TUM y z
+showlinks :: TuringC y z
 	 => Konfiguration y z -> String
 showlinks = unlines . map show . links
 
@@ -56,7 +56,7 @@ links :: Konfiguration y z -> [ Konfiguration y z ]
 links k = k : geschichte k
 
 
-start_konfiguration :: TUM y z
+start_konfiguration :: TuringC y z
 		    => Turing y z -> [y] -> Konfiguration y z
 start_konfiguration m xs = 
     Konfiguration { band_links = []
@@ -72,7 +72,7 @@ start_konfiguration m xs =
 
   
 
-bandinhalt :: TUM y z 
+bandinhalt :: TuringC y z 
 	   => Turing y z -> Konfiguration y z -> [ y ]
 bandinhalt m k = 
     let e = leerzeichen m

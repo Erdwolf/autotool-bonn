@@ -10,16 +10,16 @@ where
 
 import Turing.Type
 import Turing.Konfiguration
-import Schichten
+import Autolib.Schichten
 
 
-nachfolger :: TUM y z
+nachfolger :: TuringC y z
 	   => Turing y z -> Konfiguration y z -> [ Konfiguration y z ]
 nachfolger a k = concat $ map setToList $
     schichten (folgekonfigurationen a   ) k
 
 folgekonfigurationen 
-    :: TUM y z
+    :: TuringC y z
     => Turing y z -> Konfiguration y z 
     -> Set (Konfiguration y z)
 folgekonfigurationen m k = mkSet $ do

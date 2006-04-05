@@ -6,9 +6,9 @@ import Turing
 
 student :: Turing Char Int
 student = Turing 
-	             {eingabealphabet = mkSet "1", 
-        arbeitsalphabet = mkSet "01",
-        leerzeichen = '0', 
+	             {eingabealphabet = mkSet "1.", 
+        arbeitsalphabet = mkSet "01.#",
+        leerzeichen = '#', 
         zustandsmenge = mkSet [0, 1, 2, 3, 4, 7],
         tafel = listToFM [(('0', 0), mkSet [('1', 1, L)]),
                           (('0', 1), mkSet [('1', 2, L)]), 
