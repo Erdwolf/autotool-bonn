@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts #-}
 
 module Fun.State where
 
@@ -10,6 +10,8 @@ import Autolib.ToDoc hiding ( empty )
 
 import Machine.History
 
+import Data.Typeable
+
 data State = State { schritt :: Int
 		   , todo :: [ Exp ]
 		   , stack :: [ Integer ]
@@ -17,6 +19,7 @@ data State = State { schritt :: Int
 		   , past :: [ State ]
 		   , cache :: Cache Exp Integer
 		   }
+     deriving Typeable
 
 instance History State where 
     history = past

@@ -14,6 +14,7 @@ import qualified Sortier.Netz.Check
 import qualified JVM.Make
 import qualified Turing.Make
 import qualified Fun.Quiz
+import qualified Fun.Make
 
 import qualified Graph.Selfcom
 import qualified Graph.Nachbar
@@ -160,9 +161,10 @@ tmakers =
                 , item LCS.Instance.make_fixed
                 , item LCS.Instance.make_quiz
                 ]
-         , heading "Berechenungsmodelle"
+         , heading "Berechnungsmodelle"
                 [ item JVM.Make.make
                 , item Turing.Make.computer
+		, item Fun.Make.make
 		, item Fun.Quiz.make
                 , item RM.Make.make
                 ]

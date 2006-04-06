@@ -1,9 +1,10 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
 module Fun.Type 
 
 ( Fun (..), Exp (..), Mark (..)
 , RAM.Builtin.Builtin (..)
+, Property (..)
 )
 
 where
@@ -13,11 +14,18 @@ where
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
+import Autolib.Set
+import Autolib.Xml
 
 import qualified RAM.Builtin
 
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
+
+data Property = Builtins [ RAM.Builtin.Builtin ]
+    deriving ( Eq, Ord, Typeable )	      
+
+{-! for Property derive : Reader, ToDoc, Haskell2Xml !-}
 
 data Fun = 
 	 -- | Grundfunktionen

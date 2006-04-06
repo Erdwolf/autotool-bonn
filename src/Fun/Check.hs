@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+
 module Fun.Check where
 
 --   $Id$
@@ -5,9 +7,14 @@ module Fun.Check where
 import Fun.Type
 import qualified RAM.Builtin
 
+import qualified Machine.Numerical.Config as C
+
 import Autolib.Reporter
 import Autolib.ToDoc
 import Autolib.Set
+
+instance C.Check Property Fun where
+    check ( Builtins allowed ) f = check_builtins ( mkSet allowed ) f
 
 check_builtins :: Set Builtin -> Fun -> Reporter ()
 check_builtins allowed f = do
