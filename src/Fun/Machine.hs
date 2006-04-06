@@ -8,6 +8,7 @@ import Fun.Type
 import Fun.State
 import Fun.Step
 
+
 import qualified Fun.Cache
 
 import Autolib.Set
@@ -19,15 +20,18 @@ instance Compute Fun State where
     depth p s = schritt s
 
 instance In Fun [ Integer ] State where
-    input  p m = State { todo = [App p $ map Zahl m]
-		       , stack = []
-		       , schritt = 0
-		       , past = [] 
-		       , cache = Fun.Cache.empty
-		       }
+    input_reporter  p m = return $ input p m
+
+input p m = State 
+         { todo = [App p $ map Zahl m]
+         , stack = []
+         , schritt = 0
+         , past = [] 
+         , cache = Fun.Cache.empty
+         }
 
 instance Out Fun [ Integer ] State where
-    output p s = stack s
+    output_reporter p s = return $ stack s
 
 instance Encode [ Integer ] where
     encode = id

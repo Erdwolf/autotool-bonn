@@ -1,8 +1,5 @@
-module Fun.Table where
 
---   $Id$
-
--- berechnen von vielen funktionswerten
+-- | berechnen von vielen funktionswerten
 -- optimiert: mit durchgehender cache-benutzung
 
 -- ergebnisbehandlung:
@@ -11,6 +8,10 @@ module Fun.Table where
 
 -- d. h. tabulate benutzen, um in cache zu schreiben
 -- und frame zum anzeigen
+
+module Fun.Table where
+
+--   $Id$
 
 import Fun.Type
 import Fun.Machine
@@ -23,6 +24,7 @@ import Fun.Examples -- for testing
 import Autolib.Reporter
 import Autolib.ToDoc
 import Data.Array
+import Data.Typeable
 
 
 anzeig :: Doc -> Reporter ()
@@ -32,15 +34,6 @@ anzeig doc = do
     inform $ doc	
     newline
 
-tabelle2 :: Fun -- ^ funktions-Ausdruck
-	 -> ( Integer, Integer ) -- ^ Dimension der Tabelle
-	 -> Doc
-tabelle2 fun dim = rollout $ frame2 $ tabulate2 fun dim
-
-tabelle1 :: Fun -- ^ funktions-Ausdruck
-	 -> Integer -- ^ Dimension der Tabelle
-	 -> Doc
-tabelle1 fun dim = rollout $ frame1 $ tabulate1 fun dim
 
 -----------------------------------------------------------------------------
 
@@ -60,23 +53,33 @@ final s = case step s of
 
 -------------------------------------------------------------------
 
-type Tafel = Array (Integer, Integer) Integer 
+data Tafel2 = Tafel2
+           { unTafel2 :: Array (Integer, Integer) Integer }
+    deriving ( Typeable )
+
+data Tafel1 = Tafel1
+           { unTafel1 :: Array Integer Integer }
+    deriving ( Typeable )
+
+instance ToDoc Tafel1 where toDoc = rollout . frame1 . unTafel1
+
+instance ToDoc Tafel2 where toDoc = rollout . frame2 . unTafel2
 
 tabulate2 :: Fun 
 	 -> (Integer, Integer) 
-	 -> Tafel
+	 -> Tafel2
 tabulate2 f (h, w) = 
     let bnd = ((0,0), (h,w))
 	tuple ([x,y], v) = ((x,y), v) ; untuple (x,y) = [x,y]
-    in  array bnd $ map tuple $ table f $ map untuple $ range bnd
+    in  Tafel2 $ array bnd $ map tuple $ table f $ map untuple $ range bnd
 
 tabulate1 :: Fun
 	  -> Integer
-	  -> Array Integer Integer
+	  -> Tafel1
 tabulate1 f w =
     let bnd = ( 0, w )
 	tuple ([x], v) = ((x), v) ; untuple (x) = [x]
-    in  array bnd $ map tuple $ table f $ map untuple $ range bnd
+    in  Tafel1 $ array bnd $ map tuple $ table f $ map untuple $ range bnd
 	
 ---------------------------------------------------------------------
 
@@ -115,7 +118,7 @@ rollout b = vcat $ do
         y <- [ l .. r ]
 	return $ text $ trim item_width $ b ! (x,y)
 
--- fülle mit leerzeichen auf gesamtbreite w
+-- | fülle mit leerzeichen auf gesamtbreite w
 trim w cs = 
     let l = length cs
 	filler = replicate (w - l) ' '

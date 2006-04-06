@@ -1,10 +1,11 @@
+-- | erzeuge eine k-stellige funktion bestimmter größe
+
 module Fun.Create where
 
 --   $Id$
 
--- erzeuge eine k-stellige funktion bestimmter größe
-
 import Fun.Type
+import Fun.Quiz.Type
 import Fun.Table
 
 import Autolib.Util.Zufall
@@ -48,15 +49,16 @@ create_pr  k s = do
 
 -------------------------------------------------------------------
 
--- erzeugt eine nichttriviale zweistellige primitiv-rekursive funktion
-nontrivial :: Int -- größe (des funktions-ausdrucks)
-	   -> Int -- größe der funktionstafel
-	   -> IO ( Fun, Tafel )
-nontrivial s t =
+-- | erzeugt eine nichttriviale zweistellige primitiv-rekursive funktion
+nontrivial :: Param
+	   -> IO ( Fun, Tafel2 )
+nontrivial p = do
+    let s = expression_size p
+	t = table_size p
     repeat_until ( do 
-        f <- create 2 s
-	return ( f, tabulate2 f (fromIntegral t, fromIntegral t) )
-    ) $ \ ( f, tab ) -> 
+           f <- create 2 s
+	   return ( f, tabulate2 f (fromIntegral t, fromIntegral t) )
+        ) $ \ ( f, Tafel2 tab ) -> 
             let ((0,0), (h,w)) = bounds tab
 		-- nur bis zur hälfte testen (aber mehr ausgeben)
 		hh = h `div` 2 ; ww = w `div` 2

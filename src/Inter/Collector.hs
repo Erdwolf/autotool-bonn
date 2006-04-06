@@ -13,6 +13,7 @@ import qualified Sortier.Netz.Check
 
 import qualified JVM.Make
 import qualified Turing.Make
+import qualified Fun.Quiz
 
 import qualified Graph.Selfcom
 import qualified Graph.Nachbar
@@ -162,6 +163,7 @@ tmakers =
          , heading "Berechenungsmodelle"
                 [ item JVM.Make.make
                 , item Turing.Make.computer
+		, item Fun.Quiz.make
                 , item RM.Make.make
                 ]
          , heading "Termersetzung"

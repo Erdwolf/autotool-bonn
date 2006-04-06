@@ -16,23 +16,26 @@ import Autolib.Size
 
 import qualified RAM.Builtin
 
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
 data Fun = 
-	 -- Grundfunktionen
+	 -- | Grundfunktionen
 	   Zero Int
 	 | Succ Int
-	 | Decr Int -- naja
+	 | Decr Int -- ^ naja
 	 | Proj Int Int
 
-	 -- so tun, also ob Grundfunktion
+	 -- | so tun, also ob Grundfunktion
 	 | Builtin Int RAM.Builtin.Builtin
 
-	 -- Operatoren
+	 -- | Operatoren
 	 | Sub Int [ Fun ]
 	 | PR  Int [ Fun ]
 	 | Min Int [ Fun ]
 
 
-    deriving (Eq, Ord)
+    deriving (Eq, Ord, Typeable)
 
 instance Size Fun where
     size ( Sub i fs ) = succ $ sum $ map size fs 
@@ -42,27 +45,29 @@ instance Size Fun where
 
 data Exp
         = Zahl Integer
-	-- non-strikt
+	-- | non-strikt
         | App Fun [ Exp ]
-	-- nur auf dem Stack benutzt, für Builtins (die sind strikt)
+	-- | nur auf dem Stack benutzt, für Builtins (die sind strikt)
 	-- wende builtin auf die obersten stack-elemente an
 	| Builtin_ Int RAM.Builtin.Builtin
-	-- benutzt für PRs, deren letztes arg schon auf stack steht
+	-- | benutzt für PRs, deren letztes arg schon auf stack steht
 	| App_ Fun [ Exp ]
-	-- top of stack in cache eintragen
+	-- | top of stack in cache eintragen
 	| M Mark
-    deriving ( Eq, Ord )
+    deriving ( Eq, Ord, Typeable )
 
 
--- wollen wir nicht ausgeben
-data Mark = Mark Exp deriving (Eq, Ord)
+-- | wollen wir nicht ausgeben
+data Mark = Mark Exp deriving (Eq, Ord, Typeable)
 
 instance ToDoc  Mark where toDoc m = text "{..}"
 instance Reader Mark -- ohne implementierung
 
-{-! for Fun derive : ToDoc, Reader !-}
+{-! for Mark derive :                Haskell2Xml !-}
 
-{-! for Exp derive : ToDoc, Reader !-}
+{-! for Fun derive : ToDoc, Reader, Haskell2Xml !-}
+
+{-! for Exp derive : ToDoc, Reader, Haskell2Xml !-}
 
 
 

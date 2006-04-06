@@ -13,15 +13,17 @@ import Autolib.ToDoc
 import Autolib.Reader
 import Data.Array
 import Autolib.Set
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml hiding ( Plus )
 
 data Builtin = Copy 
              | Plus  | Minus
              | Times | Div | Mod
              | Paar  | Links | Rechts
              | Suc   | Pre
-     deriving ( Eq, Ord, Enum, Ix )
+     deriving ( Eq, Ord, Enum, Ix, Typeable )
 
-{-! for Builtin derive: Reader, ToDoc !-}
+{-! for Builtin derive: Reader, ToDoc, Haskell2Xml !-}
 
 
 none :: Set Builtin
