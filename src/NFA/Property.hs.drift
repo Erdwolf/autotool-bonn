@@ -12,18 +12,22 @@ import Autolib.NFA
 
 
 data NFAC c Int => Property c 
-              = Min_Size Int
-	      | Max_Size Int
+              = Sane
+	      | Min_Size Int 
+	      | Max_Size Int 
+
 	      | Alphabet ( Set c )
 	      | Deterministic
+	      | Non_Deterministic
 	      | Minimal
 	      | Complete
 	      | Reduced -- no useless states
-     deriving ( Typeable )
+     deriving ( Typeable , Eq )
 
 {-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: [ Property Char ]
-example = [ Min_Size 4 , Max_Size 6
+example = [ Sane
+	  , Min_Size 4 , Max_Size 6
 	  , Alphabet $ mkSet "ab"
 	  ]

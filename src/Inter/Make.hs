@@ -19,7 +19,7 @@ get_boiler makers configs = do
     dyn <- configs
     maker <- makers
     case maker of
-        Make doc ( fun :: conf -> Var p i b ) ex -> do
+        Make doc ( fun :: conf -> Var p i b ) veri ex -> do
 	    it <- maybeToList ( fromDynamic dyn :: Maybe conf )
 	    return $ Variant $ fun it
 
@@ -28,7 +28,7 @@ present :: [ Make ] -> Doc
 present makers = vcat $ do
     maker <- makers
     case maker of
-        Make doc ( fun :: fun ) ex -> return $ text $ show 
+        Make doc ( fun :: fun ) veri ex -> return $ text $ show 
 	       $ hsep [ text doc, comma, toDoc $ typeOf fun ]
 
 {-

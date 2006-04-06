@@ -34,6 +34,18 @@ import Autolib.Informed
 data Convert_To_Exp = Convert_To_Exp 
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance C.Verify Convert_To_Exp ( Convert , [ Property Char ] ) where
+    verify p ( from, props ) = do
+        inform $ text "verifiziere die Quelle der Konversion:"
+        nested 4 $ Convert.Input.verify_source $ input from
+        inform $ text "verifiziere die Parameter der Konversion:"
+        nested 4 $ case ( do Alphabet a <- props ; return a ) of
+            [ alpha ] -> return ()
+            xs -> reject $ vcat
+                [ text "es soll genau einen Alphabet-Parameter geben,"
+                , text "aber es gibt:" <+> toDoc xs
+                ]
+
 instance C.Partial Convert_To_Exp 
                    ( Convert , [ Property Char ] ) 
 		   ( RX Char ) 

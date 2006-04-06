@@ -34,22 +34,25 @@ data Make = forall conf p i b
 	    , ToDoc conf , Show conf
 	    , Reader conf , Read conf
 	    , Help conf, Help i, Help b
+	    , Verify p conf
 	    )
 	  => Make String --  description
 		  (conf -> Var p i b) --  maker function
+		  (conf -> Reporter ()) -- verify config
                   conf --  example
 
 instance Typeable Make where 
     typeOf _ = mkTyConApp ( mkTyCon "Inter.Types.Make" ) []
 
 instance ToDoc Make 
-    where toDoc ( Make doc fun ex ) = text doc
+    where toDoc ( Make doc fun veri ex ) = text doc
 
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)
 direct :: ( V p i b -- , Haskell2Xml i
 	  , Reader i , Read i , Show i
 	  , Help i, Help b
+	  , Verify p i
 	  )
          => p 
 	 -> i -- ^ example instance
@@ -62,6 +65,7 @@ direct p i = Make
 		   , gen = \ vnr manr key -> return $ return i
 		   }
 	     )
+	     ( verify p )
              i
 
 data Var p i b = 

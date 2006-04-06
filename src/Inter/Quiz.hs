@@ -57,6 +57,7 @@ make ( p :: p ) ( conf :: conf ) =
 
 quiz :: ( Generator p conf k , Project p k i,  Partial p i b 
 	, V p i b
+	, Verify p conf
 	, Typeable conf, Reader conf, ToDoc conf
 	-- , Haskell2Xml conf
 	, Show conf, Read conf
@@ -67,5 +68,6 @@ quiz :: ( Generator p conf k , Project p k i,  Partial p i b
 quiz ( p :: p ) ( conf0 :: conf ) = Make 
     ( dashed p ++ "-Quiz" )
     ( \ conf -> make p conf )
+    ( verify p )
     conf0
 

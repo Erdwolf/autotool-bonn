@@ -10,6 +10,8 @@ module NFA.Synthese
 where
 
 import NFA.SI
+import NFA.Property
+import NFA.Test
 
 import Autolib.Exp
 import Autolib.Exp.Inter
@@ -53,7 +55,8 @@ instance C.Partial  Synthese SI ( NFA Char Int )
     initial p i   = Autolib.NFA.Example.example_sigma $ alphabet i
 
     partial p i b = do
-        restrict_states b
+        -- restrict_states b
+	NFA.Test.test NFA.Property.Sane b	
 	restrict_alpha ( alphabet i ) b
 
     total   p i b = do

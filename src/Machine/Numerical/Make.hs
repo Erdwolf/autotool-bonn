@@ -37,7 +37,9 @@ make ( defcon :: Con.Config c m ) =
 		  , key = \ matrikel -> return matrikel
 		  , gen = \ vnr manr key -> fnum conf key 
 		  }
-	    ) defcon
+	    )
+	    ( \ con -> return () ) -- verify
+	    defcon
 
 
 fnum ::  ( Show c , Con.Check c m , Con.ConfigC c m , Machine m dat conf )

@@ -3,6 +3,7 @@ module Challenger.Partial
 
 ( Wert (..)
 , Measure (..)
+, Verify (..)
 , Partial (..)
 , Roller (..)
 )
@@ -27,10 +28,20 @@ class Measure p i b where
 instance Size b => Measure p i b where
       measure _ _ b = fromIntegral $ Autolib.Size.size b
       
+
+-- | Instanz verifizieren 
+-- das sieht der Tutor, wenn er die Aufgabe konfiguriert
+class Verify p i where
+      verify :: p -> i -> Reporter ()
+
+instance Verify p i where
+      verify p i = return () -- default: alles OK
+
 -- | Klasse: Partial
 class ( Show p, ToDoc i, Reader b, ToDoc b, Measure p i b )
 --    => Partial p i b | p i -> b , p b -> i where
     => Partial p i b | p i -> b  where
+
       -- | Beschreibung der Aufgabe herstellen
       --
       -- TODO: es sollte (auch oder nur) eine Beschreibung geben,

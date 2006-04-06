@@ -4,6 +4,7 @@ module Convert.Input where
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Reporter
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
@@ -12,6 +13,7 @@ import qualified Autolib.Exp
 
 import qualified Exp.Property
 import qualified NFA.Property
+import qualified NFA.Test
 
 data Autolib.NFA.NFAC c Int => 
      Input c = NFA ( Autolib.NFA.NFA c Int )
@@ -19,6 +21,14 @@ data Autolib.NFA.NFAC c Int =>
      deriving ( Typeable )
 
 {-! for Input derive: Reader, ToDoc, Haskell2Xml !-}
+
+
+verify_source ::  Autolib.NFA.NFAC c Int 
+     => Input c -> Reporter ()
+verify_source (NFA aut) = do
+    NFA.Test.test NFA.Property.Sane aut
+verify_source (Exp exp) = do
+    return ()
 
 lang :: Autolib.NFA.NFAC c Int 
      => Input c -> Doc

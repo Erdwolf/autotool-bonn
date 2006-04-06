@@ -403,7 +403,7 @@ find_mk tmk tutor mauf = do
 -- | ändere aufgaben-konfiguration (nur für tutor)
 edit_aufgabe mks mk mauf vnr manr type_click = do
     case mk of 
-        Make doc ( fun :: conf -> Var p i b ) ex -> do
+        Make doc ( fun :: conf -> Var p i b ) verify ex -> do
             ( name :: Name ) <- fmap fromCGI 
 		     $ defaulted_textfield "Name" 
 		     $ case mauf of Nothing -> "noch kein Name"
@@ -457,10 +457,22 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
             conf <- editor_submit "Konfiguration" 
 		    $ case mproto of 
 			  Just auf | not type_changed   -> 
-				 read $ toString $ A.config auf
-			  _ -> ex :: conf
+			       case parse ( parsec_wrapper 0 ) "input"
+				          ( toString $ A.config auf ) of
+				        Right ( x, rest ) -> x
+					Left err -> ex
+			  _ -> ex
+
 	    close -- table
-				   
+
+	    -- check configuration
+
+	    br
+	    
+	    Just _ <- embed $ do
+		 inform $ text "verifiziere die Konfiguration:"
+	         verify conf
+		 inform $ text "OK"
             br
 	    up <- submit "update data base: aufgabe"
             let auf' = A.Aufgabe 
@@ -541,7 +553,7 @@ fix_instant vnr mks stud auf sa = case SA.instant sa of
             Nothing -> do
                 plain "Aufgabenstellung nicht auffindbar"
                 return Nothing
-            Just ( Make doc fun ex ) -> do
+            Just ( Make doc fun veri ex ) -> do
                 ( _, _, com ) <- make_instant 
 		    vnr ( Just $ A.anr auf ) stud fun auf
                 let p = mkpar stud auf
@@ -624,8 +636,15 @@ show_previous edit vnr mks stud auf sa0 = do
 
 
 make_instant vnr manr stud fun auf = do
-    let conf = read $ toString $ A.config auf
-        var = fun  conf
+    -- let conf = read $ toString $ A.config auf
+    conf <- 
+        case parse ( parsec_wrapper 0 ) "input" $ toString $ A.config auf of
+	     Right ( x, rest ) -> return x
+	     Left err -> do
+		  plain "should not happen: parse error in A.config"
+		  pre $ show err
+		  mzero
+    let var = fun  conf
         p = problem var
     let mat = S.mnr stud
     k <- io $ key var $ toString mat 
@@ -641,7 +660,7 @@ data Method = Textarea | Upload
 -- für tutor zum ausprobieren
 -- für student echt
 solution vnr manr stud 
-        ( Make doc ( fun :: conf -> Var p i b ) ex ) auf = do
+        ( Make doc ( fun :: conf -> Var p i b ) verify ex ) auf = do
 
     ( p, i, icom ) <- make_instant vnr manr stud fun auf
 
