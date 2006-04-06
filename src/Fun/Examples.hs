@@ -8,12 +8,12 @@ plus = PR 2 [ Proj 1 1
 	     , Sub 3 [ Succ 1, Proj 3 3 ] ]
 
 mal  = PR 2 [ Zero 1   
-	     , Sub 3 [ Builtin 2 Plus
+	     , Sub 3 [ plus -- Builtin 2 Plus
 		     , Proj 3 1
 		     , Proj 3 3 ] ]
 
 hoch = PR 2 [ Sub 1 [ Succ 1, Zero 1 ]
-	     , Sub 3 [ Builtin 2 Times
+	     , Sub 3 [ mal -- Builtin 2 Times
 		     , Proj 3 1
 		     , Proj 3 3 ] ]
 
@@ -23,12 +23,12 @@ vor   = PR 1 [ Zero 0
 minus = PR 2 [ Proj 1 1
 	      , Sub 3 [ vor , Proj 3 3 ] ]
 
--- ite x y z == if (0 == x) then y else z
+-- | ite x y z == if (0 == x) then y else z
 ite = Sub 3 [ PR 3 [ Proj 2 1, Proj 4 2 ]
 	    , Proj 3 2, Proj 3 3, Proj 3 1
 	    ]
 
--- du x y z = größtes z' < z mit y * z <= x  (sonst 0)
+-- | du x y z = größtes z' < z mit y * z <= x  (sonst 0)
 du = PR 3 [ Zero 2
 	   , Sub 4 [ ite
 		   , Sub 4 [ Builtin 2 Minus
@@ -48,6 +48,9 @@ durch = Sub 2 [ du
 
 rest = Sub 2 [ Builtin 2 Minus
 	     , Proj 2 1
-	     , Sub 2 [ Builtin 2 Times, Proj 2 1, Proj 2 2 ]
+	     , Sub 2 [ Builtin 2 Times
+		     , Sub 2 [ durch , Proj 2 1, Proj 2 2 ]
+		     , Proj 2 2 
+		     ]
 	     ]
 

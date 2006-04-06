@@ -1,3 +1,4 @@
+{-# OPTIONS -fglasgow-exts #-}
 
 -- | berechnen von vielen funktionswerten
 -- optimiert: mit durchgehender cache-benutzung
@@ -14,7 +15,9 @@ module Fun.Table where
 --   $Id$
 
 import Fun.Type
+import Fun.Check
 import Fun.Machine
+import Fun.Examples
 import Machine.Class
 import Fun.Step
 import Fun.State
