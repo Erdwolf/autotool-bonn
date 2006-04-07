@@ -25,7 +25,7 @@ test Sane aut = do
     inform $ text "Der Automat soll konsistent definiert sein."
     subeq ( text "Startzustände" , starts aut )
 	  ( text "Zustandsmenge" , states aut )
-    subeq ( text "akzeptierende Zustände" , starts aut )
+    subeq ( text "akzeptierende Zustände" , finals aut )
 	  ( text "Zustandsmenge" , states aut )
     verify "Zustände" 
           ( \ (p,c,q) -> p `elementOf` states aut && q `elementOf` states aut )
