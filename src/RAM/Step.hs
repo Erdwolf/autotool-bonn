@@ -8,9 +8,9 @@ import RAM.State
 
 import qualified RAM.Builtin as B
 
-step :: State -> [ State ]
--- liste aller direkten nachfolge-zustände
+-- | liste aller direkten nachfolge-zustände
 -- for deterministische maschinen hier immer länge <= 1
+step :: State -> [ State ]
 step s = case todo s of
     [] -> [] -- fertig
     x : xs -> case x of
@@ -37,9 +37,9 @@ stepped s = return $ s { schritt = succ $ schritt s
 		       , past    = s : past s
 		       }
 
-update :: (Integer -> Integer) -> State -> Var -> State
--- wert einer variablen ändern
+-- | wert einer variablen ändern
 -- nächsten befehl anwählen
+update :: (Integer -> Integer) -> State -> Var -> State
 update fun s v = 
     let n = get (memory s) v
     in  s { memory = set ( memory s ) ( v, fun n )

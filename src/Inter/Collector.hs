@@ -89,6 +89,7 @@ import qualified Partition.Central
 import qualified KnapsackFraction.Central
 
 import qualified RM.Make
+import qualified RAM.Make
 
 import qualified Code.Huffman.Boiler
 import qualified Code.Quiz
@@ -166,6 +167,7 @@ tmakers =
                 , item Turing.Make.computer
 		, item Fun.Make.make
 		, item Fun.Quiz.make
+                , item RAM.Make.make
                 , item RM.Make.make
                 ]
          , heading "Termersetzung"

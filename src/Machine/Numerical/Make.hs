@@ -57,7 +57,7 @@ fnum conf key = do
 	      , N.extra_info = vcat $
 		(text "Die Maschine soll die folgenden Bedingungen erfüllen:") 
 		 : 
-		(do c <- (show $ Con.checks conf) : Con.conditions conf
+		(do c <- map show ( Con.checks conf) ++ Con.conditions conf
 		    return $ nest 4 $ text $ "* " ++ c
 		)
 	      , N.args = xss

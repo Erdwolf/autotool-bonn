@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
 module RAM.Type where
 
@@ -6,18 +6,29 @@ module RAM.Type where
 
 import RAM.Builtin
 
-import ToDoc
-import Reader
-import Size
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Size
 
-type Var = String
+import Autolib.TES.Identifier
+
+import Data.Typeable
+import Autolib.Xml
+import Text.XML.HaXml.Haskell2Xml
+
+type Var = Identifier
+
+instance Container Identifier String where
+    label _ = "Autolib.TES.Identifier"
+    pack = show
+    unpack = read
 
 data Statement = Inc Var
 	 | Dec Var
 	 | Loop Var Program
 	 | While Var Program
 	 | Builtin { name :: Builtin, res :: Var, args :: [ Var ] }
-    deriving ( Eq, Ord )
+    deriving ( Eq, Ord, Typeable )
 
 type Program = [ Statement ]
 
@@ -35,11 +46,10 @@ flatten ps = do
 		  While v q -> flatten q
 		  _ -> []
 
-{-! for Statement derive: ToDoc, Reader !-}
+{-! for Statement derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Statement where
-    show = render . toDoc
+-- Local variables:
+-- mode: haskell;
+-- end:
 
-instance Read Statement where
-    readsPrec = parsec_readsPrec
 

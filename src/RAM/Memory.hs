@@ -3,8 +3,7 @@ module RAM.Memory where
 --   $Id$
 
 import RAM.Type
-import Data.FiniteMap
-import OrdFM
+import Autolib.FiniteMap
 
 type Memory = FiniteMap Var Integer
 

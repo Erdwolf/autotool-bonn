@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+
 module RAM.State where
 
 --   $Id$
@@ -6,7 +8,9 @@ import RAM.Type
 import RAM.Memory
 import Machine.History
 
-import ToDoc
+import Autolib.ToDoc
+import Data.Typeable
+
 
 data State =
      State { schritt :: Int
@@ -14,7 +18,7 @@ data State =
 	   , todo   :: Program -- noch auszuführen
 	   , past :: [State] -- vorige zustände
 	   }
-     deriving ( Eq, Ord )
+     deriving ( Eq, Ord, Typeable )
 
 instance ToDoc State where
     toDoc s = text "State" <+> dutch_record 
