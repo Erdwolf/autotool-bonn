@@ -701,10 +701,12 @@ solution vnr manr stud
 	      else return b0
 	    open table
 	    open row
-            html $ Autolib.Output.render 
+            let helper :: Text.Html.Html
+                helper = Autolib.Output.render 
                  $ Autolib.Output.Beside
                       ( Autolib.Output.Text "ein Ausdruck vom Typ" )
                       ( help ini )
+            html helper
 	    close -- row
 	    open row
             sol <- textarea def
