@@ -1,0 +1,152 @@
+
+*******************************************************************************
+*** Before:
+
+autotool@i90www2:~$ AutoDrIFT -V
+Version AutoDrIFT-2.0rc3
+
+autotool@i90www2:~$ ghc-pkg-6.4.1 list
+/usr/local/lib/ghc-6.4.1/package.conf:
+    rts-1.0, Cabal-1.0, network-1.0, QuickCheck-1.0, base-1.0,
+    haskell98-1.0, template-haskell-1.0, unix-1.0, parsec-1.0,
+    haskell-src-1.0, HUnit-1.1, mtl-1.0, fgl-5.2, stm-1.0,
+    readline-1.0, (data-1.0), (lang-1.0), (concurrent-1.0),
+    (posix-1.0), (util-1.0), (text-1.0), (net-1.0), (hssource-1.0),
+    HSQL-1.4, HaXml-1.13
+
+*******************************************************************************
+*** Download, local-configure and compile:
+
+cvs checkout lib
+
+pushd lib
+./configure
+make drift
+runhaskell Setup.hs configure --ghc
+runhaskell Setup.hs build
+su -p -c 'runhaskell Setup.hs install'
+popd
+
+cvs checkout tool
+cvs checkout common
+ln -s ../../common/Gateway/ tool/src/Gateway
+
+pushd tool
+./configure --with-hsql=1.4 --with-base=<base-dir>
+pushd src
+make drift
+cat bank.create | mysql -u<user> -p<pass> <dbname>
+cp control/Mysqlconnect.hs.example control/Mysqlconnect.hs
+adjust control/Mysqlconnect.hs with <user>, <pass> and <dbname>
+!ucomment line 317 in Control/Student/CGI.hs to make mail work
+!edit lines 84+86 in Inter/Super.hs to use local highscore-address
+make Inter/Super.cgi
+make Inter/Super.cgi
+make Inter/Super.cgi
+strip Inter/Super.cgi
+cp Inter/Super.cgi <cgi-bin-dir>/Super.cgi
+popd
+popd
+
+!Note: You really need 'make Inter/Super.cgi' 3 times!! There are still
+subtle bugs in ghc-6.4.1!
+
+*******************************************************************************
+*** use-configure:
+
+create school in <dbname>
+create lecture in <dbname>
+
+*******************************************************************************
+*** Contents of bank.create:
+
+CREATE TABLE `admin` (
+  `AdNr` int(10) unsigned NOT NULL auto_increment,
+  `Name` varchar(20) NOT NULL default '',
+  `Passwort` varchar(20) NOT NULL default '',
+  PRIMARY KEY  (`AdNr`)
+) TYPE=MyISAM;
+
+CREATE TABLE `aufgabe` (
+  `ANr` int(11) NOT NULL auto_increment,
+  `Name` varchar(30) NOT NULL default '',
+  `VNr` int(10) NOT NULL default '0',
+  `Highscore` enum('low','high','no') NOT NULL default 'no',
+  `Von` datetime NOT NULL default '0000-00-00 00:00:00',
+  `Bis` datetime NOT NULL default '0000-00-00 00:00:00',
+  `Config` blob,
+  `Remark` text,
+  `Typ` blob,
+  `Status` enum('demo','mandatory','optional') default NULL,
+  PRIMARY KEY  (`ANr`)
+) TYPE=MyISAM COMMENT='aufgabe';
+
+CREATE TABLE `gruppe` (
+  `GNr` int(10) unsigned NOT NULL auto_increment,
+  `VNr` int(10) unsigned NOT NULL default '0',
+  `Name` varchar(100) default 'GruppenName <empty>',
+  `MaxStudents` int(10) unsigned NOT NULL default '0',
+  `Referent` varchar(60) NOT NULL default 'unbekannt',
+  PRIMARY KEY  (`GNr`)
+) TYPE=MyISAM;
+
+CREATE TABLE `punkte` (
+  `Rubrik` varchar(25) default NULL,
+  `MNr` varchar(12) default NULL,
+  `punkte` int(11) default NULL
+) TYPE=MyISAM;
+
+
+CREATE TABLE `schule` (
+  `UNr` int(11) NOT NULL default '0',
+  `Name` varchar(50) NOT NULL default '',
+  `Mail_Suffix` text NOT NULL
+) TYPE=MyISAM;
+
+CREATE TABLE `stud_aufg` (
+  `SNr` int(10) unsigned NOT NULL default '0',
+  `ANr` int(10) unsigned NOT NULL default '0',
+  `Ok` int(11) default NULL,
+  `No` int(11) default NULL,
+  `size` int(11) default NULL,
+  `Scoretime` datetime NOT NULL default '0000-00-00 00:00:00',
+  `Input` text,
+  `Report` text,
+  `Result` text,
+  `Instant` text,
+  PRIMARY KEY  (`SNr`,`ANr`)
+) TYPE=MyISAM COMMENT='Aufgaben Student';
+
+CREATE TABLE `stud_grp` (
+  `SNr` int(10) unsigned NOT NULL default '0',
+  `GNr` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`SNr`,`GNr`)
+) TYPE=MyISAM;
+
+CREATE TABLE `student` (
+  `SNr` int(10) unsigned NOT NULL auto_increment,
+  `MNr` varchar(12) NOT NULL default '',
+  `Name` varchar(25) NOT NULL default '',
+  `Vorname` varchar(25) NOT NULL default '',
+  `Email` varchar(150) NOT NULL default '',
+  `Status` varchar(10) NOT NULL default 'inaktiv',
+  `Passwort` varchar(64) default NULL,
+  `UNr` int(11) NOT NULL default '0',
+  `Next_Passwort` varchar(64) NOT NULL default '',
+  PRIMARY KEY  (`SNr`)
+) TYPE=MyISAM COMMENT='angemeldete Studenten';
+
+CREATE TABLE `tutor` (
+  `SNr` int(10) default NULL,
+  `VNr` int(10) default NULL
+) TYPE=MyISAM;
+
+CREATE TABLE `vorlesung` (
+  `VNr` int(10) unsigned NOT NULL auto_increment,
+  `Name` varchar(50) NOT NULL default '',
+  `EinschreibVon` datetime NOT NULL default '2005-01-01 00:00:00',
+  `EinschreibBis` datetime NOT NULL default '2005-01-01 00:00:00',
+  `unr` int(11) NOT NULL default '0',
+  `motd` text NOT NULL,
+  PRIMARY KEY  (`VNr`)
+) TYPE=MyISAM COMMENT='vorlesung';
