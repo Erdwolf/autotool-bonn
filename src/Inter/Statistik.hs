@@ -94,17 +94,16 @@ resultate vor only_mandatory = do
 	anrs = smap snd keys
 
     h3 "Einsendungen (Ok/No)"
-    open sbtable
-    open row
-    plain "MNr" ; plain "Vorname" ; plain "Name"
-    sequence_ $ do
+
+    let anames = do
         anr <- setToList anrs
-	return $ plain $ case lookupFM fma anr of
+	return $ case lookupFM fma anr of
 	    Just name -> ( if only_mandatory then take 3 else id )
 			 $ toString name
 	    Nothing   -> show anr
-    plain "total"
-    close -- row
+    let headings = [ "Matrikel", "Vorname", "Name" ] ++ anames ++ [ "total" ]
+    open_btable_with_sorter headings
+
     sequence_ $ do
         stud <- studs
 	let mnr = S.mnr stud

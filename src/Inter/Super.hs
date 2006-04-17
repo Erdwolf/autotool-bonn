@@ -882,6 +882,7 @@ data Entry = Entry
 
 ---------------------------------------------------------------------------
 
+
 -- | will return Maybe Stud_Aufg for re-grading
 tutor_statistik :: VNr -> A.Aufgabe 
 		-> Form IO ( Action, SA.Stud_Aufg, S.Student )
@@ -890,15 +891,13 @@ tutor_statistik vnr auf = do
     saufs <- io $ Control.Stud_Aufg.DB.get_anr $ A.anr auf
 
     h3 "Statistik für diese Aufgabe"
-    open btable
+
+
+    open_btable_with_sorter 
+	      [ "Matrikel", "Vorname" , "Name" , "Oks" , "Nos" , "Result" ]
+
     begin -- mutex
 
-    open row
-    plain "Matrikel" ; plain "Vorname" ; plain "Name" 
-    plain "Oks" ; plain "Nos" ; plain "Result"
-    plain "Action" ; plain "Action" ; plain "Action"
-    plain "Edit (experimental)"
-    close -- row
 
     -- erstmal die, die wirklich was eingesandt haben
     rscores1 <- sequence $ do
