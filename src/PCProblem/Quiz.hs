@@ -45,7 +45,9 @@ instance Partial PCProblem PCP Folge where
 	  let ( us, vs ) = lr i b
           inform $ vcat
 		      [ text "Aus Ihrer Folge entstehen die Zeichenketten:"
-		      , toDoc us, toDoc vs
+--		      , toDoc us, toDoc vs
+-- | fix for bug #80
+		      , text us, text vs
 		      ]
 	  let com = common us vs
 	      urest = drop (length com) us
@@ -76,6 +78,3 @@ make_quiz = quiz PCProblem
 make_fixed :: Make
 make_fixed = direct PCProblem 
     ( PCP [ ("bba","b"),("a","b"),("b","ab") ] )
-
-
-
