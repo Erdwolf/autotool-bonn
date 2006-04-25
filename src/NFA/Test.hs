@@ -59,6 +59,7 @@ test (Non_Deterministic) aut = do
 	 [ text "es gibt keinen Zustand p und Buchstaben c"
 	 , text "mit mehr als einem Nachfolgezustand."
 	 ]
+    inform $ text "OK"
 
 test (Reduced) aut = do
     inform $ text "Der Automat soll reduziert sein."
@@ -99,6 +100,7 @@ test Complete aut = do
 	 [ text "Für wenigstens diese (p, c) gibt es keine Transition (p, c, q):"
 	 , nest 4 $ toDoc $ take 4 miss
 	 ]
+    inform $ text "OK"
 		 
 test prop aut = do
     reject $ fsep [ text "test für", toDoc prop
