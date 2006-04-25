@@ -18,7 +18,7 @@ data Convert =
      Convert { name :: Maybe [String] -- if Nothing, use (show input)
              , input :: Convert.Input.Input Char
 	     }
-    deriving ( Typeable )
+    deriving ( Typeable , Show )
 
 {-! for Convert derive: Reader, ToDoc, Haskell2Xml !-}
 
