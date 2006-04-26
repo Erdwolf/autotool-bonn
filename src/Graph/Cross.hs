@@ -140,7 +140,9 @@ crossings g f = do
 
 -- | strecken schneiden sich
 is_crossing :: Strecke -> Strecke -> Bool
-is_crossing ab cd = trennt ab cd && trennt cd ab 
+is_crossing ab cd
+    | disjunct (bbox ab) (bbox cd) = False
+is_crossing ab cd                  = trennt ab cd && trennt cd ab 
    
 -- | liegen auf verschiedenen Seiten der Geraden
 trennt :: Strecke -> Strecke -> Bool
@@ -157,4 +159,15 @@ det3 [ [a1,a2,a3], [b1,b2,b3], [c1,c2,c3] ]
     - a2 * ( b1 * c3 - b3 * c1 )
     + a3 * ( b1 * c2 - b2 * c1 )
 
+-- | Rechteck durch linke untere Ecke und rechte obere Ecke dargestellt
+type Box = (Punkt,Punkt)
 
+-- | zwei rechtecke haben nichts gemeinsam, gdw. die größere der beiden
+--   linken unteren ecken größer als die kleinere der beiden rechten 
+--   oberen ecken ist
+disjunct :: Box -> Box -> Bool
+disjunct (alr,atr) (blr,btr) = max alr blr >= min atr btr
+
+-- | bounding box durch linke untere Ecke und rechte obere Ecke
+bbox :: Strecke -> (Punkt,Punkt)
+bbox ((x1,y1),(x2,y2)) = ((min x1 x2,min y1 y2),(max x1 x2,max y1 y2))
