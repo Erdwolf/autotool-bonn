@@ -75,6 +75,7 @@ instance NPDAC Char Char z
 	    , G.name = "NPDA"
 	    , G.nodes = ns ++ uns
 	    , G.edges = es ++ ss
+	    , G.attributes = []
 	    }
 
 
