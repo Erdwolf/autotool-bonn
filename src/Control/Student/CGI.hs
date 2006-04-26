@@ -314,7 +314,7 @@ pwmail stud = do
            , "|"
            , "/usr/bin/mail"
            , "-s", show "neues autotool-passwort"
-           -- , "-a", show "From: autotool"
+           , "-a", show "From: autotool"
            , e
            ]
     when Local.debug $ pre $ "running: " ++ cmd

@@ -5,7 +5,7 @@
 
 --  $Id$
 
-module Main where
+-- module Main where
 
 import Gateway.CGI
 import Inter.Evaluate
@@ -73,6 +73,8 @@ import Control.Monad
 import qualified Control.Exception
 
 import qualified Text.Html
+
+import Inter.DateTime ( defaults )
 
 main :: IO ()
 main = Gateway.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
@@ -438,14 +440,16 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
 		     ( x :: Status ) <- [ minBound .. maxBound ]
                      return ( show x, x )
             close -- row
-            -- FIXME: get now() from DB
+
+            (dflt_von,dflt_bis) <- io defaults
+
             ( von :: Time ) <- fmap fromCGI 
 		    $ defaulted_textfield "von" 
-		    $ case mauf of Nothing -> "2005-06-29 10:00:00"
+		    $ case mauf of Nothing -> dflt_von
 				   Just auf -> toString $ A.von auf
             ( bis ::Time ) <- fmap fromCGI
 		    $ defaulted_textfield "bis" 
-		    $ case mauf of Nothing -> "2005-07-06 10:00:00"
+		    $ case mauf of Nothing -> dflt_bis
 				   Just auf -> toString $ A.bis auf
 
             moth <- 
