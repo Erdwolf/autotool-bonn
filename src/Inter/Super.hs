@@ -24,7 +24,7 @@ import Autolib.Set
 import qualified Autolib.Output
 
 import Control.Types 
-    ( toString, fromCGI, Name, Remark, HiLo (..), Status (..)
+    ( toString, fromCGI, Name, Typ , Remark, HiLo (..), Status (..)
     , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr, UNr
     , TimeStatus (..)
     )
@@ -81,9 +81,9 @@ main = Gateway.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
    footer scores
 
 slink = do
---    e <- doesFileExist "link.scores"
+    e <- doesFileExist "link.scores"
     scores <- 
-        if False 
+        if e
         then readFile "link.scores" >>= return . head . lines
         else return "https://autotool.imn.htwk-leipzig.de/high/score.text"
     return scores
@@ -404,9 +404,17 @@ find_mk tmk tutor mauf = do
 edit_aufgabe mks mk mauf vnr manr type_click = do
     case mk of 
         Make doc ( fun :: conf -> Var p i b ) verify ex -> do
+
+            let t = fromCGI $ show mk
+
+            others <- io $ A.get_typed t
+
             ( name :: Name ) <- fmap fromCGI 
 		     $ defaulted_textfield "Name" 
-		     $ case mauf of Nothing -> "noch kein Name"
+		     $ case mauf of Nothing -> foldl1 (++) 
+					       [ toString t , "-"
+					       , show $ succ $ length others 
+					       ]
                                     Just auf -> toString $ A.name auf
 	    ( remark :: Remark ) <- fmap fromCGI 
 		    $ defaulted_textarea "Remark" 
@@ -439,9 +447,6 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
 		    $ defaulted_textfield "bis" 
 		    $ case mauf of Nothing -> "2005-07-06 10:00:00"
 				   Just auf -> toString $ A.bis auf
-
-
-            others <- io $ A.get_typed $ fromCGI $ show mk
 
             moth <- 
                 click_choice_with_default 0 "importiere Konfiguration" 
