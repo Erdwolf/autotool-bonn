@@ -32,3 +32,4 @@ eindeutig cut =
                           , nest 4 $ besides $ map toDoc [ b, b' ]
                           ]
              ]
+        inform $ nest 4 $ text "OK."
