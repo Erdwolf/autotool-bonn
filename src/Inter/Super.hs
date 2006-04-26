@@ -5,7 +5,7 @@
 
 --  $Id$
 
--- module Main where
+module Main where
 
 import Gateway.CGI
 import Inter.Evaluate
