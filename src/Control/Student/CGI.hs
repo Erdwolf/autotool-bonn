@@ -13,7 +13,7 @@ import qualified Control.Schule
 import Control.Monad
 import Data.List ( partition, isSuffixOf )
 import Data.Char ( isAlphaNum )
-import Data.Maybe ( isNothing )
+import Data.Maybe ( isNothing , isJust , fromJust )
 
 import Autolib.Util.Zufall
 import qualified Debug
@@ -173,7 +173,13 @@ edit_create ms = do
     vorname <- dtf "Vorname" T.vorname
     name <- dtf "Nachname" T.name
     email <- dtf "Email" T.email 
-    
+
+    when (isJust ms) (do open row
+                         plain "Interne Kennung"
+                         plain $ toString $ T.snr $ fromJust ms
+		         close -- row
+                      )
+
     is_a_word "Matrikelnummer" mnr    
     is_a_word "Vorname" vorname
     is_a_word "Nachname" name
