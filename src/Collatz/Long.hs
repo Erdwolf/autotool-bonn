@@ -28,7 +28,7 @@ instance C.Partial Collatz_Long () (Integer, P.Parameter) where
                , text "Bewertet wird  Parameter.length - log_2(Startzahl)."
 	       ]
 
-    initial Collatz_Long () = ( 7, P.compute 7 )
+    initial Collatz_Long () = ( 7, P.compute 5 )
 
     total Collatz_Long () ( start, p ) = do
 	assert ( P.compute start == p )
