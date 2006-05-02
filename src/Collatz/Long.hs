@@ -25,10 +25,10 @@ instance C.Partial Collatz_Long () (Integer, Integer) where
         inform $ vcat
 	       [ text "Gesucht ist eine lange Collatz-Folge."
                , text "Geben Sie ein Paar (Startzahl, Länge) ein."
-               , text "Bewertet wird  log_2(Startzahl) - Länge."
+               , text "Bewertet wird  Länge - log_2(Startzahl)."
 	       ]
 
-    initial Collatz_Long () = ( 7, 17 )
+    initial Collatz_Long () = ( 7, 16 )
 
     total Collatz_Long () ( start, len) = do
 	assert ( len == P.length ( P.compute start ) )
@@ -36,13 +36,13 @@ instance C.Partial Collatz_Long () (Integer, Integer) where
 
 instance C.Measure Collatz_Long () (Integer, Integer) where
     measure Collatz_Long () ( start, len) = 
-        log2 start - len
+        max 0 $ len - log2 start 
 
 make :: Make
 make = direct Collatz_Long ( )
 
 log2 :: Integer -> Integer
-log2 n = if n <= 1 then 0 else succ $ log2 $ n `mod` 2
+log2 n = if n <= 1 then 0 else succ $ log2 ( n `div` 2 )
 
 
 

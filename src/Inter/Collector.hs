@@ -222,6 +222,7 @@ tmakers =
 	        , item Collatz.Plain.qmake
 	        , item Collatz.Inverse.make
 	        , item Collatz.Inverse.qmake
+	        , item Collatz.Long.make
                 , item Faktor.Times.make_fixed
                 , item Faktor.Times.make_quiz
                 , item Faktor.Faktor.make_fixed
