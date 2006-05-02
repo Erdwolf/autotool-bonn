@@ -28,6 +28,7 @@ import qualified Graph.Cage.Central
 import qualified Graph.Graceful.Central
 import qualified Collatz.Plain
 import qualified Collatz.Inverse
+import qualified Collatz.Long
 import qualified Hanoi.Semantik
 import qualified Hanoi.Quiz
 import qualified Type.Check

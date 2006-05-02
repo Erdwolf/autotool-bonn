@@ -11,8 +11,8 @@ import Text.XML.HaXml.Haskell2Xml
 data Config = Config 
 	     { min_start :: Integer
 	     , max_start :: Integer
-	     , min_length :: Int
-	     , max_length :: Int
+	     , min_length :: Integer
+	     , max_length :: Integer
              , min_top :: Integer
              , max_top :: Integer
 	     }
