@@ -28,4 +28,6 @@ compute x =
 			    }
 
 one :: Parameter
-one = Parameter { length = 1, top = 1 }
+one = compute 1
+
+
