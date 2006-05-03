@@ -46,7 +46,7 @@ instance Partial PCProblem PCP Folge where
           inform $ vcat
 		      [ text "Aus Ihrer Folge entstehen die Zeichenketten:"
 --		      , toDoc us, toDoc vs
--- | fix for bug #80
+--  fix for bug #80
 		      , text us, text vs
 		      ]
 	  let com = common us vs
