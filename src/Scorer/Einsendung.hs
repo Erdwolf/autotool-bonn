@@ -31,7 +31,7 @@ data Einsendung = Einsendung
 
 instance Show ( SNr , Einsendung ) where
     show (s,i) = unwords 
-        [ spaci 4 $ show $ abs $ size i
+        [ spaci 10 $ show $ abs $ size i
 	, spaci 12 $ toString s
 	,    (nulli 2 $ date i !! 2) ++ "."
 		  ++ (nulli 2 $ (date i) !! 1) ++ "."
