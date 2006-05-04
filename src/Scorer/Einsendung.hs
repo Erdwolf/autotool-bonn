@@ -44,7 +44,7 @@ instance Show ( SNr , Einsendung ) where
 
 instance Show Einsendung where
     show i = unwords 
-        [ spaci 4 $ show $ abs $ size i
+        [ spaci 10 $ show $ abs $ size i
 	, spaci 12 $ toString $ matrikel i
 	,    (nulli 2 $ date i !! 2) ++ "."
 		  ++ (nulli 2 $ (date i) !! 1) ++ "."
