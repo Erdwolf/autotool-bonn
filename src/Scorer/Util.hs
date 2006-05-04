@@ -30,7 +30,9 @@ stretch :: Int -> String -> String
 stretch = stretchWith ' '
 
 stretchWith :: Char -> Int -> String -> String
-stretchWith c n s = reverse $ take n $ (reverse s) ++ (take n $ repeat c)
+stretchWith c n s = 
+    let missing = max 0 ( n - length s )
+    in  replicate missing c ++ s 
 
 -------------------------------------------------------------------------------
 
