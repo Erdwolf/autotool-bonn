@@ -45,7 +45,7 @@ instance C.Measure Collatz_Long Int (Integer, P.Parameter) where
         max 0 $ P.length p - log2 start 
 
 make :: Make
-make = direct Collatz_Long 1000
+make = direct Collatz_Long ( 1000 :: Int )
 
 log2 :: Integer -> Integer
 log2 n = if n <= 1 then 0 else succ $ log2 ( n `div` 2 )
