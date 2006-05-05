@@ -29,7 +29,7 @@ instance C.Partial Collatz_Long Int (Integer, P.Parameter) where
                , text "Geben Sie ein Paar (Startzahl, Parameter) ein."
                , text "Bewertet wird  Parameter.length - log_2(Startzahl)."
                , text "Die Startzahl soll höchstens" <+> toDoc top 
-                          <+> "Dezimalstellen haben." 
+                          <+> text "Dezimalstellen haben." 
 	       ]
 
     initial Collatz_Long top = ( 7, P.compute 5 )
