@@ -21,7 +21,7 @@ data Collatz_Long = Collatz_Long deriving ( Eq, Ord, Show, Read, Typeable )
 
 
 
-instance C.Partial Collatz_Long Integer (Integer, P.Parameter) where
+instance C.Partial Collatz_Long Int (Integer, P.Parameter) where
 
     report Collatz_Long top = do
         inform $ vcat
@@ -40,7 +40,7 @@ instance C.Partial Collatz_Long Integer (Integer, P.Parameter) where
 	assert ( P.compute start == p )
 	       $ text "angegebene Parameter sind korrekt?"
 
-instance C.Measure Collatz_Long Integer (Integer, P.Parameter) where
+instance C.Measure Collatz_Long Int (Integer, P.Parameter) where
     measure Collatz_Long top ( start, p ) = 
         max 0 $ P.length p - log2 start 
 
