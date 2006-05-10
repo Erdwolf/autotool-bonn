@@ -4,11 +4,12 @@ module Graph.Way.Quiz where
 
 import Graph.Way.Plain ( Way ( Way ) )
 import Graph.Way.Config ( Config , nodes , edges , rc )
+import Graph.Way.Input ( Input (..) , Solvability ( Solvable ) )
 
 import Autolib.Util.Zufall ( eins )
 
 import Autolib.Graph.Type ( Graph , mkGraph , kante )
-import Autolib.Graph.Adj ( wegematrix )
+import Autolib.Graph.Adj ( wegematrix , zeilen )
 import Autolib.Set ( mkSet )
 
 import Data.Array ( elems )
@@ -16,7 +17,7 @@ import Data.Array ( elems )
 import Inter.Quiz ( Generator , generator , Project , project , quiz )
 import Inter.Types ( Make )
 
-instance Generator Way Config ( (Int,[Integer]) , Graph Int ) where
+instance Generator Way Config ( Input , Maybe (Graph Int) ) where
     generator _ conf _ = do
 
        let ns = [ 1 .. nodes conf ]
@@ -28,9 +29,9 @@ instance Generator Way Config ( (Int,[Integer]) , Graph Int ) where
 
        let g = mkGraph (mkSet ns) (mkSet ks)
 
-       return ( (nodes conf,elems $ wegematrix g) , g )
+       return ( Input (zeilen $ wegematrix g) Solvable , Just g )
 
-instance Project Way ((Int,[Integer]),Graph Int) (Int,[Integer]) where 
+instance Project Way (Input,Maybe (Graph Int)) Input where 
     project _ = fst
 
 make :: Make

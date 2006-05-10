@@ -4,6 +4,10 @@ module Graph.Way.Plain where
 
 import Graph.Util
 
+import Graph.Way.Input ( Input , matrix , solvability , ex 
+		       , Solvability ( Solvable , Unsolvable ) 
+		       )
+
 import Autolib.Dot ( peng, Layout_Program (..) )
 import Autolib.Graph.Adj ( schoen , warshall )
 
@@ -16,20 +20,32 @@ import qualified Challenger as C
 
 data Way = Way deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance C.Partial Way (Int,[Integer]) (Graph Int)  where
+instance C.Partial Way Input (Maybe (Graph Int))  where
 
-    report _ (n,vs) = do
+    report _ inp = do
+        let n = length $ matrix inp
         inform $ vcat $ map text
          [ "Gesucht ist ein Graph mit der Wegematrix"
-	 , schoen $ listArray ((1,1),(n,n)) vs
+	 , schoen $ listArray ((1,1),(n,n)) $ concat $ matrix inp
+	 , foldl1 (++) [ "(Eingabe: \"Nothing\""
+		       , " falls Sie behaupten, dass es keinen Graphen"
+		       , " mit dieser Wegematrix gibt.)"
+		       ]
 	 ]
 
-    initial _ (n,_) = 
-	let ns = [1..pred n]
-        in mkGraph (mkSet ns) (mkSet $ map (uncurry kante) $ zip ns $ tail ns)
+    initial _ inp = 
+	let n  = length $ matrix inp
+            ns = [1..pred n]
+        in Just $ mkGraph (mkSet ns) 
+	                  (mkSet $ map (uncurry kante) $ zip ns $ tail ns)
 
-    partial _ (n,_) g = do
+    partial _ _ Nothing = do
 
+        inform $ text "Sie behaupten: Es gibt keinen Graphen mit dieser Wegematrix."
+
+    partial _ inp (Just g) = do
+
+        let n  = length $ matrix inp
         let n' = cardinality $ knoten g
 
         inform $ text "Stimmt die Knotenanzahl?"
@@ -38,7 +54,14 @@ instance C.Partial Way (Int,[Integer]) (Graph Int)  where
 
         inform $ text "Ja."
     
-    total _ (_,vs) g = do
+    total _ inp Nothing = do
+        
+        when ( solvability inp == Solvable ) 
+	     ( reject $ text "Das stimmt nicht." )
+
+        inform $ text "Das stimmt."
+
+    total _ inp (Just g) = do
 
         let w = warshall g
 
@@ -53,14 +76,16 @@ instance C.Partial Way (Int,[Integer]) (Graph Int)  where
 
         inform $ text "Ist diese Matrix die geforderte?"
 
-        when ( vs /= Data.Array.elems w ) $ reject $ text "Nein."
+        when ( concat (matrix inp) /= Data.Array.elems w ) 
+	     ( reject $ text "Nein." )
 
         inform $ text "Ja."
 
-instance C.Measure Way (Int,[Integer]) (Graph Int) where
-    measure _ _ g = fromIntegral $ cardinality $ kanten g
+instance C.Measure Way Input (Maybe (Graph Int)) where
+    measure _ _ (Just g) = fromIntegral $ cardinality $ kanten g
+    measure _ _ _        = 0
 
 -------------------------------------------------------------------------------
 
 make :: Make
-make = direct Way (3::Int,[1,1,0,1,1,0,0,0,1::Integer])
+make = direct Way ex
