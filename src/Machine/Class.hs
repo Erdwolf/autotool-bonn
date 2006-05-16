@@ -58,10 +58,16 @@ class Ord conf => Compute m conf where
     accepting  :: m -> conf -> Bool
     depth :: m -> conf -> Int
 
+-- | unendliche liste
 nachfolger :: Compute m conf
            => m -> conf -> [ conf ]
--- unendliche liste
 nachfolger a k = concat $ map setToList $
+    schichten (next  a) k
+
+-- | unendliche liste
+nachfolger_cut :: Compute m conf
+           => Int -> m -> conf -> [ conf ]
+nachfolger_cut cut a k = concat $ map setToList $ take cut $
     schichten (next  a) k
 
 

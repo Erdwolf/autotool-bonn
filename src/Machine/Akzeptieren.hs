@@ -27,7 +27,7 @@ akzeptierend_oder_ohne_nachfolger
     :: Machine m dat conf
     => Int -> m -> conf -> [ conf ]
 akzeptierend_oder_ohne_nachfolger cut m c = do
-    k <- take cut $ nachfolger m $ c
+    k <- take cut $ nachfolger_cut cut m $ c
     guard $  accepting m k 
           || ( isEmptySet $ next m $ k )
     return k
@@ -45,8 +45,12 @@ check_item ::   ( Machine m dat conf, ToDoc dat )
 check_item acc cut m x = nested 4 $ do
      ip <- input_reporter m x
      let ks = akzeptierend_oder_ohne_nachfolger cut m ip
+         alle = take cut $ nachfolger_cut cut m ip
 	 as = filter ( accepting m ) ks
-	 logs = if null as then ks else as
+	 logs = if not (null as) then as
+                else if not (null ks) then ks
+                else selection 2 alle
+         selection d xs = take d xs ++ selection (d+1) ( drop d xs )
 	 ok = acc == not (null as)
      let msg = vcat
 	     [ fsep [ text ( if ok then "Richtig:" else "Falsch:" )
