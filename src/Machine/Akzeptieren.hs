@@ -28,7 +28,8 @@ akzeptierend_oder_ohne_nachfolger
     => Int -> m -> conf -> [ conf ]
 akzeptierend_oder_ohne_nachfolger cut m c = do
     k <- take cut $ nachfolger m $ c
-    guard  $ isEmptySet $ next m $ k
+    guard $  accepting m k 
+          || ( isEmptySet $ next m $ k )
     return k
 
 check_liste ::  ( Machine m dat conf, ToDoc [dat] )
