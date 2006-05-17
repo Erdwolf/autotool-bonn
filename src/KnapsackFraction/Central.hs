@@ -38,8 +38,6 @@ fm_fun fm = lookupWithDefaultFM fm (error "data incomplete!?")
 count :: (Objekt -> Integer) -> FiniteMap Objekt Rational -> Rational
 count f = foldFM ( \ x r v -> v + r * (f x % 1) ) 0
 
-type Pack = ( Rational , FiniteMap Objekt Rational)
-
 instance Size Pack where size = const 1
 
 instance Partial KnapsackFraction Inp Pack where
@@ -60,9 +58,9 @@ instance Partial KnapsackFraction Inp Pack where
 	let packFM = listToFM $ do
 		     (x,i) <- zip (setToList $ objekte inp) [(0::Integer)..]
 		     return ( x , 1 % (max 1 $ mod i 3) )
-        in ( count (fm_fun $ werte inp) packFM , packFM )
+        in Pack (count (fm_fun $ werte inp) packFM) packFM
 
-    partial KnapsackFraction inp (value,packFM) = do
+    partial KnapsackFraction inp (Pack value packFM) = do
 
         eq ( text "vorhandene Objekte" , objekte inp )
 	   ( text "Objekte in Ihrer Packung" , mkSet $ keysFM packFM )
@@ -90,7 +88,7 @@ instance Partial KnapsackFraction Inp Pack where
 
         inform $ text "Ja."
 
-    total KnapsackFraction inp (value,packFM) = do
+    total KnapsackFraction inp (Pack value packFM) = do
 
         let weight = count (fm_fun $ gewichte inp) packFM
 
@@ -114,7 +112,7 @@ instance Partial KnapsackFraction Inp Pack where
 make_fixed :: Make
 make_fixed = direct KnapsackFraction inp0
 
-instance Generator KnapsackFraction Param ( Inp , Pack ) where
+instance Generator KnapsackFraction Param (Inp,Pack) where
     generator _ conf _ = do
 
         let os = take (anzahl conf) $ enumFrom A
@@ -132,9 +130,7 @@ instance Generator KnapsackFraction Param ( Inp , Pack ) where
         let ( (opt,p) : _ ) = packs os c (fm_fun gsFM) (fm_fun vsFM)
 
         return ( Inp (mkSet os) opt c gsFM vsFM
-	       , ( opt
-		 , listToFM p
-		 )
+	       , Pack opt (listToFM p)
 	       )
 
 instance Project KnapsackFraction (Inp,Pack) Inp where project _ = fst

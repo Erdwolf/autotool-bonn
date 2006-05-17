@@ -71,9 +71,8 @@ import qualified Graph.Circle.Plain
 import qualified Graph.Bisekt.Plain
 import qualified Graph.Bisekt.Quiz
 
--- FIXME: Graph.Way.Input missing
--- import qualified Graph.Way.Plain
--- import qualified Graph.Way.Quiz
+import qualified Graph.Way.Plain
+import qualified Graph.Way.Quiz
 
 import qualified Number.Base.Central
 import qualified Number.Float.From
@@ -195,9 +194,8 @@ tmakers =
 	        , item Graph.Circle.Plain.make
 	        , item Graph.Bisekt.Plain.make
 	        , item Graph.Bisekt.Quiz.make
--- FIXME
---                , item Graph.Way.Plain.make
---	        , item Graph.Way.Quiz.make
+                , item Graph.Way.Plain.make
+	        , item Graph.Way.Quiz.make
 	        , item Graph.MST.Plain.make
 	        , item Graph.MST.Quiz.make
                 ]

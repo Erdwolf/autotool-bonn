@@ -58,3 +58,11 @@ inp0 = Inp (mkSet [A,B,C,D,E,F])
 	   (listToFM $ zip [A,B,C,D,E,F] [6,4,9,8,12,9])
 
 {-! for Inp derive: ToDoc, Reader, Haskell2Xml !-}
+
+data Pack =
+     Pack { pwert :: Rational
+	  , teile :: FiniteMap Objekt Rational
+	  }
+     deriving ( Typeable )
+
+{-! for Pack derive: ToDoc, Reader, Haskell2Xml !-}
