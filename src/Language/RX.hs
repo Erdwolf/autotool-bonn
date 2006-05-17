@@ -21,7 +21,9 @@ regular sigma rx
                   let ws = takeWhile ( (<= len) . length )
                          $ take 1000 -- FIXME: arbitrary constant
                          $ accepted fa
-                  sequence $ replicate num $ eins ws
+                  if null ws 
+                     then return [] 
+                     else sequence $ replicate num $ eins ws
           l = Language 
 	    { nametag = "Regular"
 	    , abbreviation = show $ vcat
