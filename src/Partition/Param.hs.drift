@@ -4,6 +4,7 @@ module Partition.Param where
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Set ( Set )
 
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
@@ -21,6 +22,10 @@ p =  Param { elements = 15
 
 
 {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
+
+data Conf = Conf { nums ::  Set Integer } deriving ( Typeable )
+
+{-! for Conf derive: ToDoc, Reader, Haskell2Xml !-}
 
 -- Local Variables:
 -- mode: haskell 

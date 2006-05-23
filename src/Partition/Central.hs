@@ -30,17 +30,15 @@ import Data.Typeable
 data Partition = Partition
     deriving ( Eq, Typeable, Show, Read )
 
-instance Partial Partition 
-	         ( Set Integer ) 
-	         ( Set Integer, Set Integer ) where
+instance Partial Partition Conf ( Set Integer, Set Integer ) where
 
-    describe Partition s = vcat
+    describe Partition (Conf s) = vcat
         [ text "Zerlegen Sie die Menge"
 	, nest 4 $ toDoc s
         , text "in zwei Teilmengen mit übereinstimmender Element-Summe."
 	]
 
-    initial Partition s = 
+    initial Partition (Conf s) = 
         let dist :: [a] -> ( [a], [a] )
             dist [] = ( [], [] )
 	    dist (x : xs) = let (here, there) = dist xs 
@@ -50,12 +48,12 @@ instance Partial Partition
 	    , mkSet that 
 	    )
 
-    partial Partition s (l, r) = do
+    partial Partition (Conf s) (l, r) = do
         disjoint ("L", l) ("R", r)
         eq ( text "S" , s )
 	   ( text "L + R" , union l r )
 
-    total Partition s (l, r) = do
+    total Partition (Conf s) (l, r) = do
         let sl = sum $ setToList l
 	let sr = sum $ setToList r
         inform $ vcat
@@ -85,9 +83,7 @@ disjoint ( ix, x ) ( iy, y ) = do
 make_fixed :: Make
 make_fixed = direct Partition Partition.Beispiel.mm
 
-instance Generator  Partition 
-	            Param
-	         ( Set Integer ) where
+instance Generator Partition Param Conf where
 
     generator Partition p key = do
         let ( lo, hi ) = Partition.Param.bounds p
@@ -104,18 +100,9 @@ instance Generator  Partition
              return $ fromIntegral x
         return $ mkuni xs
 -}
-        return $ mkSet $ map fromIntegral xs
+        return $ Conf $ mkSet $ map fromIntegral xs
 
-instance Project  Partition 
-	         ( Set Integer ) 
-	         ( Set Integer ) where
-
-    project Partition f = f
+instance Project Partition Conf Conf where project Partition = id
 
 make_quiz :: Make
 make_quiz = quiz Partition $ Partition.Param.p 
-
-
-
-
-

@@ -652,6 +652,7 @@ make_instant vnr manr stud fun auf = do
 	     Left err -> do
 		  plain "should not happen: parse error in A.config"
 		  pre $ show err
+		  pre $ show $ A.config auf
 		  mzero
     let var = fun  conf
         p = problem var

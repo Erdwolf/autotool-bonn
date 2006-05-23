@@ -1,7 +1,10 @@
 module Partition.Beispiel where
 
-import Autolib.Set
+import Partition.Param ( Conf ( Conf ) )
+import Autolib.Set ( mkSet )
 
-mm :: Set Integer 
-mm =  mkSet [ 4,5,7,8,10 ]
+-------------------------------------------------------------------------------
+
+mm :: Conf
+mm =  Conf $ mkSet [ 4,5,7,8,10 ]
 
