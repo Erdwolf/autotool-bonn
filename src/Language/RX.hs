@@ -20,7 +20,7 @@ regular sigma rx
           sampler a = \ num len -> do
                   let ws = takeWhile ( (<= len) . length )
                          $ take 1000 -- FIXME: arbitrary constant
-                         $ accepted fa
+                         $ accepted a
                   if null ws 
                      then return [] 
                      else sequence $ replicate num $ eins ws
