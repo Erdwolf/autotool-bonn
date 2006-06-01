@@ -23,10 +23,13 @@ import Autolib.ToDoc
 make :: Ord a
      => Frequency a 
      -> Code a LR
-make xis = 
+make ( Frequency xis ) = 
     let [ top ] = maker $ do 
 	   (x, i) <- fmToList xis
-	   return $ Letter { weight = i, codes = listToFM [(x, [])] }
+	   return $ Letter 
+                  { weight = i
+                  , codes = Code $ listToFM [(x, [])] 
+                  }
     in	codes top
 
 maker :: Ord a
@@ -40,9 +43,10 @@ combine :: Ord a
 	=> Letter a -> Letter a -> Letter a
 combine x y = 
     Letter { weight = weight x + weight y
-	   , codes  = listToFM $ do
+	   , codes  = Code $ listToFM $ do
 	         ( c, it ) <- [ (L, x), (R, y) ]
-		 ( z, cs ) <- fmToList $ codes it
+                 let Code co = codes it
+		 ( z, cs ) <- fmToList co
 		 return ( z, c : cs )
 	   }
 

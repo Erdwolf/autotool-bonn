@@ -1,3 +1,5 @@
+{-# OPTIONS -fallow-incoherent-instances #-}
+
 module Code.Check where
 
 --  $Id$
@@ -14,24 +16,24 @@ import Autolib.Reporter
 import Data.List
 import Control.Monad
 
-istotal :: ( ToDoc [b], ToDoc [a], ToDoc a, Ord a )
+istotal :: ( ToDoc b,  ToDoc a, Ord a )
       => Set a
       -> Code a b
       -> Reporter ()
-istotal xs code = do
+istotal xs c @ ( Code code ) = do
     inform $ fsep 
-	   [ text "ist", toDoc code, text "vollständig"
+	   [ text "ist", toDoc c, text "vollständig"
 	   , text "für", toDoc xs, text "?"
 	   ]
     nested 4 $ Autolib.Reporter.Set.subeq
 	     ( text "zu codierende Buchstaben" , xs )
 	     ( text "tatsächlich codierte Buchstaben", mkSet $ keysFM code )
 
-isprefix :: ( ToDoc [b], ToDoc [a], ToDoc a, Ord a, Eq b )
+isprefix :: ( ToDoc a, ToDoc b, Ord a, Eq b )
       => Code a b
       -> Reporter ()
-isprefix code = do
-    inform $ fsep [ text "ist", toDoc code, text "ein Präfix-Code?"]
+isprefix c @ ( Code code ) = do
+    inform $ fsep [ text "ist", toDoc c, text "ein Präfix-Code?"]
     sequence_ $ do
         (x, cs) <- fmToList code
         (y, ds) <- fmToList code

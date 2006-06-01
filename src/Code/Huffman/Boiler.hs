@@ -17,7 +17,7 @@ import Autolib.ToDoc
 
 make_fixed :: Make
 make_fixed = direct Huffman 
-           $ listToFM
+           $ Frequency $ listToFM
            $ zip [ 'a' .. ] [ 14 :: Int, 23, 94, 87, 15, 90, 18, 35, 71 ]
 
 make_quiz :: Make

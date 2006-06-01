@@ -18,15 +18,15 @@ import Autolib.Reporter
 import Autolib.ToDoc
 
 
-isoptimalprefix ::  ( ToDoc [b], ToDoc [a], ToDoc a, Ord a, Eq b )
+isoptimalprefix ::  ( ToDoc b, ToDoc a, Ord a, Eq b )
       => Frequency a
       -> Code a b
       -> Reporter ()
 isoptimalprefix freq code = do
     inform $ vcat 
-	   [ text "Ist der Code" 
+	   [ text "Ist" 
 	   , nest 4 $ toDoc code
-	   , text "ein optimaler Präfix-Code für die Verteilung"
+	   , text "ein optimaler Präfix-Code für"
 	   , nest 4 $ toDoc freq
 	   , text "?"
 	   ]

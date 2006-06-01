@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
 module Code.Type 
 
@@ -24,6 +24,7 @@ import Autolib.Reader
 import Autolib.Reporter
 
 import Data.Maybe
+import Data.Typeable
 
 -- | FIXME: das ist unzusammenhängend
 
@@ -82,13 +83,34 @@ bits x | x > 1 = 1 + bits (x `div` 2 )
 bits _ = 1
 
 
-data Frequency a = Frequency ( FiniteMap a Int )
+data  Ord a => Frequency a = Frequency ( FiniteMap a Int )
+    deriving Typeable
 
-{-! for Frequency derive: ToDoc, Reader !-}
+instance Ord a => Size ( Frequency a ) where 
+    size ( Frequency fm ) = size fm
 
-data Code a b = Code ( FiniteMap a [ b ] )
+instance ( Ord a, ToDoc a ) => ToDoc ( Frequency a ) where
+    toDoc ( Frequency fm ) = text "Frequency" </> toDoc ( fmToList fm )
+instance ( Ord a, Reader a ) => Reader ( Frequency a ) where
+    reader = do
+        my_reserved "Frequency"
+        fm <- reader
+        return $ Frequency $ listToFM fm
 
-{-! for Code derive: ToDoc, Reader !-}
+data Ord a => Code a b =  Code ( FiniteMap a [ b ] )
+    deriving Typeable
+
+instance Ord a => Size ( Code a b ) where 
+    size ( Code fm ) = size fm
+
+instance ( Ord a, ToDoc a, ToDoc b ) => ToDoc ( Code a b ) where
+    toDoc ( Code fm ) = text "Code" </> toDoc ( fmToList fm )
+instance ( Ord a, Reader a, Reader b ) => Reader ( Code a  b) where
+    reader = do
+        my_reserved "Code"
+        fm <- reader
+        return $ Code $ listToFM fm
+
 
 -- local variables:
 -- mode: haskell

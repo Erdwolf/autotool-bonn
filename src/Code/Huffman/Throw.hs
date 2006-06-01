@@ -20,5 +20,5 @@ throw conf = do
 	return $ do
 	    i <- randomRIO $ range conf
 	    return (x, i)
-    return $ listToFM xis
+    return $ Frequency $ listToFM xis
 

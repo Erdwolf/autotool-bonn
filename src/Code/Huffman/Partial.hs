@@ -26,15 +26,15 @@ instance -- ( ToDoc a, ToDoc [a], Ord a, ToDoc [ (a, [ LR ] )] )
     describe p i = vcat
         [ text "gesucht ist ein optimaler Präfix-Code"
 	, nest 4 $ vcat [ text "über dem Code-Alphabet [L, R]"
-			, text "für die Verteilung" <+> toDoc i
+			, text "für" <+> toDoc i
 			]
 	]
 
-    initial p i = listToFM $ do
+    initial p ( Frequency i ) = Code $ listToFM $ do
         ( k, x ) <- zip [0..] $ keysFM i
 	return ( x, replicate k L ++ [ R ] )
 
-    partial p i b = do
+    partial p ( Frequency i ) b = do
         isprefix b
 	istotal ( mkSet $ keysFM i ) b
 

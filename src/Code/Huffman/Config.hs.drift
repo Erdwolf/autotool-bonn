@@ -21,4 +21,6 @@ example = Config { alphabet = mkSet [ 'a' .. 'f' ]
 
 {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
-
+-- local variables:
+-- mode: haskell
+-- end;
