@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
 module Code.Type 
 
@@ -81,10 +81,18 @@ bits :: ( Integral a, Integral b )
 bits x | x > 1 = 1 + bits (x `div` 2 )
 bits _ = 1
 
-type Frequency a = FiniteMap a Int
 
-type Code a b = FiniteMap a [ b ]
+data Frequency a = Frequency ( FiniteMap a Int )
 
+{-! for Frequency derive: ToDoc, Reader !-}
+
+data Code a b = Code ( FiniteMap a [ b ] )
+
+{-! for Code derive: ToDoc, Reader !-}
+
+-- local variables:
+-- mode: haskell
+-- end;
 
 
 
