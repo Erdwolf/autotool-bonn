@@ -111,7 +111,7 @@ get_question act prob = do
             Nothing -> do
                 error "Aufgabenstellung nicht auffindbar"
             Just ( Make doc fun veri ex ) -> do
-                ( _, _, com ) <- make_instant_common
+                ( _, i, com ) <- make_instant_common
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
                 let p = mkpar stud auf
@@ -125,7 +125,7 @@ get_question act prob = do
                          Nothing (P.highscore p)
                          Nothing
                          Nothing
-                return $ show inst
+                return $ show i
 
 put_answer :: Actor -> Problem -> Answer -> IO Bool
 put_answer act prob ans = do
