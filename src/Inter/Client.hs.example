@@ -16,8 +16,8 @@ actor = Actor { schule   = "HTWK Leipzig"
 	      , passwort = "XXXXXXX"
 	      }
 
-problem = Problem { vorlesung = "Informatik"
-		  , aufgabe   = "Faktor-Quiz-1"
+problem = Problem { vorlesung = "Objektorient. Konzepte (SS06)"
+		  , aufgabe   = "Faktor-Quiz-3"
 		  }
 
 main = do
