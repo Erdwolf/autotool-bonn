@@ -6,6 +6,7 @@ import Inter.Crypt
 import Inter.Collector
 import Inter.Common
 import Inter.Types
+import Inter.Evaluate
 
 import Control.Types (toString)
 import Challenger.Partial
@@ -18,7 +19,8 @@ import qualified Inter.Store
 import Control.Types ( VNr, SNr, ANr, Wert (..), fromCGI )
 import Control.TH
 import Control.Student.TH
-
+import Autolib.Reporter
+import Autolib.ToDoc
 
 import qualified Control.Student.CGI
 import qualified Control.Vorlesung as V
@@ -127,9 +129,21 @@ get_question act prob = do
                          Nothing
                 return $ show i
 
-put_answer :: Actor -> Problem -> Answer -> IO Bool
+put_answer :: Actor -> Problem -> String -> IO String
 put_answer act prob ans = do
-    return False
+    (vor, stud, auf) <- login act prob
+    -- FIXME: duplicated code from Inter.Super follows
+    let mmk = lookup ( toString $ A.typ auf )
+            $ do mk <- Inter.Collector.makers ; return ( show mk, mk )
+    case mmk of
+            Nothing -> do
+                error "Aufgabenstellung nicht auffindbar"
+            Just ( Make doc fun veri ex ) -> do
+                ( p, i, com ) <- make_instant_common
+                    (V.vnr vor) ( Just $ A.anr auf ) stud 
+			   ( fun $ read $ toString $ A.config auf )
+		( res, com2 :: Doc ) <- run $ evaluate p i ans
+		return $ show res
 
 
 
