@@ -37,6 +37,7 @@ import qualified Inter.Collector
 
 import Challenger.Partial
 import Inter.Types
+import Inter.Common
 
 import Control.Student.CGI
 import Control.Vorlesung.DB
@@ -654,14 +655,8 @@ make_instant vnr manr stud fun auf = do
 		  pre $ show err
 		  pre $ show $ A.config auf
 		  mzero
-    let var = fun  conf
-        p = problem var
-    let mat = S.mnr stud
-    k <- io $ key var $ toString mat 
-    g <- io $ gen var vnr manr k 
-    let ( Just i  , _ :: Text.Html.Html ) = export g
-    ( _, icom :: Text.Html.Html) <- io $ run $ report p i
-    return ( p, i, icom )
+    io $ make_instant_common vnr manr stud $ fun conf
+
 
 data Method = Textarea | Upload
     deriving ( Eq, Show, Typeable )
@@ -760,15 +755,6 @@ punkte tutor stud auf ( minst, mcs, mres, com ) =
 	     return ()
         else vorbei
 
-mkpar stud auf = P.empty 
-            { P.mmatrikel = Just $ S.mnr stud
-	    , P.aufgabe = A.name auf
-	    , P.typ = A.typ auf
-	    , P.anr = A.anr auf
-	    , P.vnr = A.vnr auf
-	    , P.highscore = A.highscore auf
-	    , P.ident = S.snr stud
-            }
 
 vorbei = do
     h3 "Einsendeschluß dieser Aufgabe ist überschritten"

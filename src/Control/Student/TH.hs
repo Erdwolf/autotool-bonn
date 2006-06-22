@@ -3,8 +3,8 @@
 module Control.Student.TH where
 
 import Control.Student.Type
-import Inter.TH
 import Control.TH
 import Network.XmlRpc.Server
+import Network.XmlRpc.THDeriveXmlRpcType
 
-$(Inter.TH.helper ''Student)
+$(asXmlRpcStruct ''Student)

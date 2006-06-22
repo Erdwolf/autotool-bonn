@@ -2,10 +2,11 @@
 
 module Control.TH where
 
-import Inter.TH
+-- import Inter.TH
 import Inter.Crypt
 import Control.Types
 import Network.XmlRpc.Internals
+import Network.XmlRpc.THDeriveXmlRpcType
 
 -- Strings
 
@@ -19,7 +20,7 @@ instance XmlRpcType Name where
     fromValue v = do s <- fromValue v ; return $ Name s
     getType _ = TString
 
-$(Inter.TH.helper ''Crypt)
+$(asXmlRpcStruct ''Crypt)
 
 -- Show
 
@@ -48,6 +49,11 @@ instance XmlRpcType VNr where
 instance XmlRpcType SNr where
     toValue ( SNr s ) = toValue s
     fromValue v = do s <- fromValue v ; return $ SNr s
+    getType _ = TInt
+
+instance XmlRpcType UNr where
+    toValue ( UNr s ) = toValue s
+    fromValue v = do s <- fromValue v ; return $ UNr s
     getType _ = TInt
 
 

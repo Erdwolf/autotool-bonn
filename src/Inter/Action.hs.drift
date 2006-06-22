@@ -12,19 +12,20 @@ import Autolib.Reader
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
-import Inter.TH
+import Network.XmlRpc.THDeriveXmlRpcType
 import Network.XmlRpc.Internals
 
 -- | die Nummer dessen, der sich einloggt (Tutor)
 data Actor
-     = Actor { matrikel :: String
-		      , passwort :: String 
-		      }
+     = Actor { schule   :: String
+	     , matrikel :: String
+	     , passwort :: String 
+	     }
      deriving ( Eq, Ord, Typeable )
 
 {-! for Actor derive: ToDoc, Reader, Haskell2Xml !-}
 
-$(Inter.TH.helper ''Actor)
+$(asXmlRpcStruct ''Actor)
 
 data Problem
      = Problem { vorlesung :: String 
@@ -34,7 +35,7 @@ data Problem
 
 {-! for Problem derive: ToDoc, Reader, Haskell2Xml !-}
 
-$(Inter.TH.helper ''Problem)
+$(asXmlRpcStruct ''Problem)
 
 data Answer =
      Answer { wert :: Wert
@@ -42,7 +43,7 @@ data Answer =
 	    }
      deriving ( Eq, Ord, Typeable )
 
-$(Inter.TH.helper ''Answer)
+$(asXmlRpcStruct ''Answer)
 
 {-! for Answer derive: ToDoc, Reader, Haskell2Xml !-}
 

@@ -1,6 +1,6 @@
 -- | template haskell helper
 
-module Inter.TH where
+module -- Inter.TH where 
 
 import Network.XmlRpc.Internals
 import Network.XmlRpc.THDeriveXmlRpcType
