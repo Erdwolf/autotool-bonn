@@ -1,0 +1,29 @@
+-- main module
+
+import Inter.Action
+
+import Control.Types
+import Control.TH
+import qualified Control.Student as S
+import Control.Student.TH
+
+import Network.XmlRpc.Client
+
+server = "http://localhost/cgi-bin/Server.cgi"
+
+actor = Actor { schule   = "HTWK Leipzig"
+	      , matrikel = "531"
+	      , passwort = "XXXXXXX"
+	      }
+
+problem = Problem { vorlesung = "Informatik"
+		  , aufgabe   = "Faktor-Quiz-1"
+		  }
+
+main = do
+    ( quest :: String ) <- remote server "get_question" actor problem
+    print quest
+    ( result :: String ) <- remote server "put_answer" actor problem "[3,4,5]"
+    print result
+
+
