@@ -34,6 +34,8 @@ import qualified Control.Stud_Aufg.DB
 import Network.XmlRpc.Server
 import Control.Monad ( when )
 
+import Data.List ( intersperse )
+
 main :: IO ()
 main = cgiXmlRpcServer 
      $ {- for_tutor ++ -} for_student
@@ -54,6 +56,10 @@ for_student =
 -- | student login
 login :: Actor -> Problem -> IO (V.Vorlesung, S.Student, A.Aufgabe)
 login act prob = do
+
+    appendFile "/tmp/RPC.log" $ show $ act { passwort = "..." }
+    appendFile "/tmp/RPC.log" $ show prob
+
     us <- U.get
     u <- case [ u | u <- us , U.name u == fromCGI ( schule act ) ] of
         [u] -> return u
@@ -143,6 +149,13 @@ put_answer act prob ans = do
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
 		( res, com2 :: Doc ) <- run $ evaluate p i ans
+                appendFile "/tmp/RPC.log"
+                       $ unwords 
+                       $ intersperse ":"
+                                 [ schule act, matrikel act
+                                 , vorlesung prob, aufgabe prob
+                                 , show res 
+                                 ]
 		return $ show res
 
 
