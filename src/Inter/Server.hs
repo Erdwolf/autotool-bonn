@@ -145,10 +145,10 @@ put_answer act prob ans = do
             Nothing -> do
                 error "Aufgabenstellung nicht auffindbar"
             Just ( Make doc fun veri ex ) -> do
-                ( p, i, com ) <- make_instant_common
+                ( p, i, icom ) <- make_instant_common
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
-		( res, com2 :: Doc ) <- run $ evaluate p i ans
+		( res, com2 ) <- run $ evaluate p i ans
                 appendFile "/tmp/RPC.log"
                        $ unwords 
                        $ intersperse ":"
@@ -156,7 +156,8 @@ put_answer act prob ans = do
                                  , vorlesung prob, aufgabe prob
                                  , show res 
                                  ]
+                Inter.Common.pure_punkte False stud auf
+                     ( Just icom, Just ans, res, Just com2 )
 		return $ show res
-
-
+                       
 

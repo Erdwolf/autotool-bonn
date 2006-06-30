@@ -303,7 +303,7 @@ aufgaben tmk ( stud, vnr, tutor ) = do
 		  sequence_ $ do
 		      ( w, sauf, stud ) <- rsc
 		      return $ do
-		          Main.punkte tutor stud auf
+		          Inter.Common.punkte tutor stud auf
 			      ( Nothing, Nothing, Just w
 			      , Just $ Text.Html.primHtml 
 					    "Bewertung durch Tutor"  
@@ -329,7 +329,7 @@ aufgaben tmk ( stud, vnr, tutor ) = do
                            [ stud ] <- io $ S.get_snr $ SA.snr sauf
 			   -- das muß auch nach Einsendeschluß gehen,
 			   -- weil es der Tutor ausführt
-			   Main.punkte tutor stud auf ( inst, inp, res, com )
+			   Inter.Common.punkte tutor stud auf ( inst, inp, res, com )
 	 mzero
 
     let manr = fmap A.anr mauf
@@ -363,7 +363,7 @@ aufgaben tmk ( stud, vnr, tutor ) = do
 	    return ()
         Solve -> do
             ( minst, cs, res, com ) <- solution vnr manr stud' mk auf' 
-	    Main.punkte False stud' auf' ( minst, cs, Just res, com )
+	    Inter.Common.punkte False stud' auf' ( minst, cs, Just res, com )
 	Edit | tutor -> do
 	    find_previous True  vnr mks stud' auf'
             return ()
@@ -738,27 +738,6 @@ parameter_table auf = do
     above ( plain "Hinweise" )
 	            ( pre $ toString $ A.remark auf )
 
--- | erreichte punkte in datenbank schreiben 
--- und lösung abspeichern
-punkte tutor stud auf ( minst, mcs, mres, com ) = 
-     if tutor || A.current auf
-	then do
-             hr ; h3 "Eintrag ins Logfile"
-	     let p = ( mkpar stud auf )  
-		     { P.minstant = minst
-		     , P.input = mcs
-		     , P.report = com
-		     , P.mresult = mres 
-		     }
-	     msg <- io $ bank p
-	     pre msg
-	     return ()
-        else vorbei
-
-
-vorbei = do
-    h3 "Einsendeschluß dieser Aufgabe ist überschritten"
-    plain "Einsendung wird nicht gespeichert, Bewertung wird ignoriert."
 
 ------------------------------------------------------------------------
 
