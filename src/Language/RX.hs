@@ -37,4 +37,3 @@ regular sigma rx
 	    , anti_sample = sampler cfa
 	    }
       in l
-

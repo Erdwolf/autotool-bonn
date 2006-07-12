@@ -49,11 +49,18 @@ instance Partial Faktor (Int,Integer) [Integer] where
 
     total Faktor (_,x) fs = do
         let p = product fs
-        assert (x == p) $ fsep
-     	                  [ text "Das Produkt der Zahlen"
-			  , toDoc fs, text "ist" , toDoc p
-			  , text "und nicht", toDoc x
-			  ]
+
+        inform $ fsep [ text "Das Produkt der Zahlen"
+		      , toDoc fs, text "ist" , toDoc p, text "."
+		      ]
+        inform $ fsep [ text "Gilt ", toDoc p 
+		      , text "=" , toDoc x 
+		      , text "?" 
+		      ]
+
+        when (x /= p) $ reject $ text "Nein."
+
+        inform $ text "Ja."
 
 -------------------------------------------------------------------------------
 
