@@ -105,17 +105,33 @@ totalize deco u fm = do
     putStrLn $ unlines
 	     $ [ "Top Ten"
 	       , "-----------------------------------"
-	       ] ++ do (i,p) <- infos
+	       ] ++ do (i,(p,ps)) <- infos
 		       return $ unwords [ stretch 10 $ show p
 					, ":"
 					, stretch 10 $ i
+					, ":" 
+					, pshow ps
 					]
+
+pshow ps = unwords $ [ stretch 4 $ show (length ps)
+		     , "Platzierungen"
+		     , ":"
+		     , cshow ps
+		     ]
+
+cshow ps = fshow $ addListToFM_C (+) emptyFM $ zip ps $ repeat 1
+
+fshow pfm = unwords $ do
+	    p <- [1..10]
+	    return $ stretch 3 $ case lookupFM pfm p of
+	     Just k -> show k
+	     _ -> []
 
 -- | gesamtliste der highscore
 collect :: Bool 
         -> UNr
 	-> DataFM 
-	->  IO [ ( String , Int ) ] -- ^ ( Matrikel, Punkt )
+	->  IO [ ( String , (Int , [Int] ) ) ] -- ^ ( Matrikel, Punkt, Plätze )
 collect deco u fm = do
 
     let nice (e,p) = if deco then do (s,_) <- decorate u e
@@ -124,13 +140,14 @@ collect deco u fm = do
 
     infos <- mapM nice $ do
 	     (auf,es) <- fmToList fm
-	     (e,p) <- zip (realize es) scorePoints
-	     return (e,p)
+	     (e,p,k) <- zip3 (realize es) scorePoints [1..]
+	     return (e,(p,[k]))
 
     return $ take scoreItems
-	   $ sortBy ( \ (_, p) -> negate p ) -- größten zuerst
+	   $ sortBy ( \ (_,(p,_)) -> negate p ) -- größten zuerst
 	   $ fmToList
-	   $ addListToFM_C (+) emptyFM infos
+	   $ addListToFM_C ( \ (x,xs) (y,ys) -> (x+y,xs++ys) ) emptyFM 
+	   $ infos
 
 {-
 collect :: DataFM 
