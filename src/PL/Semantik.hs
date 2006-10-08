@@ -4,6 +4,7 @@ module PL.Semantik where
 
 import PL.Type
 import PL.Interpretation
+import PL.Util
 
 import PL.Data
 import PL.Interpretation
@@ -57,10 +58,4 @@ compute int ( Apply f args ) = do
     vals <- mapM ( compute int ) args
     res <- find_or_complain "function value" f vals
     return res
-
-find_or_complain tag fm this = 
-    case lookupFM fm this of
-        Just x -> return x
-	Nothing -> reject $ fsep 
-            [ text tag, toDoc this, text "not bound/defined" ]
 
