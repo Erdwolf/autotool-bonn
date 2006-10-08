@@ -1,0 +1,18 @@
+module PL.Interpretation where
+
+import PL.Struktur
+import Autolib.FiniteMap
+import Autolib.TES.Identifier
+import Autolib.ToDoc
+import Autolib.Reader
+
+data Ord u => Interpretation u =
+     Interpretation { struktur :: Struktur u
+		    , belegung :: FiniteMap Identifier u
+		    }
+
+{-! for Interpretation derive: Reader, ToDoc !-}
+
+-- local variables:
+-- mode: haskell
+-- end

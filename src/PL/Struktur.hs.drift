@@ -1,0 +1,58 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
+
+module PL.Struktur where
+
+import Autolib.TES.Identifier
+import Autolib.FiniteMap
+import Autolib.Set
+import Autolib.Reader
+import Autolib.ToDoc
+import Data.Typeable
+
+data Predicate u = Predicate ( Set [u] ) 
+     deriving ( Eq, Ord, Typeable )
+
+instance ToDoc u => ToDoc ( Predicate u ) where
+    toDoc ( Predicate ts ) = as_set ts
+
+as_set ts = braces $ Autolib.ToDoc.sepBy comma $ do
+        t <- setToList $ ts
+	return $ parens $ Autolib.ToDoc.sepBy comma $ map toDoc t
+
+instance ( Ord u, Reader u ) => Reader ( Predicate u ) where
+    reader = fmap Predicate from_set
+
+data Function  u = Function  ( FiniteMap [u] u )
+     deriving ( Eq, Ord, Typeable )
+
+instance ( Ord u, ToDoc u ) => ToDoc ( Function u ) where
+    toDoc ( Function fm ) = as_set $ mkSet $ do
+        ( xs, y ) <- fmToList fm
+	return $ xs ++ [y]
+
+instance ( Ord u, Reader u ) => Reader ( Function u ) where
+    reader = do
+       tuples <- from_set
+       return $ Function $ listToFM $ do
+           tu <- setToList $ tuples
+	   return ( init tu, last tu )
+
+from_set :: ( Ord u, Reader u ) => Parser ( Set [u] )
+from_set = fmap mkSet
+	 $ my_braces $ ( `Autolib.Reader.sepBy` my_comma ) 
+	 $ my_parens $ ( `Autolib.Reader.sepBy` my_comma ) 
+	 $ reader
+
+data Ord u => Struktur u = 
+     Struktur { universum  :: Set u
+	      , predicates :: FiniteMap Identifier ( Predicate u ) 
+	      , functions  :: FiniteMap Identifier ( Function  u )
+	      }
+     deriving ( Eq, Ord, Typeable )
+	    
+{-! for Struktur derive: Reader, ToDoc !-}
+
+-- local variables:
+-- mode: haskell
+-- end
+
