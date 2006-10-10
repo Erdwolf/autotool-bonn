@@ -1,4 +1,9 @@
-module PL.Type where
+module PL.Type 
+
+( module PL.Data
+)
+
+where
 
 import PL.Data
 

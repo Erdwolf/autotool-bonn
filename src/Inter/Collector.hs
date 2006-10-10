@@ -1,3 +1,5 @@
+{-# OPTIONS -fallow-overlapping-instances #-}
+
 module Inter.Collector where
 
 import Inter.Types
@@ -105,6 +107,8 @@ import qualified Code.Hamming
 import qualified Rewriting.Derive
 import qualified Rewriting.Numerical
 
+import qualified PL.Find_Model
+
 makers :: [ Make ]
 makers = do Right make <- flatten tmakers ; return make
 
@@ -147,11 +151,16 @@ tmakers =
                      ]
                 ]
          , heading "Logik"
-                [ item Boolean.Instance.make
-	        , item Boolean.Quiz.make
-                , item SAT.SAT.make_fixed
-                , item SAT.SAT.make_quiz
-                ]
+	        [ heading "Aussagenlogik"
+                    [ item Boolean.Instance.make
+		    , item Boolean.Quiz.make
+		    , item SAT.SAT.make_fixed
+		    , item SAT.SAT.make_quiz
+		    ]
+		, heading "Prädikatenlogik"
+		    [ item PL.Find_Model.make_fixed
+		    ]
+		]
          , heading "Kombinatorik"
                 [ item PCProblem.Quiz.make_quiz 
 	        , item PCProblem.Quiz.make_fixed

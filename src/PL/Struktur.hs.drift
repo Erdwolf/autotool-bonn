@@ -1,16 +1,24 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances  #-}
 
 module PL.Struktur where
 
+import PL.Signatur
+import PL.Util
+
 import Autolib.TES.Identifier
 import Autolib.FiniteMap
+import Autolib.Size
 import Autolib.Set
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Reporter
 import Data.Typeable
 
-data Predicate u = Predicate ( Set [u] ) 
+data Predicate u = Predicate { unPredicate :: Set [u] }
      deriving ( Eq, Ord, Typeable )
+
+instance Size ( Predicate u ) where
+    size ( Predicate s ) = cardinality s
 
 instance ToDoc u => ToDoc ( Predicate u ) where
     toDoc ( Predicate ts ) = as_set ts
@@ -22,8 +30,11 @@ as_set ts = braces $ Autolib.ToDoc.sepBy comma $ do
 instance ( Ord u, Reader u ) => Reader ( Predicate u ) where
     reader = fmap Predicate from_set
 
-data Function  u = Function  ( FiniteMap [u] u )
+data Function  u = Function { unFunction :: FiniteMap [u] u }
      deriving ( Eq, Ord, Typeable )
+
+instance Size ( Function u ) where
+    size ( Function f ) = sizeFM f
 
 instance ( Ord u, ToDoc u ) => ToDoc ( Function u ) where
     toDoc ( Function fm ) = as_set $ mkSet $ do
@@ -49,6 +60,49 @@ data Ord u => Struktur u =
 	      , functions  :: FiniteMap Identifier ( Function  u )
 	      }
      deriving ( Eq, Ord, Typeable )
+
+instance Ord u => Size ( Struktur u ) where
+    size s = cardinality ( universum s )
+	   + sum ( do ( r, rr ) <- fmToList $ predicates s ; return $ size rr )
+	   + sum ( do ( f, ff ) <- fmToList $ functions  s ; return $ size ff )
+
+-- | wir testen, ob alle Symbole der Signatur
+-- wirklich in der Struktur vorkommen.
+-- es ist erlaubt, daß zusätzlichen Symbole vorkommen.
+instance ( ToDoc u, Ord u ) => Signed ( Struktur u ) where
+     check sig s = do
+	  checkit "Funktion" 
+		  ( keysFM . unFunction ) ( funktionen sig ) ( functions s )
+	  checkit "Relation" 
+		  ( setToList . unPredicate ) ( relationen sig ) ( predicates s )
+
+checkit tag get_args arities values = sequence_ $ do
+    ( f, arity ) <- fmToList $ arities
+    return $ do
+        this <- find_or_complain tag values f
+        sequence_ $ do
+            arg <- get_args this
+            return $ do
+                when ( length arg /= arity ) $ reject $ vcat
+                     [ text "Interpretation für" <+> text tag <> text "ssymbol" 
+		             <+> toDoc f
+                     , text "Falsche Stelligkeit für" <+> toDoc arg
+                     ]
+	      
+empty :: Ord u
+      => Signatur 
+      -> Set u 
+      -> Struktur u
+empty sig uni = 
+    Struktur { universum = uni
+	     , predicates = listToFM $ do
+	           ( p, a ) <- fmToList $ relationen sig
+		   return ( p, Predicate emptySet )
+	     , functions = listToFM $ do
+	           ( f, a ) <- fmToList $ funktionen sig
+		   return ( f, Function emptyFM )
+	     }
+
 	    
 {-! for Struktur derive: Reader, ToDoc !-}
 
