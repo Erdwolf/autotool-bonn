@@ -1,0 +1,48 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
+
+module Modular.Signed where
+
+import Autolib.Hash
+import Autolib.ToDoc
+import Network.XmlRpc.Internals
+import System.Random
+
+data Signed a = 
+     Signed { contents :: a 
+		, signature :: String
+		}
+
+modulus :: Integer
+modulus = 314159
+
+sign :: Show a => a -> IO ( Signed a )
+sign x = do
+    ( salt :: Integer ) <- randomRIO ( 0 , modulus - 1 )
+    let val :: Integer
+	val = fromIntegral $ hash $ show salt ++ show x 
+    return $ Signed 
+       { contents = x 
+       , signature = show $ modulus * val + salt
+       }
+
+verify :: Show a => Signed a -> Bool
+verify s = 
+    let ( val, salt ) = divMod ( read $ signature s ) modulus
+	h = fromIntegral $ hash ( show salt ++ show ( contents s ) )
+    in  h == val
+
+instance XmlRpcType a => XmlRpcType ( Signed a ) where
+    toValue d = toValue [("contents",toValue (contents d)),
+			 ("signature", toValue (signature d))]
+    fromValue v = do
+		  t <- fromValue v
+		  c <- getField "contents" t
+		  d <- getField "signature" t
+		  return $ Signed { contents = c, signature = d }
+    getType _ = TStruct
+
+{-! for Signed derive: ToDoc !-}
+
+-- local variables:
+-- mode: haskell
+-- end

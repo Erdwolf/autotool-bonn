@@ -19,7 +19,9 @@ import  Autolib.Informed
 
 import Data.Typeable
 import Data.Char
+
 -- import Text.XML.HaXml.Haskell2Xml
+-- import Network.XmlRpc.Internals
 
 type Matrikel = String
 
@@ -32,7 +34,11 @@ dashed p = map ( \ c -> if isSpace c then '-' else c )
 -- | Make name (maker function) example
 data Make = forall conf p i b 
           . ( V p i b 
-	    , Typeable conf -- , Haskell2Xml conf
+	    , Typeable conf 
+
+	    -- , Haskell2Xml conf
+	    -- , XmlRpcType conf
+
 	    , ToDoc conf , Show conf
 	    , Reader conf , Read conf
 	    , Help conf, Help i, Help b
@@ -51,7 +57,9 @@ instance ToDoc Make
 
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)
-direct :: ( V p i b -- , Haskell2Xml i
+direct :: ( V p i b 
+	  -- , Haskell2Xml i
+	  -- , XmlRpcType i
 	  , Reader i , Read i , Show i
 	  , Help i, Help b
 	  , Verify p i

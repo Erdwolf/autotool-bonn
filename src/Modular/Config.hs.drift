@@ -1,0 +1,27 @@
+{-# OPTIONS -fallow-overlapping-instances #-}
+
+module Modular.Config where
+
+import Network.XmlRpc.Internals
+
+import Autolib.ToDoc
+
+data Config = 
+     Config { contents :: String
+		}
+
+instance XmlRpcType ( Config ) where
+    toValue d = toValue [("contents",toValue (contents d))
+			]
+    fromValue v = do
+		  t <- fromValue v
+		  c <- getField "contents" t
+		  return $ Config { contents = c }
+    getType _ = TStruct
+
+{-! for Config derive: ToDoc !-}
+
+-- local variables:
+-- mode: haskell
+-- end
+
