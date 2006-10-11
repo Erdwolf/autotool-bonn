@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+
 module RM.Make where
 
 import Inter.Types

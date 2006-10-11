@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+
 module Faktor.Quiz where
 
 --  $Id$

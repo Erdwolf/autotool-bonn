@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
+
 module Inter.Types where
 
 --   $Id$
@@ -8,7 +10,7 @@ import Gateway.Help
 -- import Challenger.Problem
 import Challenger.Partial
 
-import Control.Types
+import Control.Types 
 
 import  Autolib.ToDoc
 import  Autolib.Reader
@@ -82,6 +84,10 @@ data Var p i b =
 	     -- das würfeln soll schweigend gehen,
 	     -- wenn es etwas zu sagen gibt,
 	     -- dann soll es mit (informed) drangeschrieben werden.
+
+	     -- FIXME: hier werden VNr und ANr benutzt,
+	     -- das darf aber nicht sein (man soll hier gar nicht wissen,
+	     -- daß es so etwas gibt)
 	     , gen :: VNr -> Maybe ANr -> Key -> IO ( Reporter i )
 	     }
       deriving Typeable
