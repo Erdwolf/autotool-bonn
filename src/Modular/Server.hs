@@ -25,38 +25,35 @@ list_types makers = return $ do
 get_config :: [ Make ] 
 	   -> Task 
 	   -> IO ( Documented Config )
-get_config makers task = do
-    let xconfs = do 
-            Make this _ _ conf <- makers
-	    guard $ Modular.Task.contents task == this
-	    return $ Documented 
+get_config makers task = find_and_apply makers task 
+     $ \ ( Make this _ _ conf ) -> do
+             return $ Documented 
 		   { Modular.Documented.contents = 
 		         Config { Modular.Config.contents = show conf }
 		   , documentation = "see online doc at URL ..."
 		   }
-    case xconfs of
-        [ xconf ] -> return xconf
+
+find_and_apply makers task action = do
+    let ms = do 
+            m @ ( Make this _ _ _ ) <- makers
+	    guard $ Modular.Task.contents task == this
+	    return m
+    case ms of
+        [ m ] -> action m 
 	[]     -> error "no task with this name"
-	xconfs -> error "more than one task with this name"
+	ms -> error "more than one task with this name"
 
 verify_config :: [ Make ] 
 	      -> Task
 	      -> Config 
 	      -> IO ( Signed Config ) 
-verify_config makers task conf = do
-    let actions = do 
-            Make this _ verify ( _ :: conf ) <- makers
-	    guard $ Modular.Task.contents task == this
-	    -- FIXME: check for parse errors
-	    return $ verify $ read $ Modular.Config.contents conf
-    case actions of
-        [ action ] -> do
-	    let ( result, doc :: Doc ) = export action
+verify_config makers task conf = find_and_apply makers task
+    $ \ ( Make this _ verify _ ) -> do
+            let iconf = read $ Modular.Config.contents conf 
+	    let ( result, doc :: Doc ) = export $ verify iconf
 	    case result of
 	        Just () -> sign conf
 		Nothing -> error $ show doc
-	[]      -> error "no task with this name"
-	actions -> error "more than one task with this name"
 
 get_instance :: [ Make ]
 	     -> Task
