@@ -4,6 +4,8 @@ import Modular.Documented
 import Modular.Signed
 import Modular.Config
 import Modular.Task
+import Modular.Instance
+import Modular.Solution
 
 import Inter.Types
 import Inter.Collector ( makers )
@@ -55,7 +57,30 @@ verify_config makers task conf = do
 		Nothing -> error $ show doc
 	[]      -> error "no task with this name"
 	actions -> error "more than one task with this name"
-	
+
+get_instance :: [ Make ]
+	     -> Task
+	     -> Signed Config
+	     -> IO ( Documented ( Signed Instance ) )
+get_instance makers task sconf = do
+    undefined
+
+get_hint :: [ Make ]
+	 -> Task
+	 -> Signed Config
+	 -> Signed Instance
+	 -> IO Solution
+get_hint makers task sconf sinst = do
+    undefined
+
+grade :: [ Make ]
+      -> Task
+      -> Signed Config
+      -> Signed Instance
+      -> Solution
+      -> IO ( Documented ( Bool, Int ) )
+grade makers task sconf sinst sol = do
+    undefined
 
 main :: IO ()
 main = cgiXmlRpcServer $ serve makers
