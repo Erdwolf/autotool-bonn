@@ -31,7 +31,7 @@ instance Number PCP PCP where
    number = id
 -}
 
-data PCProblem = PCProblem deriving ( Show, Typeable )
+data PCProblem = PCProblem deriving ( Show, Read, Typeable )
 
 type Folge = [ Integer ]
 instance Size Folge where size = length

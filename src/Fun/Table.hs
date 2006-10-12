@@ -58,11 +58,11 @@ final s = case step s of
 
 data Tafel2 = Tafel2
            { unTafel2 :: Array (Integer, Integer) Integer }
-    deriving ( Typeable )
+    deriving ( Show, Read, Typeable )
 
 data Tafel1 = Tafel1
            { unTafel1 :: Array Integer Integer }
-    deriving ( Typeable )
+    deriving ( Show, Read, Typeable )
 
 instance ToDoc Tafel1 where toDoc = rollout . frame1 . unTafel1
 

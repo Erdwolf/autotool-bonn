@@ -18,7 +18,7 @@ import Text.XML.HaXml.Haskell2Xml
 -- Klausel= Literal || Literal ||...|| Literal 	
 -- KNF = Klausel && Klausel && ... && Klausel
 
-data SAT = SAT deriving ( Show, Typeable )
+data SAT = SAT deriving ( Show, Read, Typeable )
 
 -- | Elementare Def.
 data Literal = Pos Variable | Neg Variable

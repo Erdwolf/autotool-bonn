@@ -73,6 +73,7 @@ direct p i = Make
 		   , tag = dashed p ++ "-Direct"
 		   , key = \ mat -> return mat
 		   , gen = \ vnr manr key -> return $ return i
+                   , generate = \ salt -> return $ return i
 		   }
 	     )
 	     ( verify p )
@@ -96,11 +97,17 @@ data Var p i b =
 	     -- FIXME: hier werden VNr und ANr benutzt,
 	     -- das darf aber nicht sein (man soll hier gar nicht wissen,
 	     -- daß es so etwas gibt)
-	     , gen :: VNr -> Maybe ANr -> Key -> IO ( Reporter i )
+	     , gen :: VNr -> Maybe ANr -> Key 
+                   -> IO ( Reporter i )
+
+             -- so soll es sein: eingabe ist seed für Zufall
+             , generate :: Int
+                        -> IO ( Reporter i )
+
 	     }
       deriving Typeable
 
-class ( Show p, Typeable p
+class ( Show p, Typeable p , Read p
       , Typeable i, ToDoc i
       -- , Haskell2Xml i
       -- , Reader i, Read i
@@ -109,7 +116,7 @@ class ( Show p, Typeable p
       , ToDoc b, Reader b 
       , Partial p i b
       ) => V p i b -- ohne methoden
-instance ( Show p, Typeable p
+instance ( Show p, Typeable p, Read p
       -- , Roller i i
       , Typeable i, ToDoc i
       -- , Haskell2Xml i

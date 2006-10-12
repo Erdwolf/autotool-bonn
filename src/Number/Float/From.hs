@@ -28,7 +28,7 @@ import Number.Float.Roll
 
 -------------------------------------------------------------------------------
 
-data From_Float = From_Float deriving ( Show, Typeable )
+data From_Float = From_Float deriving ( Show, Read, Typeable )
 
 instance Partial From_Float Zahl Rational where
 
@@ -46,7 +46,7 @@ instance Partial From_Float Zahl Rational where
 
     total From_Float z r = do
          assert ( (wert z :: Rational) == r )
-                $ text "Stimmen die Bedeutungen der Zahlen sollen überein?"
+                $ text "Stimmen die Bedeutungen der Zahlen überein?"
 
 
 -- das ist nicht sehr sinnvoll,

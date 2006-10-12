@@ -29,7 +29,7 @@ import Data.Typeable
 
 -------------------------------------------------------------------------------
 
-data Times = Times deriving ( Eq, Show, Typeable )
+data Times = Times deriving ( Eq, Show, Read, Typeable )
 
 instance Size Integer where size _ = 1
 

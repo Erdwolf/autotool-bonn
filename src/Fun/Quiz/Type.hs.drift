@@ -10,7 +10,7 @@ import Autolib.ToDoc
 import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
-data Fun_Quiz2 = Fun_Quiz2 deriving ( Eq, Ord, Typeable )
+data Fun_Quiz2 = Fun_Quiz2 deriving ( Eq, Ord, Read, Show, Typeable )
 
 {-! for Fun_Quiz2 derive : Reader, ToDoc !-}
 

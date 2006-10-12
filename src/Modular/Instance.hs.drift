@@ -5,18 +5,23 @@ module Modular.Instance where
 import Network.XmlRpc.Internals
 
 import Autolib.ToDoc
+import Data.Typeable
 
 data Instance = 
-     Instance { contents :: String
-		}
+     Instance { tag :: String
+              , contents :: String
+	      }
+    deriving Typeable
 
 instance XmlRpcType ( Instance ) where
-    toValue d = toValue [("contents",toValue (contents d))
+    toValue d = toValue [("tag",toValue (tag d))
+                        ,("contents",toValue (contents d))
 			]
     fromValue v = do
 		  t <- fromValue v
 		  c <- getField "contents" t
-		  return $ Instance { contents = c }
+		  a <- getField "tag" t
+		  return $ Instance { tag = a, contents = c }
     getType _ = TStruct
 
 {-! for Instance derive: ToDoc !-}

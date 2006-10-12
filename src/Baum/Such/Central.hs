@@ -55,12 +55,12 @@ instance ( Tag t baum a ) =>
 
 instance Tag t baum a
       => Generator t ( Config a ) ( Instanz baum a ) where
-    generator t conf key = generate conf
+    generator t conf key = Baum.Such.Generate.generate conf
 
 instance Project t  ( Instanz baum a ) ( Instanz baum a ) where
     project t i = i
 
-make_quiz :: Tag t baum Int => t -> Make
+make_quiz :: ( Tag t baum Int ) => t -> Make
 make_quiz t = quiz t Baum.Such.Config.example  
 
 

@@ -14,6 +14,7 @@ import Autolib.TES.Apply
 
 import Autolib.Size
 import Autolib.Set
+import Autolib.Reader
 import Autolib.FiniteMap
 import Autolib.Util.Zufall
 
@@ -22,7 +23,7 @@ import Control.Monad ( guard )
 import Data.Maybe
 
 
-roll :: ( Symbol c, Symbol v )
+roll :: ( Symbol c, Symbol v, Reader ( TRS v c ) )
      => Config v c 
      -> IO ( Instance v c )
 roll conf = do

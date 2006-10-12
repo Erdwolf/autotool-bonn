@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
+
 -- | Autotool Challenger Partial
 module Challenger.Partial 
 
@@ -38,8 +40,11 @@ instance Verify p i where
       verify p i = return () -- default: alles OK
 
 -- | Klasse: Partial
-class ( Show p, ToDoc i, Reader b, ToDoc b, Measure p i b )
---    => Partial p i b | p i -> b , p b -> i where
+class ( Show p, Read p
+      , ToDoc i, Read i -- Modular/Server muß auch Instanzen lesen
+      , Reader b, ToDoc b
+      , Measure p i b 
+      )
     => Partial p i b | p i -> b  where
 
       -- | Beschreibung der Aufgabe herstellen

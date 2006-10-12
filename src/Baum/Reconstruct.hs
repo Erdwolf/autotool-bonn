@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-incoherent-instances #-}
+
 module Baum.Reconstruct where
 
 --  $Id$

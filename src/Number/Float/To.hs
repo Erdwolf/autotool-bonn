@@ -29,7 +29,7 @@ import qualified Number.Float.From () -- only Rational Container
 
 -------------------------------------------------------------------------------
 
-data To_Float = To_Float deriving ( Show, Typeable )
+data To_Float = To_Float deriving ( Show, Read, Typeable )
 
 instance Partial To_Float (Config, Rational) Zahl where
 

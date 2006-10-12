@@ -26,7 +26,7 @@ import Autolib.Size
 import Autolib.Xml
 import Autolib.Reporter
 
-data LCS = LCS deriving ( Show, Typeable )
+data LCS = LCS deriving ( Show, Read, Typeable )
 
 instance 
      ( InstanceC a ) => Partial LCS ( Instance a ) [ a ] 

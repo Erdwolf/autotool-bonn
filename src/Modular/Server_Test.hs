@@ -10,6 +10,10 @@ import Modular.Documented
 import Modular.Signed
 import Modular.Task
 import Modular.Config
+import Modular.Seed
+import Modular.Instance
+import Modular.Solution
+import Modular.Pair
 
 type URL = String
 
@@ -25,6 +29,22 @@ get_config url = remote url "autotool.get_config"
 verify_config :: URL -> Task -> Config -> IO ( Signed Config )
 verify_config url = remote url "autotool.verify_config"
 
+get_instance :: URL 
+             -> Task
+	     -> Signed Config
+             -> Seed
+	     -> IO ( Pair ( Documented ( Signed Instance ) ) 
+                          ( Documented Solution )
+                   )
+get_instance url = remote url "autotool.get_instance"
+
+grade :: URL
+      -> Task
+      -> Signed Instance
+      -> Solution
+      -> IO ( Documented ( Pair Bool Double ) )
+grade url = remote url "autotool.grade"
+
 main :: IO ()
 main = do
     ts <- list_types server
@@ -38,4 +58,14 @@ main = do
     sconf <- verify_config server task conf
     print sconf
 
+    p <- get_instance server task sconf ( Seed 271828 )
+    print p
 
+    let sint = Modular.Documented.contents $ first p
+        sol  = Modular.Documented.contents $ second p
+    w <- grade server task sint sol
+    print w
+
+        
+
+    

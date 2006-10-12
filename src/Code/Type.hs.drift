@@ -29,7 +29,7 @@ import Data.Typeable
 -- | FIXME: das ist unzusammenhängend
 
 class  ( Typeable a, Typeable b, Typeable c
-       , ToDoc [a], ToDoc b
+       , ToDoc [a], ToDoc b, Reader b
        , Reader [a]
        , Ord a , Eq b, BitSize b 
        ) 

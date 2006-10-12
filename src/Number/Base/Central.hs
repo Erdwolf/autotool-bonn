@@ -23,7 +23,7 @@ import Number.Base.Param
 
 -------------------------------------------------------------------------------
 
-data Convert = Convert deriving ( Show, Typeable )
+data Convert = Convert deriving ( Show, Read, Typeable )
 
 instance Partial Convert (Zahl, Int) Zahl where
 
@@ -47,7 +47,7 @@ instance Partial Convert (Zahl, Int) Zahl where
 
     total Convert (z, b) x = do
          assert ( (wert z :: Integer) == (wert x :: Integer) )
-                $ text "Stimmen die Bedeutungen der Zahlen sollen überein?"
+                $ text "Stimmen die Bedeutungen der Zahlen überein?"
 
 
 

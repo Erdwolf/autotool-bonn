@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
 module Robots.Quiz where
 
@@ -25,3 +25,7 @@ rc = RC { width = 3
 	, at_least = 5
 	, search_width = 1000
 	}
+
+-- Local Variables:
+-- mode: haskell
+-- End:

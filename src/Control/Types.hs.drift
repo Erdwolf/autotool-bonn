@@ -1,9 +1,12 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+
 module Control.Types 
 
 ( HiLo (..)
 , Status (..)
 
 , Wert ( Reset, Pending, No, Okay )
+, size, is_okay
 -- 
 -- break abstraction because Inter.Action needs to see details.
 -- Eigentlich sollte die instance XmlRpcType Wert hier in Inter.Types stehen,
@@ -33,6 +36,7 @@ where
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Hash
 
 import System.Time
 import Control.SQL hiding ( equals )
@@ -181,14 +185,24 @@ data Wert = Reset
 	  | Pending
 	  | No 
 	  | Ok Integer
-          | Okay { punkte :: Integer, size :: Integer } 
+          | Okay { punkte :: Integer, size_ :: Integer } 
     deriving ( Eq, Ord, Typeable )
+
+size w = case w of 
+    Ok p -> p
+    Okay { } -> size_ w
+    _ -> 0
+
+is_okay w = case w of
+    Ok _ -> True
+    Okay {} -> True
+    _ -> False
 
 -- nice try, but constructors cannot be deprecated it seems
 -- {-# DEPRECATED Ok "Use 'Okay' resp. smart constructor 'ok' instead" #-}
 
 ok :: Integer -> Wert
-ok s = Okay { punkte = 1, size = s }
+ok s = Okay { punkte = 1, size_ = s }
 
 -- | replace OK constructor by Okay
 renovate :: Wert -> Wert
@@ -354,7 +368,8 @@ instance ToString ANr where
     toString (ANr i) = show i
 instance FromCGI ANr where
     fromCGI cs = ANr $ read cs
-
+instance Hash ANr where
+    hash (ANr x) = hash ( 25 :: Int , x)
 
 -- | Schul-Nummer
 
@@ -402,6 +417,8 @@ instance ToString VNr where
     toString (VNr x) = show x
 instance FromCGI VNr where
     fromCGI cs = VNr $ read cs
+instance Hash VNr where
+    hash ( VNr x ) = hash ( 17 :: Int , x )
 
 -- | OK-Bewertung (Anzahl)
 

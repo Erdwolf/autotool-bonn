@@ -16,7 +16,7 @@ import Inter.Quiz
 import System.Random
 import Data.Typeable
 
-data Euklid = Euklid deriving ( Show, Typeable )
+data Euklid = Euklid deriving ( Show, Read, Typeable )
 
 instance Partial Euklid ( Integer, Integer ) ( Integer, Integer ) where
     describe Euklid (a, b) = vcat

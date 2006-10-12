@@ -103,7 +103,7 @@ make = direct Convert_To_NFA
 instance Generator Convert_To_NFA ( Quiz Char ) 
            ( Convert, [ Property Char ] ) where
     generator p quiz key = do
-        ( exp, aut ) <- roll $ generate quiz
+        ( exp, aut ) <- roll $ NFA.Quiz.generate quiz
         return ( Convert { name = Nothing
 		   , input = Exp exp
 		   }

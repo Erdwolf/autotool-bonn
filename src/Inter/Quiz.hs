@@ -13,6 +13,7 @@ import Util.Cache
 import Autolib.Util.Seed
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Hash
 
 import Data.Maybe
 import Data.Char
@@ -35,8 +36,9 @@ make :: ( Generator p conf k, Project p k i , Partial p i b
      => p
      -> conf
      -> Var p i b
-make ( p :: p ) ( conf :: conf ) =  
-         Var { problem = p
+make ( p :: p ) ( conf :: conf ) = this 
+  where this = Var 
+             { problem = p
 	     , tag = dashed p ++ "-" ++ "Quiz"
 	     -- erzeugt cached version der instanz (o. ä.)
 	     -- key :: Matrikel -> IO Key
@@ -44,6 +46,10 @@ make ( p :: p ) ( conf :: conf ) =
 	     -- holt tatsächliche instanz
 	     -- gen :: Key -> IO ( Reporter i )
 	     , gen = \ vnr manr key -> do
+#define NEW_STYLE 1
+#if(NEW_STYLE)
+                   generate this $ fromIntegral $ hash ( vnr, manr, key )
+#else
                    seed $ read key
                    k <- cache 
 	               (  Datei { pfad = [ "autotool", "cache"
@@ -55,6 +61,17 @@ make ( p :: p ) ( conf :: conf ) =
   		          }
        	                ) ( generator p conf key )
 	           return $ return $ project p k
+#endif
+             , generate = \ salt -> do
+                   seed $ salt 
+                   k <- cache 
+	               (  Datei { pfad = [ "autotool", "new-cache" ]
+		          , name = show salt
+			  , extension = "cache" 
+  		          }
+       	                ) ( generator p conf $ show salt )
+	           return $ return $ project p k
+
 	     }
 
 quiz :: ( Generator p conf k , Project p k i,  Partial p i b 

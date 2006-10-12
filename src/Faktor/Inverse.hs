@@ -16,7 +16,7 @@ import Inter.Quiz
 import System.Random
 import Data.Typeable
 
-data Inverse = Inverse deriving ( Show, Typeable )
+data Inverse = Inverse deriving ( Show, Read, Typeable )
 
 instance Partial Inverse ( Integer, Integer ) ( Maybe Integer ) where
     describe Inverse (a, b) = vcat

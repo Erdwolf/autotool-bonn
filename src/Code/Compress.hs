@@ -22,7 +22,7 @@ import Data.IORef
 import Data.Maybe
 import Data.Ratio
 
-instance ( ToDoc c, Reader b, Coder c a b, BitSize b )
+instance ( ToDoc c, Reader c, Reader a, Coder c a b, BitSize b )
 	 => Partial ( Compress c ) [ a ] b where
 
     describe ( Compress c ) i = vcat    
@@ -54,12 +54,12 @@ instance ( ToDoc c, Reader b, Coder c a b, BitSize b )
         inform $ text "Ihre Nachricht hat die Größe" <+> toDoc you
         when ( fromIntegral you > bound ) $ reject $ text "Das ist zuviel."
 
-make_fixed :: ( ToDoc c, Reader b, Coder c Char b ) => c -> Make
+make_fixed :: ( ToDoc c,  Reader c, Reader b, Coder c Char b ) => c -> Make
 make_fixed c = direct ( Compress c ) "01001010010010100101001001010010"
 
 
 instance ( Reader a , Read a, Reader [a]
-	 , ToDoc c, Coder c a b, Size b ) 
+	 , ToDoc c, Reader c, Coder c a b, Size b ) 
      => Generator (Compress c) (Config a) [a] where
     generator (Compress c) conf key = do
         best_w <- newIORef []
@@ -84,7 +84,7 @@ instance Project (Compress c) [a] [a] where
     project _ = id
 
 
-make_quiz :: ( ToDoc c, Reader b, Coder c Char b ) => c -> Make
+make_quiz :: ( ToDoc c, Reader c, Reader b, Coder c Char b ) => c -> Make
 make_quiz c = quiz (Compress c) Code.Param.example
 
 

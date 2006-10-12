@@ -13,6 +13,7 @@ import Rewriting.Derive.Config
 
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Reader
 import Autolib.FiniteMap
 
 import Challenger.Partial
@@ -23,7 +24,7 @@ import Control.Monad
 import Data.Typeable
 
 data Derive = Derive 
-    deriving ( Eq, Ord, Show, Typeable )
+    deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance (  Symbol c )
     => Partial Derive ( Instance c c ) [ Step c c ] where
@@ -63,11 +64,11 @@ make_fixed = direct Derive Rewriting.Derive.Instance.example
 make_quiz :: Make
 make_quiz = quiz Derive Rewriting.Derive.Config.example
 
-instance (Symbol v, Symbol c)
+instance (Symbol v, Symbol c, Reader ( TRS v c ) )
     => Generator Derive ( Config v c ) ( Instance v c ) where
     generator Derive conf key = roll conf
 
-instance (Symbol v, Symbol c)
+instance (Symbol v, Symbol c, Reader ( TRS v c ) )
     => Project  Derive ( Instance v c ) ( Instance v c ) where
     project  Derive inst = inst
 

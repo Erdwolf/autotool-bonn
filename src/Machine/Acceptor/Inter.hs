@@ -35,8 +35,10 @@ acceptor auf ver num =
 	}
 -}
 
-instance ( Condition prop m , Reader m,  Machine m dat conf 
-	 , ToDoc [ dat ], ToDoc [prop]  , ToDoc prop
+instance ( Condition prop m , Reader m
+         ,  Machine m dat conf 
+	 , ToDoc [ dat ], Reader dat
+         , ToDoc [prop]  , ToDoc prop
 	 , Reader [ dat ], Reader [prop]  , Reader prop
 	 ) 
          => C.Partial ( A.Acceptor ) ( A.Type m dat prop ) m where

@@ -105,7 +105,7 @@ make = direct Convert_To_Exp
 instance Generator Convert_To_Exp ( Quiz Char ) 
            ( Convert, [ Property Char ] ) where
     generator p quiz key = do
-        aut <- roll $ generate quiz
+        aut <- roll $ Exp.Quiz.generate quiz
         return ( Convert { name = Nothing
 		   , input = NFA aut 
 		   }

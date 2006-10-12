@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
 module Graph.Cage.Config where
 
@@ -22,3 +22,7 @@ rc :: Config
 rc = Config { girth = 4
 	, chi = 4
 	}
+
+-- Local Variables:
+-- mode: haskell
+-- End:

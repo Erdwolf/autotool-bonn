@@ -11,7 +11,7 @@ import Autolib.FiniteMap
 import Data.Typeable
 
 
-data ( Symbol c, Symbol v ) => Instance v c = Instance
+data ( Symbol c, Symbol v, Reader ( TRS v c ) ) => Instance v c = Instance
         { system :: TRS v c
         , from   :: Term v c
         , to     :: Term v c

@@ -35,3 +35,5 @@ instance Informed ( Type m ) where
 instance ToDoc ( Type m ) where
      toDoc = info
 
+instance Reader ( Type m ) where
+

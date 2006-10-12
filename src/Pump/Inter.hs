@@ -75,7 +75,7 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 
 ---------------------------------------------------------------------- 
  
-instance ToDoc z => Generator PUMP ( Pump.Quiz.Conf z ) ( Conf z ) where
+instance Pumping z => Generator PUMP ( Pump.Quiz.Conf z ) ( Conf z ) where
     generator p c key = do
         let l = Pump.Quiz.lang c
       	wss <- sequence $ do

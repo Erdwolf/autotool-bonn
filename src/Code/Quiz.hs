@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances -fallow-incoherent-instances #-}
 
 module Code.Quiz where
 
@@ -41,7 +41,7 @@ instance ( Reader a , Read a, Reader [a], Reader b, ToDoc c, Coder c a b )
 instance Project (Encode c) [a] [a] where
     project _ = id
 
-enc :: ( ToDoc c, Reader b, Coder c Char b ) => c -> Make
+enc :: ( ToDoc c, Reader c, Reader b, Coder c Char b ) => c -> Make
 enc c = quiz (Encode c) Code.Param.example
 
 
@@ -64,7 +64,7 @@ instance ( Read a, Reader a, Reader [a], ToDoc a
 instance Project (Decode c) b b where
     project _ = id
 
-dec :: ( ToDoc c, Read b, Coder c Char b ) 
+dec :: ( ToDoc c, Reader c, Read b, Coder c Char b ) 
       => c -> Make
 dec c = quiz (Decode c) Code.Param.example
 
