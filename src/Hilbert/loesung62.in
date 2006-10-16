@@ -1,0 +1,58 @@
+Fx := sub H13 [ A := x & y, B := x ]
+Px := sub H4  [ A := x, B := y ]
+FPx := mopo Px Fx
+
+Fy := sub H13 [ A := x & y, B := y ]
+Py := sub H5  [ A := x, B := y ]
+FPy := mopo Py Fy
+
+G0 := sub H9 [ C := not (x & y), A := not x, B := not y ]
+
+G1 := mopo FPx G0
+G2 := mopo FPy G1	-- =  not x | not y -> not (x & y)
+
+
+Kx := sub H7 [ A := not x, B := not y ]
+Kx1 := sub H13 [ A := not x, B := not x | not y ]
+Kx2 := mopo Kx Kx1 --  =  not (not x | not y) -> not (not x)
+
+Kx3 := sub H15 [ A := x ]
+Kx4 := sub H3 [ A := not (not x | not y), B := not (not x), C := x ]
+Kx5 := mopo Kx2 Kx4
+Kx6 := mopo Kx3 Kx5 -- =  not y -> not x | not y
+
+
+Ky := sub H8 [ A := not x, B := not y ]
+Ky1 := sub H13 [ A := not y, B := not x | not y ]
+Ky2 := mopo Ky Ky1 --  =  not (not x | not y) -> not (not y)
+
+Ky3 := sub H15 [ A := y ]
+Ky4 := sub H3 [ A := not (not x | not y), B := not (not y), C := y ]
+Ky5 := mopo Ky2 Ky4
+Ky6 := mopo Ky3 Ky5 -- =  not (not x | not y) -> y
+
+L0 := sub H6 [ A := not (not x | not y), B := x, C :=  y ]
+L1 := mopo Kx6 L0
+L2 := mopo Ky6 L1  --  =  not (not x | not y) -> x & y
+
+P0 := sub H13 [ A := not (not x | not y), B :=  x & y ]
+P1 := mopo L2 P0 -- =  not (x & y) -> not (not (not x | not y))
+
+P2 := sub H3 [ A :=   not (x & y), B :=  not (not (not x | not y)), C := not x | not y ]
+P3 := sub H15 [ A := not x | not y ]
+P4 := mopo P1 P2
+P5 := mopo P3 P4 --  =  not (x & y) -> not x | not y
+
+Y0 := sub H12 [ A := not (x & y), B :=  not x | not y ]
+Y1 := mopo P5 Y0
+
+deMorgan := mopo G2 Y1
+
+
+
+
+
+
+
+
+

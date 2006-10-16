@@ -1,0 +1,4 @@
+Fx := sub H13 [ A := x & y, B := x ]
+
+
+Fy := sub H13 [ A := x & y, B := y ]

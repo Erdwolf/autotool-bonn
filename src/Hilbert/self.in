@@ -1,0 +1,5 @@
+F1 := sub H14 [ A := x ]
+F2 := sub H15 [ A := x ]
+F3 := sub H3  [ A := x, B := not (not x), C := x ]
+F4 := mopo F1 F3
+claim := mopo F2 F4
