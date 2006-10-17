@@ -14,7 +14,7 @@ import Expression.Op
 axioms :: Env ( Exp Bool )
 axioms = Hilbert.Env.make
      [ read "(H1, A -> (B -> A))" 
-     , read "(H2, (A -> B) -> A) -> A)"
+     , read "(H2, ((A -> B) -> A) -> A)"
      , read "(H3, (A -> B) -> ((B -> C) -> (A -> C)))"
 
      , read "(H4, A && B -> A )"

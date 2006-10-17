@@ -29,8 +29,11 @@ data Derivation =
     deriving Typeable
 
 example :: Derivation
-example = read 
-	$ "let { F = Sub H13 { A = x && y , B = x } } in Mopo F F"
+example = read $ unlines
+        [ "let { Fx = sub H13 { A = x && y, B = x } "
+	, "    , Px = sub H4  { A = x, B = y } "
+	, "} in mopo Px Fx"
+	]
 
 instance Size Derivation where 
     size = size . env
@@ -49,11 +52,12 @@ instance Reader Derivation where
 	return $ Derivation { env = e, act = r }
 
 derive axioms d = do
-    e <- foldM ( \ e ( name, action ) -> do
-	           v <- value e action
+    e <- foldM ( \ e ( k, ( name, action ) ) -> do
+		   inform $ text "Schritt" <+> toDoc k
+	           v <- nested 4 $ informed_value e action
 	           extend e ( name, v )
-	       ) axioms ( contents $ env d )
-    v <- value e $ act d
+	       ) axioms ( zip [1 :: Int ..] $ contents $ env d )
+    v <- informed_value e $ act d
     return v
 
 	       

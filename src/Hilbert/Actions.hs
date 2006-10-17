@@ -1,3 +1,4 @@
+{-# LINE 1 "Hilbert/Actions.hs.drift" #-}
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
 
 module Hilbert.Actions
@@ -17,8 +18,6 @@ import Autolib.Reader
 import Autolib.TES.Identifier
 import Autolib.TES
 
--- import Hilbert.Axioms
-
 import Autolib.FiniteMap
 
 import Hilbert.Env
@@ -26,14 +25,24 @@ import Hilbert.Env
 data Action = Sub Identifier ( Env ( Exp Bool ) )
 	    | Mopo Identifier Identifier
 
-{-! for Action derive: Reader, ToDoc !-}
+instance ToDoc Action where
+    toDoc ( Sub id env ) = 
+        hsep [ text "sub", toDoc id, toDoc env ]
+    toDoc ( Mopo left right ) =
+        hsep [ text "mopo", toDoc left, toDoc right ]
+
+instance Reader Action where
+    reader = 
+          do my_reserved "sub" ; i <- reader ; e <- reader ; return $ Sub i e
+      <|> do my_reserved "mopo" ; l <- reader ; r <- reader ; return $ Mopo l r
+
 
 ----------------------------------------------------------------
 
 informed_value env act = do
-   inform $ text "evaluate" <+> toDoc act
+   inform $ toDoc act
    val <- value env act
-   inform $ nest 4 $ text "result" <+> toDoc val
+   inform $ nest 4 $ text "resultat" <+> toDoc val
    return val
 
 value env act @ ( Sub orig sub ) = do
@@ -46,8 +55,8 @@ value env act @ ( Mopo left right ) = do
    r <- look env right
    let whine tag = reject $ vcat 
 	     [ text tag
-	     , toDoc left <+> equals <+> toDoc l
-	     , toDoc right <+> equals <+> toDoc r
+	     , text "links" <+> toDoc left <+> equals <+> toDoc l
+	     , text "rechts" <+> toDoc right <+> equals <+> toDoc r
 	     ]
    case r of
        Node fun [ pre, post ] | show fun == "->" -> 
@@ -94,3 +103,4 @@ pacts (x : xs) env =
 -- mode: haskell
 -- end
 
+--  Imported from other files :-

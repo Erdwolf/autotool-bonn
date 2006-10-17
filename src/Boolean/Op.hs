@@ -38,11 +38,15 @@ functions = do
 		}
 
 unary :: [ Op Bool ]
-unary = do
-    return $ Op { name = "!" , arity = 1
+unary = [     Op { name = "!" , arity = 1
 		, precedence = Just 10 , assoc = AssocNone
 		, inter = \ [x] -> not x
 		}
+        ,    Op { name = "not" , arity = 1
+		, precedence = Just 10 , assoc = AssocNone
+		, inter = \ [x] -> not x
+		}
+	]
 
 binary :: [ Op Bool ]
 binary = [ Op { name = "&&" , arity = 2
