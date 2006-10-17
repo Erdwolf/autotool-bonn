@@ -1,63 +1,71 @@
-module Env 
+module Hilbert.Env 
 
-( Env (..)
+( Env -- abstract
+, empty, contents, make
 , look
-, apply
+, extend
 , mkfm
-
-, isvar, varname
-
-, islower, isupper
 )
 
 where
 
-import Ids
-import Syntax
-import FiniteMap
 
-import Ops
+import Autolib.ToDoc hiding ( empty )
+import Autolib.Reader
+import Autolib.FiniteMap
+import Autolib.Reporter
+import Autolib.TES.Identifier
+import Autolib.TES
+import Autolib.Size
 
-type Env = FiniteMap Id Exp
+data Env a = 
+     Env { contents :: [ ( Identifier, a ) ] }
 
+make pairs = Env pairs
+empty = make []
 
-----------------------------------------------------------------
+instance Size ( Env a ) where
+    size = length . contents
 
+instance ToDoc a => ToDoc ( Env a ) where
+    toDoc ( Env e ) = dutch_record $ do
+        ( id, val ) <- e
+	return $ hsep [ toDoc id, text "=", toDoc val ]
 
-isvar :: Exp -> Bool
-isvar (App id []) = isupper $ head (idname id) 
-isvar _ = False
-
-isupper c = 'A' <= c && c <= 'Z'
-islower c = 'a' <= c && c <= 'z'
-
-varname :: Exp -> Id
-varname (App id []) = id
-varname x = error $ "varname: " ++ show x
+instance Reader a => Reader ( Env a ) where
+    reader = fmap Env
+	   $ my_braces 
+	   $ ( `Autolib.Reader.sepBy` my_comma )
+	   $ do
+        id <- reader
+	my_reserved "="
+	val <- reader
+	return ( id, val )
 
 --------------------------------------------------------------------
 
-look :: Env -> Exp -> Exp
--- must be there
-look env (App id [])  =
-    case lookupFM env id of
-	 Just x -> x
-	 Nothing -> error $ "identifier " ++ show id 
-			  ++ " not in environment " ++ show env
+-- | must be there
+look :: ToDoc a => Env a -> Identifier -> Reporter a
+look ( Env env ) this =
+    case lookupFM ( listToFM env ) this of
+	 Just x -> return x
+	 Nothing -> reject $ vcat
+		 [ text "identifier" <+> toDoc this 
+		 , text "not in environment" <+> toDoc ( Env env )
+		 ]
 
-mkfm :: Exp -> Env
-mkfm (Coll _ xs) = addListToFM_C (error "mkfm: clash") emptyFM 
-		 [ mkpair x | x <- xs ]
-mkfm foo = error $ "mkfm: " ++ show foo
+extend :: ToDoc a =>
+       Env a -> ( Identifier, a ) -> Reporter ( Env a )
+extend ( Env env ) ( this, val ) = do
+    case lookupFM ( listToFM env ) this of
+        Just x -> reject $ vcat
+	       [ text "identifier" <+> toDoc this
+	       , text "already in environment" <+> toDoc ( Env env )
+	       ]
+	Nothing -> return $ Env $ env ++ [ ( this, val ) ]
 
-mkpair (App fun [App id [], val]) | fun == assign = (id, val)
-mkpair foo = error $ "mkpair: " ++ show foo
-
-apply :: Env -> Exp -> Exp
-apply env x @ (App id args) =
-    if null args
-    then case lookupFM env id of
-	      Just y -> y
-	      Nothing -> x
-    else App id [ apply env arg | arg <- args ]
-
+mkfm :: ToDoc a => 
+     Env a -> Reporter ( FiniteMap Identifier a )
+mkfm ( Env env ) = do
+    Env checked <- foldM extend ( Env [] ) env
+    return $ listToFM checked

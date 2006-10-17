@@ -1,40 +1,37 @@
-module Axioms
+module Hilbert.Axioms
 
 ( axioms
 )
 
 where
 
-import Syntax
-import Read
+import Hilbert.Syntax
+import Hilbert.Env
 
-axioms :: [ Exp ]
-axioms = parsed . unlines $ source
+import Boolean.Op
+import Expression.Op
 
-source :: [ String ]
-source =
-     [ "A -> (B -> A) "                             
-     , "((A -> B) -> A) -> A "                       
-     , "(A -> B) -> ((B -> C) -> (A -> C)) "        
+axioms :: Env ( Exp Bool )
+axioms = Hilbert.Env.make
+     [ read "(H1, A -> (B -> A))" 
+     , read "(H2, (A -> B) -> A) -> A)"
+     , read "(H3, (A -> B) -> ((B -> C) -> (A -> C)))"
 
-{-
-     , "A & B -> A "                                
-     , "A & B -> B "                                
-     , "(A -> B) -> ((A -> C) -> (A -> B & C)) "    
-     , "A -> A | B "                                
-     , "B -> A | B "                                
-     , "(A -> C) -> ((B -> C) -> (A | B -> C)) "    
-     , "(A <-> B) -> (A -> B) "                     
-     , "(A <-> B) -> (B -> A) "                     
-     , "(A -> B) -> ((B -> A) -> (A <-> B)) "       
--}
+     , read "(H4, A && B -> A )"
+     , read "(H5, A && B -> B )"
+     , read "(H6, (A -> B) -> ((A -> C) -> (A -> B && C)) )"
 
+     , read "(H7, A -> A || B )"
+     , read "(H8, B -> A || B )"
+     , read "(H9, (A -> C) -> ((B -> C) -> (A || B -> C)) )"
 
-     , "(A -> B) -> (not B -> not A) "              
-     , "A -> not (not A) "                          
-     , "not (not A) -> A "                          
+     , read "(H10, (A <-> B) -> (A -> B) )" 
+     , read "(H11, (A <-> B) -> (B -> A) )"
+     , read "(H12, (A -> B) -> ((B -> A) -> (A <-> B)) )"
 
-
+     , read "(H13, (A -> B) -> (not B -> not A) )"
+     , read "(H14, A -> not (not A) )"
+     , read "(H15, not (not A) -> A )"
      ]                                                
 
 

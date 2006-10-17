@@ -108,6 +108,7 @@ import qualified Rewriting.Derive
 import qualified Rewriting.Numerical
 
 import qualified PL.Find_Model
+import qualified Hilbert.Central
 
 makers :: [ Make ]
 makers = do Right make <- flatten tmakers ; return make
@@ -156,6 +157,7 @@ tmakers =
 		    , item Boolean.Quiz.make
 		    , item SAT.SAT.make_fixed
 		    , item SAT.SAT.make_quiz
+		    , item Hilbert.Central.make_fixed
 		    ]
 		, heading "Prädikatenlogik"
 		    [ item PL.Find_Model.make_fixed

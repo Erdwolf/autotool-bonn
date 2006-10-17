@@ -5,7 +5,7 @@ module Control.Types
 ( HiLo (..)
 , Status (..)
 
-, Wert ( Reset, Pending, No, Okay )
+, Wert ( Reset, Pending, No, Okay)
 , size, is_okay
 -- 
 -- break abstraction because Inter.Action needs to see details.

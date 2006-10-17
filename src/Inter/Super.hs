@@ -631,7 +631,7 @@ show_previous edit vnr mks stud auf sa0 = do
 			, ("No", Just No) 
                         ] ++ do
                            p <- [ 1 .. 10 ]
-                           let w = Okay { Control.Types.punkte = p, size = 1 }
+                           let w = Control.Types.ok p
 			   return (show w, Just $ w)
 			
                close -- table
@@ -930,7 +930,7 @@ radio_score sauf stud = do
 	    : ( "No"  , [ ( No, sauf, stud ) ] )
 	    : do p <- [ 1 .. 5 ] 
 		 return ( show p
-			, [ ( Okay { Control.Types.punkte = p, size = 1 } 
+			, [ ( Control.Types.ok p
 			    , sauf, stud
 			    )
 			  ] 

@@ -20,6 +20,7 @@ import Data.Word
 import Data.Typeable
 import Autolib.Xml
 import Autolib.ToDoc hiding ( empty )
+import Autolib.Reader
 
 data Crypt = Crypt { unCrypt :: String }    
     deriving ( Eq, Ord, Typeable )
@@ -33,6 +34,11 @@ empty = Crypt ""
 -- brauchen kein quote Quots?
 instance ToDoc Crypt where toDoc = text . unCrypt
 instance Read Crypt where readsPrec p cs = [(Crypt cs, [])]
+
+instance Reader Crypt where 
+    reader = do
+        cs <- many letter
+	return $ Crypt cs
 
 instance Container Crypt String where
     label _ = "Crypt"

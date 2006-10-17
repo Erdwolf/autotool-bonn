@@ -35,7 +35,7 @@ tags :
 # note: HADDOCK will be set by configure in config.mk
 #######################################################################
 
-GHC_VERSION = 6.4
+GHC_VERSION = 6.4.2.20060121
 
 GHC_LIBS = base haskell98 parsec unix network readline
 GHC_LINK = http://www.haskell.org/ghc/docs/$(GHC_VERSION)/html/libraries
@@ -54,8 +54,9 @@ HADDOCK_OPTS = -v \
 --source=http://141.57.11.163/cgi-bin/cvsweb/tool/src \
 $(foreach lib,$(GHC_LIBS), \
 --read-interface=$(GHC_LINK)/$(lib),$(GHC_DESC)/$(lib)/$(lib).haddock) \
---read-interface=$(HAXML_LINK)/HaXml,$(HAXML_DESC)/HaXml.haddock \
 --read-interface=$(AUTOLIB_LINK),$(AUTOLIB_DESC)/Autolib.haddock 
+
+# --read-interface=$(HAXML_LINK)/HaXml,$(HAXML_DESC)/HaXml.haddock 
 
 GHC_DEFINES = $(shell ./ghc-defs.sh)
 

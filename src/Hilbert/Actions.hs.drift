@@ -1,0 +1,96 @@
+{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
+
+module Hilbert.Actions
+
+( Action 
+, value, informed_value
+)
+
+where
+
+import Boolean.Op
+import Expression.Op
+
+import Autolib.Reporter
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.TES.Identifier
+import Autolib.TES
+
+-- import Hilbert.Axioms
+
+import Autolib.FiniteMap
+
+import Hilbert.Env
+
+data Action = Sub Identifier ( Env ( Exp Bool ) )
+	    | Mopo Identifier Identifier
+
+{-! for Action derive: Reader, ToDoc !-}
+
+----------------------------------------------------------------
+
+informed_value env act = do
+   inform $ text "evaluate" <+> toDoc act
+   val <- value env act
+   inform $ nest 4 $ text "result" <+> toDoc val
+   return val
+
+value env act @ ( Sub orig sub ) = do
+   val <- look env orig
+   fm <- mkfm sub
+   return $ apply fm val
+
+value env act @ ( Mopo left right ) = do
+   l <- look env left
+   r <- look env right
+   let whine tag = reject $ vcat 
+	     [ text tag
+	     , toDoc left <+> equals <+> toDoc l
+	     , toDoc right <+> equals <+> toDoc r
+	     ]
+   case r of
+       Node fun [ pre, post ] | show fun == "->" -> 
+           if l == pre 
+	   then return post
+	   else whine "links passt nicht" 
+       _ -> whine "rechts steht keine Implikation"
+
+{-
+
+----------------------------------------------------------------
+
+update :: Env -> Id -> Exp -> Env
+update env id exp =
+    case lookupFM env id of
+	 Just x -> error $ show id ++ " already bound to " ++ show x
+	 Nothing -> addListToFM env [(id, exp)]
+
+act :: Exp -> Env -> IO Env
+act inp @ (App fun [ App id [], right ]) env | fun == assign =
+    do
+	putStrLn $ show inp
+	let val = value env right
+	putStrLn $ "  =  "  ++ show val
+	let env' = update env id val
+	return env'
+
+act x env = error $ "act: " ++ show x
+
+
+acts :: [ String ] -> IO Env
+acts xs = pacts (parsed $ unlines xs) env0
+
+pacts [] env = return env
+pacts (x : xs) env = 
+    do 
+       env' <- act x env
+       pacts xs env'
+
+
+-}
+
+-- local variables:
+-- mode: haskell
+-- end
+

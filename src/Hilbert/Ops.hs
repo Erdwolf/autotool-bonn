@@ -1,4 +1,4 @@
-module Ops
+module Hilbert.Ops
 
 ( implies, equiv
 , und, oder

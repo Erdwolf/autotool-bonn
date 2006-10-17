@@ -1,4 +1,4 @@
-module Tree
+module Hilbert.Tree
 
 ( Tree (..)
 , layers
