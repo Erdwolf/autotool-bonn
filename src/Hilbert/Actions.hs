@@ -48,7 +48,7 @@ informed_value env act = do
 value env act @ ( Sub orig sub ) = do
    val <- look env orig
    fm <- mkfm sub
-   return $ apply fm val
+   rapply fm val
 
 value env act @ ( Mopo left right ) = do
    l <- look env left
@@ -65,42 +65,16 @@ value env act @ ( Mopo left right ) = do
 	   else whine "links passt nicht" 
        _ -> whine "rechts steht keine Implikation"
 
-{-
 
-----------------------------------------------------------------
-
-update :: Env -> Id -> Exp -> Env
-update env id exp =
-    case lookupFM env id of
-	 Just x -> error $ show id ++ " already bound to " ++ show x
-	 Nothing -> addListToFM env [(id, exp)]
-
-act :: Exp -> Env -> IO Env
-act inp @ (App fun [ App id [], right ]) env | fun == assign =
-    do
-	putStrLn $ show inp
-	let val = value env right
-	putStrLn $ "  =  "  ++ show val
-	let env' = update env id val
-	return env'
-
-act x env = error $ "act: " ++ show x
-
-
-acts :: [ String ] -> IO Env
-acts xs = pacts (parsed $ unlines xs) env0
-
-pacts [] env = return env
-pacts (x : xs) env = 
-    do 
-       env' <- act x env
-       pacts xs env'
-
-
--}
-
--- local variables:
--- mode: haskell
--- end
-
---  Imported from other files :-
+rapply :: ( ToDoc v, Ord v )
+       => FiniteMap v ( Term w c ) -> Term v c 
+       -> Reporter ( Term w c )
+rapply fm ( Var t ) = 
+    case lookupFM fm t of
+        Nothing -> reject $ hsep
+	    [ text "variable" , toDoc t , text "nicht gebunden"
+	    ]
+	Just v -> return v
+rapply fm ( Node f args ) = do
+    xs <- mapM ( rapply fm ) args
+    return $ Node f xs
