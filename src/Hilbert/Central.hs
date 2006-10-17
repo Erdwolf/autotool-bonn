@@ -20,12 +20,30 @@ data Hilbert = Hilbert deriving ( Show, Read, Typeable )
 
 instance Partial Hilbert Param Derivation where
 
-    describe _ p = vcat
+    describe _ param = vcat
         [ text "Gesucht ist eine Ableitung für die Formel"
-	, nest 4 $ toDoc $ target p
+	, nest 4 $ toDoc $ target param
 	, text "im Hilbert-Kalkül mit den Axiomen"
-	, nest 4 $ toDoc $ axioms p
+	, nest 4 $ toDoc $ axioms param
 	]
+
+    initial Hilbert param = 
+        -- FIXME, sollte von Parametern abhängen
+        Hilbert.Derivation.example 
+        
+    partial Hilbert param d =
+        return ()
+
+    total Hilbert param d = do
+        v <- derive ( axioms param ) d
+	inform $ vcat
+	       [ text "Ihre Ableitung ergibt"
+	       , nest 4 $ toDoc v 
+	       ]
+	when ( v /= target param ) $ reject $ vcat
+	     [ text "aber gefordert war"
+	     , nest 4 $ toDoc $ target param
+	     ] 
 
 
 make_fixed :: Make

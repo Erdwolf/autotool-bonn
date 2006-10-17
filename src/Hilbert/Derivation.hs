@@ -4,6 +4,7 @@ module Hilbert.Derivation
 
 ( Derivation
 , derive
+, example
 )
 
 where
@@ -27,6 +28,10 @@ data Derivation =
 		}
     deriving Typeable
 
+example :: Derivation
+example = read 
+	$ "let { F = Sub H13 { A = x && y , B = x } } in Mopo F F"
+
 instance Size Derivation where 
     size = size . env
 
@@ -43,11 +48,11 @@ instance Reader Derivation where
 	r <- reader
 	return $ Derivation { env = e, act = r }
 
-derive d = do
+derive axioms d = do
     e <- foldM ( \ e ( name, action ) -> do
 	           v <- value e action
 	           extend e ( name, v )
-	       ) ( Hilbert.Env.empty ) ( contents $ env d )
+	       ) axioms ( contents $ env d )
     v <- value e $ act d
     return v
 
