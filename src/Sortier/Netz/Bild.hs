@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Sortier.Netz.Bild where
 
 --   $Id$
@@ -7,8 +9,8 @@ import Sortier.Netz.Example
 import Autolib.Util.Bild
 import Data.Array
 
+-- | bestimmt (greedy) die schicht in der zeichnung
 levelled :: Netz -> [ ( Comp, Int, Int ) ]
--- bestimmt (greedy) die schicht in der zeichnung
 levelled n = helped ( array ( low n, high n ) $ do
 		          i <- [ low n .. high n ]
 		          return ( i, 0 )
@@ -16,10 +18,10 @@ levelled n = helped ( array ( low n, high n ) $ do
 		    ( comps n )
 		    0
 
+-- | in  a ! x  steht die schicht des vorigen komparators auf linie x
+-- ausgabe: (comp, alte nummer, level)
 helped :: Array Int Int -> [ Comp ] -> Int 
        -> [ ( Comp, Int, Int ) ]
--- in  a ! x  steht die schicht des vorigen komparators auf linie x
--- ausgabe: (comp, alte nummer, level)
 helped a [] n = []
 helped a ( (x,y) : rest ) n =
     let this = succ $ maximum $ do
@@ -36,7 +38,7 @@ instance ToBild ( Netz, States ) where toBild ( n, sts ) = paint (n, sts )
 
 paint :: ( Netz , States ) -> Bild
 paint ( n, sts ) = 
-    let xscale = 4 ; yscale = 2
+    let xscale = 6 ; yscale = 2
         (u, o) = (yscale * low n, yscale * high n)
         cnts = levelled n
 

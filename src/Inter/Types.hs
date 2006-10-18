@@ -10,6 +10,7 @@ import Gateway.Help
 -- import Challenger.Problem
 import Challenger.Partial
 
+-- sollte man nicht importieren, enthält aber VNr und MNr
 import Control.Types 
 
 import  Autolib.ToDoc

@@ -12,6 +12,7 @@ import qualified PCProblem.Quiz
 import qualified Boolean.Instance
 import qualified Boolean.Quiz
 import qualified Sortier.Netz.Check 
+import qualified Sortier.Merge.Check 
 
 import qualified JVM.Make
 import qualified Turing.Make
@@ -167,6 +168,7 @@ tmakers =
                 [ item PCProblem.Quiz.make_quiz 
 	        , item PCProblem.Quiz.make_fixed
                 , item Sortier.Netz.Check.make
+                , item Sortier.Merge.Check.make
 	        , item Robots.Interface.make
 	        , item Robots.Interface.qmake
 	        , item Hanoi.Semantik.make

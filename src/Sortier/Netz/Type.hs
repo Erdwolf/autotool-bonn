@@ -1,4 +1,14 @@
-module Sortier.Netz.Type where
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+
+module Sortier.Netz.Type 
+
+( Netz
+, mkNetz, comps, low, high
+, State, States
+, Comp, Comps
+)
+
+where
 
 --   $Id$
 

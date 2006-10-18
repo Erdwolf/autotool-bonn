@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
+
 module Sortier.Netz.Check where
 
 --   $Id$
@@ -36,22 +38,24 @@ check soll n = do
     inform $ text "Das Netz hat alle möglichen Eingaben korrekt geordnet."
     return ()
 
-testing :: Int -> [State]
+-- | es gilt ja der satz: 
+-- alle 0-1-folgen sortiert <=> überhaupt alle folgen sortiert.
+-- also generiere ich 0-1-folgen (weil das weniger sind)
+-- aber um die studenten nicht unnötig aufzuregen,
+-- rechne ich es in folgen aus lauter verschiedenen elementen um
+testing :: Int -> [ State ]
 testing soll = do
     w <- Autolib.Util.Wort.alle [ 0, 1 ] soll
-    -- es gilt ja der satz: 
-    -- alle 0-1-folgen sortiert <=> überhaupt alle folgen sortiert.
-    -- also generiere ich 0-1-folgen (weil das weniger sind)
-    -- aber um die studenten nicht unnötig aufzuregen,
-    -- rechne ich es in folgen aus lauter verschiedenen elementen um
     return $ umrech w    
 
+-- | 0-1-Folge zu Zahlenfolge
+-- mit gleicher Steigung, aber lauter verschiedenen Zahlen
+-- dabei alle 0 aufsteigend, dann alle 1 aufsteigend
 umrech :: [ Int ] -> [ Int ]
--- das ist eine schöne übungsaufgabe
-umrech w = um w 1 (length w) where
+umrech w = um w 1 (1 + length w - sum w ) where
     um [] _ _ = []
     um (0 : xs) low high = low  : um xs (succ low) high
-    um (1 : xs) low high = high : um xs low (pred high)
+    um (1 : xs) low high = high : um xs low (succ high)
 
 is_increasing :: Ord a => [a] -> Bool
 is_increasing xs = and $ do
