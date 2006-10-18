@@ -13,6 +13,7 @@ import qualified Boolean.Instance
 import qualified Boolean.Quiz
 import qualified Sortier.Netz.Check 
 import qualified Sortier.Merge.Check 
+import qualified Sortier.Median.Check 
 
 import qualified JVM.Make
 import qualified Turing.Make
@@ -167,8 +168,6 @@ tmakers =
          , heading "Kombinatorik"
                 [ item PCProblem.Quiz.make_quiz 
 	        , item PCProblem.Quiz.make_fixed
-                , item Sortier.Netz.Check.make
-                , item Sortier.Merge.Check.make
 	        , item Robots.Interface.make
 	        , item Robots.Interface.qmake
 	        , item Hanoi.Semantik.make
@@ -216,6 +215,19 @@ tmakers =
                 [ item Type.Check.make
 	        , item Type.Quiz.make
                 ]
+         , heading "Algorithmen"
+                [ heading "Sortiernetze"
+		  [ item Sortier.Netz.Check.make
+		  , item Sortier.Merge.Check.make
+		  , item Sortier.Median.Check.make
+		  ] 
+                ]
+         , heading "Datenstrukturen"
+                [ item Baum.Reconstruct.make_fixed
+                , item Baum.Reconstruct.make_quiz
+                , item Baum.Binary.make_quiz
+                , item Baum.ZweiDrei.make_quiz
+                ]
          , heading "Zahlensysteme"
                 [ item Number.Base.Central.make_fixed
                 , item Number.Base.Central.make_quiz
@@ -223,12 +235,6 @@ tmakers =
                 , item Number.Float.From.make_quiz
                 , item Number.Float.To.make_fixed
                 , item Number.Float.To.make_quiz
-                ]
-         , heading "Datenstrukturen"
-                [ item Baum.Reconstruct.make_fixed
-                , item Baum.Reconstruct.make_quiz
-                , item Baum.Binary.make_quiz
-                , item Baum.ZweiDrei.make_quiz
                 ]
          , heading "Zahlentheorie"
                 [ item Collatz.Plain.make

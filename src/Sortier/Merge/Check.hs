@@ -28,6 +28,13 @@ import Autolib.Size
 
 data Merge_Netz = Merge_Netz deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance C.Verify Merge_Netz Param where
+
+    verify p i = sequence_ $ do
+	b <- breiten i
+	return $ assert ( b > 0)
+	       $ text "jede Breite soll eine positive Zahl sein"
+
 instance C.Partial Merge_Netz Param Netz where
 
     describe p i = vcat 

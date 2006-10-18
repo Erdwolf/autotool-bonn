@@ -64,6 +64,12 @@ is_increasing xs = and $ do
 
 data Sortier = Sortier deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance C.Verify Sortier Int where
+
+    verify p i = 
+	assert ( i > 0)
+	       $ text "die Breite soll eine positive Zahl sein"
+
 instance C.Partial Sortier Int Netz where
 
     describe p i = vcat 
