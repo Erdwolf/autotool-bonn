@@ -1,5 +1,3 @@
-# $Id$
-
 include ../config.mk
 include Makefile-defs
 
@@ -48,10 +46,12 @@ AUTOLIB_LINK = http://141.57.11.163/auto/lib/haddock
 AUTOLIB_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries/Autolib
 
 HADDOCK_OUTPUT = $(WWW)/auto/tool/haddock
+
 HADDOCK_OPTS = -v \
 --html \
 --title=auto/tool \
---source=http://141.57.11.163/cgi-bin/cvsweb/tool/src \
+--source-base=http://141.57.11.163/cgi-bin/cvsweb/tool/src \
+--source-module=http://141.57.11.163/cgi-bin/cvsweb/tool/src/%F \
 $(foreach lib,$(GHC_LIBS), \
 --read-interface=$(GHC_LINK)/$(lib),$(GHC_DESC)/$(lib)/$(lib).haddock) \
 --read-interface=$(AUTOLIB_LINK),$(AUTOLIB_DESC)/Autolib.haddock 
@@ -61,14 +61,16 @@ $(foreach lib,$(GHC_LIBS), \
 GHC_DEFINES = $(shell ./ghc-defs.sh)
 
 haddock :
-	mkdirhier $(HADDOCK_OUTPUT)
+	mkdirhier doc
 	for file in `find . -name "*.hi" -print | sed -e 's/hi$$/hs/'`; \
-		do cpp -P -traditional $(GHC_DEFINES) $(HDDEFS) $$file \
-			| grep -v "Id: " >$$file.uncpp; \
-		done
-	( find . -name "*.uncpp" -print ) \
+		do  \
+			mkdir -p $$(dirname doc/$$file) ; \
+			cpp -P -traditional $(GHC_DEFINES) $(HDDEFS) $$file \
+			| grep -v "Id: " > doc/$$file; \
+		done 
+	mkdirhier $(HADDOCK_OUTPUT) 
+	cd doc ; ( find . -name "*.hs" -print ) \
 	| xargs $(HADDOCK) $(HADDOCK_OPTS) -o $(HADDOCK_OUTPUT)
-	-rm `find . -name "*.uncpp" -print`
 
 .PHONY : haddock
 
