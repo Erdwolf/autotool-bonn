@@ -1,4 +1,4 @@
--- © 2001 Peter Thiemann
+-- Â© 2001 Peter Thiemann
 module Wash.HTMLBase 
   (ATTR_(), attr_, attr_name, attr_value
   ,ELEMENT_(), element_, empty_, cdata_, comment_, doctype_

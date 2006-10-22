@@ -52,7 +52,7 @@ instance C.Partial Cage Config ( Graph Int ) where
         let cols =  colourings (chi conf - 1) g
 	when ( not $ null cols ) $ reject $ vcat
 	     [ text "Die chromatische Zahl ist <" <+> (toDoc $ chi conf) <+> text ","
-	     , text "denn es gibt (unter anderem) diese Färbungen:"
+	     , text "denn es gibt (unter anderem) diese FÃ¤rbungen:"
 	     , nest 4 $ toDoc $ take 5 cols
 	     ]
 	inform $ text "OK."
@@ -76,8 +76,8 @@ colourings c g = list_colourings g
 
 list_colourings :: GraphC a
      => Graph a
-     -> FiniteMap a ( Set Int ) -- ^ noch mögliche farben für knoten
-     -> FiniteMap a Int -- ^ bereits gefärbt
+     -> FiniteMap a ( Set Int ) -- ^ noch mÃ¶gliche farben fÃ¼r knoten
+     -> FiniteMap a Int -- ^ bereits gefÃ¤rbt
      -> [ FiniteMap a Int ] --  ^ resultate
 list_colourings g cons done | 0 == sizeFM cons  = return done
 list_colourings g cons done = do 

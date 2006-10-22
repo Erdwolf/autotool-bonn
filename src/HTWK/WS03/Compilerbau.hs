@@ -2,7 +2,7 @@ module Inter.Compilerbau where
 
 --   $Id$
 
--- TODO: directories aufr‰umen:
+-- TODO: directories aufr√§umen:
 -- jetzt haben wir LV-spezifische teile
 -- sowohl in htwk/Inter/* als auch in ws03/compilerbau/* usw.
 

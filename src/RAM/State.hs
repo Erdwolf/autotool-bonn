@@ -15,8 +15,8 @@ import Data.Typeable
 data State =
      State { schritt :: Int
 	   , memory :: Memory
-	   , todo   :: Program -- noch auszuführen
-	   , past :: [State] -- vorige zustände
+	   , todo   :: Program -- noch auszufÃ¼hren
+	   , past :: [State] -- vorige zustÃ¤nde
 	   }
      deriving ( Eq, Ord, Typeable )
 

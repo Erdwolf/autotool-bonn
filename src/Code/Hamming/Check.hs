@@ -11,7 +11,7 @@ import Autolib.ToDoc
 import Data.List ( tails )
 import Control.Monad ( guard )
 
--- | alle (xs !! i, xs !! j) für i < j
+-- | alle (xs !! i, xs !! j) fÃ¼r i < j
 pairs :: [a] -> [(a,a)]
 pairs xs = do
     u : rest <- tails xs
@@ -19,11 +19,11 @@ pairs xs = do
     return (u, v)
 
 -- | falls Code nicht leer und alles gleich lang,
--- dann diese Länge.
+-- dann diese LÃ¤nge.
 equal_length :: Code -> Reporter Int
 equal_length code = do
     when ( null code ) $ reject $ text "Ihr Code ist leer."
-    inform $ text "Haben alle Code-Wörter die gleiche Länge?"
+    inform $ text "Haben alle Code-WÃ¶rter die gleiche LÃ¤nge?"
     let wrong = do
             (u, v) <- pairs code
 	    guard $ Prelude.length u /= Prelude.length v
@@ -34,16 +34,16 @@ equal_length code = do
        else reject $ text "Nein:" <+> toDoc ( head wrong )
     return $ l
 
--- | Hamming-Abstand zwischen zwei Wörtern
--- Vorsicht: schneidet auf gemeinsame Länge
+-- | Hamming-Abstand zwischen zwei WÃ¶rtern
+-- Vorsicht: schneidet auf gemeinsame LÃ¤nge
 dist :: Eq a 
 	 => [a] -> [a] -> Int
 dist u v = Prelude.length 
 	     $ filter (uncurry (/=))
 	     $ zip u v
 
--- | kleinster Hamming-Abstand zwischen zwei Wörtern
--- Vorsicht: stürzt ab für leeren code
+-- | kleinster Hamming-Abstand zwischen zwei WÃ¶rtern
+-- Vorsicht: stÃ¼rzt ab fÃ¼r leeren code
 minimum_distance :: Ord a 
       => [[a]] 
       -> ( Int, ([a], [a]) )

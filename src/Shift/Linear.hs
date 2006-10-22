@@ -233,7 +233,7 @@ junk x xs =
     in  Junk ( (x :) $ concat $ map food pre ) : post
 
 cuts :: Int -> [a] -> [[a]]
--- schneidet in gleichlange stücke
+-- schneidet in gleichlange stÃ¼cke
 cuts w [] = []
 cuts w xs =
     let ( pre, post ) = splitAt w xs

@@ -31,7 +31,7 @@ sane a = do
     when ( not $ s `elementOf` kelleralphabet a )
 	 $ reject $ fsep
 	 [ text "das Startsymbol",  toDoc s
-	 , text "gehört nicht zum Kelleralphabet"
+	 , text "gehÃ¶rt nicht zum Kelleralphabet"
 	 ]
 
     let z = startzustand a
@@ -39,7 +39,7 @@ sane a = do
 	 $ reject $ fsep
 	 [ text "der Startzustand"
 	 , toDoc z
-	 ,  text "gehört nicht zur Zustandsmenge"
+	 ,  text "gehÃ¶rt nicht zur Zustandsmenge"
 	 ]
 
     case akzeptiert a of
@@ -47,7 +47,7 @@ sane a = do
 	     when ( not $ z `elementOf` zustandsmenge a)
 		  $ reject $ fsep
 		  [ text "der Endzustand", toDoc z
-		  , text "gehört nicht zur Zustandsmenge"
+		  , text "gehÃ¶rt nicht zur Zustandsmenge"
 		  ]
                             ) ( setToList zs )
         _ -> return ()
@@ -59,14 +59,14 @@ sane a = do
           when ( isJust mx ) 
 	       $ when ( not $ the mx `elementOf` eingabealphabet a )
 		      $ reject
-		      $ toDoc (the mx) <+> text " gehört nicht zum Eingabealphabet"
+		      $ toDoc (the mx) <+> text " gehÃ¶rt nicht zum Eingabealphabet"
           mapM_ ( \ t -> when ( not $  t `elementOf` kelleralphabet a )
 		      $ reject
-		      $ toDoc t <+> text  " gehört nicht zum Kelleralphabet" )
+		      $ toDoc t <+> text  " gehÃ¶rt nicht zum Kelleralphabet" )
 	        ( y : y' )
           mapM_ ( \ t -> when ( not $ t `elementOf` zustandsmenge a )
 		      $ reject
-                      $ toDoc t <+> text " gehört nicht zur Zustandsmenge" )
+                      $ toDoc t <+> text " gehÃ¶rt nicht zur Zustandsmenge" )
 	        [ z, z' ]
 
     mapM_ check_rule $ do

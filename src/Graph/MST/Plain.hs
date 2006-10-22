@@ -1,3 +1,5 @@
+{-# OPTIONS -fallow-incoherent-instances -fglasgow-exts #-}
+
 module Graph.MST.Plain where
 
 --  $Id$
@@ -62,18 +64,18 @@ instance C.Partial MST (Int,Graph Int,Weight) (Int,Graph Int)  where
     partial _ (_,g,w) (wt,t) = do
 
         let kn_g = ( text "Knotenmenge V(G) des Graphen" , knoten g )
-	    kn_t = ( text "Knotenmenge V(T) in Ihrer Lösung" , knoten t )
+	    kn_t = ( text "Knotenmenge V(T) in Ihrer LÃ¶sung" , knoten t )
 
 	Autolib.Reporter.Set.eq kn_g kn_t
 
         let ka_g = ( text "Kantenmenge E(G) des Graphen" , kanten g )
-	    ka_t = ( text "Kantenmenge E(T) in Ihrer Lösung" , kanten t )
+	    ka_t = ( text "Kantenmenge E(T) in Ihrer LÃ¶sung" , kanten t )
 
 	Autolib.Reporter.Set.subeq ka_t ka_g
 
         inform $ vcat [ text "Stimmen das von Ihnen berechnete Gesamtgewicht"
 		      , nest 4 $ toDoc wt
-		      , text "und das Gesamtgewicht Ihrer Einsendung überein?"
+		      , text "und das Gesamtgewicht Ihrer Einsendung Ã¼berein?"
 		      ]
 
         let real_wt = weight t (wfun w)
@@ -103,7 +105,7 @@ instance C.Partial MST (Int,Graph Int,Weight) (Int,Graph Int)  where
 
         inform $ nest 4 $ text "Ja."
 
-        inform $ nest 4 $ text "Ist der Graph zusammenhängend?"
+        inform $ nest 4 $ text "Ist der Graph zusammenhÃ¤ngend?"
 
         when ( not $ isZusammen t ) $ reject $ nest 4 $ text "Nein."
 

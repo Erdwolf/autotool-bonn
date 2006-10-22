@@ -1,4 +1,4 @@
--- | Konstruktion des Graphen aus dem Beweis der NP-Vollst‰ndigkeit von VC
+-- | Konstruktion des Graphen aus dem Beweis der NP-Vollst√§ndigkeit von VC
 
 module Graph.VC.SAT ( vc ) where
 

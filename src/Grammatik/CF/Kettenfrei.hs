@@ -14,7 +14,7 @@ import Control.Monad (guard)
 
 -- | eingabe: kontextfreie Grammatik G1
 -- ausgabe: kontextfreie Grammatik G2 mit L(G2) = L(G1)
--- und G2 enthält keine Regeln  V -> V
+-- und G2 enthÃ¤lt keine Regeln  V -> V
 kettenfrei :: Grammatik -> Grammatik
 kettenfrei g = let
     ( pairs, nopairs ) = partition ( \ ( [lhs], rhs) -> 

@@ -24,7 +24,7 @@ isoptimalprefix freq code = do
     inform $ vcat 
 	   [ text "Ist der Code" 
 	   , nest 4 $ toDoc code
-	   , text "ein optimaler Pr‰fix-Code f¸r die Verteilung"
+	   , text "ein optimaler Pr√§fix-Code f√ºr die Verteilung"
 	   , nest 4 $ toDoc freq
 	   , text "?"
 	   ]
@@ -35,7 +35,7 @@ isoptimalprefix freq code = do
 	mhuff = measure freq huff
 
     when ( mcode > mhuff ) $ reject
-	   $ text "Das ist zu groﬂ."
+	   $ text "Das ist zu gro√ü."
     inform $ text "Das ist optimal."
 
 -- | construct Huffman code

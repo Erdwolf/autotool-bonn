@@ -112,7 +112,7 @@ exec trs t step = do
     inform $ toDoc slhs
 
     assert ( slhs == s )
-           $ text "stimmt überein mit Teilterm an Position?"
+           $ text "stimmt Ã¼berein mit Teilterm an Position?"
 
     inform $ text "die substituierte rechte Regelseite ist" 
     srhs <- mapply sub $ rhs rule

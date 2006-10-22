@@ -2,7 +2,7 @@ module Inter.Motd where
 
 --   $Id$
 
-import Text.Html hiding ( text  )
+import Text.XHtml hiding ( text  )
 import qualified Control.Exception
 
 contents :: IO Html

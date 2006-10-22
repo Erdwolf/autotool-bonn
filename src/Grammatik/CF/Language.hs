@@ -19,7 +19,7 @@ make :: String -- ^ nametag
 make nam g = 
      let 
 	 l = Language 
-	   { abbreviation = show $ text "L (G) für G = " <+> toDoc g
+	   { abbreviation = show $ text "L (G) fÃ¼r G = " <+> toDoc g
 	   , nametag = nam
 	   , alphabet = terminale g
 	   , contains = akzeptor g 

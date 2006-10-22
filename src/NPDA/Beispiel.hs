@@ -61,7 +61,7 @@ t = listToFM [ -- Spalte 1 (Z 2, x = '0')
 	     ]
 
 
--- durch List Comprehensions l‰ﬂt sich das kompakter schreiben:
+-- durch List Comprehensions l√§√üt sich das kompakter schreiben:
 
 t' = plusFM_C union speichern pruefen
 

@@ -11,7 +11,7 @@ import Autolib.Reader
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
-data AI = AI { name :: String -- abkürzung
+data AI = AI { name :: String -- abkÃ¼rzung
 	     , automat :: NFA Char Int   
 	     }
     deriving ( Typeable )

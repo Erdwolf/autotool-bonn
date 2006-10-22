@@ -23,11 +23,11 @@ test :: NFAC c s
 
 test Sane aut = do
     inform $ text "Der Automat soll konsistent definiert sein."
-    subeq ( text "Startzust‰nde" , starts aut )
+    subeq ( text "Startzust√§nde" , starts aut )
 	  ( text "Zustandsmenge" , states aut )
-    subeq ( text "akzeptierende Zust‰nde" , finals aut )
+    subeq ( text "akzeptierende Zust√§nde" , finals aut )
 	  ( text "Zustandsmenge" , states aut )
-    verify "Zust‰nde" 
+    verify "Zust√§nde" 
           ( \ (p,c,q) -> p `elementOf` states aut && q `elementOf` states aut )
 	  ( trans aut )
     verify "Buchstaben"
@@ -40,7 +40,7 @@ test (Min_Size s) aut = do
 
 test (Max_Size s) aut = do
     assert ( size aut <= s ) 
-	   $ text "Zustandszahl ist hˆchstens" <+> toDoc s <+> text "?"
+	   $ text "Zustandszahl ist h√∂chstens" <+> toDoc s <+> text "?"
 
 test (Alphabet m) aut = do
     subeq ( text "Alphabet des Automaten", alphabet aut )
@@ -65,12 +65,12 @@ test (Reduced) aut = do
     inform $ text "Der Automat soll reduziert sein."
     let unreach = states aut `minusSet` states ( reachable aut )
     when ( not $ isEmptySet unreach ) $ reject 
-	 $ vcat [ text "Diese Zust‰nde sind nicht erreichbar:"
+	 $ vcat [ text "Diese Zust√§nde sind nicht erreichbar:"
 		, nest 4 $ toDoc unreach
 		]
     let unprod = states aut `minusSet` states ( productive aut )
     when ( not $ isEmptySet unprod ) $ reject 
-	 $ vcat [ text "Diese Zust‰nde sind nicht produktiv:"
+	 $ vcat [ text "Diese Zust√§nde sind nicht produktiv:"
 		, nest 4 $ toDoc unprod
 		]
     inform $ text "OK"
@@ -81,15 +81,15 @@ test (Minimal) aut = do
     inform $ text "Der Automat soll minimal sein."
     let d = minimize0 $ normalize $ det aut
     when ( size d < size aut ) $ reject
-	 $ vcat [ text "Es gibt einen ‰quivalenten deterministischen Automaten"
-		, text "mit nur" <+> toDoc (size d) <+> text "Zust‰nden."
+	 $ vcat [ text "Es gibt einen √§quivalenten deterministischen Automaten"
+		, text "mit nur" <+> toDoc (size d) <+> text "Zust√§nden."
 		]
     inform $ text "OK"
 
 test Complete aut = do
-    inform $ text "Der Automat soll vollst‰ndig sein."
+    inform $ text "Der Automat soll vollst√§ndig sein."
     when ( isEmptySet $ starts aut ) $ reject
-	 $ text "Es muﬂ wenigstens einen Startzustand geben."
+	 $ text "Es mu√ü wenigstens einen Startzustand geben."
     let miss = do
             p <- lstates aut
 	    c <- setToList $ alphabet aut
@@ -97,13 +97,13 @@ test Complete aut = do
 	    guard $ isEmptySet qs
 	    return ( p, c )
     when ( not $ null miss ) $ reject $ vcat 
-	 [ text "F¸r wenigstens diese (p, c) gibt es keine Transition (p, c, q):"
+	 [ text "F√ºr wenigstens diese (p, c) gibt es keine Transition (p, c, q):"
 	 , nest 4 $ toDoc $ take 4 miss
 	 ]
     inform $ text "OK"
 		 
 test prop aut = do
-    reject $ fsep [ text "test f¸r", toDoc prop
+    reject $ fsep [ text "test f√ºr", toDoc prop
 		  , text "noch nicht implementiert"
 		  ]
 

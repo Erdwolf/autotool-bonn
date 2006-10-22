@@ -30,9 +30,9 @@ data Find_Model = Find_Model deriving ( Show, Read, Typeable )
 instance Partial Find_Model Param ( Interpretation Int ) where
 
     describe Find_Model p = vcat
-        [ text "Finden Sie für die Formel"
+        [ text "Finden Sie fÃ¼r die Formel"
 	, nest 4 $ toDoc $ formel p
-	, text "ein Modell (eine Interpretation) der Größe"
+	, text "ein Modell (eine Interpretation) der GrÃ¶ÃŸe"
 	, nest 4 $ toDoc $ model_size p
 	]
 
@@ -42,7 +42,7 @@ instance Partial Find_Model Param ( Interpretation Int ) where
 
     partial Find_Model p i = do
 	   assert ( model_size p == cardinality ( universum $ struktur i ) )
-		  $ text "Modellgröße ist korrekt?"
+		  $ text "ModellgrÃ¶ÃŸe ist korrekt?"
 	   check ( signatur $ formel p ) i
 
     total Find_Model p i = do

@@ -1,5 +1,4 @@
 
---  $Id$
 
 module Faktor.Type where
 

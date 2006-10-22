@@ -2,8 +2,6 @@
 
 module Code.Quiz where
 
---  $Id$
-
 import Code.Type
 import Code.Class hiding ( enc, dec )
 import Code.Param

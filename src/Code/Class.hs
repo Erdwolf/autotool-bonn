@@ -2,7 +2,6 @@
 
 module Code.Class where
 
---  $Id$
 
 import Code.Type
 import Code.Param
@@ -59,7 +58,9 @@ instance ( ToDoc c, Reader c,  Coder c a b )
 	   then inform $ text "Die Eingabe ist korrekt."
 	   else reject $ text "Die Antwort ist nicht korrekt."
 	 
-dec :: (Reader b, ToDoc c, Reader c , Coder c a b ) => c -> b -> Make
+
+dec :: (Reader b, Read b, Show b, ToDoc c, Coder c a b ) 
+       => c -> b -> Make
 dec c b = direct (Decode c) b
 
 instance Measure ( Decode c ) b [ a ]  where

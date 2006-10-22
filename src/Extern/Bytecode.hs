@@ -29,7 +29,7 @@ bytecode argc input = do
     system $ unwords [ "/usr/bin/javac" , "-c", cpath , ">" , opath ]
     output <- lesen ( file "out" )
 
-    -- TODO: files/directory löschen
+    -- TODO: files/directory lÃ¶schen
 
     -- nach methode suchen
 

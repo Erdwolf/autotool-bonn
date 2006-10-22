@@ -16,4 +16,4 @@ is_bi_proof g v = and [ not $ isEmptySet v
 		      ]
 
 select :: Ord a => Set (Kante a) -> Set a -> Set (Kante a)
-select es v = intersect es (mapSet (uncurry Kante) $ cross v v)
+select es v = intersect es (smap (uncurry Kante) $ cross v v)

@@ -1,4 +1,4 @@
--- | erzeuge eine k-stellige funktion bestimmter größe
+-- | erzeuge eine k-stellige funktion bestimmter grÃ¶ÃŸe
 
 module Fun.Create where
 
@@ -33,7 +33,7 @@ create_sub k s = do
     -- print ("create_sub", k, s)
     -- stelligkeit der kopf-funktion (g) raten
     i  <- eins [ 1 .. min 3 $ s-2 ]
-    -- größen aller funktionen (g und hs) raten
+    -- grÃ¶ÃŸen aller funktionen (g und hs) raten
     j : js <- summe (i+1) (s-1)
     g  <- create i j
     hs <- sequence $ do j <- js ; return $ create k j
@@ -60,7 +60,7 @@ nontrivial p = do
 	   return ( f, tabulate2 f (fromIntegral t, fromIntegral t) )
         ) $ \ ( f, Tafel2 tab ) -> 
             let ((0,0), (h,w)) = bounds tab
-		-- nur bis zur hälfte testen (aber mehr ausgeben)
+		-- nur bis zur hÃ¤lfte testen (aber mehr ausgeben)
 		hh = h `div` 2 ; ww = w `div` 2
 		rows = do x <- [ 0 .. hh ]
 			  return $ do y <- [ 0 .. ww ] ; return $ tab ! (x,y)

@@ -12,7 +12,7 @@ import Control.Monad (guard)
 
 -- | eingabe: kontextfreie Grammatik G1
 -- ausgabe: kontextfreie Grammatik G2 mit L(G2) = L(G1) - Eps
--- und G2 enthält keine Regeln  V -> Eps
+-- und G2 enthÃ¤lt keine Regeln  V -> Eps
 epsfrei :: Grammatik -> Grammatik
 epsfrei g = let
     ns = nullable g

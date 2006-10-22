@@ -6,7 +6,6 @@ module Number.Float.From
 
 where
 
---  $Id$
 
 import Challenger.Partial
 import Autolib.ToDoc
@@ -46,11 +45,11 @@ instance Partial From_Float Zahl Rational where
 
     total From_Float z r = do
          assert ( (wert z :: Rational) == r )
-                $ text "Stimmen die Bedeutungen der Zahlen überein?"
+                $ text "Stimmen die Bedeutungen der Zahlen Ã¼berein?"
 
 
 -- das ist nicht sehr sinnvoll,
--- mir fällt keine aufgabe ein, bei der man das braucht
+-- mir fÃƒÂ¤llt keine aufgabe ein, bei der man das braucht
 instance Size Rational where
     size r = fromIntegral $ length $ show r
 

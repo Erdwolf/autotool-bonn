@@ -34,7 +34,7 @@ login = do
 
     change <- click_choice_with_default 0 "Aktion"
            [ ("Login", False)
-           , ( "persˆnliche Daten ‰ndern", True) 
+           , ( "pers√∂nliche Daten √§ndern", True) 
            ]
 
     close -- btable
@@ -66,13 +66,13 @@ login = do
 
 use_first_passwort stud = 
     if ( Inter.Crypt.is_empty $ next_passwort stud ) 
-    then return stud -- ‰ndert sich nichts
+    then return stud -- √§ndert sich nichts
     else do
         plain $ unlines 
               [ "Sie hatten eine Email mit einem neuen Passwort erhalten,"
               , "aber Sie haben jetzt Ihr altes Passwort benutzt."
-              , "Das Passwort aus der Email wird dadurch ung¸ltig,"
-              , "Ihr bestehendes (jetzt benutztes) Passwort bleibt g¸ltig."
+              , "Das Passwort aus der Email wird dadurch ung√ºltig,"
+              , "Ihr bestehendes (jetzt benutztes) Passwort bleibt g√ºltig."
               ]
         let neu = stud { T.next_passwort = Inter.Crypt.empty }
         io $ Control.Student.DB.put ( Just $ T.snr stud ) neu
@@ -84,7 +84,7 @@ use_next_passwort alt = do
                   , T.next_passwort = Inter.Crypt.empty
                   }
     io $ Control.Student.DB.put ( Just $ T.snr alt ) neu
-    plain "Das vorherige ist damit ung¸ltig."
+    plain "Das vorherige ist damit ung√ºltig."
     return neu
 
 wrong_password stud = do
@@ -160,7 +160,7 @@ edit_create ms = do
     
     us <- io $ Control.Schule.get 
     u <- case ms of
-        -- Student darf Schule nicht ‰ndern
+        -- Student darf Schule nicht √§ndern
         Just s -> return $ head $ do
             u <- us
             guard $ U.unr u == T.unr s 
@@ -214,7 +214,7 @@ edit_create ms = do
 
     -- password handling
     case ms of
-        Nothing -> do -- neuer Account: passwort w¸rfeln und mailen,
+        Nothing -> do -- neuer Account: passwort w√ºrfeln und mailen,
             open row
             submit "Account ..."
             click <- submit "... anlegen?"
@@ -227,11 +227,11 @@ edit_create ms = do
                 pwmail $ stud
             mzero -- never returns
 
-        Just s -> do -- bestehender Account: passwort ‰ndern 
+        Just s -> do -- bestehender Account: passwort √§ndern 
            pw <- defaulted_textfield "password" ""
            c <- if null pw 
 	        then do 
-                    plain "(keine Eingabe: Passwort wird nicht ge‰ndert)"
+                    plain "(keine Eingabe: Passwort wird nicht ge√§ndert)"
                     return $ T.passwort s
 	        else do
 	            is_a_word "Passwort" pw
@@ -244,7 +244,7 @@ edit_create ms = do
                    $ stud { T.passwort = c
                           , T.next_passwort = Inter.Crypt.empty
                           }
-                plain "update ausgef¸hrt"
+                plain "update ausgef√ºhrt"
 
     close -- btable
 
@@ -307,11 +307,11 @@ pwmail stud = do
 
     let echo = texter
             [ "Sie haben ein neues Passwort"
-            , "f¸r das E-Learning-System autotool angefordert."
+            , "f√ºr das E-Learning-System autotool angefordert."
             , unwords [ "Es lautet:", "Matrikelnummer:", m, "Passwort:", p ]
             , "Es wird durch seine erste Benutzung aktiviert,"
-            , "Sie kˆnnen es danach ‰ndern."
-            , "Sie kˆnnen aber auch Ihr bisheriges Passwort weiter benutzen"
+            , "Sie k√∂nnen es danach √§ndern."
+            , "Sie k√∂nnen aber auch Ihr bisheriges Passwort weiter benutzen"
             , "und diese Mail ignorieren."
             ]
 

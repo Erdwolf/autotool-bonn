@@ -68,7 +68,7 @@ instance Ord u => Size ( Struktur u ) where
 
 -- | wir testen, ob alle Symbole der Signatur
 -- wirklich in der Struktur vorkommen.
--- es ist erlaubt, daß zusätzlichen Symbole vorkommen.
+-- es ist erlaubt, daÃ zusÃ¤tzlichen Symbole vorkommen.
 instance ( ToDoc u, Ord u ) => Signed ( Struktur u ) where
      check sig s = do
 	  checkit "Funktion" 
@@ -84,9 +84,9 @@ checkit tag get_args arities values = sequence_ $ do
             arg <- get_args this
             return $ do
                 when ( length arg /= arity ) $ reject $ vcat
-                     [ text "Interpretation für" <+> text tag <> text "ssymbol" 
+                     [ text "Interpretation fÃ¼r" <+> text tag <> text "ssymbol" 
 		             <+> toDoc f
-                     , text "Falsche Stelligkeit für" <+> toDoc arg
+                     , text "Falsche Stelligkeit fÃ¼r" <+> toDoc arg
                      ]
 	      
 empty :: Ord u

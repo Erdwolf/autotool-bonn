@@ -21,7 +21,7 @@ import Autolib.ToDoc
 
 
 instance Pumping Zerlegung where
-    tag z = "Pump-Eigenschaft für kontextfreie Sprachen"
+    tag z = "Pump-Eigenschaft fÃ¼r kontextfreie Sprachen"
     tag_show z = "u v x y z"
 
     exempel = Zerlegung "" "" "" "" ""

@@ -2,8 +2,8 @@
 --
 -- Modul, welches eine Instanz eines Graceful Problems behandelt
 --
--- Einfach ausgedrückt schaut das Modul, ob ein gegebener Graph mit dem
--- gegebenen Labeling graceful (schön, hübsch) gelabelt ist.
+-- Einfach ausgedrÃ¼ckt schaut das Modul, ob ein gegebener Graph mit dem
+-- gegebenen Labeling graceful (schÃ¶n, hÃ¼bsch) gelabelt ist.
 --
 --
 -- Autor: Alexander Kiel
@@ -66,7 +66,7 @@ instance
 
 
     verifiziere Graceful graph labeling =
-	    testeAlles (text "Die Lösung ist richtig.") (
+	    testeAlles (text "Die LÃ¶sung ist richtig.") (
 		    [
 		    -- isLabelingAbbildungVonKnoten graph labeling
 		      isSmallestLabelNull labeling
@@ -131,7 +131,7 @@ getELabel labeling kante = show (getDiff labeling kante)
 -- hier folgen die einzelnen Tests
 -------------------------------------------------------------------------------
 
--- die Labels müssen mit der Zahl 0 anfangen
+-- die Labels mÃ¼ssen mit der Zahl 0 anfangen
 isSmallestLabelNull :: Labeling knoten -> (Bool, Doc)
 isSmallestLabelNull labeling =
     ( (==) 0 $ minimum $ eltsFM labeling
@@ -144,8 +144,8 @@ isBiggestLabelAnzKanten graph labeling =
 		(cardinality $ kanten graph)
 		(fromInteger $ maximum $ eltsFM labeling)
 	, text
-		( "Das größte Label muss mit der Anzahl der Kanten ("
-		++show (cardinality (kanten graph)) ++ ") übereinstimmen."
+		( "Das grÃ¶ÃŸte Label muss mit der Anzahl der Kanten ("
+		++show (cardinality (kanten graph)) ++ ") Ã¼bereinstimmen."
 		)
 	)
 
@@ -161,14 +161,14 @@ dicht g f =
 		   k <- setToList $ kanten g
 		   return ( k, getDiff f k )
 	( fl, t ) = Graph.Labeling.injektiv diffs
-    in	( fl, text "Für die Abbildung  Kante -> Differenz gilt:" <+> t )
+    in	( fl, text "FÃ¼r die Abbildung  Kante -> Differenz gilt:" <+> t )
     
 --------------------------------------------------------------------------
 
 
--- führt alle Tests durch und gibt entweder:
---   die Ausgabe (Bool, Doc) des ersten nicht bestanden Tests zurück
---   oder die positiv Meldung in der Form (True, Doc) zurück
+-- fÃ¼hrt alle Tests durch und gibt entweder:
+--   die Ausgabe (Bool, Doc) des ersten nicht bestanden Tests zurÃ¼ck
+--   oder die positiv Meldung in der Form (True, Doc) zurÃ¼ck
 testeAlles :: Doc -> [(Bool, Doc)] -> (Bool, Doc)
 testeAlles positivDoc tests =
 	getFirstError positivDoc [(b, doc) | (b, doc) <- tests, b == False]

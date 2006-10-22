@@ -49,6 +49,6 @@ instance ( Machine m dat conf, InOut m dat conf )
     partial p i b = F.check i b
     total   p i b = do
         fun_test (F.cut i) (F.pairs i) b
-        return () -- größe der maschine (hier) ignorieren
+        return () -- grÃ¶ÃŸe der maschine (hier) ignorieren
 
 

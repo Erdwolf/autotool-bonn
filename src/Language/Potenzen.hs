@@ -51,7 +51,7 @@ potenzen e = Language
 	    }
 
 sam :: Int -> Int -> IO String
--- würfelt ein Wort von ungefähr passender Länge
+-- wÃ¼rfelt ein Wort von ungefÃ¤hr passender LÃ¤nge
 sam e l = do
     w <- zahl l
     let n = read w

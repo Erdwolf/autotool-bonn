@@ -1,4 +1,4 @@
--- | drei-färbung (mit würfeln) 
+-- | drei-fÃ¤rbung (mit wÃ¼rfeln) 
 -- autor m.lindemeyer
 -- stinfwww.informatik.uni-leipzig.de\/~psy99hvr
 -- (8484955)
@@ -27,7 +27,7 @@ import Control.Monad ( guard ) -- old style
 
 data DreiCol = DreiCol deriving Show
 
--- | Färbung als Abbildung : Knotemengen -> Zahlen
+-- | FÃ¤rbung als Abbildung : Knotemengen -> Zahlen
 type Faerbung a = Graph.Labeling.Labeling a Integer
 
 
@@ -42,7 +42,7 @@ instance ( ToDoc (Graph a) , Show (Graph a) , Read (Graph a)
         getGraphviz graph instanzTrans dateiName
 	
     getBeweis DreiCol graph loesung dateiName =
-		-- Komplexität ist noch verbesserunswürdig
+		-- KomplexitÃ¤t ist noch verbesserunswÃ¼rdig
 	getGraphviz graph (getBeweisTrans loesung) dateiName
 
     validiere DreiCol g f =
@@ -71,7 +71,7 @@ instance ( ToDoc (Graph a) , Show (Graph a) , Read (Graph a)
 	    else if not $ null same 
 	    then ( False, text "Diese Kanten haben gleichfarbige Endpunkte:"
 			  <+> toDoc same )
-	    else ( True , text "Das ist eine korrekte Drei-Färbung." )
+	    else ( True , text "Das ist eine korrekte Drei-FÃ¤rbung." )
 
 
 		
@@ -114,7 +114,7 @@ getBeweisTrans loesung = GVTrans
 getNColor :: Ord knoten => Faerbung knoten -> knoten -> GVColor
 getNColor f knoten = getColor (Graph.Labeling.the $ lookupFM f knoten)
 
--- gibt eine Farbe zu einem Index einer Klasse zurück
+-- gibt eine Farbe zu einem Index einer Klasse zurÃ¼ck
 -- sind erst mal nur 8 Farben - sollte aber reichen
 getColor :: Integer -> GVColor
 getColor index

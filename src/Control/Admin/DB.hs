@@ -59,7 +59,7 @@ failDB nme pas = do
 -- > Output: IO [ [ SNr, MNr, Vorname , Email, Status ] ]
 --
 -- TODO optinale Teilwort suche (%part%)
--- TODO optinale or Verknüpfung?
+-- TODO optinale or VerknÃ¼pfung?
 --
 findStudDB vnm nme mat eml vrl= do
        conn <- myconnect

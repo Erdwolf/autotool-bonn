@@ -21,7 +21,7 @@ import Autolib.ToDoc
 
 
 instance Pumping Zerlegung where
-    tag z = "Pump-Eigenschaft für reguläre Sprachen"
+    tag z = "Pump-Eigenschaft fÃ¼r regulÃ¤re Sprachen"
     tag_show z = "u v w"
 
     inflate_show i z = "u v^" ++ show i ++ " w"

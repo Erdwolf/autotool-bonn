@@ -20,7 +20,7 @@ data Autolib.NFA.NFAC c Int =>
 	   | Exp  ( Autolib.Exp.RX c )
      deriving ( Typeable )
 
-{-! for Input derive: Reader, ToDoc, Haskell2Xml !-}
+{-! for Input derive: Reader, ToDoc !-}
 
 
 verify_source ::  Autolib.NFA.NFAC c Int 

@@ -21,7 +21,7 @@ instance Partial PCProblem PCP Folge where
     partial PCProblem pcp lsg = do
         let (l,r) = lr pcp lsg
         assert ( isPrefixOf l r || isPrefixOf r l )
-	    $ text "Ist das eine Wort ein Präfix des anderen?"
+	    $ text "Ist das eine Wort ein PrÃ¤fix des anderen?"
     total PCProblem pcp lsg = do
         let (l, r) = lr pcp lsg
 	    c = common l r
@@ -31,7 +31,7 @@ instance Partial PCProblem PCP Folge where
 	when ( not $ null cr ) $ reject 
 	     $ text "Unterer Vorsprung:" <+> text cr
 	when ( null lsg ) $ reject
-	     $ text "Das Lösungswort darf nicht leer sein."
+	     $ text "Das LÃ¶sungswort darf nicht leer sein."
 
 
 instance  Step PCProblem PCP Folge ( Select Int ) where
@@ -63,7 +63,7 @@ inter (PCP pcp) = do
 
         kname k = Ident $ "P" ++ show k
 
-	pairs0 = ( mkLabel "Wählen Sie:" ) { ident = Ident "pairs0" }
+	pairs0 = ( mkLabel "WÃ¤hlen Sie:" ) { ident = Ident "pairs0" }
         pairs listener = do
            (k, (l,r)) <- zip [1 ..] pcp
 	   return $ ( mkButton ( l ++ "/" ++ r ) )

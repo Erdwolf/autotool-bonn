@@ -39,10 +39,10 @@ instance C.Partial Exp_Smaller
 
     report Exp_Smaller ( rx, props ) = do
         inform $ vcat
-            [ text "Gesucht ist ein regulärer Ausdruck,"
+            [ text "Gesucht ist ein regulÃ¤rer Ausdruck,"
 	    , text "der die selbe Sprache wie der Ausdruck"
 	    , nest 4 $ toDoc rx
-	    , text "der Größe"
+	    , text "der GrÃ¶ÃŸe"
 	    , nest 4 $ toDoc $ size rx
 	    , text "erzeugt, aber kleiner ist und die Eigenschaften"
 	    , nest 4 $ toDoc props
@@ -56,15 +56,15 @@ instance C.Partial Exp_Smaller
     partial Exp_Smaller ( rx, props ) exp = do
 -- als property definiert
 --        sanity_keys ( mkSet [ "Eps", "Empty" ] ) exp
-        inform $ text "Sind alle Eigenschaften erfüllt?"
+        inform $ text "Sind alle Eigenschaften erfÃ¼llt?"
         nested 4 $ mapM_ ( flip test exp ) props
 
         inform $ text "Ist Ihr Ausdruck kleiner?"
 
         when ( size exp >= size rx ) $ reject $ vcat 
-	     [ text "Nein. Die Größe Ihres Ausdrucks ist"
+	     [ text "Nein. Die GrÃ¶ÃŸe Ihres Ausdrucks ist"
 	     , nest 4 $ toDoc $ size exp
-	     , text "darf aber höchstens"
+	     , text "darf aber hÃ¶chstens"
 	     , nest 4 $ toDoc $ pred $ size rx
 	     , text "sein." 
 	     ]

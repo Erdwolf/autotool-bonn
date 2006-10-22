@@ -19,7 +19,7 @@ data Break = Break deriving ( Show, Typeable )
 instance Partial Break Config Integer where
 
     describe Break conf = vcat
-	   [ text "Finden Sie den Klartext für eine RSA-Verschlüsselung mit"
+	   [ text "Finden Sie den Klartext fÃ¼r eine RSA-VerschlÃ¼sselung mit"
 	   , nest 4 $ toDoc conf
 	   ]
 
@@ -33,14 +33,14 @@ instance Partial Break Config Integer where
         let ( d, n ) = public_key conf
 	let y = powmod x d n
 	inform $ vcat
-	       [ text "bei Verschlüsselung von" <+> toDoc x
-	       , fsep [ text "erhält man"
+	       [ text "bei VerschlÃ¼sselung von" <+> toDoc x
+	       , fsep [ text "erhÃ¤lt man"
 		      , toDoc x, text "^", toDoc d, text "=" 
 		      , toDoc y, text "mod", toDoc n
 		      ]
 	       ]
 	assert ( y == message conf )
-	       $ text "Stimmt das mit vorliegender Nachricht überein?"
+	       $ text "Stimmt das mit vorliegender Nachricht Ã¼berein?"
 
 break :: Config -> Integer -> Integer
 break conf x = 

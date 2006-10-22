@@ -23,7 +23,7 @@ import System.IO ( hFlush, stdout )
 import Data.Char
 
 
--- | druckt Auswertung f¸r alle Aufgaben einer Vorlesung
+-- | druckt Auswertung f√ºr alle Aufgaben einer Vorlesung
 emit :: Bool -> U.Schule -> V.Vorlesung -> DataFM -> IO ()
 emit deco u vor fm0 = do
 
@@ -39,7 +39,7 @@ emit deco u vor fm0 = do
         putStrLn $ unlines
 	     [ "", ""
              , unwords [ toString $ U.name u ]
-	     ,  unwords [ "Auswertung f¸r Lehrveranstaltung"
+	     ,  unwords [ "Auswertung f√ºr Lehrveranstaltung"
                         , toString $ V.name vor, ":" ] 
 	     ]
         mapM_ (single deco (V.unr vor)) $ fmToList fm
@@ -52,18 +52,18 @@ inform = do
     putStrLn $ unlines 
 	     [ unwords
 	       [ "Dabei gibt es pro Score" , show scorePoints, "Punkte"
-	       , "f¸r die Pl‰tze [1 ..", show scoreItems, "]" 
+	       , "f√ºr die Pl√§tze [1 ..", show scoreItems, "]" 
 	       ]
 	     , ""
 	     ]
 
 realize :: [ Einsendung ] -> [ Einsendung ]
-realize es = take scoreItems -- genau 10 st¸ck
+realize es = take scoreItems -- genau 10 st√ºck
 	   $ filter ( not . isadmin . matrikel) -- keine admins
 	   $ es
     
 -- | FIXME: this is badly broken
--- und zwar f¸r Matrikelnummern, die keine Zahlen sind
+-- und zwar f√ºr Matrikelnummern, die keine Zahlen sind
 isadmin m = 
     let cs = toString m
     in  if all isDigit cs
@@ -77,7 +77,7 @@ single deco u arg @( anr, es ) = do
     let header = unwords 
 	       [ "Aufgabe" , toString $ A.name auf
 	       , unwords $ if null es then [] else
-	         [ "( beste bekannte Lˆsung", show (size $ head es), ")" ]
+	         [ "( beste bekannte L√∂sung", show (size $ head es), ")" ]
 	       ]
 	strich = replicate (length header) '-'
 
@@ -131,7 +131,7 @@ fshow pfm = unwords $ do
 collect :: Bool 
         -> UNr
 	-> DataFM 
-	->  IO [ ( String , (Int , [Int] ) ) ] -- ^ ( Matrikel, Punkt, Pl‰tze )
+	->  IO [ ( String , (Int , [Int] ) ) ] -- ^ ( Matrikel, Punkt, Pl√§tze )
 collect deco u fm = do
 
     let nice (e,p) = if deco then do (s,_) <- decorate u e
@@ -144,7 +144,7 @@ collect deco u fm = do
 	     return (e,(p,[k]))
 
     return $ take scoreItems
-	   $ sortBy ( \ (_,(p,_)) -> negate p ) -- grˆﬂten zuerst
+	   $ sortBy ( \ (_,(p,_)) -> negate p ) -- gr√∂√üten zuerst
 	   $ fmToList
 	   $ addListToFM_C ( \ (x,xs) (y,ys) -> (x+y,xs++ys) ) emptyFM 
 	   $ infos
@@ -153,7 +153,7 @@ collect deco u fm = do
 collect :: DataFM 
 	 ->  [ ( MNr, Int ) ] -- ^ ( Matrikel, Punkt )
 collect fm = take scoreItems
-	   $ sortBy ( \ (m, p) -> negate p ) -- grˆﬂten zuerst
+	   $ sortBy ( \ (m, p) -> negate p ) -- gr√∂√üten zuerst
 	   $ fmToList
 	   $ addListToFM_C (+) emptyFM
 	   $ do  ( auf, es ) <- fmToList fm

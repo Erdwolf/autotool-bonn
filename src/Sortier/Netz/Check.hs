@@ -2,7 +2,6 @@
 
 module Sortier.Netz.Check where
 
---   $Id$
 
 import Sortier.Netz.Type
 import Sortier.Netz.Rechnung
@@ -35,7 +34,7 @@ check soll n = do
 	       , nest 4 $ toDoc $ toBild ( n , xss )
 	       ]
     mapM_ verify $ testing soll
-    inform $ text "Das Netz hat alle möglichen Eingaben korrekt geordnet."
+    inform $ text "Das Netz hat alle mÃ¶glichen Eingaben korrekt geordnet."
     return ()
 
 -- | es gilt ja der satz: 
@@ -73,8 +72,8 @@ instance C.Verify Sortier Int where
 instance C.Partial Sortier Int Netz where
 
     describe p i = vcat 
-	  [ text "Finden Sie ein Sortiernetz für"
-	         <+> toDoc i <+> text "Eingänge"
+	  [ text "Finden Sie ein Sortiernetz fÃ¼r"
+	         <+> toDoc i <+> text "EingÃ¤nge"
 	  , text "mit weniger als" <+> toDoc ( size $ bubble i )
 		 <+> text "Komparatoren."
 	  ]        

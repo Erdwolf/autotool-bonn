@@ -18,7 +18,7 @@ instance ( Show a ) => ToDot ( Term a ) where
     toDotProgram t = "dot"
     toDotOptions t = "" -- d.h. kein rankdir
     toDot t = 
-	let -- compact show, geht nur für einstellige kind-nummern
+	let -- compact show, geht nur fÃ¼r einstellige kind-nummern
 	    sp ps = "R" ++ concat ( map show ps ) 
 	
             tricky cs =

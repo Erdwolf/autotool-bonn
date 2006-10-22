@@ -37,14 +37,14 @@ meta limit me = do
 			 , periode = p
 			 }
     
-    inform $ text "Ich prüfe die Shift-Instanzen"
+    inform $ text "Ich prÃ¼fe die Shift-Instanzen"
     inform $ toDoc shs
     sequence_ $ map (silent . verify limit) shs
     inform $ text "OK"
     newline    
 
     let ps = map periode shs
-    inform $ text "Ich untersuche das Wachstum der Periodenlängen."
+    inform $ text "Ich untersuche das Wachstum der PeriodenlÃ¤ngen."
 
     delta 0 ps
 

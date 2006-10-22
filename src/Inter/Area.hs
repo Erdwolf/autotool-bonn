@@ -8,8 +8,8 @@ import Inter.Click
 import Autolib.Reader
 import Autolib.ToDoc
 
-import qualified Text.Html
-import Text.Html ( pre, primHtml, (<<), (+++), (!)
+import qualified Text.XHtml
+import Text.XHtml ( pre, primHtml, (<<), (+++), (!)
 		 , table, aboves, besides, td, submit, br, h3
 		 )
 
@@ -46,8 +46,8 @@ editor :: ( ToDoc a, Reader a )
        => String
        -> a -- ^ default value
        -> Env 
-       -> ( a -> IO Text.Html.Html )
-       -> IO Text.Html.Html
+       -> ( a -> IO Text.XHtml.Html )
+       -> IO Text.XHtml.Html
 editor nm def env computer = do
     -- get contents of textarea if it is there and user has *not* clicked Example
     let dropin = show $ toDoc def
@@ -62,11 +62,11 @@ editor nm def env computer = do
 	   , br , display a , br , buttons a , br , log
 	   ]
 	    
-display :: Area -> Text.Html.Html
-display a =  Text.Html.textarea ( Text.Html.primHtml $ contents a  ) 
-              ! [ Text.Html.name $ (textarea_name a)
-	        , Text.Html.rows $ show $ height a + 2
-	        , Text.Html.cols $ show $ width  a
+display :: Area -> Text.XHtml.Html
+display a =  Text.XHtml.textarea ( Text.XHtml.primHtml $ contents a  ) 
+              ! [ Text.XHtml.name $ (textarea_name a)
+	        , Text.XHtml.rows $ show $ height a + 2
+	        , Text.XHtml.cols $ show $ width  a
 	        ]
 
 -- | parse contents of area
@@ -74,8 +74,8 @@ display a =  Text.Html.textarea ( Text.Html.primHtml $ contents a  )
 -- * if fail, display error message, don't call continuation
 parser :: ( ToDoc a, Reader a )
        => Area 
-       -> (a -> IO Text.Html.Html)
-       -> IO Text.Html.Html
+       -> (a -> IO Text.XHtml.Html)
+       -> IO Text.XHtml.Html
 parser a continue = case parse (parse_complete reader) (name a) $ contents a of
 	Left e -> do
 	    return $ pre << show 
@@ -86,7 +86,7 @@ parser a continue = case parse (parse_complete reader) (name a) $ contents a of
             c <- continue x
  	    return $ primHtml "gelesen:" +++ pre << show (toDoc x) +++ c
 
-buttons :: Area -> Text.Html.Html
-buttons a = (<<) table $ aboves $ return $ Text.Html.besides $ do
+buttons :: Area -> Text.XHtml.Html
+buttons a = (<<) table $ aboves $ return $ Text.XHtml.besides $ do
                act <- [ Submit, Example ]
                return $ td <<  submit (button_name a) ( show act )

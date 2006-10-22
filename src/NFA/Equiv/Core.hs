@@ -41,7 +41,7 @@ toKlassen fm = mkSet $ eltsFM $ addListToFM_C union emptyFM $ do
 
 ----------------------------------------------------------------------
 
--- | verfeinert äquivalenzklassen
+-- | verfeinert Ã¤quivalenzklassen
 refine :: Ord s => (s -> s -> Bool) -> Klassen s -> Klassen s
 refine eq xss = mkSet $ do xs <- setToList xss 
 			   split eq $ setToList xs 
@@ -53,7 +53,7 @@ split eq (x : xs) =
     in	mkSet (x : yeah) : split eq noh
 
 
--- | wer hier vorkommt, ist nicht äquivalent
+-- | wer hier vorkommt, ist nicht Ã¤quivalent
 mkTafel :: (Ord c, Ord s) => [ Trenner c s ] -> Set (s,s) 
 mkTafel ts = mkSet $ do
     (p,q,c) <- ts
@@ -127,7 +127,7 @@ check_trenner a fm (p,q,c) = do
 		   , st q c q'
 		   , text "sind"
 		   , if flag then empty else text "nicht"
-		   , text "äquivalent"
+		   , text "Ã¤quivalent"
 		   ]
     if flag
        then do reject $ msg
@@ -141,8 +141,8 @@ check_trenners a fm ts = mapM_ (check_trenner a fm) ts
 
 ----------------------------------------------------------------------
 
--- | prüfe einen schritt
-schritt :: NFAC c s
+-- | prÃ¼fe einen schritt
+schritt :: (  NFAC c s )
 	=> Set c -> NFA c s 
 	-> Klassen s  -> (Int, [ Trenner c s ])
 	-> Reporter ( Klassen s )
@@ -150,13 +150,13 @@ schritt sigma a xss (k, ts) = do
     let fm = toMappe xss
     inform $ text $ unwords [ "Schritt", show k ]
     nested 4 $ do
-        inform $ text "Die Äquivalenzklassen sind:" <+> toDoc xss
-        inform $ text "Ich prüfe Ihre trennenden Tupel:" <+> toDoc ts
+        inform $ text "Die Ã„quivalenzklassen sind:" <+> toDoc xss
+        inform $ text "Ich prÃ¼fe Ihre trennenden Tupel:" <+> toDoc ts
 
         inform $ text "sind alle Tupel korrekt?"
         nested 4 $ check_trenners a fm ts
 
-        inform $ text "sind alle für diesen Schritt nötigen Tupel vorhanden?"
+        inform $ text "sind alle fÃ¼r diesen Schritt nÃ¶tigen Tupel vorhanden?"
         let ts' = trenner sigma a xss
         if isEmptySet (mkTafel ts' `minusSet` mkTafel ts)
             then do 
@@ -164,14 +164,14 @@ schritt sigma a xss (k, ts) = do
                  let cls = anwende xss ts 
                  let ca = compact a cls
 		 inform $ vcat 
-			[ text "Durch Zusammenfassen der bis hier äquivalenten Zustände"
+			[ text "Durch Zusammenfassen der bis hier Ã¤quivalenten ZustÃ¤nde"
 			, text "ergibt sich dieser Automat"
 			, text "(ist im Allgemeinen nicht deterministisch"
-			, text "und nicht äquivalent zur Eingabe):"
+			, text "und nicht Ã¤quivalent zur Eingabe):"
 			]
 		 peng ca
 	         return $ cls
-            else do reject $ text "Nein. Sie müssen noch mehr Zustände trennen."
+            else do reject $ text "Nein. Sie mÃ¼ssen noch mehr ZustÃ¤nde trennen."
 
 ----------------------------------------------------------------------------
 
@@ -182,8 +182,8 @@ equiv :: NFAC c s
 	-> Reporter (Klassen s)
 equiv url sigma a tss = do
     inform $ vcat $ map text 
-	          [ "Sie sollen die Äquivalenzklassen"
-		  , "für diesen Automaten bestimmen:"
+	          [ "Sie sollen die Ã„quivalenzklassen"
+		  , "fÃ¼r diesen Automaten bestimmen:"
 		  , url
 		  ]
     foldM ( schritt sigma a ) ( start a ) $ zip [0..] $ tss ++ [[]]

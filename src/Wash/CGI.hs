@@ -1,4 +1,4 @@
--- © 2001 Peter Thiemann
+-- Â© 2001 Peter Thiemann
 
 -- with modifications by Johannes Waldmann joe@informatik.uni-leipzig.de
 --   $Id$

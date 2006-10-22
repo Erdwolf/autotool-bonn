@@ -2,7 +2,7 @@
 
 module Code.Hamming.Partial where
 
---  $Id$
+
 
 import Code.Hamming.Data
 import Code.Hamming.Check
@@ -18,7 +18,7 @@ data Hamming = Hamming
 instance Partial Hamming Config Code where
 
     describe Hamming conf = vcat
-        [ text "Gesucht ist ein Code (als Liste von Wörtern über L, R)"
+        [ text "Gesucht ist ein Code (als Liste von WÃ¶rtern Ã¼ber L, R)"
 	, text "mit diesen Eigenschaften:"
 	, nest 4 $ toDoc conf
 	]
@@ -30,7 +30,7 @@ instance Partial Hamming Config Code where
         let (d, p) = minimum_distance code
 	inform $ vcat
 	       [ text "Die Hamming-Weite dieses Codes ist:" <+> toDoc d
-	       , text "zwei Wörter mit diesem Abstand sind:" <+> toDoc p
+	       , text "zwei WÃ¶rter mit diesem Abstand sind:" <+> toDoc p
 	       ]
 
     total Hamming conf code = do
@@ -43,7 +43,7 @@ instance Partial Hamming Config Code where
 	    check what target value = case target of
                  (Fixed ,  x ) -> helper what (==) "genau"      x value
                  (Atleast, x ) -> helper what (<=) "wenigstens" x value
-                 (Atmost,  x ) -> helper what (>=) "höchstens"  x value
+                 (Atmost,  x ) -> helper what (>=) "hÃ¶chstens"  x value
         check Width (Code.Hamming.Data.width conf) l
         check Size (Code.Hamming.Data.size   conf) (length code)
         check Distance (Code.Hamming.Data.distance   conf) d

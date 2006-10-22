@@ -36,7 +36,7 @@ sam xs c n = do
     let l = length xs
     let (q, r) = divMod n l
 
-    -- hat evtl. größere länge als n
+    -- hat evtl. grÃ¶ÃŸere lÃ¤nge als n
     ys <- genau $ zip xs $ repeat 1
     let w = do y <- ys; replicate (q+1) y
 

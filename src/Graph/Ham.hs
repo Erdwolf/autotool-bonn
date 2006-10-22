@@ -2,7 +2,7 @@
 
 module Graph.Ham where
 
--- | hamiltonsche wege: wege, die jeden knoten genau einmal berühren
+-- | hamiltonsche wege: wege, die jeden knoten genau einmal berÃ¼hren
 
 import Autolib.Graph.Type ( Graph , Kante , kante , von , nach , knoten 
 			  , mkGraph 
@@ -87,7 +87,7 @@ hypercube n = let nodes = alle "01" n
 		 return $ kante x y
 
 -- | wie hypercube, aber als knoten der wert, wenn die knoten in hypercube
---   als binärziffer aufgefasst werden
+--   als binÃ¤rziffer aufgefasst werden
 
 hypercubeI :: Int -> Graph Int
 hypercubeI n = let nodes        = alle [0,1] n

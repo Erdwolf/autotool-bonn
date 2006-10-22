@@ -50,10 +50,10 @@ dec77 :: (  ToDoc a, ToDoc [a] )
 dec77 cache [] = do
     return $ reverse cache
 dec77 cache (x @ (Letter l) : xs) = do
-    inform $ text "nächstes Zeichen:" <+> toDoc x
+    inform $ text "nÃ¤chstes Zeichen:" <+> toDoc x
     dec77 (l : cache) xs
 dec77 cache (x @ (Block {}) : xs) = do
-    inform $ text "nächstes Zeichen:" <+> toDoc x
+    inform $ text "nÃ¤chstes Zeichen:" <+> toDoc x
     let w = take ( width x ) $ drop ( dist x) cache
     inform $ text "entspricht:" <+> toDoc ( reverse w )
     dec77 (w ++ cache) xs
@@ -148,7 +148,7 @@ dec (b, s) (c @ (Entry i) : xs) = do
             return ( s , ( insert b w', s ) )
 	Nothing -> reject $ vcat
                           [ text "Es gibt keinen Eintrag" <+> toDoc i 
-                          , text "im aktuellen Wörterbuch" <+> toDoc b
+                          , text "im aktuellen WÃ¶rterbuch" <+> toDoc b
                           ]
         Just w -> do
             -- known entry

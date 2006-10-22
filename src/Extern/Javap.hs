@@ -1,5 +1,5 @@
 -- TODO das ist erstmal ein ad-hoc-programm
--- sollte sp‰ter zerlegt und generalisiert werden
+-- sollte sp√§ter zerlegt und generalisiert werden
 -- falls es sich denn lohnen sollte
 
 --  $Id$
@@ -21,7 +21,7 @@ instance C.Partial Bytecode BC Java where
     initial p i   = Java $ unlines [ "return (x0 * x1);" ]
     partial p i b = return ()
     total   p i b = undefined
-        -- hier muﬂ leider ein IO-Prozess laufen!
+        -- hier mu√ü leider ein IO-Prozess laufen!
   
 
 

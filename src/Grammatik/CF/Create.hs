@@ -26,14 +26,14 @@ next ch limit g = addListToFM_C union g $ do
      let w = wx ++ wy
      return ( l, mkSet [ w | length w < limit ] )
 
--- | erzeuge alle wörter bis zu gegebener länge
+-- | erzeuge alle wÃ¶rter bis zu gegebener lÃ¤nge
 create :: Grammatik -> Int -> [ String ]
 create g limit = uniqs $ do
        let ch = make g
        n <- [ 0 .. limit ]
        create_ch ch n
 
--- | erzeuge alle wörter bis zu gegebener länge
+-- | erzeuge alle wÃ¶rter bis zu gegebener lÃ¤nge
 create_ch :: Ord x 
        => Chomsky x
        -> Int

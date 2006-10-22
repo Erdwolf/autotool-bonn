@@ -16,7 +16,7 @@ type Exp = Term Identifier Identifier
 
 infer :: Signature -> Exp -> Reporter Type
 infer sig exp = do
-    inform $ text "berechne Typ für Ausdruck:" <+> toDoc exp
+    inform $ text "berechne Typ fÃ¼r Ausdruck:" <+> toDoc exp
     t <- nested 4 $ case exp of
 	Node n [] ->
             case do v <- variables sig ; guard $ vname v == n ; return v
@@ -33,14 +33,14 @@ infer sig exp = do
 	    of  [ f ] -> do
 		    inform $ text "Funktion hat Deklaration:" <+> toDoc f
 		    assert ( length args == length ( arguments f ) )
-			   $ text "Anzahl der Argumente stimmt mit Deklaration überein?" 
+			   $ text "Anzahl der Argumente stimmt mit Deklaration Ã¼berein?" 
 		    sequence_ $ do
 		        ( k, arg ) <- zip [1..] args
                         return $ do
-                            inform $ text "prüfe Argument Nr." <+> toDoc k
+                            inform $ text "prÃ¼fe Argument Nr." <+> toDoc k
 			    t <- nested 4 $ infer sig arg
 			    assert ( t == arguments f !! (k-1) )
-				   $ text "Argument-Typ stimmt mit Deklaration überein?"
+				   $ text "Argument-Typ stimmt mit Deklaration Ã¼berein?"
 		    return $ result f
                 [   ] -> reject $ text "ist nicht deklarierte Funktion."
 		fs    -> reject $ vcat

@@ -46,11 +46,11 @@ instance Partial From_Float Zahl Rational where
 
     total From_Float z r = do
          assert ( (wert z :: Rational) == r )
-                $ text "Stimmen die Bedeutungen der Zahlen sollen überein?"
+                $ text "Stimmen die Bedeutungen der Zahlen sollen Ã¼berein?"
 
 
 -- das ist nicht sehr sinnvoll,
--- mir fällt keine aufgabe ein, bei der man das braucht
+-- mir fÃ¤llt keine aufgabe ein, bei der man das braucht
 instance Size Rational where
     size r = fromIntegral $ length $ show r
 

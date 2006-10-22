@@ -69,7 +69,7 @@ reachables :: Ord a => Graph a -> a -> Set a
 reachables g x = unionManySets $ schichten ( nachbarn g ) x
 
 -------------------------------------------------------------------------------
--- | echte nachfolger (nicht reflexive nachfolger-h¸lle)
+-- | echte nachfolger (nicht reflexive nachfolger-h√ºlle)
 
 sucs :: Ord a => Graph a -> a -> Set a
 sucs g = last . fixL . scanl union emptySet . tail 
@@ -86,7 +86,7 @@ sucsN n g x = schichten_with_loops (nachbarn g) x !! n
 path :: Ord a => Graph a -> a -> a -> Bool
 path g x y = y `elementOf` sucs g x
 
--- | gibt es pfad der l‰nge n von x nach y
+-- | gibt es pfad der l√§nge n von x nach y
 
 pathN :: Ord a => Int -> Graph a -> a -> a -> Bool
 pathN n g x y = y `elementOf` sucsN n g x
@@ -102,7 +102,7 @@ wegematrix :: Ord a => Graph a -> AdjMatrix
 wegematrix = adjazenz_matrix . egraph
 
 -- | erreichbarkeitsgraph: kanten zwischen allen knoten, zwischen
--- | denen ein Pfad der L‰nge n existiert
+-- | denen ein Pfad der L√§nge n existiert
 -- | es gilt: n>0 => adjazenz_matrix (egraphN n g) = sig (adjazenz_matrix g)^n
 
 egraphN :: Ord a => Int -> Graph a -> Graph a
@@ -148,7 +148,7 @@ check_reg :: ( ToDoc a, ToDoc [a], Ord a )
 	  => Graph a
 	  -> Reporter ()
 check_reg g = do
-    inform $ fsep [ text "ist der Graph", info g, text "regul‰r?" ]
+    inform $ fsep [ text "ist der Graph", info g, text "regul√§r?" ]
     let degs = fmToList $ addListToFM_C union emptyFM $ do
            x <- lknoten g
 	   return (degree g x, unitSet x)
@@ -190,8 +190,8 @@ diam g = rad_diam g >>= return . snd
 -------------------------------------------------------------------------------
 
 -- | artikulationspunkte: knoten, die durch entfernen zu einem
--- | nicht-zusammenh‰ngenden graphen f¸hren. beachte: wenn der
--- | ausgangsgraph nicht zusammenh‰ngend ist, dann sind alle knoten
+-- | nicht-zusammenh√§ngenden graphen f√ºhren. beachte: wenn der
+-- | ausgangsgraph nicht zusammenh√§ngend ist, dann sind alle knoten
 -- | artikulationspunkte!
 
 artikulationen :: GraphC a => Graph a -> [a]
@@ -202,7 +202,7 @@ artikulationen g = filter ( \ n -> not $ isZusammen
 
 -------------------------------------------------------------------------------
 
--- | einfach zusammenh‰ngende komponenten als liste von graphen
+-- | einfach zusammenh√§ngende komponenten als liste von graphen
 
 komponenten :: GraphC a => Graph a -> [Graph a]
 komponenten g
@@ -217,7 +217,7 @@ komponenten g
 
 -- | bisektion: eine kantenmenge wird entfernt, sodass der
 -- | resultierende graph in zwei teilgraphen (nicht komponenten!)
--- | zerf‰llt, die sich um hˆchstens eins in der knotenzahl
+-- | zerf√§llt, die sich um h√∂chstens eins in der knotenzahl
 -- | unterscheiden und zwischen denen keine kanten verlaufen
 
 bisektionen :: GraphC a => Graph a -> [ Set (Kante a) ]
@@ -242,7 +242,7 @@ bisektierend g ns = all ( \ k -> not $ or
 
 
 -- | bisektionsweite: minimale anzahl kanten die zur bisektion
--- | entfernt werden muss -> maﬂ f¸r zuverl‰ssigkeit von netzen
+-- | entfernt werden muss -> ma√ü f√ºr zuverl√§ssigkeit von netzen
 
 bisektionsweite :: GraphC a => Graph a -> Int
 bisektionsweite = cardinality . head . bisektionen

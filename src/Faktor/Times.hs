@@ -1,9 +1,9 @@
 {-# OPTIONS -fglasgow-exts #-}
 
--- | Korrekturfunktion für Faktorisierung
+-- | Korrekturfunktion fÃ¼r Faktorisierung
 
 -- joe@informatik.uni-leipzig.de
--- benutzt code für challenger/PCProblem
+-- benutzt code fÃ¼r challenger/PCProblem
 -- von Markus Kreuz  mai99byv@studserv.uni-leipzig.de
 
 module Faktor.Times (
@@ -11,7 +11,7 @@ module Faktor.Times (
      , make_quiz
     ) where
 
---  $Id$
+
 
 import Challenger.Partial
 import Autolib.ToDoc

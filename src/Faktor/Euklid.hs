@@ -34,7 +34,7 @@ instance Partial Euklid ( Integer, Integer ) ( Integer, Integer ) where
     total Euklid (a, b) (c, d) = do
         let g = a * c + b * d
         inform $ fsep 
-               [ text "Ist", toDoc g, text "größter gemeinsamer Teiler"
+               [ text "Ist", toDoc g, text "grÃ¶ÃŸter gemeinsamer Teiler"
                , text "von", toDoc a, text "und", toDoc b, text "?"
                ]
         if  ggt (a, b) == g

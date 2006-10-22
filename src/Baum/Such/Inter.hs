@@ -31,12 +31,12 @@ steps :: ( Such baum, OpC a, ToDot (baum a), Show (baum a), Hash (baum a) )
       -> Reporter ( baum a )
 steps b [] [] = return b
 steps b [] send = reject $ vcat
-         [ text "Sie wollen noch diese Operationen ausführen:"
+         [ text "Sie wollen noch diese Operationen ausfÃ¼hren:"
 	 , nest 4 $ toDoc send
 	 , text "es sind aber keine mehr zugelassen."
 	 ]
 steps b plan [] = reject $ vcat
-         [ text "Es müssen noch diese Operationen ausgeführt werden:"
+         [ text "Es mÃ¼ssen noch diese Operationen ausgefÃ¼hrt werden:"
 	 , nest 4 $ toDoc plan
 	 ]
 steps b (p : plan) (s : send) = do

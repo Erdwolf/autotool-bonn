@@ -20,7 +20,7 @@ import Autolib.Schichten
 import Random
 import Data.List
 import Control.Monad
-import Text.Html (Html)
+import Text.XHtml (Html)
 
 type Gene = [(Int,Int)]
 
@@ -140,7 +140,7 @@ tofile :: FilePath
      -> Reporter a
      -> IO ()
 tofile fname r = do
-        ( _ , out :: Text.Html.Html ) <- Autolib.Reporter.run r
+        ( _ , out :: Text.XHtml.Html ) <- Autolib.Reporter.run r
 	writeFile ( fname ++ ".html" ) $ show out
 
 ------------------------------------------------------------------------------

@@ -13,6 +13,7 @@ import Autolib.TES.OC
 import Autolib.TES.Apply
 
 import Autolib.Size
+import Autolib.Reader
 import Autolib.Set
 import Autolib.Reader
 import Autolib.FiniteMap

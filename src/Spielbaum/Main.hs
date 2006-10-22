@@ -37,7 +37,7 @@ info = putStrLn $ unlines
       , "-------------------------------------------------------------------"
       , "Optionen:"
       , "    Das Bild des Graph kann Kombinationen von Spielposition,"
-      , "    GV-Wert und Grundy-Wert enthalten, einstellbar über:"
+      , "    GV-Wert und Grundy-Wert enthalten, einstellbar Ã¼ber:"
       , "          -> Spielposition, GV-Wert, Grundy-Wert"
       , "    -gv   -> Spielposition, GV-Wert"
       , "    -gr   -> Spielposition, Grundy-Wert"

@@ -40,7 +40,7 @@ wrapped msg act = do
     return x
 
 -- | liefert bewertete Aufgaben von mat aus DB,
--- TODO: mat = [] sollte auch StudentMNr als Spalte zurückliefern
+-- TODO: mat = [] sollte auch StudentMNr als Spalte zurÃ¼ckliefern
 studAufgDB :: Maybe MNr -> IO ( [ String ] , [ [ StrOrInt ] ])
 studAufgDB mat = wrapped "studAufgDB" $ do
        conn <- myconnect 
@@ -77,7 +77,7 @@ studAufgDB mat = wrapped "studAufgDB" $ do
 
 
 
--- | Neuen Studenten einfügen
+-- | Neuen Studenten einfÃ¼gen
 -- TODO: EMail-Ueberpruefung
 insertNewStudentDB :: String -- ^ vorname
 		   -> String -- ^ nachname
@@ -255,7 +255,7 @@ updatePasswortDB mat pass = wrapped "updatePasswortDB" $ do
        return ()
 
 
--- | Übungsgruppen
+-- | Ãœbungsgruppen
 -- liefert alle freien Gruppen
 getFreeGruppenDB :: IO ( [String], [ (GNr, [String]) ] )
 getFreeGruppenDB = wrapped "getFreeGruppenDB" $ do
@@ -271,7 +271,7 @@ getFreeGruppenDB = wrapped "getFreeGruppenDB" $ do
             ++ "COUNT(SNr) as studentCount" ++ " "
             ++ "\nFROM gruppe \n"
 
-            -- verbinde gruppe mit stud_grp über GNr
+            -- verbinde gruppe mit stud_grp Ã¼ber GNr
             ++ " LEFT JOIN stud_grp USING (GNr) "
 
             ++ ", vorlesung" ++ " "
@@ -366,7 +366,7 @@ getSNrFromMatDB ( mat :: MNr ) =
     return inh
 
 -- | if student ist bereits in gruppe zu gleicher vorlesung,
--- then diese ändern, else gruppe hinzufügen
+-- then diese Ã¤ndern, else gruppe hinzufÃ¼gen
 
 changeStudGrpDB  mat grp =  
     changeStudGrpDB' mat (fromCGI grp )
@@ -422,7 +422,7 @@ leaveStudGrpDB' mnr gnr =
 data Col a = Col String
 data Cola = forall a . ( Show a, SqlBind a ) => Cola (Col a)
 
--- | liefert (jetzt!)  mgl. Aufgaben für Student
+-- | liefert (jetzt!)  mgl. Aufgaben fÃ¼r Student
 -- FIXME: use Control.Aufgabe type
 
 mglAufgabenDB :: SNr -> IO [ (( ANr, Name, Typ),( Config, HiLo, Remark)) ]
@@ -470,7 +470,7 @@ mglAufgabenDB' isAdmin snr =
 ----------------------------------------------------------------------------------
 
 
--- | liefert (nun und demnaechst mgl). Aufgaben für Student
+-- | liefert (nun und demnaechst mgl). Aufgaben fÃ¼r Student
 
 -- >  bzw. alle Student (snr=[])
 -- > ( [header ... ] , [ ( ANr, Name , Subject , Path , Highscore , Von , Bis ) ] ) 
@@ -516,7 +516,7 @@ mglNextAufgabenDB_old snr =
 
 
 -- | liefert bewertete Aufgaben von mat aus DB,
--- TODO: mat = [] sollte auch StudentMNr als Spalte zurückliefern
+-- TODO: mat = [] sollte auch StudentMNr als Spalte zurÃ¼ckliefern
 mglNextAufgabenDB :: SNr -> IO ( [String],[[StrOrInt]])
 mglNextAufgabenDB snr = wrapped "mglNextAufgabenDB" $ do
        conn <- myconnect 

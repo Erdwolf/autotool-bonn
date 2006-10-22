@@ -2,7 +2,6 @@
 
 module Inter.Types where
 
---   $Id$
 
 import Autolib.Reporter
 import Gateway.Help
@@ -86,12 +85,12 @@ data Var p i b =
 	     -- (den der benutzer in auswahlliste sieht)
 	     -- gar nicht mehr wahr!
 	     , tag :: String
-	     -- | erzeugt cached version der instanz (o. ä.)
+	     -- | erzeugt cached version der instanz (o. Ã¤.)
 	     , key :: Matrikel -> IO Key
 
-	     -- | holt tatsächliche instanz
+	     -- | holt tatsÃ¤chliche instanz
 	     -- TODO: der Reporter hier ist unsinnig,
-	     -- das würfeln soll schweigend gehen,
+	     -- das wÃ¼rfeln soll schweigend gehen,
 	     -- wenn es etwas zu sagen gibt,
 	     -- dann soll es mit (informed) drangeschrieben werden.
 

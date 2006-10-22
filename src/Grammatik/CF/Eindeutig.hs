@@ -22,9 +22,9 @@ eindeutig cut =
         let dups = ambigs cut g
         when ( not $ null dups ) $ reject $ vcat
              [ text "Diese Grammatik ist nicht eindeutig."
-             , text "Die folgenden Wörter haben mehrere Ableitungsbäume"
+             , text "Die folgenden WÃ¶rter haben mehrere AbleitungsbÃ¤ume"
              , text "(die eventuell noch vorkommenden Variablen sind produktiv,"
-             , text "d. h. die Ableitungen können zu Terminalwörtern fortgesetzt werden):"
+             , text "d. h. die Ableitungen kÃ¶nnen zu TerminalwÃ¶rtern fortgesetzt werden):"
              , nest 4 $ vcat $ do
                    (b, b') <- take 4 $ dups
                    return $ vcat 

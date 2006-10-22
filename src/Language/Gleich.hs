@@ -11,9 +11,9 @@ module Language.Gleich
 ) 
 -}
 
--- TODO: allgemeineres interface schreiben für
+-- TODO: allgemeineres interface schreiben fÃ¼r
 -- { a^i b^j c^k | p(i,j,k) }
--- für irgendwelche prädikate p
+-- fÃ¼r irgendwelche prÃ¤dikate p
 
 where
 
@@ -107,7 +107,7 @@ ordered_gleich_con xs w =
 	     in  all ( uncurry ( == ) ) $ zip ls $ tail ls 
 
 ordered_gleich_sam :: String -> Int -> Int -> IO [ String ]
--- liefert evtl. etwas kürzere Wörter
+-- liefert evtl. etwas kÃ¼rzere WÃ¶rter
 ordered_gleich_sam xs c n = 
     let ( d, m ) = divMod n ( length xs )
     in  return [ do x <- xs ; replicate d x ]
@@ -129,9 +129,9 @@ ordered_ungleich xs = Language
        , alphabet     = mkSet xs
        , sample       = ordered_ungleich_sam xs
        , anti_sample  = \ c n -> do
-	    -- die sind überhaupt durcheinander (ganz kaputt)
+	    -- die sind Ã¼berhaupt durcheinander (ganz kaputt)
 	    ws <- anti (ordered_ungleich_sam xs) (ordered_ungleich_con xs) c n
-	    -- die sind zu sehr in ordnung (alle blöcke gleichlang)
+	    -- die sind zu sehr in ordnung (alle blÃ¶cke gleichlang)
 	    us <- ordered_gleich_sam xs c n
 	    return $ us ++ ws
        , contains     = ordered_ungleich_con xs
@@ -149,7 +149,7 @@ ordered_ungleich_con xs w =
 ordered_ungleich_sam :: String -> Int -> Int -> IO [ String ]
 ordered_ungleich_sam xs c n = do
     -- c : (maximale) Anzahl 
-    -- n : Wortlänge
+    -- n : WortlÃ¤nge
     ws <- ordered_gleich_sam xs c n 
     us <- mapM edits $ concat $ replicate ( 4 * c ) ws
     return $ uniq $ filter ( ordered_ungleich_con xs ) $ us

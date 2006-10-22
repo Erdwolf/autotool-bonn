@@ -38,7 +38,7 @@ data  ConfigC c m => Config c m =
 	    , op :: Exp Integer -- zu berechnende funktion
 	      , num_args :: Int	      -- zum Testen: anzahl 
 	      , max_arg :: Integer 
-	    , cut :: Int -- höchstens soviele schritte
+	    , cut :: Int -- hÃ¶chstens soviele schritte
 	    , checks :: [c]  -- sonstige Bedingungen an Maschine
 	    , start :: m -- damit soll der student anfangen
 	      }

@@ -29,12 +29,12 @@ positiv_liste cut m  xss = do
      let fehler = take 3 $ do 
             xs <- xss
             let ks = akzeptierend cut m xs
-            guard $ null ks -- d. h. fälschlicherweise nicht akzeptiert
+            guard $ null ks -- d. h. fÃ¤lschlicherweise nicht akzeptiert
             return xs
      case fehler of
-          []  -> inform $ text "alle Wörter aus der Positiv-Liste wurden akzeptiert"
+          []  -> inform $ text "alle WÃ¶rter aus der Positiv-Liste wurden akzeptiert"
           xss -> do
-	     inform $ text "diese Wörter der Positiv-Liste wurden nicht akzeptiert:"
+	     inform $ text "diese WÃ¶rter der Positiv-Liste wurden nicht akzeptiert:"
 	     inform $ toDoc xss
 	     vorrechnens m xss
 
@@ -46,12 +46,12 @@ negativ_liste cut m xss = do
     let fehler = take 3 $ do 
          xs <- xss
          let ks = akzeptierend cut m xs
-         guard $ not $ null ks -- d. h. fälschlicherweise akzeptiert
+         guard $ not $ null ks -- d. h. fÃ¤lschlicherweise akzeptiert
          return xs
     case fehler of 
 	 []  -> inform $ text $ "jedes Wort aus der Negativ-Liste wurden nicht akzeptiert"
          xss -> do 
-	     inform $ text "diese Wörter der Negativ-Liste wurden doch akzeptiert:"
+	     inform $ text "diese WÃ¶rter der Negativ-Liste wurden doch akzeptiert:"
 	     inform $ toDoc xss
 	     vorrechnens m xss
 

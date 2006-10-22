@@ -31,11 +31,11 @@ instance (  Symbol c )
 
     report Derive inst = do 
         inform $ vcat
-            [ text "gesucht ist für das Term-Ersetzungs-System"
+            [ text "gesucht ist fÃ¼r das Term-Ersetzungs-System"
             , nest 4 $ toDoc $ system inst
             , text "eine Folge von Schritten, die"
             , nest 4 $ toDoc $ from inst
-            , text "überführt in"
+            , text "Ã¼berfÃ¼hrt in"
             , nest 4 $ toDoc $ to inst
             ]
         peng $ from inst
@@ -55,7 +55,7 @@ instance (  Symbol c )
         let sys = system inst
         t <- foldM ( exec sys ) ( from inst ) steps
         assert ( t == to inst )
-               $ text "stimmt mit Ziel überein?"
+               $ text "stimmt mit Ziel Ã¼berein?"
 
 
 make_fixed :: Make
@@ -63,6 +63,7 @@ make_fixed = direct Derive Rewriting.Derive.Instance.example
 
 make_quiz :: Make
 make_quiz = quiz Derive Rewriting.Derive.Config.example
+
 
 instance (Symbol v, Symbol c, Reader ( TRS v c ) )
     => Generator Derive ( Config v c ) ( Instance v c ) where

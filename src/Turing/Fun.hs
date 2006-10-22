@@ -30,7 +30,7 @@ fun_test cut pairs m = do
     inform $ text $ "Ihre Turingmaschine ist"
     inform $ toDoc m
 
-    inform $ text "Bei allen folgenden Rechnungen berücksichtige ich"
+    inform $ text "Bei allen folgenden Rechnungen berÃ¼cksichtige ich"
     inform $ text $ "nur die ersten " ++ show cut ++ " erreichbaren Konfigurationen."
 
     check m

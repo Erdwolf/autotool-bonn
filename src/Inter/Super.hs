@@ -3,8 +3,6 @@
 
 -- TODO: hack this module into pieces
 
---  $Id$
-
 module Main where
 
 import Gateway.CGI
@@ -73,7 +71,7 @@ import Data.List ( partition )
 import Control.Monad
 import qualified Control.Exception
 
-import qualified Text.Html
+import qualified Text.XHtml
 
 import Inter.DateTime ( defaults )
 
@@ -111,14 +109,14 @@ data Code = Stat | Auf | Einsch
 use_account tmk = do
 
     h3 "Login"
-    -- für Student und Tutor gleicher Start
+    -- fÃ¼r Student und Tutor gleicher Start
 
     svt @ ( stud, vor, tutor0, attends0 ) <- Inter.Login.form
 
     ( tutor, attends ) <- 
         if tutor0
         then do
-            h3 "Sie sind Tutor für diese Vorlesung."
+            h3 "Sie sind Tutor fÃ¼r diese Vorlesung."
             open btable
             result <- click_choice_with_default 0 "Arbeiten als..."
                   [ ("Tutor", ( tutor0, attends0 ) ) 
@@ -138,39 +136,39 @@ use_account tmk = do
     close -- btable 
     aktion
 
--- | Studenten behandeln, die in keiner Übungsgruppe sind
+-- | Studenten behandeln, die in keiner Ãœbungsgruppe sind
 waisenkinder :: UNr -> Form IO ()
 waisenkinder u = do
     h3 $ "Waisenkinder"
-    plain $  "Studenten Ihrer Schule, die keine Übungsgruppe gewählt haben"
+    plain $  "Studenten Ihrer Schule, die keine Ãœbungsgruppe gewÃ¤hlt haben"
     studs <- io $ S.orphans $ u
     open btable
     Inter.Statistik.edit_studenten studs
 
--- | alle Übungen,
--- markiere besuchte Übungen
--- one-click für verlassen\/besuchen 
+-- | alle Ãœbungen,
+-- markiere besuchte Ãœbungen
+-- one-click fÃ¼r verlassen\/besuchen 
 veranstaltungen :: ( S.Student , V.Vorlesung , Bool ) -> Form IO ()
 veranstaltungen ( stud , vor, False ) = do
     h3 "Einschreibung"
 
-    -- dieser student für diese Vorlesung
+    -- dieser student fÃ¼r diese Vorlesung
     ags <- io $ G.get_attended ( V.vnr vor ) ( S.snr stud )
 
     case ags of
-        [] -> plain "Sie sind in keine Übungsgruppe eingeschrieben."
-        _  -> show_gruppen "Sie sind eingeschrieben in Übungsgruppe:" ags
+        [] -> plain "Sie sind in keine Ãœbungsgruppe eingeschrieben."
+        _  -> show_gruppen "Sie sind eingeschrieben in Ãœbungsgruppe:" ags
 
-    -- alle Gruppen für diese Vorlesung
+    -- alle Gruppen fÃ¼r diese Vorlesung
     gs <- io $ G.get_this $ V.vnr vor
-    show_gruppen "alle Übungsgruppen zu dieser Vorlesung:" gs
+    show_gruppen "alle Ãœbungsgruppen zu dieser Vorlesung:" gs
 
     when ( Control.Types.Current /= V.einschreib vor ) $ do
          br
 	 plain $ unlines [ "Das Ein/Ausschreiben ist"
 			 , "nur von " ++ show ( V.einschreibVon vor )
 			 , "bis " ++ show ( V.einschreibBis vor )
-			 , "möglich."
+			 , "mÃ¶glich."
 			 ]
 	 mzero
     opts <- sequence $ do
@@ -207,7 +205,7 @@ veranstaltungen ( stud , vor, True ) = do
     h3 "Daten der Vorlesung"
     V.edit ( V.unr vor ) ( Just vor )
     
-    h3 "Übungsgruppen zu dieser Vorlesung:"
+    h3 "Ãœbungsgruppen zu dieser Vorlesung:"
     gs <- io $ G.get_this $ V.vnr vor
 
     open btable
@@ -215,12 +213,12 @@ veranstaltungen ( stud , vor, True ) = do
         [ ("anzeigen", View )
         , ("erzeugen", Add )
 	, ("bearbeiten", Edit )
-	, ("löschen", Delete )
+	, ("lÃ¶schen", Delete )
 	]
     close -- btable
     case act of
 	 View -> do
-             show_gruppen "Übungsgruppen zu dieser Vorlesung:" gs
+             show_gruppen "Ãœbungsgruppen zu dieser Vorlesung:" gs
 	 Add -> do
 	     G.edit ( V.vnr vor ) Nothing
 	 Edit -> do
@@ -236,7 +234,7 @@ veranstaltungen ( stud , vor, True ) = do
 	         g <- gs
 		 return ( toString $ G.name g , g )
              open row
-	     click <- submit "wirklich löschen?"
+	     click <- submit "wirklich lÃ¶schen?"
              close
              close
 	     io $ G.delete $ G.gnr g
@@ -305,7 +303,7 @@ aufgaben tmk ( stud, vnr, tutor ) = do
 		      return $ do
 		          Inter.Common.punkte tutor stud auf
 			      ( Nothing, Nothing, Just w
-			      , Just $ Text.Html.primHtml 
+			      , Just $ Text.XHtml.primHtml 
 					    "Bewertung durch Tutor"  
 			      )
 
@@ -327,8 +325,8 @@ aufgaben tmk ( stud, vnr, tutor ) = do
 		      Nothing -> return ()
 		      Just ( inst, inp, res, com ) -> do
                            [ stud ] <- io $ S.get_snr $ SA.snr sauf
-			   -- das muß auch nach Einsendeschluß gehen,
-			   -- weil es der Tutor ausführt
+			   -- das muÃŸ auch nach EinsendeschluÃŸ gehen,
+			   -- weil es der Tutor ausfÃ¼hrt
 			   Inter.Common.punkte tutor stud auf ( inst, inp, res, com )
 	 mzero
 
@@ -336,10 +334,10 @@ aufgaben tmk ( stud, vnr, tutor ) = do
     
     when ( Delete == action ) $ do
         Just anr <- return manr
-	wirk <- submit "wirklich löschen?"
+	wirk <- submit "wirklich lÃ¶schen?"
 	when wirk $ do
             io $ A.delete anr
-            plain $ unwords [ "Aufgabe", show anr, "gelöscht." ]
+            plain $ unwords [ "Aufgabe", show anr, "gelÃ¶scht." ]
 	mzero
 
     ( mk, type_click ) <- find_mk tmk tutor mauf
@@ -351,7 +349,7 @@ aufgaben tmk ( stud, vnr, tutor ) = do
                 case mauf of
 		  Nothing -> do 
                       -- kommt eigentlich nicht vor?
-		      plain "keine Aufgabe gewählt"
+		      plain "keine Aufgabe gewÃ¤hlt"
 		      mzero
 		  Just auf -> do
                       return auf
@@ -380,8 +378,8 @@ aufgaben tmk ( stud, vnr, tutor ) = do
 -------------------------------------------------------------------------
 
 -- | bestimme aufgaben-typ (maker)
--- für tutor: wählbar
--- für student: fixiert (ohne dialog)
+-- fÃ¼r tutor: wÃ¤hlbar
+-- fÃ¼r student: fixiert (ohne dialog)
 find_mk tmk tutor mauf = do
     let pre_mk = fmap (toString . A.typ) mauf
     if tutor 
@@ -403,7 +401,7 @@ find_mk tmk tutor mauf = do
 		 Just it  <- return $ lookup pre mks
 		 return ( it, False )
 
--- | ändere aufgaben-konfiguration (nur für tutor)
+-- | Ã¤ndere aufgaben-konfiguration (nur fÃ¼r tutor)
 edit_aufgabe mks mk mauf vnr manr type_click = do
     case mk of 
         Make doc ( fun :: conf -> Var p i b ) verify ex -> do
@@ -501,16 +499,16 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
             when up $ io $ A.put manr auf'
             return auf'
 
--- | matrikelnummer zum aufgabenlösen:
--- tutor bekommt eine gewürfelt (und kann neu würfeln)
+-- | matrikelnummer zum aufgabenlÃ¶sen:
+-- tutor bekommt eine gewÃ¼rfelt (und kann neu wÃ¼rfeln)
 -- student bekommt genau seine eigene
 get_stud tutor stud = 
     if tutor 
        then do
          hr
 	 m0 <- io $ randomRIO (0, 999999 :: Int) 
-	 -- neu würfeln nur bei änderungen oberhalb von hier
-	 plain "eine gewürfelte Matrikelnummer:"
+	 -- neu wÃ¼rfeln nur bei Ã¤nderungen oberhalb von hier
+	 plain "eine gewÃ¼rfelte Matrikelnummer:"
 	 mat <- with ( show m0 ) $ textfield ( show m0 )
          -- falls tutor, dann geht es hier nur um die matrikelnr
 	 return $ stud { S.mnr = fromCGI mat
@@ -522,7 +520,7 @@ get_stud tutor stud =
 
 find_previous edit vnr mks stud auf = do
 
-    -- kann sein, daß S.anr  error  ergibt (für tutor)
+    -- kann sein, daÃŸ S.anr  error  ergibt (fÃ¼r tutor)
     sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
                    `Control.Exception.catch` \ any -> return []
     case sas of
@@ -593,7 +591,7 @@ show_previous edit vnr mks stud auf sa0 = do
         Just file -> do
             cs <- io $ logged "Super.view" 
     	         $ readFile $ toString file
-    	    html $ Text.Html.primHtml cs
+    	    html $ Text.XHtml.primHtml cs
         Nothing -> do
 	    plain "(keine Aufgabe)"
     br ; plain "Einsendung:"
@@ -618,7 +616,7 @@ show_previous edit vnr mks stud auf sa0 = do
 		 Nothing -> return "(keine Eingabe)"
     case edit of
 	 False -> do
-             html $ Text.Html.primHtml h
+             html $ Text.XHtml.primHtml h
              blank -- ??
 	     return Nothing
          True  -> do
@@ -640,7 +638,7 @@ show_previous edit vnr mks stud auf sa0 = do
 			     , mgrade
 			     , case mgrade of 
 			           Just x | x /= Pending -> 
-			                 Just $ Text.Html.primHtml com 
+			                 Just $ Text.XHtml.primHtml com 
 			           _ -> Nothing
 			     )
 
@@ -661,9 +659,9 @@ make_instant vnr manr stud fun auf = do
 data Method = Textarea | Upload
     deriving ( Eq, Show, Typeable )
 
--- | eingabe und bewertung der lösung
--- für tutor zum ausprobieren
--- für student echt
+-- | eingabe und bewertung der lÃ¶sung
+-- fÃ¼r tutor zum ausprobieren
+-- fÃ¼r student echt
 solution vnr manr stud 
         ( Make doc ( fun :: conf -> Var p i b ) verify ex ) auf = do
 
@@ -681,8 +679,8 @@ solution vnr manr stud
     when ( not $ A.current auf ) vorbei
 
     ---------------------------------------------------------
-    html $ Text.Html.anchor Text.Html.! [ Text.Html.name "hotspot" ]
-         Text.Html.<< ""
+    html $ Text.XHtml.anchor Text.XHtml.! [ Text.XHtml.name "hotspot" ]
+         Text.XHtml.<< ""
 
     h3 "Neue Einsendung"
 
@@ -706,7 +704,7 @@ solution vnr manr stud
 	      else return b0
 	    open table
 	    open row
-            let helper :: Text.Html.Html
+            let helper :: Text.XHtml.Html
                 helper = Autolib.Output.render 
                  $ Autolib.Output.Beside
                       ( Autolib.Output.Text "ein Ausdruck vom Typ" )
@@ -721,7 +719,7 @@ solution vnr manr stud
             return sol
 
 	Upload -> do
-            plain "Datei auswählen:"
+            plain "Datei auswÃ¤hlen:"
             up <- file undefined
 	    fsub  <- submit "Datei absenden"
             when ( not fsub ) $ mzero -- break
@@ -729,7 +727,7 @@ solution vnr manr stud
 
     Just cs <- return mcs
     hr ; h3 "Neue Bewertung"
-    (res, com :: Text.Html.Html) <- io $ run $ evaluate p i cs
+    (res, com :: Text.XHtml.Html) <- io $ run $ evaluate p i cs
     html com
     return ( Just icom, Just cs, fromMaybe No res, Just com )
 
@@ -741,9 +739,9 @@ parameter_table auf = do
 
 ------------------------------------------------------------------------
 
-data Action = Solve  -- ^ neue Lösung bearbeiten
-	    | View -- ^ alte Lösung + Bewertung ansehen
-	    | Edit -- ^ alte Lösung + Bewertung ändern
+data Action = Solve  -- ^ neue LÃ¶sung bearbeiten
+	    | View -- ^ alte LÃ¶sung + Bewertung ansehen
+	    | Edit -- ^ alte LÃ¶sung + Bewertung Ã¤ndern
 	    | Rescore [ ( Wert, SA.Stud_Aufg, S.Student ) ] 
             | Clear_Cache
 	    | Statistics 
@@ -755,8 +753,8 @@ data Action = Solve  -- ^ neue Lösung bearbeiten
 -- data Display = Current | Old 
 --     deriving ( Show, Eq, Typeable )
 
--- | für Student: statistik aller seiner Aufgaben anzeigen, 
--- für Tutor: kann Aufgabenlösung sehen und (nach-)korrigieren
+-- | fÃ¼r Student: statistik aller seiner Aufgaben anzeigen, 
+-- fÃ¼r Tutor: kann AufgabenlÃ¶sung sehen und (nach-)korrigieren
 -- mit aufgabenauswahl
 statistik tutor stud aufs = do
     hr 
@@ -865,7 +863,7 @@ tutor_statistik vnr auf = do
     hr
     saufs <- io $ Control.Stud_Aufg.DB.get_anr $ A.anr auf
 
-    h3 "Statistik für diese Aufgabe"
+    h3 "Statistik fÃ¼r diese Aufgabe"
 
 
     open_btable_with_sorter 
@@ -915,7 +913,7 @@ tutor_statistik vnr auf = do
 	      return rs
 
     close -- btable
-    click ( "Edits ausführen"
+    click ( "Edits ausfÃ¼hren"
 	  , ( Rescore ( concat $ rscores1 ++ rscores2 ) 
 	    , error "sa" :: SA.Stud_Aufg
 	    , error "s" :: S.Student

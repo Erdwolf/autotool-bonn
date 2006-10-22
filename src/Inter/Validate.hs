@@ -6,10 +6,10 @@ import Inter.Types
 import Inter.Logged
 import qualified Inter.Param as P
 
--- das wird sp‰ter mal autotool/bin/Settings.hs
+-- das wird sp√§ter mal autotool/bin/Settings.hs
 import qualified Inter.Param as S 
 
-import Text.Html
+import Text.XHtml
 -- import SQLqueries hiding ( logged )
 
 import Control.Types 
@@ -33,7 +33,7 @@ validate par = do
     mbsnr <- logged ( show [ "loginDB", show $ P.matrikel par, show $ P.passwort par ] ) 
 	   $ loginDB (P.matrikel par) (P.passwort par)
 
-    let msg = p << "Bitte g¸ltige Matrikelnummer und Passwort eingeben, danach Aufgabe w‰hlen."
+    let msg = p << "Bitte g√ºltige Matrikelnummer und Passwort eingeben, danach Aufgabe w√§hlen."
     case mbsnr of 
      -- nein 
      Nothing -> return $ Left ( p << msg, par )
@@ -58,7 +58,7 @@ validate par = do
                                           }
                  _      -> return 
                            $ Left 
-                           $ p << "mˆgliche Probleme/Aufgaben/Versionen:"
+                           $ p << "m√∂gliche Probleme/Aufgaben/Versionen:"
                                  +++ pre << render ( toDoc $ P.variants par )
 
 -}
@@ -99,7 +99,7 @@ continue set = do
 		       , S.names = names
 		       }
              mks -> return $ Left 
-		  ( p << "nicht genau ein passender maker f¸r diesen typ, sondern:"
+		  ( p << "nicht genau ein passender maker f√ºr diesen typ, sondern:"
 		    +++ p << pre << render ( toDoc mks )
 		  , set { S.names = names }
 		  )

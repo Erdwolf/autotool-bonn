@@ -22,8 +22,8 @@ import Autolib.ToDoc
 
 ---------------------------------------------------------------------------
 
--- | zeigt 5 ableitungsbäume
--- und 5 abgeleitete terminalwörter
+-- | zeigt 5 ableitungsbÃ¤ume
+-- und 5 abgeleitete terminalwÃ¶rter
 zeige :: Int
       -> Grammatik 
       -> Reporter [ String ]
@@ -33,28 +33,28 @@ zeige cut g = do
     -- damit das tool nicht sinnlos rumrechnet
     zeige_woerter cut $ reduktion g
 
--- | zeigt 5 ableitungsbäume
+-- | zeigt 5 ableitungsbÃ¤ume
 zeige_ableitungen :: Int
       -> Grammatik 
       -> Reporter ()
 zeige_ableitungen cut g = inform $ vcat 
-	[ text "Hier sind einige ableitbare Wörter"
+	[ text "Hier sind einige ableitbare WÃ¶rter"
 	, text "(nicht notwendig nur aus Terminalzeichen)"
-	, text "mit dazugehörigen Ableitungsbäumen:"
+	, text "mit dazugehÃ¶rigen AbleitungsbÃ¤umen:"
         , text ""
         , rundown 5 $ map ( \ b -> ( yield b, b ) ) 
 	            $ take cut $ baums g
 	]
 
--- | zeigt 5 ableitbare terminalwörter
--- und liefert (at most) cut ableitbare terminalwörter
+-- | zeigt 5 ableitbare terminalwÃ¶rter
+-- und liefert (at most) cut ableitbare terminalwÃ¶rter
 zeige_woerter :: Int
       -> Grammatik 
       -> Reporter [ String ]
 zeige_woerter cut g = do
     if ( not $ startsymbol g `elementOf` variablen g )
        then do
-	    inform $ text "Es sind keine Terminalwörter ableitbar."
+	    inform $ text "Es sind keine TerminalwÃ¶rter ableitbar."
 	    return []
        else do
             let wbs = do
@@ -63,7 +63,7 @@ zeige_woerter cut g = do
 		     guard $ all (`elementOf` terminale g) w
 		     return (w, b)
 	    inform $ vcat
-		   [ text "Einige ableitbare Terminalwörter sind:"
+		   [ text "Einige ableitbare TerminalwÃ¶rter sind:"
 		   , text ""
 		   , rundown 5 $ wbs
 		   ]

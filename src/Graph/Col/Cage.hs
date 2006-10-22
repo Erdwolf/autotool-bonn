@@ -26,14 +26,14 @@ instance ( GraphC a, Show a )
 
     report p (c, g) = do
         inform $ vcat
-	       [ text "Gesucht ist eine konfliktfreie Knoten-Färbung des Graphen"
+	       [ text "Gesucht ist eine konfliktfreie Knoten-FÃ¤rbung des Graphen"
 	       , nest 4 $ toDoc g
 	       ]
         peng $ g { layout_program = Dot
 		 , layout_hints = [ "-Nshape=ellipse" ]
 		 }
 	inform $ fsep 
-	       [ text "mit höchstens", toDoc c, text "verschiedenen Farben." ]
+	       [ text "mit hÃ¶chstens", toDoc c, text "verschiedenen Farben." ]
 
     initial p (c, g) = listToFM $ do
         v <- lknoten g
@@ -42,13 +42,13 @@ instance ( GraphC a, Show a )
 
     partial p (c, g) f = do
         let s1 = ( text "Knotenmenge des Graphen" , knoten g )
-	    s2 = ( text "gefärbte Knoten" , mkSet $ keysFM f )
+	    s2 = ( text "gefÃ¤rbte Knoten" , mkSet $ keysFM f )
 	Autolib.Reporter.Subset.check s1 s2
     
     total p (c, g) f = do
         let col v = lookupWithDefaultFM f (error $ "Graph.Col.Plain" ++ show v) v
         let fg = gmap ( \ v ->  (v, col v ) ) g 
-        inform $ vcat [ text "Der gefärbte Graph ist" ]
+        inform $ vcat [ text "Der gefÃ¤rbte Graph ist" ]
         peng $ fg { layout_program = Dot
 		  , layout_hints = [ "-Nshape=ellipse" ]
 		  }
@@ -60,12 +60,12 @@ instance ( GraphC a, Show a )
 	     [ text "Diese Kante(n) verlaufen zwischen gleichfarbigen Knoten:"
 	     , nest 4 $ toDoc wrong
 	     ]
-	inform $ text "Die Färbung ist konfliktfrei."
+	inform $ text "Die FÃ¤rbung ist konfliktfrei."
         let cc = C.measure p (c, g) f 
 	inform $ text "Sie benutzt" 
 		 <+> toDoc cc
 		 <+> text "Farben."
-	when ( cc > c ) $ reject $ text "erlaubt sind aber höchstens" <+> toDoc c
+	when ( cc > c ) $ reject $ text "erlaubt sind aber hÃ¶chstens" <+> toDoc c
 
 instance ( GraphC a, Show a )
     => C.Measure Col ( Integer, Graph a ) ( FiniteMap a Color ) where

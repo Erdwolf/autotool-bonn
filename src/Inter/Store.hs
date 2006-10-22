@@ -16,9 +16,9 @@ import Data.Char
 data Type = Instant | Input | Report deriving ( Eq, Ord, Show )
 
 -- | alles: speichert in "latest.input"
--- d. h. überschreibt immer
+-- d. h. Ã¼berschreibt immer
 -- zur sicherheit auch: von richtigen einsendungen: speicher in "$pid.input"
--- d. h. eigentlich kein überschreiben
+-- d. h. eigentlich kein Ã¼berschreiben
 store :: Type -> P.Type -> IO ( String, Maybe File )
 store ty p = logged "Inter.store" $ do
     pid <- fmap show $ System.Posix.getProcessID 

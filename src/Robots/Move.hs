@@ -65,7 +65,7 @@ reverse_executes k z @ (n, d) = do
     case slide k p d of
          Just q | q == p -> do
              -- ist blockiert in richtung d,
-	     -- kˆnnte also von gegen¸ber gekommen sein
+	     -- k√∂nnte also von gegen√ºber gekommen sein
              let st = case slide k p d' of
                    Nothing -> ( if 0 == dx' then x else breit k * dx'
 			      , if 0 == dy' then y else breit k * dy'
@@ -85,7 +85,7 @@ executes k [] = do
     inform $ nice k
     return k
 executes k (z : zs) = do
-    inform $ vcat [ nice k , nest 4  $ text "n‰chster Zug:" <+> toDoc z ] 
+    inform $ vcat [ nice k , nest 4  $ text "n√§chster Zug:" <+> toDoc z ] 
     case Robots.Move.execute k z of
 	   Nothing -> reject $ text "nicht erlaubt" 
 	   Just k' -> executes k' zs

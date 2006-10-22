@@ -42,7 +42,7 @@ vorrechnens :: TUM y z
 	   => Turing y z -> [[y]]
 	   -> Reporter ()
 vorrechnens a xss = do
-    inform $ text "rechnen für eingaben" <+> toDoc xss
+    inform $ text "rechnen fÃ¼r eingaben" <+> toDoc xss
     mapM_ (vorrechnen a) xss
 
 

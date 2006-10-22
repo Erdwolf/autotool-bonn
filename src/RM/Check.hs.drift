@@ -22,19 +22,19 @@ data Checker = MaxReg Register
 instance Check Checker Program where
     check (MaxReg r) p = do
         assert ( max_reg p <= r ) $ 
-            text $ concat [ "Benutzen Sie höchstens das "
+            text $ concat [ "Benutzen Sie hÃ¶chstens das "
 			  , show r
 			  , "-te Register?"
 			  ]
     check (NumReg k) p = do
         assert ( cardinality (regs p) <= k ) $ 
-            text $ concat [ "Benutzen Sie höchstens "
+            text $ concat [ "Benutzen Sie hÃ¶chstens "
 			  , show k
 			  , " Register?"
 			  ]
     check (UseReg rs) p = do
         assert ( subseteq (regs p) rs ) $ 
-            text $ concat [ "Benutzen Sie höchstens die Register "
+            text $ concat [ "Benutzen Sie hÃ¶chstens die Register "
 			  , show rs
 			  , "?"
 			  ]

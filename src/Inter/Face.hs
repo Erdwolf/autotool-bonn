@@ -4,11 +4,11 @@
 --
 -- Allgemein:
 --  bei jedem CGI-aufruf werden: 
---  - die login-daten neu geprüft, 
+--  - die login-daten neu geprÃ¼ft, 
 --  - die instanz neu erzeugt,
---  - die lösung bewertet, 
---  - und eine textarea für die eingabe
---    des nächsten versuchs generiert.
+--  - die lÃ¶sung bewertet, 
+--  - und eine textarea fÃ¼r die eingabe
+--    des nÃ¤chsten versuchs generiert.
 --
 --  keine komplexe Zustandsfolge wie bei wash,
 --  sondern jedesmal kompletter Neustart. 
@@ -82,17 +82,17 @@ iface makers env = logged "iface" $ do
 	       P.empty { P.makers = makers }
     motd <- logged "motd" $ Inter.Motd.contents
 
-    -- gültigkeit prüfen, aufg.-instanz generieren / bzw. holen
+    -- gÃ¼ltigkeit prÃ¼fen, aufg.-instanz generieren / bzw. holen
     --
     -- das ist eine IO-Aktion 
     -- (wg. DB-zugriffen und evtl. Random in Generierung)
     -- im Reporter.Type gibts (mit Absicht) (leider) keine IO
     res <- logged "validate" $ validate $ par0 
 
-    -- haben es wir geschafft zum aufgabenlösen
+    -- haben es wir geschafft zum aufgabenlÃ¶sen
     case res of
      -- nein, fehler (=msg) : entweder passwort falsch 
-     -- oder ungültige Aufgabe (-> zeige mögliche)
+     -- oder ungÃ¼ltige Aufgabe (-> zeige mÃ¶gliche)
      Left ( msg, par1 ) -> logged ( "lefty" ++ show msg ) $ do
           return $ page par1 ( msg +++ motd )
 
@@ -101,7 +101,7 @@ iface makers env = logged "iface" $ do
      Right par1 -> case P.variante par1 of
        Variant v -> do
 
-          -- key (für persönliche Aufgabe) und Aufgaben-Instanz
+          -- key (fÃ¼r persÃ¶nliche Aufgabe) und Aufgaben-Instanz
           -- herstellen und anzeigen
           k <- key  v $ P.smatrikel par1
           generator <- gen v k
@@ -120,21 +120,21 @@ iface makers env = logged "iface" $ do
           -- Beispiel-Eingabe holen  
           let b0 = Challenger.initial ( problem v ) i
 
-	  -- nur bei Submit wird textarea übernommen.
+	  -- nur bei Submit wird textarea Ã¼bernommen.
           ein <- case P.click par1 of
 	      Submit   -> return $ P.input par1
 	      Previous -> latest par1 
 		  `Control.Exception.catch` \ _ -> return ( show b0 )
 	      _  -> return $ show b0
 
-          -- Eingabe.Form füllen entweder mit
+          -- Eingabe.Form fÃ¼llen entweder mit
           let par2 = par1 { P.input = ein }
 
 	  ( res , ans, log ) <- 
 	      if ( P.click par1 == Submit )
 	      -- nur dann erfolgt berechnung und ausgabe der bewertung
 	      then do  
-		   -- neu (11. 11. 03): IO-Aktion ausführen
+		   -- neu (11. 11. 03): IO-Aktion ausfÃ¼hren
 		   ( res :: Maybe Int , com :: Doc ) 
 		       <- timed_run patience ( reject $ text "timer expired" ) 
 		          $ do -- TODO: set default dir
@@ -147,15 +147,15 @@ iface makers env = logged "iface" $ do
 		   return ( res , ans , log )
 	      else return ( Nothing , noHtml, noHtml )
 
-	  -- Höhe der Eingabe-Form berechnen
+	  -- HÃ¶he der Eingabe-Form berechnen
           let height = length $ filter ( == '\n' ) $ P.input par2
 
-	  -- bewertung ausgeben, bzw. zur Lösungseingabe auffordern
+	  -- bewertung ausgeben, bzw. zur LÃ¶sungseingabe auffordern
           let status = case res of
 		   Just s -> 
-			   p << bold << ( "Korrekte Lösung, Size: " ++ show s )
+			   p << bold << ( "Korrekte LÃ¶sung, Size: " ++ show s )
 		   Nothing -> 
-			   p << bold << ( "Hier Lösung eingeben:" )
+			   p << bold << ( "Hier LÃ¶sung eingeben:" )
 
 			   +++ p << "(experimentell) Typ der Eingabe:"
 			   +++ p << pre << show (toDoc $ typeOf b0)
@@ -180,7 +180,7 @@ iface makers env = logged "iface" $ do
 		 $   inst -- aufgabenstellung (immer)
 		 +++ motd -- message vom tage (immer)
 		 +++ log  -- logfile entry (nur bei submit)
-		 +++ status -- antwort OK bzw. Textarea für neue lösg (immer)
+		 +++ status -- antwort OK bzw. Textarea fÃ¼r neue lÃ¶sg (immer)
 		 +++ ans  -- korrektur-log (nur bei submit)
 
 ------------------------------------------------------------------------
@@ -191,7 +191,7 @@ page par msg =
     let 
 	heading = h2 << "Autotool-CGI-Inter.Face"
 	pref = preface par 
-	chg = primHtml "  Achtung, verwirft Lösung!!"
+	chg = primHtml "  Achtung, verwirft LÃ¶sung!!"
     in  header << thetitle << "Inter.Face"
             +++ body ( form ( foldr1 (+++) 
 			       [ heading , hr , pref , hr , msg ] )

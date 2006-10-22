@@ -382,7 +382,7 @@ example =
 	 	      subtype="plain",
 		      parameters=[],
 		      filename="",
-		      textLines=["Hallo, ihr daheim!   ", "diridiridideldö    ", "x=y und auch !\"§$%&/()§$%&/()=?"]}
+		      textLines=["Hallo, ihr daheim!   ", "diridiridideldÃ¶    ", "x=y und auch !\"Â§$%&/()Â§$%&/()=?"]}
 	 doc = DOC {  mediatype="multipart",
 	 	      subtype="mixed",
 		      parameters=[],
@@ -401,8 +401,8 @@ example2 =
   do bs <- readFile "/home/thiemann/lib/pictures/rijbewijs.jpg"
      let doc1 = (binaryDOC "image" "jpeg" bs) { filename="rijbewijs.jpg" }
 	 doc2 = textDOC "plain" ["Hallo, ihr daheim!   "
-	 			,"diridiridideldö    "
-				,"x=y und auch !\"§$%&/()§$%&/()=?"]
+	 			,"diridiridideldÃ¶    "
+				,"x=y und auch !\"Â§$%&/()Â§$%&/()=?"]
 	 doc = multipartDOC [doc2,doc1]
      return (simpleMail ["thiemann"] "Halloween" doc)
 

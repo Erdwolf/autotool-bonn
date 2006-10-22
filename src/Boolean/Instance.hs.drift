@@ -46,13 +46,13 @@ instance Partial Boolean BI ( Exp Bool ) where
 
     describe p i = vcat
         [ text "Gesucht ist ein aussagenlogischer Ausdruck,"
-	, text "der ‰quivalent ist zu:"
+	, text "der √§quivalent ist zu:"
 	, nest 4 $ toDoc $ formula i
 	, text ""
 	, parens $ vcat [ text "die Baumstruktur dieses Ausdrucks ist:"
 			, nest 4 $ draw  $ formula i
 			]
-	, text "und nur diese Operatoren enth‰lt:"
+	, text "und nur diese Operatoren enth√§lt:"
 	, nest 4 $ toDoc $ operators i
 	]
 

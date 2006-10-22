@@ -1,4 +1,4 @@
--- © 2001 Peter Thiemann
+-- Â© 2001 Peter Thiemann
 module Wash.Unique where
 
 import Random

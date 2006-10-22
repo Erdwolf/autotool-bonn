@@ -3,9 +3,9 @@
 -- Modul, welches die Datenstruktur Labeling mit Funktionen bereitstellt
 --
 -- Ein Labeling ist eine eindeutige Abbildung von Knoten eines Graphen in die
--- Menge der natürlichen Zahlen.
+-- Menge der natÃ¼rlichen Zahlen.
 --
--- Implementiert ist das Labeling zur Zeit mit einer FiniteMap, was von Außen
+-- Implementiert ist das Labeling zur Zeit mit einer FiniteMap, was von AuÃŸen
 -- allerdings nicht interessant ist. Ein Konten kann einen beliebigen Typ haben,
 -- wenn dieser einige Eigenschaften wie Ord hat. Das Label hingegen ist auf den
 -- festen Typ Integer gesetzt.
@@ -15,7 +15,7 @@
 
 --------------------------------------------------------------------------------
 
--- geändert: ToDoc Labeling joe@informatik.uni-leipzig.de
+-- geÃ¤ndert: ToDoc Labeling joe@informatik.uni-leipzig.de
 
 
 module Graceful.Labeling
@@ -56,7 +56,7 @@ unitLabeling (knoten, int) = Labeling (unitFM knoten int)
 mkLabeling :: Ord knoten => [(knoten, Integer)] -> Labeling knoten
 mkLabeling liste = Labeling (listToFM liste)
 
--- gibt die Anzahl der Abbildungen im Labeling zurück
+-- gibt die Anzahl der Abbildungen im Labeling zurÃ¼ck
 sizeL :: Labeling knoten -> Int
 sizeL (Labeling fmap) = sizeFM fmap 
 
@@ -70,18 +70,18 @@ labelSet :: Ord knoten => Labeling knoten -> Set Integer
 labelSet labeling = mkSet [label | (knoten, label) <- lToList labeling]
 
 -- gibt die Label der Knoten in einer geordneten Liste mit dem kleinten Label
--- zuerst zurück
+-- zuerst zurÃ¼ck
 getSortedLabelList :: Labeling knoten -> [Integer]
 getSortedLabelList (Labeling fmap) = sort $ eltsFM fmap
 
--- gibt das Label eines Knotens zurück
--- gibt -1 zurück, falls Label nicht gefunden wurde
+-- gibt das Label eines Knotens zurÃ¼ck
+-- gibt -1 zurÃ¼ck, falls Label nicht gefunden wurde
 getLabel :: Ord knoten => Labeling knoten -> knoten -> Integer
 getLabel (Labeling fmap) knoten = 
 	maybe (-1) id (lookupFM fmap knoten)
 
--- gibt die Differenz einer Kante zurück
--- gibt -1 zurück, falls eines der beiden Label nicht gefunden wurde
+-- gibt die Differenz einer Kante zurÃ¼ck
+-- gibt -1 zurÃ¼ck, falls eines der beiden Label nicht gefunden wurde
 getDiff :: Ord knoten => Labeling knoten -> Kante knoten -> Integer
 getDiff labeling kante =
 	labelDiff (getLabel labeling (von kante)) (getLabel labeling (nach kante))
@@ -93,7 +93,7 @@ labelDiff _ (-1) = (-1)
 labelDiff label1 label2 = abs (label1 - label2)
 
 --------------------------------------------------------------------------------
--- ToDoc Implementation für Labeling
+-- ToDoc Implementation fÃ¼r Labeling
 --------------------------------------------------------------------------------
 
 instance ToDoc knoten => ToDoc ( Labeling knoten ) where
@@ -105,7 +105,7 @@ instance (Ord knoten, Read knoten) => Read ( Labeling knoten ) where
     readsPrec p cs = do
         ( l, cs ) <- lex cs
 	if l == "Labeling" then do
-	     -- daß das jemals funkionierte ... now deprecated!
+	     -- daÃŸ das jemals funkionierte ... now deprecated!
 	     ( fm, cs ) <- reads cs
 	     return ( Labeling fm, cs )
 	 else if l == "mkLabeling" then do

@@ -2,7 +2,6 @@
 
 module Faktor.Quiz where
 
---  $Id$
 
 import Faktor.Param
 import Faktor.Type

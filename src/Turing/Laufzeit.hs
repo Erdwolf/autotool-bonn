@@ -53,8 +53,8 @@ instance Problem TM Laufzeit ( Turing Char Integer ) where
   verifiziereR TM conf m = do
 
     inform $ fsep [ text "Ihre Turingmaschine"
-		  , text "soll für Eingaben der Form A^n"
-		  , text "genau", info conf, text "Schritte ausführen."
+		  , text "soll fÃ¼r Eingaben der Form A^n"
+		  , text "genau", info conf, text "Schritte ausfÃ¼hren."
 		  ]
 
     inform $ text "Ihre Turingmaschine ist"
@@ -63,7 +63,7 @@ instance Problem TM Laufzeit ( Turing Char Integer ) where
     check m
     deterministisch m
 
-    inform $ text "ich teste die Laufzeit für die Eingabelängen" 
+    inform $ text "ich teste die Laufzeit fÃ¼r die EingabelÃ¤ngen" 
 	     <+> toDoc ( args conf )
 
     let falsch = do 
@@ -82,7 +82,7 @@ instance Problem TM Laufzeit ( Turing Char Integer ) where
 		ks -> do k <- ks
 			 guard $ nummer k /= t
 			 return ( ein
-				, fsep [ text "hält bereits im Schritt"
+				, fsep [ text "hÃ¤lt bereits im Schritt"
 				       , toDoc (nummer k), text ","
 				       , text "Laufzeit soll aber" 
 				       , toDoc t, text "sein." 

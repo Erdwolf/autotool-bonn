@@ -2,8 +2,8 @@
 
 -- | ein Code ist beschrieben durch 
 -- * length: anzahl der bits pro code-wort
--- * size: anzahl der code-wörter
--- * dist: minimaler Hamming-Abstand der code-wörter
+-- * size: anzahl der code-wÃ¶rter
+-- * dist: minimaler Hamming-Abstand der code-wÃ¶rter
 -- es gibt deswegen drei aufgabentypen:
 -- jeweils zwei parameter sind fixiert,
 -- der dritte ist zu optimieren

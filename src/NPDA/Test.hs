@@ -23,7 +23,7 @@ import Size
 
 data Config = Config 
      { tiefe :: Int
-     , det   :: Bool -- True: muß det. sein, False: egal	
+     , det   :: Bool -- True: muÃŸ det. sein, False: egal	
      , modus :: Mod
      }
      deriving (Eq, Ord, Show)
@@ -59,19 +59,19 @@ test conf pos neg a = do
 	  $ case akzeptiert a of
 	        Zustand zs -> return ()
 	        _ -> reject $ text 
-		     $ "Der Automat soll aber durch Endzustände akzeptieren."
+		     $ "Der Automat soll aber durch EndzustÃ¤nde akzeptieren."
 
      newline
      inform $ vcat $ map text
-	[ "bei allen folgenden Rechnungen berücksichtige ich"
+	[ "bei allen folgenden Rechnungen berÃ¼cksichtige ich"
 	, "nur die ersten " ++ show (tiefe conf) ++ " (durch Breitensuche)"
 	, "erreichbaren Konfigurationen,"
 	, "und auch davon nur die, bei denen das Kellerwort"
-	, "nicht länger als 2 * (Länge der noch zu lesenden Eingabe) + 3 ist"
+	, "nicht lÃ¤nger als 2 * (LÃ¤nge der noch zu lesenden Eingabe) + 3 ist"
 	]
 
      newline
-     inform $ text "ich starte den Automaten auf einigen Wörtern aus L"
+     inform $ text "ich starte den Automaten auf einigen WÃ¶rtern aus L"
      let (offen, geheim) = splitAt 2 pos
      vorrechnens a $ offen
      newline
@@ -80,7 +80,7 @@ test conf pos neg a = do
      positiv_liste (tiefe conf) a pos
 
      newline
-     inform $ text "ich starte den Automaten auf einigen Wörtern nicht in L"
+     inform $ text "ich starte den Automaten auf einigen WÃ¶rtern nicht in L"
      let (offen, geheim) = splitAt 2 neg
      vorrechnens a $ offen
      inform $ text "weitere Eingaben: " <+> toDoc geheim

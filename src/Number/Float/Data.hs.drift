@@ -34,7 +34,7 @@ instance ( ToDoc a, B.Range a ) => B.Range ( Signed a ) where
     range b s = silent $ do
         inform $ fsep
                [ text "teste Ziffern von", toDoc s
-               , text "bez�glich Basis", toDoc b
+               , text "bezÃ¼glich Basis", toDoc b
                ]
         nested 4 $ B.range b $ contents s
 
@@ -69,7 +69,7 @@ instance B.Range Natural where
     range b n = silent $ do
         inform $ fsep
                [ text "teste Ziffern von", toDoc n
-               , text "bez�glich Basis", toDoc b
+               , text "bezÃ¼glich Basis", toDoc b
                ]
         nested 4 $ B.range b $ ziffern n
 
@@ -106,7 +106,7 @@ instance B.Range Fixed where
     range b f = silent $ do
         inform $ fsep
                [ text "teste Ziffern von", toDoc f
-               , text "bez�glich Basis", toDoc b
+               , text "bezÃ¼glich Basis", toDoc b
                ]
         nested 4 $ B.range b $ pre f
         nested 4 $ B.range b $ post f

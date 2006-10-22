@@ -81,4 +81,4 @@ udecode ( Node f [t] ) | f == s = do
     i <- udecode t ; return $ succ i
 udecode t = reject 
           $ text "term" <+> toDoc t 
-                <+> text "ist keine Un‰rdarstellung einer Zahl."
+                <+> text "ist keine Un√§rdarstellung einer Zahl."

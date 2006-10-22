@@ -6,8 +6,6 @@ module Number.Float.To
 
 where
 
---  $Id$
-
 import Challenger.Partial
 import Autolib.ToDoc
 import Autolib.Reporter
@@ -36,7 +34,7 @@ instance Partial To_Float (Config, Rational) Zahl where
     describe To_Float (c, x) = vcat
 	   [ text "Welche Gleitkommazahl mit diesen Eigenschaften"
            , nest 4 $ toDoc c
-           , text "ist eine gute Näherung für" <+> toDoc x <+> text "?"
+           , text "ist eine gute NÃ¤herung fÃ¼r" <+> toDoc x <+> text "?"
 	   ]
 
     initial To_Float (c, x) = 

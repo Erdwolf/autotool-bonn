@@ -1,7 +1,5 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
--- $Id$
-
 module KnapsackFraction.Central 
 
 ( KnapsackFraction
@@ -45,13 +43,13 @@ instance Size Pack where size = const 1
 instance Partial KnapsackFraction Inp Pack where
 
     describe KnapsackFraction inp = vcat
-        [ text "Lösen Sie das Problem Bruchteilrucksack für die Objekte"
+        [ text "LÃ¶sen Sie das Problem Bruchteilrucksack fÃ¼r die Objekte"
 	, nest 4 $ toDoc $ objekte inp
 	, text "mit den Gewichten"
 	, nest 4 $ toDoc $ gewichte inp
 	, text "und den Werten"
 	, nest 4 $ toDoc $ werte inp
-        , text "Der Rucksack hat eine Kapazität von"
+        , text "Der Rucksack hat eine KapazitÃ¤t von"
 	, nest 4 $ toDoc $ kapazitaet inp
 	, text "Sie sollen auch den Gesamtwert Ihrer Packung angeben."
 	]
@@ -72,7 +70,7 @@ instance Partial KnapsackFraction Inp Pack where
         let badFM = filterFM ( \ _ v -> or [ v < 0 , v > 1 ] ) packFM
 
         when ( sizeFM badFM > 0 ) $ reject $ vcat
-	     [ text "Nein. Diese Bruchteile sind nicht möglich:"
+	     [ text "Nein. Diese Bruchteile sind nicht mÃ¶glich:"
 	     , nest 4 $ toDoc badFM
 	     ]
 
@@ -81,7 +79,7 @@ instance Partial KnapsackFraction Inp Pack where
         inform $ vcat 
 	       [ text "Stimmen der von Ihnen berechnete Gesamtwert"
 	       , nest 4 $ toDoc value
-	       , text "und der tatsächliche Gesamtwert Ihrer Packung überein?"
+	       , text "und der tatsÃ¤chliche Gesamtwert Ihrer Packung Ã¼berein?"
 	       ]
 
         let real_value = count (fm_fun $ werte inp) packFM
@@ -95,9 +93,9 @@ instance Partial KnapsackFraction Inp Pack where
         let weight = count (fm_fun $ gewichte inp) packFM
 
         inform $ vcat 
-	       [ text "Überschreitet das Gesamtgewicht Ihrer Einsendung"
+	       [ text "Ãœberschreitet das Gesamtgewicht Ihrer Einsendung"
 	       , nest 4 $ toDoc weight
-	       , text "die Kapazität des Rucksacks?"
+	       , text "die KapazitÃ¤t des Rucksacks?"
 	       ]
 
         when ( weight > (kapazitaet inp % 1) ) $ reject $ text "Ja."
@@ -107,7 +105,7 @@ instance Partial KnapsackFraction Inp Pack where
         inform $ text "Ist der Gesamtwert maximal?"
 
         when ( value < optimaler_wert inp ) $ reject 
-		 $ text "Nein. Es gibt eine Packung mit höherem Wert!"
+		 $ text "Nein. Es gibt eine Packung mit hÃ¶herem Wert!"
 
         inform $ text "Ja."
 

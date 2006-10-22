@@ -24,9 +24,9 @@ instance -- ( ToDoc a, ToDoc [a], Ord a, ToDoc [ (a, [ LR ] )] )
 	 => Partial Huffman ( Frequency a ) ( Code a LR ) where
 
     describe p i = vcat
-        [ text "gesucht ist ein optimaler Präfix-Code"
-	, nest 4 $ vcat [ text "über dem Code-Alphabet [L, R]"
-			, text "für" <+> toDoc i
+        [ text "gesucht ist ein optimaler PrÃ¤fix-Code"
+	, nest 4 $ vcat [ text "Ã¼ber dem Code-Alphabet [L, R]"
+			, text "fÃ¼r" <+> toDoc i
 			]
 	]
 

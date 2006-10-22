@@ -2,7 +2,6 @@
 
 module Graph.Cross where
 
---  $Id$
 
 import Graph.Util
 import Autolib.Graph.Basic
@@ -52,10 +51,10 @@ instance ( Show a, GraphC a )
 	peng g
 	inform $ vcat 
 	       [ text "ganzzahlige Koordinaten zu,"
-	       , text "so daﬂ sich eine Zeichnung mit hˆchstens"
+	       , text "so da√ü sich eine Zeichnung mit h√∂chstens"
                      <+> toDoc c <+> text "Kreuzungen"
 	       , text "und mit geringer Ausdehnung ergibt."
-               , parens $ text "Bewertung: 1000 * Kreuzungszahl + grˆﬂte Ausdehnung"
+               , parens $ text "Bewertung: 1000 * Kreuzungszahl + gr√∂√üte Ausdehnung"
 	       ]
 
     initial p (c, g) = listToFM $ do
@@ -150,7 +149,7 @@ is_crossing ab cd                  = trennt ab cd && trennt cd ab
 trennt :: Strecke -> Strecke -> Bool
 trennt (a, b) (c, d) = 0 <= area2 a c d * area2 b d c
 
--- | doppeltes des orientierten Fl‰cheninhalts
+-- | doppeltes des orientierten Fl√§cheninhalts
 area2 :: Punkt -> Punkt -> Punkt -> Integer
 area2 (x1,x2) (y1,y2) (z1,z2) = 
     det3 [[x1, x2, 1], [y1, y2, 1], [z1, z2, 1]]
@@ -164,8 +163,8 @@ det3 [ [a1,a2,a3], [b1,b2,b3], [c1,c2,c3] ]
 -- | Rechteck durch linke untere Ecke und rechte obere Ecke dargestellt
 type Box = (Punkt,Punkt)
 
--- | zwei rechtecke haben nichts gemeinsam, gdw. die grˆﬂere der beiden
---   linken unteren ecken grˆﬂer als die kleinere der beiden rechten 
+-- | zwei rechtecke haben nichts gemeinsam, gdw. die gr√∂√üere der beiden
+--   linken unteren ecken gr√∂√üer als die kleinere der beiden rechten 
 --   oberen ecken ist
 disjunct :: Box -> Box -> Bool
 disjunct (alr,atr) (blr,btr) = max alr blr >= min atr btr

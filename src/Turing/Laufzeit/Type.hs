@@ -10,7 +10,7 @@ import Reader
 
 data Laufzeit = 
      Laufzeit { fun :: Int -> Int     -- laufzeit-funktion (kein Read)
-	      , fun_info :: Doc	      -- funktions-name/-erkl‰rung
+	      , fun_info :: Doc	      -- funktions-name/-erkl√§rung
 	      , args :: [ Int ]	      -- argumente zum testen
 	      }
 

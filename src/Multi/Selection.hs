@@ -15,8 +15,8 @@ import Control.Monad ( guard )
 
 data Item = 
      Item { picture :: FilePath -- ohne dir
-	  , alternatives :: [ String ] -- vorschl‰ge
-	  , solution :: Int -- der isses (z‰hl. beginnt bei 0)
+	  , alternatives :: [ String ] -- vorschl√§ge
+	  , solution :: Int -- der isses (z√§hl. beginnt bei 0)
 	  }
      deriving ( Read, Show )
 

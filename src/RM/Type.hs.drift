@@ -2,7 +2,7 @@
 
 -- | Registermaschine:
 -- | * Beliebig viele Register 
--- | * Beliebig groﬂe Zahlen
+-- | * Beliebig gro√üe Zahlen
 -- | * Operationen: Add, Sub, While, Conc
 -- |
 -- | Semantik:

@@ -21,10 +21,10 @@ main :: IO ()
 main = do
     -- TODO : mappe von file lesen
     server port emptyFM
-    -- TODO : mappe zurückschreiben
+    -- TODO : mappe zurÃ¼ckschreiben
     return ()
 
--- single-threaded server: alles schön der reihe nach
+-- single-threaded server: alles schÃ¶n der reihe nach
 
 server :: Int -> Map -> IO Map
 server portnum m = do

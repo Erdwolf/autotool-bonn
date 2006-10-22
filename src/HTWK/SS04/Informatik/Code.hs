@@ -17,19 +17,19 @@ generates =
              { A.length   = (A.Atmost,  6)
 	     , A.size     = (A.Atleast, 5)
 	     , A.distance = (A.Atleast, 3)
-	     , A.optimize = "Größe"
+	     , A.optimize = "GrÃ¶ÃŸe"
 	     }
     , A.make $ A.Config
              { A.length = (A.Atmost, 4)
 	     , A.size = (A.Atleast, 6)
 	     , A.distance  = (A.Atleast, 2)
-	     , A.optimize = "Größe"
+	     , A.optimize = "GrÃ¶ÃŸe"
 	     }
     , A.make $ A.Config
              { A.length = (A.Atmost, 9)
 	     , A.size   = (A.Atleast, 10)
 	     , A.distance  = (A.Atleast, 5)
-	     , A.optimize = "Länge"
+	     , A.optimize = "LÃ¤nge"
 	     }
     , A.make $ A.Config
              { A.length = (A.Atmost, 8)

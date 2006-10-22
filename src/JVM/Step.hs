@@ -10,8 +10,8 @@ import Data.Array
 import Control.Monad ( guard )
 
 step :: State -> [ State ]
--- liste aller direkten nachfolge-zust‰nde
--- for deterministische maschinen hier immer l‰nge <= 1
+-- liste aller direkten nachfolge-zust√§nde
+-- for deterministische maschinen hier immer l√§nge <= 1
 step s = do
     guard $ inRange (bounds $ code s) (pc s)
     let b = code s ! pc s ; s' = stepped s
@@ -43,7 +43,7 @@ push i s = do
 pop :: State
     -> [ ( Integer, State ) ]
 pop s = do
-	    -- paﬂt nur, falls nicht leer
+	    -- pa√üt nur, falls nicht leer
 	    top : rest <- return $ stack s
 	    return ( top , s { stack = rest } )
 

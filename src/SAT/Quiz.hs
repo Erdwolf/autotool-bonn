@@ -24,10 +24,10 @@ quiz auf ver par =
          Var { problem = SAT
 	     , aufgabe = auf
 	     , version = ver
-	     -- erzeugt cached version der instanz (o. ä.)
+	     -- erzeugt cached version der instanz (o. Ã¤.)
 	     -- key :: Matrikel -> IO Key
 	     , key = \ mat -> return mat
-	     -- holt tatsächliche instanz
+	     -- holt tatsÃ¤chliche instanz
 	     -- gen :: Key -> IO ( Reporter i )
 	     , gen = \ key -> do
 	           seed $ read key

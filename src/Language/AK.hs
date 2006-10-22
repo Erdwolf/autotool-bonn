@@ -1,4 +1,4 @@
--- | formeln des aussagenkalküls
+-- | formeln des aussagenkalkÃ¼ls
 --  $Id$
 
 module Language.AK
@@ -85,7 +85,7 @@ zweist ts vs n = do
 
 
 anti_sam :: String -> Int -> Int -> IO [ String ]
--- wir würfeln hier einfach irgendeinen string.
+-- wir wÃ¼rfeln hier einfach irgendeinen string.
 -- das reicht, da weiter oben noch mutiert wird
 anti_sam vs c n = do
     let xs = setToList $ alphabet $ form vs

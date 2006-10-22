@@ -13,21 +13,26 @@ import qualified Machine.Numerical.Type as N
 import qualified Machine.Numerical.Config as Con
 import qualified Autolib.Reporter.Checker as Checker
 
+import Challenger.Partial
+
 import Autolib.ToDoc
 import Autolib.Reporter
 import Data.List ( intersperse )
-import Random
+import System.Random
+import Data.Typeable
 
 testliste :: Int -> Int -> Integer -> IO [[Integer]]
 testliste len ari hei = sequence $ replicate len $ do
     xs <- sequence $ replicate ari $ randomRIO (0, hei)
     return xs
 
-{-
-make :: ( Con.Check c m , Con.ConfigC c m , Machine m dat conf )
+
+make :: forall c m dat conf b
+     . ( Show c, Con.Check c m , Con.ConfigC c m , Machine m dat conf 
+       , Partial N.Computer ( N.Type m ) b, Typeable b
+       )
      => Con.Config c m
       ->  Make
--}
 make ( defcon :: Con.Config c m ) = 
     let t = "Machine.Numerical" ++ "." ++ Con.name defcon
     in Make t
@@ -55,7 +60,7 @@ fnum conf key = do
 	      , N.fun_info = fsep 
 		     [ text "\\" , toDoc xs , text "->", toDoc $ Con.op conf ]
 	      , N.extra_info = vcat $
-		(text "Die Maschine soll die folgenden Bedingungen erfüllen:") 
+		(text "Die Maschine soll die folgenden Bedingungen erfÃ¼llen:") 
 		 : 
 		(do c <- map show ( Con.checks conf) ++ Con.conditions conf
 		    return $ nest 4 $ text $ "* " ++ c

@@ -36,8 +36,8 @@ instance ( GraphC a, Show a, Haskell2Xml (Solution a) )
 	 , "des Graphen G."
 	 , "Gesucht ist eine Kantenmenge M von Kanten von G, die G bisektiert."
 	 , ""
-	 , "Eine Kantenmenge M bisektiert G, wenn durch Entfernen von M der Graph G in zwei Teilgraphen zerfällt,"
-	 , "die sich in ihrer Knotenzahl um höchstens 1 unterscheiden und zwischen denen keine Kanten verlaufen."
+	 , "Eine Kantenmenge M bisektiert G, wenn durch Entfernen von M der Graph G in zwei Teilgraphen zerfÃ¤llt,"
+	 , "die sich in ihrer Knotenzahl um hÃ¶chstens 1 unterscheiden und zwischen denen keine Kanten verlaufen."
 	 , ""
 	 , "Sie sollen die Kantenmenge M und die Knotenmengen der beiden Teilgraphen angeben."
 	 ]
@@ -53,7 +53,7 @@ instance ( GraphC a, Show a, Haskell2Xml (Solution a) )
 
     partial _ (_,g) (Solution { schnittkanten =ks, knoten1=l,knoten2=r} ) = do
 
-        inform $ text "Unterscheiden sich die Knotenanzahlen höchstens um 1?"
+        inform $ text "Unterscheiden sich die Knotenanzahlen hÃ¶chstens um 1?"
 
         when ( abs ((cardinality l) - (cardinality r)) > 1 ) 
 		 $ reject $ text "Nein."
@@ -61,12 +61,12 @@ instance ( GraphC a, Show a, Haskell2Xml (Solution a) )
         inform $ text "Ja."
 
         let s1 = ( text "Kantenmenge E(G) des Graphen" , kanten g )
-	    s2 = ( text "Kantenmenge M in Ihrer Lösung" , ks )
+	    s2 = ( text "Kantenmenge M in Ihrer LÃ¶sung" , ks )
 
 	Autolib.Reporter.Set.subeq s2 s1
 
-        let sl = ( text "Erste Knotenmenge in Ihrer Lösung" , l )
-	    sr = ( text "Zweite Knotenmenge in Ihrer Lösung" , r )
+        let sl = ( text "Erste Knotenmenge in Ihrer LÃ¶sung" , l )
+	    sr = ( text "Zweite Knotenmenge in Ihrer LÃ¶sung" , r )
             sk = ( text "Knotenmenge des Graphen" , knoten g )
 
 	Autolib.Reporter.Set.partition [sl,sr] sk
@@ -75,7 +75,7 @@ instance ( GraphC a, Show a, Haskell2Xml (Solution a) )
 
         let u = unlinks g $ setToList ks
 
-        inform $ text "Der Graph, der durch Entfernen der Kanten in Ihrer Lösung entsteht, hat die Gestalt:"
+        inform $ text "Der Graph, der durch Entfernen der Kanten in Ihrer LÃ¶sung entsteht, hat die Gestalt:"
 
 	peng $ u { layout_program = Circo
 		 , layout_hints = [ "-Nshape=ellipse" , "-Gsize=\"5,5\"" ]

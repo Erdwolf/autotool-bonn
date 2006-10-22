@@ -11,7 +11,7 @@ import Data.Array
 import Data.Maybe
 import Data.Char
 
--- | hübsches layout
+-- | hÃ¼bsches layout
 instance Nice Config where
   nice k = vcat $ do
     let bereich @ ((l,u), (r,o)) = hull_with_goals k

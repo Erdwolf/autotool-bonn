@@ -30,7 +30,7 @@ meDef
     = haskellStyle
         { opStart           = opLetter meDef
         , opLetter          = oneOf ","
-	-- muﬂ auch feldangaben wie "@3" verstehen
+	-- mu√ü auch feldangaben wie "@3" verstehen
 	, identStart   = letter <|> oneOf "_'@"
 	, identLetter    = alphaNum <|> oneOf "_'@"
         }

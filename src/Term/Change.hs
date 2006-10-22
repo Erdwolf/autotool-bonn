@@ -50,21 +50,21 @@ next trs t = do
     (l, r) <- trs
     sub <- maybeToList $ match l s0
 
-    -- jetzt die alters-information für die match-belegungen aufsammeln
+    -- jetzt die alters-information fÃ¼r die match-belegungen aufsammeln
     let sub' = addListToFM_C link emptyFM $ do
 	    q <- positions l
 	    let v = peek l q
 	    guard $ isvar v
 	    return ( case symbol v of Left n -> n , peek s q )
 	    
-    -- alters-information für das match-gerüst
+    -- alters-information fÃ¼r das match-gerÃ¼st
     let m = minimum $ do
 	    q <- positions l
 	    guard $ not $ isvar $ peek l q
-	    -- tatsächliches alter einer nonvar-pos
+	    -- tatsÃ¤chliches alter einer nonvar-pos
 	    return $ age $ symbol $ peek s q 
     let m' = 1 + m
-    -- gealtertes gerüst bauen
+    -- gealtertes gerÃ¼st bauen
     let r' = fmap ( \ f -> case f of 
 		    Left v -> Left v -- variable bleibt
 		    Right ff -> Right (m', ff) -- symbol mit alter

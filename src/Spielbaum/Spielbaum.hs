@@ -24,7 +24,7 @@ order_nodes graph =
         in
             zip knotenliste childrenlst
 
--- aus der Liste ( Knoten, Nachfolger ( Knoten ) ) und der anfänglich leeren Liste
+-- aus der Liste ( Knoten, Nachfolger ( Knoten ) ) und der anfÃ¤nglich leeren Liste
 -- von SpielbaumLabels wird die Liste der SpielbaumLabel berechnet
 renameNodes :: [ ( String , [ String ] ) ] -> [ SpielbaumLabel ] -> [ SpielbaumLabel ]
 renameNodes ordered old  
@@ -63,7 +63,7 @@ getEdges str_lst sLlist
                                  , nach = x }
                            : help xs
 
--- könnte eventuell eingespart werden
+-- kÃ¶nnte eventuell eingespart werden
 returnGameTree :: Wort Char -> Graph SpielbaumLabel
 returnGameTree wort = 
         Graph { knoten = mkSet node_list

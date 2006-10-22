@@ -2,7 +2,6 @@
 
 module Inter.Quiz where
 
---  $Id$
 
 import Challenger.Partial
 import Inter.Types
@@ -20,8 +19,8 @@ import Data.Char
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
--- | generator könnte noch zusätzliche information erzeugen
--- (und in cache schreiben) bsp. zu PCP-instanz auch die lösung
+-- | generator kÃ¶nnte noch zusÃ¤tzliche information erzeugen
+-- (und in cache schreiben) bsp. zu PCP-instanz auch die lÃ¶sung
 -- mit project holt man sich die instanz
 class ( Read k, ToDoc k ) => Generator p conf k | p conf -> k where
       generator :: p -> conf -> String -> IO k
@@ -40,10 +39,10 @@ make ( p :: p ) ( conf :: conf ) = this
   where this = Var 
              { problem = p
 	     , tag = dashed p ++ "-" ++ "Quiz"
-	     -- erzeugt cached version der instanz (o. ä.)
+	     -- erzeugt cached version der instanz (o. Ã¤.)
 	     -- key :: Matrikel -> IO Key
 	     , key = \ mat -> return mat
-	     -- holt tatsächliche instanz
+	     -- holt tatsÃ¤chliche instanz
 	     -- gen :: Key -> IO ( Reporter i )
 	     , gen = \ vnr manr key -> do
 #define NEW_STYLE 1

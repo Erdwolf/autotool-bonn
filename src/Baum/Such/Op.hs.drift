@@ -26,5 +26,5 @@ conforms _ Any = reject $
      text "Sie sollen Any durch eine Operation ersetzen."
 conforms Any _ = return ()
 conforms x y = when ( x /= y ) $ reject $
-     text "Die Operation" <+> toDoc x <+> text "soll nicht ge�ndert werden." 
+     text "Die Operation" <+> toDoc x <+> text "soll nicht geÃ¤ndert werden." 
 

@@ -82,12 +82,13 @@ logged cs = when ( Local.debug ) $ do
 
 strich = "\n--------------------------------\n"
 
+reed :: forall a . ( Read a, Show a, Typeable a ) => String -> a
 reed cs = case readsPrec 0 cs of
     [(x, "")] -> x
-    ( sonst :: [(a,String)] ) -> 
+    ( sonst ) -> 
 	error $ unlines [ "kein parse."
-			, "für eingabe:", cs 
-			, "für typ:" , show (typeOf (undefined::a)) 
+			, "fÃ¼r eingabe:", cs 
+			, "fÃ¼r typ:" , show (typeOf (undefined::a)) 
 			, "readsPrec:" , show sonst
 			]
 
@@ -132,7 +133,7 @@ instance R.Reader Bind where
          e <- R.reader
 	 mi <- R.option Nothing $ do 
 	       -- FIXME: wenn man hier ... <|> R.my_reserved "AS" schreibt,
-	       -- gibt es trotzdem keinen parse für "vorlesung.VNr AS VNr"
+	       -- gibt es trotzdem keinen parse fÃ¼r "vorlesung.VNr AS VNr"
                -- aber mit "vorlesung.VNr as VNr" geht es
                R.my_reserved "as" 
 	       fmap Just R.reader

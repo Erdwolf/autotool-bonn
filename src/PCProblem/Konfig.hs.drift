@@ -10,9 +10,9 @@ import Autolib.Reader
 data Konfig = 
      Konfig { instanz :: PCP
 	    , folge :: Folge -- ^ achtung, falschrum! (damit wir vorn dranbauen)
-	    , tief :: Int -- ^ im Suchbaum (= L‰nge der Folge)
+	    , tief :: Int -- ^ im Suchbaum (= L√§nge der Folge)
 	    , oben :: String  -- ^ einer von beiden soll leer sein
-	    , unten :: String -- ^ d. h. gemeinsame pr‰fixe werden abgeschnitten
+	    , unten :: String -- ^ d. h. gemeinsame pr√§fixe werden abgeschnitten
 	    }
 
 -- | zum schnelleren vergleichen

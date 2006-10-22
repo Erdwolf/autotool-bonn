@@ -15,8 +15,8 @@ data Computer = Computer
 
 data Type m dat = 
      Make { pairs :: [ (dat, dat) ] -- zu berechnende funktion
-	      , fun_info :: Doc	      -- funktions-name/-erklärung
-	    , cut :: Int -- höchstens soviele schritte
+	      , fun_info :: Doc	      -- funktions-name/-erklÃ¤rung
+	    , cut :: Int -- hÃ¶chstens soviele schritte
 	    , check :: m -> Reporter () -- sonstige Bedingungen an Maschine
 	    , start :: m -- damit soll der student anfangen
 	      }

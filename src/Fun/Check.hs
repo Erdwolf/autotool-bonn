@@ -78,7 +78,7 @@ check_arity soll f = case f of
 
     Sub ist [ ] -> do
         complain f
-	reject $ fsep [ text "Der Sub-Operator benötigt wenigstens" 
+	reject $ fsep [ text "Der Sub-Operator benÃ¶tigt wenigstens" 
 		      , text "ein Argument." ]
     Sub ist (g : hs) -> do
         diff f soll ist
@@ -88,7 +88,7 @@ check_arity soll f = case f of
         
     PR ist gh | 2 /= length gh -> do
         complain f
-	reject $ fsep [ text "Der PR-Operator benötigt genau" 
+	reject $ fsep [ text "Der PR-Operator benÃ¶tigt genau" 
 		      , text "zwei Argumente." ]
     PR ist [ g, h ] -> do
         diff f soll ist
@@ -96,7 +96,7 @@ check_arity soll f = case f of
 	check_arity (succ soll) h
 	
     Min ist gs | 1 /= length gs -> reject $ fsep 
-	[ text "Der Min-Operator benötigt genau" , text "ein Argument." ]
+	[ text "Der Min-Operator benÃ¶tigt genau" , text "ein Argument." ]
     Min ist [ g ] -> do
         diff f soll ist
 	check_arity (succ soll) g

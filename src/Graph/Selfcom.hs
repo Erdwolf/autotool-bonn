@@ -21,7 +21,7 @@ data Selfcom = Selfcom deriving ( Eq, Ord, Show, Read, Typeable )
 instance C.Partial Selfcom Int ( Graph Int, FiniteMap Int Int ) where
 
     describe p i = vcat
-        [ text "Gesucht ist ein regul‰rer selbstkomplement‰rer Graph"
+        [ text "Gesucht ist ein regul√§rer selbstkomplement√§rer Graph"
 	, text "mit wenigstens" <+> toDoc i <+> text "Knoten."
 	, text "Sie sollen auch die passende Isomorphie angeben."
 	]
@@ -37,10 +37,10 @@ instance C.Partial Selfcom Int ( Graph Int, FiniteMap Int Int ) where
         let h = complement g
         inform $ vcat [ text "Das Komplement ist" , nest 4 $ toDoc h ]
 	check_iso f g h
-        inform $ text "Dieser Graph ist selbstkomplement‰r."
+        inform $ text "Dieser Graph ist selbstkomplement√§r."
 	check_reg g
         assert ( size g >= i )
-	       $ text "Ist der Graph groﬂ genug?"
+	       $ text "Ist der Graph gro√ü genug?"
 
 instance Size ( Graph Int, FiniteMap Int Int ) where 
     size ( g, f ) = size g

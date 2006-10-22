@@ -22,11 +22,11 @@ import Control.Monad (guard)
 import Autolib.Set
 
 -- | behalte nur die variablen aus qs
--- lˆsche alle regeln, die andere variablen benutzen
+-- l√∂sche alle regeln, die andere variablen benutzen
 einschraenkung :: Set Char -> Grammatik -> Grammatik
 einschraenkung qs g =
   g { variablen = sfilter (`elementOf` qs) ( variablen g )
-          -- `union` ( unitSet $ startsymbol g ) -- das muﬂ bleiben?
+          -- `union` ( unitSet $ startsymbol g ) -- das mu√ü bleiben?
     , regeln = mkSet $ do 
 	          rule @ ( lhs, rhs ) <- rules g
 		  guard $ and $ do p <- lhs 

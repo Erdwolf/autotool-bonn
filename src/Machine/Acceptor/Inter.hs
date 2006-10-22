@@ -1,7 +1,5 @@
 module Machine.Acceptor.Inter where
 
---   $Id$
-
 import qualified Machine.Acceptor.Type as A
 import Machine.Akzeptieren
 import Machine.Class
@@ -44,7 +42,7 @@ instance ( Condition prop m , Reader m
          => C.Partial ( A.Acceptor ) ( A.Type m dat prop ) m where
     describe p i  = vcat
 	          [ text "Gesucht ist ein" <+> A.machine_desc i 
-		  , text "für die Sprache" <+> A.data_desc i
+		  , text "fÃ¼r die Sprache" <+> A.data_desc i
 		  , text "mit diesen Eigenschaften" <+> toDoc (A.properties i)
 		  ]
     initial p i   = A.start i
@@ -52,5 +50,5 @@ instance ( Condition prop m , Reader m
     total   p i b = do
         positiv_liste (A.cut i) b $ A.yeah i
         negativ_liste (A.cut i) b $ A.noh  i
-        return () -- größe der maschine (hier) ignorieren
+        return () -- grÃ¶ÃŸe der maschine (hier) ignorieren
 

@@ -25,7 +25,7 @@ import qualified Autolib.Set as S
 import Data.Array
 
 
--- polymorph ==> frißt rechenzeit
+-- polymorph ==> friÃŸt rechenzeit
 table_lookup :: Ix a => Array a b -> a -> b
 table_lookup a i = a ! i
 

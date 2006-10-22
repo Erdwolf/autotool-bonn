@@ -25,7 +25,7 @@ dead :: Konfig -> Bool
 dead k = and [ not $ null $ oben k, not $ null $ unten k ]
 
 reduce :: Konfig -> Konfig
--- schneide gemeinsamen präfix (oben/unten) ab
+-- schneide gemeinsamen prÃ¤fix (oben/unten) ab
 reduce k = case ( oben k, unten k ) of
     ( x : xs, y : ys ) | x == y -> reduce $ k { oben = xs, unten = ys }
     _                           -> k
@@ -45,10 +45,10 @@ nachfolger k = do
     return k'
 
 solutions :: Int -- maximal so viele knoten expandieren
-	  -> Int -- lösungsfolgen maximal so lang
+	  -> Int -- lÃ¶sungsfolgen maximal so lang
 	   -> PCP 
 	   -> [ Folge ]
--- der größe nach
+-- der grÃ¶ÃŸe nach
 solutions depth width i = do
     k0 <- nachfolger $ start i -- wenigstens einen schritt
     let fun k = mkSet $ do

@@ -28,22 +28,22 @@ positiv l ( p @ Ja {} :: Pump z ) ws = do
     let fodder = undefined :: z
 	
     inform $ vcat $ map text
-	     [ "Sie mˆchten nachweisen, daﬂ die Sprache  L = "
+	     [ "Sie m√∂chten nachweisen, da√ü die Sprache  L = "
 	     , show l
-	     , "die " ++ tag fodder ++ " erf¸llt."
+	     , "die " ++ tag fodder ++ " erf√ºllt."
 	     , ""
 	     , "Sie behaupten, JEDES Wort  p  in  L  mit  |p| >= " ++ show (n p) 
 	     , "besitzt eine Zerlegung  p = " ++ tag_show fodder ++ ","
-	     , "so daﬂ f¸r alle i:  " ++ inflate_show_i fodder ++ " in L."
+	     , "so da√ü f√ºr alle i:  " ++ inflate_show_i fodder ++ " in L."
 	     ]
     newline
 
     when ( n p < 1 ) $ reject $ text "Es soll aber n >= 1 sein."
 
     inform $ vcat 
-	   [ text "Ich pr¸fe jetzt, ob die von Ihnen angegebenen Zerlegungen f¸r die Wˆrter"
+	   [ text "Ich pr√ºfe jetzt, ob die von Ihnen angegebenen Zerlegungen f√ºr die W√∂rter"
 	   , nest 4 $ toDoc ws
-	   , text "tats‰chlich die geforderten Eigenschaften besitzen."
+	   , text "tats√§chlich die geforderten Eigenschaften besitzen."
 	   ]
     newline
 	 
@@ -56,11 +56,11 @@ report :: Pumping z
        => Language -> Pump z -> String 
        -> Reporter ()
 report l p w = do
-    inform $ text $ "Ich w‰hle  p = " ++ show w 
+    inform $ text $ "Ich w√§hle  p = " ++ show w 
     let mz @ ~ (Just z) = lookupFM (zerlege p) w
     when ( isNothing mz ) 
 	 $ reject $ text "Sie haben gar keine Zerlegung angegeben."
-    inform $ text "Sie w‰hlen" <+> toDoc z
+    inform $ text "Sie w√§hlen" <+> toDoc z
     admissable (n p) z
     when ( w /= inflate 1 z )
 	 $ reject $ text "Das ist gar keine Zerlegung von p."

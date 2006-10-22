@@ -5,7 +5,7 @@ module Language.Zahl where
 import Random
 
 zahl :: Int -> IO String
--- ein Integer dieser Länge
+-- ein Integer dieser LÃ¤nge
 zahl 0 = return "0"
 zahl l = do
      c <- randomRIO ( '1' , '9' )

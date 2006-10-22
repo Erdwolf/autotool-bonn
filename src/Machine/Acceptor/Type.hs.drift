@@ -43,8 +43,8 @@ data Class dat prop => Type m dat prop =
      Make { machine_desc :: Doc
 	  , data_desc :: Doc
 	  , yeah :: [ dat ] -- ^ sollen akzeptiert werden
-	  , noh :: [ dat ] -- ^ dürfen nicht akzeptiert werden
-	    , cut :: Int -- ^ höchstens soviele schritte
+	  , noh :: [ dat ] -- ^ dÃ¼rfen nicht akzeptiert werden
+	    , cut :: Int -- ^ hÃ¶chstens soviele schritte
 	    , properties :: [ prop ] -- ^ sonstige Bedingungen an Maschine
 	    , start :: m -- ^ damit soll der student anfangen
 	      }

@@ -26,7 +26,7 @@ isoptimalprefix freq code = do
     inform $ vcat 
 	   [ text "Ist" 
 	   , nest 4 $ toDoc code
-	   , text "ein optimaler Pr‰fix-Code f¸r"
+	   , text "ein optimaler Pr√§fix-Code f√ºr"
 	   , nest 4 $ toDoc freq
 	   , text "?"
 	   ]
@@ -37,7 +37,7 @@ isoptimalprefix freq code = do
 	mhuff = measure freq huff
 
     when ( mcode > mhuff ) $ reject
-	   $ text "Das ist zu groﬂ."
+	   $ text "Das ist zu gro√ü."
     inform $ text "Das ist optimal."
 
 

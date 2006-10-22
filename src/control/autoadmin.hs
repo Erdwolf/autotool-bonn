@@ -53,7 +53,7 @@ checkLoginPage (F2 lgnF pwdF) =
 			hrline
 			h3 $ text "Name oder Passwort fehlerhaft."
 			hrline
-			submit F0 (loginPage lgn) (fieldVALUE "Zurück")
+			submit F0 (loginPage lgn) (fieldVALUE "ZurÃ¼ck")
 
 -- 	do inh <- io $ checkPasswdMNrDB (Just pass) lgn
 -- 	   if  ( (length inh)  == 0  ) -- passwort nicht okay?
@@ -61,7 +61,7 @@ checkLoginPage (F2 lgnF pwdF) =
 -- 			do standardQuery "Fehler:" $ 
 -- 				table $ do
 -- 					hrrow		
--- 					th3 "Passwort und Matrikelnummer stimmen nicht überein!" 
+-- 					th3 "Passwort und Matrikelnummer stimmen nicht Ã¼berein!" 
 -- 					hrrow
 -- 					smallSubButton F0 (loginPage lgn) "Login wiederholen"
 --  					smallSubButton F0 endPage		 "Ende"
@@ -78,7 +78,7 @@ findStudPage = do
 
 findStudTable  vnm nme mat eml vrl = do
 		table $ do	
-		th3  "Suche nach Teilworten (und verknüpft)"	
+		th3  "Suche nach Teilworten (und verknÃ¼pft)"	
 		ttxt "Pattern \'_\' = ein Zeichen \'#\' = bel. viele Zeichen"
 		spacerow
 		matF <- promptedInput "Matrikelnr.:"	( (fieldSIZE 30) ## (fieldVALUE mat) ) 
@@ -158,7 +158,7 @@ addVorlesungChoice mat mgladdVl =
 			td $ submit (F1 addVlF) (addedVorlesungPage mat mgladdVl) (fieldVALUE "Add")
 	   else
 	   do
-	   ttxt "Add Vorlesung: Bereits alle Vorlesungen ausgewählt."
+	   ttxt "Add Vorlesung: Bereits alle Vorlesungen ausgewÃ¤hlt."
 
 removeVorlesungChoice mat mgldelVl = do 
 	if length mgldelVl > 0	
@@ -186,7 +186,7 @@ editStudentPage mat F0 =
 		table $ 
 			do
 			hrrow
-			-- Stammdaten ändern
+			-- Stammdaten Ã¤ndern
 			(matF,vnmF,nmeF,emlF,pasF) <- inputStudent mat vnm nme eml pas
 			submit	(F5 matF vnmF nmeF emlF pasF) 
 					(editSubmitStudentPage mat vnm nme eml pas) 
@@ -194,7 +194,7 @@ editStudentPage mat F0 =
 			hrrow
 			-- Vorlesungen
 			tableRow2 (text "Vorlesung:") $ text $ if length vl > 0 then foldr1 kommas vl else "keine" 
-			-- Vorlesungen hinzufügen (bereits verhanden ignorieren)
+			-- Vorlesungen hinzufÃ¼gen (bereits verhanden ignorieren)
 			addVorlesungChoice mat mgladdVl
 			-- Vorlesung entfernen (bepunktete ignorien)			  
 			removeVorlesungChoice mat mgldelVl
@@ -221,7 +221,7 @@ editSubmitStudentPage  mat' vnm' nme' eml' pas' (F5 matF vnmF nmeF emlF pasF) =
 	( matDup , emlDup ) <- io $ duplMatOrEmailDB mat eml
 	-- [(was kann schief gehen , fehlermsg )]
 	let { checks = [ ( not matok						
-					 , "Die Matrikelnummer muss größer 1024 sein.")
+					 , "Die Matrikelnummer muss grÃ¶ÃŸer 1024 sein.")
 				   , ( length vnm < 2					
 					 , "Der Vorname muss mindestens 2 Buchstaben lang sein.") 
 				   , ( length nme <	2					
@@ -248,12 +248,12 @@ editSubmitStudentPage  mat' vnm' nme' eml' pas' (F5 matF vnmF nmeF emlF pasF) =
 addedVorlesungPage mat mglVl (F1 addVlF) = do 
 	let addVl = value $ addVlF 
 	io $ insertStudVorlDB mat addVl
-	standardQuery "Vorlesung hinzufügen" $ 
+	standardQuery "Vorlesung hinzufÃ¼gen" $ 
 		do	
 		table $ do
 			attr "width" "600"
 			hrrow
-			tr $ td $ text $ "Vorlesung " ++ addVl ++ " hinzugefügt."
+			tr $ td $ text $ "Vorlesung " ++ addVl ++ " hinzugefÃ¼gt."
 			hrrow
 			smallSubButton F0 (editStudentPage mat) "Weiter"
 

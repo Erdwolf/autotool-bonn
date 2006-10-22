@@ -17,14 +17,14 @@ import Control.Monad ( when )
 check :: Exp Bool -> Exp Bool -> Reporter ()
 check e f = do
     inform $ vcat
-	   [ text "Sind die Ausdrücke"
+	   [ text "Sind die AusdrÃ¼cke"
 	   , nest 4 $ toDoc e
 	   , text "und"
 	   , nest 4 $ toDoc f
-	   , text "äquivalent?"
+	   , text "Ã¤quivalent?"
 	   ]
     mapM_ ( test e f ) $ belegungen $ vars e
-    inform $ text "Ja, die Werte stimmen für alle Variablen-Belegungen überein."
+    inform $ text "Ja, die Werte stimmen fÃ¼r alle Variablen-Belegungen Ã¼berein."
 
 test :: Exp Bool -> Exp Bool -> Belegung Identifier
      -> Reporter ()

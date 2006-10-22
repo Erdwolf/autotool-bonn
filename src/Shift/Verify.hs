@@ -20,18 +20,18 @@ verify limit sh = do
     let p = periode sh
 
     when ( q > limit || p > limit ) 
-	 $ reject $ fsep [ text "Eine (Vor-)Periode über", toDoc limit
+	 $ reject $ fsep [ text "Eine (Vor-)Periode Ã¼ber", toDoc limit
 			 , text "kann ich nicht verifizieren,"
 			 , text "weil das zuviel Rechenkraft verbraucht."
 			 ]
 
     -- das rechnen wir zweimal aus, damit es jedesmal (hoffentlich)
-    -- in konstantem space läuft
+    -- in konstantem space lÃ¤uft
     let sq  = nth ps q
     let sqp = nth ps (q + p)
 
-    inform $ fsep [ text "Stimmen die Zustände zu den Zeiten"
-		  , toDoc q, text "und", toDoc (p+q), text "überein?"
+    inform $ fsep [ text "Stimmen die ZustÃ¤nde zu den Zeiten"
+		  , toDoc q, text "und", toDoc (p+q), text "Ã¼berein?"
 		  ]
     when ( sq /= sqp ) 
 	 $ reject $ text "Nein."
@@ -39,7 +39,7 @@ verify limit sh = do
     newline
 
     inform $ vcat [ text "Gibt es eine kleinere Periode?"
-		  , text "Prüfe für alle echten Primteiler von" <+> toDoc p
+		  , text "PrÃ¼fe fÃ¼r alle echten Primteiler von" <+> toDoc p
 		  ]
     newline
     sequence $ do
@@ -57,7 +57,7 @@ verify limit sh = do
 			  ]
 	    when ( not flag )
 		 $ reject $ text "also war" <+> toDoc p
-			  <+> text "nicht die kürzeste Periode."
+			  <+> text "nicht die kÃ¼rzeste Periode."
 	
     newline
     return p

@@ -60,7 +60,7 @@ anti_sam sigma c n = sequence $ replicate c $ do
 
     let l = length sigma
 
-    -- würfle zwei verschiedene Buchstaben x und y
+    -- wÃ¼rfle zwei verschiedene Buchstaben x und y
     i <- randomRIO (0, l-1)
     d <- randomRIO (1, l-1)
     let x = sigma !! i 

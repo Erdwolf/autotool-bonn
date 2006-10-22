@@ -47,7 +47,7 @@ zeige_woerter :: Config
 zeige_woerter conf g = do
     if ( not $ startsymbol g `elementOf` nichtterminale g )
        then do
-	    inform $ text "Es sind keine Terminalwörter ableitbar."
+	    inform $ text "Es sind keine TerminalwÃ¶rter ableitbar."
 	    return []
        else do
             let rabss = ableitungen conf g
@@ -58,7 +58,7 @@ zeige_woerter conf g = do
 		   guard $ all (`elementOf` terminale g) w
 		   return w
 	    inform $ vcat
-		   [ text "Einige (in wenigen Schritten) ableitbare Terminalwörter sind:"
+		   [ text "Einige (in wenigen Schritten) ableitbare TerminalwÃ¶rter sind:"
 		   , nest 4 $ toDoc $ take 20 terms
 		   ]
 	    return terms

@@ -19,7 +19,7 @@ instance C.Partial Palindrom Int Integer where
     report Palindrom e = do
         inform $ vcat
 	       [ text "Gesucht ist eine Zahl x,"
-	       , text "so daﬂ die Dezimaldarstellung von"
+	       , text "so da√ü die Dezimaldarstellung von"
 		 <+> text "x^" <> toDoc e
 		 <+> text "ein Palindrom ist,"
 	       , text "aber die Dezimaldarstellung von x kein Palindrom ist."

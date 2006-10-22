@@ -17,7 +17,7 @@ checkbin = mapM_ check . subterms where
     check t @ ( Node f args ) 
 	= when ( not $ length args `elem` [0, 2] )
                $ reject $ vcat 
-		    [ text "Das ist kein bin‰rer Baum,"
+		    [ text "Das ist kein bin√§rer Baum,"
 		    , text "denn die Wurzel diese Teilbaums"
 		    , text "hat" <+> toDoc (length args) <+> text "Kinder:"
 		    , nest 4 $ present t

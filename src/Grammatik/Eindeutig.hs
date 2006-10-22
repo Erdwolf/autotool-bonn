@@ -28,9 +28,9 @@ eindeutig conf =
 		mcadr x /= mcadr y -- aber car x == car y
 	when ( not $ null wrong ) $ reject $ vcat
 	     [ text "Diese Grammatik ist nicht eindeutig."
-	     , text "Die folgenden Wörter haben mehrere Links-Ableitungen:"
+	     , text "Die folgenden WÃ¶rter haben mehrere Links-Ableitungen:"
 	     , text "(Die eventuell noch vorkommenden Variablen sind produktiv,"
-	     , text "d. h. die Ableitungen können zu Terminalwörtern fortgesetzt werden.)"
+	     , text "d. h. die Ableitungen kÃ¶nnen zu TerminalwÃ¶rtern fortgesetzt werden.)"
 	     , nest 4 $ vcat $ do
 	           (x , y) <- take 4 $ filter interesting $ wrong
 	           return $ vcat 
@@ -39,7 +39,7 @@ eindeutig conf =
 			  ]
 	     ]
         inform $ text "OK" 
-	       <+> parens ( fsep [ text "für Wörter der Länge <="
+	       <+> parens ( fsep [ text "fÃ¼r WÃ¶rter der LÃ¤nge <="
 				 , toDoc ( max_length conf )
 				 ]
 			  )

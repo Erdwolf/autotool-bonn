@@ -4,7 +4,7 @@
 -- optimiert: mit durchgehender cache-benutzung
 
 -- ergebnisbehandlung:
--- tabulate erzeugt ein Array mit werten (das ist Show/Read-fähig)
+-- tabulate erzeugt ein Array mit werten (das ist Show/Read-fÃ¤hig)
 -- frame erzeugt daraus ein Doc
 
 -- d. h. tabulate benutzen, um in cache zu schreiben
@@ -12,7 +12,6 @@
 
 module Fun.Table where
 
---   $Id$
 
 import Fun.Type
 import Fun.Check
@@ -26,6 +25,7 @@ import Fun.Examples -- for testing
 
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Reader hiding ( newline )
 import Data.Array
 import Data.Typeable
 
@@ -67,6 +67,8 @@ data Tafel1 = Tafel1
 instance ToDoc Tafel1 where toDoc = rollout . frame1 . unTafel1
 
 instance ToDoc Tafel2 where toDoc = rollout . frame2 . unTafel2
+
+instance Reader Tafel2 -- dummy, dangerous?
 
 tabulate2 :: Fun 
 	 -> (Integer, Integer) 
@@ -121,7 +123,7 @@ rollout b = vcat $ do
         y <- [ l .. r ]
 	return $ text $ trim item_width $ b ! (x,y)
 
--- | fülle mit leerzeichen auf gesamtbreite w
+-- | fÃ¼lle mit leerzeichen auf gesamtbreite w
 trim w cs = 
     let l = length cs
 	filler = replicate (w - l) ' '

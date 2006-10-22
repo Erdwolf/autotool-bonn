@@ -1,9 +1,9 @@
--- | Korrekturfunktion für PCP-Aufgaben
+-- | Korrekturfunktion fÃ¼r PCP-Aufgaben
 
 -- autor Markus Kreuz
 -- mai99byv@studserv.uni-leipzig.de
 
--- -- $Id$
+
 
 module PCProblem.Type 
 
@@ -45,7 +45,7 @@ lr (PCP pcp) folge =
     in	( links, rechts )
 
 common :: Eq a => [a] -> [a] -> [a]
--- längster gemeinsamer prefix
+-- lÃ¤ngster gemeinsamer prefix
 common [] ys = []
 common xs [] = []
 common xxs @ (x : xs) yys @ (y : ys) =
@@ -65,8 +65,8 @@ erzInstanz (PCP xys) = unlines $ do
 erzBeweis :: PCP -> Folge -> String
 erzBeweis pcp ks = 
     let (links, rechts) = lr pcp ks
-    in	unlines [ "Lösungsfolge: " ++ show ks ++ "<BR>"
-		, "expandierte Lösungsfolge: " ++ show links
+    in	unlines [ "LÃ¶sungsfolge: " ++ show ks ++ "<BR>"
+		, "expandierte LÃ¶sungsfolge: " ++ show links
 		]
 
 

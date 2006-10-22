@@ -2,7 +2,7 @@ module Main where
 
 --   $Id$
 
--- socket-interface für tool
+-- socket-interface fÃ¼r tool
 -- geklaut und vereinfacht von Face.hs
 
 -- Autoren: Johannes Waldmann, Alf Richter

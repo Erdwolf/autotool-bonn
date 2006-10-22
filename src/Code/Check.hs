@@ -22,18 +22,18 @@ istotal :: ( ToDoc b,  ToDoc a, Ord a )
       -> Reporter ()
 istotal xs c @ ( Code code ) = do
     inform $ fsep 
-	   [ text "ist", toDoc c, text "vollst‰ndig"
-	   , text "f¸r", toDoc xs, text "?"
+	   [ text "ist", toDoc c, text "vollst√§ndig"
+	   , text "f√ºr", toDoc xs, text "?"
 	   ]
     nested 4 $ Autolib.Reporter.Set.subeq
 	     ( text "zu codierende Buchstaben" , xs )
-	     ( text "tats‰chlich codierte Buchstaben", mkSet $ keysFM code )
+	     ( text "tats√§chlich codierte Buchstaben", mkSet $ keysFM code )
 
 isprefix :: ( ToDoc a, ToDoc b, Ord a, Eq b )
       => Code a b
       -> Reporter ()
 isprefix c @ ( Code code ) = do
-    inform $ fsep [ text "ist", toDoc c, text "ein Pr‰fix-Code?"]
+    inform $ fsep [ text "ist", toDoc c, text "ein Pr√§fix-Code?"]
     sequence_ $ do
         (x, cs) <- fmToList code
         (y, ds) <- fmToList code
@@ -43,7 +43,7 @@ isprefix c @ ( Code code ) = do
 	return $ do
             when ( isPrefixOf cs ds ) $ reject $ fsep
 	       [ text "Nein:"
-               , msg (x, cs) , text "ist Pr‰fix von", msg (y, ds)
+               , msg (x, cs) , text "ist Pr√§fix von", msg (y, ds)
                ]
     inform $ text "Ja."
 

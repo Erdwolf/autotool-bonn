@@ -72,7 +72,7 @@ getAllSerienPunkteDB =
 
 
 
--- | Erweiterungen für den ScorerDB
+-- | Erweiterungen fÃ¼r den ScorerDB
 getHighscoreCandidatesDB =
     do
     { let { sqlstr = foldr1 (\x y -> x ++ " " ++ y) 

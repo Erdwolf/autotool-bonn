@@ -30,9 +30,9 @@ instance C.Partial TreeWidth ( Graph Int, Int )
 
     report p (g, w) = do
 	inform $ vcat
-	       [ text "Gesucht ist eine Baum-Überdeckung"
+	       [ text "Gesucht ist eine Baum-Ãœberdeckung"
 	       , text "mit Weite <=" <+> toDoc w 
-	       , text "für diesen Graphen:"
+	       , text "fÃ¼r diesen Graphen:"
 	       , nest 4 $ toDoc g
 	       ]
 	peng g
@@ -48,7 +48,7 @@ instance C.Partial TreeWidth ( Graph Int, Int )
 
     partial p (g, w) ( fm, t ) = do
 
-        inform $ text "Die Struktur Ihrer Überdeckung ist:"
+        inform $ text "Die Struktur Ihrer Ãœberdeckung ist:"
 	-- setToList, damit die Beschriftung kleiner wird (sonst mkSet)
         peng $ gmap ( \ i -> setToList $ lookupset fm i ) t
 
@@ -56,7 +56,7 @@ instance C.Partial TreeWidth ( Graph Int, Int )
 		 && cardinality (kanten t) < cardinality (knoten g) )
 	       ( text "Ist das ein Baum?" )
 
-        inform $ text "Ist keine Menge zu groß?"
+        inform $ text "Ist keine Menge zu groÃŸ?"
         let large = do 
 	      (i, s) <- fmToList fm
 	      guard $ cardinality s - 1 > w
@@ -68,14 +68,14 @@ instance C.Partial TreeWidth ( Graph Int, Int )
 
     total p (g, w) ( fm, t ) = do
 
-        inform $ text "Ist jeder Knoten überdeckt?"
+        inform $ text "Ist jeder Knoten Ã¼berdeckt?"
 	let nein = knoten g `minusSet` unionManySets ( eltsFM fm )
         when ( not $ isEmptySet nein ) $ reject $ vcat
 	     [ text "nein, diese nicht:"
 	     , nest 4 $ toDoc nein
 	     ]
 
-        inform $ text "Ist jede Kante überdeckt?"
+        inform $ text "Ist jede Kante Ã¼berdeckt?"
 	-- welcher Knoten in welchen Mengen?
 	let wh = addListToFM_C Autolib.Set.union emptyFM $ do
 		  (i, s) <- fmToList fm
@@ -114,7 +114,7 @@ instance C.Partial TreeWidth ( Graph Int, Int )
 	          return $ vcat 
 	                 [ text "Der Knoten" <+> toDoc x
 			 , text "ist enthalten in den Mengen" <+> toDoc is
-			 , text "aber diese bilden keinen zusammenhängenden Teilgraphen."
+			 , text "aber diese bilden keinen zusammenhÃ¤ngenden Teilgraphen."
 			 ]
 	     ]
 

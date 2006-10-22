@@ -3,7 +3,7 @@
 
 module JVM.Check where
 
---   $Id$
+
 
 import JVM.Type
 import JVM.Builtin
@@ -36,7 +36,7 @@ instance Check Checker Program where
         let wrong = minusSet you allowed
         assert ( isEmptySet wrong ) $ text "sind alle zugelassen?"
     check (Smallnums allowed) p = do
-        inform $ text "Push (i) ist nur erlaubt für  abs(i) <= " 
+        inform $ text "Push (i) ist nur erlaubt fÃ¼r  abs(i) <= " 
 		   <+> toDoc allowed
         let you = mkSet $ do
         	    Push i <- flatten p

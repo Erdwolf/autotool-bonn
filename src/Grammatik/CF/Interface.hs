@@ -34,11 +34,11 @@ data CFG = CFG deriving ( Eq, Ord, Show, Read, Typeable )
 instance Partial CFG I.Config Grammatik where
 
     describe p i = vcat
-	   [ text "Gesucht ist eine kontextfreie Grammatik für die Sprache"
+	   [ text "Gesucht ist eine kontextfreie Grammatik fÃ¼r die Sprache"
            , nest 4 $ toDoc $ inter $ I.lang i
-	   , text "über dem Alphabet" <+> toDoc ( alphabet $ inter $ I.lang i )
+	   , text "Ã¼ber dem Alphabet" <+> toDoc ( alphabet $ inter $ I.lang i )
 	   , text ""
-	   , text "Zu dieser Sprache gehören unter anderem die Wörter:"
+	   , text "Zu dieser Sprache gehÃ¶ren unter anderem die WÃ¶rter:"
 	   , nest 4 $ toDoc $ take 10 $ I.unLong $ I.yeah i
 	   , text ""
 	   , text "Die Grammatik soll diese Eigenschaften haben:"

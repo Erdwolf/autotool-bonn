@@ -28,7 +28,7 @@ fourty = make
   , Robot { name = "E", position = (-1,-2), ziel = Just (0,0) }
   ]
 
--- | selbst gewürfelte:
+-- | selbst gewÃ¼rfelte:
 e13 :: Config
 e13 =  make [ Robot { name = "A", position = ( 1, -1 )
                , ziel = Nothing

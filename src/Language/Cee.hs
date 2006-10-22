@@ -36,10 +36,10 @@ cee c l = Language
 	return $ concat wss
         
     , anti_sample = \ count n -> do
-	  -- die falschen wörter, aber mit richtigem trennzeichen
+	  -- die falschen wÃ¶rter, aber mit richtigem trennzeichen
           this <- sample ( cee c $ komplement l ) count n
 
-	  -- die richtigen wörter (aus l), aber mit falschen trennzeichen
+	  -- die richtigen wÃ¶rter (aus l), aber mit falschen trennzeichen
 	  ws <- sample l count n
 	  that <- sequence $ do
 	      w <- ws
@@ -47,7 +47,7 @@ cee c l = Language
 	          k <- randomRIO (0, 5)
 		  eins $ shuffle w $ replicate k c
 	  -- zur sicherheit nochmal filtern
-	  -- denn das trennzeichen könnte doch genau in der mitte sein
+	  -- denn das trennzeichen kÃ¶nnte doch genau in der mitte sein
 	  return $ filter ( not . contains ( cee c l ) ) $ this ++ that
 
     }

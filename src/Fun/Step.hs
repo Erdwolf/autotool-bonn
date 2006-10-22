@@ -7,10 +7,10 @@ module Fun.Step where
 -- auswertung durch (top-)rewriting (mit cache)
 
 -- status besteht aus:
--- input-stack = Liste von auszuwertenden ausdrücken
+-- input-stack = Liste von auszuwertenden ausdrÃ¼cken
 -- output-stack = Liste von resultaten (Zahlen)
 
--- eine rechnung verläuft
+-- eine rechnung verlÃ¤uft
 -- von todo = App fun args : rest , stack = accu
 -- zu  todo = rest                , stack = fun args : rest
 
@@ -31,7 +31,7 @@ step s = case todo s of
 		            $ head $ stack s
 		    }
 
-        -- auf ergebnis-stack kopieren (kommt das überhaupt vor?)
+        -- auf ergebnis-stack kopieren (kommt das Ã¼berhaupt vor?)
         Zahl i -> s { todo = xs
 		    , stack = i : stack s
 		    }
@@ -43,7 +43,7 @@ step s = case todo s of
 	      }
 
         -- strikte Funktionen (builtins)
-	-- argument-ausdrücke zur auswertung in input-stack schreiben
+	-- argument-ausdrÃ¼cke zur auswertung in input-stack schreiben
 	-- danach builtin-markierung
 	App (Succ 1) [ arg ] ->
             s { todo = arg : Builtin_ 1 Suc : marked x : xs }
@@ -63,7 +63,7 @@ step s = case todo s of
 		  }
 
         -- non-strikte funktionen:
-	-- einen top-rewrite-schritt ausführen
+	-- einen top-rewrite-schritt ausfÃ¼hren
 	-- d. h. top des input-stacks ersetzen
         App ( Proj oben unten ) args ->
             s { todo = args !! (unten - 1) : xs
@@ -102,7 +102,7 @@ stepped s = s { schritt = succ $ schritt s
 marked x = M $ Mark x
 
 cached :: State -- start
-       -> State -- würde bei expliziter rechnung rauskommen
+       -> State -- wÃ¼rde bei expliziter rechnung rauskommen
        -> State -- ergebnis
 cached s it =
     let x : xs = todo s

@@ -37,7 +37,7 @@ move hof zug @ (von, nach) = do
 	     inform $ fsep 
 			     [ text "oberste Scheibe auf Ziel-Turm ist"
 			     , toDoc op ]
-             assert ( top < op ) $ text "groß genug?"
+             assert ( top < op ) $ text "groÃŸ genug?"
 
     return $ addListToFM hof
 	   [ ( von, rest ) , ( nach, top : to ) ]

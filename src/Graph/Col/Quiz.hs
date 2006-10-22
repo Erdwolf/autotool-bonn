@@ -19,7 +19,7 @@ import Autolib.FiniteMap
 instance Generator Col Config ( ( Integer, Graph Int) , FiniteMap Int Color ) where
     generator p conf key = do
        let vs  = mkSet [ 1 .. nodes conf ]
-       -- erstmal die knoten irgendwie f‰rben
+       -- erstmal die knoten irgendwie f√§rben
        vcs <- mapM ( \ v -> do
            c <- randomRIO ( 0, fromIntegral (chi conf) - 1 )
 	   return ( v, toEnum c )

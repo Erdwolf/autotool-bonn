@@ -94,7 +94,7 @@ monoton = C.make "Monoton" ( text "Die Grammatik soll monoton sein." ) $ \ g -> 
     
     let	kurz = filter ( \ (l, r) -> length l > length r ) $ noeps
     when ( not $ null kurz ) $ reject $ fsep
-	 [ text "Die rechte Regelseite darf nicht kürzer als die linke sein."
+	 [ text "Die rechte Regelseite darf nicht kÃ¼rzer als die linke sein."
 	 , text "Diese Regeln sind deswegen verboten:"
 	 , toDoc kurz
 	 ]

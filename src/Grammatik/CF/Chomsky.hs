@@ -102,14 +102,14 @@ comp ch =
 	fm = addListToFM_C union emptyFM $ do
 	   ( lhs, rhss ) <- fmToList gr
 	   return ( rhss, unitSet lhs )
-	-- durchzählen
+	-- durchzÃ¤hlen
 	tr = listToFM $ do
 	   ( k, ( rhss, lhss ) ) <- zip [1 ..] $ fmToList fm
 	   lhs <- setToList lhss
 	   return ( lhs, k )
 	-- umnumerieren
 	dh = fmap ( lookupWithDefaultFM tr ( error "dh" ) ) ch
-	-- kürzen
+	-- kÃ¼rzen
     in	dh { rules = nub $ rules dh }
 
 

@@ -34,8 +34,8 @@ ist_deterministisch a =
     of []  -> inform $ text "das ist ein deterministischer Kellerautomat"
        fss -> reject $ vcat 
 	      [ text "das ist kein deterministischer Kellerautomat,"
-	      , text "denn für folgende x in X, z in Z, y in Y"
-	      , text "enthält  h(x,z,y) + h(epsilon,z,y) mehr als ein Element:"
+	      , text "denn fÃ¼r folgende x in X, z in Z, y in Y"
+	      , text "enthÃ¤lt  h(x,z,y) + h(epsilon,z,y) mehr als ein Element:"
               , nest 4 $ toDoc fss
 	      ]
 

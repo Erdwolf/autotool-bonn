@@ -7,7 +7,7 @@ import Autolib.Reporter
 import Autolib.ToDoc
 import System (ExitCode)
 
--- | Klasse Problem steht für ein abstraktes Problem zu dem
+-- | Klasse Problem steht fÃ¼r ein abstraktes Problem zu dem
 
 -- Instanzen mit Beweisen existieren und auf Korrektheit 
 -- ueberprueft werden koennen
@@ -20,7 +20,7 @@ class (Show p, ToDoc i, Show i, Read i
        validiere   :: p -> i -> b -> (Bool, Doc) 
        verifiziere :: p -> i -> b -> (Bool, Doc) 
 
-       -- für den gleitenden wechsel zur reporter-monade:
+       -- fÃ¼r den gleitenden wechsel zur reporter-monade:
        -- die obigen methoden deprecated, die neuen sind:
        validiereR  :: p -> i -> b -> Reporter ()
        verifiziereR  :: p -> i -> b -> Reporter ()
@@ -29,7 +29,7 @@ class (Show p, ToDoc i, Show i, Read i
        validiere p i b = lazy_cheporter $ validiereR p i b
        verifiziere p i b = lazy_cheporter $ verifiziereR p i b
 
-       -- rückwarts-defaults
+       -- rÃ¼ckwarts-defaults
        validiereR p i b = porterche $ validiere p i b
        verifiziereR p i b = porterche $ verifiziere p i b
 

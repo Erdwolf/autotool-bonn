@@ -14,10 +14,10 @@ data Clock = Clock
 {-! for Clock derive : Show, Read, ToDoc, Reader !-}
 
 data Type m = 
-     Make { fun ::  Integer -> Integer -- gewünschte Laufzeitfunktion
-	      , fun_info :: Doc	      -- funktions-name/-erklärung
+     Make { fun ::  Integer -> Integer -- gewÃ¼nschte Laufzeitfunktion
+	      , fun_info :: Doc	      -- funktions-name/-erklÃ¤rung
 	      , args :: [ Integer ]	      -- argumente zum testen
-	    , cut :: Int -- höchstens soviele schritte
+	    , cut :: Int -- hÃ¶chstens soviele schritte
 	    , check :: m -> Reporter () -- sonstige Bedingungen an Maschine
 	    , start :: m -- damit soll der student anfangen
 	      }

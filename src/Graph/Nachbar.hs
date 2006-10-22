@@ -25,7 +25,7 @@ instance C.Partial Nachbar () ( Graph Int ) where
 
     describe p _ = vcat
         [ text "Gesucht ist ein Graph G mit der Eigenschaft:"
-	, nest 4 $ vcat [ text "Für alle Knoten x, y gilt:"
+	, nest 4 $ vcat [ text "FÃ¼r alle Knoten x, y gilt:"
 			, text "Wenn x und y nicht benachbart sind,"
 			, text "dann besteht ihre gemeinsame Nachbarschaft"
 			, text "aus genau einem Knoten."
@@ -93,12 +93,12 @@ kx_mit_dach g = do
     let (x, r) = divMod (cardinality $ knoten g) 2
     assert ( 1 == r ) 
            $ text "ist die Knotenanzahl ungerade?"
-    inform $ fsep [ text "vielleicht für x = ", toDoc x ]
+    inform $ fsep [ text "vielleicht fÃ¼r x = ", toDoc x ]
     let xs = sfilter ( \ v -> 2 == degree g v ) $ knoten g
     assert ( x == cardinality xs ) 
            $ text "gibt es genau x Knoten vom Grad 2?"
     assert ( is_independent g xs )
-           $ text "bilden diese eine unabhängige Menge?"
+           $ text "bilden diese eine unabhÃ¤ngige Menge?"
     let g' = restrict (minusSet (knoten g) xs) g
     inform $ text "G' := G ohne diese Menge."
     let (ys, zs) = Data.List.partition ( \ v -> 0 < degree g' v ) $ lknoten g'

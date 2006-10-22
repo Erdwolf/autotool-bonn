@@ -61,7 +61,7 @@ instance Range [ Ziffer ] where
     range b zs = silent $ do
         inform $ fsep 
                [ text "teste Ziffern", toDoc zs
-               , text "bez�glich der Basis", toDoc b
+               , text "bezÃ¼glich der Basis", toDoc b
                ]
         nested 4 $ sequence_ $ do
             z <- zs

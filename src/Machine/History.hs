@@ -8,7 +8,7 @@ detail :: Int
 detail = 7
 
 class History conf where
-    -- | ergibt den Pfad im Berechnungsbaum, der zu der Konfiguration f¸hrt
+    -- | ergibt den Pfad im Berechnungsbaum, der zu der Konfiguration f√ºhrt
     -- (in falscher reihenfolge, d. h. wurzel des baums kommt zuletzt)
     -- konfiguration selbst ist nicht in der liste
     history :: conf -> [ conf ]
@@ -20,7 +20,7 @@ present conf =
         ( rnew, mo  ) = splitAt detail $ cs
 	( old, mid ) = splitAt detail $ reverse mo 
     in  if null mid
-	then vcat [ text "Die Rechnung verl‰uft so:"
+	then vcat [ text "Die Rechnung verl√§uft so:"
 	          , nest 4 $ vcat $ map toDoc $ reverse cs
 		  ]
 	else vcat [ text "Die Rechnung beginnt so:"

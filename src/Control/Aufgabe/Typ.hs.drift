@@ -24,8 +24,8 @@ data Aufgabe  =
 	     , von :: Time
 	     , bis :: Time
 	     -- | das wird bei DB-zugriff berechnet (NOW between VON and BIS)
-	     -- damit wir außerhalb der DB keine Uhr brauchen
-	     -- und keine zeiten vergleichen müssen
+	     -- damit wir auÃŸerhalb der DB keine Uhr brauchen
+	     -- und keine zeiten vergleichen mÃ¼ssen
 	     , timeStatus :: TimeStatus
 	     }
      deriving ( Eq, Ord, Typeable )

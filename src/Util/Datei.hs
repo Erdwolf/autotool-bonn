@@ -46,8 +46,8 @@ inner d =  concat
 	$ intersperse "/" 
 	$ pfad d ++ [ namex d ]
 
--- | das kann als arg. für CGI verwendet werden:
--- dann darf im filenamen natürlich kein komma stehen
+-- | das kann als arg. fÃ¼r CGI verwendet werden:
+-- dann darf im filenamen natÃ¼rlich kein komma stehen
 outer :: Datei -> String
 outer d =  concat 
 	$ intersperse "," 
@@ -72,8 +72,8 @@ home_dir :: IO FilePath
 home_dir = do
 	    return Util.Datei.Base.base
 
--- | mit großer vorsicht: über das argument von Get.cgi
--- könnte jemand von außen files zu lesen probieren.
+-- | mit groÃŸer vorsicht: Ã¼ber das argument von Get.cgi
+-- kÃ¶nnte jemand von auÃŸen files zu lesen probieren.
 -- inklusive aller tricks mit "..\/.."  usw.
 -- deswegen vor jedem zugriff testen
 sanity :: Datei -> IO ()

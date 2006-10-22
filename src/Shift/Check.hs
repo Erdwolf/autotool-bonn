@@ -22,8 +22,8 @@ check m limit sh = do
     inform $ text "Sie haben eingesandt:" <+> toDoc sh
     newline
 
-    inform $ fsep [ text "Das Schaltnetz darf höchstens"
-			, toDoc m, text "Ein/Ausgänge haben." ]
+    inform $ fsep [ text "Das Schaltnetz darf hÃ¶chstens"
+			, toDoc m, text "Ein/AusgÃ¤nge haben." ]
     let n = maximum $ 0 : pins sh
     when (n > m) $ reject 
 		 $ fsep [ text "aber Sie benutzen", toDoc n ]

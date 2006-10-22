@@ -28,7 +28,7 @@ ite = Sub 3 [ PR 3 [ Proj 2 1, Proj 4 2 ]
 	    , Proj 3 2, Proj 3 3, Proj 3 1
 	    ]
 
--- | du x y z = größtes z' < z mit y * z <= x  (sonst 0)
+-- | du x y z = grÃ¶ÃŸtes z' < z mit y * z <= x  (sonst 0)
 du = PR 3 [ Zero 2
 	   , Sub 4 [ ite
 		   , Sub 4 [ Builtin 2 Minus

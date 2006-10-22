@@ -72,7 +72,7 @@ instance Partial Fun_Quiz2 Tafel2 Fun where
                   return ( xy, l, r )
           -- Bei Unterschieden -> Differenz ausgeben
           when ( not $ null diffs ) $ do
-               inform $ text "Die Tabellen stimmen wenigstens hier nicht überein:"
+               inform $ text "Die Tabellen stimmen wenigstens hier nicht Ã¼berein:"
                reject $ nest 4 $ vcat $ take 3 $  do
 	           ( xy, l, r ) <- diffs
 		   return $ hsep
@@ -81,7 +81,7 @@ instance Partial Fun_Quiz2 Tafel2 Fun where
 			  , text "Ihr Wert:", toDoc r
 			  ]
           -- Sehr schoen: richtig Loesung
-          inform $ text "Die Tabellen stimmen überein."
+          inform $ text "Die Tabellen stimmen Ã¼berein."
     --  Aufgabe beschreiben
     describe p i = 
             vcat [ text "Konstruieren Sie eine zweistellige primitiv rekursive Funktion"

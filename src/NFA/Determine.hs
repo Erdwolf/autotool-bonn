@@ -44,12 +44,12 @@ instance C.Partial  Determine DI ( NFA Char Int )  where
     describe p i =
             let minitxt = 
 	          if (mustmini $ config i) 
-	          then " minimierten, vollst‰ndigen" 
+	          then " minimierten, vollst√§ndigen" 
 	          else ""
             in  vcat
 		[ text "Gegeben ist der Automat"
 		, nest 4 $ toDoc ( nea i)
-		, text $ "Finden Sie einen dazu ‰quivalenten" 
+		, text $ "Finden Sie einen dazu √§quivalenten" 
 			  ++ minitxt
 			  ++ " deterministischen Automaten!"
 		]
@@ -68,7 +68,7 @@ instance C.Partial  Determine DI ( NFA Char Int )  where
     f <- equ ( informed ( text "Sprache des gegebenen Automaten") ( nea i ))
             ( informed ( text "Sprache Ihres Automaten" )        b )
 
-    assert f $ text "Stimmen die Sprachen ¸berein?"
+    assert f $ text "Stimmen die Sprachen √ºberein?"
 
 	-- b minimiert?
     -- TODO: if (mustmini . config) i then

@@ -28,18 +28,18 @@ negativ l ( p @ Nein {} :: Pump z ) = do
     let checked =  [ 1, 2, 4, 8, 10 ]
 
     inform $ vcat $ map text
-	     [ "Sie möchten nachweisen, daß die Sprache "
+	     [ "Sie mÃ¶chten nachweisen, daÃŸ die Sprache "
 	     , show l
-	     , "die " ++ tag ( undefined :: z ) ++ " NICHT erfüllt."
+	     , "die " ++ tag ( undefined :: z ) ++ " NICHT erfÃ¼llt."
 	     , ""
 	     , "Sie behaupten, zu jeder Zahl n > 0"
 	     , "gibt es ein Wort  p  in L  mit  |p| >= n,"
-	     , "so daß zu jeder gültigen Zerlegung  p = " 
+	     , "so daÃŸ zu jeder gÃ¼ltigen Zerlegung  p = " 
 	       ++ tag_show ( undefined :: z )
 	     , "ein  i  existiert mit  " 
 	       ++ inflate_show_i ( undefined :: z ) ++ " not in L."
 	     , ""
-	     , "Dazu sollen Sie mir für jedes  n  aus " ++ render (toDoc checked)
+	     , "Dazu sollen Sie mir fÃ¼r jedes  n  aus " ++ render (toDoc checked)
 	     , "ein solches Wort  p  angeben."
 	     , ""
 	     , "Sie haben eingesandt:"
@@ -61,12 +61,12 @@ report :: Pumping z
        => Language -> Pump z -> Int 
        -> Reporter ()
 report l ( neg @ Nein {} :: Pump z ) n = do
-    let pre1 = "Ich wähle  n = " ++ show n
+    let pre1 = "Ich wÃ¤hle  n = " ++ show n
 	mw @ ~ (Just w) = lookupFM (wort neg) n
-	pre2 = "Sie wählen  p = " ++ show w
+	pre2 = "Sie wÃ¤hlen  p = " ++ show w
     inform $ text pre1
     when ( isNothing mw ) $ reject 
-	 $ text "Sie haben für dieses  n  gar kein  p  angegeben."
+	 $ text "Sie haben fÃ¼r dieses  n  gar kein  p  angegeben."
     inform $ text pre2
     when ( not $ contains l w ) $ reject 
 	 $ text "p  ist aber gar nicht in L"  
@@ -89,12 +89,12 @@ report l ( neg @ Nein {} :: Pump z ) n = do
                 newline 
 		reject $ vcat $ map text
 		  [ "Die Zerlegung " ++ show z 
-                  , "erfüllt die Pump-Eigenschaft DOCH,"
-		  , "denn soweit ich sehe, gilt für alle  i : "
+                  , "erfÃ¼llt die Pump-Eigenschaft DOCH,"
+		  , "denn soweit ich sehe, gilt fÃ¼r alle  i : "
 		    ++ inflate_show_i z ++ " in  L."
 		  ]
           ) zs
-    inform $ text $ "OK. Für jede Zerlegung gibt es ein  i  mit  " 
+    inform $ text $ "OK. FÃ¼r jede Zerlegung gibt es ein  i  mit  " 
 	       ++ inflate_show_i ( undefined :: z )  ++ " not in L."
     newline
 
@@ -105,7 +105,7 @@ expos :: Pumping z
 -- die exponenten, deren inflation nicht in der sprache ist
 expos l n z = do
      -- ARBITRARY
-     -- tatsächlich, für ABCdiff war der feste Wert 20 zu klein
+     -- tatsÃ¤chlich, fÃ¼r ABCdiff war der feste Wert 20 zu klein
      i <- [ 0 .. length ( inflate 2 z ) ] 
      let w' = inflate i z
      guard $ not $ contains l w'

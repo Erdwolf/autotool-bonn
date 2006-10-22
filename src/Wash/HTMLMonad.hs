@@ -1,4 +1,4 @@
--- © 2001 Peter Thiemann
+-- Â© 2001 Peter Thiemann
 module Wash.HTMLMonad (module Wash.HTMLMonad,module Wash.HTMLBase) where
 import Prelude hiding (div,head,map,span)
 import Wash.HTMLBase

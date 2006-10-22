@@ -31,7 +31,7 @@ remove_kanten k g = do
     remove_kanten (k-1) h
 
 
--- | erzeuge vollständigen k-tree, mit perf. elim. scheme
+-- | erzeuge vollstÃ¤ndigen k-tree, mit perf. elim. scheme
 roll :: (ToDoc [a], ToDoc a, Ord a)
      => Int -- ^ intended tree width (upper bound)
      -> [ a ] -- ^ nodes

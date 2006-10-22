@@ -23,9 +23,9 @@ import System ( getArgs )
 compute :: U.Schule -> ( V.Vorlesung, ScoreDefFM ) -> IO ()
 compute u ( vor, aufs ) = do
 
-    -- wir lesen die logfiles für jede vorlesung komplett neu ein,
+    -- wir lesen die logfiles fÃ¼r jede vorlesung komplett neu ein,
     -- damit wir die entries, die wir nicht brauchen, 
-    -- gleich wieder weghauen können
+    -- gleich wieder weghauen kÃ¶nnen
 
     args <- getArgs
 
@@ -40,8 +40,8 @@ compute u ( vor, aufs ) = do
 
     let total = foldl ( update aufs ) emptyFM einsendungen
     -- pforsicht: hier sind auch die admins (< 1024) drin
-    -- damit wir "best known" anzeigen können
-    -- vor der bepunktung müssen die aber raus
+    -- damit wir "best known" anzeigen kÃ¶nnen
+    -- vor der bepunktung mÃ¼ssen die aber raus
 
     emit decorate u vor total
 
@@ -59,9 +59,9 @@ collide :: HiLo
 collide dir schon neus = 
     let fun = case dir of
             Low -> id ; High -> negate 
-    in    take ( scoreItems + 5 ) -- platz lassen für admins (s. o.)
-	$ nubBy matrikel -- nur eine lösung je student
-        $ mergeBy ( \ e -> ( fun ( size e ) -- erst nach größe
+    in    take ( scoreItems + 5 ) -- platz lassen fÃ¼r admins (s. o.)
+	$ nubBy matrikel -- nur eine lÃ¶sung je student
+        $ mergeBy ( \ e -> ( fun ( size e ) -- erst nach grÃ¶ÃŸe
 			    , date e )        -- dann nach zeit
 		   ) neus schon
 

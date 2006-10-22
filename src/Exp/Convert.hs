@@ -1,6 +1,5 @@
 module Exp.Convert where
 
---  $Id$
 
 import Convert.Type
 
@@ -53,7 +52,7 @@ instance C.Partial Convert_To_Exp
 
     report Convert_To_Exp ( from, props ) = do
         inform $ vcat
-            [ text "Gesucht ist ein regulärer Ausdruck,"
+            [ text "Gesucht ist ein regulÃ¤rer Ausdruck,"
 	    , text "der die Sprache"
 	    , nest 4 $ form from
 	    , text "erzeugt und folgende Eigenschaften hat:"
@@ -72,7 +71,7 @@ instance C.Partial Convert_To_Exp
     partial Convert_To_Exp ( from, props ) exp = do
 -- als property definiert
 --        sanity_keys ( mkSet [ "Eps", "Empty", "Sigma", "All" ] ) exp
-        inform $ text "Sind alle Eigenschaften erfüllt?"
+        inform $ text "Sind alle Eigenschaften erfÃ¼llt?"
         nested 4 $ mapM_ ( flip test exp ) props
 
     total Convert_To_Exp ( from, props ) exp = do
@@ -94,7 +93,7 @@ instance C.Measure Convert_To_Exp
 
 make :: Make
 make = direct Convert_To_Exp 
-     ( Convert { name = Just ["Wörter über {a,b}, die mit  a  beginnen und mit  b  enden"]
+     ( Convert { name = Just ["WÃ¶rter Ã¼ber {a,b}, die mit  a  beginnen und mit  b  enden"]
 	       , input = Exp $ read "a (a+b)^* b"
 	       }
      , Exp.Property.example

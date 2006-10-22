@@ -22,10 +22,10 @@ test :: ( Symbol c, Reader [c], ToDoc [c] )
 
 test (Min_Size s) exp = do
     assert ( size exp >= s ) 
-	   $ text "Grˆﬂe des Ausdrucks ist wenigstens" <+> toDoc s <+> text "?"
+	   $ text "Gr√∂√üe des Ausdrucks ist wenigstens" <+> toDoc s <+> text "?"
 test (Max_Size s) exp = do
     assert ( size exp <= s ) 
-	   $ text "Grˆﬂe des Ausdrucks ist hˆchstens" <+> toDoc s <+> text "?"
+	   $ text "Gr√∂√üe des Ausdrucks ist h√∂chstens" <+> toDoc s <+> text "?"
 
 test (Alphabet a) exp = do
     sanity_alpha a exp
@@ -40,6 +40,6 @@ test (AllowedKeys ks) exp = do
     sanity_keys ks exp
 
 test prop exp = do
-    reject $ fsep [ text "test f¸r", toDoc prop
+    reject $ fsep [ text "test f√ºr", toDoc prop
 		  , text "noch nicht implementiert"
 		  ]

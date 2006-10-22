@@ -47,7 +47,7 @@ instance C.Partial Convert_To_NFA
         let [ alpha ] = do Alphabet a <- props ; return a
         restrict_states aut
         restrict_alpha alpha aut
-        inform $ text "Sind alle Eigenschaften erfüllt?"
+        inform $ text "Sind alle Eigenschaften erfÃ¼llt?"
         nested 4 $ mapM_ ( flip test aut ) props
 
     total Convert_To_NFA ( from, props ) aut = do

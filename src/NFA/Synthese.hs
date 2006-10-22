@@ -1,4 +1,4 @@
--- | vom regulären Ausdruck zum Automaten
+-- | vom regulÃ¤ren Ausdruck zum Automaten
 --  $Id$
 
 module NFA.Synthese 
@@ -48,7 +48,7 @@ instance C.Partial  Synthese SI ( NFA Char Int )
 			     then text "deterministischen" else empty )
 	               <+> text "endlichen Automaten,"
 	, text "der die Sprache" <+> besch i
-	, text "über dem Alphabet" <+> toDoc ( alphabet i )
+	, text "Ã¼ber dem Alphabet" <+> toDoc ( alphabet i )
 	, text "akzeptiert."
 	]
 
@@ -64,7 +64,7 @@ instance C.Partial  Synthese SI ( NFA Char Int )
 	f <- equ ( informed ( besch i )                         goal )
 		 ( informed ( text "Sprache Ihres Automaten" )  b    )
 
-	assert f $ text "Stimmen die Sprachen überein?"
+	assert f $ text "Stimmen die Sprachen Ã¼berein?"
         when (  deterministisch i ) $ Autolib.NFA.Check.deterministisch b
         return () 
 

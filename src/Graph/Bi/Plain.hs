@@ -20,14 +20,14 @@ instance ( GraphC a, Show a )
 
     report _ g = do
         inform $ vcat
-	       [ text "Gesucht ist eine Knotenmenge M, die beweist, daß der Graph"
+	       [ text "Gesucht ist eine Knotenmenge M, die beweist, daÃŸ der Graph"
 	       , nest 4 $ toDoc g
 	       ]
 	peng $ g { layout_program = Circo
 		 , layout_hints = [ "-Nshape=ellipse" , "-Gsize=\"5,5\"" ]
 		 }
         inform $ vcat
-	       [ text "bipartit ist, also jede Kante des Graphen zwischen Knoten aus M und V(G)\\M verläuft."
+	       [ text "bipartit ist, also jede Kante des Graphen zwischen Knoten aus M und V(G)\\M verlÃ¤uft."
 	       ]
 
     initial _ g = let n = cardinality $ knoten g
@@ -38,7 +38,7 @@ instance ( GraphC a, Show a )
 
     partial _ g v = do
         let s1 = ( text "Knotenmenge V(G) des Graphen" , knoten g )
-	    s2 = ( text "Knotenmenge M in Ihrer Lösung" , v )
+	    s2 = ( text "Knotenmenge M in Ihrer LÃ¶sung" , v )
 	Autolib.Reporter.Set.non_empty s2
 	Autolib.Reporter.Set.proper_subset s2 s1
     
@@ -47,24 +47,24 @@ instance ( GraphC a, Show a )
         let es_norm = select (kanten g) v
 	let es_quer = select (kanten g) v_quer
 
-        inform $ vcat [ text "Das Komplement V(G)\\M Ihrer Lösung ist:" 
+        inform $ vcat [ text "Das Komplement V(G)\\M Ihrer LÃ¶sung ist:" 
 		      , nest 4 $ toDoc v_quer
 		      ]
 
         when ( not $ isEmptySet es_norm ) $ reject $ vcat
-	     [ text "Diese Kante(n) verlaufen zwischen Knoten aus Ihrer Lösung:"
+	     [ text "Diese Kante(n) verlaufen zwischen Knoten aus Ihrer LÃ¶sung:"
 	     , nest 4 $ toDoc es_norm
 	     ]
 
-        inform $ vcat [ text "Zwischen den Knoten Ihrer Lösung verlaufen keine Kanten." ]
+        inform $ vcat [ text "Zwischen den Knoten Ihrer LÃ¶sung verlaufen keine Kanten." ]
 
         when ( not $ isEmptySet es_quer ) $ reject $ vcat
-	     [ text "Diese Kante(n) verlaufen zwischen Knoten aus dem Komplement Ihrer Lösung:"
+	     [ text "Diese Kante(n) verlaufen zwischen Knoten aus dem Komplement Ihrer LÃ¶sung:"
 	     , nest 4 $ toDoc es_quer
 	     ]
 
         inform $ vcat 
-	       [ text "Zwischen den Knoten des Komplements Ihrer Lösung verlaufen keine Kanten." ]
+	       [ text "Zwischen den Knoten des Komplements Ihrer LÃ¶sung verlaufen keine Kanten." ]
 
 instance ( GraphC a, Show a )
     => C.Measure Bi (Graph a) (Set a) where

@@ -36,7 +36,7 @@ instance CC a
 	inform $ vcat
 	       [ text "Gesucht ist eine Eliminationsordung"
 	       , text "mit Weite <=" <+> toDoc k 
-	       , text "für diesen Graphen:"
+	       , text "fÃ¼r diesen Graphen:"
 	       , nest 4 $ toDoc g
 	       ]
 	peng g
@@ -44,14 +44,14 @@ instance CC a
     initial p (g, k) = lknoten g
 
     partial p (g, k) xs = do
-        -- auch partielle lösungen sollen kommentiert werden
+        -- auch partielle lÃ¶sungen sollen kommentiert werden
         let rest = knoten g `minusSet` mkSet xs
 	ys <- if isEmptySet rest
 	      then return []
 	      else do 
 		 inform $ vcat 
 		        [ text "Diese Knoten des Graphen fehlen in Ihrer Liste"
-			, text "und werden deswegen am Ende angefügt:"
+			, text "und werden deswegen am Ende angefÃ¼gt:"
 			, nest 4 $ toDoc rest
 			]
 		 return $ setToList rest

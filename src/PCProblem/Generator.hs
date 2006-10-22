@@ -7,8 +7,6 @@ module PCProblem.Generator
 
 where
 
--- -- $Id$
-
 import PCProblem.Type
 import PCProblem.Param
 import PCProblem.Solver
@@ -53,7 +51,7 @@ gen p = do
 			      ) uvs 
 			]
     let (u1, v1) : (u2, v2) : rest = uvs
-    -- hackerei für anfang und ende
+    -- hackerei fÃ¼r anfang und ende
     let uvs' = ( v1 ++ u1, v1 ) : ( u2 , v2 ++ u2 ) : rest
     xys <- permutation uvs'
     return $ PCP xys
@@ -65,7 +63,7 @@ pair p = ( do l <- randomRIO (1,breite p)
 	 ) `repeat_until` ( uncurry (/=) )
 
 
--- | nur eine kürzeste lösung
+-- | nur eine kÃ¼rzeste lÃ¶sung
 sol :: Param -> IO ( PCP, Maybe Folge )
 sol p = do
     i <- gen p -- Instanz
@@ -73,7 +71,7 @@ sol p = do
     return ( i, listToMaybe $ take 1 $ fs )
 
 -- | falls ein buchstabe nur einseitige differenzen hat,
--- dann nützt er in der lösung nicht viel (?? - check)
+-- dann nÃ¼tzt er in der lÃ¶sung nicht viel (?? - check)
 triviale_instanz :: PCP -> Bool
 triviale_instanz i @ ( PCP uvs ) = or $ do
     x <- setToList $ letters i
@@ -93,7 +91,7 @@ instance Generator PCProblem Param ( PCP, Folge ) where
 	       Nothing -> False
 	       Just f  -> and [ nah conf <= length f 
 			      , length f <= fern conf
-                                -- alle paare sollen in der lösung vorkommen
+                                -- alle paare sollen in der lÃ¶sung vorkommen
 			      , length (nub f) == paare conf
 			      ]
        return ( i, f )

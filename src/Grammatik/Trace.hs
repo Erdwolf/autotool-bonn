@@ -46,27 +46,27 @@ starts (g, vs) ts = do
 
 complete :: (Grammatik, Set String) -> Tracks -> Reporter ()
 complete (g, vs) ts = do
-    inform $ text "Haben Sie für jedes Zielwort eine Ableitung aufgeschrieben?"
+    inform $ text "Haben Sie fÃ¼r jedes Zielwort eine Ableitung aufgeschrieben?"
     let terms = mkSet $ do t <- ts ; guard $ not $ null t ; return $ last t
     let wrong = vs `minusSet` terms
     when (not $ isEmptySet wrong)
-	 $ reject $ text "nein, für diese nicht:" <+> toDoc wrong
+	 $ reject $ text "nein, fÃ¼r diese nicht:" <+> toDoc wrong
     inform $ text "OK"
     newline
 
 trace :: Int -> ( Grammatik, Set String ) -> Tracks -> Reporter Int
 trace b ( g, vs ) ts = do
     inform $ text "Sie sollen nachweisen,"
-    inform $ text "daß diese Wörter aus dem Startsymbol ableitbar sind:"
+    inform $ text "daÃŸ diese WÃ¶rter aus dem Startsymbol ableitbar sind:"
     inform $ nest 4 $ toDoc vs
     newline
 
-    inform $ text "In den Ableitungen dürfen Sie jeweils maximal"
+    inform $ text "In den Ableitungen dÃ¼rfen Sie jeweils maximal"
 	   <+> toDoc b
 	   <+> text "Einzelschritte zusammenfassen."
     newline
 
-    inform $ text "Sie haben diese (verkürzten) Ableitungen eingesandt:"
+    inform $ text "Sie haben diese (verkÃ¼rzten) Ableitungen eingesandt:"
     inform $ nest 4 $ toDoc ts
     newline
 

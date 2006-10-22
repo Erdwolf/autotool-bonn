@@ -50,5 +50,5 @@ instance ( Machine m dat conf, Numerical dat, Reader m )
     partial p i b = N.check i b
     total   p i b = do
         numerical_test' i b
-        return () -- größe der maschine (hier) ignorieren
+        return () -- grÃ¶ÃŸe der maschine (hier) ignorieren
 

@@ -17,8 +17,8 @@ data Config =
      Config { lang :: Language.Syntax.Type
 	    , properties :: [ Property ]
 	    , num_samples :: Int -- ^ anzahl der samples
-	    , min_sample_length :: Int -- ^ minimale l‰nge der samples
-	    , max_sample_length :: Int -- ^ maximal l‰nge der samples
+	    , min_sample_length :: Int -- ^ minimale l√§nge der samples
+	    , max_sample_length :: Int -- ^ maximal l√§nge der samples
 	    }
      deriving ( Eq, Typeable )
 

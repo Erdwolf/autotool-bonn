@@ -13,14 +13,14 @@ import Autolib.Set
 import Autolib.Fix
 import Grammatik.Type
 
--- eigentlich ist das nur für CFG definiert.
+-- eigentlich ist das nur fÃ¼r CFG definiert.
 
 -- wir verallgemeinern auf beliebige Grammatiken:
--- jede Vars. der rechten seite heißt hier erreichbar,
+-- jede Vars. der rechten seite heiÃŸt hier erreichbar,
 -- falls alle Vars der linken seite erreichbar sind.
 
 -- das ist sichere Approximation, d. h. 
--- Löschen aller nicht erreichtb. Var. ändert die Sprache nicht
+-- LÃ¶schen aller nicht erreichtb. Var. Ã¤ndert die Sprache nicht
 
 erreichbar :: Grammatik -> Set Char
 erreichbar g = fix ( \ qs -> union qs $ mkSet $ do

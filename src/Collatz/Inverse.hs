@@ -29,10 +29,10 @@ instance C.Partial Collatz_Inverse P.Parameter Integer where
     initial Collatz_Inverse p = 27
 
     total Collatz_Inverse p x = do
-        -- vorsicht: hier könnte max [] = undefined vorkommen
-        -- aber wegen Parameter deriving Eq werden zuerst die längen verglichen
+        -- vorsicht: hier kÃ¶nnte max [] = undefined vorkommen
+        -- aber wegen Parameter deriving Eq werden zuerst die lÃ¤ngen verglichen
         -- und die stimmen dann eben nicht, weil nur instanzen
-        -- mit längen > 0 gewürfelt werden (hoffentlich)
+        -- mit lÃ¤ngen > 0 gewÃ¼rfelt werden (hoffentlich)
 	assert ( p == P.compute x )
 	       $ text "angegebene Zahl ist korrekt?"
 

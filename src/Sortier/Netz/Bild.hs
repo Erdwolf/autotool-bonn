@@ -2,7 +2,6 @@
 
 module Sortier.Netz.Bild where
 
---   $Id$
 
 import Sortier.Netz.Type
 import Sortier.Netz.Example
@@ -57,7 +56,7 @@ paint ( n, sts ) =
             ((x,y), n, t) <- cnts
 	    s <- [x,y]
 	    return ((xscale * t, yscale * s), 'o')
-        kanten = do -- für komparatoren
+        kanten = do -- fÃ¼r komparatoren
             ((x,y), n, t) <- cnts
  	    let c = if x < y then 'v' else '^'
 	    z <- [ succ $ yscale * min x y .. pred $ yscale * max x y ]

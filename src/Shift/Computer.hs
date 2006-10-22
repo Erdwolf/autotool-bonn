@@ -54,8 +54,8 @@ folge :: Pins -> [ Bool ]
 folge = map head . zustands_folge
 
 find :: Ord a => [a] -> (Int, Int)
--- findet L‰nge von Vorperiode und Periode 
--- f¸r eine unendliche schlieﬂlich periodische Folge
+-- findet L√§nge von Vorperiode und Periode 
+-- f√ºr eine unendliche schlie√ülich periodische Folge
 find xs = 
     let handle cache ((k,x) : rest) = 
 	       case lookupFM cache x of
@@ -89,7 +89,7 @@ ffind next x0 =
 		   return x
 
 	-- bestimme das erste vorkommen von x danach 
-	-- (ergibt kleinste periodenl‰nge)
+	-- (ergibt kleinste periodenl√§nge)
 	d = head $ do (i, y) <- tail $ zip [0..] 
 		                     $ strictly $ iterate_strict next x
 		      guard $ y == x

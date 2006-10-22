@@ -1,6 +1,6 @@
 {-# OPTIONS -fth -fallow-overlapping-instances -fglasgow-exts #-}
 
--- | Interface für externe Korrektoren
+-- | Interface fÃ¼r externe Korrektoren
 
 module Inter.Action where
 

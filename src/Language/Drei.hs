@@ -18,7 +18,7 @@ vielfache m = Language
 	    }
 
 zahl :: Int -> IO Integer
--- ein Integer dieser Länge
+-- ein Integer dieser LÃ¤nge
 zahl 0 = return 0
 zahl l = do
      c <- randomRIO [ '1' .. '9' ]
@@ -26,7 +26,7 @@ zahl l = do
      return $ read ( c : cs )
 
 sam :: Integer -> Int -> IO String
--- würfelt ein Wort von ungefähr passender Länge
+-- wÃ¼rfelt ein Wort von ungefÃ¤hr passender LÃ¤nge
 sam m l = do
     n <- zahl l
     let nn = n - rem n m 

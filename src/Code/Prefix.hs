@@ -17,18 +17,18 @@ istotal :: ( Ord a )
       -> Reporter ()
 istotal xs code = do
     inform $ fsep 
-	   [ text "ist", toDoc code, text "vollst‰ndig"
-	   , text "f¸r", toDoc xs, text "?"
+	   [ text "ist", toDoc code, text "vollst√§ndig"
+	   , text "f√ºr", toDoc xs, text "?"
 	   ]
     nested 4 $ Reporter.Subset.check 
 	     ( text "zu codierende Buchstaben" , xs )
-	     ( text "tats‰chlich codierte Buchstaben", mkSet $ keysFM code )
+	     ( text "tats√§chlich codierte Buchstaben", mkSet $ keysFM code )
 
 isprefix :: ( Ord a, Eq b )
       => Code a b
       -> Reporter ()
 isprefix code = do
-    inform $ text "ist" <+> toDoc code <+> "ein Pr‰fix-Code?"
+    inform $ text "ist" <+> toDoc code <+> "ein Pr√§fix-Code?"
     sequence_ $ do
         (x, cs) <- fmToList code
         (y, ds) <- fmToList code

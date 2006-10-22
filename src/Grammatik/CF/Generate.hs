@@ -55,7 +55,7 @@ throw conf = do
 			   ( \ mg -> isJust mg ) 
     return g
 
--- | solange Regeln hinzufügen, bis condition wahr.
+-- | solange Regeln hinzufÃ¼gen, bis condition wahr.
 roll :: Config -> IO ( Maybe G.Grammatik )
 roll conf = do
     let vars = setToList ( nichtterminale conf )
@@ -75,7 +75,7 @@ roll conf = do
 	 []       -> return Nothing
 	 (g : _ ) -> return $ Just g
 
--- | eine neue regel würfeln
+-- | eine neue regel wÃ¼rfeln
 rule :: [ Char ] -> [[String]] -> IO ( String, String )
 rule vars lhsss = do
      lhss <- eins lhsss

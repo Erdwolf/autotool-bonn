@@ -44,7 +44,7 @@ instance Out Program Memory State where
 
         inform $ nest 4 $ text "Ja."
 
-        inform $ nest 4 $ text "Sind alle benutzten Register zurückgesetzt?"
+        inform $ nest 4 $ text "Sind alle benutzten Register zurÃ¼ckgesetzt?"
 
         let rs  = 0 : keysFM m0
         let bad = do b@(r,v) <- fmToList m

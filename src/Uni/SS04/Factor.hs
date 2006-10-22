@@ -42,7 +42,7 @@ unibranch m = do
         thing @ ( (x, y), yzs ) <- fmToList $ tafel m
         guard $ 1 < cardinality yzs
         return thing
-    inform $ text "Die Maschine enthält diese nichtdeterministischen Verzweigungen:"
+    inform $ text "Die Maschine enthÃ¤lt diese nichtdeterministischen Verzweigungen:"
     inform $ nest 4 $ toDoc nondets
     when ( 1 /= length nondets ) 
      $ reject $ text "Die Maschine soll genau eine nichtdeterministische Verzweigung enthalten."

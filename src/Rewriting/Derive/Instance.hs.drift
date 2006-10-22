@@ -11,7 +11,12 @@ import Autolib.FiniteMap
 import Data.Typeable
 
 
+<<<<<<< Instance.hs.drift
+data ( Symbol c, Symbol v, ToDoc ( TRS v c ), Reader ( TRS v c ) ) 
+    => Instance v c = Instance
+=======
 data ( Symbol c, Symbol v, Reader ( TRS v c ) ) => Instance v c = Instance
+>>>>>>> 1.2
         { system :: TRS v c
         , from   :: Term v c
         , to     :: Term v c

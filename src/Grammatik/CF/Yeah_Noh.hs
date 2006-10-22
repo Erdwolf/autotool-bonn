@@ -31,14 +31,14 @@ import Autolib.Reporter
 
 
 
--- eins der beiden imports auswählen:
+-- eins der beiden imports auswÃ¤hlen:
 
--- für jedes wort einzeln das CYK-array ausrechnen
--- (besser für hugs??)
+-- fÃ¼r jedes wort einzeln das CYK-array ausrechnen
+-- (besser fÃ¼r hugs??)
 -- import CYK
 
--- gemeinsamen speicher für alle teilwörter
--- (müßte eigentlich hashtabelle benutzen, FiniteMaps sind zu langsam?)
+-- gemeinsamen speicher fÃ¼r alle teilwÃ¶rter
+-- (mÃ¼ÃŸte eigentlich hashtabelle benutzen, FiniteMaps sind zu langsam?)
 import Grammatik.CF.DPL_CYK
 
 -- end auswahl
@@ -64,7 +64,7 @@ cf_yeah_noh c g = do
     let snip = take 5 -- ??
 
     inform $ vcat
-	   [ text "Ich prüfe, ob diese Wörter der Zielsprache"
+	   [ text "Ich prÃ¼fe, ob diese WÃ¶rter der Zielsprache"
 	   , nest 4 $ toDoc yeahs
 	   , text "von Ihrer Grammatik erzeugt werden."
 	   ]
@@ -76,15 +76,15 @@ cf_yeah_noh c g = do
 		    $ achyeah
 
     when ( not $ null yeah_falsch ) $ reject $ vcat
-	 [ text "Ihre Grammatik erzeugt unter anderem diese Wörter NICHT:"
+	 [ text "Ihre Grammatik erzeugt unter anderem diese WÃ¶rter NICHT:"
 	 , nest 4 $ toDoc yeah_falsch
 	 ]
     inform $ text "OK."
 
     inform $ vcat
-	   [ text "Ich prüfe, ob diese Wörter aus dem Komplement der Zielsprache"
+	   [ text "Ich prÃ¼fe, ob diese WÃ¶rter aus dem Komplement der Zielsprache"
 	   , nest 4 $ toDoc nohs
-	   , text "tatsächlich NICHT von Ihrer Grammatik erzeugt werden."
+	   , text "tatsÃ¤chlich NICHT von Ihrer Grammatik erzeugt werden."
 	   ]
 
     let achnoh =  accepteds ch nohs
@@ -94,7 +94,7 @@ cf_yeah_noh c g = do
 		    $ achnoh
 
     when ( not $ null noh_falsch ) $ reject $ vcat
-	 [ text "Ihre Grammatik erzeugt unter anderem diese Wörter DOCH:"
+	 [ text "Ihre Grammatik erzeugt unter anderem diese WÃ¶rter DOCH:"
 	 , nest 4 $ toDoc noh_falsch
 	 ]
     inform $ text "OK."

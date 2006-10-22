@@ -1,4 +1,4 @@
--- | vom Automaten zum regulären Ausdruck
+-- | vom Automaten zum regulÃ¤ren Ausdruck
 --  $Id$
 module NFA.Analyse 
 
@@ -35,9 +35,9 @@ instance C.Partial  Analyse AI Exp
   where
     describe p i =  vcat
 	             [     text "Finden Sie einen"
-	               <+> text "regulären Ausdruck,"
+	               <+> text "regulÃ¤ren Ausdruck,"
 		     , text "der die Sprache" <+> info ( automat i )
-		     , text "über dem Alphabet" <+> toDoc ( alphabet $ automat i )
+		     , text "Ã¼ber dem Alphabet" <+> toDoc ( alphabet $ automat i )
 		     , text "beschreibt."
 		     ]
 
@@ -51,7 +51,7 @@ instance C.Partial  Analyse AI Exp
 		 ( informed ( toDoc b ) 
 		   $ inter (std_sigma (setToList $ alphabet $ automat i)) b  )
 
-	assert f $ text "Stimmen die Sprachen überein?"
+	assert f $ text "Stimmen die Sprachen Ã¼berein?"
         return () 
 
 make :: Make

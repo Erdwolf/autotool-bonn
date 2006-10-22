@@ -1,4 +1,4 @@
--- | Korrekturfunktion für PCP-Aufgaben
+-- | Korrekturfunktion fÃ¼r PCP-Aufgaben
 
 -- autor Markus Kreuz
 -- mai99byv@studserv.uni-leipzig.de

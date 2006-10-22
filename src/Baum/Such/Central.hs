@@ -1,6 +1,7 @@
+{-# OPTIONS -fallow-undecidable-instances #-}
+
 module Baum.Such.Central where
 
---  $Id$
 
 import Baum.Such.Config
 import Baum.Such.Class
@@ -37,7 +38,7 @@ instance ( Tag t baum a ) =>
 	      [ text "sollen diese Operationen angewendet werden"
               , text "(wobei Sie  Any  geeignet ersetzen sollen):"
               , nest 4 $ toDoc plan
-              , text "so daß dieser Baum entsteht:"
+              , text "so daÃŸ dieser Baum entsteht:"
               ]
        peng end
 
@@ -48,7 +49,7 @@ instance ( Tag t baum a ) =>
         inform $ text "Beginne mit"
 	peng start
         c <- steps start plan ops
-	inform $ text "Stimmt überein mit Aufgabenstellung?"
+	inform $ text "Stimmt Ã¼berein mit Aufgabenstellung?"
         peng end
 	assert ( c `equal` end) $ Autolib.ToDoc.empty
 

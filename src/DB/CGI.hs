@@ -8,7 +8,7 @@ import DB.Action
 import DB.Config
 
 import Network.CGI
-import qualified Text.Html
+import qualified Text.XHtml
 import Text.PrettyPrint.HughesPJ
 import Text.XML.HaXml.Types
 import Text.XML.HaXml.Haskell2Xml
@@ -18,10 +18,10 @@ import Maybe
 main :: IO ()
 main = wrapper $ \ env -> doctor $ cgi env
 
-doctor :: IO Doc -> IO Text.Html.Html
+doctor :: IO Doc -> IO Text.XHtml.Html
 doctor idoc = do
     doc <- idoc
-    let html = Text.Html.thecode $ Text.Html.linesToHtml $ lines $ show doc
+    let html = Text.XHtml.thecode $ Text.XHtml.linesToHtml $ lines $ show doc
     return html
 
 cgi :: [(String,String)] -> IO Doc

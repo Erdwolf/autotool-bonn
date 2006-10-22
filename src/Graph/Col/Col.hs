@@ -26,7 +26,7 @@ import Control.Monad ( guard ) -- old style
 
 data Col = Col deriving Show
 
--- Färbung als Klassen-Einteilung der Knoten
+-- FÃ¤rbung als Klassen-Einteilung der Knoten
 data Klassen a = Klassen [[a]] deriving (Read,Show)
 instance (ToDoc [a])=> ToDoc (Klassen a) where
 	toDoc (Klassen erg) = text "Loesung: " <+> toDoc erg
@@ -68,7 +68,7 @@ instance
 		getGraphviz graph instanzTrans dateiName
 	
 	getBeweis Col (graph,anzahl) loesung dateiName =
-		-- Komplexität ist noch verbesserunswürdig
+		-- KomplexitÃ¤t ist noch verbesserunswÃ¼rdig
 		getGraphviz graph (getBeweisTrans (sortLoesung $ loesung)) dateiName
 
 		
@@ -118,7 +118,7 @@ getNColor (Klassen liste) knoten =
 			| otherwise = findKlasse xs knoten (index + 1)
 		findKlasse [] knoten index = (-1) -- nicht gefunden
 
--- gibt eine Farbe zu einem Index einer Klasse zurück
+-- gibt eine Farbe zu einem Index einer Klasse zurÃ¼ck
 -- sind erst mal nur 8 Farben - sollte aber reichen
 getColor :: Int -> GVColor
 getColor index

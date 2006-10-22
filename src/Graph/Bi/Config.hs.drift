@@ -13,7 +13,7 @@ import Text.XML.HaXml.Haskell2Xml
 data Config = Config 
 	    { nodes :: Int -- ^ number of nodes
 	    , edges :: Int -- ^ number of edges
-	    , teil  :: Int -- ^ größe des beweises im verhältnis zur knotenzahl
+	    , teil  :: Int -- ^ grÃ¶ÃŸe des beweises im verhÃ¤ltnis zur knotenzahl
 	    }
      deriving ( Typeable )
 

@@ -19,7 +19,7 @@ class  ( Ord a , Hash a, Show a, ToDoc a, Reader a, Haskell2Xml a
 instance ( Ord a , Hash a, Show a, ToDoc a, Reader a, Haskell2Xml a
 	 , ToDoc [a], Reader [a] ) => CC a
 
--- | liefert maximale Grˆﬂe einer Clique,
+-- | liefert maximale Gr√∂√üe einer Clique,
 -- die in der Eliminationsordnung verwendet wird
 cliques :: CC a
 	=> ( Graph a, Int ) 
@@ -28,18 +28,18 @@ cliques :: CC a
 
 cliques (g, k) xs | ist_clique g = do
     let s = cardinality $ knoten g
-    inform $ text "verbleibender Graph ist eine Clique der Grˆﬂe" <+> toDoc s
+    inform $ text "verbleibender Graph ist eine Clique der Gr√∂√üe" <+> toDoc s
     assert ( s - 1 <= k ) 
-	   $ text "hˆchstens k+1 Knoten?"
+	   $ text "h√∂chstens k+1 Knoten?"
     return $ s - 1
 
 cliques (g, k) ( x : xs ) = do
     peng g
-    inform $ text "n‰chster Knoten:" <+> toDoc x
+    inform $ text "n√§chster Knoten:" <+> toDoc x
     let n = nachbarn g x
     inform $ text "hat Nachbarn:" <+> toDoc n
     assert ( cardinality n <= k )
-	   $ text "hˆchstens k St¸ck?"
+	   $ text "h√∂chstens k St√ºck?"
     let c = no_fixed_layout $ clique n
         neu = kanten c `minusSet` kanten g
     inform $ text "neue Kanten:" <+> toDoc neu

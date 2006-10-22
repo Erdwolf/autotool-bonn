@@ -5,7 +5,7 @@ module Language.Genau where
 import Random
 
 genau :: [ (Char, Int) ] -> IO String
--- genau [(c1,n1),..] würfelt einen String
+-- genau [(c1,n1),..] wÃ¼rfelt einen String
 -- mit genau n1 mal buchstabe c1 usw.
 genau [] = return []
 genau xns = do

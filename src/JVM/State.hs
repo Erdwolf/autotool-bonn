@@ -19,7 +19,7 @@ data State =
 	   , pc   :: Int
 	   , stack :: [ Integer ]
 	   , memory  :: Memory
-	   , past :: [State] -- vorige zust‰nde
+	   , past :: [State] -- vorige zust√§nde
 	   }
      deriving ( Eq, Ord, Typeable )
 

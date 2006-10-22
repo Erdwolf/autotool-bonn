@@ -10,8 +10,6 @@ module Sortier.Netz.Type
 
 where
 
---   $Id$
-
 import Sortier.Netz.Xml
 
 import Autolib.ToDoc

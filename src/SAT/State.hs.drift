@@ -14,13 +14,13 @@ import qualified Autolib.Relation as Relation
 import Autolib.FiniteMap
 
 data State = 
-     State { assignment :: Belegung -- ^ erfüllend
-	   , satisfying :: Set Literal -- ^ dazu gehörende literale
+     State { assignment :: Belegung -- ^ erfÃ¼llend
+	   , satisfying :: Set Literal -- ^ dazu gehÃ¶rende literale
 	   , todo :: Int -- ^ noch so viele klauseln
 	   , width :: Int -- ^ soviele literale pro klausel
 	   , formula  :: Formel -- ^ soweit schon gebaut
 	   , clause :: Klausel -- ^ currently being built
-	   , csat :: Bool -- ^ klausel ist bereits erfüllt?
+	   , csat :: Bool -- ^ klausel ist bereits erfÃ¼llt?
 	   , unfrequent :: Set Literal
 	   , morefrequent :: Set Literal
 	   , dependencies :: Relation.Type Variable Variable

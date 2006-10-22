@@ -12,7 +12,6 @@ module Challenger.Partial
 
 where
 
---   $Id$
 
 import Autolib.Reporter
 import Autolib.ToDoc
@@ -24,9 +23,9 @@ import Control.Types ( Wert (..), ok )
 class Measure p i b where
       measure :: p -> i -> b -> Integer
 
--- | die Messung der Größe ist von der Prüfung der Lösung getrennt.
+-- | die Messung der GröÂße ist von der Prüfung der Lösung getrennt.
 -- das ist schlecht, falls dadurch aufwendige Rechnungen
--- wiederholt werden müssen (siehe z. B. Graph.Cross)
+-- wiederholt werden mÃÂ¼ssen (siehe z. B. Graph.Cross)
 instance Size b => Measure p i b where
       measure _ _ b = fromIntegral $ Autolib.Size.size b
       
@@ -50,7 +49,7 @@ class ( Show p, Read p
       -- | Beschreibung der Aufgabe herstellen
       --
       -- TODO: es sollte (auch oder nur) eine Beschreibung geben,
-      -- die nur von p allein abhängt (dann muß man nicht erst erzeugen
+      -- die nur von p allein abhÃÂ¤ngt (dann muÃŸ man nicht erst erzeugen
       -- und kann trotzdem schon was ausgeben)
       describe :: p -> i -> Doc
       describe p i = vcat
@@ -63,17 +62,17 @@ class ( Show p, Read p
       report   :: p -> i -> Reporter ()
       report p i = inform $ describe p i -- default
 
-      -- | ein sinnvoller startpunkt für die lösung
+      -- | ein sinnvoller startpunkt fÃÂ¼r die lÃÂ¶sung
       initial :: p -> i -> b
 
-      -- | prüfe, ob lösung partiell korrekt
-      -- d. h. läßt sich zu total korrekter erweitern
+      -- | prÃÂ¼fe, ob lÃÂ¶sung partiell korrekt
+      -- d. h. lÃ¤ÃÂŸt sich zu total korrekter erweitern
       -- hat defaul-imp, die immer ja sagt
       partial :: p -> i -> b -> Reporter ()
       -- default
       partial p i b = return ()
 
-      -- | hier können wir irgendwas vorrechen,
+      -- | hier kÃÂ¶nnen wir irgendwas vorrechen,
       -- nachdem der partial-test bestanden wurde 
       -- (zur Reihenfolge siehe Inter.Evaluate)
       demonstrate :: p -> i -> b -> Reporter ()
@@ -81,7 +80,7 @@ class ( Show p, Read p
 
       -- | alles richtig?
       -- vorher wird immer erst partial angewendet
-      -- eine der beiden total, total_neu muß implementiert werden
+      -- eine der beiden total, total_neu muÃŸ implementiert werden
       total   :: p -> i -> b -> Reporter ()
       total p i b = do
           res <- total_neu p i b
@@ -99,7 +98,7 @@ class ( Show p, Read p
 
 ---------------------------------------------------------------------
 
--- | falls man erstmal etwas ausrechnen (z. b. würfeln) will
+-- | falls man erstmal etwas ausrechnen (z. b. wÃÂ¼rfeln) will
 class Roller i i' | i -> i' where
       roller :: i -> IO i'
 

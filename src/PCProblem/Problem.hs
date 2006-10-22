@@ -2,7 +2,7 @@
 -- autor Markus Kreuz
 -- mai99byv@studserv.uni-leipzig.de
 
--- | Korrekturfunktion für PCP-Aufgaben
+-- | Korrekturfunktion fÃ¼r PCP-Aufgaben
 module PCProblem.PCProblem (
      PCProblem (..)
     ,Folge (..)
@@ -42,9 +42,9 @@ instance (ToDoc PCP, Show PCP, Read PCP
         let range = mkSet [ 1 .. fromIntegral $ length pcp ]
 	    aussen = filter ( \ i -> not (elementOf i range) ) folge
 	in  if null folge 
-	    then ( False, text "Die Lösungsfolge darf nicht leer sein." )
+	    then ( False, text "Die LÃ¶sungsfolge darf nicht leer sein." )
 	    else if not $ null aussen 
-	    then ( False, text "Diese Elemente der Lösungsfolge bezeichnen kein Paar der Instanz:" <+> toDoc aussen )
+	    then ( False, text "Diese Elemente der LÃ¶sungsfolge bezeichnen kein Paar der Instanz:" <+> toDoc aussen )
 	    else ( True, text "OK" )
         
     verifiziere PCProblem p folge = 
@@ -53,10 +53,10 @@ instance (ToDoc PCP, Show PCP, Read PCP
 	    linksrest = drop (length c) links
 	    rechtsrest = drop (length c) rechts
 	in  if links == rechts
-	    then ( True, text "Oberes und unteres Wort stimmen überein:"
+	    then ( True, text "Oberes und unteres Wort stimmen Ã¼berein:"
 			 <+> toDoc links )
 	    else ( False
-		 , fsep [ text "Der längste gemeinsame Präfix des oberen und unteren Wortes ist" <+> toDoc c
+		 , fsep [ text "Der lÃ¤ngste gemeinsame PrÃ¤fix des oberen und unteren Wortes ist" <+> toDoc c
 			, text "Der Rest des oberen Wortes ist:" <+> toDoc linksrest
 			, text "Der Rest des unteren Wortes ist:" <+> toDoc rechtsrest
 			]
@@ -87,7 +87,7 @@ instance Partial PCProblem PCP Folge where
     partial PCProblem ( PCP pcp ) lsg = do
         let (l,r) = lr pcp folge
         assert ( isPrefixOf l r || isPrefixOf r l )
-	    $ text "Ist das eine Wort ein Präfix des anderen?"
+	    $ text "Ist das eine Wort ein PrÃ¤fix des anderen?"
 
 instance  Step PCProblem PCP Folge ( Select Int ) where
         step Vertex ( g, k ) xs ( Pick x ) =
@@ -113,7 +113,7 @@ lr (PCP pcp) folge =
     in	( links, rechts )
 
 common :: Eq a => [a] -> [a] -> [a]
--- längster gemeinsamer prefix
+-- lÃ¤ngster gemeinsamer prefix
 common [] ys = []
 common xs [] = []
 common xxs @ (x : xs) yys @ (y : ys) =
@@ -133,8 +133,8 @@ erzInstanz (PCP xys) = unlines $ do
 erzBeweis :: PCP -> Folge -> String
 erzBeweis pcp ks = 
     let (links, rechts) = lr pcp ks
-    in	unlines [ "Lösungsfolge: " ++ show ks ++ "<BR>"
-		, "expandierte Lösungsfolge: " ++ show links
+    in	unlines [ "LÃ¶sungsfolge: " ++ show ks ++ "<BR>"
+		, "expandierte LÃ¶sungsfolge: " ++ show links
 		]
 
 

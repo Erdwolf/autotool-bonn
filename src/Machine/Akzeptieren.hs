@@ -70,7 +70,7 @@ positiv_liste :: ( Machine m dat conf, ToDoc [dat] )
 	      -> Reporter ()
 positiv_liste cut m  xss = do
     inform $ vcat
-	   [ text "Ich prüfe, daß jede dieser Eingaben akzeptiert wird:"
+	   [ text "Ich prÃ¼fe, daÃŸ jede dieser Eingaben akzeptiert wird:"
 	   , nest 4 $ toDoc xss
 	   ]
     check_liste True cut m xss
@@ -80,7 +80,7 @@ negativ_liste :: ( Machine m dat conf, ToDoc [dat] )
               -> Reporter ()
 negativ_liste cut m xss = do
     inform $ vcat
-	   [ text "Ich prüfe, daß keine dieser Eingaben akzeptiert wird:"
+	   [ text "Ich prÃ¼fe, daÃŸ keine dieser Eingaben akzeptiert wird:"
 	   , nest 4 $ toDoc xss
 	   ]
     check_liste False cut m xss

@@ -38,13 +38,13 @@ instance TuringC y z => Out  ( Turing y z ) [ y ] ( Konfiguration y z ) where
     output_reporter m k = return $ bandinhalt m k
 
 instance Encode String where
-    -- unär
+    -- unÃ¤r
     encode xs = do
         x <- xs
 	replicate ( fromIntegral x) '1' ++ "."  -- nicht das leerzeichen!
 
 instance Decode String where
-    decode m = fromIntegral $ length m -- eigentlich prüfen, welche zeichen
+    decode m = fromIntegral $ length m -- eigentlich prÃ¼fen, welche zeichen
 
 {-
 instance TuringC y z => 
@@ -66,7 +66,7 @@ instance TuringC y z =>
     total   p i b = do
         positiv_liste (A.cut i) b $ A.yeah i
         negativ_liste (A.cut i) b $ A.noh  i
-        return () -- größe der maschine (hier) ignorieren
+        return () -- grÃ¶ÃŸe der maschine (hier) ignorieren
 
 -}
 

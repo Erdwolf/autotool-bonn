@@ -51,5 +51,5 @@ instance ( Machine m dat conf, Encode dat )
     partial p i b = C.check i b
     total   p i b = do
         clock_test i b
-        return () -- größe der maschine (hier) ignorieren
+        return () -- grÃ¶ÃŸe der maschine (hier) ignorieren
 

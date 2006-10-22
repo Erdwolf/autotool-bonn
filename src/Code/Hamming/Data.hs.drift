@@ -19,8 +19,8 @@ import Text.XML.HaXml.Haskell2Xml
 import Autolib.Reader
 import Autolib.ToDoc
 
--- | damit übernimmt der parser die prüfung darauf,
--- daß nur zwei buchstaben verwendet werden
+-- | damit Ã¼bernimmt der parser die prÃ¼fung darauf,
+-- daÃŸ nur zwei buchstaben verwendet werden
 type Code = [[ LR ]]
 
 data Goal = Fixed 
@@ -42,7 +42,7 @@ data Attribut = Width | Size | Distance deriving ( Eq, Ord, Typeable )
 
 {-! for Attribut derive : ToDoc, Reader, Haskell2Xml !-}
 
-attributes = [ (width, "Breite"), (size, "Größe"), (distance, "Abstand") ]
+attributes = [ (width, "Breite"), (size, "GrÃ¶ÃŸe"), (distance, "Abstand") ]
 
 {-! for Config derive : ToDoc, Reader, Haskell2Xml !-}
 

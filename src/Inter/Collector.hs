@@ -78,14 +78,15 @@ import qualified Graph.Bisekt.Quiz
 import qualified Graph.Way.Plain
 import qualified Graph.Way.Quiz
 
+-- broken with 6.6
+-- import qualified Graph.MST.Plain
+-- import qualified Graph.MST.Quiz
+
 import qualified Number.Base.Central
 import qualified Number.Float.From
 import qualified Number.Float.To
 
 import qualified LCS.Instance
-
-import qualified Graph.MST.Plain
-import qualified Graph.MST.Quiz
 
 import qualified Graph.VC.Central
 import qualified Graph.VC.VCSAT
@@ -133,7 +134,7 @@ tmakers =
 	             , item NFA.Equiv.Challenger.make
 	             , item NFA.Equiv.Challenger.qmake
                      ]
-                , heading "regul‰re Ausdr¸cke"
+                , heading "regul√§re Ausdr√ºcke"
 	             [ item Exp.Convert.make
 	             , item Exp.Convert.qmake
 	             , item Exp.Smaller.make
@@ -161,7 +162,7 @@ tmakers =
 		    , item SAT.SAT.make_quiz
 		    , item Hilbert.Central.make_fixed
 		    ]
-		, heading "Pr‰dikatenlogik"
+		, heading "Pr√§dikatenlogik"
 		    [ item PL.Find_Model.make_fixed
 		    ]
 		]
@@ -208,8 +209,8 @@ tmakers =
 	        , item Graph.Bisekt.Quiz.make
                 , item Graph.Way.Plain.make
 	        , item Graph.Way.Quiz.make
-	        , item Graph.MST.Plain.make
-	        , item Graph.MST.Quiz.make
+--	        , item Graph.MST.Plain.make
+--	        , item Graph.MST.Quiz.make
                 ]
          , heading "Programmierung"
                 [ item Type.Check.make

@@ -7,7 +7,7 @@ module Boolean.Op
 
 where
 
---  $Id$
+
 
 import Expression.Op
 

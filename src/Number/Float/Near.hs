@@ -14,8 +14,8 @@ import Data.Ratio
 
 -- | z ist gute darstellung von x (schlechte implementierung)':
 -- wenn in x im intervall  wert(z) - delta/2, wert(z) + delta/2 liegt
--- wobei eps h‰lfte des werts des letzten bits
--- (richtig w‰re: wenn z die zu x n‰chstliegende maschinenzahl ist)
+-- wobei eps h√§lfte des werts des letzten bits
+-- (richtig w√§re: wenn z die zu x n√§chstliegende maschinenzahl ist)
 -- weil die Zahlen normalisiert sind, geht es evtl. doch gut
 -- (sonst definitiv nicht)
 
@@ -24,7 +24,7 @@ near c x z = do
 
     inform $ vcat
            [ text "ist z =" <+> toDoc z
-           , text "eine gute N‰herung f¸r x =" <+> toDoc x
+           , text "eine gute N√§herung f√ºr x =" <+> toDoc x
            , text "unter allen Gleitkommazahlen mit" <+> toDoc c <+> text "?"
            ]
     let w :: Rational

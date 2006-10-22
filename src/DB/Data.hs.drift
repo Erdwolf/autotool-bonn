@@ -3,7 +3,7 @@
 module DB.Data where
 
 -- das wird serverseitig benutzt
--- der server weiß nichts über den inhalt der XML-dokumente
+-- der server weiÃŸ nichts Ã¼ber den inhalt der XML-dokumente
 
 import Data.FiniteMap
 
@@ -12,7 +12,7 @@ import Text.XML.HaXml.Haskell2Xml
 
 data Contents  = Contents { unContents :: [ Content ] }
 
--- das können wir nicht deriven
+-- das kÃ¶nnen wir nicht deriven
 instance Haskell2Xml Contents where
     toHType _ = Prim "Xml" "xml"
     toContents ( Contents es ) 

@@ -29,7 +29,7 @@ snr_by_unr_mnr um = get_unr_mnr um >>= return . map CST.snr
 -- from student left join stud_grp ON student.snr=stud_grp.snr 
 -- where stud_grp.gnr is null;  
 
--- | alle, die in keiner Übungsgruppe sind
+-- | alle, die in keiner Ãœbungsgruppe sind
 orphans :: UNr -> IO [ CST.Student ]
 orphans unr = 
     let from = reed "student LEFT JOIN stud_grp ON student.snr = stud_grp.snr"

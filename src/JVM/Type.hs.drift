@@ -15,7 +15,7 @@ data Statement =
 	   Push Integer	 | Drop | Dup
 	 | Add | Sub | Mul -- | Div
 	 | Load 	 | Store 
-	 | Jump Int | Jumpz Int -- relative Sprünge
+	 | Jump Int | Jumpz Int -- relative SprÃ¼nge
 	 | Halt
     deriving ( Eq, Ord, Typeable )
 

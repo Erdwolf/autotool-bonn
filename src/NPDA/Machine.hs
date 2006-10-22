@@ -28,7 +28,7 @@ instance NPDAC x y z
     -- endkonf. lesen (ein einziges arg)
     -- output :: m -> conf -> dat
     
-    -- TODO: wouzu ist diese Instanz eigentlich nötig?
+    -- TODO: wouzu ist diese Instanz eigentlich nÃ¶tig?
     -- NPDA soll doch  nur rechnen und akzeptieren, nichts ausgeben?
     output_reporter m k = return $ eingabe k -- sollte verbraucht sein
 

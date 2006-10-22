@@ -6,7 +6,7 @@ import Robots.Data
 import Robots.Config
 import Data.Maybe
 
--- | kleinstes überdeckendes rechteck ( unten links, oben rechts )
+-- | kleinstes Ã¼berdeckendes rechteck ( unten links, oben rechts )
 hull :: Config -> (Position, Position)
 hull k = 
     let ps = map position $ robots k
@@ -17,14 +17,14 @@ inrange ::  (Position, Position) -> Position -> Bool
 inrange ((l,u),(r,o)) (x,y) = 
 	l <= x && x <= r && u <= y && y <= o
 
--- | ist jedes Ziel im Hüll-rechteck?
+-- | ist jedes Ziel im HÃ¼ll-rechteck?
 covered :: Config -> Bool
 covered k = 
     let h = hull k
     in	and $ map (inrange h) $ goals k
 
     
--- | kleinstes überdeckendes rechteck, basierend auch auf den Positionen
+-- | kleinstes Ã¼berdeckendes rechteck, basierend auch auf den Positionen
 -- | der ziele
 hull_with_goals :: Config -> (Position,Position)
 hull_with_goals k =     

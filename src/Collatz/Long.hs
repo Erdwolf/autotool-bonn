@@ -1,4 +1,4 @@
--- | möglichst lange Collatz-Folge
+-- | mÃ¶glichst lange Collatz-Folge
 
 module Collatz.Long where
 
@@ -28,7 +28,7 @@ instance C.Partial Collatz_Long Int (Integer, P.Parameter) where
 	       [ text "Gesucht ist eine lange Collatz-Folge."
                , text "Geben Sie ein Paar (Startzahl, Parameter) ein."
                , text "Bewertet wird  Parameter.length - log_2(Startzahl)."
-               , text "Die Startzahl soll höchstens" <+> toDoc top 
+               , text "Die Startzahl soll hÃ¶chstens" <+> toDoc top 
                           <+> text "Dezimalstellen haben." 
 	       ]
 
@@ -36,7 +36,7 @@ instance C.Partial Collatz_Long Int (Integer, P.Parameter) where
 
     total Collatz_Long top ( start, p ) = do
         assert ( length ( show start ) <= top )
-               $ text "Startzahl nicht zu groß?"
+               $ text "Startzahl nicht zu groÃŸ?"
 	assert ( P.compute start == p )
 	       $ text "angegebene Parameter sind korrekt?"
 

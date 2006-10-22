@@ -1,4 +1,4 @@
--- | Eine Aufgabe, bei der Studenten Lösung im Klartext eintragen können.
+-- | Eine Aufgabe, bei der Studenten LÃ¶sung im Klartext eintragen kÃ¶nnen.
 -- Tutor soll dann "von Hand" die Oks eintragen
 
 module Upload where
@@ -32,15 +32,15 @@ instance C.Partial Upload Config Contents where
 	 , text ""
 	 , text "erreichbare Punktzahl:" <+> toDoc ( punkte conf )
 	 , text ""
-	 , text "Sie können hier Ihre Lösung als Text eingeben."
+	 , text "Sie kÃ¶nnen hier Ihre LÃ¶sung als Text eingeben."
 	 , text "Diese wird jetzt scheinbar abgeleht,"
-	 , text "aber gespeichert und später (off-line) korrigiert."
+	 , text "aber gespeichert und spÃ¤ter (off-line) korrigiert."
 	 , text "Die Punkte sehen Sie danach in der Datenbank."
 	 ]
     initial Upload conf = Contents "(Ihr Text hier.)"
 
     total_neu Upload conf _ = do
-        inform $ text "Lösung wird off-line bewertet."
+        inform $ text "LÃ¶sung wird off-line bewertet."
         return $ C.Pending
 
 

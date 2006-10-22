@@ -22,7 +22,7 @@ instance C.Partial Collatz_Plain Integer P.Parameter where
 
     report Collatz_Plain x = do
         inform $ vcat
-	       [ text "Gesucht sind Länge und maximales Element"
+	       [ text "Gesucht sind LÃ¤nge und maximales Element"
 	       , text "der Collatz-Folge mit Startzahl" <+> toDoc x
 	       ]
 

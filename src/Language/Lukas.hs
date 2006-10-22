@@ -23,7 +23,7 @@ import Language.Type
 lukas :: Language
 lukas = Language
 	      { nametag      = "Lukas" 
-	      , abbreviation = "Lukasiewicz-Sprache über {a,b}"
+	      , abbreviation = "Lukasiewicz-Sprache Ã¼ber {a,b}"
 	      , alphabet     = mkSet "ab"
 	      , contains     = lukas_ok
 	      , sample       = lukas_sam
@@ -33,7 +33,7 @@ lukas = Language
 nolukas :: Language
 nolukas = Language
 	      { nametag      = "ComLukas"
-	      , abbreviation = "Komplement der Lukasiewicz-Sprache über {a,b}"
+	      , abbreviation = "Komplement der Lukasiewicz-Sprache Ã¼ber {a,b}"
 	      , alphabet     = mkSet "ab"
 	      , contains     = not . lukas_ok
 	      , sample       = random_sample nolukas
@@ -43,7 +43,7 @@ nolukas = Language
 dyck :: Language
 dyck = Language
 	      { nametag      = "Dyck"
-	      , abbreviation = "Dyck-Sprache (korrekt geklammerte Wörter über {a,b})"
+	      , abbreviation = "Dyck-Sprache (korrekt geklammerte WÃ¶rter Ã¼ber {a,b})"
 	      , alphabet     = mkSet "ab"
 	      , contains     = dyck_ok
 	      , sample       = dyck_sam
@@ -54,7 +54,7 @@ dyck = Language
 nodyck :: Language
 nodyck = Language
 	      { nametag      = "ComDyck"
-	      , abbreviation = "Komplement der Dyck-Sprache (nicht korrekt geklammerte Wörter über {a,b})"
+	      , abbreviation = "Komplement der Dyck-Sprache (nicht korrekt geklammerte WÃ¶rter Ã¼ber {a,b})"
 	      , alphabet     = mkSet "ab"
 	      , contains     = not . dyck_ok
 	      , sample       = random_sample nodyck

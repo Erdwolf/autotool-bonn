@@ -2,8 +2,8 @@ module Grammatik.Check
 
 -- -- $Id$
 
--- simpler test: einige wörter ableiten
--- und prüfen, ob sie zur sprache gehören
+-- simpler test: einige wÃ¶rter ableiten
+-- und prÃ¼fen, ob sie zur sprache gehÃ¶ren
 
 where
 
@@ -24,7 +24,7 @@ check :: Language
       -> Reporter ()
 check lang ws = do
      inform $ text
-	    $ "Gehören diese Wörter zur Sprache " ++ abbreviation lang ++ " ?"
+	    $ "GehÃ¶ren diese WÃ¶rter zur Sprache " ++ abbreviation lang ++ " ?"
      let ( yeah, noh ) = partition ( contains lang ) ws
      when ( not $ null noh ) $ reject $ vcat
 	  [ text "Nein, diese nicht:"

@@ -16,9 +16,9 @@ import Data.List (intersperse)
 import Autolib.Set
 
 
--- nur die erste (d. h. am weitesten linke) Ersetzung ausführen
--- das hat eigentlich nur für CF-Grammatiken Sinn,
--- das prüfen wir hier jedoch nicht
+-- nur die erste (d. h. am weitesten linke) Ersetzung ausfÃ¼hren
+-- das hat eigentlich nur fÃ¼r CF-Grammatiken Sinn,
+-- das prÃ¼fen wir hier jedoch nicht
 
 links_schritt :: Config
 	-> Grammatik -> Ableitung -> Set Ableitung 

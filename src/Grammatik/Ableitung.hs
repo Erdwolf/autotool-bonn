@@ -11,7 +11,7 @@ import Grammatik.Type
 -------------------------------------------------------------------
 
 data Config = Config
-	   { max_length :: Int -- wortlänge
+	   { max_length :: Int -- wortlÃ¤nge
 	   , max_depth :: Int -- anzahl schichten
 	   , max_width :: Int -- breite der schicht
 	   }
@@ -75,7 +75,7 @@ nil = Ableitung []
 
 schritt :: Config
 	-> Grammatik -> Ableitung -> Set Ableitung
--- nur die wörter, die nicht zu lang sind
+-- nur die wÃ¶rter, die nicht zu lang sind
 schritt conf g a = mkSet $ do
     let w = car a
     (vorn, hinten) <- zerlegungen w

@@ -2,8 +2,6 @@
 
 module Fun.Quiz.Type where
 
---   $Id$
-
 import Autolib.Reader
 import Autolib.ToDoc
 

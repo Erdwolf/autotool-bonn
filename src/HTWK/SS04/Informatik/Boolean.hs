@@ -22,7 +22,7 @@ inner_make bi =
 	   }
 
 makers :: [ Make ]
-makers =  [ Make "Boolesche Ausdrücke"
+makers =  [ Make "Boolesche AusdrÃ¼cke"
 	         inner_make 
                  (configs0 !! 0) -- example
 	  ]

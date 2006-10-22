@@ -32,7 +32,7 @@ data Check = Left_Linear
 instance(Symbol c, Symbol v) => C.Check Check ( TRS v c ) where
 
     check Non_Overlapping trs = do
-        inform $ text "Das System soll nicht-überlappend sein."
+        inform $ text "Das System soll nicht-Ã¼berlappend sein."
         sequence_ $ do
             ol <- overlaps trs
             return $ reject $ toDoc ol
@@ -42,7 +42,7 @@ instance(Symbol c, Symbol v) => C.Check Check ( TRS v c ) where
         sequence_ $ do
             ( k, rule ) <- zip [0..] $ regeln trs
             return $ do
-                inform $ text "prüfe Regel" <+> toDoc rule 
+                inform $ text "prÃ¼fe Regel" <+> toDoc rule 
                 linear ( text "linke Seite der Regel" ) ( lhs rule )
 
     check Linear trs = do
@@ -50,7 +50,7 @@ instance(Symbol c, Symbol v) => C.Check Check ( TRS v c ) where
         sequence_ $ do
             ( k, rule ) <- zip [0..] $ regeln trs
             return $ do
-                inform $ text "prüfe Regel" <+> toDoc rule 
+                inform $ text "prÃ¼fe Regel" <+> toDoc rule 
                 linear ( text "linke  Seite der Regel" ) ( lhs rule )
                 linear ( text "rechte Seite der Regel" ) ( rhs rule )
                 let lvs = vars ( lhs rule ) ; rvs = vars ( rhs rule )
@@ -61,7 +61,7 @@ instance(Symbol c, Symbol v) => C.Check Check ( TRS v c ) where
     check ( Max_Rules n ) trs = 
         bounder ( text "Anzahl der Regeln" ) n ( length $ regeln trs )
     check ( Max_Size n ) trs = 
-        bounder ( text "Größe einer Regelseite" ) n 
+        bounder ( text "GrÃ¶ÃŸe einer Regelseite" ) n 
             ( maximum $ 0 : map size ( terms trs ) )
     check ( Max_Symbols n ) trs = 
         bounder ( text "Anzahl verschiedener Symbole" ) n 
@@ -71,7 +71,7 @@ instance(Symbol c, Symbol v) => C.Check Check ( TRS v c ) where
             ( cardinality $ unionManySets $ map vars $ terms trs )
     check ch trs = do
         reject $ vcat
-               [ text "Test für" <+> toDoc ch <+> text "nicht implementiert."
+               [ text "Test fÃ¼r" <+> toDoc ch <+> text "nicht implementiert."
                , text "(please file a bug report)"
                ]
 

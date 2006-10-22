@@ -2,8 +2,6 @@
 
 module Robots.Generator where
 
---  $Id$
-
 import Robots.Config
 import Robots.Data
 import Robots.Solver

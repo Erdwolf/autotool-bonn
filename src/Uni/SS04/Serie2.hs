@@ -61,7 +61,7 @@ loopfib, loopprim, loopsqrt:: IO ( T.Var N.Computer
 -- Builtin = None
 -- -----------------------------------------------------------
 
--- Helper für loopfib
+-- Helper fÃ¼r loopfib
 top :: Integer
 top = 15
 
@@ -202,7 +202,7 @@ generate =
 
 
 -- -- ---------------------------------------
--- -- Maschinen mit Schrittbeschränkungen
+-- -- Maschinen mit SchrittbeschrÃ¤nkungen
 -- -- ---------------------------------------
 
 -- tmstep2 = do
@@ -216,7 +216,7 @@ generate =
 --               }
 --     return $ CI.clock "RAM" "Linear" it
 
---  -- Beispiel für diese Maschinen
+--  -- Beispiel fÃ¼r diese Maschinen
 -- stepexample = 
 --      [ Inc "x0"
 --       , Loop "x1" [ Loop "x0" [ Inc "x0" ] ]

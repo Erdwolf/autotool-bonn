@@ -103,7 +103,7 @@ evolve conf = do
 	   }
 
 
--- | entferne k zufällig gewählte elemente
+-- | entferne k zufÃ¤llig gewÃ¤hlte elemente
 remove :: Int -> [a] -> IO [a]
 remove k xs = do
     ys <- permIO xs

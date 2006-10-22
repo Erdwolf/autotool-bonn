@@ -28,7 +28,7 @@ instance ( GraphC a , Show a )
 
     report p g = do
         inform $ vcat
-	       [ text "Gesucht ist ein graceful labeling für"
+	       [ text "Gesucht ist ein graceful labeling fÃ¼r"
 	       , nest 4 $ toDoc g
 	       ]
         peng g

@@ -9,7 +9,7 @@ import Inter.Types ( Variant, Make )
 import Inter.Click
 import Control.Types
 
-import qualified Text.Html
+import qualified Text.XHtml
 
 -- | CGI - Zustands-Daten
 data Type = 
@@ -25,10 +25,10 @@ data Type =
 	  , conf :: Config
 	  , remark :: Remark
 
-          , minstant :: Maybe Text.Html.Html
+          , minstant :: Maybe Text.XHtml.Html
           , input    :: Maybe String
           , mresult    :: Maybe Wert
-          , report    :: Maybe Text.Html.Html
+          , report    :: Maybe Text.XHtml.Html
 
 	  , wahl :: String -- ^ vorige aufgabe
 	  , click    :: Click

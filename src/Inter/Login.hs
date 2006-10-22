@@ -10,13 +10,13 @@ import qualified Control.Vorlesung as V
 import qualified Control.Student.CGI
 import qualified Control.Student.Type as S
 
-import qualified Text.Html
+import qualified Text.XHtml
 
 import Autolib.Util.Sort
 
 -- | returns ( s, v, ist_tutor, ist_eingeschrieben )
 -- unterschiede: tutor darf "alles",
--- student darf keine aufgaben ändern und nur aktuelle aufgaben sehen
+-- student darf keine aufgaben Ã¤ndern und nur aktuelle aufgaben sehen
 form :: Form IO ( S.Student, V.Vorlesung, Bool , Bool )
 form = do
 
@@ -32,9 +32,9 @@ aule stud = do
     -- alle vorlesungen an dieser Schule
     vors0 <- io $ V.get_at_school ( S.unr stud )
     let vors = reverse $ sortBy V.einschreibVon vors0
-    -- hierfür ist er tutor:
+    -- hierfÃ¼r ist er tutor:
     tvors <- io $ V.get_tutored snr
-    -- hierfür ist er eingeschrieben:
+    -- hierfÃ¼r ist er eingeschrieben:
     avors <- io $ V.get_attended snr
  
     open btable

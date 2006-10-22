@@ -23,12 +23,12 @@ erweitert a b = do
     assert ( subseteq ( endzustandsmenge b ) (endzustandsmenge a ) )
 	   ( text "ist die originale Endzustandsmenge enthalten?" )
     assert ( startzustand a == startzustand b )
-	   ( text "sind die Startzust‰nde gleich?" )
+	   ( text "sind die Startzust√§nde gleich?" )
 
     let ucb = unCollect $ tafel b
 	uca = unCollect $ tafel a
         miss = minusSet ( mkSet ucb ) ( mkSet uca )
-    inform $ text "ist die originale ‹bergangsrelation enthalten?"
+    inform $ text "ist die originale √úbergangsrelation enthalten?"
     when ( not $ isEmptySet miss ) $ reject
 	 $ text "Nein, diese Tupel fehlen:" <+> toDoc miss
     inform $ text "Ja."

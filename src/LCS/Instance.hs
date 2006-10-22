@@ -8,7 +8,6 @@ module LCS.Instance
 
 where
 
---  $Id$
 
 import LCS.Code
 import LCS.Data
@@ -35,7 +34,7 @@ instance
 
     describe LCS i =
         vcat [ fsep [ text "Bestimmen Sie eine"  
-		    , text $ if sharp i then "längste" else "lange" 
+		    , text $ if sharp i then "lÃ¤ngste" else "lange" 
 		    , text "gemeinsame Teilfolge"
 		    ]
 	     , text "von" <+> toDoc ( left i )
@@ -59,18 +58,18 @@ instance
 	let zs' = lcs (left i) (right i)
 	if sharp i
 	   then case compare (length zs) (length zs') of
-	     LT -> reject $ text "Das ist keine längste gemeinsame Teilfolge."
-	     EQ -> inform $ text "Das ist eine längste gemeinsame Teilfolge."
+	     LT -> reject $ text "Das ist keine lÃ¤ngste gemeinsame Teilfolge."
+	     EQ -> inform $ text "Das ist eine lÃ¤ngste gemeinsame Teilfolge."
 	     GT -> inform $ vcat 
 			  [ text "Das kann eigentlich nicht sein."
 			  , text "Ihre Einsendung"
 			  , nest 4 $ toDoc zs
-			  , text "ist länger als meine Lösung"
+			  , text "ist lÃ¤nger als meine LÃ¶sung"
 			  , nest 4 $ toDoc zs'
 			  ]
 	   else if length zs < ( length zs' `div` 2 )
 		then reject 
-		   $ text "Ihre Folge ist kürzer als die Hälfte meiner Lösung."
+		   $ text "Ihre Folge ist kÃ¼rzer als die HÃ¤lfte meiner LÃ¶sung."
 		else return ()
 
 merge :: [a] -> [a] -> [a]

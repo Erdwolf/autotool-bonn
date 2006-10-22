@@ -29,7 +29,7 @@ instance C.Partial MinSep ( Graph Int ) ( (Int, Int), Set Int ) where
 
     report MinSep g = do
         inform $ vcat 
-	       [ text "Finden Sie für diesen (nicht chordalen) Graphen" 
+	       [ text "Finden Sie fÃ¼r diesen (nicht chordalen) Graphen" 
 	       , nest 4 $ toDoc g 
 	       ]
         peng g
@@ -49,9 +49,9 @@ instance C.Partial MinSep ( Graph Int ) ( (Int, Int), Set Int ) where
 				      ]
 		      ]
 	when ( not $ a `elementOf` knoten g )
-	     $ reject $ text "a gehört nicht zu V(G)"
+	     $ reject $ text "a gehÃ¶rt nicht zu V(G)"
 	when ( not $ b `elementOf` knoten g )
-	     $ reject $ text "b gehört nicht zu V(G)"
+	     $ reject $ text "b gehÃ¶rt nicht zu V(G)"
 	when ( not $ subseteq s (knoten g) ) 
 	     $ reject $ text "s ist keine Teilmenge von V(G)"
     

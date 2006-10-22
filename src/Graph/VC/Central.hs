@@ -37,7 +37,7 @@ instance C.Partial VC (Graph Int,Int) (Set Int) where
     report VC (g,c) = do
 
         inform $ vcat
-	       [ text "Geben Sie eine Knotenüberdeckung mit höchstens"
+	       [ text "Geben Sie eine KnotenÃ¼berdeckung mit hÃ¶chstens"
 	       , nest 4 $ toDoc c
 	       , text "Knoten des Graphen"
 	       , nest 4 $ toDoc g
@@ -53,7 +53,7 @@ instance C.Partial VC (Graph Int,Int) (Set Int) where
     partial VC (g,c) ns = do
 
         inform $ text $ foldl1 (++) 
-		      [ "Ist die Knotenanzahl höchstens "
+		      [ "Ist die Knotenanzahl hÃ¶chstens "
 		      , show c
 		      , "?"
 		      ]

@@ -17,7 +17,7 @@ import qualified Number.Float.Data as F
 
 data Config = Config
 	    { basis :: Int
-            -- m�ssen alle normalisiert sein
+            -- mÃ¼ssen alle normalisiert sein
 	    -- , normalisiert :: Bool   
 	    , max_stellen_mantisse :: Int 
 	    , max_stellen_exponent :: Int 
@@ -47,11 +47,11 @@ conforms c z = do
 	 $ assert ( F.ist_normalisiert z ) 
 	 $ text "Ist die Zahl normalisiert?"
     assert ( size ( F.mantisse z ) <= max_stellen_mantisse c )
-	   $ text "Hat die Mantisse h�chstens" 
+	   $ text "Hat die Mantisse hÃ¶chstens" 
                  <+> toDoc ( max_stellen_mantisse c )
 	         <+> text "Stellen?"
     assert ( size ( F.exponent z ) <= max_stellen_exponent c )
-	   $ text "Hat der Exponent h�chstens" 
+	   $ text "Hat der Exponent hÃ¶chstens" 
                  <+> toDoc ( max_stellen_exponent c )
 	         <+> text "Stellen?"
 

@@ -21,7 +21,7 @@ make = M.make $ C.Config
 	 [ "Die Eingabe erfolgt in den Registern 1 und 2."
 	 , "Die Ausgabe soll im Register 0 erfolgen."
 	 , "Die Werte der Eingaberegister sollen erhalten bleiben."
-	 , "Die Werte der benutzten Register sollen auf 0 zurückgesetzt werden."
+	 , "Die Werte der benutzten Register sollen auf 0 zurÃ¼ckgesetzt werden."
 	 ]
        , C.arity = 2
        , C.op = read "x1 + x2"

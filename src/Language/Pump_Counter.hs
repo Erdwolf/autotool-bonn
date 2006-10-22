@@ -25,7 +25,7 @@ pump_counter = Language
 	    }
 
 sam :: Int -> IO String
--- würfelt ein Wort von ungefähr passender Länge
+-- wÃ¼rfelt ein Wort von ungefÃ¤hr passender LÃ¤nge
 sam l = do
     f <- randomRIO (False, True)
     let form x y z =  replicate x 'a' ++ replicate y 'b' ++ replicate z 'c'

@@ -36,7 +36,7 @@ import Autolib.Dot.Dotty
 import Control.Monad ( guard )
 import Data.Array
 import Data.List ( intersperse )
-import qualified Text.Html
+import qualified Text.XHtml
 
 import NFA.Funk
 import Random
@@ -346,7 +346,7 @@ runit :: [ NFA Char Int ] -> IO ()
 runit auts = sequence_ $ do 
     it @ (i, a) <- zip [0 :: Int ..] $ auts
     return $ do
-        ( _ , out :: Text.Html.Html ) <- Autolib.Reporter.run $ handle a
+        ( _ , out :: Text.XHtml.Html ) <- Autolib.Reporter.run $ handle a
         let fname = concat 
 		  $ intersperse "-"
 		  $ [ "auto", show $ size a, show i ]

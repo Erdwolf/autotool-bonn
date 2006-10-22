@@ -21,7 +21,7 @@ import Autolib.Informed
 instance Partial PCProblem PCP Folge where
 
     describe p i = 
-        vcat [ text "Lˆsen Sie diese Instanz des Postschen Korrespondenz-Problems:"
+        vcat [ text "L√∂sen Sie diese Instanz des Postschen Korrespondenz-Problems:"
 	     , nest 4 $ toDoc i
 	     ]
 
@@ -33,7 +33,7 @@ instance Partial PCProblem PCP Folge where
 		guard $ isPrefixOf u v || isPrefixOf v u
 		return k
 	of   []     -> [ ] -- sollte nicht passieren
-	     k : ks -> [k] -- so kˆnnte es losgehen
+	     k : ks -> [k] -- so k√∂nnte es losgehen
 
     partial p i @ ( PCP uvs ) b = do 	     
           let n = fromIntegral $ length uvs
@@ -54,8 +54,8 @@ instance Partial PCProblem PCP Folge where
 	      vrest = drop (length com) vs
 	  when ( not (null urest) && not ( null vrest )) $ do
 	       reject $ vcat
-		      [ text "Die eine muﬂ ein Pr‰fix der anderen sein,"
-		      , text "nach Lˆschen des gemeinsamen Pr‰fixes"
+		      [ text "Die eine mu√ü ein Pr√§fix der anderen sein,"
+		      , text "nach L√∂schen des gemeinsamen Pr√§fixes"
 		      , nest 4 $ toDoc com
 		      , text "entstehen jedoch die Reste"
 		      , nest 4 $ toDoc ( urest, vrest )
@@ -63,7 +63,7 @@ instance Partial PCProblem PCP Folge where
           
     total   p i b = do
 	  when ( null b ) $ do
-	       reject $ text "Das Lˆsungswort darf nicht leer sein."
+	       reject $ text "Das L√∂sungswort darf nicht leer sein."
 	  let ( us, vs ) = lr i b
           assert ( us == vs )
 	         $ text "Sind die Zeichenketten gleich?"

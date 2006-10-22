@@ -3,7 +3,7 @@ module Main where
 --   $Id$
 
 import Network.CGI
-import Text.Html hiding ( text  )
+import Text.XHtml hiding ( text  )
 import Control.Monad ( when )
 
 import qualified Util.Datei as D

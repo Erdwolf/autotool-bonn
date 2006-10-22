@@ -11,12 +11,12 @@ where
 import Grammatik.CF.Chomsky
 
 
--- eins der beiden auswählen:
+-- eins der beiden auswÃ¤hlen:
 
--- benutzt FiniteMap (besser für hugs?)
+-- benutzt FiniteMap (besser fÃ¼r hugs?)
 -- import CYK_Tables
 
--- benutzt Arrays (auf jeden fall besser für ghc -O)
+-- benutzt Arrays (auf jeden fall besser fÃ¼r ghc -O)
 
 import Grammatik.CF.CYK_Arrays
 

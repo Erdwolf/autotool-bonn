@@ -1,7 +1,7 @@
 -- $Id$
 
--- | Bruchteilrucksack-Problem: Packe in einen Rucksack der Kapazität
--- | C (Teile von) Elemente(n), so dass das Gesamtgewicht nicht über C
+-- | Bruchteilrucksack-Problem: Packe in einen Rucksack der KapazitÃ¤t
+-- | C (Teile von) Elemente(n), so dass das Gesamtgewicht nicht Ã¼ber C
 -- | liegt und der Gesamtwert maximiert wird. => Greedy funktioniert.
 
 module KnapsackFraction.Solve where
@@ -13,13 +13,13 @@ import Autolib.Pick ( permutations )
 
 -------------------------------------------------------------------------------
 
--- | gibt *alle* optimalen packungen zurück
+-- | gibt *alle* optimalen packungen zurÃ¼ck
 -- | arg 1: elemente, die zu packen sind
--- | arg 2: kapazität des rucksacks
+-- | arg 2: kapazitÃ¤t des rucksacks
 -- | arg 3: gewicht der elemente
 -- | arg 4: wert der elemente
 
--- | zurück: (gesamtwert,packung)
+-- | zurÃ¼ck: (gesamtwert,packung)
 
 packs :: Integral b 
       => [a] -> b -> (a -> b) -> (a -> b) 

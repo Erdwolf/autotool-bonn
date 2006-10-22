@@ -31,10 +31,10 @@ instance Partial Inverse ( Integer, Integer ) ( Maybe Integer ) where
 
     partial Inverse (a, b) Nothing = 
         when ( inverse a b /= Nothing ) $ reject $ 
-	     text "Sie behaupten, es gäbe kein Inverses, aber es gibt eins!"
+	     text "Sie behaupten, es gÃ¤be kein Inverses, aber es gibt eins!"
     partial Inverse (a, b) (Just i) = do
         when ( abs i > b ) $ reject $ 
-	     text $ "Der Betrag des Inversen soll höchstens " ++ show (b-1) ++ " sein!"
+	     text $ "Der Betrag des Inversen soll hÃ¶chstens " ++ show (b-1) ++ " sein!"
 
         inform $ text "Ja."
 

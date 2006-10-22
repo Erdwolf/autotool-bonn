@@ -11,9 +11,9 @@ import Text.XML.HaXml.Haskell2Xml
 data Param =
      Param { alpha :: String -- ^ zu benutzende Buchstaben
 	       , paare :: Int -- ^ anzahl
-	       , breite :: Int -- ^ maximale wortlänge
-	       , nah :: Int -- ^ keines mit kürzerer lösung
-	       , fern :: Int -- ^ keines mit längerer lösung
+	       , breite :: Int -- ^ maximale wortlÃ¤nge
+	       , nah :: Int -- ^ keines mit kÃ¼rzerer lÃ¶sung
+	       , fern :: Int -- ^ keines mit lÃ¤ngerer lÃ¶sung
 	       , viel :: Int -- ^ nur soviele Knoten im suchbaum (bfs)
 	       }
      deriving ( Typeable )

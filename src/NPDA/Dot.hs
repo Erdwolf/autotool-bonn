@@ -19,9 +19,9 @@ import Autolib.Set
 import Autolib.FiniteMap
 import Data.Maybe
 
--- | zustände werden mit [0 .. ] durchnumeriert
--- akzeptierende zustände bekommen doppelkreis drumrum
--- startzustände bekommen pfeil dran,
+-- | zustÃ¤nde werden mit [0 .. ] durchnumeriert
+-- akzeptierende zustÃ¤nde bekommen doppelkreis drumrum
+-- startzustÃ¤nde bekommen pfeil dran,
 -- dieser kommt aus unsichtbarem zustand mit idents U0, U1, ..
 
 instance NPDAC Char Char z
@@ -30,7 +30,7 @@ instance NPDAC Char Char z
         let fm = listToFM $ zip (setToList $ zustandsmenge a) $ [ 0.. ] 
 	    num = fromMaybe (error "NPDA.Dot.num") . lookupFM fm
 
-	    -- tatsächliche knoten (zustände)
+	    -- tatsÃ¤chliche knoten (zustÃ¤nde)
 	    ns = do let finals = case akzeptiert a of
 			       Leerer_Keller -> emptySet
 			       Zustand xs    -> xs
@@ -44,14 +44,14 @@ instance NPDAC Char Char z
 			   , N.shape = Just sh
 			   }
 
-	    -- unsichtbare knoten (für start-pfeile)
+	    -- unsichtbare knoten (fÃ¼r start-pfeile)
 	    uns = do let p = startzustand a
 		     return $ N.blank
 			   { N.ident = "U" ++ show ( num p )
 			   , N.node_style = Just "invis"
 			   }
     
-	    -- tatsächliche zustandsübergänge
+	    -- tatsÃ¤chliche zustandsÃ¼bergÃ¤nge
 	    es = do ( mx, z, y, z', ys' ) <- unCollect' $ transitionen a
 		    let form "" = "Eps" ; form cs = cs
 			lab =  "(" ++ form ( maybeToList mx )

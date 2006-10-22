@@ -40,7 +40,7 @@ checkforall m =
 	deterministisch m 	-- determ.check
 	return ()
 -- ---------------------------------------
--- Maschinen mit Schrittbeschränkungen
+-- Maschinen mit SchrittbeschrÃ¤nkungen
 -- ---------------------------------------
 tmstep1 = do
     let it = C.Make
@@ -75,7 +75,7 @@ tmstep3 = do
 		}
     return $ CI.clock "TM" "STEP3" it
 
--- Beispiel für diese Maschinen
+-- Beispiel fÃ¼r diese Maschinen
 stepexample = 
     Turing { eingabealphabet = mkSet "1."
            , arbeitsalphabet = mkSet "1.", leerzeichen = '#'
@@ -93,7 +93,7 @@ stepexample =
 tmpred = do
     let tmpredtest = [ (binstr n,binstr (n-1)) | n <- [1..5] ++ [7..9] ++ [13] ]
     let it = F.Make
-           { F.fun_info = text "Vorgängerfunktion für Binärzahlen > 0, \\ n -> n - 1"
+           { F.fun_info = text "VorgÃ¤ngerfunktion fÃ¼r BinÃ¤rzahlen > 0, \\ n -> n - 1"
            , F.pairs = tmpredtest
            , F.cut = 10000
            , F.check = checkforall
@@ -114,7 +114,7 @@ tmpred = do
 tmexpo = do 
     let tmexpotest = [ (unstr n,unstr (2*n)) | n <- ( [1..7] ++ [11,13] )]
     let it = F.Make
-           { F.fun_info = text "expo('1'^n) = '1'^(2n) für unäre Zahlen"
+           { F.fun_info = text "expo('1'^n) = '1'^(2n) fÃ¼r unÃ¤re Zahlen"
            , F.pairs = tmexpotest
            , F.cut = 10000
            , F.check = checkforall

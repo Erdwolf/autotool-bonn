@@ -55,10 +55,10 @@ data Exp
         = Zahl Integer
 	-- | non-strikt
         | App Fun [ Exp ]
-	-- | nur auf dem Stack benutzt, für Builtins (die sind strikt)
+	-- | nur auf dem Stack benutzt, fÃ¼r Builtins (die sind strikt)
 	-- wende builtin auf die obersten stack-elemente an
 	| Builtin_ Int RAM.Builtin.Builtin
-	-- | benutzt für PRs, deren letztes arg schon auf stack steht
+	-- | benutzt fÃ¼r PRs, deren letztes arg schon auf stack steht
 	| App_ Fun [ Exp ]
 	-- | top of stack in cache eintragen
 	| M Mark

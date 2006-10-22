@@ -2,7 +2,6 @@
 
 module Code.Huffman.Boiler where
 
---  $Id$
 
 import Code.Type
 import Code.Huffman.Partial

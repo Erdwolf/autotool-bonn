@@ -23,7 +23,7 @@ instance ( GraphC a, Show a )
 
     report _ (n,g) = do
         inform $ vcat
-	       [ text "Gesucht ist eine Knotenmenge M derart, dass f¸r den Graphen"
+	       [ text "Gesucht ist eine Knotenmenge M derart, dass f√ºr den Graphen"
 	       , nest 4 $ toDoc g
 	       ]
 	peng $ g { layout_program = Dot
@@ -31,7 +31,7 @@ instance ( GraphC a, Show a )
 		 }
 
         inform $ vcat
-	       [ text "die Beschr‰nkung R(G,M) von G auf M ein Kreis der Grˆﬂe"
+	       [ text "die Beschr√§nkung R(G,M) von G auf M ein Kreis der Gr√∂√üe"
 	       , nest 4 $ toDoc n
 	       , text "ist."
 	       ]
@@ -58,7 +58,7 @@ instance ( GraphC a, Show a )
 		      ]
 
         let s1 = ( text "Knotenmenge V(G) des Graphen" , knoten g )
-	    s2 = ( text "Knotenmenge M in Ihrer Lˆsung" , v )
+	    s2 = ( text "Knotenmenge M in Ihrer L√∂sung" , v )
 
 	Autolib.Reporter.Set.subeq s2 s1
     
@@ -68,7 +68,7 @@ instance ( GraphC a, Show a )
         inform $ vcat 
 	       [ text "Ihre Knotenmenge lautet:"
 	       , nest 4 $ toDoc v
-	       , text "Die Beschr‰nkung R(G,M) von G auf M"
+	       , text "Die Beschr√§nkung R(G,M) von G auf M"
 	       , nest 4 $ toDoc c
 	       , text "hat die Gestalt"
 	       ]
@@ -78,9 +78,9 @@ instance ( GraphC a, Show a )
 		 }
 
         when ( not $ isZusammen c ) $ reject $ vcat
-	     [ text "R(G,M) ist nicht zusammenh‰ngend." ]
+	     [ text "R(G,M) ist nicht zusammenh√§ngend." ]
 
-        inform $ vcat [ text "R(G,M) ist zusammenh‰ngend." ]
+        inform $ vcat [ text "R(G,M) ist zusammenh√§ngend." ]
 
         let grade = map (grad c) (knotenliste c)
 

@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances -fallow-undecidable-instances #-}
 
 module Code.Type 
 
@@ -8,8 +8,6 @@ module Code.Type
 )
 
 where
-
---  $Id$
 
 
 import Code.Param
@@ -26,7 +24,7 @@ import Autolib.Reporter
 import Data.Maybe
 import Data.Typeable
 
--- | FIXME: das ist unzusammenhängend
+-- | FIXME: das ist unzusammenhÃ¤ngend
 
 class  ( Typeable a, Typeable b, Typeable c
        , ToDoc [a], ToDoc b, Reader b
@@ -71,7 +69,7 @@ class  ( Typeable a, Typeable b, Typeable c
                                ]
                  return xs
              Nothing -> do
-                 reject $ text "ist nicht möglich."
+                 reject $ text "ist nicht mÃ¶glich."
 
 class Size b => BitSize b where
       bitSize :: b -> Integer

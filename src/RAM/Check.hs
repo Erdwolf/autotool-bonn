@@ -40,7 +40,7 @@ check_arity b = do
     when ( length ( args b ) /= ar )
 	 $ reject $ vcat [ text "Fehler in Anweisung" <+> toDoc b 
 			 , fsep [ text "Das Builtin" , toDoc ( name b )
-				, text "benötigt genau" ,toDoc ar
+				, text "benÃ¶tigt genau" ,toDoc ar
 				, text "Argumente"
 				]
 			 , fsep [ text "aber Sie verwenden"
@@ -55,7 +55,7 @@ no_while p = do
 	    w @ ( While {} ) <- flatten p
 	    return w
     when ( not $ null whiles ) $ reject
-	 $ text "Sie dürfen kein While benutzen."
+	 $ text "Sie dÃ¼rfen kein While benutzen."
 
 
 no_loop :: Program -> Reporter ()
@@ -64,6 +64,6 @@ no_loop p = do
 	    w @ ( Loop {} ) <- flatten p
 	    return w
     when ( not $ null loops ) $ reject
-	 $ text "Sie dürfen kein Loop benutzen."
+	 $ text "Sie dÃ¼rfen kein Loop benutzen."
 
     

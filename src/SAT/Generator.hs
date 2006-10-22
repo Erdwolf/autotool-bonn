@@ -72,7 +72,7 @@ step s = do
                   lit <- setToList $ unfrequent s
 		  let var = unLiteral lit -- neu
 		      vars = map unLiteral (literale $ clause s ) -- schon da
-		  -- muß erfüllen
+		  -- muÃŸ erfÃ¼llen
                   let forced = not ( csat s ) 
 			   && length vars == pred ( width s ) 
 		  guard $ forced <= ( lit `elementOf` satisfying s )

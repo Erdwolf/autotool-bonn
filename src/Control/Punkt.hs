@@ -1,4 +1,4 @@
--- | werden von Face.cgi benutzt: login zum aufgabenlösen und scoring
+-- | werden von Face.cgi benutzt: login zum aufgabenlÃ¶sen und scoring
 
 module Control.Punkt where
 
@@ -15,7 +15,7 @@ import Data.Maybe
 -- | Login des Studenten Version 2
 --
 -- Input:   Matrikelnr., Passwort
--- Output:  IO Just SNr zurück, wenn (mnr,pass) in DB
+-- Output:  IO Just SNr zurÃ¼ck, wenn (mnr,pass) in DB
 --
 loginDB :: MNr -> Control.Passwort.Type -> IO (Maybe SNr)
 loginDB mnr pass =
@@ -50,7 +50,7 @@ set :: SNr -> ANr
 set snr anr minstant mwert minput mreport = 
     bepunkteStudentDB snr anr minstant mwert Keine minput mreport
 
--- | erhöht von Student, für Aufgabe (Ok,Size) \/ No 
+-- | erhÃ¶ht von Student, fÃ¼r Aufgabe (Ok,Size) \/ No 
 --
 -- Input: (SNr,ANr,{No,Ok size}, {High,Low,Keine} )
 -- Output: IO ()

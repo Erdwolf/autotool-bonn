@@ -2,8 +2,6 @@
 
 module Baum.Reconstruct where
 
---  $Id$
-
 import Baum.Type
 import Baum.Config
 import Baum.Traverse
@@ -34,7 +32,7 @@ instance ( Symbol c, ToDoc [c] )
     where
         describe Reconstruct ocs = vcat
 	  [ hsep [ text "Gesucht ist ein"
-		 , if onlybin ocs then text "binärer" else empty
+		 , if onlybin ocs then text "binÃ¤rer" else empty
 		 , text "Baum t mit den Knoten-Reihenfolgen:"
 		 ]
 	  , nest 4 $ vcat $ do
@@ -62,12 +60,12 @@ instance ( Symbol c, ToDoc [c] )
 			, nest 4 $ vcat 
 				 [ announce o ( text "Eingabe" ) <+> toDoc ds
 				 , announce o ( text "Gesucht" ) <+> toDoc cs 
-				 , text "stimmen überein?" 
+				 , text "stimmen Ã¼berein?" 
 				     <+> toDoc ( cs == ds )
 				 ]
 			]
 	     let ok = and $ do ( o, cs, ds ) <- ocds ; return ( cs == ds )
-	     assert ok $ text "stimmt alles überein?"
+	     assert ok $ text "stimmt alles Ã¼berein?"
 
 -- | if inorder is involved, then tree must be binary
 onlybin :: Traversals c -> Bool

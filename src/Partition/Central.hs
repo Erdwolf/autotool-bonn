@@ -1,8 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
---  $Id$
-
-
 module Partition.Central 
 
 ( Partition
@@ -37,7 +32,7 @@ instance Partial Partition Conf ( Set Integer, Set Integer ) where
     describe Partition (Conf s) = vcat
         [ text "Zerlegen Sie die Menge"
 	, nest 4 $ toDoc s
-        , text "in zwei Teilmengen mit übereinstimmender Element-Summe."
+        , text "in zwei Teilmengen mit Ã¼bereinstimmender Element-Summe."
 	]
 
     initial Partition (Conf s) = 
@@ -65,7 +60,7 @@ instance Partial Partition Conf ( Set Integer, Set Integer ) where
 	       , nest 4 $ text "=" <+> toDoc sr
 	       ]
 	assert ( sl == sr )
-	       $ text "Stimmen die Summen überein?"
+	       $ text "Stimmen die Summen Ã¼berein?"
 
 disjoint ( ix, x ) ( iy, y ) = do
     inform $ vcat

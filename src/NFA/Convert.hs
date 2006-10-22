@@ -1,7 +1,5 @@
 module NFA.Convert where
 
---  $Id$
-
 import Convert.Type
 
 import Inter.Types
@@ -72,7 +70,7 @@ instance C.Partial Convert_To_NFA
         let [ alpha ] = do Alphabet a <- props ; return a
         inform $ text "Das ist Ihr Automat:"
 	peng $ aut
-        inform $ text "Sind alle Eigenschaften erfüllt?"
+        inform $ text "Sind alle Eigenschaften erfÃ¼llt?"
         nested 4 $ mapM_ ( flip test aut ) 
 		 $ nub $ NFA.Property.Sane : props
 

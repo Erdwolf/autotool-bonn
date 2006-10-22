@@ -2,8 +2,8 @@ module Term.CLS where
 
 --   $Id$
 
--- untersuche, ob CL(S) rückwärts change-bounded ist
--- falls ja, dann wäre das ein argument für REG-erhaltung
+-- untersuche, ob CL(S) rÃ¼ckwÃ¤rts change-bounded ist
+-- falls ja, dann wÃ¤re das ein argument fÃ¼r REG-erhaltung
 
 import Term.Type
 import Term.Dot
@@ -91,7 +91,7 @@ om = bin stt stt
 
 
 sterms :: Int -> [ STerm ]
--- zähle anzahl der S
+-- zÃ¤hle anzahl der S
 sterms n | n == 1 = return s
 sterms n = do
     a <- [ 1 .. n-1 ]

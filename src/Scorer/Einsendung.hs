@@ -108,5 +108,5 @@ monthFM    = listToFM [ ("Jan", 1),("Feb", 2),("Mar", 3),("Apr", 4)
 		      , ("Sep", 9),("Oct",10),("Nov",11),("Dec",12)
                       ]
 
--- | Umwandlung Monat-K¸rzel -> Zahl, bei Fehler kommt 13 zur¸ck
+-- | Umwandlung Monat-K√ºrzel -> Zahl, bei Fehler kommt 13 zur√ºck
 monthNum m = lookupWithDefaultFM monthFM 13 m

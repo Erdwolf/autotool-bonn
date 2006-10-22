@@ -11,7 +11,7 @@ import Autolib.Reader
 import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
-data SI = SI { name :: String -- abkürzung
+data SI = SI { name :: String -- abkÃ¼rzung
 	     , ausdruck :: Exp   
 	     , alphabet :: Set Char
 	     , beschreibung :: Maybe String -- falls Nothing, dann ausdruck

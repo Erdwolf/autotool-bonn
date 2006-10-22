@@ -1,3 +1,5 @@
+{-# OPTIONS -fallow-overlapping-instances -fallow-incoherent-instances #-}
+
 -- convert to NFA for displaying
 --   $Id$
 
@@ -10,15 +12,24 @@ import qualified Autolib.NFA as N
 import qualified Autolib.NFA.Compact as C
 import Autolib.ToDoc
 
-type Triple y = ( y,  y, Bewegung )
+-- type Triple y = ( y,  y, Bewegung )
 
-convert :: ( N.NFAC (Triple Char) z , UM z ) 
+data Triple y = Triple ( y,  y, Bewegung ) 
+                deriving ( Eq, Ord )
+instance ToDoc y => ToDoc ( Triple y ) where
+    toDoc ( Triple ( p, q, m ) ) = 
+        toDoc ( p, q, m ) 
+
+
+
+convert :: ( N.NFAC (Triple Char) z 
+           , UM z ) 
 	=> Turing Char z -> N.NFA (Triple Char ) z
 convert tm = 
     let transitions = do
 	      ( (input, p), next ) <- fmToList $ tafel tm
 	      ( output, q, move )  <- setToList next
-	      return ( p, (input, output, move) , q )
+	      return ( p, Triple (input, output, move) , q )
     in N.NFA 
         { N.alphabet = mkSet $ do ( p, t, q ) <- transitions; return t
         , N.nfa_info = text "converted from Turing"
@@ -30,8 +41,6 @@ convert tm =
 
 instance ToDoc [ Triple Char ] where
     toDoc ts = brackets $ vcat $ punctuate comma $ map toDoc ts
-instance Show  [ Triple Char ] where
-    show = render . toDoc
 
 
 instance ( N.NFAC (Triple Char) z , N.NFAC [Triple Char] z , TuringC Char z ) 

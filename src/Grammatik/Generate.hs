@@ -14,10 +14,10 @@ import Data.Set
 import Reporter
 
 gens :: Int -> Int -> Grammatik -> IO Track
-    -- erzeugt eine Ableitung mit höchstens `steps' meilensteinen
+    -- erzeugt eine Ableitung mit hÃ¶chstens `steps' meilensteinen
     -- und jeder abstand ist <= `width' 
     -- d. h. jeder ausgegebene track
-    -- läßt sich mit `trace b g' verifizieren
+    -- lÃ¤ÃŸt sich mit `trace b g' verifizieren
 gens s b g = gen s b g [ startsymbol g ]
 
 gen s b g u | s <= 0 = return [ u ]

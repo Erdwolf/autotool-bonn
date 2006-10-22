@@ -21,11 +21,11 @@ data Language = Language
 	      , contains     :: String -> Bool
 
 	      -- | sample  c n
-	      -- würfelt maximal c Wörter der Sprache
-	      -- mit Länge == n
+	      -- wÃ¼rfelt maximal c WÃ¶rter der Sprache
+	      -- mit LÃ¤nge == n
 	      , sample       :: Int -> Int -> IO [ String ]
 
-              -- | das gleiche für wörter im komplement
+              -- | das gleiche fÃ¼r wÃ¶rter im komplement
               , anti_sample  :: Int -> Int -> IO [ String ]
 
 	      }
@@ -51,7 +51,7 @@ instance ToDoc Language where
 instance Show Language where
     show = render . toDoc
 
--- | wirklich *alle* wörter des alphabets werden erzeugt und getestet,
+-- | wirklich *alle* wÃ¶rter des alphabets werden erzeugt und getestet,
 -- es entsteht unendliche liste
 komplett :: Language -> [ String ]
 komplett l = do
@@ -61,21 +61,21 @@ komplett l = do
     return w
 
 
--- | würfeln und testen
--- nur sinnvoll, wenn sprache genügend dicht ist
+-- | wÃ¼rfeln und testen
+-- nur sinnvoll, wenn sprache genÃ¼gend dicht ist
 random_sample :: Language 
-	      -> Int -- ^ so oft würfeln 
-	      -> Int -- ^ für wörter genau dieser länge
+	      -> Int -- ^ so oft wÃ¼rfeln 
+	      -> Int -- ^ fÃ¼r wÃ¶rter genau dieser lÃ¤nge
 	      -> IO [ String ]
 random_sample l c n = do
     ws <- sequence $ replicate c $ someIO (setToList $ alphabet l) n
     return $ filter (contains l) ws
 
--- | würfelt genau (!) c Wörter der Sprache l, mit Länge >= n,
--- dabei von jeder festen länge höchstens sqrt c viele
+-- | wÃ¼rfelt genau (!) c WÃ¶rter der Sprache l, mit LÃ¤nge >= n,
+-- dabei von jeder festen lÃ¤nge hÃ¶chstens sqrt c viele
 -- das klappt nur, wenn die sprache unendlich ist
 samples :: Language 
-	-> Int -- ^ so viele wörter (c)
+	-> Int -- ^ so viele wÃ¶rter (c)
 	-> Int -- ^ mindestens so lang (n)
 	-> IO [ String ]
 samples l c n | c > 0 = do
@@ -94,14 +94,14 @@ anti_samples l = samples ( komplement l )
 
 
 -- | TODO: das ist nicht OK, weil es IO benutzt.
--- es sollte ein Random-State genügen.
--- das würde auch andere Würfel-probleme lösen.
+-- es sollte ein Random-State genÃ¼gen.
+-- das wÃ¼rde auch andere WÃ¼rfel-probleme lÃ¶sen.
 
 present :: Language -> IO ()
 present l = do
     ws <- samples l 20 0
     print $ vcat [ text "Zur Sprache" <+> text (abbreviation l)
-		 , text "gehören zum Beispiel diese Wörter:"
+		 , text "gehÃ¶ren zum Beispiel diese WÃ¶rter:"
 		 , toDoc ws
 		 ]
 

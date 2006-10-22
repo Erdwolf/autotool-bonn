@@ -64,7 +64,7 @@ loginPage (mat :: String) F0  = do
                         ttxt $ concat 
                                          [ "Wenn Sie bereits angemeldet sind, Matrikelnr. und Passwort eingeben." 
                                          ]
-                        ttxt $ "Dann können Sie Ihre Daten ändern/ansehen."
+                        ttxt $ "Dann kÃ¶nnen Sie Ihre Daten Ã¤ndern/ansehen."
                         spacerow
                         matF <- promptedInput           "Matrikelnr:"   $ (fieldSIZE 30) ## ( fieldVALUE mat )
                         pwdF <- promptedPassword        "Passwort:"             (fieldSIZE 30)
@@ -74,9 +74,9 @@ loginPage (mat :: String) F0  = do
                         -- c)
 
                         hrrow
-                        th3 $ "Hier können Sie sich in die Übungsgruppen von " ++ vorlesungen ++ " einschreiben."
+                        th3 $ "Hier kÃ¶nnen Sie sich in die Ãœbungsgruppen von " ++ vorlesungen ++ " einschreiben."
                         spacerow
-                        ttxt "Dazu müssen Sie sich neu anmelden und dann eine Gruppe wählen."
+                        ttxt "Dazu mÃ¼ssen Sie sich neu anmelden und dann eine Gruppe wÃ¤hlen."
                         spacerow
                         -- b)
                         smallSubButton F0 (registerPage "" "" "" "") "Neuanmeldung"
@@ -94,7 +94,7 @@ registerPage vnm nme ( mat :: String ) eml F0 =
         table $ do      
            attr "width" "600"      
            hrrow
-           th3 "Nach der Anmeldung können Sie die Vorlesung/Übungsgruppe auswählen."
+           th3 "Nach der Anmeldung kÃ¶nnen Sie die Vorlesung/Ãœbungsgruppe auswÃ¤hlen."
            spacerow
            ttxt "Bitte achten Sie auf die korrekte Angabe von Matrikelnummer und Email-Adresse."
            spacerow
@@ -113,7 +113,7 @@ registerPage vnm nme ( mat :: String ) eml F0 =
            smallSubButton F0 endPage "Ende"
 
 --
--- Überprüfung der Registration
+-- ÃœberprÃ¼fung der Registration
 --
 -- Bei Fehler (siehe Variable checks) 
 -- Aufruf der registeredPage (a) mit bereits eingegeben Werten fuer Korrektur, 
@@ -137,7 +137,7 @@ registeredPage (F6 vnmF nmeF matF emlF ps1F ps2F) =
         -- Diese Tests muessen alle bestanden werden, um Registration abzuschliessen.
         let { checks = [ ( ps1 == ps2                   , "Passwort und Passwort Wiederholung nicht identisch.")
                          -- Q: Warum kann mat hier nicht direkt checken?                                         
-                                   , ( matok                            , "Die Matrikelnummer muss größer 1024 sein.")
+                                   , ( matok                            , "Die Matrikelnummer muss grÃ¶ÃŸer 1024 sein.")
                                    , ( length vnm > 1           , "Der Vorname muss mindestens 2 Buchstaben lang sein.") 
                                    , ( length nme > 1           , "Der Name muss mindestens 2 Buchstaben lang sein.") 
                                    , ( not matDup                       , "Matrikelnummer bereits registiert.")
@@ -152,16 +152,16 @@ registeredPage (F6 vnmF nmeF matF emlF ps1F ps2F) =
             hrrow
             if allok 
                then do -- (b) Erfolgreich
-                        th3 "Vielen Dank. Alle Angaben wurden übernommen. "
+                        th3 "Vielen Dank. Alle Angaben wurden Ã¼bernommen. "
                         -- msgKontrollEmail
                         hrrow
                         smallSubButton F0 (changeGrpPage mat) "Weiter"
                else do -- (a) Ausgabe der nicht bestanden Tests
-                        ttxt "Bitte überprüfen Sie Ihre Angaben:"
+                        ttxt "Bitte Ã¼berprÃ¼fen Sie Ihre Angaben:"
                         spacerow
                         mapM_ (ttxt) [  msg | ( ok , msg ) <- checks , not ok ]
                         hrrow
-                        smallSubButton F0 (registerPage vnm nme mat0 eml) "Zurück"
+                        smallSubButton F0 (registerPage vnm nme mat0 eml) "ZurÃ¼ck"
 
 -- ----------------
 -- Endseite 
@@ -169,12 +169,12 @@ endPage F0 =
         standardQuery "Ende" $ 
                 table $ do      
                         hrrow
-                        th3 "Vielen Dank für die Benutzung. Und schönen Tag noch."
+                        th3 "Vielen Dank fÃ¼r die Benutzung. Und schÃ¶nen Tag noch."
                         hrrow
 
 
 -- ----------------
--- Überpüfung der passwort,matrikel paares, bei Erfolg Student-Status anzeigen
+-- ÃœberpÃ¼fung der passwort,matrikel paares, bei Erfolg Student-Status anzeigen
 checkLoginPage (F2 matF pwdF) =
   let 
                 mat0  = unAllDigits ( value matF )
@@ -187,7 +187,7 @@ checkLoginPage (F2 matF pwdF) =
                         do standardQuery "Fehler:" $ 
                                 table $ do
                                         hrrow           
-                                        th3 "Passwort und Matrikelnummer stimmen nicht überein!" 
+                                        th3 "Passwort und Matrikelnummer stimmen nicht Ã¼berein!" 
                                         hrrow
                                         smallSubButton F0 (loginPage mat0)                               "Login wiederholen"
                                         smallSubButton F0 (registerPage "" "" "" "")       "Neuanmeldung"
@@ -247,7 +247,7 @@ studStatusPage ( mat :: MNr ) F0 =
           -- c) Bepunktete Aufgaben holen
           result                <- io $ studAufgDB $ Just mat
           -- gesamtres <- io $ getSerienPunkteDB mat
-          standardQuery "Übersicht" $ 
+          standardQuery "Ãœbersicht" $ 
                 do 
                         hrline
                         h3 $ text "Anmeldungsdaten"
@@ -260,7 +260,7 @@ studStatusPage ( mat :: MNr ) F0 =
                                 tableRow2 (text "Matrikelnr.")   ( text $ show mat )
                                 tableRow2 (text "Email-Adresse") ( text email )
                                 tableRow2 (text "Interne Kennung")   ( text $ show $ Data.List.head snrs )
-                                tableRow2 (text "Übungsgruppen") ( grptab grp )
+                                tableRow2 (text "Ãœbungsgruppen") ( grptab grp )
                                 -- gesamtergTable gesamtres
                                 -- (c)
                         if ( length (snd result)) > 0 
@@ -274,15 +274,15 @@ studStatusPage ( mat :: MNr ) F0 =
                            else showAsTable mglAufgs
                         -- --------------------------------------------------
                         hrline
-                        h3 $ text "Hier können Sie :"
+                        h3 $ text "Hier kÃ¶nnen Sie :"
                         table $ 
                                 do 
-                                   smallSubButton F0 (changeGrpPage mat)                        "Vorlesung/Übungsgruppe auswählen/ändern"
+                                   smallSubButton F0 (changeGrpPage mat)                        "Vorlesung/Ãœbungsgruppe auswÃ¤hlen/Ã¤ndern"
                                    smallspacerow
-                                   smallSubButton F0 (changeEmailPage mat email)        "die Email-Adresse ändern"
-                                   smallSubButton F0 (changePasswortPage mat)           "das Passwort ändern"
+                                   smallSubButton F0 (changeEmailPage mat email)        "die Email-Adresse Ã¤ndern"
+                                   smallSubButton F0 (changePasswortPage mat)           "das Passwort Ã¤ndern"
                                    smallspacerow
-                                   smallSubButton F0 (studStatusPage mat)                       "Übersicht aktualisieren"
+                                   smallSubButton F0 (studStatusPage mat)                       "Ãœbersicht aktualisieren"
                                    smallspacerow
                                    smallSubButton F0 endPage                                            "beenden"
                 where 
@@ -309,23 +309,23 @@ changeGrpPage mat F0 = do
                 currentgrps = filter ( \ (g,_) -> g `elem` stdgrp ) allgrps
                 thrd (_,_,x) = x
           let { show' = show . snd }
-          standardQuery "Übungsgruppe ändern" $ do
-                  h3 $ text "Sie besuchen diese Übungsgruppen:" 
+          standardQuery "Ãœbungsgruppe Ã¤ndern" $ do
+                  h3 $ text "Sie besuchen diese Ãœbungsgruppen:" 
                   if null currentgrps then text "keine" else do
                       grptab currentgrps 
-                      ttxt "Eine Übungsgruppe verlassen:"
+                      ttxt "Eine Ãœbungsgruppe verlassen:"
                       vgrpF <- selectSingle show' Nothing currentgrps empty
                       smallSubButton (F1 vgrpF) (leaveGrpPage mat) "Weiter"
 
-                  h3 $ text "Noch freie Übungsgruppen sind:"
+                  h3 $ text "Noch freie Ãœbungsgruppen sind:"
                   if null posgrp then text "keine" else do
                       grptab posgrp 
-                      ttxt "Eine Übungsgruppe besuchen:"
+                      ttxt "Eine Ãœbungsgruppe besuchen:"
                       grpF <- selectSingle show' Nothing posgrp empty
                       smallSubButton (F1 grpF) (changedGrpPage mat) "Weiter" 
 
                   hrrow
-                  smallSubButton F0 (studStatusPage mat) "Zurück"
+                  smallSubButton F0 (studStatusPage mat) "ZurÃ¼ck"
 
 grptab ( grps :: [ (GNr, [String]) ] ) = mytable $ do
     tableRow3 [ text "Vorlesung", text "Gruppe", text "Dozent" ]
@@ -333,7 +333,7 @@ grptab ( grps :: [ (GNr, [String]) ] ) = mytable $ do
         grp @ ( _ , [v,g,r]) <- grps
         return $ tableRow3 [ text v, text g, text r ]
 
-changedGrpPage = commonGrpPage "ausgewählt" changeStudGrpDB' 
+changedGrpPage = commonGrpPage "ausgewÃ¤hlt" changeStudGrpDB' 
 leaveGrpPage   = commonGrpPage "verlassen"  leaveStudGrpDB' 
 
 commonGrpPage name action  mat (F1 grpF) = do 
@@ -341,7 +341,7 @@ commonGrpPage name action  mat (F1 grpF) = do
         let v @ (grp :: GNr ,desc) = value $ grpF
         io $ logged $ "commonGrpPage.v  " ++ show v
         io $ action mat grp   
-        let msg = unwords [ "Übungsgruppe" , show desc, name ]
+        let msg = unwords [ "Ãœbungsgruppe" , show desc, name ]
         standardQuery msg $ table $ do
                         attr "width" "600"
                         hrrow
@@ -351,27 +351,27 @@ commonGrpPage name action  mat (F1 grpF) = do
 
 --------------------------------------------------------------------------------------
 
--- Email - Änderung
+-- Email - Ã„nderung
 changeEmailPage mat email F0 =
-        standardQuery "Änderung der Email-Adresse" $ do
+        standardQuery "Ã„nderung der Email-Adresse" $ do
                 table $ do 
                         attr "width" "600"
                         hrrow
                         emailF <- promptedInput "Neue Email-Adresse" (fieldVALUE email)
                         hrrow
-                        smallSubButton (F1 emailF) (changedEmailPage mat email) "Ändern"  
-                        smallSubButton F0 (studStatusPage mat) "Zurück"
+                        smallSubButton (F1 emailF) (changedEmailPage mat email) "Ã„ndern"  
+                        smallSubButton F0 (studStatusPage mat) "ZurÃ¼ck"
         
 changedEmailPage mat oldemail (F1 emailF)       = do 
         let email = unEmailAddress $ value emailF
         do
          if (oldemail == email) 
            then do
-                        standardQuery "Fehler: Keine Änderung" $ do
+                        standardQuery "Fehler: Keine Ã„nderung" $ do
                                 table $ do
                                         attr "width" "600"
                                         hrrow
-                                        ttxt "Die Email-Adresse wurde nicht geändert."
+                                        ttxt "Die Email-Adresse wurde nicht geÃ¤ndert."
                                         hrrow
                                         smallSubButton F0 (studStatusPage mat) "Weiter"
                 else do         
@@ -380,15 +380,15 @@ changedEmailPage mat oldemail (F1 emailF)       = do
                                 table $ do 
                                         attr "width" "600"
                                         hrrow
-                                        tableRow2       ( text "Email-Adresse geändert auf ") (text email)
+                                        tableRow2       ( text "Email-Adresse geÃ¤ndert auf ") (text email)
                                         hrrow
                                         smallSubButton F0 (studStatusPage mat) "Weiter"
 
 ----------------------------------------------------------------------------------------
 
--- Passwort - Änderung
+-- Passwort - Ã„nderung
 changePasswortPage mat F0 =
-        standardQuery "Änderung des Passwort" $ do
+        standardQuery "Ã„nderung des Passwort" $ do
                 table $ do 
                         attr "width" "600"
                         hrrow
@@ -399,8 +399,8 @@ changePasswortPage mat F0 =
                         passwortF <- promptedPassword "Neues Passwort" (fieldSIZE 40)
                         passwort2F <- promptedPassword "Wiederholung" (fieldSIZE 40)
                         hrrow
-                        smallSubButton (F2 passwortF passwort2F) (changedPasswortPage mat) "Ändern"  
-                        smallSubButton F0 (studStatusPage mat) "Zurück"
+                        smallSubButton (F2 passwortF passwort2F) (changedPasswortPage mat) "Ã„ndern"  
+                        smallSubButton F0 (studStatusPage mat) "ZurÃ¼ck"
         
 changedPasswortPage mat (F2 passwortF passwort2F) = 
         let 
@@ -414,7 +414,7 @@ changedPasswortPage mat (F2 passwortF passwort2F) =
                                 table $ do 
                                         attr "width" "600"
                                         hrrow
-                                        ttxt "Passwort geändert."
+                                        ttxt "Passwort geÃ¤ndert."
                                         hrrow
                                         smallSubButton F0 (studStatusPage mat) "Weiter"
                 else do

@@ -9,7 +9,7 @@ import qualified Control.Student as S
 import Control.Types (toString)
 import Challenger.Partial
 
-import qualified Text.Html
+import qualified Text.XHtml
 import Autolib.Reporter
 
 mkpar stud auf = P.empty 
@@ -27,12 +27,12 @@ make_instant_common vnr manr stud var = do
     let mat = S.mnr stud
     k <- key var $ toString mat 
     g <- gen var vnr manr k 
-    let ( Just i  , _ :: Text.Html.Html ) = export g
-    ( _, icom :: Text.Html.Html) <- run $ report p i
+    let ( Just i  , _ :: Text.XHtml.Html ) = export g
+    ( _, icom :: Text.XHtml.Html) <- run $ report p i
     return ( p, i, icom )
 
 -- | erreichte punkte in datenbank schreiben 
--- und lösung abspeichern
+-- und lÃ¶sung abspeichern
 punkte tutor stud auf ( minst, mcs, mres, com ) = 
      if tutor || A.current auf
 	then do
@@ -50,7 +50,7 @@ punkte tutor stud auf ( minst, mcs, mres, com ) =
 
 
 vorbei = do
-    h3 "Einsendeschluß dieser Aufgabe ist überschritten"
+    h3 "EinsendeschluÃŸ dieser Aufgabe ist Ã¼berschritten"
     plain "Einsendung wird nicht gespeichert, Bewertung wird ignoriert."
 
 pure_punkte tutor stud auf ( minst, mcs, mres, com ) = 

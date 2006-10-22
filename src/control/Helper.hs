@@ -25,14 +25,14 @@ kommas a b = a ++ ", " ++ b
 allDigits x = and $ Prelude.map (`elem` ['0'..'9']) x  
 
 -- nur buchstaben,zahlen [@-_.] erlauben
--- SQL schützen vor injekted sql angriff
+-- SQL schÃ¼tzen vor injekted sql angriff
 filterQuots :: String -> String
 filterQuots s = [ c | c <- s 
-				,  (toLower c ) `elem` ( ['a'..'z'] ++ "äüöß " ++ ['0'..'9'] ++ "@-_." ) 
+				,  (toLower c ) `elem` ( ['a'..'z'] ++ "Ã¤Ã¼Ã¶ÃŸ " ++ ['0'..'9'] ++ "@-_." ) 
 				]
 
--- für passworter dürfen wir nicht so streng sein...
--- TODO muss noch mehr geschützt werden?
+-- fÃ¼r passworter dÃ¼rfen wir nicht so streng sein...
+-- TODO muss noch mehr geschÃ¼tzt werden?
 quoteQuots :: String -> String
 quoteQuots [] = []
 quoteQuots (x:xs) = y ++ quoteQuots xs

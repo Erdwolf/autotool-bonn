@@ -8,7 +8,6 @@ module Inter.Crypt
 
 where
 
---  $Id$
 
 import Codec.Encryption.MD5 ( hash )
 import Codec.Encryption.Utils ( Octet )
@@ -35,10 +34,12 @@ empty = Crypt ""
 instance ToDoc Crypt where toDoc = text . unCrypt
 instance Read Crypt where readsPrec p cs = [(Crypt cs, [])]
 
+
 instance Reader Crypt where 
     reader = do
         cs <- many letter
 	return $ Crypt cs
+
 
 instance Container Crypt String where
     label _ = "Crypt"

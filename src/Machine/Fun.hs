@@ -49,7 +49,7 @@ numerical_test cut inputs fun m = do
 	    let a' = fun ein
 
 	    inform $ vcat
-		   [ text "Die Endkonfiguration enthält das Resultat", toDoc a
+		   [ text "Die Endkonfiguration enthÃ¤lt das Resultat", toDoc a
 		   , text "gefordert war", toDoc a'
 		   ]
 	    return $ a == a' 
@@ -86,7 +86,7 @@ inner_fun_test cut inputs encode check m = do
     inform $ text $ "Ihre Maschine ist"
     inform $ nest 4 $ toDoc m
 
-    inform $ text "Bei allen folgenden Rechnungen berücksichtige ich"
+    inform $ text "Bei allen folgenden Rechnungen berÃ¼cksichtige ich"
     inform $ text $ "nur die ersten " ++ show cut ++ " erreichbaren Konfigurationen."
 
     -- inform $ text $ "ich starte die Maschine auf einigen Eingaben"

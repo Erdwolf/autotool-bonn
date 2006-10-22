@@ -2,8 +2,6 @@
 
 module Pump.Inter where
 
--- -- $Id$
-
 import Pump.Type
 import Pump.Positiv
 import Pump.Negativ
@@ -24,6 +22,7 @@ import Autolib.FiniteMap
 import Inter.Types
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Reader
 
 import qualified Pump.REG as REG
 import qualified Pump.CF as CF
@@ -42,13 +41,13 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
     describe PUMP ( conf :: Conf z ) = vcat 
 	     [ text $ "Untersuchen Sie, ob die Sprache  L = "
 	     , nest 4 $ toDoc (inter $ lang conf)
-	     , text $ "die " ++ Pump.Type.tag ( undefined :: z ) ++ " erfüllt."
+	     , text $ "die " ++ Pump.Type.tag ( undefined :: z ) ++ " erfÃ¼llt."
 	     , text ""
 	     , nest 4 $ parens
 	              $ text "Ja-Einsendungen werden bei dieser Aufgabe"
-	              $$ text "nur für  n <=" <+> toDoc (ja_bound conf)
+	              $$ text "nur fÃ¼r  n <=" <+> toDoc (ja_bound conf)
 	              <+> text "akzeptiert."
-	     , text "Zu dieser Sprache gehören unter anderem die Wörter:"
+	     , text "Zu dieser Sprache gehÃ¶ren unter anderem die WÃ¶rter:"
 	     , nest 4 $ toDoc $ take 10 $ samp conf
 	     ]
 
@@ -75,7 +74,8 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 
 ---------------------------------------------------------------------- 
  
-instance Pumping z => Generator PUMP ( Pump.Quiz.Conf z ) ( Conf z ) where
+instance ( Reader z, ToDoc z  , Pumping z ) 
+    => Generator PUMP ( Pump.Quiz.Conf z ) ( Conf z ) where
     generator p c key = do
         let l = Pump.Quiz.lang c
       	wss <- sequence $ do

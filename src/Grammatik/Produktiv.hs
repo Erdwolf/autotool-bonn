@@ -8,9 +8,9 @@ module Grammatik.Produktiv
 where
 
 -- verallgemeiner von CFG auf beliebige Grammatiken
--- produktivität ist natürlich nicht entscheidbar
+-- produktivitÃ¤t ist natÃ¼rlich nicht entscheidbar
 -- hier ist sichere Approximation in diesem sinne:
--- nach löschen aller nicht produktiven variablen
+-- nach lÃ¶schen aller nicht produktiven variablen
 -- gibts immer noch die gleiche sprache
 
 import Control.Monad (guard)
@@ -21,7 +21,7 @@ import Grammatik.Type
 
 -- jede Variable der linken seite nennen wir produktiv,
 -- wenn rechts alle Variablen produktiv sind.
--- zur vereinfachung zählen wir auch alle terminale als produktiv
+-- zur vereinfachung zÃ¤hlen wir auch alle terminale als produktiv
 
 produktiv :: Grammatik -> Set Char
 produktiv g = fix ( \ qs -> union qs $ mkSet $ do

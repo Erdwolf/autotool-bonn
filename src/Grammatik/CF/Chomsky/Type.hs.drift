@@ -13,7 +13,7 @@ type Rules a   = [ ( a, Either Char (a, a) ) ]
 data Chomsky a = Chomsky 
 	       { start :: a
 	       , rules :: Rules a
-	       , eps :: Bool -- ^ die ursprüngliche G. erzeugte Eps ?
+	       , eps :: Bool -- ^ die ursprÃ¼ngliche G. erzeugte Eps ?
 	       }
      deriving (Eq, Ord)
 

@@ -34,11 +34,11 @@ instance C.Partial Equiv ( NFA Char Int ) [[ Trenner Char Int ]] where
     report p i = do
          inform $ vcat $ 
 	     [ text "Sie sollen den deterministischen Automaten minimieren,"
-	     , text "indem Sie Paare von nicht ‰quivalenten Zust‰nden angeben."
+	     , text "indem Sie Paare von nicht √§quivalenten Zust√§nden angeben."
 	     , text ""
              , text "In Ihrer Einsendung [ l_0, l_1, .. l_n ]"
 	     , text "soll jeweils l_k die Liste aller Tripel (p, q, c) sein,"
-	     , text "f¸r die p \\sim_k q, aber T(p,c) \\not\\sim_k T(q,c)."
+	     , text "f√ºr die p \\sim_k q, aber T(p,c) \\not\\sim_k T(q,c)."
 	     , text ""
 	     , text "Die letzte Unter-Liste  l_n  soll leer ( = [] ) sein."
 	     , text ""
@@ -62,7 +62,7 @@ instance C.Partial Equiv ( NFA Char Int ) [[ Trenner Char Int ]] where
     total p i b = do
 	assert  ( not ( null b ) && null ( last b ) )
            $ vcat 
-	       [ text "Ist Ihre Liste vollst‰ndig?"
+	       [ text "Ist Ihre Liste vollst√§ndig?"
 	       , nest 4 $  text "Die letzte Unter-Liste soll [] sein:"
 			<+> text "[ [ ... ] , ... , [] ]"
 	       ]
