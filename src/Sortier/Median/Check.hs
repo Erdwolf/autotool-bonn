@@ -15,7 +15,7 @@ import Sortier.Netz.Bild
 import Autolib.Util.Bild
 
 import qualified Autolib.Util.Wort ( alle )
-import Data.List ( tails)
+import Data.List ( tails, partition )
 import Data.Typeable
 
 import Autolib.Reporter
@@ -97,7 +97,8 @@ check soll n = do
 
 median_is_in_the_middle xs = 
     let ( pre, m : post ) = splitAt ( length xs `div` 2 ) xs
-    in  all ( <= m ) pre && all (>= m) post
+        ( small, high ) = partition ( < m ) $ pre ++ post
+    in  length small == length high
 
 -- | alle Folgen mit genau floor(b/2) einsen und ceil(b/2) einsen
 testing :: Int -> [ State ]
