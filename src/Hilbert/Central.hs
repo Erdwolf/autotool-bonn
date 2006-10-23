@@ -21,14 +21,14 @@ data Hilbert = Hilbert deriving ( Show, Read, Typeable )
 instance Partial Hilbert Param Derivation where
 
     describe _ param = vcat
-        [ text "Gesucht ist eine Ableitung für die Formel"
+        [ text "Gesucht ist eine Ableitung fÃ¼r die Formel"
 	, nest 4 $ toDoc $ target param
-	, text "im Hilbert-Kalkül mit den Axiomen"
+	, text "im Hilbert-KalkÃ¼l mit den Axiomen"
 	, nest 4 $ toDoc $ axioms param
 	]
 
     initial Hilbert param = 
-        -- FIXME, sollte von Parametern abhängen
+        -- FIXME, sollte von Parametern abhÃ¤ngen
         Hilbert.Derivation.example 
         
     partial Hilbert param d =

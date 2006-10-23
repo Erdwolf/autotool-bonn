@@ -38,10 +38,10 @@ instance C.Verify Merge_Netz Param where
 instance C.Partial Merge_Netz Param Netz where
 
     describe p i = vcat 
-	  [ text "Finden Sie ein Netzwerk zum korrekten Zusammenfügen"
-	  , text "von bereits geordneten Folgen der Längen" 
+	  [ text "Finden Sie ein Netzwerk zum korrekten ZusammenfÃ¼gen"
+	  , text "von bereits geordneten Folgen der LÃ¤ngen" 
               <+> toDoc ( breiten i )
-	  , text "mit höchstens" <+> toDoc ( max_comparators i )
+	  , text "mit hÃ¶chstens" <+> toDoc ( max_comparators i )
 	  	 <+> text "Komparatoren."
 	  ]        
 
@@ -105,7 +105,7 @@ check soll n = do
 	       , nest 4 $ toDoc $ toBild ( n , xss )
 	       ]
     mapM_ verify $ map umrech $ testing soll
-    inform $ text "Das Netz hat alle möglichen Eingaben korrekt geordnet."
+    inform $ text "Das Netz hat alle mÃ¶glichen Eingaben korrekt geordnet."
     return ()
 
 -- | alle Folgen von monotonen 0-1-Folgen

@@ -39,7 +39,7 @@ instance ( Reader a , Read a, Reader [a], Reader b, ToDoc c, Coder c a b )
 instance Project (Encode c) [a] [a] where
     project _ = id
 
-enc :: ( ToDoc c, Reader c, Reader b, Coder c Char b ) => c -> Make
+enc :: ( ToDoc c, Reader c, Reader b, Coder c Char b, Read b ) => c -> Make
 enc c = quiz (Encode c) Code.Param.example
 
 

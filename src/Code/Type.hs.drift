@@ -29,6 +29,7 @@ import Data.Typeable
 class  ( Typeable a, Typeable b, Typeable c
        , ToDoc [a], ToDoc b, Reader b
        , Reader [a]
+       , Read a
        , Ord a , Eq b, BitSize b 
        ) 
        => Coder c a b | c a -> b, c b -> a where

@@ -23,7 +23,7 @@ import Data.Typeable
 import Data.Maybe
 import Control.Monad.State
 
-instance ( Typeable a, Ord a, ToDoc a, Reader a, ToDoc [a], Reader [a] )
+instance ( Typeable a, Ord a, ToDoc a, Reader a, ToDoc [a], Reader [a], Read a )
     => Coder Lempel_Ziv_Welch a [ Code_Letter a ] where
     encode _ [] = []
     encode _ (x : xs) = output 
@@ -34,7 +34,7 @@ instance ( Typeable a, Ord a, ToDoc a, Reader a, ToDoc [a], Reader [a] )
     decode_hint lzw ys = take 3 
                        $ fromJust (error "decode_hint") $ decode lzw ys
 
-instance ( Typeable a, Ord a, ToDoc a, Reader a, ToDoc [a], Reader [a] )
+instance ( Typeable a, Ord a, ToDoc a, Reader a, ToDoc [a], Reader [a], Read a )
     => Coder Lempel_Ziv_77 a [ Code_Letter a ] where
     encode _ xs = enc77 [] xs
     encode_hint lz77 xs = take 3 $ encode lz77 xs

@@ -18,7 +18,7 @@ import Autolib.Size
 
 import Data.Typeable
 
-instance ( Typeable a, Ord a, ToDoc [a], Reader [a] ) 
+instance ( Typeable a, Ord a, ToDoc [a], Reader [a], Read a ) 
         => Coder Move_To_Front a ( Coding [a] ) where
       encode c = W.encode
       decode c it = Just $ W.decode it

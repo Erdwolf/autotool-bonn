@@ -22,7 +22,7 @@ coder = T.Coder
       }
 -}
 
-instance ( Typeable a, Ord a, ToDoc [a] , Reader [a], Size a) 
+instance ( Typeable a, Ord a, ToDoc [a] , Reader [a], Size a, Read a) 
         => T.Coder Burrows_Wheeler a ( [a], Int ) where
       encode c = bw
       decode c = error "Burrows-Wheeler.decode"

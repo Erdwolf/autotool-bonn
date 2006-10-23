@@ -2,11 +2,6 @@
 
 module SAT.Types where
 
-<<<<<<< Types.hs.drift
---   $Id$
-=======
---   $Id$
->>>>>>> 1.12
 
 import Autolib.FiniteMap
 import Autolib.Set

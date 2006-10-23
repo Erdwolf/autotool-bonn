@@ -41,8 +41,8 @@ instance C.Partial Median_Netz Param Netz where
 
     describe p i = vcat 
 	  [ text "Finden Sie ein Netzwerk mit"
-	      <+> toDoc ( breite i ) <+> text "Eingängen,"
-	  , text "mit höchstens" <+> toDoc ( max_comparators i )
+	      <+> toDoc ( breite i ) <+> text "EingÃ¤ngen,"
+	  , text "mit hÃ¶chstens" <+> toDoc ( max_comparators i )
 	  	 <+> text "Komparatoren,"
 	  , text "dessen mittlerer Ausgang der Median ist."
 	  ]        
@@ -92,7 +92,7 @@ check soll n = do
 	       , nest 4 $ toDoc $ toBild ( n , xss )
 	       ]
     mapM_ verify $ map umrech $ testing soll
-    inform $ text "Das Netz hat alle möglichen Eingaben korrekt geordnet."
+    inform $ text "Das Netz hat alle mÃ¶glichen Eingaben korrekt geordnet."
     return ()
 
 median_is_in_the_middle xs = 
