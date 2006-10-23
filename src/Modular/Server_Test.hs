@@ -18,7 +18,7 @@ import Modular.Pair
 type URL = String
 
 server :: URL
-server = "http://localhost/cgi-bin/modular-server.cgi"
+server = "http://dfa.imn.htwk-leipzig.de/cgi-bin/modular-server.cgi"
 
 list_types :: URL -> IO [ Task ]
 list_types url = remote url "autotool.list_types"
