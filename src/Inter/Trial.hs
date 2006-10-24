@@ -84,7 +84,8 @@ my_name = "Trial.cgi"
 
 main :: IO ()
 main = Gateway.CGI.execute ( my_name ++ "#hotspot" ) $ do
-   wrap $ aufgaben Inter.Collector.tmakers ( undefined, VNr 42, True )
+   let stud = S.Student { }
+   wrap $ aufgaben Inter.Collector.tmakers ( stud, VNr 42, True )
 
 aufgaben tmk ( stud, vnr, tutor ) = do
     h3 "Aufgaben"
