@@ -63,6 +63,7 @@ import Debug
 import qualified Local
 
 import System.Random
+import qualified System.Directory
 import Data.Typeable
 import Data.Maybe
 import Data.Tree
@@ -336,7 +337,11 @@ aufgaben tmk ( stud, vnr, tutor ) = do
 
     auf' <- if tutor 
             then do
-		 edit_aufgabe mks mk mauf vnr manr type_click
+		 auf' <- edit_aufgabe mks mk mauf vnr manr type_click
+	         up <- submit "update data base: aufgabe"
+                 when up $ io $ A.put manr auf'
+                 return auf'
+
 	    else -- kein tutor 
                 case mauf of
 		  Nothing -> do 

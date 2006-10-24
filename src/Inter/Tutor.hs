@@ -107,8 +107,7 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
 	         verify conf
 		 inform $ text "OK"
             br
-	    up <- submit "update data base: aufgabe"
-            let auf' = A.Aufgabe 
+            return $ A.Aufgabe 
 		               { A.anr = error "Super.anr" -- intentionally
 			       , A.vnr = vnr
 			       , A.name = name
@@ -121,8 +120,6 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
 			       , A.bis = bis
 			       , A.timeStatus = Control.Types.Early -- ist egal
 			       }
-            when up $ io $ A.put manr auf'
-            return auf'
 
 -- | matrikelnummer zum aufgabenlösen:
 -- tutor bekommt eine gewürfelt (und kann neu würfeln)
