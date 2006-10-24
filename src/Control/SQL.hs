@@ -25,16 +25,9 @@ import Text.ParserCombinators.Parsec.Expr
 
 import Mysqlconnect
 
-#ifdef HSQL16
+
 import Database.HSQL.MySQL hiding ( query, collectRows )
 import qualified Database.HSQL.MySQL
-#elif HSQL14
-import Database.HSQL.MySQL hiding ( query, collectRows )
-import qualified Database.HSQL.MySQL
-#elif HSQL12
-import Database.MySQL.HSQL hiding ( query, collectRows )
-import qualified Database.MySQL.HSQL
-#endif
 
 import Control.Monad ( when )
 import Control.Exception ( catch, catchDyn )

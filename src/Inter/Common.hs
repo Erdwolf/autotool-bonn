@@ -6,11 +6,14 @@ import Gateway.CGI
 import qualified Inter.Param as P
 import qualified Control.Aufgabe as A
 import qualified Control.Student as S
+import qualified Autolib.Output as O
 import Control.Types (toString)
 import Challenger.Partial
+import Autolib.Reporter
 
 import qualified Text.XHtml
-import Autolib.Reporter
+import System.Directory
+import qualified Control.Exception
 
 mkpar stud auf = P.empty 
             { P.mmatrikel = Just $ S.mnr stud
@@ -63,3 +66,31 @@ pure_punkte tutor stud auf ( minst, mcs, mres, com ) =
 		     }
 	     bank p
              return ()
+
+-----------------------------------------------------------------------------
+
+footer scores = do
+    hr ; h3 "Informationen zum autotool"
+    let entry name url = O.Named_Link name url
+    embed $ output
+          $ foldr1 O.Beside
+	      [ entry "autotool home" 
+		      "http://dfa.imn.htwk-leipzig.de/auto/"
+              , O.Text "/"
+	      , entry "bugs (ansehen und melden)" 
+		      "http://dfa.imn.htwk-leipzig.de/bugzilla/buglist.cgi?component=autotool&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED"
+              , O.Text "/"
+	      , entry "highscores" scores
+	      ]
+    hr
+
+slink = do
+    e <- doesFileExist "link.scores"
+    scores <- 
+        if e
+        then readFile "link.scores" >>= return . head . lines
+        else return "https://autotool.imn.htwk-leipzig.de/high/score.text"
+    return scores
+
+
+scores_link = io $ slink `Control.Exception.catch` \ e -> return ( show e )
