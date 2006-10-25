@@ -18,12 +18,14 @@ module Util.Datei
 
 where
 
+import Debug
 import Data.List (inits, intersperse)
 import Directory
 import Control.Monad (guard, when)
 import System (getEnv, system)
 import Char (isAlphaNum)
 import qualified System.Posix
+import qualified System.Directory
 import qualified Control.Exception
 
 import Util.Datei.Base
@@ -108,7 +110,10 @@ schreiben :: Datei -> String -> IO FilePath
 schreiben d inhalt = do
     createDir d
     h <- home d
-    writeFile h inhalt
+    debug "before writeFile ..."
+    when ( length inhalt >= 0 ) -- force evaluation? 
+	 $ writeFile h inhalt
+    debug "... after writeFile"
     perm "go+r" h
     return h
 
@@ -127,14 +132,16 @@ dirgehen d = do
 
 perm :: String -> FilePath -> IO ()
 perm flags f = do
-    system $ unwords [ "chmod",  flags, f ]    
+    Debug.system $ unwords [ "chmod",  flags, f ]    
     return ()
 
 
 lesen :: Datei -> IO(String)
 lesen d  = do
     h <- home d
-    readFile h
+    ex <- System.Directory.doesFileExist h
+    if ex then readFile h
+	  else error $ "file: " ++ h ++ " does not exist"
 
 existiert :: Datei -> IO Bool
 existiert d  = do
@@ -163,7 +170,7 @@ createDir d = do
 		ok <- doesDirectoryExist path
 	    	when ( not ok ) $ do 
 		       createDirectory path
-		           `catch` \ any ->
+		           `Control.Exception.catch` \ any ->
 			       error $ unlines [ show any, show path ]
 		       perm "go+rx" path 
 		       return ()

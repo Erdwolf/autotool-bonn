@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-overlapping-instances #-}
+{-# OPTIONS -cpp -fglasgow-exts -fallow-undecidable-instances -fallow-overlapping-instances #-}
 
 module Inter.Quiz where
 
@@ -22,14 +22,15 @@ import Text.XML.HaXml.Haskell2Xml
 -- | generator könnte noch zusätzliche information erzeugen
 -- (und in cache schreiben) bsp. zu PCP-instanz auch die lösung
 -- mit project holt man sich die instanz
-class ( Read k, ToDoc k ) => Generator p conf k | p conf -> k where
+class ( Reader k, ToDoc k ) => Generator p conf k | p conf -> k where
       generator :: p -> conf -> String -> IO k
 
 class Project p k i | p k -> i where
       project :: p -> k -> i
 
 
-make :: ( Generator p conf k, Project p k i , Partial p i b 
+make :: ( Generator p conf k, Project p k i 
+	, Partial p i b 
 	, V p i b
 	)
      => p
@@ -73,7 +74,8 @@ make ( p :: p ) ( conf :: conf ) = this
 
 	     }
 
-quiz :: ( Generator p conf k , Project p k i,  Partial p i b 
+quiz :: ( Generator p conf k , Project p k i
+	,  Partial p i b 
 	, V p i b
 	, Verify p conf
 	, Typeable conf, Reader conf, ToDoc conf

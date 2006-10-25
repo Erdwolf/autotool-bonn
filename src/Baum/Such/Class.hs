@@ -1,9 +1,10 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fallow-incoherent-instances #-}
 
 module Baum.Such.Class where
 
 import Baum.Such.Op
 import Autolib.ToDoc
+import Autolib.Reader
 import Autolib.Hash
 
 import Tree
@@ -24,7 +25,8 @@ class Such baum where
 class ( Show t, Typeable t, Read t
       , Such baum, OpC a
       , ToTree baum
-      , ToDoc (baum a), Show ( baum a ), Read ( baum a ) 
+      , ToDoc (baum a), Show ( baum a )
+      , Reader ( baum a ) , Read ( baum a )
       , ToDot ( baum a), Eq (baum a), Hash (baum a)
       , Typeable (baum a)
       ) 
