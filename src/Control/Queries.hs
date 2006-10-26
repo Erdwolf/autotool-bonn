@@ -1,3 +1,5 @@
+{-# OPTIONS -cpp #-}
+
 module Control.Queries where
 
 --  $Id$

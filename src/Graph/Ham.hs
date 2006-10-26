@@ -1,8 +1,8 @@
--- $Id$
-
-module Graph.Ham where
+--  $Id$
 
 -- | hamiltonsche wege: wege, die jeden knoten genau einmal berühren
+module Graph.Ham where
+
 
 import Autolib.Graph.Type ( Graph , Kante , kante , von , nach , knoten 
 			  , mkGraph 

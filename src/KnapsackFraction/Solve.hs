@@ -1,4 +1,4 @@
--- $Id$
+--  $Id$
 
 -- | Bruchteilrucksack-Problem: Packe in einen Rucksack der Kapazität
 -- | C (Teile von) Elemente(n), so dass das Gesamtgewicht nicht über C

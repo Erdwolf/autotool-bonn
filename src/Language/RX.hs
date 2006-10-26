@@ -1,6 +1,6 @@
 module Language.RX where
 
--- $Id$
+--  $Id$
 
 import Language.Type
 

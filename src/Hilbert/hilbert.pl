@@ -1,4 +1,4 @@
-#!/usr/loc_inf/bin/perl -w
+#!/usr/bin/perl -w
 
 
 sub wayout {
@@ -11,7 +11,7 @@ $SIG{ALRM} = 'wayout';
 
 $title = "HILBERT demo output";
 
-$hilbertdir = "/u/joe/hilbert-cgi";
+$hilbertdir = "/var/www/hilbert";
 $hilbertname = "$hilbertdir/hilbert$$";
 $hilbertin = "$hilbertname.in";
 $hilbertout = "$hilbertname.out";

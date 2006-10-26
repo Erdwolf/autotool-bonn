@@ -1,6 +1,6 @@
 module Language.Center ( center ) where
 
--- $Id$
+--  $Id$
 
 import Language.Type
 

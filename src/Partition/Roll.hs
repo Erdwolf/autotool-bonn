@@ -4,7 +4,7 @@
 -- Input: Set A of numbers.
 -- Question: Exists B subseteq A with sum(B)=sum(A - B)?
 
--- $Id$
+--  $Id$
 
 module Partition.Roll where
 

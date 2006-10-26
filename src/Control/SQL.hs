@@ -42,25 +42,13 @@ squery con scom = query con (show scom)
 query :: Connection -> String -> IO Statement
 query con com = do
     logged com
-#ifdef HSQL16
     Database.HSQL.MySQL.query con com
-#elif HSQL14
-    Database.HSQL.MySQL.query con com
-#elif HSQL12
-    Database.MySQL.HSQL.query con com
-#endif
             `catchSql` \ e -> do  
                    logged $ "query: " ++ (show e) 
 		   error $ "SQLqueries.error in query:" ++ (show e) ++ com
 
 collectRows fun stat = do
-#ifdef HSQL16
     i <- Database.HSQL.MySQL.collectRows fun stat
-#elif HSQL14
-    i <- Database.HSQL.MySQL.collectRows fun stat
-#elif HSQL12
-    i <- Database.MySQL.HSQL.collectRows fun stat
-#endif
             `catchSql` \ e -> do  
                    logged $ "collectRows: " ++ (show e) 
 		   error $ "SQLqueries.error in collectRows: " ++ (show e) 
