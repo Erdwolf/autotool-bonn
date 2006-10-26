@@ -3,6 +3,7 @@
 module Boolean.Op 
 
 ( module Expression.Op
+, und, oder, implies
 ) 
 
 where
@@ -48,15 +49,23 @@ unary = [     Op { name = "!" , arity = 1
 		}
 	]
 
-binary :: [ Op Bool ]
-binary = [ Op { name = "&&" , arity = 2
+und =  Op { name = "&&" , arity = 2
 	      , precedence = Just 8 , assoc = AssocLeft
 	      , inter = \ [x, y] -> x && y
-	      } ]
-      ++ [ Op { name = "||" , arity = 2
+	      }
+oder = Op { name = "||" , arity = 2
 	      , precedence = Just 7 , assoc = AssocLeft
 	      , inter = \ [x, y] -> x || y
-	      } ]
+	      }
+
+implies = Op { name = "->", arity = 2
+			 , precedence = Just 6 , assoc = AssocNone
+			 , inter = \ [x,y] -> x <= y
+			 }
+
+
+binary :: [ Op Bool ]
+binary = [ und, oder ]
       ++  do (f, cs) <- [ ((<), "<")
 			, ((<=), "<="), ((<=), "->")
 			, ((==), "=="), ((==), "<->")
