@@ -13,7 +13,7 @@ import Inter.Types
 import Autolib.Set
 import Autolib.Reader
 import Autolib.ToDoc
-import Random
+import System.Random
 import Autolib.Util.Wort
 import Util.Datei
 import Util.Cache

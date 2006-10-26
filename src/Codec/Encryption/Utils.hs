@@ -20,8 +20,8 @@ module Codec.Encryption.Utils (
    i2osp
 	      ) where
 
-import Word
-import Bits
+import Data.Word
+import Data.Bits
 
 powersOf n = 1 : (map (*n) (powersOf n))
 

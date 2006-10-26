@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -cpp #-}
 
 module Hanoi.Type where
 

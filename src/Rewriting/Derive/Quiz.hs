@@ -1,4 +1,4 @@
-{-# OPTIONS -fallow-overlapping-instances -fallow-incoherent-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
 module Rewriting.Derive.Quiz where
 

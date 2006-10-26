@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts #-}
 
 module Number.Base.Data where
 
@@ -70,3 +70,8 @@ instance Range [ Ziffer ] where
                [ text "die Ziffer", toDoc z
                , text "liegt nicht im erlaubten Bereich."
                ]
+
+
+-- local variables:
+-- mode: haskell
+-- end;

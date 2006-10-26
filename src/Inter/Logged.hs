@@ -4,7 +4,7 @@ module Inter.Logged where
 --  $Id$
 
 import qualified Control.SQL 
-import IO
+import System.IO
 
 logged :: String -> IO a -> IO a
 logged msg act = do

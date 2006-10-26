@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Number.Wert where
 
 class Num b => Wert a b where 

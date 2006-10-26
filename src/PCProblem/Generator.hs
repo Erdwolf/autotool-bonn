@@ -15,7 +15,7 @@ import Autolib.Util.Zufall
 import Autolib.Util.Wort
 import Autolib.Letters
 
-import Random
+import System.Random
 import Data.Maybe
 import Data.List ( nub )
 import Autolib.Set

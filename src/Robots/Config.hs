@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Robots.Config 
 
 ( Config -- abstract

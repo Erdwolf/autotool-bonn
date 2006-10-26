@@ -2,7 +2,7 @@ module Language.Genau where
 
 -- -- $Id$
 
-import Random
+import System.Random
 
 genau :: [ (Char, Int) ] -> IO String
 -- genau [(c1,n1),..] würfelt einen String

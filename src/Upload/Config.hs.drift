@@ -1,4 +1,4 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
 module Upload.Config where
 

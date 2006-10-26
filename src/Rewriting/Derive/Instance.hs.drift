@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-incoherent-instances -fallow-overlapping-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-incoherent-instances -fallow-overlapping-instances -fallow-undecidable-instances #-}
 
 module Rewriting.Derive.Instance where
 

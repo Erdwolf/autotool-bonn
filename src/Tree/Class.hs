@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-incoherent-instances #-}
+
 module Tree.Class where
 
 --  $Id$
@@ -35,12 +37,7 @@ mirror ( Node f args ) = Node f ( map mirror args )
 form :: ( ToTree baum, Show a ) 
      => baum a -> Doc
 form = vcat . map text . lines . drawTree . mirror 
-     . fmap 
-#if (__GLASGOW_HASKELL__ < 604)
-            toDoc 
-#else
-            ( render . toDoc )
-#endif
+     . fmap ( render . toDoc )
      . toTree
 
 

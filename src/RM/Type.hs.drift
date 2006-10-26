@@ -1,4 +1,4 @@
---  $Id$
+{-# OPTIONS -fglasgow-exts #-}
 
 -- | Registermaschine:
 -- | * Beliebig viele Register 

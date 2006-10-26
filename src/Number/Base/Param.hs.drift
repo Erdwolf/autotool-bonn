@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts #-}
 
 module Number.Base.Param where
 
@@ -31,4 +31,8 @@ p = Param { quelle = Matrikel
 
 {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
+
+-- local variables:
+-- mode: haskell
+-- end;
 

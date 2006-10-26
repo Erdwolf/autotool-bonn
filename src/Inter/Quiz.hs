@@ -46,10 +46,9 @@ make ( p :: p ) ( conf :: conf ) = this
 	     -- holt tatsächliche instanz
 	     -- gen :: Key -> IO ( Reporter i )
 	     , gen = \ vnr manr key -> do
-#define NEW_STYLE 0
-#if(NEW_STYLE)
-                   generate this $ fromIntegral $ hash ( vnr, manr, key )
-#else
+
+             --  generate this $ fromIntegral $ hash ( vnr, manr, key )
+
                    seed $ read key
                    k <- cache 
 	               (  Datei { pfad = [ "autotool", "cache"
@@ -61,7 +60,7 @@ make ( p :: p ) ( conf :: conf ) = this
   		          }
        	                ) ( generator p conf key )
 	           return $ return $ project p k
-#endif
+
              , generate = \ salt -> do
                    seed $ salt 
                    k <- cache 

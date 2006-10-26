@@ -42,15 +42,9 @@ import Inter.Crypt
 import Data.Char ( toLower )
 import Data.Maybe ( fromMaybe )
 
-#ifdef HSQL16
 import Database.HSQL.MySQL
 import Database.HSQL.Types
-#elif HSQL14
-import Database.HSQL.MySQL
-import Database.HSQL.Types
-#elif HSQL12
-import Database.MySQL.HSQL
-#endif
+
 
 import qualified Control.Exception
 import Data.Typeable

@@ -20,10 +20,11 @@ where
 
 import Debug
 import Data.List (inits, intersperse)
-import Directory
+import System.Directory
 import Control.Monad (guard, when)
-import System (getEnv, system)
-import Char (isAlphaNum)
+import System.Cmd ( system)
+import System.Environment ( getEnv )
+import Data.Char (isAlphaNum)
 import qualified System.Posix
 import qualified System.Directory
 import qualified Control.Exception

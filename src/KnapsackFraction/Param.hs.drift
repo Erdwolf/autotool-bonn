@@ -1,4 +1,4 @@
---   $Id$
+{-# OPTIONS -fglasgow-exts #-}
 
 module KnapsackFraction.Param where
 
@@ -66,3 +66,8 @@ data Pack =
      deriving ( Typeable )
 
 {-! for Pack derive: ToDoc, Reader, Haskell2Xml !-}
+
+
+-- local variables:
+-- mode: haskell
+-- end;

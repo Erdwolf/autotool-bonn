@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
 module Turing.Type 
 

@@ -22,8 +22,8 @@ module Codec.Encryption.MD5 (
 
 import Codec.Encryption.MD5Aux
 import Codec.Encryption.Utils
-import Char(chr)
-import List(unfoldr)
+import Data.Char(chr)
+import Data.List(unfoldr)
 import Numeric(readHex)
 
 -- | Take [Octet] and return [Octet] according to the standard.

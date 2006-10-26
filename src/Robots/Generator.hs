@@ -18,7 +18,7 @@ import Data.List ( intersperse )
 import Data.Array ( range )
 
 import System.Random
-import IO
+import System.IO
 import Data.IORef
 
 -- | erzeugt eine konfiguration mit n robots,
