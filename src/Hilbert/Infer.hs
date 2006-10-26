@@ -28,7 +28,7 @@ import Control.Monad ( guard )
 
 
 rules = do
-    ( name, form ) <- contents axioms
+    ( name, form ) <- contents small_axioms
     ( prems, conc ) <- distributes form
     let pvars = unionManySets $ map vars prems
     return ( prems, conc )

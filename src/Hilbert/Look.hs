@@ -26,10 +26,10 @@ import System.IO
 
 maxdepth = 15	-- of tree
 maxbranch = 500	-- of number of children of a tree node
-maxwidth = 3	-- of clauses in search target
+maxwidth = 4	-- of clauses in search target
 
 maxsize = 20	-- of formulas in target
-maxvars = 3	-- of variables in target
+maxvars = 4	-- of variables in target
 
 maxsols = 10	-- number of solutions
 
