@@ -1,29 +1,37 @@
-module Infer
+{-# OPTIONS -fglasgow-exts #-}
+
+module Hilbert.Infer
 
 ( infer
+, unvar
 )
 
-where
+where 
 
-import Set
-import FiniteMap
-import Sorters
+import Autolib.Set
+import Autolib.TES.Term hiding ( unvar, assoc, precedence, arity )
+import Autolib.FiniteMap
+import Autolib.Util.Uniq
 
-import Ids
-import Syntax
 
-import Env
-import Rules
-import Sub
+import Boolean.Op
+import Expression.Op
 
-import Read
+import Hilbert.Env
 
-import Unify
-import Match
 
-import Assert
+import Autolib.TES.Unify
+import Autolib.TES.Identifier
+import Hilbert.Axioms
+import Data.Maybe
+import Control.Monad ( guard )
 
-import Axioms
+
+rules = do
+    ( name, form ) <- contents axioms
+    ( prems, conc ) <- distributes form
+    let pvars = unionManySets $ map vars prems
+    return ( prems, conc )
 
 -----------------------------------------------------------------------
 
@@ -33,18 +41,16 @@ takefrom [] = []
 
 ------------------------------------------------------------------------
 
-prefer :: [ Exp ] -> ( [ Exp ] , String )
--- testen, was sofort und ohne nebenwirkungen passt
+-- | testen, was sofort und ohne nebenwirkungen passt
+prefer :: [ Exp Bool ] -> ( [ Exp Bool ] , String )
 prefer targets =
-    let short t = take 1 -- der erste reicht
-		  [ inf 
-		  | rule @ ([], c) <- rules
-		  , fm <- matchl c t
-		  , let inf = "subgoal: " ++ show t
+    let short t = take 1 $ do
+	    ( [] , rule ) <- rules
+	    fm <- maybeToList $ match rule t
+	    return $ "subgoal: " ++ show t
 			    ++ ", solved by rule: " ++ show rule
 			    ++ ", under subst: " ++ show fm
 			    ++ ", generates no new subgoals"
-		  ]
 
 	tfms = [ (t, short t) | t <- targets ]
 	infs = concat [ inf | (t, inf : _) <- tfms ]
@@ -54,20 +60,18 @@ prefer targets =
 -----------------------------------------------------------------------
 
 
-infgoal :: Set Exp -> Exp -> [ ( Env, [ Exp ], String ) ]
-infgoal vars t =
-    do 
-       rule @ (p, c) <- rules
+infgoal :: Set Identifier
+	-> Exp Bool 
+	-> [ ( FiniteMap Identifier ( Exp Bool ), [ Exp Bool ], String ) ]
+infgoal forbidden t = do 
+       rule0 @ (prems, conc) <- rules
+       let rule = rename forbidden rule0 
 
-       assert $ rule == modusponens || not (isvar c)
-
-       let rule' @ (prems, conc) = rename rule vars
-
-       fm <- unifyl conc t
-       let prems' = [ apply fm p | p <- prems ]
+       fm <- maybeToList $ mgu conc t
+       let prems' = [ apply_partial fm p | p <- prems ]
 
        let inf = "subgoal: " ++ show t
-	       ++ ", solved by rule: " ++ show rule' 
+	       ++ ", solved by rule: " ++ show rule
 	       ++ ", under subst: " ++ show fm
 	       ++ ", generates new subgoals: " ++ show prems'
 
@@ -75,44 +79,67 @@ infgoal vars t =
 
 -----------------------------------------------------------------------
 
+-- | Axiom darstellen als ( Liste von Voraussetzungen, Folgerung )
+-- Bsp: distribute  (A -> C) -> ((B -> C) -> (A || B -> C)) 
+-- = ( [ A -> C, B -> C ] , A || B -> C )
+distributes :: Exp Bool -> [ ( [ Exp Bool ], Exp Bool ) ]
+distributes t = ( [] , t ) : case t of
+    ( Node imp [ l, r ] ) | imp == implies -> do
+        ( pre, con ) <- distributes r
+        return ( l : pre, con )
+    _ -> []
 
-infer :: [ Exp ] -> [([ Exp ], String)]
-infer targets = weed $
-    do 
-       let (todo, pref) = prefer targets
-       let vars = unionManySets [ subvars t | t <- todo ]    
+-----------------------------------------------------------------------
+
+infer :: [ Exp Bool ] -> [([ Exp Bool ], String)]
+infer targets = weed $    do 
+
+       let (todo, pref) = ( targets, "" ) --  prefer targets
+
+       let forbidden = unionManySets $ map vars todo
 
        (t, odo) <- takefrom todo
 
-       (fm, prems', inf) <- infgoal vars t
+       (fm, prems', inf) <- infgoal forbidden t
 
-       let rest = [ apply fm o | o <- odo ]
+       let rest = [ apply_partial fm o | o <- odo ]
        let inf' = inf ++ ", still need to prove: " ++ show rest
 
-       return $ (us (rest ++ prems'), pref ++ inf')
+       return $ (uniq (rest ++ prems'), pref ++ inf')
 
 weed :: Ord a => [(a,b)] -> [(a,b)] 
 weed  = fmToList . listToFM
 
 -----------------------------------------------------------------------
 
-subvars x = filterSet isvar $ subs x
-
-rename (prems, conc) vars =
-    let vs = unionManySets [ mapSet varname $ subvars t | t <- conc : prems ]
-	supply = [ v 
-		 | k <- [1..]
-		 , let fname = "V" ++ show k
-		 , let fid = usercon 0 fname
-		 , let v = App fid []
-		 , not $ v `elementOf` vars
-		 ]
-	fm = listToFM $ zip (setToList vs) supply
-    in	( [ apply fm p | p <- prems ]
-	, apply fm conc
+-- | Formel im Resultat hat disjunkte Variablen zu Menge
+rename :: Set Identifier
+       -> ( [Exp Bool], Exp Bool )
+       -> ( [Exp Bool], Exp Bool )
+rename forbidden ( prems, conc ) =
+    let vs = do 
+	    t <- conc : prems
+	    setToList ( vars t )
+	free = do 
+	    k <- [ 1 :: Int .. ]
+	    let v = mknullary $ "V" ++ show k
+	    guard $ not $ elementOf v forbidden
+	    return v
+	fm :: FiniteMap Identifier Identifier
+	fm = listToFM $ zip vs free
+    in	( map ( applyvar fm ) prems
+	, applyvar fm conc
 	)
 
 -----------------------------------------------------------------------
+
+unvar ( Node f args ) = Node f $ map unvar args
+unvar ( Var v ) =  
+    let op = Op { name = show v, arity = 0
+		, precedence = Nothing , assoc = AssocNone
+		, inter = undefined
+		}
+    in  Node op []
 
 
 

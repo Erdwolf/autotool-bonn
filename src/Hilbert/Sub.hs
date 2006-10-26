@@ -1,4 +1,4 @@
-module Sub
+module Hilbert.Sub
 
 ( subcons
 , subs
@@ -6,8 +6,8 @@ module Sub
 
 where
 
-import Syntax
-import Set
+-- import Syntax
+import Autolib.Set
 
 subcons :: Exp -> [ (Exp, Exp -> Exp) ]
 subcons x @ (App fun args) = (x, id) :

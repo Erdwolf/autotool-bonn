@@ -1,57 +1,83 @@
-module Look
+module Hilbert.Look
 
 ( search
 )
 
 where
 
-import Set
-import Sorters
+import Autolib.Set
+import Autolib.Util.Sort
+import Autolib.Util.Hide
+import Autolib.FiniteMap
+import Autolib.Util.Uniq
 
-import Syntax
+import Hilbert.Infer
+import Hilbert.Sat
 
-import Env
-import Sub
+import Autolib.TES.Term hiding ( unvar, assoc, precedence, arity )
+import Autolib.Size
+import Autolib.Schichten
+import Autolib.TES.Position
+import Boolean.Op
+import Expression.Op
 
-import Infer
-import Tree
-import Read
-
-import Sat
-
-import System
-import IO
-
+import Control.Monad ( guard, when )
+import System.IO
 
 maxdepth = 15	-- of tree
-maxbranch = 5	-- of number of children of a tree node
+maxbranch = 500	-- of number of children of a tree node
 maxwidth = 3	-- of clauses in search target
 
 maxsize = 20	-- of formulas in target
-maxvars = 4	-- of variables in target
+maxvars = 3	-- of variables in target
 
 maxsols = 10	-- number of solutions
 
-search goal = search' 0 goal
+
+search :: Exp Bool -> IO ()
+search goal = search' 0 $ unvar goal
 
 search' dep goal = 
     do putStrLn $ "**** at depth " ++ show dep
-       paths <- lookfor [ goal ] dep [ ] 
+       paths <- lookfor_bfs [ goal ] dep [ ] 
        if null paths
 	  then search' (dep + 1) goal
 	  else return ()
 
 ----------------------------------------------------------------       
 
-lookfor :: [ Exp ] -> Int -> [ String ] -> IO [[String]]
+lookfor_bfs targets top path = do
+  sequence_ $ do
+    ( n, Hide inf ) <- bfs ( \ ( ts, Hide p ) ->        mkSet $ do
+        guard $ satisfiable ts 
+	( n, i ) <- infer ts
+	guard $ klein top n
+	return ( n , Hide ( p ++ "\n" ++ i ) )
+      ) ( targets, Hide path ) 
+    return $ do 
+        -- print ( n, inf ) 
+	putStr $ show $ length n ; hFlush stdout
+	when ( null n ) $ error $ inf
+  return []
 
+klein top ts = and
+      [ length ts < maxwidth
+      , sum ( map size ts ) < top
+      , cardinality ( unionManySets $ map vars ts ) < maxvars 
+      ]
+
+
+lookfor :: [ Exp Bool ] -- ^  Konjunktion, soll erfüllt werden
+	-> Int          -- ^  Suchtiefe
+	-> [ String ]   -- ^ Suchpfad ( prefix )
+	-> IO [[String]] -- ^  alle (manche?) Lösungen
 
 lookfor []      depth path  =
     do	putStrLn $ "\n********** begin solution (length " ++ show (length path) ++ " *************"
 	sequence [ print p
 		 | p <- reverse path 
 		 ]
-	putStrLn $ "********** end solution   *************\n"
+	error $ "********** end solution   *************\n"
 
 	return [ path ]
 
@@ -60,13 +86,12 @@ lookfor targets 0 path  =
 	return []
 
 lookfor targets depth path  =
-  do let s = sat targets
+  do let s = satisfiable targets
      if not s 
-        then do -- putStrLn $ "--- NOT satisfiable: " ++ show targets
+        then do putStrLn $ "--- NOT satisfiable: " ++ show targets
 		return []
-	else 
-	  do 
-  	    --putStrLn $ "+++ satisfiable: " ++ show targets
+	else do 
+  	    putStrLn $ "+++ targets: " ++ show targets
 
             if 2 * depth > maxdepth 
           	  then putStrLn $ show (depth, targets)
@@ -76,13 +101,15 @@ lookfor targets depth path  =
           		   | ni @ (n, i) <- infer targets
           		   , length n <= maxwidth
           		   , maxsize > sum [  size t | t <- n ] 
-          		   , maxvars > sum [ vsize t | t <- n ] 
+          		   , all ( \ t -> maxvars >= variables t ) n
 			   , and [ not (isvar t) | t <- n ]
             		   ]
           
             let cands = take maxbranch
-          		 $ msortwith ( \ (n,i) 
-          			     -> sum [ size t  | t <- n ] )
+          		 $ sortBy ( \ (n,i) 
+          			     -> ( 0 -- negate $ length n
+					, sum [ (size t)^ 2  | t <- n ] ) 
+					)
           		 $ ninfs
           
             ps <- mapM ( \ (next, inf) ->
@@ -91,8 +118,5 @@ lookfor targets depth path  =
 	    return $ concat ps
           
           
-size :: Exp -> Int
-size (App fun args) = 1 + sum [ size arg | arg <- args ]
+variables = length . voccs
 
-
-vsize = cardinality . filterSet isvar . subs 

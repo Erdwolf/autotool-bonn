@@ -1,4 +1,4 @@
-module Unify
+module Hilbert.Unify
 
 ( unify
 , unifyl
@@ -6,14 +6,16 @@ module Unify
 
 where
 
-import Syntax
-import FiniteMap
-import Set
-import Assert
+-- import Syntax
+import Autolib.FiniteMap
+import Autolib.Set
+-- import Assert
+
+import Boolean.Op
+import Expression.Op
 
 
-
-import Env
+import Hilbert.Env
 import Sub
 
 -------------------------------------------------------------------------
@@ -21,12 +23,12 @@ import Sub
 mbtl (Just x) = return x
 mbtl Nothing = zero
 
-unifyl :: Exp -> Exp -> [ Env ]
+unifyl :: Ord a => Exp a -> Exp a -> [ Env ( Exp a ) ]
 unifyl l r = mbtl $ unify l r
 
-unify :: Exp -> Exp -> Maybe Env
+unify :: Ord a => Exp a -> Exp a -> Maybe ( Env a )
 
-unify pat exp | pat == exp = return emptyFM
+unify pat exp | pat == exp = return Hilbert.Env.empty
 
 unify pat exp | isvar pat =
     do
