@@ -23,7 +23,7 @@ import Autolib.ToDoc
 import Autolib.Reporter
 
 import Control.Monad ( guard )
-import qualified Text.Html
+import qualified Text.XHtml as H
 import Data.Typeable
 
 find_and_apply makers task action = do
@@ -80,8 +80,8 @@ get_instance makers task sconf seed = find_and_apply makers task
             var -> do
                 let p = problem var
                 g <- generate var ( Modular.Seed.contents seed )
-                let ( Just i  , _ :: Text.Html.Html ) = export g
-                ( _, icom :: Text.Html.Html) <- run $ report p i
+                let ( Just i  , _ :: H.Html ) = export g
+                ( _, icom :: H.Html) <- run $ report p i
                 si <- sign $ Instance
                            { Modular.Instance.contents = show i
                            , Modular.Instance.tag = show p
@@ -113,7 +113,7 @@ grade makers task sinst sol = find_and_apply makers task
                    ( read ( Modular.Instance.tag inst ) :: p )
                    ( read ( Modular.Instance.contents inst ) :: i )
                    ( Modular.Solution.contents sol )
-       ( res, com :: Text.Html.Html) <- run action
+       ( res, com :: H.Html) <- run action
        return $ Documented
               { documentation = show com
               , Modular.Documented.contents = 
