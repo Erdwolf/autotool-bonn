@@ -12,14 +12,23 @@ import Autolib.FiniteMap
 import Autolib.Util.Uniq
 
 import Hilbert.Infer
+import Hilbert.Env
+import Hilbert.Axioms
 import Hilbert.Sat
 
 import Autolib.TES.Term hiding ( unvar, assoc, precedence, arity )
 import Autolib.Size
+
 import Autolib.Schichten
+import Hilbert.BFS
+import Hilbert.Proof
+
 import Autolib.TES.Position
 import Boolean.Op
 import Expression.Op
+import Autolib.ToDoc
+
+import Data.Tree
 
 import Control.Monad ( guard, when )
 import System.IO
@@ -39,84 +48,103 @@ search goal = search' 0 $ unvar goal
 
 search' dep goal = 
     do putStrLn $ "**** at depth " ++ show dep
-       paths <- lookfor_bfs [ goal ] dep [ ] 
+       paths <- lookfor_bfs ( syms goal ) [ goal ] dep [ ] 
        if null paths
 	  then search' (dep + 1) goal
 	  else return ()
 
 ----------------------------------------------------------------       
 
-lookfor_bfs targets top path = do
+lookfor_bfs alphabet targets top path = do
   sequence_ $ do
-    ( n, Hide inf ) <- bfs ( \ ( ts, Hide p ) ->        mkSet $ do
-        guard $ satisfiable ts 
-	( n, i ) <- infer ts
+    ( n, Hide inf ) <- Hilbert.BFS.weighted_search 
+      ( \ ( ts, Hide p ) -> 
+              ( not $ null ts
+	      , sum $ map size ts 
+	      , minimum $ map size ts
+	      ) 
+      )
+      ( \ ( ts, Hide p ) ->  mkSet $ do
+	( n, Hide i ) <- infer ( usable_rules alphabet axioms ) ts
+	guard $ all ( not . isvar ) n
+        guard $ satisfiable n
 	guard $ klein top n
-	return ( n , Hide ( p ++ "\n" ++ i ) )
-      ) ( targets, Hide path ) 
+	return ( n , Hide ( i : p ) )
+      ) 
+      ( targets, Hide path ) 
     return $ do 
-        -- print ( n, inf ) 
-	putStr $ show $ length n ; hFlush stdout
-	when ( null n ) $ error $ inf
+        -- print ( n, inf ) ; putStrLn "--------------------------"
+	hPutStr stderr $ show $ length n 
+	when ( null n ) $ do
+	    putStrLn $ "\n" ++  show ( toDoc $ treeform $ explain inf )
+	    error "-----------------------------------"
   return []
 
+
 klein top ts = and
-      [ length ts < maxwidth
-      , sum ( map size ts ) < top
-      , cardinality ( unionManySets $ map vars ts ) < maxvars 
+      [ True
+      -- , length ts < 3
+      , sum ( map ( length . varpos ) ts ) < 4
+      -- , cardinality ( unionManySets $ map vars ts ) < maxvars 
       ]
 
+usable_rules alphabet axioms = do
+    ( name, form ) <- contents axioms
+    guard $ subseteq ( syms form  ) ( alphabet `union` mkSet [ implies ] )
+    ( prems, conc ) <- distributes form
+    let pvars = unionManySets $ map vars prems
+    return ( prems, conc )
 
-lookfor :: [ Exp Bool ] -- ^  Konjunktion, soll erfüllt werden
-	-> Int          -- ^  Suchtiefe
-	-> [ String ]   -- ^ Suchpfad ( prefix )
-	-> IO [[String]] -- ^  alle (manche?) Lösungen
+----------------------------------------------------------------       
 
-lookfor []      depth path  =
-    do	putStrLn $ "\n********** begin solution (length " ++ show (length path) ++ " *************"
-	sequence [ print p
-		 | p <- reverse path 
-		 ]
-	error $ "********** end solution   *************\n"
+treeform steps = 
+    let collect accu [] = accu
+	collect accu ( (t, p) : odo ) = 
+	    let p' = resolve accu p
+	        accu' = addListToFM_C ( error "treeform.collect" ) 
+				      accu [ (t, p') ]
+	    in collect accu' odo
+        index = collect emptyFM steps
+    in  lookupWithDefaultFM index ( error $ "treeform.lookup:" ) 
+	    $ fst $ last steps
 
-	return [ path ]
+externalize :: Proof -> Tree String
+externalize p = case p of
+    Modus_Ponens {} -> 
+        Data.Tree.Node "Mopo" $ map externalize [ left p, right p ]
+    
 
+resolve index p = case p of
+    Reference {} -> 
+        lookupWithDefaultFM index ( error "treeform.resolve" ) $ core p
+    Modus_Ponens {} -> 
+        Modus_Ponens { left = resolve index $ left p 
+		     , right = resolve index $ right p
+		     }
+    Local_Substitution { to = Axiom {} } ->
+        p
 
-lookfor targets 0 path  = 
-	return []
+explain [] = []
+explain ( ( f, p ) : fps ) = case p of
+    Global_Substitution {} -> 
+        map ( applyP ( fm p ) ) $ explain ( (f, to p) : fps )
+    _ -> ( f, p ) : explain fps
+        
+applyP fm ( f, p ) = ( apply_partial fm f, apply_to_proof fm p )
 
-lookfor targets depth path  =
-  do let s = satisfiable targets
-     if not s 
-        then do putStrLn $ "--- NOT satisfiable: " ++ show targets
-		return []
-	else do 
-  	    putStrLn $ "+++ targets: " ++ show targets
+apply_to_proof subst p = case p of
+     Reference {} -> Reference { core = apply_partial subst $ core p }
+     Modus_Ponens {} -> 
+         Modus_Ponens { left  = apply_to_proof subst $ left p
+		      , right = apply_to_proof  subst $ right p 
+		      }
+     Local_Substitution {} ->
+         apply_to_proof ( apply_to_sub subst $ fm p ) $ to p
+     Axiom {} -> 
+	 Local_Substitution { fm = subst , to = p }
 
-            if 2 * depth > maxdepth 
-          	  then putStrLn $ show (depth, targets)
-          	  else return ()
-                    
-            let ninfs = [ ni
-          		   | ni @ (n, i) <- infer targets
-          		   , length n <= maxwidth
-          		   , maxsize > sum [  size t | t <- n ] 
-          		   , all ( \ t -> maxvars >= variables t ) n
-			   , and [ not (isvar t) | t <- n ]
-            		   ]
-          
-            let cands = take maxbranch
-          		 $ sortBy ( \ (n,i) 
-          			     -> ( 0 -- negate $ length n
-					, sum [ (size t)^ 2  | t <- n ] ) 
-					)
-          		 $ ninfs
-          
-            ps <- mapM ( \ (next, inf) ->
-			 lookfor next (depth - 1) (inf : path) 
-		       ) ninfs
-	    return $ concat ps
-          
-          
-variables = length . voccs
+apply_to_sub fm sub = mapFM ( \ k v -> apply_partial fm v ) sub
+
+------------------------------------------------------------------
+
 
