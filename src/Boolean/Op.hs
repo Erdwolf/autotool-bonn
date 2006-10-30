@@ -3,7 +3,7 @@
 module Boolean.Op 
 
 ( module Expression.Op
-, und, oder, implies
+, und, oder, implies, nicht
 ) 
 
 where
@@ -43,11 +43,13 @@ unary = [     Op { name = "!" , arity = 1
 		, precedence = Just 10 , assoc = AssocNone
 		, inter = \ [x] -> not x
 		}
-        ,    Op { name = "not" , arity = 1
+        , nicht
+	]
+
+nicht =     Op { name = "not" , arity = 1
 		, precedence = Just 10 , assoc = AssocNone
 		, inter = \ [x] -> not x
 		}
-	]
 
 und =  Op { name = "&&" , arity = 2
 	      , precedence = Just 8 , assoc = AssocLeft

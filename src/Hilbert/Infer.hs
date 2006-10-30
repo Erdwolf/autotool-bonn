@@ -20,7 +20,8 @@ import Expression.Op
 
 import Hilbert.Proof
 
-import Autolib.Util.Sort ( sort, nub )
+import Autolib.Util.Sort ( sort, nub, sortBy )
+import Autolib.Size
 import Autolib.Util.Hide
 
 import Autolib.TES.Unify
@@ -99,7 +100,10 @@ infer rules targets = nub $    do
 
        let forbidden = unionManySets $ map vars todo
 
-       (t, odo) <- takefrom todo
+       -- consider only one subgoal
+       (t, odo) <- take 1 
+		 $ sortBy ( \ (t, _) -> negate $ size t ) 
+		 $ takefrom todo
 
        (fm, prems', inf) <- infgoal rules forbidden t
 

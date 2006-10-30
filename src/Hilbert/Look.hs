@@ -60,12 +60,16 @@ lookfor_bfs alphabet targets top path = do
     ( n, Hide inf ) <- Hilbert.BFS.weighted_search 
       ( \ ( ts, Hide p ) -> 
               ( not $ null ts
-	      , sum $ map size ts 
-	      , minimum $ map size ts
+	      ,  0 
+	       + ( sum $ map ( size ) ts )
+	      -- , ( length ts ) 
 	      ) 
       )
       ( \ ( ts, Hide p ) ->  mkSet $ do
-	( n, Hide i ) <- infer ( usable_rules alphabet axioms ) ts
+        let alphabet' = alphabet `union` mkSet [ nicht ]
+	( n, Hide i ) <- 
+	    infer ( usable_rules alphabet' axioms ) ts
+	guard $ not $ subseteq ( mkSet targets ) ( mkSet n )
 	guard $ all ( not . isvar ) n
         guard $ satisfiable n
 	guard $ klein top n
@@ -73,19 +77,26 @@ lookfor_bfs alphabet targets top path = do
       ) 
       ( targets, Hide path ) 
     return $ do 
-        -- print ( n, inf ) ; putStrLn "--------------------------"
+        when ( length n <= 1 ) $ do
+	    hPutStrLn stderr $ show $ toDoc ( n {-- , inf --} ) 
+	    hPutStrLn stderr "--------------------------"
 	hPutStr stderr $ show $ length n 
 	when ( null n ) $ do
-	    putStrLn $ "\n" ++  show ( toDoc $ treeform $ explain inf )
+	    putStrLn "\n--------------------------"
+--	    putStrLn $ show ( toDoc $ treeform $ explain inf )
+	    putStrLn "\n--------------------------"
+	    putStrLn $ show ( toDoc $ zip [1 :: Int ..] $ explain inf )
+	    hFlush stdout
 	    error "-----------------------------------"
   return []
 
 
 klein top ts = and
       [ True
-      -- , length ts < 3
+--      , length ts < top
+      , sum ( map size ts ) < top
       , sum ( map ( length . varpos ) ts ) < 4
-      -- , cardinality ( unionManySets $ map vars ts ) < maxvars 
+--    , cardinality ( unionManySets $ map vars ts ) < top
       ]
 
 usable_rules alphabet axioms = do

@@ -1,6 +1,7 @@
 module Hilbert.Axioms
 
 ( axioms
+, meredith
 , small_axioms
 )
 
@@ -12,15 +13,25 @@ import Hilbert.Env
 import Boolean.Op
 import Expression.Op
 
+meredith :: Env ( Exp Bool )
+meredith = Hilbert.Env.make
+     [ read "(M, (((p->q)->(not r -> not s)) -> t) -> ((t-> p)->(q->p)))"
+     ]
+
 axioms :: Env ( Exp Bool )
 axioms = Hilbert.Env.make
-     [ read "(H1, A -> (B -> A))" 
+     [ read "(H1, A -> (B -> A))" -- K xy -> x
 
---     , read "(H2, ((A -> B) -> A) -> A)" -- altes Herre-Skript (?)
---      , read "(H2, (A -> (A -> B)) -> (A -> B))" -- aktuelles Herre-Skript
---     , read "(H3, (A -> B) -> ((B -> C) -> (A -> C)))"
+     , read "(H2, ((A -> B) -> A) -> A)" -- altes Herre-Skript (?), Pierce
 
-     , read "(Frege, (A -> (B -> C)) -> ((A -> B) -> (A -> C)))"
+--      D fx -> fxx
+--      , read "(H2neu, (A -> (A -> B)) -> (A -> B))" -- aktuelles Herre-Skript
+
+ -- C fgx -> f(g(x))
+     , read "(H3, (A -> B) -> ((B -> C) -> (A -> C)))"
+
+--     S x y z -> x z ( y z )
+--     , read "(Frege, (A -> (B -> C)) -> ((A -> B) -> (A -> C)))" 
 
      , read "(H4, A && B -> A )"
      , read "(H5, A && B -> B )"
