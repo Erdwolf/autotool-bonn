@@ -22,7 +22,7 @@ instance Generator Circle Config ( (Int,Graph Int) , Set Int ) where
        let rest = filter ( not . flip elem cs ) ns
 
        -- kanten zwischen genau n knoten
-       let edges_cs = map (uncurry kante) $ zip cs (cycle $ tail cs)
+       let edges_cs = map (uncurry kante) $ zip cs (tail $ cycle cs)
 
        -- noch mehr kanten raten
        edges_rest <- sequence $ replicate (edges conf) $ do
