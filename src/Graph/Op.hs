@@ -42,7 +42,7 @@ unary = co : do
                     ]
     return $ Op { name = tag 
                 , arity = 1
-		, precedence = Nothing , assoc = AssocNone
+		, precedence = Just 10 , assoc = AssocNone
 		, inter = \ [ Nat n ] -> Gra $ fun [ 1 .. n ]
 		}
     
