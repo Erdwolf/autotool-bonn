@@ -1,12 +1,6 @@
 module Mysqlconnect where 
 
-#ifdef HSQL16
 import Database.HSQL.MySQL
-#elif HSQL14
-import Database.HSQL.MySQL
-#elif HSQL12
-import Database.MySQL.HSQL
-#endif
 
 -- Mysql
 mysqlhost="localhost"
