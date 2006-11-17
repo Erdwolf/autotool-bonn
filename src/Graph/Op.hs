@@ -3,6 +3,7 @@
 module Graph.Op 
 
 ( module Expression.Op
+, eval
 ) 
 
 where
@@ -14,9 +15,15 @@ import Expression.Op
 import Autolib.Graph.Graph ( Graph )
 import qualified Autolib.Graph.Basic as B
 import qualified Autolib.Graph.Ops as O
+import qualified Autolib.Graph.Line as L
 
 import Autolib.Hash
 import Autolib.Set ( mkSet )
+import Autolib.FiniteMap
+
+eval0 = eval emptyFM
+eval b = tfold ( lookupWithDefaultFM b $ error "Graph.Op.eval" ) 
+               ( inter )
 
 data Graph_Or_Natural where
     Nat :: Int -> Graph_Or_Natural
@@ -35,7 +42,7 @@ nullary = do
 		}
 
 unary :: [ Op Graph_Or_Natural ]
-unary = co : do
+unary = [ co, line ] : do
     ( tag, fun ) <- [ ( "K", B.clique . mkSet )
 		    , ("I", B.independent . mkSet )
                     , ( "P", B.path   ), ("C", B.circle )
@@ -47,8 +54,13 @@ unary = co : do
 		}
     
 co =  Op { name = "co" , arity = 1
-		, precedence = Just 10 , assoc = AssocNone
+		, precedence = Nothing , assoc = AssocNone
 		, inter = wrapped $ \ [ x ] -> O.complement x
+		}
+
+line =  Op { name = "line" , arity = 1
+		, precedence = Nothing , assoc = AssocNone
+		, inter = wrapped $ \ [ x ] -> L.line_graph x
 		}
 
 binary :: [ Op Graph_Or_Natural ]
