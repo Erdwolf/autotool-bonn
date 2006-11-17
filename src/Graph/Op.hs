@@ -1,4 +1,4 @@
-{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
+{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts -fno-monomorphism-restriction -fallow-incoherent-instances #-}
 
 module Graph.Op 
 
@@ -8,8 +8,6 @@ module Graph.Op
 
 where
 
-
-
 import Expression.Op
 
 import Autolib.Graph.Graph ( Graph )
@@ -18,6 +16,7 @@ import qualified Autolib.Graph.Ops as O
 import qualified Autolib.Graph.Line as L
 
 import Autolib.Hash
+import Autolib.ToDoc
 import Autolib.Set ( mkSet )
 import Autolib.FiniteMap
 
@@ -28,6 +27,10 @@ eval b = tfold ( lookupWithDefaultFM b $ error "Graph.Op.eval" )
 data Graph_Or_Natural where
     Nat :: Int -> Graph_Or_Natural
     Gra :: Graph Int -> Graph_Or_Natural
+  
+instance ToDoc Graph_Or_Natural where
+    toDoc ( Nat n ) = text "Int" <+> toDoc n
+    toDoc ( Gra g ) = text "Gra" <+> toDoc g
 
 instance Ops ( Graph_Or_Natural ) where
     ops = nullary ++ unary ++ binary 
@@ -42,7 +45,7 @@ nullary = do
 		}
 
 unary :: [ Op Graph_Or_Natural ]
-unary = [ co, line ] : do
+unary = [ co, line ] ++ do
     ( tag, fun ) <- [ ( "K", B.clique . mkSet )
 		    , ("I", B.independent . mkSet )
                     , ( "P", B.path   ), ("C", B.circle )
