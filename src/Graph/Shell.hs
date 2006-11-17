@@ -24,4 +24,7 @@ handler input = do
     exp :: Exp Graph_Or_Natural <- parse_or_complain input
     Gra g <- return $ eval0 exp
     inform $ toDoc g
-    peng g
+    peng $ g { layout_program = Dot
+                 , layout_hints = [ "-Nshape=ellipse" , "-Gsize=\"5,5\"" ]
+                 }
+
