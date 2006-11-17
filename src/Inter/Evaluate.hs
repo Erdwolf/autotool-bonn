@@ -22,7 +22,11 @@ evaluate :: ( Reader b
 	    )
  	    => p -> i -> String 
 	    -> Reporter Wert
-evaluate p i cs =
+evaluate p i cs = do
+    b <- parse_or_complain cs
+    evaluate' p i b
+
+{-
     case parse (parse_complete reader) "input" cs of
          Left e -> do
 	       inform $ text "Syntaxfehler:"
@@ -30,6 +34,18 @@ evaluate p i cs =
 	 Right b  -> do
 	       inform $ text "gelesen:" <+> toDoc b
                evaluate' p i b
+-}
+
+parse_or_complain :: ( Reader a, ToDoc a ) 
+                  => String -> Reporter a
+parse_or_complain cs = 
+    case parse (parse_complete reader) "input" cs of
+         Left e -> do
+	       inform $ text "Syntaxfehler:"
+	       reject $ errmsg 72 e $ cs
+	 Right b  -> do
+	       inform $ text "gelesen:" <+> toDoc b
+               return b
 
 evaluate' p i b = do
        inform $ text "partiell korrekt?"

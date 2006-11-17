@@ -3,7 +3,8 @@
 module Graph.Op 
 
 ( module Expression.Op
-, eval
+, eval, eval0, Graph_Or_Natural ( Gra )
+, example
 ) 
 
 where
@@ -24,13 +25,16 @@ eval0 = eval emptyFM
 eval b = tfold ( lookupWithDefaultFM b $ error "Graph.Op.eval" ) 
                ( inter )
 
+example :: Exp Graph_Or_Natural
+example = read "co (P 6)"
+
 data Graph_Or_Natural where
     Nat :: Int -> Graph_Or_Natural
     Gra :: Graph Int -> Graph_Or_Natural
   
 instance ToDoc Graph_Or_Natural where
-    toDoc ( Nat n ) = text "Int" <+> toDoc n
-    toDoc ( Gra g ) = text "Gra" <+> toDoc g
+    toDoc ( Nat n ) = toDoc n
+    toDoc ( Gra g ) = toDoc g
 
 instance Ops ( Graph_Or_Natural ) where
     ops = nullary ++ unary ++ binary 
@@ -47,8 +51,9 @@ nullary = do
 unary :: [ Op Graph_Or_Natural ]
 unary = [ co, line ] ++ do
     ( tag, fun ) <- [ ( "K", B.clique . mkSet )
-		    , ("I", B.independent . mkSet )
-                    , ( "P", B.path   ), ("C", B.circle )
+		    , ( "I", B.independent . mkSet )
+                    , ( "P", B.path   )
+                    , ( "C", B.circle )
                     ]
     return $ Op { name = tag 
                 , arity = 1
