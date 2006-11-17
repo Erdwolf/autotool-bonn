@@ -5,6 +5,7 @@ module Main where
 import Graph.Op
 import Expression.Op
 import Autolib.Dot ( peng, Layout_Program (..) )
+import Autolib.Graph.Graph
 import Gateway.CGI
 import Inter.Evaluate
 import Autolib.ToDoc
@@ -25,6 +26,6 @@ handler input = do
     Gra g <- return $ eval0 exp
     inform $ toDoc g
     peng $ g { layout_program = Dot
-                 , layout_hints = [ "-Nshape=ellipse" , "-Gsize=\"5,5\"" ]
-                 }
+             , layout_hints = [ "-Nshape=ellipse" , "-Nsize=\"1\"" ]
+             }
 
