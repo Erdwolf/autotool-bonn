@@ -49,7 +49,7 @@ main :: IO ()
 main = do
     ts <- list_types server
     print $ zip [0.. ] ts
-    let task = ts !! 78
+    let task = ts !! 79
 
     dconf <- get_config server task
     print $ dconf
@@ -63,7 +63,8 @@ main = do
 
     let sint = Modular.Documented.contents $ first p
         sol  = Modular.Documented.contents $ second p
-    w <- grade server task sint sol
+	sol' = Solution "[ 23,34,45 ]"
+    w <- grade server task sint sol'
     print w
 
         

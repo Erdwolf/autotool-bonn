@@ -1,6 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
 
-module Boolean.Op 
+module Graph.Op 
 
 ( module Expression.Op
 ) 
@@ -11,14 +11,16 @@ where
 
 import Expression.Op
 
-import Autolib.Grah.Basic 
-import Autolib.Graph.Op
+import Autolib.Graph.Graph ( Graph )
+import qualified Autolib.Graph.Basic as B
+import qualified Autolib.Graph.Ops as O
 
 import Autolib.Hash
+import Autolib.Set ( mkSet )
 
 data Graph_Or_Natural where
-    Nat :: Integer -> Graph_Or_Natural
-    Gra :: Graph Integer -> Graph_Or_Natural
+    Nat :: Int -> Graph_Or_Natural
+    Gra :: Graph Int -> Graph_Or_Natural
 
 instance Ops ( Graph_Or_Natural ) where
     ops = nullary ++ unary ++ binary 
@@ -34,8 +36,9 @@ nullary = do
 
 unary :: [ Op Graph_Or_Natural ]
 unary = co : do
-    ( tag, fun ) <- [ ( "K", clique ), ("I", independent )
-                    , ( "P", path   ), ("C", circle )
+    ( tag, fun ) <- [ ( "K", B.clique . mkSet )
+		    , ("I", B.independent . mkSet )
+                    , ( "P", B.path   ), ("C", B.circle )
                     ]
     return $ Op { name = tag 
                 , arity = 1
@@ -45,7 +48,7 @@ unary = co : do
     
 co =  Op { name = "co" , arity = 1
 		, precedence = Just 10 , assoc = AssocNone
-		, inter = wrapped $ \ [ x ] -> complement x
+		, inter = wrapped $ \ [ x ] -> O.complement x
 		}
 
 binary :: [ Op Graph_Or_Natural ]
@@ -53,16 +56,16 @@ binary = [ times, cross, plus ]
 
 times =  Op { name = "*" , arity = 2
 	      , precedence = Just 8 , assoc = AssocLeft
-	      , inter = wrapped $ \ [x, y] -> times x y
+	      , inter = wrapped $ \ [x, y] -> O.times x y
 	      }
 cross =  Op { name = "%" , arity = 2
 	      , precedence = Just 8 , assoc = AssocLeft
-	      , inter = wrapped $ \ [x, y] -> grid x y
+	      , inter = wrapped $ \ [x, y] -> O.grid x y
 	      }
 plus = Op { name = "+" , arity = 2
 	      , precedence = Just 7 , assoc = AssocLeft
-	      , inter = wrapped \ [x, y] -> union x y
+	      , inter = wrapped $ \ [x, y] -> O.union x y
 	      }
 
-wrapped fun = Gra . fun . map ( \ ( Gra x ) -> x ) 
+wrapped fun = Gra . O.normalize . fun . map ( \ ( Gra x ) -> x ) 
 
