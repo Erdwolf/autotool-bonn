@@ -1,0 +1,29 @@
+module Algebraic.Instance where
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Set
+
+data Information = Formula | Value deriving Typeable
+
+{-! for Information derive: Haskell2Xml, ToDoc, Reader !-}
+
+data Type a =
+     Make { max_size :: Int
+	 , operators_in_instance :: Set ( Op a )
+	 , operators_in_solution :: Set ( Op a )
+         , inform :: Information
+	 }
+     deriving ( Typeable )
+
+{-! for Type derive: Haskell2Xml, ToDoc, Reader !-}
+
+
+
+-- local variables:
+-- mode: haskell
+-- end;
+

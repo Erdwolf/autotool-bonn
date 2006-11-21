@@ -1,0 +1,26 @@
+{-# OPTIONS -fglasgow-exts #-}
+
+module Algebraic.Instance where
+
+import Expression.Op
+
+import Data.Typeable
+import Text.XML.HaXml.Haskell2Xml
+
+import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.Set
+
+data Ops a => Type a =
+     Make { target :: a
+          , description :: Maybe String
+	  , operators :: Set ( Op a )
+          , max_size :: Int
+	  }
+     deriving ( Typeable )
+
+{-! for Type derive: Haskell2Xml, ToDoc, Reader !-}
+
+-- local variables:
+-- mode: haskell
+-- end;
