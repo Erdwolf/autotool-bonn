@@ -1,4 +1,9 @@
-module Algebraic.Instance where
+{-# OPTIONS -fglasgow-exts #-}
+
+module Algebraic.Config where
+
+import qualified Autolib.TES.Binu as B
+import Expression.Op
 
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
@@ -11,11 +16,13 @@ data Information = Formula | Value deriving Typeable
 
 {-! for Information derive: Haskell2Xml, ToDoc, Reader !-}
 
-data Type a =
-     Make { max_size :: Int
-	 , operators_in_instance :: Set ( Op a )
-	 , operators_in_solution :: Set ( Op a )
-         , inform :: Information
+data Ops a => Type c a =
+     Make { max_formula_size_for_instance :: Int
+	 , operators_in_instance :: B.Binu ( Op a )
+	 , operators_in_solution :: B.Binu ( Op a )
+	 , restrictions :: [ c ]
+         , information :: Information
+	 , max_formula_size_for_solution :: Int
 	 }
      deriving ( Typeable )
 

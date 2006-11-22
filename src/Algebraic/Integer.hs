@@ -4,15 +4,21 @@
 
 module Algebraic.Integer where
 
+import qualified Autolib.TES.Binu as B
+
 import Algebraic.Class
 import Algebraic.Instance
-import Data.Typeable
+import Condition
 
 import Autolib.ToDoc
+import Autolib.Choose
 import Autolib.Reader
 import Autolib.Set
+import Autolib.Size
 
-data Tag = Tag deriving ( Read, Show, Typeable )
+import Data.Typeable
+
+data Algebraic_Integer = Algebraic_Integer deriving ( Read, Show, Typeable )
 
 functions :: [ Op Integer ]
 functions = 
@@ -30,9 +36,17 @@ zahl i = Op { name = show i, arity = 0, precedence = Nothing, assoc = AssocNone
             } 
 
 instance Ops Integer where 
-    ops = map zahl [ 0 .. 1 ] ++ functions
+    bops = B.Binu
+	 { B.nullary =  map zahl [ 0 .. 1 ]	
+	 , B.unary = []
+	 , B.binary = functions
+	 }
 
-instance Algebraic Tag Integer where
+instance Condition () Integer where
+
+instance Size Integer where size i = fromIntegral i
+
+instance Algebraic Algebraic_Integer Integer where
     -- evaluate         :: tag -> Exp a -> Reporter a
     evaluate tag exp = do
         v <- tfoldR ( error "evaluate" ) inter exp
@@ -47,8 +61,11 @@ instance Algebraic Tag Integer where
 
     -- default_instance :: tag -> Algebraic.Instance.Type a
     default_instance tag = Algebraic.Instance.Make
-          { target = 13
+        { target = 13
           , description = Nothing
-	  , operators = mkSet ops
-          , max_size = 8
-          }
+	  , operators = default_operators tag
+          , max_size = 7
+	}
+
+    default_operators tag = bops
+

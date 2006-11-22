@@ -14,20 +14,23 @@ import Autolib.ToDoc
 import Autolib.Reporter
 import Autolib.Reporter.Set
 import Autolib.Size
+import Autolib.Set
 
 
 instance Algebraic tag a 
     => Partial tag ( Algebraic.Instance.Type a ) ( Exp a ) where
 
-    describe p i = vcat
-        [ text "Gesucht ist ein Ausdruck (Term) mit dieser Bedeutung:"
-        , nest 4 $ case description i of
-            Nothing -> toDoc $ target i
-            Just cs -> text cs
-	, text "und nur diese Symbole (Operatoren, Variablen) enthält:"
-	, nest 4 $ toDoc $ operators i
-        , text "und maximal die Größe" <+> toDoc (max_size i) <+> text "hat."
-	]
+    report p i = do
+        inform $ vcat
+            [ text "Gesucht ist ein Ausdruck (Term) mit dieser Bedeutung:"
+            , nest 4 $ case description i of
+                Nothing -> toDoc $ target i
+                Just cs -> text cs
+    		, text "und nur diese Symbole (Operatoren, Variablen) enthält:"
+    		, nest 4 $ toDoc $ operators i
+            , text "und maximal die Größe" <+> toDoc (max_size i) <+> text "hat."
+    	    ]
+	present p $ target i
 
     initial p i = some_formula p i
 
@@ -39,7 +42,9 @@ instance Algebraic tag a
 	       ]
         Autolib.Reporter.Set.subeq
 	    ( parens $ text "benutzte Operatoren" , syms b )
-	    ( parens $ text "erlaubte Operatoren" , operators i )
+	    ( parens $ text "erlaubte Operatoren" 
+	    , mkSet $ flatten $ operators i 
+	    )
         let s = size b
         inform $ text "Die Größe Ihres Ausdrucks ist" <+> toDoc s
         when ( s > max_size i ) $ reject $ text "Das ist zuviel."

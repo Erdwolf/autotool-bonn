@@ -11,11 +11,16 @@ where
 
 
 import Expression.Op
+import qualified Autolib.TES.Binu as B
 
 import Autolib.Hash
 
 instance Ops Bool where
-    ops = nullary ++ unary ++ binary ++ functions
+    bops = B.Binu
+        { B.nullary = nullary 
+	, B.unary = unary ++ functions
+	, B.binary = binary
+	}
 
 nullary :: [ Op Bool ]
 nullary = do

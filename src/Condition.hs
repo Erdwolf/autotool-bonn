@@ -1,13 +1,27 @@
-module Condition where
+{-# OPTIONS -fglasgow-exts #-}
+
+module Condition 
+
+( module Condition
+, module Suggest
+)
+
+where
+
+import Suggest
 
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Reader
 
-class Condition prop ob | prop -> ob, ob -> prop where
+import Data.Typeable
+
+class ( ToDoc prop, Reader prop, Typeable prop, Suggest prop ) 
+      => Condition prop ob | ob -> prop where
     explain   :: prop -> Doc
     condition :: prop -> ob -> Reporter ()
 
-investigate :: ( ToDoc prop, Condition prop ob )
+investigate :: Condition prop ob
 	    => [ prop ] -> ob -> Reporter ()
 investigate props ob = sequence_ $ do 
     prop <- props

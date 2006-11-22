@@ -18,6 +18,7 @@ import Autolib.Util.Size
 
 import qualified Autolib.Symbol
 import qualified Autolib.TES.Parsec
+import qualified Autolib.TES.Binu as B
 import qualified Autolib.TES.In as I
 import qualified Autolib.TES.Term as T
 import Autolib.TES.Position ( vars, syms )
@@ -64,6 +65,13 @@ tfoldR fvar fnode t = case t of
 -- | for parsing
 class Ops a where
       ops :: [ Op a ]
+      ops = flatten bops
+      bops :: B.Binu ( Op a )
+
+flatten :: Ops a => B.Binu (Op a) -> [ Op a ]
+flatten b = do
+          f <- [ B.nullary, B.unary, B.binary ]
+	  f b
 
 -- | xml-darstellung ist einfach ein string (show\/read)
 instance Ops a => Container (Op a) String where

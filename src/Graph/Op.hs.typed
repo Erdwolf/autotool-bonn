@@ -3,14 +3,13 @@
 module Graph.Op 
 
 ( module Expression.Op
-, eval, eval0, Graph
+, eval, eval0, Graph_Or_Natural ( Gra )
 , example
 ) 
 
 where
 
 import Expression.Op
-import qualified Autolib.TES.Binu as U
 
 import Autolib.Graph.Graph ( Graph )
 import qualified Autolib.Graph.Basic as B
@@ -30,34 +29,44 @@ eval b =
 	    Nothing -> reject $ text "Graph.Op.eval:" <+> toDoc x
     in  tfoldR look inter
 
-example :: Exp ( Graph Int )
-example = read "co P5"
+example :: Exp Graph_Or_Natural
+example = read "co (P 6)"
 
-instance Ops ( Graph Int ) where
-    bops = U.Binu { U.nullary = nullary
-		  , U.unary = unary
-		  , U.binary = binary
-		  }
+data Graph_Or_Natural where
+    Nat :: Int -> Graph_Or_Natural
+    Gra :: Graph Int -> Graph_Or_Natural
+  
+instance ToDoc Graph_Or_Natural where
+    toDoc ( Nat n ) = toDoc n
+    toDoc ( Gra g ) = toDoc g
 
-nullary :: [ Op ( Graph Int ) ]
+instance Ops ( Graph_Or_Natural ) where
+    ops = nullary ++ unary ++ binary 
+
+nullary :: [ Op Graph_Or_Natural ]
 nullary = do
+    n <- [ 1 .. 9 ] 
+    return $ Op { name = show n
+                , arity = 0
+		, precedence = Nothing , assoc = AssocNone
+		, inter = lift $ \ [ ] -> Nat n
+		}
+
+unary :: [ Op Graph_Or_Natural ]
+unary = [ co, line ] ++ do
     ( tag, fun ) <- [ ( "K", B.clique . mkSet )
 		    , ( "I", B.independent . mkSet )
                     , ( "P", B.path   )
                     , ( "C", B.circle )
                     ]
-    n <- [ 1 .. 5 :: Int ] 
-    return $ Op { name = tag ++ show n
-                , arity = 0
-		, precedence = Nothing , assoc = AssocNone
-		, inter = wrapped $ \ [ ] -> fun [ 1 .. n ]
+    return $ Op { name = tag 
+                , arity = 1
+		, precedence = Just 10 , assoc = AssocNone
+		, inter = lift $ \ [ Nat n ] -> Gra $ fun [ 1 .. n ]
 		}
-
-unary :: [ Op ( Graph Int ) ]
-unary = [ co, line ] 
     
 co =  Op { name = "co" , arity = 1
-		, precedence = Just 9 , assoc = AssocNone
+		, precedence = Nothing , assoc = AssocNone
 		, inter = wrapped $ \ [ x ] -> O.complement x
 		}
 
@@ -66,7 +75,7 @@ line =  Op { name = "line" , arity = 1
 		, inter = wrapped $ \ [ x ] -> L.line_graph x
 		}
 
-binary :: [ Op ( Graph Int ) ]
+binary :: [ Op Graph_Or_Natural ]
 binary = [ times, cross, plus ]
 
 times =  Op { name = "*" , arity = 2
@@ -82,5 +91,5 @@ plus = Op { name = "+" , arity = 2
 	      , inter = wrapped $ \ [x, y] -> O.union x y
 	      }
 
-wrapped fun = \ xs -> return $ O.normalize $ fun xs
+wrapped fun = return . Gra . O.normalize . fun . map ( \ ( Gra x ) -> x ) 
 

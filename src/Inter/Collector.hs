@@ -114,7 +114,9 @@ import qualified PL.Find_Model
 import qualified Hilbert.Central
 
 import qualified Algebraic.Central
-import qualified Algebraic.Integer
+import qualified Algebraic.Quiz
+import Algebraic.Integer
+import Algebraic.Graph
 
 makers :: [ Make ]
 makers = do Right make <- flatten tmakers ; return make
@@ -286,7 +288,10 @@ tmakers =
                 , item Graph.VC.VCSAT.make_quiz               
                 ]
 	  , heading "experimentell"
-	        [ item $ Algebraic.Central.make Algebraic.Integer.Tag
+	        [ item $ Algebraic.Central.make Algebraic_Integer
+	        , item $ Algebraic.Quiz.make Algebraic_Integer
+	        , item $ Algebraic.Central.make Algebraic_Graph
+	        , item $ Algebraic.Quiz.make Algebraic_Graph
 		]
           ]
 
