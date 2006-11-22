@@ -55,6 +55,13 @@ instance GraphC a => Condition Restriction ( Graph a ) where
 		 [ text "Maximalgrad" <+> parens ( toDoc top )
 		 , text "größer als Schranke" <+> parens ( toDoc m )
 		 ]
+        Min_Degree m -> do
+	    let degs = do x <- lknoten g ; return $ degree g x
+		top  = minimum degs
+	    when ( not ( null degs ) && top < m ) $ reject $ fsep	
+		 [ text "Minimalgrad" <+> parens ( toDoc top )
+		 , text "kleiner als Schranke" <+> parens ( toDoc m )
+		 ]
 	Connected -> do
 	    when ( not $ is_connected g ) $ reject $ fsep
 		 [ text "ist nicht zusammenhängend" ]

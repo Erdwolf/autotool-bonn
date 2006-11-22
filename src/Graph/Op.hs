@@ -41,12 +41,12 @@ instance Ops ( Graph Int ) where
 
 nullary :: [ Op ( Graph Int ) ]
 nullary = do
-    ( tag, fun ) <- [ ( "K", B.clique . mkSet )
-		    , ( "I", B.independent . mkSet )
-                    , ( "P", B.path   )
-                    , ( "C", B.circle )
+    ( tag, fun, start ) <- [ ( "K", B.clique . mkSet, 1 )
+		    -- , ( "I", B.independent . mkSet, 2 )
+                    , ( "P", B.path , 3  )
+                    , ( "C", B.circle , 3)
                     ]
-    n <- [ 1 .. 5 :: Int ] 
+    n <- [ start .. 5 :: Int ]
     return $ Op { name = tag ++ show n
                 , arity = 0
 		, precedence = Nothing , assoc = AssocNone

@@ -11,24 +11,55 @@ import Inter.Types
 import Inter.Quiz
 
 import Condition
+import Debug
 
 import qualified Autolib.TES.Binu as B
 import Autolib.TES.Type
+import Autolib.TES.Position
 import Autolib.Choose
 import Autolib.Size
 import Autolib.Util.Zufall
 import Data.Maybe (isJust )
 
+import Data.IORef
+import System.Random
+
+roll binu s = do
+    let no_unaries = binu { B.unary = [] }
+    num_uns <- randomRIO ( 0, min 2 s )
+    t <- choose no_unaries ( s - num_uns )
+    case B.unary binu of
+        [] -> return t
+	us -> do
+	    uns <- sequence $ replicate num_uns $ eins us
+	    poke_unaries t uns
+
+poke_unaries t [] = return t
+poke_unaries t (u : us) = do
+    ( p, s ) <- eins $ positions t
+    let t' = poke t ( p, Node u [s] )
+    poke_unaries t' us
+
+------------------------------------------------------------------------
 
 instance ( Condition c a,  Algebraic tag a )
     => Generator tag ( C.Type c a ) ( I.Type a , Exp a ) where
     generator tag conf key = do
-        ( t, Just x )  <- do
-	      -- FIXME this may loop indefinitely
-	      t <- choose ( C.operators_in_instance conf ) 
+        counter <- newIORef 10000
+        ( t, Just x, c )  <- do
+	      t <- roll   ( C.operators_in_instance conf ) 
 		          ( C.max_formula_size_for_instance conf )
-	      return ( t, result $ evaluate tag t )
-	  `repeat_until` \ ( t, mx ) -> case mx of
+	      c <- readIORef counter
+	      writeIORef counter $ pred c
+	      debug $ unlines 
+		    [ show c, show t ]			   
+	      return ( t, result $ evaluate tag t, c )
+	  `repeat_until` \ ( t, mx, c ) -> case mx of
+	      _  | c < 0 -> error $ unlines
+		     [ "generator could not produce instance,"
+		     , "Tutor: perhaps remove some restrictions."
+		     , "Student: report error to Tutor."
+		     ] 
 	      Nothing -> False
 	      Just x  -> isJust 
                   $ result $ investigate ( C.restrictions conf ) x

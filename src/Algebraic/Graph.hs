@@ -29,13 +29,13 @@ data Algebraic_Graph = Algebraic_Graph deriving ( Read, Show, Typeable )
 instance Algebraic Algebraic_Graph ( Graph Int ) where
     -- evaluate         :: tag -> Exp a -> Reporter a
     evaluate tag exp = do
-        v <- tfoldR ( error "evaluate" ) inter exp
-	inform $ vcat [ text "Graph ist" , nest 4 $ toDoc v ]
-        ping v
-	return v
+        g <- tfoldR ( error "evaluate" ) inter exp
+	inform $ vcat [ text "Graph ist" , nest 4 $ toDoc g ]
+        ping g
+	return g
 
     present tag g = do
-        ping g
+	ping g
         
     -- equivalent       :: tag -> a -> a -> Reporter Bool
     equivalent tag a b = do
@@ -57,9 +57,10 @@ instance Algebraic Algebraic_Graph ( Graph Int ) where
 
 
 ping g = peng $ ( no_fixed_layout g )
-	     { layout_program = Dot
+	     { layout_program = Fdp
              , layout_hints = [ "-Nheight=0.1", "-Nwidth=0.1"
                               , "-Nfixedsize=true"
-                              , "-Gsize=5,5"
+                              , "-Gsize=7,7"
                               ]
+	     , show_labels = False
              } 

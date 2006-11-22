@@ -26,7 +26,7 @@ instance Algebraic tag a
             , nest 4 $ case description i of
                 Nothing -> toDoc $ target i
                 Just cs -> text cs
-    		, text "und nur diese Symbole (Operatoren, Variablen) enthält:"
+    		, text "der nur diese Symbol enthält:"
     		, nest 4 $ toDoc $ operators i
             , text "und maximal die Größe" <+> toDoc (max_size i) <+> text "hat."
     	    ]
