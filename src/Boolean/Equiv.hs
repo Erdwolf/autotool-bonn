@@ -29,7 +29,8 @@ check e f = do
 test :: Exp Bool -> Exp Bool -> Belegung Identifier
      -> Reporter ()
 test e f b = do
-    let x = eval b e ; y = eval b f
+    x <- eval b e
+    y <- eval b f
     when ( x /= y ) $ reject $ vcat
 	 [ text "Nein. Bei Belegung"
 	 , nest 4 $ toDoc b

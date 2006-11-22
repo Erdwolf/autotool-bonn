@@ -20,7 +20,7 @@ import Autolib.Reader
 
 import Data.Typeable
 
-class (        Reader tag, ToDoc tag, Typeable tag
+class (      Typeable tag
       , Show tag, Read tag
       , Ops a, Reader a  , ToDoc a  , Typeable a
       ) => Algebraic tag a | tag -> a where

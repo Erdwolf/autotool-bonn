@@ -26,6 +26,8 @@ import Autolib.TES.Draw ( draw )
 import Autolib.TES.Identifier
 import Autolib.Xml
 
+import Autolib.Reporter
+
 import Text.ParserCombinators.Parsec.Expr
 import Text.ParserCombinators.Parsec.Token
 import Text.ParserCombinators.Parsec.Language
@@ -42,9 +44,22 @@ data Op a = Op { name  :: String
 	     , arity :: Int
 	     , precedence :: Maybe Int
 	     , assoc :: Assoc
-	     , inter :: [a] -> a
+	     , inter :: [a] -> Reporter a
 	     }
     deriving ( Typeable )
+
+lift fun = \ arg -> return $ fun arg
+
+-- | TODO: move to Autolib/TES/Type (next to tfold)
+tfoldR :: ( v -> Reporter a )
+      -> ( c -> [a] -> Reporter a )
+      -> T.Term v c
+      -> Reporter a
+tfoldR fvar fnode t = case t of
+    T.Var v -> fvar v
+    T.Node f args -> do
+        vals <- mapM ( tfoldR fvar fnode ) args
+	fnode f vals
 
 -- | for parsing
 class Ops a where

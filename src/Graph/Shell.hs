@@ -26,7 +26,7 @@ main = Gateway.CGI.execute "Graph.cgi" $ Gateway.CGI.wrap $ do
 
 handler input lout = do
     exp :: Exp Graph_Or_Natural <- parse_or_complain input
-    Gra g <- return $ eval0 exp
+    Gra g <- eval0 exp
     inform $ toDoc g
     peng $ g { layout_program = lout
              , layout_hints = [ "-Nheight=0.1", "-Nwidth=0.1"

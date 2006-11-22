@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Graph.Circle.Quiz where
 
 --  $Id$

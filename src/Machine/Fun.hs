@@ -36,8 +36,8 @@ numerical_test' i m = numerical_test ( N.cut i ) ( N.args i ) ( N.fun i ) m
 
 numerical_test :: ( Numerical dat, Machine m dat conf, Out m dat conf )
 	 => Int
-	 -> [[Integer]] -- Liste von eingabe-vektoren
-	 -> ( [Integer] -> Integer ) -- die funktion ist auszurechnen
+	 -> [[Integer]] -- ^ Liste von eingabe-vektoren
+	 -> ( [Integer] -> Reporter Integer ) -- ^ die funktion ist auszurechnen
 	 -> m
 	 -> Reporter Int
 numerical_test cut inputs fun m = do
@@ -46,7 +46,7 @@ numerical_test cut inputs fun m = do
             r <- Machine.Class.output_reporter m conf
 
 	    let a = decode r
-	    let a' = fun ein
+	    a' <- fun ein
 
 	    inform $ vcat
 		   [ text "Die Endkonfiguration enthält das Resultat", toDoc a

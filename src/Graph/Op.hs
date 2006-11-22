@@ -20,10 +20,14 @@ import Autolib.Hash
 import Autolib.ToDoc
 import Autolib.Set ( mkSet )
 import Autolib.FiniteMap
+import Autolib.Reporter
 
 eval0 = eval emptyFM
-eval b = tfold ( lookupWithDefaultFM b $ error "Graph.Op.eval" ) 
-               ( inter )
+eval b = 
+    let look x = case lookupFM b x of
+	    Just y -> return y
+	    Nothing -> reject $ text "Graph.Op.eval:" <+> toDoc x
+    in  tfoldR look inter
 
 example :: Exp Graph_Or_Natural
 example = read "co (P 6)"
@@ -45,7 +49,7 @@ nullary = do
     return $ Op { name = show n
                 , arity = 0
 		, precedence = Nothing , assoc = AssocNone
-		, inter = \ [ ] -> Nat n
+		, inter = lift $ \ [ ] -> Nat n
 		}
 
 unary :: [ Op Graph_Or_Natural ]
@@ -58,7 +62,7 @@ unary = [ co, line ] ++ do
     return $ Op { name = tag 
                 , arity = 1
 		, precedence = Just 10 , assoc = AssocNone
-		, inter = \ [ Nat n ] -> Gra $ fun [ 1 .. n ]
+		, inter = lift $ \ [ Nat n ] -> Gra $ fun [ 1 .. n ]
 		}
     
 co =  Op { name = "co" , arity = 1
@@ -87,5 +91,5 @@ plus = Op { name = "+" , arity = 2
 	      , inter = wrapped $ \ [x, y] -> O.union x y
 	      }
 
-wrapped fun = Gra . O.normalize . fun . map ( \ ( Gra x ) -> x ) 
+wrapped fun = return . Gra . O.normalize . fun . map ( \ ( Gra x ) -> x ) 
 
