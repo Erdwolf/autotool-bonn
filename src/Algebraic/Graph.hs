@@ -1,7 +1,5 @@
 {-# OPTIONS -fglasgow-exts #-}
 
--- | demonstration module: how to use the Algebraic.Class
-
 module Algebraic.Graph where
 
 import qualified Autolib.TES.Binu as B
@@ -29,7 +27,8 @@ data Algebraic_Graph = Algebraic_Graph deriving ( Read, Show, Typeable )
 instance Algebraic Algebraic_Graph ( Graph Int ) where
     -- evaluate         :: tag -> Exp a -> Reporter a
     evaluate tag exp = do
-        g <- tfoldR ( error "evaluate" ) inter exp
+        g <- tfoldR ( \ it -> reject $ text "unbekannt:" <+> toDoc it
+                    ) inter exp
 	inform $ vcat [ text "Graph ist" , nest 4 $ toDoc g ]
         ping g
 	return g
