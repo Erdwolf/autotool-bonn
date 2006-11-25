@@ -78,6 +78,8 @@ import qualified Graph.Bisekt.Quiz
 import qualified Graph.Way.Plain
 import qualified Graph.Way.Quiz
 
+import qualified Graph.Hamilton.Plain
+
 -- broken with 6.6
 -- import qualified Graph.MST.Plain
 -- import qualified Graph.MST.Quiz
@@ -216,6 +218,7 @@ tmakers =
 	        , item Graph.Way.Quiz.make
 --	        , item Graph.MST.Plain.make
 --	        , item Graph.MST.Quiz.make
+                , item Graph.Hamilton.Plain.make
                 ]
          , heading "Programmierung"
                 [ item Type.Check.make
