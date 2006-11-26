@@ -220,6 +220,7 @@ tmakers =
 --	        , item Graph.MST.Plain.make
 --	        , item Graph.MST.Quiz.make
                 , item Graph.Hamilton.Plain.make
+                , item Graph.Hamilton.Quiz.make
                 ]
          , heading "Programmierung"
                 [ item Type.Check.make
