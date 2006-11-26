@@ -46,9 +46,10 @@ serial g h =
 normalize :: GraphC a 
            => STGraph a -> STGraph Int
 normalize g =
-    let fm = listToFM 
-           $ zip ( setToList $ knoten $ contents g ) [ 0 .. ]
-        fun = fromMaybe ( error "STGraph.normalize" ) 
+    let ks = source g : target g : ( setToList $ knoten $ contents g )
+        fm = listToFM 
+           $ zip ks [ 0 .. ]
+        fun = fromMaybe ( error $ "STGraph.normalize: " ++ show g ) 
             . lookupFM fm
     in  gmap fun g
 
