@@ -32,11 +32,17 @@ instance Size b => Measure p i b where
 
 -- | Instanz verifizieren 
 -- das sieht der Tutor, wenn er die Aufgabe konfiguriert
-class Verify p i where
+class ( Show  i ) => Verify p i where
       verify :: p -> i -> Reporter ()
 
-instance Verify p i where
-      verify p i = return () -- default: alles OK
+instance ( Show i ) => Verify p i where
+      verify p i = do
+          inform $ vcat
+                 [ text "Vorsicht: Methode Challenger.Partial.verify nicht implementiert"
+                 ]
+          when ( 0 > length ( show i ) )
+               $ reject $ text "Syntaxfehler (?)"
+          return ()
 
 -- | Klasse: Partial
 class ( Show p, Read p
@@ -49,7 +55,7 @@ class ( Show p, Read p
       -- | Beschreibung der Aufgabe herstellen
       --
       -- TODO: es sollte (auch oder nur) eine Beschreibung geben,
-      -- die nur von p allein abhÃÂ¤ngt (dann muÃŸ man nicht erst erzeugen
+      -- die nur von p allein abhängt (dann muß man nicht erst erzeugen
       -- und kann trotzdem schon was ausgeben)
       describe :: p -> i -> Doc
       describe p i = vcat

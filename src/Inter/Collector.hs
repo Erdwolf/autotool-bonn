@@ -120,6 +120,7 @@ import qualified Algebraic.Central
 import qualified Algebraic.Quiz
 import Algebraic.Integer
 import Algebraic.Graph
+import Algebraic.STGraph
 
 makers :: [ Make ]
 makers = do Right make <- flatten tmakers ; return make
@@ -296,7 +297,10 @@ tmakers =
 	        [ item $ Algebraic.Central.make Algebraic_Integer
 	        , item $ Algebraic.Quiz.make Algebraic_Integer
 	        , item $ Algebraic.Central.make Algebraic_Graph
+
 	        , item $ Algebraic.Quiz.make Algebraic_Graph
+	        , item $ Algebraic.Central.make Algebraic_STGraph
+	        , item $ Algebraic.Quiz.make Algebraic_STGraph
 		]
           ]
 

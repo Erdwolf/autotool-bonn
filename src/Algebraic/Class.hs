@@ -27,7 +27,7 @@ import Data.Typeable
 
 class (      Typeable tag
       , Show tag, Read tag
-      , Ops a, Reader a  , ToDoc a  , Typeable a, Size a
+      , Ops a, Reader a  , ToDoc a  , Typeable a -- , Size a
       ) => Algebraic tag a | tag -> a where
     evaluate         :: tag -> Exp a -> Reporter a
 
