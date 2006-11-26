@@ -222,6 +222,12 @@ tmakers =
 --	        , item Graph.MST.Quiz.make
                 , item Graph.Hamilton.Plain.make
                 , item Graph.Hamilton.Quiz.make
+		, heading "Graphoperationen"
+		  [ item $ Algebraic.Central.make Algebraic_Graph
+		  , item $ Algebraic.Quiz.make Algebraic_Graph
+		  , item $ Algebraic.Central.make Algebraic_STGraph
+		  , item $ Algebraic.Quiz.make Algebraic_STGraph
+		  ]
                 ]
          , heading "Programmierung"
                 [ item Type.Check.make
@@ -297,7 +303,6 @@ tmakers =
 	        [ item $ Algebraic.Central.make Algebraic_Integer
 	        , item $ Algebraic.Quiz.make Algebraic_Integer
 	        , item $ Algebraic.Central.make Algebraic_Graph
-
 	        , item $ Algebraic.Quiz.make Algebraic_Graph
 	        , item $ Algebraic.Central.make Algebraic_STGraph
 	        , item $ Algebraic.Quiz.make Algebraic_STGraph
