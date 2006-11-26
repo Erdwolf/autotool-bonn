@@ -29,7 +29,8 @@ instance ( GraphC a, Show a )
 	       , nest 4 $ toDoc g
 	       ]
 	peng $ g { layout_program = Dot
-		 , layout_hints = [ "-Nshape=ellipse" , "-Gsize=\"5,5\"" ]
+		 , layout_hints = [ "-Nshape=ellipse" , "-Gsize=\"8,8\"" ]
+		 , show_labels = True
 		 }
     initial _ g = 
         shuffle $ lknoten g
@@ -53,11 +54,10 @@ nodes_in_graph g xs =
 nodes_form_cycle g xs = do
     inform $ text "Knotenfolge bildet Kreis?"
     sequence $ do
-        (x, y) <- zip ( lknoten g ) ( rotate 1 $ lknoten g )
+        (x, y) <- zip xs ( rotate 1 xs )
         let k = kante x y
-        return $ when ( not $ elementOf k $ kanten g )
-            $ reject 
-            $ fsep [ toDoc k, text "nicht vorhanden" ]
+        return $ assert ( elementOf k $ kanten g )
+	       $ toDoc k
     inform $ text "ja."
 
 rotate k xs = 
