@@ -79,6 +79,7 @@ import qualified Graph.Way.Plain
 import qualified Graph.Way.Quiz
 
 import qualified Graph.Hamilton.Plain
+import qualified Graph.Hamilton.Quiz
 
 -- broken with 6.6
 -- import qualified Graph.MST.Plain

@@ -18,3 +18,7 @@ example :: Config
 example = Config { nodes = 10
 	    , edges  = 30
 	    }
+
+-- local variables:
+-- mode: haskell
+-- end;
