@@ -1,7 +1,13 @@
-module Lambda.Data where
+module Lambda.Data 
+
+( module Lambda.Data
+, Identifier
+)
+
+where
 
 import Autolib.TES.Identifier
-
+import Autolib.Set
 
 data Lambda 
     = Variable Identifier
@@ -9,6 +15,11 @@ data Lambda
     | Abstract Identifier Lambda
     deriving ( Eq, Ord )
 
+free_variables :: Lambda -> Set Identifier
+free_variables t = case t of
+    Variable v -> unitSet v
+    Apply f a -> free_variables f `union` free_variables a
+    Abstract v b -> free_variables b `minusSet` unitSet v
 
 applications :: Lambda -> ( Lambda, [ Lambda ] )
 applications t = case t of

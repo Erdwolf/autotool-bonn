@@ -11,3 +11,4 @@ s = read "x y z -> x z (y z)"
 k :: Lambda
 k = read "x y -> x"
 
+
