@@ -1,4 +1,4 @@
-{-# OPTIONS -fallow-incoherent-instances #-}
+{-# OPTIONS -fallow-incoherent-instances -fglasgow-exts #-}
 
 module Baum.Such.Class where
 
@@ -24,7 +24,7 @@ class Such baum where
 
 class ( Show t, Typeable t, Read t
       , Such baum, OpC a
-      , ToTree baum
+      , ToTree ( baum a )
       , ToDoc (baum a), Show ( baum a )
       , Reader ( baum a ) , Read ( baum a )
       , ToDot ( baum a), Eq (baum a), Hash (baum a)

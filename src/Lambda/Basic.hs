@@ -1,6 +1,6 @@
 module Lambda.Basic where
 
-import Lambda.Data
+import Lambda.Type
 
 i :: Lambda
 i = read "x -> x"

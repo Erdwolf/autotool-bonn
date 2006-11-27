@@ -1,4 +1,4 @@
-{-# OPTIONS -fallow-undecidable-instances #-}
+{-# OPTIONS -fallow-undecidable-instances -fglasgow-exts #-}
 
 module Baum.Such.Central where
 

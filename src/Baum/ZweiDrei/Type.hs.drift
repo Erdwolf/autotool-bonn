@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts #-}
 
 module Baum.ZweiDrei.Type where
 
@@ -11,6 +11,10 @@ import Text.XML.HaXml.Haskell2Xml
 data Key a = This a | Infinity 
      deriving ( Typeable, Eq, Ord )
 
+instance Functor Key where
+    fmap f (This x ) = This ( f x )
+    fmap f Infinity = Infinity
+
 {-! for Key derive:  Reader, ToDoc, Haskell2Xml !-}
 
 -- |  zweites element ist jeweils der schlüssel,
@@ -22,11 +26,21 @@ data Baum a = Null
 	    | Baum [ ( Baum a, Key a ) ]
      deriving ( Eq, Ord, Typeable )
 
+instance Functor Baum where
+    fmap f Null = Null
+    fmap f ( Baum bks ) = Baum $ do
+        ( b, k ) <- bks
+        return ( fmap f b, fmap f k )
+
 isNull :: Baum a -> Bool
 isNull Null = True
 isNull _ = False
 
 {-! for Baum derive: Reader, ToDoc, Haskell2Xml !-}
+
+-- local variables:
+-- mode: haskell
+-- end;
 
 
 

@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Baum.Binary 
 
 ( make_quiz
@@ -29,8 +31,8 @@ instance C.Such Baum where
     equal = (==)
     contents = contents
 
-instance T.ToTree Baum where
-    toTree = toTree
+instance Show a => T.ToTree ( Baum a ) where
+    toTree = toTree . fmap show
 
 data SuchbaumBinary = SuchbaumBinary 
     deriving ( Eq, Ord, Show, Read, Typeable )

@@ -11,6 +11,6 @@ import qualified Tree as T
 import Autolib.TES.Term
 import Autolib.Dot.Dotty
 
-instance ( Show v ) => T.ToTree ( Term v ) where
+instance ( Show v, Show a ) => T.ToTree ( Term v a ) where
     toTree ( Var v ) = T.Node ( show v ) []
     toTree ( Node f args ) = T.Node ( show f ) $ map T.toTree args
