@@ -98,36 +98,10 @@ data TimeStatus = Early | Current | Late deriving ( Eq, Ord, Typeable )
 
 {-! for TimeStatus derive : Reader, ToDoc, Haskell2Xml !-}
 
-#ifdef HSQL16
 timer :: Int -> Int -> TimeStatus
 timer 1 _ = Early
 timer _ 1 = Late
 timer 0 0 = Current
-#elif HSQL14
-timer :: Int -> Int -> TimeStatus
-timer 1 _ = Early
-timer _ 1 = Late
-timer 0 0 = Current
-#elif HSQL12
-timer :: Bool -> Bool -> TimeStatus
-timer True _ = Early
-timer _ True = Late
-timer False False = Current
-#endif
-
--------------------------------------------------------------
-
-#ifdef HSQL16
--- this HAS an Bool instance already
--- but we are not going to use it
-#elif HSQL14
--- this HAS an Bool instance already
--- but we are not going to use it
-#elif HSQL12
-instance SqlBind Bool where
-    fromSqlValue _ s = return $ "0" /= s
-    toSqlValue f = show $ fromEnum f
-#endif
 
 -------------------------------------------------------------
 

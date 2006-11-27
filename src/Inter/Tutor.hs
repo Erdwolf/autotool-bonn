@@ -26,6 +26,8 @@ import Data.Maybe
 import Data.Tree ( flatten )
 
 
+import Control.Exception
+
 -- | ändere aufgaben-konfiguration (nur für tutor)
 edit_aufgabe mks mk mauf vnr manr type_click = do
     case mk of 
@@ -34,6 +36,7 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
             let t = fromCGI $ show mk
 
             others <- io $ A.get_typed t
+               `Control.Exception.catch` \ any -> return []
 
             ( name :: Name ) <- fmap fromCGI 
 		     $ defaulted_textfield "Name" 
