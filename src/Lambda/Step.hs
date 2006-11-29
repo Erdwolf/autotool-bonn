@@ -3,14 +3,27 @@ module Lambda.Step where
 import Lambda.Type
 import Autolib.Set
 import Autolib.TES.Identifier
+import Autolib.ToDoc
 import Control.Monad ( guard )
 
+is_redex :: Lambda -> Bool
+is_redex ( Apply ( Abstract _ _ ) _ ) = True
+is_redex _ = False
+
+redex_positions :: Lambda -> [ Position ]
+redex_positions t = do
+    p <- positions t
+    s <- peek t p 
+    guard $ is_redex s
+    return p
+
 -- | apply beta reduction at root (if possible)
-step :: Lambda -> [ Lambda ]
+step :: Monad m => Lambda -> m Lambda
 step t = case t of
     Apply (Abstract var body) arg -> 
          return $ free_sub var arg body 
-    _ -> []
+    _ -> fail $ show $ text "ist kein Redex:" <+> toDoc t
+
 
 -- | from left to right
 successors :: Lambda -> [ Lambda ]
@@ -37,11 +50,6 @@ free_sub v a t = case t of
                          else ( w, b )
         in  Abstract w' $ free_sub v a b'
 
-next_free vs = head $ do
-    k <- [1 .. ]
-    let w' = mknullary $ "x" ++ show k
-    guard $ not $ elementOf w' vs
-    return w'
 
 free_rename :: Identifier -> Identifier -> Lambda -> Lambda
 free_rename v w t = case t of

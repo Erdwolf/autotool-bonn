@@ -1,0 +1,31 @@
+{-# OPTIONS -fglasgow-exts #-}
+
+module Lambda.Derive.Instance where
+
+import Lambda.Type
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+
+data Type = Make
+          { from :: Lambda
+          , to :: Lambda
+          -- | wenn @Just x@, dann genau @x@ Schritte, sonst egal
+          , steps :: Maybe Int 
+          }
+     deriving ( Typeable, Eq, Ord )
+
+{-! for Type derive: ToDoc, Reader !-}
+
+example :: Type
+example = Make
+        { from = read "(x -> x x)( x -> x x)"
+        , to   = read "(x -> x x)( x -> x x)"
+        , steps = Just 2
+        }
+
+-- local variables:
+-- mode: haskell
+-- end

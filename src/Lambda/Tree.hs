@@ -1,11 +1,12 @@
 module Lambda.Tree 
 
-( toTree, display )
+( toTree, display, peng )
 
 where
 
 import Lambda.Data
 import Tree
+import Autolib.Dot.Dotty
 
 instance ToTree Lambda where
     toTree t = case t of

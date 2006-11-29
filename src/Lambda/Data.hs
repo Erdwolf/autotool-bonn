@@ -8,6 +8,7 @@ where
 
 import Autolib.TES.Identifier
 import Autolib.Set
+import Control.Monad ( guard )
 
 data Lambda 
     = Variable Identifier
@@ -41,5 +42,9 @@ abstractions t = case t of
 abstract :: ( [ Identifier ] , Lambda ) -> Lambda
 abstract ( vars, body ) = foldr Abstract body vars
 
-
-        
+next_free vs = head $ do
+    k <- [0 .. ]
+    f <- "xyz" ++ "uvw" ++ "pqrs" ++ [ 'a' .. 'o' ]
+    let w' = mknullary $ f : (if k == 0 then "" else show k )
+    guard $ not $ elementOf w' vs
+    return w'
