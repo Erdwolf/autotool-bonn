@@ -8,6 +8,7 @@ where
 
 import Autolib.TES.Identifier
 import Autolib.Set
+import Autolib.Size
 import Control.Monad ( guard )
 
 data Lambda 
@@ -15,6 +16,12 @@ data Lambda
     | Apply Lambda Lambda
     | Abstract Identifier Lambda
     deriving ( Eq, Ord )
+
+instance Size Lambda where
+    size t = case t of
+        Variable {} -> 1
+        Apply fun arg -> size fun + size arg
+        Abstract v b -> 1 + size b
 
 free_variables :: Lambda -> Set Identifier
 free_variables t = case t of

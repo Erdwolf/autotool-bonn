@@ -26,6 +26,13 @@ example = Make
         , steps = Just 2
         }
 
+initial :: Lambda -> Type
+initial t = Make 
+    { from = t
+    , to = t
+    , steps = Just 0 
+    } 
+
 -- local variables:
 -- mode: haskell
 -- end

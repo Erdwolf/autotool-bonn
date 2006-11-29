@@ -16,7 +16,7 @@ variable s vars = do
     return $ Variable v
 
 composition s vars = do
-    action <- eins [ abstraction , application ]
+    action <- eins [ abstraction , application , application ]
     action s vars
 
 abstraction s vars = do

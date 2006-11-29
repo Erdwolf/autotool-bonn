@@ -4,11 +4,14 @@ module Lambda.Derive where
 
 import Lambda.Type
 import Lambda.Tree ( peng )
+import Lambda.Quiz
 import Lambda.Derive.Instance as I
+import Lambda.Derive.Config as C
 import Lambda.Step
 
 import Challenger.Partial
 import Inter.Types
+import Inter.Quiz
 import Autolib.ToDoc
 import Autolib.Reporter
 import Data.Typeable
@@ -63,31 +66,17 @@ check_result inst t = do
     assert ( to inst == t )
            $ text "Ableitungsergebnis korrekt?"
 
-derive t xxs = do
-    inform $ vcat 
-        [ text "*****************************************************"
-        , text "aktueller Term ist" 
-        , nest 4 $ toDoc t 
-        ]
-    peng t
-    let ps = redex_positions t
-    inform $ vcat 
-        [ text "Liste der Redex-Positionen ist"
-        , nest 4 $ vcat $ map toDoc $ zip [ 0 :: Int .. ] ps
-        ]
-    case xxs of
-        [] -> return t
-        x : xs -> do
-            inform $ text "Sie wählen den Redex Nummer" <+> toDoc x
-            silent $ assert ( 0 <= x && x < length ps )
-                   $ text "Nummer ist zulässig?"
-            let p = ps !! x
-            redex <- peek t p
-            inform $ vcat [ text "Redex ist", nest 4 $ toDoc redex ]
-            redukt <- step redex
-            inform $ vcat [ text "Redukt ist", nest 4 $ toDoc redukt ]
-            result <- poke t ( p, redukt )
-            derive result xs
 
-make :: Make
-make = direct Derive I.example                    
+make_fixed :: Make
+make_fixed = direct Derive I.example                    
+
+instance Generator Derive C.Type I.Type where
+    generator p = Lambda.Quiz.generator
+
+instance Project Derive I.Type I.Type where
+    project p = id
+
+
+make_quiz :: Make
+make_quiz = quiz Derive C.example
+

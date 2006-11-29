@@ -201,7 +201,8 @@ tmakers =
                 , item Rewriting.Numerical.make
                 ]
          , heading "Lambda-Kalkül"
-                [ item Lambda.Derive.make
+                [ item Lambda.Derive.make_fixed
+                , item Lambda.Derive.make_quiz
                 ]
          , heading "Graphen"
                 [ item Graph.Selfcom.make
