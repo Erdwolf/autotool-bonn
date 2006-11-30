@@ -21,7 +21,7 @@ pali sigma =
         Language
 	{ abbreviation = foldl1 (++) [ "{ w | w in {" 
 				     , intersperse ',' sigma
-				     , "}^*  und  w = reverse w }"
+				     , "}^*  und  w != reverse w }"
 				     ]
 	, nametag      = "Pali"
 	, alphabet     = mkSet sigma
