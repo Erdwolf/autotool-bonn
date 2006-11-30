@@ -1,6 +1,7 @@
 module Lambda.Step where
 
 import Lambda.Type
+import Lambda.Alpha
 import Lambda.Tree ( peng )
 
 import Autolib.Set
@@ -21,7 +22,13 @@ redex_positions t = do
     guard $ is_redex s
     return p
 
-derive t xxs = do
+derive :: Lambda -> [ Int ] -> Reporter Lambda
+derive start xs = do
+    ts <- derivation start xs
+    return $ last ts
+
+derivation :: Lambda -> [ Int ] -> Reporter [ Lambda ]
+derivation t xxs = do
     inform $ vcat 
         [ text "*****************************************************"
         , text "aktueller Term ist" 
@@ -39,7 +46,7 @@ derive t xxs = do
                      redex <- peek t p 
                      return ( n, p, redex )
     case xxs of
-        [] -> return t
+        [] -> return [ t ]
         x : xs -> do
             inform $ text "Sie wählen den Redex Nummer" <+> toDoc x
             silent $ assert ( 0 <= x && x < length ps )
@@ -50,7 +57,8 @@ derive t xxs = do
             redukt <- step redex
             inform $ vcat [ text "Redukt ist", nest 4 $ toDoc redukt ]
             result <- poke t ( p, redukt )
-            derive result xs
+            ts <- derivation result xs
+	    return $ t : ts
 
 
 -- | apply beta reduction at root (if possible)
@@ -72,24 +80,3 @@ successors t =
               do b' <- successors b ; return $ Abstract v b'
         _ -> []
 
--- | replace each free occurence of v by a 
--- rename bound variables in b when necessary.
--- implementation is not efficient (will compute FV(b) repeatedly)
-free_sub :: Identifier -> Lambda -> Lambda -> Lambda
-free_sub v a t = case t of
-    Variable w -> if v == w then a else t
-    Apply fun arg -> Apply ( free_sub v a fun ) ( free_sub v a arg )
-    Abstract w b -> 
-        let ( w', b' ) = if w `elementOf` free_variables t
-                         then let w' = next_free ( free_variables t )
-                              in  ( w', free_rename w w' b )
-                         else ( w, b )
-        in  Abstract w' $ free_sub v a b'
-
-
-free_rename :: Identifier -> Identifier -> Lambda -> Lambda
-free_rename v w t = case t of
-    Variable u -> if v == u then Variable w else t
-    Apply fun arg -> Apply (free_rename v w fun) ( free_rename v w arg)
-    Abstract u b -> 
-        if v == u then t else Abstract u $ free_rename v w b

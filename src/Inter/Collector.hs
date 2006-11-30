@@ -114,6 +114,7 @@ import qualified Rewriting.Derive
 import qualified Rewriting.Numerical
 
 import qualified Lambda.Derive
+import qualified Lambda.Backward_Join
 
 import qualified PL.Find_Model
 import qualified Hilbert.Central
@@ -203,6 +204,7 @@ tmakers =
          , heading "Lambda-Kalkül"
                 [ item Lambda.Derive.make_fixed
                 , item Lambda.Derive.make_quiz
+                , item Lambda.Backward_Join.make_fixed
                 ]
          , heading "Graphen"
                 [ item Graph.Selfcom.make
