@@ -16,13 +16,13 @@ import Autolib.ToDoc
 import Autolib.Reporter
 import Data.Typeable
 
-data Derive = Derive 
+data Lambda_Derive = Lambda_Derive 
     deriving ( Read, Show, Typeable )
 
-instance Measure Derive I.Type [ Int ] where
+instance Measure Lambda_Derive I.Type [ Int ] where
     measure p inst xs = fromIntegral $ length xs
 
-instance Partial Derive I.Type [ Int ] where
+instance Partial Lambda_Derive I.Type [ Int ] where
     report p inst = do
         let step_info = case steps inst of
                Nothing -> empty
@@ -68,15 +68,15 @@ check_result inst t = do
 
 
 make_fixed :: Make
-make_fixed = direct Derive I.example                    
+make_fixed = direct Lambda_Derive I.example                    
 
-instance Generator Derive C.Type I.Type where
+instance Generator Lambda_Derive C.Type I.Type where
     generator p = Lambda.Quiz.generator
 
-instance Project Derive I.Type I.Type where
+instance Project Lambda_Derive I.Type I.Type where
     project p = id
 
 
 make_quiz :: Make
-make_quiz = quiz Derive C.example
+make_quiz = quiz Lambda_Derive C.example
 
