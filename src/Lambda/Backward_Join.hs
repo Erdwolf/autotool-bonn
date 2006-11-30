@@ -27,7 +27,7 @@ instance Partial Lambda_Backward_Join I.Type S.Type where
         inform $ vcat
             [ text "gesucht ist ein Term t"
 	    , text "mit t ->^*" <+> toDoc ( I.left_goal inst )
-	    , text "und t ->^*" <+> toDoc ( I.left_goal inst )
+	    , text "und t ->^*" <+> toDoc ( I.right_goal inst )
             ]
         inform $ vcat
             [ text "Sie sollen jeweils auch die Ableitungen angeben."
