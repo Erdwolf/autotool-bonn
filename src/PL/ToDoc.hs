@@ -13,7 +13,9 @@ import Autolib.TES.Identifier
 instance ToDoc Formel where
     toDocPrec p ( Operation op xs ) = docParen ( p > 0 ) $ case xs of
         [x]   -> toDoc op <+> toDocPrec 0 x
-	[x,y] -> toDocPrec 1 x <+> toDoc op <+> toDocPrec 1 y
+	[x,y] -> sep [ toDocPrec 1 x 
+                     , toDoc op <+> toDocPrec 1 y
+                     ]
     toDocPrec p ( Quantified q x f ) = docParen ( p > 0 ) $
         toDoc q <+> toDoc x <+> text "." <+> toDoc f
     toDocPrec p ( Predicate r xs ) = 
