@@ -7,6 +7,7 @@ module PL.Find_Model (
 --  $Id$
 
 import PL.Type
+import PL.Tree
 import PL.Param
 import PL.Signatur
 import PL.Struktur
@@ -29,12 +30,14 @@ data Find_Model = Find_Model deriving ( Show, Read, Typeable )
 
 instance Partial Find_Model Param ( Interpretation Int ) where
 
-    describe Find_Model p = vcat
-        [ text "Finden Sie für die Formel"
-	, nest 4 $ toDoc $ formel p
-	, text "ein Modell (eine Interpretation) der Größe"
-	, nest 4 $ toDoc $ model_size p
-	]
+    report Find_Model p = do
+        inform $ vcat
+            [ text "Finden Sie für die Formel"
+	    , nest 4 $ toDoc $ formel p
+	    , text "ein Modell (eine Interpretation) der Größe"
+	    , nest 4 $ toDoc $ model_size p
+	    ]
+        peng $ formel p
 
     initial Find_Model p = 
         PL.Interpretation.empty ( signatur $ formel p ) 

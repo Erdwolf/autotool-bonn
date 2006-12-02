@@ -18,6 +18,7 @@ data Quantor = Forall | Exists
 data Formel = Quantified Quantor Identifier Formel
 	    | Predicate Identifier [ Term ]
 	    | Operation PL.Data.Operator [ Formel ]
+     deriving ( Eq, Ord, Typeable )
 
 data Operator = Not | And | Or | Iff | Implies
      deriving ( Eq, Ord, Typeable )
