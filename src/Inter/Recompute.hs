@@ -50,8 +50,8 @@ recompute_for_aufgabe mk @ ( Make p t make v conf ) auf =
     wrap ("for aufgabe " ++ show ( A.anr auf ) ) $ do
         eins <- SA.get_anr $ A.anr auf
         mapM ( \ e -> recompute_for_einsendung mk auf e
-                  `Control.Exception.catch` \ any -> 
-                      -- putStrLn $ "some error: " ++  show e
+                  `Control.Exception.catch` \ any -> do
+                      hPutStr stderr "?"
                       return ()
              ) eins
         return ()
@@ -71,7 +71,9 @@ recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
         input   <- read_from_file   ( SA.input   eins )
         let ( res, doc :: Doc ) = export $ evaluate p instant input
         let old_result = SA.result  eins
-        when ( not $ compatible old_result res ) $ do
+        if ( compatible old_result res )
+           then hPutStr stderr "."
+           else do
               putStrLn $ show $ vcat
                    [ text "tag:" <+> toDoc tag
                    , text "aufgabe:" <+> toDoc auf
@@ -82,6 +84,7 @@ recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
                    , text "computed result:" <+> toDoc res
                    , text "stored result:" <+> toDoc old_result
                    ]
+              hFlush stdout
 
 compatible ( Just Pending ) _ = True
 compatible ( Just No ) Nothing = True
