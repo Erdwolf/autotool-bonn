@@ -44,7 +44,8 @@ data Make = forall conf p i b
 	    , Help conf, Help i, Help b
 	    , Verify p conf
 	    )
-	  => Make String --  description
+	  => Make p
+                  String --  description
 		  (conf -> Var p i b) --  maker function
 		  (conf -> Reporter ()) -- verify config
                   conf --  example
@@ -53,7 +54,7 @@ instance Typeable Make where
     typeOf _ = mkTyConApp ( mkTyCon "Inter.Types.Make" ) []
 
 instance ToDoc Make 
-    where toDoc ( Make doc fun veri ex ) = text doc
+    where toDoc ( Make p doc fun veri ex ) = text doc
 
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)
@@ -67,7 +68,7 @@ direct :: ( V p i b
          => p 
 	 -> i -- ^ example instance
 	 -> Make
-direct p i = Make 
+direct p i = Make p
              (dashed p ++ "-Direct") 
 	     ( \ i -> Var { problem = p
 		   , tag = dashed p ++ "-Direct"
@@ -107,10 +108,13 @@ data Var p i b =
 	     }
       deriving Typeable
 
+get_i_type :: Var p i b -> i
+get_i_type = error "get_i_type: don't call"
+
 class ( Show p, Typeable p , Read p
       , Typeable i, ToDoc i
       -- , Haskell2Xml i
-      -- , Reader i, Read i
+      , Reader i, Read i
       , Typeable b
       -- , Haskell2Xml b
       , ToDoc b, Reader b 
@@ -120,7 +124,7 @@ instance ( Show p, Typeable p, Read p
       -- , Roller i i
       , Typeable i, ToDoc i
       -- , Haskell2Xml i
-      -- , Reader i, Read i
+      , Reader i, Read i
       , Typeable b
       -- , Haskell2Xml b
       , ToDoc b, Reader b 

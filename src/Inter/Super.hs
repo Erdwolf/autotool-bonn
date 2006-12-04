@@ -418,7 +418,7 @@ fix_instant vnr mks stud auf sa = case SA.instant sa of
             Nothing -> do
                 plain "Aufgabenstellung nicht auffindbar"
                 return Nothing
-            Just ( Make doc fun veri ex ) -> do
+            Just ( Make p0 doc fun veri ex ) -> do
                 ( _, _, com ) <- make_instant 
 		    vnr ( Just $ A.anr auf ) stud fun auf
                 let p = mkpar stud auf

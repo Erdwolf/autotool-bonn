@@ -32,7 +32,7 @@ data Method = Textarea | Upload
 -- für tutor zum ausprobieren
 -- für student echt
 solution vnr manr stud 
-        ( Make doc ( fun :: conf -> Var p i b ) verify ex ) auf = do
+        ( Make p0 doc ( fun :: conf -> Var p i b ) verify ex ) auf = do
 
     ( p, i, icom ) <- make_instant vnr manr stud fun auf
 

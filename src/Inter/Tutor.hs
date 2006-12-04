@@ -31,7 +31,7 @@ import Control.Exception
 -- | ändere aufgaben-konfiguration (nur für tutor)
 edit_aufgabe mks mk mauf vnr manr type_click = do
     case mk of 
-        Make doc ( fun :: conf -> Var p i b ) verify ex -> do
+        Make p doc ( fun :: conf -> Var p i b ) verify ex -> do
 
             let t = fromCGI $ show mk
 

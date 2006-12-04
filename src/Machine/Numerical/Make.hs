@@ -35,7 +35,7 @@ make :: forall c m dat conf b
       ->  Make
 make ( defcon :: Con.Config c m ) = 
     let t = "Machine.Numerical" ++ "." ++ Con.name defcon
-    in Make t
+    in Make N.Computer t
             ( \ ( conf :: Con.Config c m ) ->  Var 
 	          { problem = N.Computer
 		  , tag = t

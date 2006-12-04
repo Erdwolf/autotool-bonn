@@ -84,7 +84,7 @@ quiz :: ( Generator p conf k , Project p k i
      => p -- ^ problem type
      -> conf -- ^ default configuration
      -> Make
-quiz ( p :: p ) ( conf0 :: conf ) = Make 
+quiz ( p :: p ) ( conf0 :: conf ) = Make p
     ( dashed p ++ "-Quiz" )
     ( \ conf -> make p conf )
     ( verify p )
