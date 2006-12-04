@@ -125,6 +125,8 @@ import Algebraic.Integer
 import Algebraic.Graph
 import Algebraic.STGraph
 
+import qualified Flow.Central
+
 makers :: [ Make ]
 makers = do Right make <- flatten tmakers ; return make
 
@@ -240,6 +242,8 @@ tmakers =
          , heading "Programmierung"
                 [ item Type.Check.make
 	        , item Type.Quiz.make
+		, item Flow.Central.goto_to_struct_fixed
+		, item Flow.Central.struct_to_goto_fixed
                 ]
          , heading "Algorithmen"
                 [ heading "Sortiernetze"
