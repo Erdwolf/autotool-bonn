@@ -2,10 +2,12 @@
 
 import qualified Control.Stud_Aufg as SA
 import qualified Control.Aufgabe as A
+import qualified Control.Student as S
 import Control.Types
 
 import Inter.Collector
 import Inter.Evaluate
+import Inter.Common
 import Inter.Types
 
 import Challenger.Partial
@@ -15,16 +17,26 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Control.Exception ( catch )
+import System.IO
 
 main :: IO ()
 main = wrap "main" $ do
     mapM recompute_for_type $ Inter.Collector.makers
     return ()
 
+verbose :: Bool
+verbose = True
+
 wrap msg action = do
-    putStrLn $ "start: " ++ msg
+    if verbose 
+       then hPutStrLn stderr $ "start: " ++ msg
+       else hPutStr stderr  "/"
+    hFlush stderr
     x <- action
-    putStrLn $ "end  : " ++ msg
+    if verbose
+       then hPutStrLn stderr $ "end  : " ++ msg
+       else hPutStr stderr "\\"
+    hFlush stderr
     return x
 
 recompute_for_type mk = 
@@ -35,25 +47,31 @@ recompute_for_type mk =
         return ()
 
 recompute_for_aufgabe mk @ ( Make p t make v conf ) auf = 
-    wrap ("for aufgabe " ++ show auf ) $ do
+    wrap ("for aufgabe " ++ show ( A.anr auf ) ) $ do
         eins <- SA.get_anr $ A.anr auf
-        mapM ( \ e -> recompute_for_einsendung p t auf ( make conf ) e
-                  `Control.Exception.catch` \ any -> return ()
+        mapM ( \ e -> recompute_for_einsendung mk auf e
+                  `Control.Exception.catch` \ any -> 
+                      -- putStrLn $ "some error: " ++  show e
+                      return ()
              ) eins
         return ()
 
 recompute_for_einsendung 
-    :: ( Reader i, Partial p i b , V p i b  )
-    => p -> String -> A.Aufgabe -> Var p i b -> SA.Stud_Aufg -> IO ()
-recompute_for_einsendung   p tag auf v eins = 
-    wrap ("for einsendung " ++ show eins ) $ do
-        instant  <- if True 
-                    then parse_from_file   ( SA.instant eins ) 
-                    else return $ get_i_type v
+    :: Make -> A.Aufgabe -> SA.Stud_Aufg -> IO ()
+recompute_for_einsendung  mk auf eins = 
+    {- wrap ("for einsendung " ++ show eins ) $ -} do
+        studs <- S.get_snr $ SA.snr eins
+        mapM_ ( recompute_for_student mk auf eins ) studs
+        return ()
+
+recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
+        ( p, instant, icom ) <- 
+            make_instant_common (A.vnr auf) (Just $ A.anr auf) stud 
+                   ( fun $ read $ toString $ A.config auf ) 
         input   <- read_from_file   ( SA.input   eins )
         let ( res, doc :: Doc ) = export $ evaluate p instant input
         let old_result = SA.result  eins
-        when ( res /= old_result ) $ do
+        when ( not $ compatible old_result res ) $ do
               putStrLn $ show $ vcat
                    [ text "tag:" <+> toDoc tag
                    , text "aufgabe:" <+> toDoc auf
@@ -64,6 +82,10 @@ recompute_for_einsendung   p tag auf v eins =
                    , text "computed result:" <+> toDoc res
                    , text "stored result:" <+> toDoc old_result
                    ]
+
+compatible ( Just Pending ) _ = True
+compatible ( Just No ) Nothing = True
+compatible x y = x == y
 
 parse_from_file :: ( ToDoc a, Reader a ) => Maybe File -> IO a
 parse_from_file ( Just fname ) = do
