@@ -124,6 +124,7 @@ import qualified Algebraic.Quiz
 import Algebraic.Integer
 import Algebraic.Graph
 import Algebraic.STGraph
+import Algebraic.Set
 
 import qualified Flow.Central
 
@@ -180,6 +181,9 @@ tmakers =
 		    [ item PL.Find_Model.make_fixed
 		    ]
 		]
+         , heading "Mengen und Relationen"
+                [ item $ Algebraic.Central.make Algebraic_Set
+                ]
          , heading "Kombinatorik"
                 [ item PCProblem.Quiz.make_quiz 
 	        , item PCProblem.Quiz.make_fixed
