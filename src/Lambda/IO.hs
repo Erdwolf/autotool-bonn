@@ -31,7 +31,7 @@ instance Reader Lambda where
 atomic :: Parser Lambda 
 atomic = my_parens ( reader :: Parser Lambda )
      <|> try abstraction
-     <|> do this :: Identifier <- reader ; return $ Variable this
+     <|> do ( this :: Identifier ) <- reader ; return $ Variable this
 
 abstraction :: Parser Lambda
 abstraction = do

@@ -33,17 +33,20 @@ tags :
 # note: HADDOCK will be set by configure in config.mk
 #######################################################################
 
-GHC_VERSION = 6.4.2.20060121
+# GHC_VERSION = 6.4.2.20060121
+GHC_VERSION = 6.6
 
 GHC_LIBS = base haskell98 parsec unix network readline
 GHC_LINK = http://www.haskell.org/ghc/docs/$(GHC_VERSION)/html/libraries
 GHC_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries
 
 HAXML_LINK = http://www.cs.york.ac.uk/fp/HaXml
-HAXML_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries/HaXml
+# HAXML_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries/HaXml
+HAXML_DESC = /usr/local/share/HaXml-1.13.2/doc/html
 
 AUTOLIB_LINK = http://141.57.11.163/auto/lib/haddock
-AUTOLIB_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries/Autolib
+# AUTOLIB_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries/Autolib
+AUTOLIB_DESC = /usr/local/share/Autolib-0.0/doc/html
 
 HADDOCK_OUTPUT = $(WWW)/auto/tool/haddock
 

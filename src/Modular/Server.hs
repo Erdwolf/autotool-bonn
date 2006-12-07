@@ -11,6 +11,8 @@ import Modular.Seed
 import Modular.Solution
 import Modular.Pair
 
+import Debug
+
 import Inter.Types
 import Control.Types ( size, is_okay )
 import Inter.Evaluate
@@ -26,15 +28,20 @@ import Control.Monad ( guard )
 import qualified Text.XHtml as H
 import Data.Typeable
 
-find_and_apply makers task action = do
+
+find_and_apply tag makers task action = do
     let ms = do 
             m @ ( Make this _ _ _ ) <- makers
 	    guard $ Modular.Task.contents task == this
 	    return m
-    case ms of
+    debug $ "RPC call " ++ tag ++ " starts"
+    result <- case ms of
         [ m ] -> action m 
 	[]     -> error "no task with this name"
 	ms -> error "more than one task with this name"
+    debug $ ".. RPC call " ++ tag ++ " ends with result:"
+    debug $ show result
+    return result
 
 list_types :: [ Make ] -> IO [ Task ]
 list_types makers = return $ do
@@ -44,7 +51,7 @@ list_types makers = return $ do
 get_config :: [ Make ] 
 	   -> Task 
 	   -> IO ( Documented Config )
-get_config makers task = find_and_apply makers task 
+get_config makers task = find_and_apply "get_config" makers task 
      $ \ ( Make _ _ _ conf ) -> do
              return $ Documented 
 		   { Modular.Documented.contents = 
@@ -56,9 +63,10 @@ verify_config :: [ Make ]
 	      -> Task
 	      -> Config 
 	      -> IO ( Signed Config ) 
-verify_config makers task conf = find_and_apply makers task
+verify_config makers task conf = find_and_apply "verify_config" makers task
     $ \ ( Make _ _ verify _ ) -> do
-            let iconf = read $ Modular.Config.contents conf 
+            let ( iconf  ) = read $ Modular.Config.contents conf 
+            -- when ( size iconf < 0 ) $ error "reading failed (probably)"            
 	    let ( result, doc :: Doc ) = export $ verify iconf
 	    case result of
 	        Just () -> sign conf
@@ -71,7 +79,7 @@ get_instance :: [ Make ]
 	     -> IO ( Pair ( Documented ( Signed Instance ) )
                           ( Documented Solution )
                    )
-get_instance makers task sconf seed = find_and_apply makers task 
+get_instance makers task sconf seed = find_and_apply "get_instance" makers task 
     $ \ ( Make _ make _ _ ) -> do
         this <- Modular.Signed.unsign sconf
                  -- FIXME: parse errors
@@ -106,7 +114,7 @@ grade :: [ Make ]
       -> Signed Instance
       -> Solution
       -> IO ( Documented ( Pair Bool Double ) )
-grade makers task sinst sol = find_and_apply makers task 
+grade makers task sinst sol = find_and_apply "grade" makers task 
     $ \ ( Make _ ( _ :: c -> Var p i b ) _ _  ) -> do
        inst <- unsign sinst
        let action = Inter.Evaluate.evaluate 
@@ -131,11 +139,15 @@ main :: IO ()
 main = cgiXmlRpcServer $ serve makers
 
 serve makers =
-     [ ( "autotool.list_types", fun $ list_types makers )
-     , ( "autotool.get_config", fun $ get_config makers )
-     , ( "autotool.verify_config", fun $ verify_config makers )
-     , ( "autotool.get_instance", fun $ get_instance makers )
-     , ( "autotool.grade", fun $ grade makers )
+     [ publish "list_types" $ list_types makers 
+     , publish "get_config" $ get_config makers 
+     , publish "verify_config" $ verify_config makers 
+     , publish "get_instance" $ get_instance makers 
+     , publish "grade"  $ grade makers 
      ]
   
+publish name action = 
+    ( "autotool." ++ name
+    , fun action
+    )
 

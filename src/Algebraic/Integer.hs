@@ -43,7 +43,7 @@ instance Ops Integer where
 	 , B.binary = functions
 	 }
 
-instance Condition () Integer where
+instance Condition () Integer -- where
 
 instance Size Integer where size i = fromIntegral i
 

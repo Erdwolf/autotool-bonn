@@ -52,7 +52,7 @@ next conf inst = mkSet $ do
     redukt <- step redex
     result <- poke t ( p, redukt )
     guard $ inRange ( C.overall_size_range conf ) ( size result )
-    l :: Int <- maybeToList $ I.steps inst
+    ( l :: Int ) <- maybeToList $ I.steps inst
     guard $ inRange ( 0, C.derivation_length conf ) l
     return $ inst 
         { I.to = result 

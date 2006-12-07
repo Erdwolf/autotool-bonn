@@ -49,7 +49,7 @@ import SAT.Beispiel
 instance Partial SAT Formel Belegung where
 
     describe SAT f = vcat
-        [ text "finden Sie eine erfüllende Belegung für die Formel"
+        [ text "finden Sie eine erfuellende Belegung fuer die Formel"
 	, nest 4 $ toDoc f
 	]
 
@@ -63,7 +63,7 @@ instance Partial SAT Formel Belegung where
 	    out = minusSet domain ( variablen f )
         when ( not $ isEmptySet out ) $ reject $ vcat
 	     [ text "Diese Variablen der Belegung"
-	     , text "gehören gar nicht zur Formel:"
+	     , text "gehoeren gar nicht zur Formel:"
 	     , nest 4 $ toDoc out
 	     ]
 
@@ -72,17 +72,17 @@ instance Partial SAT Formel Belegung where
 		False <- maybeToList $ wert klaus b
 		return klaus
 	when ( not $ null wrong ) $ reject $ vcat
-	     [ text "Diese vollständig belegten Klauseln sind nicht erfüllt:"
+	     [ text "Diese vollstaendig belegten Klauseln sind nicht erfuellt:"
 	     , nest 4 $ toDoc wrong
 	     ]
-	inform $ text "Alle vollständig belegten Klauseln sind erfüllt."
+	inform $ text "Alle vollstaendig belegten Klauseln sind erfuellt."
 
         let open = do
 		 klaus <- klauseln f
 		 Nothing <- return $ wert klaus b
 		 return klaus
 	inform $ vcat
-	       [ text "Diese Klauseln noch nicht erfüllt:"
+	       [ text "Diese Klauseln noch nicht erfuellt:"
 	       , nest 4 $ toDoc open
 	       ]
 
