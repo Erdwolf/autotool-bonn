@@ -6,14 +6,15 @@ module Algebraic.Integer where
 
 import qualified Autolib.TES.Binu as B
 
-import Algebraic.Class
-import Algebraic.Instance
+import Algebraic2.Class as AC
+import Algebraic2.Instance as  AI
 import Condition
 
 import Autolib.ToDoc
 import Autolib.Choose
 import Autolib.Reader
 import Autolib.Set
+import Autolib.FiniteMap
 import Autolib.Size
 
 import Data.Typeable
@@ -46,10 +47,10 @@ instance Condition () Integer where
 
 instance Size Integer where size i = fromIntegral i
 
-instance Algebraic Algebraic_Integer Integer where
+instance Algebraic Algebraic_Integer () Integer where
     -- evaluate         :: tag -> Exp a -> Reporter a
-    evaluate tag exp = do
-        v <- tfoldR ( error "evaluate" ) inter exp
+    evaluate tag bel exp = do
+        v <- tfoldB bel inter exp
 	return v
         
     -- equivalent       :: tag -> a -> a -> Reporter Bool
@@ -59,13 +60,18 @@ instance Algebraic Algebraic_Integer Integer where
     -- some_formula     :: tag -> Algebraic.Instance.Type a -> Exp a
     some_formula tag i = read "(1 + 1)* (1 + 1)"
 
+    default_context tag = ()
+
     -- default_instance :: tag -> Algebraic.Instance.Type a
-    default_instance tag = Algebraic.Instance.Make
-        { target = 13
+    default_instance tag = AI.Make
+        { context = ()
+	, target = 13
           , description = Nothing
 	  , operators = default_operators tag
+	  , predefined = listToFM [ ( read "foo", 81 ) ]
           , max_size = 7
 	}
 
     default_operators tag = bops
 
+    default_predefined tag = emptyFM

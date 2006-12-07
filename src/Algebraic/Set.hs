@@ -2,73 +2,65 @@
 
 module Algebraic.Set where
 
-import qualified Autolib.TES.Binu as B
 
-import qualified Algebraic.Nested as Nested
+import qualified Algebraic.Nested.Type as Nested
+import Algebraic.Nested.Op 
+import Algebraic.Nested.Restriction
 
-import Algebraic.Class
-import Algebraic.Instance
+import Algebraic2.Class
+import Algebraic2.Instance as AI
 import Condition
 
 import Autolib.ToDoc
 import Autolib.Choose
 import Autolib.Reader
 import Autolib.Size
+import Autolib.FiniteMap
+
+import qualified Autolib.Reporter.Set
 
 import Data.Typeable
 
 data Algebraic_Set = Algebraic_Set deriving ( Read, Show, Typeable )
 
-
-functions :: Ord a => [ Op ( Nested.Type a ) ]
-functions = 
-       [ Op { name = "+", arity = 2, precedence = Just 5, assoc = AssocLeft
-            , inter = lift $ \ [ x, y ] -> Nested.union x y
-            }
-       , Op { name = "-", arity = 2, precedence = Just 5, assoc = AssocLeft
-            , inter = lift $ \ [ x, y ] -> Nested.difference x y
-            }
-       , Op { name = "*", arity = 2, precedence = Just 7, assoc = AssocLeft
-            , inter = lift $ \ [ x, y ] -> Nested.intersection x y
-            }
-       , Op { name = "pow", arity = 1, precedence = Nothing, assoc = AssocNone
-            , inter = lift $ \ [ x ] -> Nested.power x 
-            }
-       ]
-
-zahl :: Integer -> Op ( Nested.Type Integer )
-zahl i = Op { name = show i, arity = 0, precedence = Nothing, assoc = AssocNone
-            , inter = lift $ \ [ ] -> Nested.unit i
-            } 
-
-instance Ops ( Nested.Type Integer ) where 
-    bops = B.Binu
-	 { B.nullary =  map zahl [ 0 .. 9 ]	
-	 , B.unary = []
-	 , B.binary = functions
-	 }
-
-instance Condition () ( Nested.Type Integer ) where
-
-
-instance Algebraic Algebraic_Set ( Nested.Type Integer ) where
+instance Algebraic Algebraic_Set () ( Nested.Type Integer ) where
     -- evaluate         :: tag -> Exp a -> Reporter a
-    evaluate tag exp = do
-        v <- tfoldR ( error "evaluate" ) inter exp
+    evaluate tag bel exp = do
+        v <- tfoldB bel inter exp
+	inform $ vcat [ text "Der Wert Ihres Terms ist"
+		      , nest 4 $ toDoc v
+		      ]
 	return v
         
     -- equivalent       :: tag -> a -> a -> Reporter Bool
     equivalent tag a b = do
-       return $ a == b
+        inform $ text "stimmen die Werte überein?"
+	let ab = difference a b
+	    ba = difference b a
+	    err = union ab ba
+        let ok = is_empty err 
+	when ( not ok ) $ reject $ vcat 
+             [ text "Nein, diese Elemente kommen nur in jeweils einer der Mengen vor:"
+	     , nest 4 $ toDoc err
+	     ]
+	return ok
+
 
     -- some_formula     :: tag -> Algebraic.Instance.Type a -> Exp a
     some_formula tag i = read "pow (1 + pow (2)) "
 
+    default_context tag = ()
+
     -- default_instance :: tag -> Algebraic.Instance.Type a
-    default_instance tag = Algebraic.Instance.Make
+    default_instance tag = AI.Make
         { target = Nested.example
+	, context = ()
           , description = Nothing
 	  , operators = default_operators tag
+	  , predefined = listToFM 
+	      [ (read "A", read "{1,3,5,6}" )
+	      , (read "B", read "{2,3,6,7}" )
+	      ]		  
           , max_size = 7
 	}
 

@@ -121,10 +121,16 @@ import qualified Hilbert.Central
 
 import qualified Algebraic.Central
 import qualified Algebraic.Quiz
-import Algebraic.Integer
+
 import Algebraic.Graph
 import Algebraic.STGraph
+
+import qualified Algebraic2.Central
+import qualified Algebraic2.Quiz
+
+import Algebraic.Integer
 import Algebraic.Set
+import Algebraic.Relation
 
 import qualified Flow.Central
 
@@ -182,7 +188,10 @@ tmakers =
 		    ]
 		]
          , heading "Mengen und Relationen"
-                [ item $ Algebraic.Central.make Algebraic_Set
+                [ item $ Algebraic2.Central.make Algebraic_Set
+		, item $ Algebraic2.Quiz.make Algebraic_Set
+		, item $ Algebraic2.Central.make Algebraic_Relation
+		, item $ Algebraic2.Quiz.make Algebraic_Relation
                 ]
          , heading "Kombinatorik"
                 [ item PCProblem.Quiz.make_quiz 
@@ -316,8 +325,8 @@ tmakers =
                 , item Graph.VC.VCSAT.make_quiz               
                 ]
 	  , heading "experimentell"
-	        [ item $ Algebraic.Central.make Algebraic_Integer
-	        , item $ Algebraic.Quiz.make Algebraic_Integer
+	        [ item $ Algebraic2.Central.make Algebraic_Integer
+	        , item $ Algebraic2.Quiz.make Algebraic_Integer
 	        , item $ Algebraic.Central.make Algebraic_Graph
 	        , item $ Algebraic.Quiz.make Algebraic_Graph
 	        , item $ Algebraic.Central.make Algebraic_STGraph

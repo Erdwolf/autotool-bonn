@@ -14,6 +14,7 @@ where
 import Autolib.Reader 
 import Autolib.ToDoc
 import Autolib.Hash
+import Autolib.FiniteMap
 import Autolib.Util.Size
 
 import qualified Autolib.Symbol
@@ -51,6 +52,26 @@ data Op a = Op { name  :: String
 
 lift fun = \ arg -> return $ fun arg
 
+lift0 fun = \ xs -> case xs of
+    [] -> return fun
+    _  -> complain 0 xs
+
+lift1 fun = \ xs -> case xs of
+    [x1] -> return $ fun x1
+    _  -> complain 1 xs
+
+lift2 fun = \ xs -> case xs of
+    [x1, x2] -> return $ fun x1 x2
+    _  -> complain 2 xs
+
+complain :: ToDoc a => Int -> [a] -> Reporter b
+complain n xs = reject $ vcat
+		 [ text "erwarte" <+> toDoc n <+> text "Argumente, bekomme" 
+		 , nest 4 $ toDoc xs
+		 ]
+
+
+
 -- | TODO: move to Autolib/TES/Type (next to tfold)
 tfoldR :: ( v -> Reporter a )
       -> ( c -> [a] -> Reporter a )
@@ -61,6 +82,17 @@ tfoldR fvar fnode t = case t of
     T.Node f args -> do
         vals <- mapM ( tfoldR fvar fnode ) args
 	fnode f vals
+
+tfoldB :: ( Ord v, ToDoc v )
+       =>  FiniteMap v a
+      -> ( c -> [a] -> Reporter a )
+      -> T.Term v c
+      -> Reporter a
+tfoldB bel = tfoldR $ \ v -> case lookupFM bel v of
+        Nothing -> 
+	    reject $ hsep [ text "Bezeichner", toDoc v, text "unbekannt." ]
+        Just v  -> 
+	    return v
 
 -- | for parsing
 class Ops a where

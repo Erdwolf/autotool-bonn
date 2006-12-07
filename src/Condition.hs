@@ -17,8 +17,15 @@ import Autolib.Reader
 import Data.Typeable
 
 class ( ToDoc prop, Reader prop, Typeable prop, Suggest prop ) 
-      => Condition prop ob | ob -> prop where
+    => Explain prop where
     explain   :: prop -> Doc
+    explain = toDoc
+   
+instance ( ToDoc prop, Reader prop, Typeable prop, Suggest prop ) 
+    => Explain prop 
+
+class Explain prop
+      => Condition prop ob | ob -> prop where
     condition :: prop -> ob -> Reporter ()
 
 investigate :: Condition prop ob

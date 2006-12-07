@@ -26,6 +26,8 @@ data Property = Det
 
 instance Condition  Property ( Turing Char Int ) where
     condition p a = C.run ( Turing.Property.check p ) a
+
+instance Explain Property where
     explain p = C.condition ( Turing.Property.check p )
 
 instance Machine.Numerical.Config.Check Property ( Turing Char Int ) where

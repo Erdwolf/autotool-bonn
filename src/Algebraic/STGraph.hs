@@ -60,7 +60,6 @@ data Algebraic_STGraph = Algebraic_STGraph
     deriving ( Read, Show, Typeable )
 
 instance Condition () ( STGraph a ) where 
-    explain p = toDoc ()
     condition p g = return ()
 
 instance Algebraic Algebraic_STGraph ( STGraph Int ) where

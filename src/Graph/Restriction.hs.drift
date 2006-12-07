@@ -34,7 +34,6 @@ instance Suggest Restriction where
 	      ]
 
 instance GraphC a => Condition Restriction ( Graph a ) where
-    explain r = toDoc r
     condition r g = case r of
         Min_Size m -> do
 	    let s = size g

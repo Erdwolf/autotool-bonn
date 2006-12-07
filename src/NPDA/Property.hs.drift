@@ -26,6 +26,8 @@ data Property = Det
 
 instance Condition  Property ( NPDA Char Char Int ) where
     condition p a = C.run ( NPDA.Property.check p ) a
+
+instance Explain Property where
     explain p = C.condition ( NPDA.Property.check p )
 
 check :: Property -> C.Type  ( NPDA Char Char Int )
