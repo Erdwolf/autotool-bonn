@@ -82,11 +82,11 @@ instance (ToDoc a, Ord a ) => Ops ( Re a )  where
 		 }
 	    , Op { name = "-", arity = 2
 		 , precedence = Just 5, assoc = AssocLeft
-		 , inter = lift2R $ difference
+		 , inter = lift2R $ R.difference
 		 }
 	    ,  Op { name = "&", arity = 2
 		 , precedence = Just 6, assoc = AssocLeft
-		 , inter = lift2R $ intersection
+		 , inter = lift2R $ R.intersection
 		 }
 	    ,  Op { name = "*", arity = 2
 		 , precedence = Just 6, assoc = AssocLeft
@@ -97,16 +97,6 @@ instance (ToDoc a, Ord a ) => Ops ( Re a )  where
 
 lift1R fun xs = fmap Re $ lift1 fun $ map unRe xs
 lift2R fun xs = fmap Re $ lift2 fun $ map unRe xs
-
-difference r s = R.make_on ( R.source r, R.target r ) $ do
-    (x, y) <- R.pairs r
-    guard $ not $ R.holds s x y
-    return ( x, y )
-
-intersection r s = R.make_on ( R.source r, R.target r ) $ do
-    (x, y) <- R.pairs r
-    guard $ R.holds s x y
-    return ( x, y )
 
 ---------------------------------------------------------------------------
 

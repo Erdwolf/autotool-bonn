@@ -9,7 +9,7 @@ import Condition
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
-import         Depth
+import Autolib.Depth
 
 import Autolib.Reporter
 
@@ -35,5 +35,5 @@ instance ( Ord a, ToDoc a )
 	    
 
 -- local variables:
--- mode: haskell;
--- end;
+-- mode: haskell
+-- end:

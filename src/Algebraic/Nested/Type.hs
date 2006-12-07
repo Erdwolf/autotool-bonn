@@ -11,7 +11,7 @@ import Autolib.Reader
 import qualified Autolib.Set as S
 
 import Autolib.Size
-import Depth
+import Autolib.Depth
 
 import Data.Typeable
 
