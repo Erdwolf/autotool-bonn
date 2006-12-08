@@ -24,7 +24,8 @@ nachfolger a k = concat $ map setToList $
 sinnvoll ::  NPDAC x y z
 	 => Konfiguration x y z -> Bool
 sinnvoll k =
-    length (keller k) <= 2 * length (eingabe k) + 3
+    -- length (keller k) <= 2 * length (eingabe k) + 3
+    True
 
 
 folgekonfigurationen 
