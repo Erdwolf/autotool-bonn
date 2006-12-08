@@ -21,7 +21,9 @@ import System.IO
 
 main :: IO ()
 main = wrap "main" $ do
-    mapM recompute_for_type $ Inter.Collector.makers
+    mapM recompute_for_type 
+             $ filter ( \ m -> show m == "Acceptor-NPDA-Quiz" )
+             $ Inter.Collector.makers
     return ()
 
 verbose :: Bool
@@ -51,7 +53,7 @@ recompute_for_aufgabe mk @ ( Make p t make v conf ) auf =
         eins <- SA.get_anr $ A.anr auf
         mapM ( \ e -> recompute_for_einsendung mk auf e
                   `Control.Exception.catch` \ any -> do
-                      hPutStr stderr "?"
+                      hPutStr stderr $ "err: " ++ show any
                       return ()
              ) eins
         return ()
