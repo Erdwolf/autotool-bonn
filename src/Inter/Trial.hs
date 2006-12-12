@@ -85,15 +85,57 @@ my_name = "Trial.cgi"
 main :: IO ()
 main = Gateway.CGI.execute ( my_name ++ "#hotspot" ) $ do
    let stud = S.Student { }
-   wrap $ aufgaben Inter.Collector.tmakers ( stud, VNr 42, True )
+   wrap $ selektor stud
 
-aufgaben tmk ( stud, vnr, tutor ) = do
+btabled :: Monad m => Form m a -> Form m a
+btabled = bracketed btable
+rowed :: Monad m => Form m a -> Form m a
+rowed = bracketed row
+mutexed :: ( Typeable a, Monad m ) => Form m () -> Form m a
+mutexed action = do begin ; action ; end
+bracketed b action = do open b; x <- action ; close ; return x
+
+selektor stud = do
     h3 "Aufgaben"
+    let tmk = Inter.Collector.tmakers
+    action <- btabled $ click_choice "Auswahl..." 
+        [ ( "nach Vorlesungen", vor tmk )
+	, ( "nach Themen"
+	  , aufgaben tmk 
+	  )
+	]
+    action ( stud, VNr 42, True )   
 
+vor tmk pack = do
+    schulen <- io $ U.get
+    schule <- btabled $ click_choice "Hochschule" $ do
+        u <- schulen
+	return ( toString $ U.name u , u )
+    vors <- io $ V.get_at_school $ U.unr schule
+    vor <- btabled $ click_choice "Vorlesung" $ do
+        v <- vors
+	return ( toString $ V.name v , v )
+    aufgaben <- io $ A.get ( Just $ V.vnr vor )
+    ( conf, auf ) <- mutexed $ btabled $ do
+	rowed $ do plain "Aufgabe" ; plain "Typ"
+	sequence_ $ do
+	    auf <- aufgaben
+	    return $ rowed $ do
+	        plain $ toString $ A.name auf
+		plain $ toString $ A.typ  auf
+		click ( "solve" , ( False, auf ) )
+		click ( "config and solve", ( True, auf ) )
+    common_aufgaben tmk pack ( Just auf ) conf   
+
+aufgaben tmk pack = do
+    common_aufgaben tmk pack Nothing True
+
+common_aufgaben tmk ( stud, vnr, tutor ) mauf conf = do
     let mks = do Right mk <- flatten tmk ; return mk
-
-    ( mk, type_click ) <- find_mk tmk True Nothing
-    auf' <- edit_aufgabe mks mk Nothing vnr Nothing type_click
+    ( mk, type_click ) <- find_mk tmk True mauf
+    auf' <- case ( mauf, conf ) of
+	 ( Just auf, False ) -> return auf
+	 _ -> edit_aufgabe mks mk Nothing vnr Nothing type_click
     stud' <- get_stud tutor stud
     solution vnr Nothing stud' mk auf' 
     scores <- scores_link
