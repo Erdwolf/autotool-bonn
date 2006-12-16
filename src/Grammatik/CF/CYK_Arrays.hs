@@ -1,8 +1,5 @@
 module Grammatik.CF.CYK_Arrays
 
--- -- $Id$
-
-
 ( module Autolib.Simple_Set
 
 , ctable
@@ -24,16 +21,22 @@ import qualified Autolib.Set as S
 
 import Data.Array
 
+-- | if not in range, default to empty set
+safe_set_lookup :: Ix a => Array a ( Set b ) -> a -> Set b
+safe_set_lookup a i = 
+    if inRange (bounds a) i
+    then a ! i
+    else emptySet
 
 -- polymorph ==> frißt rechenzeit
-table_lookup :: Ix a => Array a b -> a -> b
-table_lookup a i = a ! i
+table_lookup :: Ix a => Array a (Set b) -> a -> Set b
+table_lookup = safe_set_lookup
 
-ctable_lookup :: Array Char b -> Char -> b
-ctable_lookup a i = a ! i
+ctable_lookup :: Array Char (Set b) -> Char -> Set b
+ctable_lookup = safe_set_lookup
 
-vtable_lookup :: Array (Int, Int) b -> (Int, Int) -> b
-vtable_lookup a i = a ! i
+vtable_lookup :: Array (Int, Int) (Set b) -> (Int, Int) -> Set b
+vtable_lookup = safe_set_lookup
 
 grenzen :: ( Ord a, Bounded a ) => [ a ] -> ( a, a )
 grenzen [] = ( minBound , maxBound ) -- UGLY UGLY
