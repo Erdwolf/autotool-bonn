@@ -23,6 +23,7 @@ import Data.List (inits, intersperse)
 import System.Directory
 import Control.Monad (guard, when)
 import System.Cmd ( system)
+import System.IO
 import System.Environment ( getEnv )
 import Data.Char (isAlphaNum)
 import qualified System.Posix
@@ -112,8 +113,12 @@ schreiben d inhalt = do
     createDir d
     h <- home d
     debug "before writeFile ..."
-    when ( length inhalt >= 0 ) -- force evaluation? 
-	 $ writeFile h inhalt
+--    when ( length inhalt >= 0 ) -- force evaluation? 
+--	 $ writeFile h inhalt
+    f <- openFile h WriteMode 
+    hPutStr f inhalt
+    hClose f
+
     debug "... after writeFile"
     perm "go+r" h
     return h
@@ -141,8 +146,12 @@ lesen :: Datei -> IO(String)
 lesen d  = do
     h <- home d
     ex <- System.Directory.doesFileExist h
-    if ex then readFile h
-	  else error $ "file: " ++ h ++ " does not exist"
+    if ex then do
+            f <- openFile h ReadMode
+            cs <- hGetContents f
+	    hClose f
+	    return cs
+        else error $ "file: " ++ h ++ " does not exist"
 
 existiert :: Datei -> IO Bool
 existiert d  = do
