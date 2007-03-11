@@ -99,25 +99,27 @@ iface tmk = do
 data Code = Stat | Auf | Einsch
    deriving ( Show, Eq, Typeable )
 
+
 use_account tmk = do
 
     h3 "Login"
     -- für Student und Tutor gleicher Start
 
-    svt @ ( stud, vor, tutor0, attends0 ) <- Inter.Login.form
+    svt @ ( stud, vor, status0, attends0 ) <- Inter.Login.form
 
-    ( tutor, attends ) <- 
-        if tutor0
+    ( status, attends ) <- 
+        if status0 == Tutor
         then do
             h3 "Sie sind Tutor für diese Vorlesung."
             open btable
             result <- click_choice_with_default 0 "Arbeiten als..."
-                  [ ("Tutor", ( tutor0, attends0 ) ) 
-                  , ("Student", ( False, True ) )
+                  [ ("Tutor", ( Tutor, attends0 ) ) 
+                  , ("Student", ( Student, True ) )
                   ]
             close
             return result
-        else return ( False, attends0 )
+        else return ( Student, attends0 )
+    let tutor = ( status >= Tutor )
 
     open btable
     aktion <- click_choice_with_default 0 "Aktion" $

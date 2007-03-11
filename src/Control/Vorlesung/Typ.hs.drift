@@ -15,6 +15,7 @@ import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 data Vorlesung =
      Vorlesung { vnr :: VNr
 	       , unr :: UNr
+	       , enr :: ENr
 	       , name :: Name
 	       , einschreibVon :: Time
 	       , einschreibBis :: Time

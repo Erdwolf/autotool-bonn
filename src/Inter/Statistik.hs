@@ -30,11 +30,11 @@ import Control.Monad
 -- main :: IO ()
 -- main = Inter.CGI.execute "Statistik.cgi" $ iface 
 
-main svt @ ( stud, vor, tutor, attends ) = do
+main svt @ ( stud, vor, status, attends ) = do
 
     h3 "autotool: Statistiken"
 
-    guard $ tutor
+    guard $ status >= Tutor
 
     open btable
     action <- click_choice "zeige" 

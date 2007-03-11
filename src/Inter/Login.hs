@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 --  $Id$
 
 module Inter.Login where
@@ -14,10 +16,15 @@ import qualified Text.XHtml
 
 import Autolib.Util.Sort
 
+import Data.Typeable
+
+data Status = Student | Tutor | Direktor | Minister
+   deriving ( Show, Eq, Ord, Typeable )
+
 -- | returns ( s, v, ist_tutor, ist_eingeschrieben )
 -- unterschiede: tutor darf "alles",
 -- student darf keine aufgaben ändern und nur aktuelle aufgaben sehen
-form :: Form IO ( S.Student, V.Vorlesung, Bool , Bool )
+form :: Form IO ( S.Student, V.Vorlesung, Status , Bool )
 form = do
 
     -- open btable
@@ -49,11 +56,13 @@ aule stud = do
         plain motd
         par
 
-    let tutor = V.vnr vor `elem` map V.vnr tvors
+    let status = if V.vnr vor `elem` map V.vnr tvors
+		then Tutor
+		else Student
 	attends = V.vnr vor `elem` map V.vnr avors
 
     open btable
-    when ( not tutor ) close -- risky
+    when ( status < Tutor ) close -- risky
 
-    return ( stud, vor, tutor, attends )
+    return ( stud, vor, status, attends )
 

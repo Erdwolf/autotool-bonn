@@ -13,6 +13,7 @@ import Prelude hiding ( all )
 qq =  Select 
      $ map reed [ "vorlesung.VNr as VNr" 
 		, "vorlesung.UNr as UNr" 
+		, "vorlesung.ENr as ENr" 
 		, "vorlesung.Name as Name"
 		, "vorlesung.EinschreibVon as Von"
 		, "vorlesung.EinschreibBis as Bis"
@@ -88,6 +89,7 @@ get_attended snr = do
 common = collectRows $ \ state -> do
     	g_vnr <- getFieldValue state "VNr"
     	g_unr <- getFieldValue state "UNr"
+    	g_enr <- getFieldValue state "ENr"
         g_name <- getFieldValue state "Name"
         g_von <- getFieldValue state "Von"
         g_bis <- getFieldValue state "Bis"
@@ -97,6 +99,7 @@ common = collectRows $ \ state -> do
         g_motd   <- getFieldValue state "Motd"
         return $ Vorlesung { vnr = g_vnr
 			   , unr = g_unr
+			   , enr = g_enr
 			 , name = g_name
 			  , einschreibVon = g_von
 			  , einschreibBis = g_bis
