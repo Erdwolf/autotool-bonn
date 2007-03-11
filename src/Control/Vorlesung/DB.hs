@@ -22,27 +22,25 @@ qq =  Select
                 , "vorlesung.motd as Motd"
 		] 
 
--- | get alle vorlesungen aus DB
--- TODO: implementiere filter
-get :: IO [ Vorlesung ]
-get = do
+get_from_where f w = do
     conn <- myconnect
     stat <- squery conn $ Query qq
-        [ From $ map reed [ "vorlesung" ] ]
+        [ From f, Where w ]
     res <- common stat
     disconnect conn
     return res
 
+-- | get alle vorlesungen aus DB
+-- TODO: implementiere filter
+get :: IO [ Vorlesung ]
+get = get_from_where (  map reed [ "vorlesung" ] ) 
+             ( ands [] )
+
+
 get_at_school :: UNr -> IO [ Vorlesung ]
-get_at_school unr = do
-    conn <- myconnect
-    stat <- squery conn $ Query qq
-        [ From $ map reed [ "vorlesung" ] 
-        , Where $ equals ( reed "vorlesung.UNr" ) ( toEx unr )
-        ]
-    res <- common stat
-    disconnect conn
-    return res
+get_at_school unr = 
+      get_from_where (  map reed [ "vorlesung" ] ) 
+             ( equals ( reed "vorlesung.UNr" ) ( toEx unr ) )
 
 get_this :: VNr -> IO [ Vorlesung ]
 get_this vnr = do

@@ -21,6 +21,9 @@ get_unr_mnr ( unr , mnr ) =
 get_snr  :: SNr -> IO [ CST.Student ]
 get_snr snr = get_where $ equals ( reed "student.SNr" ) ( toEx snr )
 
+get_unr  :: UNr -> IO [ CST.Student ]
+get_unr unr = get_where $ equals ( reed "student.UNr" ) ( toEx unr )
+
 snr_by_unr_mnr :: ( UNr, MNr ) -> IO [ SNr ]
 snr_by_unr_mnr um = get_unr_mnr um >>= return . map CST.snr
 
@@ -41,8 +44,8 @@ orphans unr =
 get_from_where from ex = do
     conn <- myconnect
     stat <- squery conn $ Query
-        ( Select $ map reed [ "student.SNr", "UNr", "MNr", "Name", "Vorname" 
-			    , "Email", "Passwort", "Next_Passwort" 
+        ( Select $ map reed [ "student.SNr", "student.UNr", "student.MNr", "student.Name", "student.Vorname" 
+			    , "student.Email", "student.Passwort", "student.Next_Passwort" 
 			    ] )
         [ From $ from
         , Where $ ex

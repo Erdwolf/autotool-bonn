@@ -13,10 +13,12 @@ import Prelude hiding ( all )
 -- | get alle Schulen aus DB
 -- TODO: implementiere filter
 get :: IO [ Schule ]
-get = do
+get = get_from_where (  map reed [ "schule" ] ) $ ands []
+
+get_from_where f w = do
     conn <- myconnect
     stat <- squery conn $ Query qq
-        [ From $ map reed [ "schule" ] ]
+        [ From f , Where w ]
     res <- common stat
     disconnect conn
     return res
@@ -42,8 +44,7 @@ put :: Maybe UNr
     -> IO ()
 put munr vor = do
     conn <- myconnect 
-    let common = [ ( reed "UNr", toEx $ unr vor )
-		 , ( reed "Name", toEx $ name vor )
+    let common = [ ( reed "Name", toEx $ name vor )
 		 , ( reed "Mail_Suffix", toEx $ mail_suffix vor )
 		 ]
     case munr of

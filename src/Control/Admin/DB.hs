@@ -1,11 +1,11 @@
 -- | alles aufsammeln, was mit Rechten zu tun hat
 
-module Control.Admin where
+module Control.Admin.DB where
 
 
 import Control.SQL
 import Control.Types
-import qualified Control.Student.DB
+import qualified Control.Student
 
 import Prelude hiding ( all )
 
@@ -23,32 +23,21 @@ get_tutored snr = do
     disconnect conn
     return res
 
-get_directed :: SNr -> IO [ UNr ]
-get_directed snr = do
-    conn <- myconnect
-    stat <- squery conn $ Query 
-            ( Select $ map reed [ "direktor.UNr as UNr" ] )
-        [ From $ map reed [ "direktor" ] 
-	, Where $ ands
-	        [ equals ( toEx snr ) ( reed "direktor.SNr" ) 
-		]
-	]
-    res <- collectRows ( \ state -> getFieldValue state "UNr" ) stat
-    disconnect conn
-    return res
 
-is_minister :: SNr -> IO Bool
-is_minister snr = do
-    ms <- get_ministered snr
+
+is_minister :: Control.Student.Student -> IO Bool
+is_minister s = do
+    ms <- get_ministered s
     return $ not $ null ms
 
-get_ministered :: SNr -> IO [()]
-get_ministered snr = do
+get_ministered :: Control.Student.Student -> IO [()]
+get_ministered s = do
     conn <- myconnect
-    stat <- squery conn $ Query ( Select [] )
+    stat <- squery conn $ Query ( Select [ reed "minister.SNr" ] )
         [ From $ map reed [ "minister" ] 
 	, Where $ ands
-	        [ equals ( toEx snr ) ( reed "minister.SNr" ) 
+	        [ equals ( toEx $ Control.Student.snr s ) 
+                         ( reed "minister.SNr" ) 
 		]
 	]
     res <- collectRows ( \ state -> return () ) stat

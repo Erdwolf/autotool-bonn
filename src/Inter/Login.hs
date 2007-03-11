@@ -11,7 +11,8 @@ import Control.Monad ( when )
 import qualified Control.Vorlesung as V
 import qualified Control.Student.CGI
 import qualified Control.Student.Type as S
-
+import qualified Control.Admin.CGI
+import qualified Control.Direktor.CGI
 import qualified Text.XHtml
 
 import Autolib.Util.Sort
@@ -30,6 +31,9 @@ form = do
     -- open btable
     stud <- Control.Student.CGI.login
     -- close -- btable
+
+    Control.Admin.CGI.main stud
+    Control.Direktor.CGI.main stud
 
     aule stud
 
