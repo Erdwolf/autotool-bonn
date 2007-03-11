@@ -36,6 +36,9 @@ form = do
 aule stud = do
     let snr = S.snr stud
 
+
+    
+
     -- alle vorlesungen an dieser Schule
     vors0 <- io $ V.get_at_school ( S.unr stud )
     let vors = reverse $ sortBy V.einschreibVon vors0
