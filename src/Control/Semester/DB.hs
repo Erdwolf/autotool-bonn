@@ -82,8 +82,8 @@ put menr sem = do
     let common = [ ( reed "ENr", toEx $ enr sem )
 		 , ( reed "UNr", toEx $ unr sem )
 		 , ( reed "Name", toEx $ name sem )
-		 , ( reed "Von", toEx $ einschreibVon sem )
-		 , ( reed "Bis", toEx $ einschreibBis sem )
+		 , ( reed "Von", toEx $ von sem )
+		 , ( reed "Bis", toEx $ bis sem )
 		 ]
     case menr of
 	 Nothing -> squery conn $ Query

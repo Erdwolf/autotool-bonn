@@ -19,6 +19,7 @@ module Control.Types
 -- , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , MNr(..), SNr(..), ANr(..), GNr(..), VNr(..) -- not abstrakt, see above
 , UNr(..)
+, ENr(..)
 
 , ClockTime
 -- , Typ, Config, Remark, Name, File, Email
@@ -352,6 +353,23 @@ instance ToString UNr where
     toString (UNr i) = show i
 instance FromCGI UNr where
     fromCGI cs = UNr $ read cs
+
+
+-- | Semester-Nummer
+
+data ENr = ENr Int deriving ( Eq, Ord, Typeable )
+
+{-! for ENr derive: ToDoc, Reader, Haskell2Xml !-}
+
+instance SqlBind ENr where 
+    fromSqlValue _ s = Just $ ENr $ read s -- FIXME: check SqlType
+    toSqlValue (ENr i) = toSqlValue i
+instance ToEx ENr where
+    toEx (ENr x) = EString $ show x
+instance ToString ENr where
+    toString (ENr i) = show i
+instance FromCGI ENr where
+    fromCGI cs = ENr $ read cs
 
 
 -- | Gruppen-Nummer
