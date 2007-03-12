@@ -79,8 +79,7 @@ put :: Maybe ENr
     -> IO ()
 put menr sem = do
     conn <- myconnect 
-    let common = [ ( reed "ENr", toEx $ enr sem )
-		 , ( reed "UNr", toEx $ unr sem )
+    let common = [ ( reed "UNr", toEx $ unr sem )
 		 , ( reed "Name", toEx $ name sem )
 		 , ( reed "Von", toEx $ von sem )
 		 , ( reed "Bis", toEx $ bis sem )

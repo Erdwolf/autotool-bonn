@@ -4,6 +4,7 @@ import Control.Types
 import Gateway.CGI
 import Control.Vorlesung.Typ as T
 import Control.Vorlesung.DB
+import Control.Time
 import Control.Monad
 
 edit :: UNr -> Maybe Vorlesung -> Form IO ()
@@ -17,8 +18,8 @@ edit u mv = do
            defaulted_textarea label $ case mv of
                 Just v -> select v ; Nothing -> ""
     n <- dtf "Name" T.name
-    v <- dtf "einschreiben von" T.einschreibVon
-    b <- dtf "einschreiben bis" T.einschreibBis
+    v <- Control.Time.edit "einschreiben von" $ fmap T.einschreibVon mv
+    b <- Control.Time.edit "einschreiben bis" $ fmap T.einschreibBis mv
     m <- dtf "message of the day" T.motd
     close -- btable
     up <- submit "update"
@@ -28,7 +29,7 @@ edit u mv = do
 		       , vnr = case mv of 
 			     Just v -> vnr v ; Nothing -> undefined
 		       , name = fromCGI n
-		       , einschreibVon = fromCGI v
-		       , einschreibBis = fromCGI b
+		       , einschreibVon = v
+		       , einschreibBis = b
                        , motd = fromCGI m
 		       }

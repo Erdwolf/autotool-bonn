@@ -21,7 +21,8 @@ module Control.Types
 , UNr(..)
 , ENr(..)
 
-, ClockTime
+-- , ClockTime -- wer braucht das?
+
 -- , Typ, Config, Remark, Name, File, Email
 , Typ, Config, Remark, Name(..), File, Email(..)
 , Oks (..), Nos (..)
@@ -37,11 +38,13 @@ import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Hash
 
-import System.Time
+-- import System.Time
+import Control.Time
+
 import Control.SQL hiding ( equals )
 import Inter.Crypt
 import Data.Char ( toLower )
-import Data.Maybe ( fromMaybe )
+import Data.Maybe ( fromMaybe, listToMaybe )
 
 import Database.HSQL.MySQL
 import Database.HSQL.Types
@@ -71,9 +74,8 @@ instance SqlBind Crypt where
 
 --------------------------------------------------------------
 
+{-
 data Time = Time String deriving ( Eq, Ord, Typeable )
-
-{-! for Time derive : Reader, ToDoc, Haskell2Xml !-}
 
 instance SqlBind Time where 
     fromSqlValue _ s = Just $ Time s
@@ -85,6 +87,22 @@ instance FromCGI Time where
     fromCGI s = Time s
 instance ToString Time where
     toString (Time x) = x
+-}
+
+-- Zeit wird jetzt intern strukturiert:
+instance SqlBind Time where 
+    fromSqlValue _ s = listToMaybe $ do
+        ( t, "" ) <- reads s
+	return t
+    toSqlValue s = show s
+
+instance ToEx Time where
+    toEx x = EString $ show x
+instance FromCGI Time where
+    fromCGI s = read s
+instance ToString Time where
+    toString x = show x
+
 
 -------------------------------------------------------------
 

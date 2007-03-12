@@ -4,6 +4,7 @@ import Control.Types
 import Gateway.CGI
 import Control.Semester.Typ as S
 import Control.Semester.DB
+import qualified Control.Time
 import Control.Monad
 
 
@@ -19,8 +20,8 @@ edit u e mv = do
            defaulted_textarea label $ case mv of
                 Just v -> select v ; Nothing -> ""
     n <- dtf "Name" S.name
-    v <- dtf "beginnt" S.von
-    b <- dtf "endet" S.bis
+    v <- Control.Time.edit "beginnt" $ fmap S.von mv
+    b <- Control.Time.edit "endet"   $ fmap S.bis mv
     close -- btable
     up <- submit "update"
     when up $ do
@@ -28,6 +29,6 @@ edit u e mv = do
 	   $ Semester { unr = u
 		      , enr = e
 		       , name = fromCGI n
-		       , von = fromCGI v
-		       , bis = fromCGI b
+		       , von = v
+		       , bis = b
 		       }

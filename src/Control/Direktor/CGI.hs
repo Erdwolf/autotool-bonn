@@ -45,15 +45,11 @@ main stud = do
                 [ ("Nein", False), ("Ja", True ) ]
 	close -- btable
         when w $ do
-            u <- case us of
-	        [u] -> return u
-	        _ -> do
-	            open btable
-		    u <- click_choice "für Schule" $ do
+	    open btable
+	    u <- click_choice "für Schule" $ do
                         u <- us
 		        return ( toString $ Control.Schule.name u, u )
-	 	    close
-		    return u
+	    close
             dirigate u 
             mzero
         
@@ -74,11 +70,25 @@ semesterzeiten :: Control.Schule.Schule -> Form IO ()
 semesterzeiten u = do
     open btable
     action <- click_choice "Semesterzeiten"
-       [ ( "bearbeiten", semester_bearbeiten  )
+       [ ("anzeigen", semester_anzeigen )
+       , ( "bearbeiten", semester_bearbeiten  )
        , ("neu anlegen", semester_neu  ) 
        ]
     close
     action u
+
+semester_anzeigen :: Control.Schule.Schule -> Form IO ()
+semester_anzeigen u = do
+    sems <- io $ Control.Semester.get_at_school $ Control.Schule.unr u
+    open btable
+    sequence $ do
+        sem <- sems
+	return $ do
+	   open row
+           plain $ toString $ Control.Semester.name sem
+	   plain $ show sem
+	   close -- row
+    close -- btable
 
 semester_bearbeiten :: Control.Schule.Schule -> Form IO ()
 semester_bearbeiten u = do
@@ -99,11 +109,25 @@ vorlesungen :: Control.Schule.Schule -> Form IO ()
 vorlesungen u = do
     open btable
     action <- click_choice "Vorlesungen"
-       [ ( "bearbeiten", vorlesung_bearbeiten  )
+       [ ("anzeigen", vorlesungen_anzeigen )
+       , ( "bearbeiten", vorlesung_bearbeiten  )
        , ( "neu anlegen", vorlesung_neu  ) 
        ]
     close
     action u
+
+vorlesungen_anzeigen ::  Control.Schule.Schule -> Form IO ()
+vorlesungen_anzeigen u = do
+    vors <- io $ Control.Vorlesung.get_at_school $ Control.Schule.unr u
+    open btable
+    sequence $ do
+        vor <- vors
+	return $ do
+	   open row
+	   plain $ toString $ Control.Vorlesung.name vor
+	   plain $ show vor
+	   close
+    close
 
 vorlesung_neu :: Control.Schule.Schule -> Form IO ()
 vorlesung_neu u = do
@@ -112,15 +136,17 @@ vorlesung_neu u = do
 vorlesung_bearbeiten :: Control.Schule.Schule -> Form IO ()
 vorlesung_bearbeiten u = do
     vors <- io $ Control.Vorlesung.get_at_school $ Control.Schule.unr u
+    open btable
     ( vor , flag ) <- selector_submit_click "wähle" Nothing $ do
         vor <- vors
 	return ( toString $ Control.Vorlesung.name vor, vor )
-    -- open btable
+    close
+    open btable
     action <- click_choice "Aktion" $ 
         [ ("Parameter", vorlesung_parameter u vor )
 	, ("Tutoren", vorlesung_tutoren u vor )
 	]
-    -- end
+    close
     action
 
 vorlesung_parameter :: Control.Schule.Schule 
@@ -133,25 +159,37 @@ vorlesung_tutoren :: Control.Schule.Schule
 		    -> Control.Vorlesung.Vorlesung 
 		    -> Form IO ()
 vorlesung_tutoren u vor = do
-    ds <- io $ Control.Tutor.DB.get_tutors vor
-    plain $ "Tutoren sind:"
-    mapM plain $ map show ds
-
     open btable
-    onoff <- click_choice "Tutor" $
-	  [ ( "hinzufügen", True ), ("absetzen", False) ]
+    action <- click_choice "Tutoren" $
+	  [ ("anzeigen", tutor_anzeigen )
+	  , ( "hinzufügen", tutor_neu )
+	  , ("absetzen", tutor_weg ) 
+	  ]
     close -- btable
+    action u vor
 
-    case onoff of
-        True -> do
-            studs <- io $ Control.Student.DB.get_unr $ Control.Schule.unr u
-            d <- pick_student studs
-            up <- submit "ausführen"
-            when up $ io $ Control.Tutor.DB.put d vor
-        False -> do
-            d <- pick_student ds
-            up <- submit "ausführen"
-            when up $ io $ Control.Tutor.DB.delete d vor
+tutor_anzeigen u vor = do 
+    ds <- io $ Control.Tutor.DB.get_tutors vor
+    open btable
+    sequence $ do
+        d <- ds
+	return $ do
+	    open row
+	    plain $ show d
+	    close
+    close
+
+tutor_neu u vor = do
+    studs <- io $ Control.Student.DB.get_unr $ Control.Schule.unr u
+    d <- pick_student studs
+    up <- submit "ausführen"
+    when up $ io $ Control.Tutor.DB.put d vor
+
+tutor_weg u vor = do
+    ds <- io $ Control.Tutor.DB.get_tutors vor
+    d <- pick_student ds
+    up <- submit "ausführen"
+    when up $ io $ Control.Tutor.DB.delete d vor
 
 pick_student :: [ Control.Student.Student ] 
 	     -> Form IO Control.Student.Student
