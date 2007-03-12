@@ -46,7 +46,7 @@ main stud = do
 	close -- btable
         when w $ do
 	    open btable
-	    u <- click_choice "für Schule" $ do
+	    u <- click_choice_with_default 0 "für Schule" $ do
                         u <- us
 		        return ( toString $ Control.Schule.name u, u )
 	    close
@@ -70,9 +70,9 @@ semesterzeiten :: Control.Schule.Schule -> Form IO ()
 semesterzeiten u = do
     open btable
     action <- click_choice "Semesterzeiten"
-       [ ("anzeigen", semester_anzeigen )
+       [ ( "anzeigen", semester_anzeigen )
        , ( "bearbeiten", semester_bearbeiten  )
-       , ("neu anlegen", semester_neu  ) 
+       , ( "neu anlegen", semester_neu  ) 
        ]
     close
     action u
@@ -98,6 +98,8 @@ semester_bearbeiten u = do
 	return ( toString $ Control.Semester.name sem, sem )
     Control.Semester.edit ( Control.Schule.unr u ) 
           ( Control.Semester.enr sem ) ( Just sem )
+
+
 
 semester_neu :: Control.Schule.Schule -> Form IO ()
 semester_neu u = do
@@ -131,7 +133,7 @@ vorlesungen_anzeigen u = do
 
 vorlesung_neu :: Control.Schule.Schule -> Form IO ()
 vorlesung_neu u = do
-    Control.Vorlesung.edit ( Control.Schule.unr u ) Nothing 
+    Control.Vorlesung.edit u Nothing 
 
 vorlesung_bearbeiten :: Control.Schule.Schule -> Form IO ()
 vorlesung_bearbeiten u = do
@@ -153,7 +155,7 @@ vorlesung_parameter :: Control.Schule.Schule
 		    -> Control.Vorlesung.Vorlesung 
 		    -> Form IO ()
 vorlesung_parameter u vor =
-    Control.Vorlesung.edit ( Control.Schule.unr u ) ( Just vor ) 
+    Control.Vorlesung.edit u ( Just vor ) 
 
 vorlesung_tutoren :: Control.Schule.Schule 
 		    -> Control.Vorlesung.Vorlesung 
@@ -162,7 +164,7 @@ vorlesung_tutoren u vor = do
     open btable
     action <- click_choice "Tutoren" $
 	  [ ("anzeigen", tutor_anzeigen )
-	  , ( "hinzufügen", tutor_neu )
+	  , ("hinzufügen", tutor_neu )
 	  , ("absetzen", tutor_weg ) 
 	  ]
     close -- btable

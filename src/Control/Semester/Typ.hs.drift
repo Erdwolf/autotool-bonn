@@ -21,7 +21,7 @@ data Semester =
 	       -- | nicht in DB, aber bei Zugriff ausgerechnet
 	       , status :: TimeStatus
 	    }
-	deriving ( Typeable )
+	deriving ( Eq, Ord, Typeable )
 
 {-! for Semester derive: Reader, ToDoc, Haskell2Xml !-}
 

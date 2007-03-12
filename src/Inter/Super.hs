@@ -199,7 +199,8 @@ veranstaltungen ( stud , vor, False ) = do
 
 veranstaltungen ( stud , vor, True ) = do
     h3 "Daten der Vorlesung"
-    V.edit ( V.unr vor ) ( Just vor )
+    [ u ] <- io $ U.get_unr ( V.unr vor )
+    V.edit u ( Just vor )
     
     h3 "Übungsgruppen zu dieser Vorlesung:"
     gs <- io $ G.get_this $ V.vnr vor

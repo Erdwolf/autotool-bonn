@@ -5,9 +5,13 @@ import Gateway.CGI
 import Control.Vorlesung.Typ as T
 import Control.Vorlesung.DB
 import Control.Time
+import qualified Control.Semester
+import qualified Control.Schule
 import Control.Monad
 
-edit :: UNr -> Maybe Vorlesung -> Form IO ()
+edit :: Control.Schule.Schule 
+     -> Maybe Vorlesung 
+     -> Form IO ()
 edit u mv = do
     open btable    
     let dtf0 label select =
@@ -17,7 +21,10 @@ edit u mv = do
         dta0 label select =
            defaulted_textarea label $ case mv of
                 Just v -> select v ; Nothing -> ""
-    n <- dtf "Name" T.name
+    open row ; plain "Schule" ; plain $ toString $ Control.Schule.name u ; close
+
+    n <- dtf "Vorlesung" T.name
+    sem <- pick_semester u
     v <- Control.Time.edit "einschreiben von" $ fmap T.einschreibVon mv
     b <- Control.Time.edit "einschreiben bis" $ fmap T.einschreibBis mv
     m <- dtf "message of the day" T.motd
@@ -25,7 +32,8 @@ edit u mv = do
     up <- submit "update"
     when up $ do
         io $ put ( fmap T.vnr mv ) 
-	   $ Vorlesung { unr = u
+	   $ Vorlesung { unr = Control.Schule.unr u
+		       , enr = Control.Semester.enr sem
 		       , vnr = case mv of 
 			     Just v -> vnr v ; Nothing -> undefined
 		       , name = fromCGI n
@@ -33,3 +41,14 @@ edit u mv = do
 		       , einschreibBis = b
                        , motd = fromCGI m
 		       }
+
+pick_semester  :: Control.Schule.Schule 
+	       -> Form IO Control.Semester.Semester
+pick_semester u = do
+    sems <- io $ Control.Semester.get_at_school $ Control.Schule.unr u
+    [sem] <- selectors "Semester" [ (Nothing, do
+         sem <- sems
+	 return ( toString $ Control.Semester.name sem, sem )
+      ) ]
+    return sem
+

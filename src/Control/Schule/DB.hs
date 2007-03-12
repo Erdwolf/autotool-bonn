@@ -15,6 +15,12 @@ import Prelude hiding ( all )
 get :: IO [ Schule ]
 get = get_from_where (  map reed [ "schule" ] ) $ ands []
 
+get_unr :: UNr -> IO [ Schule ]
+get_unr u = get_from_where 
+     (  map reed [ "schule" ] ) 
+     ( equals ( reed "schule.UNr" ) ( toEx u ) )
+
+
 get_from_where f w = do
     conn <- myconnect
     stat <- squery conn $ Query qq

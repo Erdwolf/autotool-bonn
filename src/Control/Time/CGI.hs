@@ -8,9 +8,10 @@ import Data.Ix
 
 edit :: String -> Maybe Time -> Form IO Time
 edit title mt = do
-    t <- io $ case mt of
-         Just t -> return t
-	 Nothing -> fmap read $ Inter.DateTime.now
+    jetzt <- fmap read $ io $ Inter.DateTime.now
+    let t = case mt of
+         Just t -> t
+	 Nothing -> jetzt
     
     let def n opts = ( Just $ length $ takeWhile ( \(_,x) -> x /= n ) opts 
 		     , opts 
@@ -23,13 +24,13 @@ edit title mt = do
 		     [ 1.. ]
     [ y, m, d, h, i, s ]  <- selectors title
         [ def ( year t   ) $ numbers ( 2000, 2010 )
-	, def ( day t    ) $ numbers ( 1, 31 )
 	, def ( month t  ) $ months 
+	, def ( day t    ) $ numbers ( 1, 31 )
 	, def ( hour t   ) $ numbers ( 0, 23 )
 	, def ( minute t ) $ numbers ( 0, 59 )
 	, def ( second t ) $ numbers ( 0, 59 )
 	]
-    return $ Time
+    return $  Time
 	    { year = y, month = m, day = d
 	    , hour = h, minute = i, second = s
 	    }
