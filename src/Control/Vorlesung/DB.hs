@@ -5,6 +5,9 @@ module Control.Vorlesung.DB where
 import Control.SQL
 import Control.Types
 import Control.Vorlesung.Typ
+import qualified Control.Schule
+import qualified Control.Semester
+
 import qualified Control.Student.Type as CST
 import qualified Control.Student.DB
 
@@ -41,6 +44,16 @@ get_at_school :: UNr -> IO [ Vorlesung ]
 get_at_school unr = 
       get_from_where (  map reed [ "vorlesung" ] ) 
              ( equals ( reed "vorlesung.UNr" ) ( toEx unr ) )
+
+get_at_school_sem :: Control.Schule.Schule 
+		  -> Control.Semester.Semester
+		  -> IO [ Vorlesung ]
+get_at_school_sem u e = 
+      get_from_where (  map reed [ "vorlesung" ] ) 
+             $ ands 
+	     [ equals ( reed "vorlesung.UNr" ) ( toEx $ Control.Schule.unr u ) 
+	     , equals ( reed "vorlesung.ENr" ) ( toEx $ Control.Semester.enr e ) 
+	     ]
 
 get_this :: VNr -> IO [ Vorlesung ]
 get_this vnr = do

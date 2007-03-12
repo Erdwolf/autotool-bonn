@@ -92,14 +92,19 @@ semester_anzeigen u = do
 
 semester_bearbeiten :: Control.Schule.Schule -> Form IO ()
 semester_bearbeiten u = do
-    sems <- io $ Control.Semester.get_at_school $ Control.Schule.unr u
-    ( sem, flag ) <- selector_submit_click "wähle" Nothing $ do
-        sem <- sems
-	return ( toString $ Control.Semester.name sem, sem )
+    sem <- pick_semester u
     Control.Semester.edit ( Control.Schule.unr u ) 
           ( Control.Semester.enr sem ) ( Just sem )
 
-
+-- | non-blocking, aktuelles semester als default
+pick_semester u = do
+    open btable
+    sems <- io $ Control.Semester.get_at_school $ Control.Schule.unr u
+    sem <- click_choice_with_default 0 "Semester" $ do
+        sem <- sortBy ( \ s -> Control.Semester.status s /= Current ) sems
+	return ( toString $ Control.Semester.name sem, sem )
+    close
+    return sem
 
 semester_neu :: Control.Schule.Schule -> Form IO ()
 semester_neu u = do
@@ -116,11 +121,14 @@ vorlesungen u = do
        , ( "neu anlegen", vorlesung_neu  ) 
        ]
     close
-    action u
+    sem <- pick_semester u
+    action u sem
 
-vorlesungen_anzeigen ::  Control.Schule.Schule -> Form IO ()
-vorlesungen_anzeigen u = do
-    vors <- io $ Control.Vorlesung.get_at_school $ Control.Schule.unr u
+vorlesungen_anzeigen ::  Control.Schule.Schule 
+		     -> Control.Semester.Semester 
+		     -> Form IO ()
+vorlesungen_anzeigen u sem = do
+    vors <- io $ Control.Vorlesung.get_at_school_sem u sem
     open btable
     sequence $ do
         vor <- vors
@@ -131,13 +139,17 @@ vorlesungen_anzeigen u = do
 	   close
     close
 
-vorlesung_neu :: Control.Schule.Schule -> Form IO ()
-vorlesung_neu u = do
+vorlesung_neu :: Control.Schule.Schule 
+	     -> Control.Semester.Semester 
+	      -> Form IO ()
+vorlesung_neu u sem = do
     Control.Vorlesung.edit u Nothing 
 
-vorlesung_bearbeiten :: Control.Schule.Schule -> Form IO ()
-vorlesung_bearbeiten u = do
-    vors <- io $ Control.Vorlesung.get_at_school $ Control.Schule.unr u
+vorlesung_bearbeiten :: Control.Schule.Schule 
+		     -> Control.Semester.Semester 
+		     -> Form IO ()
+vorlesung_bearbeiten u sem = do
+    vors <- io $ Control.Vorlesung.get_at_school_sem u sem
     open btable
     ( vor , flag ) <- selector_submit_click "wähle" Nothing $ do
         vor <- vors
