@@ -152,7 +152,8 @@ put :: Maybe VNr
     -> IO ()
 put mvnr vor = do
     conn <- myconnect 
-    let common = [ ( reed "VNr", toEx $ vnr vor )
+    let common = [ ( reed "UNr", toEx $ unr vor )
+		 , ( reed "ENr", toEx $ enr vor )
 		 , ( reed "Name", toEx $ name vor )
 		 , ( reed "Motd", toEx $ motd vor )
 		 , ( reed "EinschreibVon", toEx $ einschreibVon vor )

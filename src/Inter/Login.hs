@@ -42,6 +42,15 @@ form = do
 aule stud = do
     let snr = S.snr stud
 
+    sems0 <- io $ Control.Semester.get_at_school $ S.unr stud
+    let sems = sortBy ( \ s -> Control.Semester.status s /= Current ) 
+	     $ sems0
+ 
+    open btable
+    sem <- click_choice_with_default 0 "Semester" $ do
+	 sem <- sems
+	 return ( toString $ Control.Semester.name sem, sem )
+
     -- alle vorlesungen an dieser Schule
     vors0 <- io $ V.get_at_school ( S.unr stud )
     let vors = reverse $ sortBy V.einschreibVon vors0
@@ -50,16 +59,6 @@ aule stud = do
     -- hierfür ist er eingeschrieben:
     avors <- io $ V.get_attended snr
 
-    semss <- sequence $ do
-        vor <- tvors ++ avors
-	return $ io $ Control.Semester.get_this $ Control.Vorlesung.enr vor
-    let sems = sortBy ( \ s -> Control.Semester.status s /= Current ) 
-	     $ nub $ concat semss
- 
-    open btable
-    sem <- click_choice_with_default 0 "Semester" $ do
-	 sem <- sems
-	 return ( toString $ Control.Semester.name sem, sem )
     let current v = Control.Vorlesung.enr v == Control.Semester.enr sem
 
     vor <- click_choice "Vorlesung" $ do
