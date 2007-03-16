@@ -31,7 +31,7 @@ import Data.Typeable
 
 find_and_apply tag makers task action = do
     let ms = do 
-            m @ ( Make this _ _ _ ) <- makers
+            m @ ( Make p this _ _ _ ) <- makers
 	    guard $ Modular.Task.contents task == this
 	    return m
     debug $ "RPC call " ++ tag ++ " starts"
@@ -45,14 +45,14 @@ find_and_apply tag makers task action = do
 
 list_types :: [ Make ] -> IO [ Task ]
 list_types makers = return $ do
-    Make tag _ _ _ <- makers
+    Make p tag _ _ _ <- makers
     return $ Task tag
 
 get_config :: [ Make ] 
 	   -> Task 
 	   -> IO ( Documented Config )
 get_config makers task = find_and_apply "get_config" makers task 
-     $ \ ( Make _ _ _ conf ) -> do
+     $ \ ( Make p _ _ _ conf ) -> do
              return $ Documented 
 		   { Modular.Documented.contents = 
 		         Config { Modular.Config.contents = show conf }
@@ -64,7 +64,7 @@ verify_config :: [ Make ]
 	      -> Config 
 	      -> IO ( Signed Config ) 
 verify_config makers task conf = find_and_apply "verify_config" makers task
-    $ \ ( Make _ _ verify _ ) -> do
+    $ \ ( Make p _ _ verify _ ) -> do
             let ( iconf  ) = read $ Modular.Config.contents conf 
             -- when ( size iconf < 0 ) $ error "reading failed (probably)"            
 	    let ( result, doc :: Doc ) = export $ verify iconf
@@ -80,7 +80,7 @@ get_instance :: [ Make ]
                           ( Documented Solution )
                    )
 get_instance makers task sconf seed = find_and_apply "get_instance" makers task 
-    $ \ ( Make _ make _ _ ) -> do
+    $ \ ( Make p _ make _ _ ) -> do
         this <- Modular.Signed.unsign sconf
                  -- FIXME: parse errors
         let conf = read  $ Modular.Config.contents this 
@@ -115,7 +115,7 @@ grade :: [ Make ]
       -> Solution
       -> IO ( Documented ( Pair Bool Double ) )
 grade makers task sinst sol = find_and_apply "grade" makers task 
-    $ \ ( Make _ ( _ :: c -> Var p i b ) _ _  ) -> do
+    $ \ ( Make p _ ( _ :: c -> Var p i b ) _ _  ) -> do
        inst <- unsign sinst
        let action = Inter.Evaluate.evaluate 
                    ( read ( Modular.Instance.tag inst ) :: p )
