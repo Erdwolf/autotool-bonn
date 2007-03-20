@@ -38,7 +38,7 @@ main s = do
     m <- io $ is_minister s
     when m $ do
         open btable
-        w <- click_choice "als Admin arbeiten?"
+        w <- click_choice_with_default 0 "als Admin arbeiten?"
                 [ ("Nein", False), ("Ja", True ) ]
         close -- btable
 	when w $ do administrate ; mzero

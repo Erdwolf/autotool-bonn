@@ -41,7 +41,7 @@ main stud = do
     us <- io $ Control.Direktor.DB.get_directed stud
     when ( not $ null us ) $ do
         open btable
-        w <- click_choice "als Direktor arbeiten?"
+        w <- click_choice_with_default 0 "als Direktor arbeiten?"
                 [ ("Nein", False), ("Ja", True ) ]
 	close -- btable
         when w $ do

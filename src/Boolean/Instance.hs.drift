@@ -79,7 +79,7 @@ instance Partial Boolean BI ( Exp Bool ) where
 make :: Make
 make = direct Boolean $  BI 
        { formula = read "x == (y == z)"
-       , operators = read "mkSet [ false, true, !, ||, && ]"
+       , operators = mkSet $ read "[ false, true, !, ||, && ]"
        }
 
 

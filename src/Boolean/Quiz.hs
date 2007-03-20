@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
+
 module Boolean.Quiz where
 
 --  $Id$
@@ -16,6 +18,9 @@ import Autolib.Util.Zufall
 import Autolib.Util.Wort
 import Autolib.Util.Seed
 import Autolib.Set
+
+import Autolib.ToDoc
+import Autolib.Reader
 
 import Util.Datei
 import Util.Cache
@@ -45,7 +50,7 @@ make = quiz Boolean
 		, B.unary   = [ ]
 		, B.nullary = [ read "true", read "false" ]
 		}
-	   , operators_in_solution = read "mkSet [ !, ||, && ]" 
+	   , operators_in_solution = mkSet $ read "[ !, ||, && ]" 
 	   }
 
 instance Generator Boolean BIC BI where
