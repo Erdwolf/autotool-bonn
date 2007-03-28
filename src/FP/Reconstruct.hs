@@ -11,15 +11,22 @@ import Autolib.TES.Position
 import Autolib.Symbol
 
 import Autolib.FiniteMap
+import Autolib.Set
 import Autolib.Reporter hiding ( wrap  )
 
 import Autolib.ToDoc
 
+import Data.Char
 
-type Env = FiniteMap Identifier Type
+data Env = Env ( FiniteMap Identifier Type )
+
+instance ToDoc Env where
+   toDoc ( Env env ) = dutch Nothing ( text "{" , semi, text "}" ) $ do
+       ( n, t ) <- fmToList env
+       return $ toDoc n <+> text "::" <+> toDoc t
 
 env0 :: Env
-env0 = listToFM 
+env0 = Env $ listToFM 
     [ ( read "map", read "forall a b . (a -> b) -> [a] -> [b]" )
     , ( read "append", read "forall a . [a] -> [a] -> [a]" )
     , ( read "reverse", read "forall a. [a] -> [a]" )
@@ -28,7 +35,7 @@ env0 = listToFM
     ]
 
 look :: Env -> Identifier -> Reporter Type
-look env at = do
+look ( Env env ) at = do
     case lookupFM env at of
         Nothing -> reject $ vcat 
 			  [ text "keine Typinformation über" <+> toDoc at
@@ -43,11 +50,14 @@ reconstruct env x = do
     return $ wrap t0
 
 reconstructor env x = do
-    inform $ text "find most general type for" <+> toDoc x
-    t0 <- nested 4 $ reconstruct0 env x
+    inform $ vcat
+	   [ text "berechne allgemeinsten Typ für"
+	   , nest 4 $ toDoc x
+	   ]
+    t0 <- nested 6 $ reconstruct0 env x
     inform $ vcat 
-	   [ text "most general type for" <+> toDoc x
-	   , nest 4 $ text "is" <+> toDoc ( wrap t0 )
+	   [ text "allgemeinster Typ für", nest 4 $ toDoc x
+	   , text "ist  ", nest 4 $ toDoc ( wrap t0 )
 	   ]
     return t0
     
@@ -61,28 +71,54 @@ reconstruct0 env ( Atomic at ) = do
 reconstruct0 env ( Apply fun arg ) = do
     tfun <- reconstructor env fun
 
-    inform $ text "soll ein Funktionstyp sein"
-    let [ src, tgt ] = unused 2 $ vars $ unArrow tfun
+    let [ src, tgt ] = unused' 2 $ vars $ unArrow tfun
     let ar = Node ( mkunary "->" ) [ Var src, Var tgt ]
+    inform $ text "soll ein Funktionstyp sein:" <+> toDoc ( Arrow ar )
 
     sigma <- case mgu ar $ unArrow tfun of
         Just sigma -> do
-	   inform $ text "OK mit Substitution" <+> toDoc sigma
+	   inform $ vcat [ text "paßt mit Substitution"
+			 , nest 4 $ toDoc ( Sub sigma )
+			 ]
 	   return sigma
 	Nothing -> reject $ text "Falsch"
     let src1 = apply sigma $ Var src
 	tgt1 = apply sigma $ Var tgt
 
-    -- TODO: typvariablen in arg wegbenennen (konfliktfrei mit fun)
+
     targ <- reconstructor env arg
-    inform $ text "soll passen zum Argumenttyp" <+> toDoc src1 
-    rho <- case mgu ( unArrow targ ) src1 of
+    -- TODO: typvariablen in arg wegbenennen (konfliktfrei mit fun)
+    let targ1 = Arrow $ disjoint_renamed ( vars $ unArrow tfun ) $ unArrow targ 
+    inform $ vcat [ text "umbenannt in", nest 4 $ toDoc targ1 ]
+
+    inform $ vcat [ text "soll passen zum Argumenttyp"
+		  , nest 4 $ toDoc ( Arrow src1 )
+		  ]
+    rho <- case mgu ( unArrow targ1 ) src1 of
         Just rho -> do
-	    inform $ text "OK mit Substitution" <+> toDoc rho
+	    inform $ vcat 
+		   [ text "paßt mit Substitution", nest 4 $ toDoc ( Sub rho ) ]
 	    return rho
 	Nothing -> reject $ text "Falsch"
 
     return $ Arrow $ apply_partial rho tgt1
 
+data Sub = Sub ( FiniteMap Identifier ( Term Identifier Identifier ) )
 
+instance ToDoc Sub where
+    toDoc ( Sub sub ) = dutch Nothing ( text "{" , semi, text "}" ) $ do
+       ( n, t ) <- fmToList sub
+       return $ toDoc n <+> text "=" <+> toDoc ( Arrow t )
 
+disjoint_renamed vs t = 
+    let ws = vars t
+        common = setToList $ intersect vs ws
+        new = unused' ( length common ) ( union vs ws )
+	rename = listToFM $ zip common $ map Var new
+    in  apply_partial rename t
+
+unused' k vs = take k $ do 
+    v <- pool
+    guard $ not $ v `elementOf` vs
+    guard $ all isAlphaNum $ show v
+    return v
