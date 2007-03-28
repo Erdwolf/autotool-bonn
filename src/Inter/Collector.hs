@@ -37,6 +37,7 @@ import qualified Hanoi.Semantik
 import qualified Hanoi.Quiz
 import qualified Type.Check
 import qualified Type.Quiz
+import qualified FP.Check
 
 -- import qualified Object.Check
 -- import qualified Object.Quiz
@@ -255,6 +256,8 @@ tmakers =
          , heading "Programmierung"
                 [ item Type.Check.make
 	        , item Type.Quiz.make
+		, item FP.Check.make
+		-- , item FP.Quiz.make
 		, item Flow.Central.goto_to_struct_fixed
 		, item Flow.Central.struct_to_goto_fixed
                 ]

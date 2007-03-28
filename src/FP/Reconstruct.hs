@@ -3,6 +3,7 @@ module FP.Reconstruct where
 import FP.Type
 import FP.Arrow
 import FP.Expression
+import FP.Env
 
 import Autolib.TES.Unify
 import Autolib.TES.Identifier
@@ -18,12 +19,6 @@ import Autolib.ToDoc
 
 import Data.Char
 
-data Env = Env ( FiniteMap Identifier Type )
-
-instance ToDoc Env where
-   toDoc ( Env env ) = dutch Nothing ( text "{" , semi, text "}" ) $ do
-       ( n, t ) <- fmToList env
-       return $ toDoc n <+> text "::" <+> toDoc t
 
 env0 :: Env
 env0 = Env $ listToFM 
@@ -85,7 +80,6 @@ reconstruct0 env ( Apply fun arg ) = do
     let src1 = apply sigma $ Var src
 	tgt1 = apply sigma $ Var tgt
 
-
     targ <- reconstructor env arg
     -- TODO: typvariablen in arg wegbenennen (konfliktfrei mit fun)
     let targ1 = Arrow $ disjoint_renamed ( vars $ unArrow tfun ) $ unArrow targ 
@@ -103,10 +97,25 @@ reconstruct0 env ( Apply fun arg ) = do
 
     return $ Arrow $ apply_partial rho tgt1
 
+isinstanceof tgt typ = do
+    inform $ vcat
+	   [ text "Typ", nest 4 $ toDoc typ
+	   , text "ist allgemeiner als Typ", nest 4 $ toDoc tgt
+	   ]
+    case match ( unArrow typ ) ( unArrow tgt ) of
+	 Just sub -> do
+	     inform $ vcat 
+		    [ text "paßt mit Substitution"
+		    , nest 4 $ toDoc ( Sub sub )
+		    ]
+	     return sub
+	 Nothing -> do 
+	     reject $ text "paßt nicht."
+
 data Sub = Sub ( FiniteMap Identifier ( Term Identifier Identifier ) )
 
 instance ToDoc Sub where
-    toDoc ( Sub sub ) = dutch Nothing ( text "{" , semi, text "}" ) $ do
+    toDoc ( Sub sub ) = dutch Nothing ( text "{" , semi , text "}" ) $ do
        ( n, t ) <- fmToList sub
        return $ toDoc n <+> text "=" <+> toDoc ( Arrow t )
 

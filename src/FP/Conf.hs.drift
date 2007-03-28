@@ -1,0 +1,24 @@
+module FP.Conf where
+
+data Conf = Conf { max_arity :: Int
+		 , min_symbols :: Int
+		 , max_symbols :: Int
+		 , min_size :: Int
+		 , max_size :: Int
+		 }
+    deriving ( Typeable )
+
+example :: Conf
+example = Conf { max_arity = 3
+	    , min_symbols = 4
+	    , max_symbols = 10
+	    , min_size = 5
+	    , max_size = 10
+	    }
+
+{-! for Conf derive: ToDoc, Reader !-}
+
+
+-- local variables:
+-- mode: haskell
+-- end:

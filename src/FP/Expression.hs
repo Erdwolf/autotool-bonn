@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module FP.Expression 
 
 ( Expression (..)
@@ -8,13 +10,20 @@ where
 import Autolib.TES.Identifier
 
 import Autolib.ToDoc
+import Autolib.Size
 import Autolib.Reader
+
+import Data.Typeable
 
 data Expression at = Atomic at
 		| Apply { fun :: Expression at
 			, arg :: Expression at 
 			}
-     deriving ( Eq, Ord )
+     deriving ( Eq, Ord, Typeable )
+
+instance Size ( Expression at ) where
+    size ( Atomic at ) = 1
+    size ( Apply f a ) = size f + size a
 
 spine :: Expression at -> ( at, [ Expression at ] )
 spine x = case x of
