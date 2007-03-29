@@ -12,23 +12,28 @@ where
 
 import Autolib.TES.Identifier
 import Autolib.TES.Term
+import Autolib.TES.Position
 
 import Autolib.ToDoc
 import Autolib.Reader
 
+import Autolib.Size
+
 data Arrow at = Arrow { unArrow :: Term Identifier at }
      deriving ( Eq, Ord )
+
+instance Size ( Arrow at ) where size = size . unArrow
 
 instance ( Symbol at ) => ToDoc ( Arrow at ) where
     toDocPrec p ( Arrow ( Var v ) ) = toDoc v
     toDocPrec p ( Arrow ( Node fun args ) ) = case ( show fun, args ) of
-        ( "[]", [arg] ) -> brackets $ toDoc $ Arrow arg
-	( "->", [ from, to ] ) -> docParen ( p > 0 ) $
+        ( "List", [arg] ) -> brackets $ toDoc $ Arrow arg
+	( "Arrow", [ from, to ] ) -> docParen ( p > 0 ) $
             hsep [ toDocPrec 1 $ Arrow from
 		 , text "->" 
 		 , toDocPrec 0 $ Arrow to 
 		 ]
-	( "()" , args ) -> parens 
+	( "Tuple" , args ) -> parens 
 	         $ hsep $ punctuate comma $ map ( toDoc . Arrow ) args
 	_ -> docParen ( p > 1 && not ( null args ) ) 
 	     $ toDoc fun <+> hsep ( map (toDocPrec 2 . Arrow) args )
@@ -43,7 +48,7 @@ parse_arrow vars = do
 arrow vars = do 
         let parrow = do string "->" ; my_whiteSpace
         xs <- Autolib.Reader.sepBy1 ( atomic vars ) parrow
-        let barrow from to = Node ( mkunary "->" ) [ from, to ]
+        let barrow from to = Node ( mkunary "Arrow" ) [ from, to ]
 	return $ foldr barrow ( last xs ) ( init xs )
 
 atomic vars = tuple vars <|> list vars <|> application vars
@@ -52,11 +57,11 @@ tuple vars = my_parens $ do
     args <- Autolib.Reader.sepBy ( arrow vars ) my_comma
     return $ case args of
         [ arg ] -> arg
-	_ -> Node ( mkunary "()" ) args
+	_ -> Node ( mkunary "Tuple" ) args
 	
 list vars = my_brackets $ do
     arg <- arrow vars
-    return $ Node ( mkunary "[]" ) [ arg ]
+    return $ Node ( mkunary "List" ) [ arg ]
 
 application vars = do
     fun <- name

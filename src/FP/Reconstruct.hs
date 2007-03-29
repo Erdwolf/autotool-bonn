@@ -65,9 +65,16 @@ reconstruct0 env ( Atomic at ) = do
     return $ core t
 reconstruct0 env ( Apply fun arg ) = do
     tfun <- reconstructor env fun
+    targ <- reconstructor env arg
 
+    combine (fun, tfun) ( arg, targ)
+
+combine :: ( Expression Identifier, Arrow Identifier )
+	-> ( Expression Identifier, Arrow Identifier )
+	->  Reporter ( Arrow Identifier )
+combine (fun,tfun) (arg,targ) = do
     let [ src, tgt ] = unused' 2 $ vars $ unArrow tfun
-    let ar = Node ( mkunary "->" ) [ Var src, Var tgt ]
+    let ar = Node ( mkunary "Arrow" ) [ Var src, Var tgt ]
     inform $ text "soll ein Funktionstyp sein:" <+> toDoc ( Arrow ar )
 
     sigma <- case mgu ar $ unArrow tfun of
@@ -77,11 +84,9 @@ reconstruct0 env ( Apply fun arg ) = do
 			 ]
 	   return sigma
 	Nothing -> reject $ text "Falsch"
-    let src1 = apply sigma $ Var src
-	tgt1 = apply sigma $ Var tgt
+    let src1 = apply_partial sigma $ Var src
+	tgt1 = apply_partial sigma $ Var tgt
 
-    targ <- reconstructor env arg
-    -- TODO: typvariablen in arg wegbenennen (konfliktfrei mit fun)
     let targ1 = Arrow $ disjoint_renamed ( vars $ unArrow tfun ) $ unArrow targ 
     inform $ vcat [ text "umbenannt in", nest 4 $ toDoc targ1 ]
 
@@ -96,6 +101,7 @@ reconstruct0 env ( Apply fun arg ) = do
 	Nothing -> reject $ text "Falsch"
 
     return $ Arrow $ apply_partial rho tgt1
+    
 
 isinstanceof tgt typ = do
     inform $ vcat

@@ -9,6 +9,7 @@ import Autolib.TES.Position
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Set
+import Autolib.Size
 
 import Data.Char
 
@@ -17,6 +18,11 @@ data Type =
      Type { prefix :: [ Identifier ]
 	  , core :: Arrow Identifier
 	  }
+
+instance Size Type where size = size . core
+
+instance Eq Type where s == t = core s == core t
+instance Ord Type where compare s t = compare ( core s ) ( core t )
 
 instance ToDoc Type where
     toDoc t = fsep 

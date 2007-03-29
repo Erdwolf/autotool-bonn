@@ -1,13 +1,16 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# OPTIONS -fglasgow-exts -fno-monomorphism-restriction #-}
 
 module FP.Expression 
 
 ( Expression (..)
+, symbols
 )
 
 where
 
 import Autolib.TES.Identifier
+import Autolib.TES.Term
+import Autolib.TES.Position
 
 import Autolib.ToDoc
 import Autolib.Size
@@ -24,6 +27,9 @@ data Expression at = Atomic at
 instance Size ( Expression at ) where
     size ( Atomic at ) = 1
     size ( Apply f a ) = size f + size a
+
+toTerm x = let ( f, args ) = spine x in Node f $ map toTerm args
+symbols = syms . toTerm
 
 spine :: Expression at -> ( at, [ Expression at ] )
 spine x = case x of

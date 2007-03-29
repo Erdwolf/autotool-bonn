@@ -1,19 +1,30 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module FP.Conf where
 
-data Conf = Conf { max_arity :: Int
-		 , min_symbols :: Int
-		 , max_symbols :: Int
-		 , min_size :: Int
-		 , max_size :: Int
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Autolib.TES.Identifier
+
+import Data.Typeable
+
+data Conf = Conf { typecons ::  [ (Identifier, Int) ]
+		 , typevars :: [ Identifier ]
+		 , type_size_bounds :: ( Int, Int)
+		 , signature_size_bounds :: ( Int, Int)
+		 , target_size_bounds :: ( Int, Int)
+		 , solution_size_bounds :: (Int, Int)
 		 }
     deriving ( Typeable )
 
 example :: Conf
-example = Conf { max_arity = 3
-	    , min_symbols = 4
-	    , max_symbols = 10
-	    , min_size = 5
-	    , max_size = 10
+example = Conf { typecons = read "[( List, 1), ( Tuple, 0 ), ( Tuple, 2), ( Arrow, 2), (Foo, 1), (Bar, 2)]"
+	    , typevars = read "[a,b]"
+		 , type_size_bounds = ( 2, 6 )
+		 , signature_size_bounds = ( 3, 5 )
+	    , target_size_bounds = ( 5, 20 )
+		 , solution_size_bounds = ( 3, 15 )
 	    }
 
 {-! for Conf derive: ToDoc, Reader !-}
