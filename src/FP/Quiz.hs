@@ -30,6 +30,6 @@ instance Project  FPTypeCheck ( Expression Identifier, TI ) TI where
     project p ( x , ti ) = ti
 
 make :: Make
-make = quiz FPTypeCheck conf
+make = quiz FPTypeCheck FP.Conf.example
 
 
