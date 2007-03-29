@@ -38,6 +38,7 @@ import qualified Hanoi.Quiz
 import qualified Type.Check
 import qualified Type.Quiz
 import qualified FP.Check
+import qualified FP.Quiz
 
 -- import qualified Object.Check
 -- import qualified Object.Quiz
@@ -257,7 +258,7 @@ tmakers =
                 [ item Type.Check.make
 	        , item Type.Quiz.make
 		, item FP.Check.make
-		-- , item FP.Quiz.make
+		, item FP.Quiz.make
 		, item Flow.Central.goto_to_struct_fixed
 		, item Flow.Central.struct_to_goto_fixed
                 ]
