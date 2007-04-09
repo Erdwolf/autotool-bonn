@@ -1,0 +1,37 @@
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
+
+module NFA.Nerode.Congruent.Instance where
+
+import Autolib.Reader
+import Autolib.ToDoc
+
+import Convert.Input
+
+import Autolib.Exp
+import Autolib.NFA ( NFAC )
+
+import Data.Typeable
+
+data NFAC c Int => Instance c =
+     Instance { alphabet :: [c]
+              , language :: Autolib.Exp.RX c
+              , goal :: [c]
+              , wanted :: Int
+              , length_bounds :: (Int, Int)
+              }
+    deriving ( Typeable )
+
+{-! for Instance derive: Reader, ToDoc !-}
+
+example :: Instance Char
+example = Instance
+        { alphabet = "ab"
+        , language = read "(a + bb)^*"
+        , goal = "ab"
+        , wanted = 4
+        , length_bounds = (6, 12)
+        }
+
+-- local variables:
+-- mode: haskell
+-- end;
