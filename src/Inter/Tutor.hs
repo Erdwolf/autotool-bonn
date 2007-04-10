@@ -3,7 +3,6 @@ module Inter.Tutor where
 
 import Inter.Types
 import Inter.Bank
-import Inter.DateTime ( defaults )
 
 import Gateway.CGI
 import qualified Inter.Param as P
@@ -15,6 +14,7 @@ import Control.Types
     , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr, UNr
     , TimeStatus (..)
     )
+import Control.Time 
 
 import Autolib.Reporter
 import Autolib.ToDoc
@@ -68,16 +68,14 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
                      return ( show x, x )
             close -- row
 
-            (dflt_von,dflt_bis) <- io defaults
+            (dflt_von,dflt_bis) <- io Control.Time.defaults
 
-            ( von :: Time ) <- fmap fromCGI 
-		    $ defaulted_textfield "von" 
+            ( von :: Time ) <- Control.Time.edit "von" $ Just
 		    $ case mauf of Nothing -> dflt_von
-				   Just auf -> toString $ A.von auf
-            ( bis ::Time ) <- fmap fromCGI
-		    $ defaulted_textfield "bis" 
+				   Just auf -> A.von auf
+            ( bis ::Time ) <- Control.Time.edit "bis" $ Just 
 		    $ case mauf of Nothing -> dflt_bis
-				   Just auf -> toString $ A.bis auf
+				   Just auf -> A.bis auf
 
             moth <- 
                 click_choice_with_default 0 "importiere Konfiguration" 

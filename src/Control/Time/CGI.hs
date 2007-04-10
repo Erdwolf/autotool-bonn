@@ -6,6 +6,11 @@ import Gateway.CGI
 
 import Data.Ix
 
+defaults :: IO (Time,Time)
+defaults = do
+    ( lo, hi ) <- Inter.DateTime.defaults
+    return ( read lo, read hi ) -- ARGH
+
 edit :: String -> Maybe Time -> Form IO Time
 edit title mt = do
     jetzt <- fmap read $ io $ Inter.DateTime.now
@@ -16,7 +21,8 @@ edit title mt = do
     let def n opts = ( Just $ length $ takeWhile ( \(_,x) -> x /= n ) opts 
 		     , opts 
 		     )
-        numbers bnd = do n <- range bnd ; return ( show n, n )
+        filled ff cs = drop ( length cs ) ff ++ cs
+        numbers bnd = do n <- range bnd ; return ( filled "00" $ show n, n )
 	months = zip [ "Januar", "Februar", "März", "April"
 		     , "Mai", "Juni", "Juli", "August"
 		     , "September", "Oktober", "November", "Dezember"  
