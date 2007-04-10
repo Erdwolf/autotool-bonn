@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
 module Exp.Property where
 
@@ -27,3 +27,7 @@ example = [ Simple
 	  , Alphabet $ mkSet "ab"
 	  , AllowedKeys $ mkSet [ "Empty" ]
 	  ]
+
+-- local variables;
+-- mode: haskell;
+-- end;

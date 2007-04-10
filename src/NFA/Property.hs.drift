@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
 module NFA.Property where
 
@@ -31,3 +31,7 @@ example = [ Sane
 	  , Min_Size 4 , Max_Size 6
 	  , Alphabet $ mkSet "ab"
 	  ]
+
+-- local variables;
+-- mode: haskell;
+-- end;

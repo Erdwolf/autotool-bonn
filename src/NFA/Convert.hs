@@ -26,7 +26,8 @@ import NFA.Property
 import NFA.Test
 import NFA.Quiz
 import Autolib.NFA.Type
-import Exp.Roll
+import qualified Exp.Roll
+import qualified NFA.Roll
 import Convert.Input
 
 import Text.XML.HaXml.Haskell2Xml
@@ -101,9 +102,15 @@ make = direct Convert_To_NFA
 instance Generator Convert_To_NFA ( Quiz Char ) 
            ( Convert, [ Property Char ] ) where
     generator p quiz key = do
-        ( exp, aut ) <- roll $ NFA.Quiz.generate quiz
+        i <- case NFA.Quiz.generate quiz of
+	    From_Exp props -> do
+	        ( exp, aut) <- Exp.Roll.roll props
+		return $ Convert.Input.Exp exp
+	    From_NFA props -> do
+	        aut <- NFA.Roll.roll props
+		return $ Convert.Input.NFA aut
         return ( Convert { name = Nothing
-		   , input = Exp exp
+		   , input = i
 		   }
 	       , solve quiz
 	       )
