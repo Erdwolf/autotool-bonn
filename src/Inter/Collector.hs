@@ -53,6 +53,7 @@ import qualified Faktor.Inverse
 import qualified NFA.Convert
 import qualified NFA.Equiv.Challenger
 import qualified NFA.Nerode.Congruent.Check
+import qualified NFA.Nerode.Incongruent.Check
 import qualified Exp.Convert
 import qualified Exp.Smaller
 
@@ -176,6 +177,7 @@ tmakers =
                      ]
                 , heading "Nerode-Kongruenz"
                      [ item NFA.Nerode.Congruent.Check.make
+                     , item NFA.Nerode.Incongruent.Check.make
                      ]
                 , heading "Turing-Maschine (als Akzeptor)"
                      [ item Turing.Make.acceptor
