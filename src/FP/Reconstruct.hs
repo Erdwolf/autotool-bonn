@@ -52,10 +52,11 @@ reconstructor env x = do
     t0 <- nested 6 $ reconstruct0 env x
     inform $ vcat 
 	   [ text "allgemeinster Typ für", nest 4 $ toDoc x
-	   , text "ist  ", nest 4 $ toDoc ( wrap t0 )
+	   , text "ist  ", nest 4 $ tow t0
 	   ]
     return t0
     
+tow t = toDoc $ wrap t
 
 reconstruct0 :: Env
 	    -> Expression Identifier
@@ -63,11 +64,13 @@ reconstruct0 :: Env
 reconstruct0 env ( Atomic at ) = do
     t <- look env at    
     return $ core t
-reconstruct0 env ( Apply fun arg ) = do
+reconstruct0 env ap @ ( Apply fun arg ) = do
     tfun <- reconstructor env fun
     targ <- reconstructor env arg
-
-    combine (fun, tfun) ( arg, targ)
+    inform $ vcat [ text "bestimme Typ für"
+                  , nest 4 $ toDoc ap
+                  ]
+    nested 4 $ combine (fun, tfun) ( arg, targ)
 
 combine :: ( Expression Identifier, Arrow Identifier )
 	-> ( Expression Identifier, Arrow Identifier )
@@ -75,8 +78,12 @@ combine :: ( Expression Identifier, Arrow Identifier )
 combine (fun,tfun) (arg,targ) = do
     let [ src, tgt ] = unused' 2 $ vars $ unArrow tfun
     let ar = Node ( mkunary "Arrow" ) [ Var src, Var tgt ]
-    inform $ text "soll ein Funktionstyp sein:" <+> toDoc ( Arrow ar )
-
+    inform $ vcat
+        [ text "der Typ" <+> tow tfun
+        , text "von" <+> toDoc fun
+        , text "soll ein Funktionstyp sein:" 
+                   <+> toDoc ( Arrow ar )
+        ]
     sigma <- case mgu ar $ unArrow tfun of
         Just sigma -> do
 	   inform $ vcat [ text "paßt mit Substitution"
@@ -88,10 +95,14 @@ combine (fun,tfun) (arg,targ) = do
 	tgt1 = apply_partial sigma $ Var tgt
 
     let targ1 = Arrow $ disjoint_renamed ( vars $ unArrow tfun ) $ unArrow targ 
-    inform $ vcat [ text "umbenannt in", nest 4 $ toDoc targ1 ]
+    inform $ vcat 
+       [ text "der Typ" <+> tow targ
+       , text "von" <+> toDoc arg
+       , text "wird umbenannt in", nest 4 $ tow targ1 
+       ]
 
-    inform $ vcat [ text "soll passen zum Argumenttyp"
-		  , nest 4 $ toDoc ( Arrow src1 )
+    inform $ vcat [ text "und soll passen zum Argumenttyp"
+		  , nest 4 $ tow ( Arrow src1 )
 		  ]
     rho <- case mgu ( unArrow targ1 ) src1 of
         Just rho -> do
@@ -105,8 +116,8 @@ combine (fun,tfun) (arg,targ) = do
 
 isinstanceof tgt typ = do
     inform $ vcat
-	   [ text "Typ", nest 4 $ toDoc typ
-	   , text "ist allgemeiner als Typ", nest 4 $ toDoc tgt
+	   [ text "Typ", nest 4 $ tow typ
+	   , text "ist allgemeiner als Typ", nest 4 $ tow tgt
 	   ]
     case match ( unArrow typ ) ( unArrow tgt ) of
 	 Just sub -> do
