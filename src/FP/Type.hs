@@ -25,16 +25,18 @@ instance Eq Type where s == t = core s == core t
 instance Ord Type where compare s t = compare ( core s ) ( core t )
 
 instance ToDoc Type where
-    toDoc t = fsep 
+    toDoc t = case prefix t of
+         [] -> toDoc $ core t
+         ps -> fsep 
 	    [ text "forall"
-	    , hsep $ map toDoc $ prefix t
+	    , hsep $ map toDoc ps
 	    , text "."
 	    , toDoc $ core t
 	    ]
 
 instance Reader Type where
     reader = do
-        ps <- {- option [] -}  pre
+        ps <- option []  pre
 	c <- parse_arrow ps
 	return $ Type { prefix = ps , core = c }
 
@@ -44,7 +46,7 @@ wrap t = Type { prefix = setToList $ vars $ unArrow t , core = t }
 pre :: Parser [ Identifier ]
 pre = do
     my_reserved "forall"
-    ps <- many1 name
+    ps <- many name
     my_reserved "."
     return ps
 
