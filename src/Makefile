@@ -4,6 +4,7 @@ include Makefile-defs
 ###############################################################################
 
 MAIN = Inter/Super.cgi
+TRIAL = Inter/Trial.cgi
 
 all : drift $(CGIS)
 
@@ -98,9 +99,9 @@ drift-clean :
 ###############################################################################
 
 
-install : $(MAIN)
+install : $(MAIN) $(TRIAL) 
 	cp $(MAIN) $(CGI)/$(CGINAME)
-
+	cp $(TRIAL) $(CGI)/
 
 .PHONY : do
 

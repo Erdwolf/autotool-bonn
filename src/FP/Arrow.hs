@@ -19,6 +19,8 @@ import Autolib.Reader
 
 import Autolib.Size
 
+import Data.Char ( isLower )
+
 data Arrow at = Arrow { unArrow :: Term Identifier at }
      deriving ( Eq, Ord )
 
@@ -64,7 +66,7 @@ list vars = my_brackets $ do
     return $ Node ( mkunary "List" ) [ arg ]
 
 application vars = do
-    fun <- name
+    fun <- bounded_name vars
     args <- many ( basic vars )
     mkapp vars fun args
 
@@ -75,10 +77,24 @@ mkapp vars fun args =
 	( True, _  ) -> fail "Typvariable mit Argument(en)"
 
 basic vars = tuple vars 
-      <|> do n <- name; mkapp vars n [] 
+      <|> do n <- bounded_name vars; mkapp vars n [] 
 
-name = do
+name = checked_name Nothing
+bounded_name vars = checked_name ( Just vars )
+
+checked_name mvars = do
     c <- letter
     cs <- many alphaNum
+    let n = mkunary $ c : cs
+    case ( isLower c, mvars ) of
+      ( True , Just vars ) -> if elem n vars
+              then return ()
+              else fail $ show $ vcat
+                     [ text "nicht gebundene Typvariable:"
+                     , nest 4 $ toDoc n
+                     , text "gebunden sind hier:"
+                     , nest 4 $ toDoc vars
+                     ]
+      _ -> return ()
     my_whiteSpace
-    return $ mkunary $ c : cs
+    return n
