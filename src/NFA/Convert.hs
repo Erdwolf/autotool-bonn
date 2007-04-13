@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module NFA.Convert where
 
 import Convert.Type
@@ -25,6 +27,7 @@ import Autolib.Informed
 import NFA.Property
 import NFA.Test
 import NFA.Quiz
+
 import Autolib.NFA.Type
 import qualified Exp.Roll
 import qualified NFA.Roll

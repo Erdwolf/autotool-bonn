@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module NFA.Roll where
 
 --  $Id$

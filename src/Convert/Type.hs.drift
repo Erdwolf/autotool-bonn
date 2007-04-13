@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
 module Convert.Type where
 
@@ -32,4 +32,7 @@ eval alpha conv = case input conv of
     Convert.Input.NFA aut -> aut
     Convert.Input.Exp exp -> inter ( std_sigma $ setToList alpha ) exp
 
+-- local variables:
+-- mode: haskell;
+-- end;
 

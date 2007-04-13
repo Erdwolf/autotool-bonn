@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
 module Convert.Input where
 
@@ -41,3 +41,6 @@ lang (Exp exp) =
 	 , nest 4 $ toDoc exp
 	 ]
 
+-- local variables:
+-- mode: haskell;
+-- end;
