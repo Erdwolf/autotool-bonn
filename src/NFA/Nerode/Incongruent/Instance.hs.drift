@@ -16,7 +16,6 @@ data NFAC c Int => Instance c =
      Instance { alphabet :: [c]
               , language :: Autolib.Exp.RX c
               , wanted :: Int
-              , length_bounds :: (Int, Int)
               }
     deriving ( Typeable )
 
@@ -27,7 +26,6 @@ example = Instance
         { alphabet = "ab"
         , language = read "(a + bb)^*"
         , wanted = 4
-        , length_bounds = (6, 12)
         }
 
 -- local variables:

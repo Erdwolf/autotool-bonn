@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Exp.Test where
 
 --  $Id$
@@ -14,6 +16,8 @@ import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
 import Autolib.Symbol
+
+tests ps exp = sequence_ $ do p <- ps ; return $ test p exp
 
 test :: ( Symbol c, Reader [c], ToDoc [c] )
      => Property c 

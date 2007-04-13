@@ -49,11 +49,13 @@ instance C.Partial Nerode_Incongruent
                , toDoc ( wanted i )
                , text "verschiedene Wörter u_0, u_1, ..."
                ]
+{-
         , hsep [ text "mit"
                , toDoc ( fst $ length_bounds i )
                , text "<= |u_i| <="
                , toDoc ( snd $ length_bounds i )
                ]
+-}
 	, text "die bezüglich der Sprache"
 	, nest 4 $ toDoc ( language i )
         , text "paarweise inkongruent sind."
@@ -71,22 +73,22 @@ instance C.Partial Nerode_Incongruent
               ( std_sigma $ NFA.Nerode.Incongruent.Instance.alphabet i ) 
               ( language i )
 
-        partial_check d i s
+        partial_check d s
 
     total Nerode_Incongruent i s = do
         let n = length $ words s
         assert ( wanted i <= n )
                $ text "genügend Wörter?"
-	complete_map n s
+	complete_map n $ proofs s
 
-complete_map n s = sequence_ $ do
+complete_map n p = sequence_ $ do
     i <- [ 0 .. n - 1 ]
     j <- [ i + 1 .. n - 1 ]
-    let p = (i,j)
-    return $ when ( isNothing $ lookupFM ( proofs s ) (i,j) )
-	   $ reject $ text "es fehlt der Beweis für das Indexpaar" <+> toDoc p
+    let ij = (i,j)
+    return $ when ( isNothing $ lookupFM p ij )
+	   $ reject $ text "es fehlt der Beweis für das Indexpaar" <+> toDoc ij
 
-partial_check d inst s = sequence_ $ do
+partial_check d s = sequence_ $ do
     let bnd = ( 0, pred $ length $ words s )
     p @ ((i,j), w) <- fmToList $ proofs s
     return $ do
@@ -95,8 +97,7 @@ partial_check d inst s = sequence_ $ do
         whine (i < j) "erster Index soll kleiner als zweiter Index sein"
 	whine (inRange bnd i) "erster Index soll im erlaubten Bereich liegen"
  	whine (inRange bnd j) "zweiter Index soll im erlaubten Bereich liegen"
-	whine (inRange (length_bounds inst) $ length w ) 
-	      "Länge des Wortes soll im erlaubten Bereich liegen"
+
         let ui = words s !! i ; uj = words s !! j
 	    uiname = "u_" ++ show i ; ujname = "u_" ++ show j
 	inform $ vcat [ text uiname <+> equals <+> toDoc ui
