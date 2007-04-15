@@ -13,8 +13,7 @@ import Autolib.NFA ( NFAC )
 import Data.Typeable
 
 data NFAC c Int => Instance c =
-     Instance { alphabet :: [c]
-              , language :: Language c
+     Instance { language :: Language c
               , wanted :: Int
               }
     deriving ( Typeable )
@@ -23,8 +22,7 @@ data NFAC c Int => Instance c =
 
 example :: Instance Char
 example = Instance
-        { alphabet = "ab"
-        , language = Convert.Language.example
+        { language = Convert.Language.example
         , wanted = 4
         }
 

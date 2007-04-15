@@ -49,15 +49,8 @@ instance C.Partial Nerode_Incongruent
     describe Nerode_Incongruent i = vcat
         [ hsep [ text "Gesucht sind wenigstens"
                , toDoc ( wanted i )
-               , text "verschiedene Wörter u_0, u_1, ..."
+               , text "verschiedene Wörter u_0, u_1, ...,"
                ]
-{-
-        , hsep [ text "mit"
-               , toDoc ( fst $ length_bounds i )
-               , text "<= |u_i| <="
-               , toDoc ( snd $ length_bounds i )
-               ]
--}
 	, text "die bezüglich der Sprache"
 	, nest 4 $ nice $ language i
         , text "paarweise inkongruent sind."
@@ -67,7 +60,7 @@ instance C.Partial Nerode_Incongruent
         ]
 
     initial Nerode_Incongruent i = 
-        NFA.Nerode.Incongruent.Solution.example ( alphabet i )
+        NFA.Nerode.Incongruent.Solution.example "ab"
 
     partial Nerode_Incongruent i s = do
 
