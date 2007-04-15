@@ -15,8 +15,7 @@ import Data.Typeable
 
 
 data NFAC c Int => Instance c =
-     Instance { alphabet :: [c]
-              , language :: Language c
+     Instance { language :: Language c
               , goal :: [c]
               , wanted :: Int
               , length_bounds :: (Int, Int)
@@ -27,8 +26,7 @@ data NFAC c Int => Instance c =
 
 example :: Instance Char
 example = Instance
-        { alphabet = "ab"
-        , language = Convert.Language.example
+        { language = Convert.Language.example
         , goal = "ab"
         , wanted = 4
         , length_bounds = (6, 12)
