@@ -3,6 +3,7 @@
 module NFA.Nerode.Congruent.Check where
 
 import NFA.Nerode.Congruent.Instance
+import Convert.Language
 
 import Inter.Types
 import Inter.Quiz
@@ -32,6 +33,7 @@ data Nerode_Congruent = Nerode_Congruent
 
 instance C.Verify Nerode_Congruent ( Instance Char ) where
     verify Nerode_Congruent i = do
+        Convert.Language.verify $ language i
         assert ( wanted i > 1 )
                $ text "wenigstens nach zwei Wörtern fragen"
 
@@ -51,7 +53,7 @@ instance C.Partial Nerode_Congruent
                , toDoc ( snd $ length_bounds i )
                ]
 	, text "die bezüglich der Sprache"
-	, nest 4 $ toDoc ( language i )
+	, nest 4 $ nice ( language i )
         , text "kongruent sind zu"
         , nest 4 $ toDoc ( goal i )
         ]
@@ -60,9 +62,7 @@ instance C.Partial Nerode_Congruent
         mkSet [ reverse $ goal i ]
 
     partial Nerode_Congruent i s = do
-        let d = Autolib.Exp.Inter.inter_det
-              ( std_sigma $ NFA.Nerode.Congruent.Instance.alphabet i ) 
-              ( language i )
+        let d = min_det_automaton $ language i 
         sequence_ $ do
             w <- setToList s
             return $ nested 4 $ do

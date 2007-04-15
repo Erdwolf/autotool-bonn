@@ -5,16 +5,18 @@ module NFA.Nerode.Congruent.Instance where
 import Autolib.Reader
 import Autolib.ToDoc
 
-import Convert.Input
+
+import Convert.Language
 
 import Autolib.Exp
 import Autolib.NFA ( NFAC )
 
 import Data.Typeable
 
+
 data NFAC c Int => Instance c =
      Instance { alphabet :: [c]
-              , language :: Autolib.Exp.RX c
+              , language :: Language c
               , goal :: [c]
               , wanted :: Int
               , length_bounds :: (Int, Int)
@@ -26,7 +28,9 @@ data NFAC c Int => Instance c =
 example :: Instance Char
 example = Instance
         { alphabet = "ab"
-        , language = read "(a + bb)^*"
+        , language = Language { implementation = read "Exp (a + bb)^*"
+			      , description = Nothing
+			      }
         , goal = "ab"
         , wanted = 4
         , length_bounds = (6, 12)

@@ -5,6 +5,8 @@ module NFA.Nerode.Incongruent.Check where
 import NFA.Nerode.Incongruent.Instance
 import NFA.Nerode.Incongruent.Solution
 
+import Convert.Language
+
 import Inter.Types
 import Inter.Quiz
 import Autolib.ToDoc
@@ -57,7 +59,7 @@ instance C.Partial Nerode_Incongruent
                ]
 -}
 	, text "die bezüglich der Sprache"
-	, nest 4 $ toDoc ( language i )
+	, nest 4 $ nice $ language i
         , text "paarweise inkongruent sind."
 	, text "Für jedes Paar (i,j) mit i < j"
 	, text "sollen Sie ein Wort w angeben"
@@ -69,9 +71,7 @@ instance C.Partial Nerode_Incongruent
 
     partial Nerode_Incongruent i s = do
 
-        let d = Autolib.Exp.Inter.inter_det
-              ( std_sigma $ NFA.Nerode.Incongruent.Instance.alphabet i ) 
-              ( language i )
+        let d = min_det_automaton $ language i
 
         partial_check d s
 
