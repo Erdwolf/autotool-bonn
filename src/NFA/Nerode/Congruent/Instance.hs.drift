@@ -28,9 +28,7 @@ data NFAC c Int => Instance c =
 example :: Instance Char
 example = Instance
         { alphabet = "ab"
-        , language = Language { implementation = read "Exp (a + bb)^*"
-			      , description = Nothing
-			      }
+        , language = Convert.Language.example
         , goal = "ab"
         , wanted = 4
         , length_bounds = (6, 12)
