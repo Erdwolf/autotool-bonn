@@ -18,7 +18,7 @@ data NFAC c Int => Instance c =
      Instance { language :: Language c
               , goal :: [c]
               , wanted :: Int
-              , length_bounds :: (Int, Int)
+              , minimal_length :: Int
               }
     deriving ( Typeable )
 
@@ -29,7 +29,7 @@ example = Instance
         { language = Convert.Language.example
         , goal = "ab"
         , wanted = 4
-        , length_bounds = (6, 12)
+        , minimal_length = 6
         }
 
 -- local variables:

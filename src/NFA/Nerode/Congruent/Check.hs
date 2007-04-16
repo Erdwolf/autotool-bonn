@@ -48,9 +48,8 @@ instance C.Partial Nerode_Congruent
                , text "verschiedene Wörter w"
                ]
         , hsep [ text "mit"
-               , toDoc ( fst $ length_bounds i )
-               , text "<= |w| <="
-               , toDoc ( snd $ length_bounds i )
+               , toDoc $ minimal_length i
+               , text "<= |w|"
                ]
 	, text "die bezüglich der Sprache"
 	, nest 4 $ nice ( language i )
@@ -67,7 +66,7 @@ instance C.Partial Nerode_Congruent
             w <- setToList s
             return $ nested 4 $ do
                 inform $ text "teste Wort w =" <+> toDoc w
-                nested 4 $ assert ( inRange ( length_bounds i ) $ length w )
+                nested 4 $ assert ( minimal_length i <= length w )
                        $ text "Länge erlaubt?"
                 nested 4 $ must_be_congruent d ( goal i ) w
 
