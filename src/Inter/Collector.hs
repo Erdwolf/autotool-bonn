@@ -55,6 +55,7 @@ import qualified NFA.Equiv.Challenger
 import qualified NFA.Nerode.Congruent.Check
 import qualified NFA.Nerode.Congruent.Quiz
 import qualified NFA.Nerode.Incongruent.Check
+import qualified NFA.Nerode.Incongruent.Quiz
 import qualified NFA.Nerode.Separation.Check
 import qualified Exp.Convert
 import qualified Exp.Smaller
@@ -181,6 +182,7 @@ tmakers =
                      [ item NFA.Nerode.Congruent.Check.make
                      , item NFA.Nerode.Congruent.Quiz.make
                      , item NFA.Nerode.Incongruent.Check.make
+                     , item NFA.Nerode.Incongruent.Quiz.make
                      , item NFA.Nerode.Separation.Check.make
                      ]
                 , heading "Turing-Maschine (als Akzeptor)"
