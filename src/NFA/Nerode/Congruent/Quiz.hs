@@ -32,7 +32,7 @@ instance NFAC c Int => Generator
             -- gibt wenigstens einen, weil Automat vollständig ist
             i = pre_infinite_states d
         q <- eins $ setToList i
-        let ws = some_shortest $ d { starts = mkSet [ q ] }
+        let ws = some_shortest $ d { finals = mkSet [ q ] }
         -- gibt wenigstens eins, weil Sprache unendlich ist
         w <- eins ws
         return $ I.Instance
