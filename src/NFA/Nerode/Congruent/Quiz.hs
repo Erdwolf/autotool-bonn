@@ -30,7 +30,7 @@ instance NFAC c Int => Generator
                ]
         let d = Autolib.NFA.minimize0 a
             -- gibt wenigstens einen, weil Automat vollständig ist
-            i = infinite_states d
+            i = pre_infinite_states d
         q <- eins $ setToList i
         let ws = some_shortest $ d { finals = mkSet [ q ] }
         -- gibt wenigstens eins, weil Sprache unendlich ist
