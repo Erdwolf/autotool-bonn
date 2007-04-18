@@ -3,6 +3,7 @@ module Baum.Traverse where
 --  $Id$
 
 import Baum.Type
+
 import Baum.Order
 import Autolib.ToDoc
 
