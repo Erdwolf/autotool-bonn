@@ -10,8 +10,6 @@ import Autolib.ToDoc
 import Autolib.Set
 import Control.Monad (guard)
 
-import RandoM
-
 data Language = Language
 	      { abbreviation :: String
 	      , nametag      :: String
