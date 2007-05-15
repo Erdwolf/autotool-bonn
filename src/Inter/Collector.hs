@@ -64,6 +64,7 @@ import qualified Pump.Inter
 
 -- import qualified Grammatik.Interface
 import qualified Grammatik.CF.Interface
+import qualified Grammatik.CF.Interface2
 import qualified NPDA.Inter
 -- import qualified Turing.Inter
 
@@ -169,6 +170,7 @@ tmakers =
                      ]
                 , heading "Grammatiken"
                      [ item Grammatik.CF.Interface.make
+                     , item Grammatik.CF.Interface2.make
                      -- , item Grammatik.Interface.make
                      ]
                 , heading "Kellerautomaten"
