@@ -11,11 +11,10 @@ where
 
 import Language.Type
 import Language.Mutate
-import Autolib.Util.Wort
+
 import Autolib.Util.Zufall
 
 import Autolib.Set
-import System.Random
 import Data.List (intersperse)
 import Control.Monad ( guard )
 import Data.Maybe (isJust)
@@ -58,23 +57,25 @@ geklammert p _ = Nothing
 
 -------------------------------------------------------------------------
 
-sam :: String -> Int -> Int -> IO [ String ]
+sam :: RandomC m 
+    => String -> Int -> Int 
+    -> m [ String ]
 sam vs c n = sequence $ replicate c 
 	   $ samf vs n
 
--- sample formel
+-- | sample formel
 samf vs n | n <= 4 = do
     v <- eins vs
     return [v]
 samf vs n = entweder (einst ['N'] vs n) (zweist ['A','O'] vs n)
 
--- sample formel mit einstelligem top-symbol
+-- | sample formel mit einstelligem top-symbol
 einst ts vs n = do
     t <- eins ts
     w <- samf vs (n-3)
     return $ t : "(" ++ w ++ ")"
 
--- sample formel mit zweistelligem top-symbol
+-- | sample formel mit zweistelligem top-symbol
 zweist ts vs n = do
     t <- eins ts
     sl <- randomRIO (1, n-4)
@@ -84,9 +85,11 @@ zweist ts vs n = do
     return $ t : "(" ++ l ++ "," ++ r ++ ")"
 
 
-anti_sam :: String -> Int -> Int -> IO [ String ]
--- wir würfeln hier einfach irgendeinen string.
+-- | wir würfeln hier einfach irgendeinen string.
 -- das reicht, da weiter oben noch mutiert wird
+anti_sam :: RandomC m
+         => String -> Int -> Int 
+         -> m [ String ]
 anti_sam vs c n = do
     let xs = setToList $ alphabet $ form vs
     sequence $ replicate c $ someIO xs n

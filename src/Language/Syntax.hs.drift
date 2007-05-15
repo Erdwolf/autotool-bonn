@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts #-}
 
 module Language.Syntax where
 
@@ -38,4 +38,7 @@ data Type
 
 {-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
 
+-- local variables:
+-- mode: haskell
+-- end:
 

@@ -12,10 +12,8 @@ import PCProblem.Param
 import PCProblem.Solver
 
 import Autolib.Util.Zufall
-import Autolib.Util.Wort
 import Autolib.Letters
 
-import System.Random
 import Data.Maybe
 import Data.List ( nub )
 import Autolib.Set

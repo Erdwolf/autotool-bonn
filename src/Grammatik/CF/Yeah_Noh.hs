@@ -29,7 +29,7 @@ import Autolib.Util.Sort
 import Autolib.ToDoc
 import Autolib.Reporter
 
-
+import Autolib.Util.Zufall
 
 -- eins der beiden imports auswählen:
 
@@ -106,8 +106,8 @@ cf_yeah_noh c g = do
 test = do
      let s = Gleich "ab" [2,1]
          l = inter s
-     y <-      samples l 50 4
-     n <- anti_samples l 50 4
+     y <- lift $     samples l 50 4
+     n <- lift $ anti_samples l 50 4
      let conf = Config 
 		 { lang = s
 		 , properties  = [ Grammatik.Property.Eindeutig 500 ]

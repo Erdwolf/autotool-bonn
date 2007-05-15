@@ -4,7 +4,7 @@ import Lambda.Type
 import Autolib.TES.Identifier
 import Autolib.Set
 import Autolib.Util.Zufall
-import System.Random
+
 
 term :: Int -> Set Identifier -> IO Lambda
 term s vars = 

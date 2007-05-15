@@ -27,7 +27,6 @@ import Autolib.Set
 
 import Autolib.Util.Sort
 
-import System.Random
 import Data.List ( nub )
 import Data.Maybe
 import Data.Ix

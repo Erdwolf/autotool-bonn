@@ -20,12 +20,13 @@ where
 import Language.Type
 import Language.Genau
 
+import Autolib.Util.Zufall
 import Autolib.Util.Edit
 import Autolib.Util.Uniq
 
 import Autolib.Set
 import Data.List (intersperse, nub, group, sort)
-import System.Random
+
 import Control.Monad
 
 -----------------------------------------------------------------------------
@@ -47,7 +48,9 @@ gleich xs vs = Language
        , contains     = gleich_con xs vs
        }
 
-gleich_sam :: String -> [Int] -> Int -> Int -> IO [ String ]
+gleich_sam :: RandomC m 
+           => String -> [Int] -> Int -> Int 
+           -> m [ String ]
 gleich_sam _  _  _ 0 = return [[]]
 gleich_sam xs vs c n = 
     let p = product vs
@@ -56,7 +59,7 @@ gleich_sam xs vs c n =
 	vs' = zipWith div (repeat kvG) vs
         ( q , r ) = divMod n $ sum vs'
     in	if 0 == r
-	then do ws <- sequence $ replicate c $ genau $ do
+	then do ws <- sequence $ replicate c $ Language.Genau.genau $ do
 		      (x,v) <- zip xs vs'
 		      return (x,q * v)
 		return $ nub ws
@@ -106,8 +109,10 @@ ordered_gleich_con xs w =
 	     let ls = map length gs
 	     in  all ( uncurry ( == ) ) $ zip ls $ tail ls 
 
-ordered_gleich_sam :: String -> Int -> Int -> IO [ String ]
--- liefert evtl. etwas kürzere Wörter
+-- | liefert evtl. etwas kürzere Wörter
+ordered_gleich_sam :: RandomC m 
+                   => String -> Int -> Int 
+                   -> m [ String ]
 ordered_gleich_sam xs c n = 
     let ( d, m ) = divMod n ( length xs )
     in  return [ do x <- xs ; replicate d x ]
@@ -146,7 +151,9 @@ ordered_ungleich_con xs w =
 	     let ls = map length gs
 	     in  not $ all ( uncurry ( == ) ) $ zip ls $ tail ls 
 
-ordered_ungleich_sam :: String -> Int -> Int -> IO [ String ]
+ordered_ungleich_sam :: RandomC m
+                     => String -> Int -> Int 
+                     -> m [ String ]
 ordered_ungleich_sam xs c n = do
     -- c : (maximale) Anzahl 
     -- n : Wortlänge
@@ -157,9 +164,10 @@ ordered_ungleich_sam xs c n = do
 -----------------------------------------------------------------------------
 
 -- todo: move to a generic place
-anti :: ( Int -> Int -> IO [ String ] ) 
+anti :: RandomC m
+     => ( Int -> Int -> m [ String ] ) 
      -> ( String -> Bool )
-     -> Int -> Int -> IO [ String ]
+     -> Int -> Int -> m [ String ]
 anti sam con c n = do
     ws <- sam c n
     vs <- sequence $ do

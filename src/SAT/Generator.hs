@@ -7,7 +7,6 @@ import SAT.Param
 import SAT.Wert
 import SAT.State
 
-import System.Random
 import Autolib.Util.Zufall
 import Autolib.Util.Sort
 import qualified Autolib.Relation as Relation

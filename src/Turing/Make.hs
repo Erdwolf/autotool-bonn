@@ -32,6 +32,7 @@ import qualified Autolib.Reporter.Checker as R
 import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Informed
+import Autolib.Util.Zufall
 
 
 computer :: Make
@@ -63,8 +64,8 @@ instance Generator A.Acceptor TC.Config Accept where
             m = TC.max_num config
             e = TC.max_length config
             small = \ w -> length w <= e
-        yeah <- samples      l m 0
-        noh  <- anti_samples l m 0
+        yeah <- lift $ samples      l m 0
+        noh  <- lift $ anti_samples l m 0
         return $ A.Make
            { A.machine_desc = text "Turing-Maschine (als Akzeptor)"
            , A.data_desc = info $ TC.lang config

@@ -3,10 +3,13 @@ module Language.ABCdiff (abcdiff) where
 -- -- $Id$
 
 import Language
+
 import Autolib.Set
+import Autolib.Util.Zufall
+
 import Control.Monad ( guard )
 import Data.List ( sort, nub )
-import System.Random
+
 
 abcdiff :: Language
 abcdiff = Language 
@@ -18,7 +21,9 @@ abcdiff = Language
        , contains     = con
        }
 
-sam :: Int -> Int -> IO [ String ]
+sam :: RandomC m
+    => Int -> Int 
+    -> m [ String ]
 sam c n = do
     ws <- sequence $ replicate c $ do
 	  w <- sequence $ replicate n $ randomRIO ('a', 'c')

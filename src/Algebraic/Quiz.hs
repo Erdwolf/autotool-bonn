@@ -22,7 +22,6 @@ import Autolib.Util.Zufall
 import Data.Maybe (isJust )
 
 import Data.IORef
-import System.Random
 
 roll binu s = do
     let no_unaries = binu { B.unary = [] }

@@ -20,6 +20,9 @@ import qualified Autolib.Reporter.Checker as C
 import Autolib.ToDoc
 import Autolib.Informed
 
+import Autolib.Util.Zufall
+
+
 import Inter.Types
 import Inter.Quiz
 
@@ -34,8 +37,8 @@ instance Generator ( A.Acceptor ) Config Accept where
     	    m = max_num config
     	    e = max_length config
             small = \ w -> length w <= e
-        yeah <- samples      l m 0
-        noh  <- anti_samples l m 0
+        yeah <- lift $ samples      l m 0
+        noh  <- lift $ anti_samples l m 0
         return $ A.Make
     	   { A.machine_desc = text "Keller-Automat"
     	   , A.data_desc = info $ lang config

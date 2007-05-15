@@ -4,13 +4,13 @@
 module Language.Type where
 
 import Autolib.Util.Uniq
-import Autolib.Util.Wort
+import Autolib.Util.Wort ( alle )
 
 import Autolib.ToDoc
 import Autolib.Set
 import Control.Monad (guard)
-import System.Random
 
+import RandoM
 
 data Language = Language
 	      { abbreviation :: String
@@ -23,12 +23,14 @@ data Language = Language
 	      -- | sample  c n
 	      -- würfelt maximal c Wörter der Sprache
 	      -- mit Länge == n
-	      , sample       :: Int -> Int -> IO [ String ]
+	      , sample       :: Int -> Int -> RandoM [ String ]
 
               -- | das gleiche für wörter im komplement
-              , anti_sample  :: Int -> Int -> IO [ String ]
+              , anti_sample  :: Int -> Int -> RandoM [ String ]
 
 	      }
+
+
 
 uneps :: Language -> Language
 uneps l = l  { nametag = "Uneps" ++ nametag l
@@ -66,7 +68,7 @@ komplett l = do
 random_sample :: Language 
 	      -> Int -- ^ so oft würfeln 
 	      -> Int -- ^ für wörter genau dieser länge
-	      -> IO [ String ]
+	      -> RandoM [ String ]
 random_sample l c n = do
     ws <- sequence $ replicate c $ someIO (setToList $ alphabet l) n
     return $ filter (contains l) ws
@@ -77,7 +79,7 @@ random_sample l c n = do
 samples :: Language 
 	-> Int -- ^ so viele wörter (c)
 	-> Int -- ^ mindestens so lang (n)
-	-> IO [ String ]
+	-> RandoM [ String ]
 samples l c n | c > 0 = do
 
     let m = truncate $ sqrt $ fromIntegral c
@@ -89,7 +91,8 @@ samples l c n | c > 0 = do
     return $ uniq $ here ++ there
 samples l c n = return []
 
-anti_samples :: Language -> Int -> Int -> IO [ String ]
+anti_samples :: Language -> Int -> Int 
+             -> RandoM [ String ]
 anti_samples l = samples ( komplement l )
 
 
@@ -97,10 +100,10 @@ anti_samples l = samples ( komplement l )
 -- es sollte ein Random-State genügen.
 -- das würde auch andere Würfel-probleme lösen.
 
-present :: Language -> IO ()
+present :: Language -> RandoM Doc
 present l = do
     ws <- samples l 20 0
-    print $ vcat [ text "Zur Sprache" <+> text (abbreviation l)
+    return $ vcat [ text "Zur Sprache" <+> text (abbreviation l)
 		 , text "gehören zum Beispiel diese Wörter:"
 		 , toDoc ws
 		 ]

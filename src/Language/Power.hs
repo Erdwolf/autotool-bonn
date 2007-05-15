@@ -12,7 +12,8 @@ where
 import Language.Type
 
 import Autolib.Set
-import Autolib.Util.Wort
+import Autolib.Util.Zufall
+
 import Data.List (intersperse)
 
 
@@ -53,7 +54,8 @@ nopower sigma k =
 
 -------------------------------------------------------------------------
 
-sam :: String -> Int -> Int -> Int -> IO [ String ]
+sam :: RandomC m
+    => String -> Int -> Int -> Int -> m [ String ]
 sam sigma k c n = do
     let q = div n k
     ws <- sequence $ replicate c $ do

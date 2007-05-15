@@ -6,7 +6,6 @@ import Number.Base.Data ( Ziffer (..) )
 import Number.Float.Data  as D
 import qualified Number.Float.Config as C
 
-import Autolib.Util.Wort
 import Autolib.Util.Zufall
 
 import System.Random

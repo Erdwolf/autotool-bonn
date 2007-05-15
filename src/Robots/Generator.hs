@@ -17,7 +17,6 @@ import Inter.Quiz
 import Data.List ( intersperse )
 import Data.Array ( range )
 
-import System.Random
 import System.IO
 import Data.IORef
 

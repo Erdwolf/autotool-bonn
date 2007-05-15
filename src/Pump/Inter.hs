@@ -17,6 +17,7 @@ import Challenger.Partial
 
 import Autolib.Util.Sort
 import Autolib.Util.Seed
+import Autolib.Util.Zufall
 
 import Autolib.FiniteMap
 import Inter.Types
@@ -80,7 +81,7 @@ instance ( Reader z, ToDoc z  , Pumping z )
         let l = Pump.Quiz.lang c
       	wss <- sequence $ do
 	    c <- [ 10 .. 30 ]
-	    return $ samples ( inter l ) 2 c
+	    return $ lift $ samples ( inter l ) 2 c
 	return $ Conf { lang = l
 			    , samp = nub $ concat wss
 			    , ja_bound = Pump.Quiz.ja_bound c

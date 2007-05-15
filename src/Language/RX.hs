@@ -9,7 +9,10 @@ import Autolib.Exp.Inter ( inter , std_sigma )
 import Autolib.NFA ( is_accepted_by, accepted )
 import Autolib.NFA.Minus
 import Autolib.Set ( mkSet )
+
 import Autolib.Util.Zufall
+
+
 import Autolib.ToDoc
 
 regular :: String -> Exp -> Language

@@ -8,7 +8,7 @@ import Baum.Such.Config
 
 import Autolib.Set
 import Autolib.Util.Zufall
-import System.Random
+
 
 type Instanz baum a = ( baum a, [ Op a ], baum a )
 

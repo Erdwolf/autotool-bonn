@@ -2,11 +2,12 @@ module Language.Genau where
 
 -- -- $Id$
 
-import System.Random
+import Autolib.Util.Zufall hiding ( genau )
 
-genau :: [ (Char, Int) ] -> IO String
--- genau [(c1,n1),..] würfelt einen String
+-- | genau [(c1,n1),..] würfelt einen String
 -- mit genau n1 mal buchstabe c1 usw.
+genau :: RandomC m
+      => [ (Char, Int) ] -> m String
 genau [] = return []
 genau xns = do
     let l = length xns

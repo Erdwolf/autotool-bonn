@@ -17,8 +17,8 @@ import Grammatik.CF.Baum
 import Grammatik.Property
 
 import Autolib.Set
-import Autolib.Util.Wort
-
+import Autolib.Util.Zufall
+import Autolib.Util.Wort ( alle )
 
 import Inter.Types
 import Inter.Quiz
@@ -79,8 +79,8 @@ instance Generator CFG P.Config I.Config where
 		 alle ( setToList $ alphabet l ) n
 		 
           -- watch argument ordering! -- TODO: use records instead
-          here   <- samples      l n w
-          there  <- anti_samples l n w
+          here   <- lift $ samples      l n w
+          there  <- lift $ anti_samples l n w
           let (yeahs, nohs) = partition (contains l) 
 		    $ nub 
 		    $ filter ( \ w -> length w <= P.max_sample_length c )

@@ -23,7 +23,7 @@ import Autolib.Util.Zufall
 import Data.Maybe (isJust )
 
 import Data.IORef
-import System.Random
+
 
 roll binu0 s bel = do
     let new_nulls = do

@@ -13,7 +13,6 @@ import Autolib.Util.Zufall
 import Inter.Types
 import Inter.Quiz
 
-import System.Random
 import Data.Typeable
 
 data Inverse = Inverse deriving ( Show, Read, Typeable )

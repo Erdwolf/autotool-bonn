@@ -15,9 +15,9 @@ where
 
 import Autolib.Set
 import Data.List ( mapAccumL, nub )
-import System.Random
 
-import Autolib.Util.Wort
+
+import Autolib.Util.Zufall
 import Language.Type
 
 lukas :: Language
@@ -84,7 +84,7 @@ dyck_ok w =
 
 -------------------------------------------------------------------------
 
-balanced :: Int -> IO String
+balanced :: RandomC m => Int -> m String
 balanced n | n > 0 = do
     a <- randomRIO (0,n-1)
     let b = n-1-a
@@ -95,12 +95,12 @@ balanced _ = return ""
 
 -----------------------------------------------------------------
 
-good :: Int -> IO String
+good :: RandomC m => Int -> m String
 good n = do
     w <- balanced n
     return $ w ++ "b"
 
-lukas_sam :: Int -> Int -> IO [ String ]
+lukas_sam :: RandomC m => Int -> Int -> m [ String ]
 lukas_sam c n | even n = return []
 lukas_sam c n = do
     ws <- sequence $ replicate c $ good (n `div` 2)

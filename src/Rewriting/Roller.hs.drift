@@ -4,13 +4,11 @@ module Rewriting.Roller where
 
 import Rewriting.TRS
 
-import Autolib.Util.Wort
 import Autolib.Util.Zufall
 import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Reader
 
-import System.Random
 import Data.Typeable
 
 roll_trs :: ( Symbol v, Symbol c )

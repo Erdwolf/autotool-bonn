@@ -13,7 +13,6 @@ import Autolib.Util.Zufall
 import Inter.Types
 import Inter.Quiz
 
-import System.Random
 import Data.Typeable
 
 data Euklid = Euklid deriving ( Show, Read, Typeable )

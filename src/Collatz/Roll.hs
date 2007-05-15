@@ -7,7 +7,6 @@ import Collatz.Config
 
 
 import Autolib.Util.Zufall
-import System.Random
 
 import Local
 import Control.Monad ( when )

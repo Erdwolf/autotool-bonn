@@ -10,10 +10,9 @@ module Language.Pali
 where
 
 import Language.Type
-import Autolib.Util.Wort
+import Autolib.Util.Zufall
 
 import Autolib.Set
-import System.Random
 import Data.List (intersperse)
 
 pali :: String -> Language
@@ -43,7 +42,9 @@ nopali sigma = ( komplement $ pali sigma )
 
 -------------------------------------------------------------------------
 
-sam :: String -> Int -> Int -> IO [ String ]
+sam :: RandomC m 
+    => String -> Int -> Int 
+    -> m [ String ]
 sam _ 0 n = return []
 sam _ c 0 = return [ [] ]
 sam sigma c n = do
@@ -52,7 +53,9 @@ sam sigma c n = do
         w <- someIO sigma (q + r)
 	return $ w ++ drop r (reverse w)
 
-anti_sam :: String -> Int -> Int -> IO [ String ]
+anti_sam :: RandomC m
+         => String -> Int -> Int 
+         -> m [ String ]
 anti_sam _ 0 n = return []
 anti_sam _ c n | n < 2 = return []
 anti_sam sigma c n = sequence $ replicate c $ do
