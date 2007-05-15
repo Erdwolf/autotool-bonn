@@ -8,6 +8,7 @@ import Autolib.Util.Wort ( alle )
 
 import Autolib.ToDoc
 import Autolib.Set
+import Autolib.Util.Zufall
 import Control.Monad (guard)
 
 data Language = Language
