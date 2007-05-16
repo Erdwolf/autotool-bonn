@@ -6,6 +6,7 @@ module Grammatik.CF.Interface2 where
 import Language.Type
 import Language.Syntax
 import Language.Inter
+import Language.Sampler
 import Grammatik.Type
 
 import qualified Grammatik.CF.Instance.Config as I
@@ -36,19 +37,21 @@ instance Partial CFG2 I2.Config Grammatik where
 
     describe p i = vcat
 	   [ text "Gesucht ist eine kontextfreie Grammatik für die Sprache"
-           , nest 4 $ toDoc $ inter $ I2.lang i
-	   , text "über dem Alphabet" <+> toDoc ( alphabet $ inter $ I2.lang i )
+           , nest 4 $ toDoc $ inter $ language $ I2.source i
+	   , text "über dem Alphabet" 
+                      <+> toDoc ( alphabet $ inter $ language $ I2.source i )
 	   , text ""
 	   , text "Die Grammatik soll diese Eigenschaften haben:"
            , nest 4 $ toDoc $ I2.properties i
 	   ]
 
     initial  p i = Grammatik 
-	   { terminale = alphabet $ inter $ I2.lang i
+	   { terminale = alphabet $ inter $ language $ I2.source i
 	   , variablen = mkSet "ST"
 	   , start = 'S'
 	   , regeln = mkSet $
-                 let a : b : rest = setToList $ alphabet $ inter $ I2.lang i
+                 let a : b : rest = setToList 
+                      $ alphabet $ inter $ language $ I2.source i
 	         in  [ ( "S", [ 'T', a, 'S' ] ) , ("S", ""), ( "T", [ b, b ] ) ]
 	   }
 
@@ -64,27 +67,12 @@ instance Partial CFG2 I2.Config Grammatik where
 ---------------------------------------------------------------------------
 
 add_test_cases p i b 
-    = randomly ( fromIntegral $ hash b ) $ do
-          let l = inter $ I2.lang i
-              w = I2.min_sample_length i
-              n = I2.num_samples i
-          -- die kleinen sollten ja auch schnell zu testen sein
-	  let klein = take 40 $ do 
-		 n <- [0 .. ]
-		 alle ( setToList $ alphabet l ) n
-          -- watch argument ordering! -- TODO: use records instead
-          here   <- samples      l n w
-          there  <- anti_samples l n w
-          -- größte rechte Seite
-          let lrg = maximum $ (0 : ) $ map ( length . snd ) $ rules b
-          let top = 5 + max lrg ( I2.max_sample_length i )
-          farout <-      samples l 10 lrg
-          let (yeahs, nohs) = partition (contains l) 
-		    $ nub 
-		    $ filter ( \ w -> length w <= top )
-		    $ klein ++ here ++ there ++ farout
-          return $ I.Config
-		 { I.lang = I2.lang i
+    = let large = maximum $ (0 : ) $ map ( length . snd ) $ rules b
+          ( yeahs, nohs ) = Language.Sampler.create ( I2.source i ) 
+                            ( hash b ) ( Just large )
+                             
+      in  I.Config
+		 { I.lang = language $  I2.source i
 		 , I.properties  = I2.properties i
 		 , I.yeah = I.Long $ map I.Long yeahs
 		 , I.noh  = I.Long $ map I.Long nohs
