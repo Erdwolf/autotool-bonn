@@ -66,6 +66,7 @@ import qualified Pump.Inter
 import qualified Grammatik.CF.Interface
 import qualified Grammatik.CF.Interface2
 import qualified NPDA.Inter
+import qualified NPDA.Inter2
 -- import qualified Turing.Inter
 
 import qualified SAT.SAT
@@ -175,6 +176,7 @@ tmakers =
                      ]
                 , heading "Kellerautomaten"
 	             [ item NPDA.Inter.make
+                     , item NPDA.Inter2.make
                      ]
                 , heading "Pumping-Lemma"
                      [ item Pump.Inter.reg

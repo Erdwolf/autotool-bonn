@@ -19,26 +19,32 @@ import Autolib.Size
 
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Hash
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
 
 import Data.Maybe
 import Autolib.Reporter
 
 class ( Read z, Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z 
-      , Haskell2Xml z
+--      , Haskell2Xml z
+      , Hash z
       )
       
     => RTO z
 instance ( Read z, Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z 
-      , Haskell2Xml z
+--      , Haskell2Xml z
+        , Hash z
 	 )
     => RTO z
 
 data RTO z => Modus z = Leerer_Keller | Zustand (Set z) 
-    deriving ( Typeable )
+    deriving ( Eq, Typeable )
 
-{-! for Modus derive: Reader, ToDoc, Haskell2Xml !-}
+instance RTO z => Hash ( Modus z ) where
+    hash Leerer_Keller = 67
+    hash ( Zustand xs ) = hash xs
+
+{-! for Modus derive: Reader, ToDoc !-}
 
 class ( RTO x, RTO y, RTO z )
     => NPDAC x y z
@@ -54,14 +60,20 @@ data NPDAC x y z => NPDA x y z =
 	  , akzeptiert	     :: Modus z
 	  , transitionen     :: FiniteMap (Maybe x, z, y) (Set (z, [y]))
 	  }
-     deriving ( Typeable )
+     deriving ( Eq, Typeable )
+
+instance ( NPDAC x y z ) => Hash ( NPDA x y z ) where
+    hash a = hash [ hash $ startzustand a
+                  , hash $ startsymbol a
+                  , hash $ transitionen a
+                  ]
 
 instance Container (x, z, y) (x, (z, y)) where
     label _ = "Triple"
     pack (x, y, z) = (x, (y, z))
     unpack (x, (y, z)) = (x, y, z)
 
-{-! for NPDA derive: Reader, ToDoc, Haskell2Xml !-}
+{-! for NPDA derive: Reader, ToDoc !-}
 
 instance NPDAC x y z => Size (NPDA x y z) where
     size a = length $ unCollect' $ transitionen a

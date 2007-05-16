@@ -9,7 +9,7 @@ import NPDA.Property
 
 import Autolib.ToDoc
 import Autolib.Reader
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Data.Typeable
 
@@ -24,7 +24,7 @@ data Config =
 	    }
      deriving ( Typeable )
 
-{-! for Config derive: ToDoc, Reader, Haskell2Xml !-}
+{-! for Config derive: ToDoc, Reader !-}
 
 
 
