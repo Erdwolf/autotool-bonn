@@ -39,19 +39,6 @@ class In m dat conf | m -> dat, m -> conf where -- strong dependencies ??
     input_reporter  :: ( Typeable m, Typeable dat, Typeable conf ) 
                     =>  m -> dat -> Reporter conf
 
-{-
-    input_reporter m dat = return $ input m dat
-
-    -- | obsolete
-    input  :: ( Typeable m, Typeable dat, Typeable conf ) => m -> dat -> conf
-    input m dat = error $ show $ vcat 
-          [ text "Machine.Class.input method is obsolete"
-          , text "type of m:" <+> toDoc ( typeOf m )
-          , text "type of dat:" <+> toDoc ( typeOf dat )
-          , text "type of result:" <+> toDoc ( typeOf $ input m dat )
-          ]
--}
-
 class Ord conf => Compute m conf where
     -- | alle direkten nachfolger ( nichtdeterministisch )
     next   :: m -> conf -> Set conf 
@@ -74,11 +61,6 @@ nachfolger_cut cut a k = concat $ map setToList $ take cut $
 class Out m dat conf  | m -> dat, m -> conf where
     -- | endkonf. lesen (ein einziges arg)
     output_reporter :: m -> conf -> Reporter dat
-{-
-    output_reporter m conf = return $ output m conf
-    output :: m -> conf -> dat
-    output = error "Machine.Class.output method is obsolete"
--}
 
 class ( In m dat conf, Out m dat conf )
       => InOut m dat conf   | m -> dat, m -> conf

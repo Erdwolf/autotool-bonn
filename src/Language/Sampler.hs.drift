@@ -1,0 +1,23 @@
+{-# OPTIONS -fglasgow-exts #-}
+
+module Language.Sampler where
+
+import Language.Syntax
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Data.Typeable
+
+data Sampler = 
+     Sampler { language :: Language.Syntax.Type
+             , num_samples :: Int -- ^ anzahl der samples
+             , min_sample_length :: Int -- ^ minimale länge der samples
+             , max_sample_length :: Int -- ^ maximal länge der samples
+             }
+    deriving ( Eq, Typeable )
+
+{-! for Sampler derive: Reader, ToDoc !-}
+
+-- local variables:
+-- mode: haskell
+-- end:
