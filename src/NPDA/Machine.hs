@@ -37,6 +37,9 @@ instance NPDAC x y z
 	 => Compute ( NPDA x y z ) ( Konfiguration x y z ) where
     depth m k = schritt k
     next m k = folgekonfigurationen m k
+    weight m k = fromIntegral 
+	       $ length ( keller k ) + length ( eingabe k )
+
     accepting m k = null ( eingabe k ) 
 	&& case akzeptiert m of
 	        Leerer_Keller -> null $ keller k

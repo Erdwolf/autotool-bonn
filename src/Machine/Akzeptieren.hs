@@ -15,6 +15,8 @@ import Autolib.Reporter hiding ( output )
 import Autolib.ToDoc
 import Autolib.Set
 
+
+-- | einige akzeptierende Rechnungen
 akzeptierend
     :: Machine m dat conf
     => Int -> m -> conf -> [ conf ]
@@ -23,11 +25,12 @@ akzeptierend cut m c = do
     guard $ accepting m k
     return k
 
+-- | einige Rechnungen
 akzeptierend_oder_ohne_nachfolger
     :: Machine m dat conf
     => Int -> m -> conf -> [ conf ]
 akzeptierend_oder_ohne_nachfolger cut m c = do
-    k <- take cut $ nachfolger_cut cut m $ c
+    k <- take cut $ nachfolger_cut cut m $ c	
     guard $  accepting m k 
           || ( isEmptySet $ next m $ k )
     return k
