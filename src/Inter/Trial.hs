@@ -18,6 +18,7 @@ import Inter.Logged
 import Inter.Tutor
 import Inter.Student
 
+
 import qualified Inter.Param as P
 import qualified Inter.Statistik
 
@@ -85,7 +86,11 @@ my_name = "Trial.cgi"
 main :: IO ()
 main = Gateway.CGI.execute ( my_name ++ "#hotspot" ) $ do
    let stud = S.Student { }
-   wrap $ selektor stud
+   wrap $ do
+       selektor stud
+       con <- io $ Inter.Motd.contents
+       html con
+       hr
 
 btabled :: Monad m => Form m a -> Form m a
 btabled = bracketed btable
@@ -96,7 +101,9 @@ mutexed action = do begin ; action ; end
 bracketed b action = do open b; x <- action ; close ; return x
 
 selektor stud = do
-    h3 "Aufgaben"
+    hr
+    h2 "(Tutor) Aufgabe auswählen und konfigurieren"
+    hr
     let tmk = Inter.Collector.tmakers
     action <- btabled $ click_choice "Auswahl..." 
         [ ( "nach Vorlesungen", vor tmk )
@@ -137,6 +144,9 @@ common_aufgaben tmk ( stud, vnr, tutor ) mauf conf = do
 	 ( Just auf, False ) -> return auf
 	 _ -> edit_aufgabe mks mk Nothing vnr Nothing type_click
     stud' <- get_stud tutor stud
+    hr
+    h2 "(Student) Aufgabe lösen"
+    hr
     solution vnr Nothing stud' mk auf' 
     scores <- scores_link
     footer scores
