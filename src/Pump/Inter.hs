@@ -34,12 +34,24 @@ import Data.Typeable
 
 ------------------------------------------------------------------------
 
-data PUMP = PUMP deriving ( Eq, Ord, Show, Read, Typeable )
+data PUMP = PUMP String
+    deriving ( Eq, Ord, Typeable )
 
+instance ToDoc PUMP where
+    toDoc ( PUMP kind ) = text $ "PUMP-" ++ kind
+
+instance Reader PUMP where
+    reader = do
+        my_reserved "PUMP"
+        -- for backward compatibility
+        cs <- option "REG" $ do
+            Autolib.Reader.char '-'
+            many alphaNum
+        return $ PUMP cs
 
 instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 
-    describe PUMP ( conf :: Conf z ) = vcat 
+    describe ( PUMP {} ) ( conf :: Conf z ) = vcat 
 	     [ text $ "Untersuchen Sie, ob die Sprache  L = "
 	     , nest 4 $ toDoc (inter $ lang conf)
 	     , text $ "die " ++ Pump.Type.tag ( undefined :: z ) ++ " erfüllt."
@@ -52,7 +64,7 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 	     , nest 4 $ toDoc $ take 10 $ samp conf
 	     ]
 
-    initial PUMP conf = 
+    initial ( PUMP {} ) conf = 
 	    Ja { n = 3, zerlege = listToFM $ do 
 	           w <- take 3 $ samp conf
 		   return ( w, exem w )
@@ -60,11 +72,11 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 
     -- partial p conf z =
 
-    total   PUMP conf p @ ( Nein {} ) = do
+    total   ( PUMP {} ) conf p @ ( Nein {} ) = do
 	negativ ( inter $ lang conf ) p
 	return ()
 
-    total   PUMP conf p @ ( Ja   {} ) = do
+    total   ( PUMP {} ) conf p @ ( Ja   {} ) = do
 	assert ( n p <= ja_bound conf ) 
 	       $ text "Ist Ihr n kleiner als die Schranke?"
 	let ws = take 5 
@@ -76,7 +88,7 @@ instance Pumping z => Partial PUMP ( Conf z ) ( Pump z ) where
 ---------------------------------------------------------------------- 
  
 instance ( Reader z, ToDoc z  , Pumping z ) 
-    => Generator PUMP ( Pump.Quiz.Conf z ) ( Conf z ) where
+    => Generator ( PUMP ) ( Pump.Quiz.Conf z ) ( Conf z ) where
     generator p c key = do
         let l = Pump.Quiz.lang c
       	wss <- sequence $ do
@@ -87,10 +99,10 @@ instance ( Reader z, ToDoc z  , Pumping z )
 			    , ja_bound = Pump.Quiz.ja_bound c
 			    }
 
-instance Project PUMP ( Conf z ) ( Conf z ) where
+instance Project ( PUMP ) ( Conf z ) ( Conf z ) where
     project p c = c
 
 ---------------------------------------------------------------------- 
 
-reg = quiz PUMP ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )
-cf  = quiz PUMP ( Pump.Quiz.example :: Pump.Quiz.Conf CF.Zerlegung )
+reg = quiz ( PUMP "REG" ) ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )
+cf  = quiz ( PUMP "CF"  ) ( Pump.Quiz.example :: Pump.Quiz.Conf CF.Zerlegung )
