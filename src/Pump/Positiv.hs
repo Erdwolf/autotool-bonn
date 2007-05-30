@@ -70,7 +70,7 @@ report l p w = do
 	   when ( not $ contains l w' ) $ reject $ text
 		$ "aber " ++ inflate_show i z ++ " = " ++ show w'
 		  ++ " ist nicht in " ++  show l 
-    mapM_ check [ 0 .. 20 ]
+    mapM_ check [ 0 .. 100 ] -- FIXME
     inform $ text "OK"
     newline
 

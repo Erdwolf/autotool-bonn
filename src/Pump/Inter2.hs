@@ -66,9 +66,10 @@ instance (  Hash ( Pump z ), Pumping z )
 
     initial ( PUMP {} ) conf = 
         let ( yeah, noh ) = Language.Sampler.create 
-                  ( sampler conf ) ( 314159 ) Nothing
-	in  Ja { n = 3, zerlege = listToFM $ do 
-	           w <- take 3 $ yeah
+                  ( sampler conf ) ( 314159 ) $ Just 10
+            start = 3
+	in  Ja { n = start, zerlege = listToFM $ do 
+	           w <- positive_liste ( sampler conf ) start
 		   return ( w, exem w )
 	       }
 
@@ -77,15 +78,15 @@ instance (  Hash ( Pump z ), Pumping z )
 	return ()
 
     total   ( PUMP {} ) conf p @ ( Ja   {} ) = do
-        let ( yeah, noh ) = Language.Sampler.create 
-                  ( sampler conf ) ( 271828 ) $ Just 10
 	assert ( n p <= ja_bound conf ) 
 	       $ text "Ist Ihr n kleiner als die Schranke?"
-       	let ws = take 5 
-	       $ filter ( (n p <= ) . length ) 
-	       $ yeah
+       	let ws = positive_liste ( sampler conf ) ( n p )
 	positiv ( inter $ language $ sampler conf ) p ws
 	return ()
+
+positive_liste s n = 
+        let ( yeah, noh ) = Language.Sampler.create s 314159 $ Just (2 * n)
+        in  filter ( ( >= 2 * n) . length ) yeah
 
 ---------------------------------------------------------------------- 
 
