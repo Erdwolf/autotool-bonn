@@ -61,6 +61,7 @@ import qualified Exp.Convert
 import qualified Exp.Smaller
 
 import qualified Pump.Inter
+import qualified Pump.Inter2
 
 -- import qualified Grammatik.Interface
 import qualified Grammatik.CF.Interface
@@ -169,16 +170,24 @@ tmakers =
 	             , item Exp.Convert.qmake
 	             , item Exp.Smaller.make
                      ]
-                , heading "Grammatiken"
-                     [ item Grammatik.CF.Interface.make
-                     , item Grammatik.CF.Interface2.make
+                , heading "Grammatiken (neu)"
+                     [ item Grammatik.CF.Interface2.make
                      -- , item Grammatik.Interface.make
                      ]
-                , heading "Kellerautomaten"
-	             [ item NPDA.Inter.make
-                     , item NPDA.Inter2.make
+                , heading "Grammatiken (veraltet)"
+                     [ item Grammatik.CF.Interface.make
+		     ]
+                , heading "Kellerautomaten (neu)"
+	             [ item NPDA.Inter2.make
                      ]
-                , heading "Pumping-Lemma"
+                , heading "Kellerautomaten (veraltet)"
+	             [ item NPDA.Inter.make
+                     ]
+                , heading "Pumping-Lemma (neu)"
+                     [ item Pump.Inter2.reg
+                     , item Pump.Inter2.cf
+                     ]
+                , heading "Pumping-Lemma (veraltet)"
                      [ item Pump.Inter.reg
                      , item Pump.Inter.cf
                      ]

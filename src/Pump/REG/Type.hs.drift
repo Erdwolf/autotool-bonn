@@ -5,6 +5,7 @@ module Pump.REG.Type where
 --   $Id$
 
 import Autolib.Size
+import Autolib.Hash
 import Autolib.Reader
 import Autolib.ToDoc
 
@@ -19,10 +20,13 @@ data Zerlegung = Zerlegung
 
 {-! for Zerlegung derive: ToDoc, Reader !-}
 
+instance Hash Zerlegung where
+    hash z = hash ( u z, v z, w z )
+
 --------------------------------------------------------------------------
 
+-- | alle Zerlegungen mit |uv| <= n, |v| > 0
 zerlegungen :: String -> Int -> [ Zerlegung ]
--- alle Zerlegungen mit |uv| <= n, |v| > 0
 zerlegungen p n = do
     ( ab, c ) <- take n $ splits p
     ( a, b  ) <- splits ab

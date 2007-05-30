@@ -10,13 +10,15 @@ import Autolib.Reader
 import Autolib.Reporter
 
 import Autolib.Size
+import Autolib.Hash
 import Autolib.FiniteMap
 
 import Data.Typeable
 
 --------------------------------------------------------------------------
 
-class ( Ord z,  Show z, ToDoc z, ToDoc [z], Reader z ) => Pumping z where
+class ( Hash z, Ord z,  Show z, ToDoc z, ToDoc [z], Reader z ) 
+       => Pumping z where
     tag :: z -> String
     tag_show :: z -> String
     admissable :: Int -> z -> Reporter ()
@@ -38,7 +40,7 @@ data Pumping z =>
 	     { n :: Int
 	     , zerlege :: FiniteMap String z
 	     }
-    deriving ( Typeable )
+    deriving ( Eq, Typeable )
 
 {-! for Pump derive: Reader, ToDoc !-}     
 
@@ -46,4 +48,7 @@ instance Pumping z => Size ( Pump z ) where
     size p @ Nein {} = sum [ length $ w | (n,w) <- fmToList $ wort p ]
     size p @ Ja   {} = n p
 
+instance Pumping z => Hash ( Pump z ) where
+    hash ( n @ Nein {} ) = hash $ wort n
+    hash ( j @ Ja {}   ) = hash ( n j, hash $ zerlege j )
 

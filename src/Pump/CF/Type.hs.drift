@@ -5,6 +5,7 @@ module Pump.CF.Type where
 --   $Id$
 
 import Autolib.Size
+import Autolib.Hash
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
@@ -15,6 +16,9 @@ data Zerlegung = Zerlegung
      deriving (Eq, Ord, Typeable)
 
 {-! for Zerlegung derive: Reader, ToDoc !-}
+
+instance Hash Zerlegung where
+    hash e = hash ( hash ( u e, v e ), x e , hash ( y e, z e ) )
 
 
 
