@@ -104,4 +104,8 @@ unCollect' fm = do
     ( y', z', b ) <- setToList yzbs
     return ( y, z, y', z', b ) 
 
+-- local variables:
+-- mode: haskell
+-- end:
+
 

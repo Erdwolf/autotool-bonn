@@ -19,6 +19,7 @@ import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data Property = Det
+	      | Final_States_Are_Dead
 	      | Sane
     deriving ( Eq, Ord, Typeable )
 
@@ -47,4 +48,9 @@ check p = case p of
                  text "Die Turingmaschine soll deterministisch sein."
             , C.investigate = Turing.Check.deterministisch
             }
-
+         Final_States_Are_Dead -> C.Make
+            { C.nametag = ""
+            , C.condition = 
+                 text "Es gibt keinen Übergang von einem Finalzustand aus."
+            , C.investigate = Turing.Check.final_states_are_dead
+            }

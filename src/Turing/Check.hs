@@ -70,3 +70,18 @@ deterministisch m = do
 		  reject $ toDoc rs
 
 
+final_states_are_dead :: TuringC y z 
+    => Turing y z -> Reporter ()
+final_states_are_dead m = do
+     let wrong = do
+	     q @ ( y, z, y', z', b ) <- unCollect' $ tafel m
+	     guard $ z `elementOf` endzustandsmenge m
+	     return q
+     when ( not $ null wrong ) $ reject $ vcat 
+         [ text "bei einer deterministischen Maschine:"
+	 , text "akzeptierender Zustand darf nicht verlassen werden."
+	 , text "falsche Übergänge:"
+	 , nest 4 $ toDoc wrong
+	 ]
+    
+
