@@ -65,7 +65,9 @@ data TuringC y z => Turing y z =
 
 {-! for Turing derive : ToDoc, Reader, Haskell2Xml !-}
 
-instance TuringC y z => Size (Turing y z) where size = size . zustandsmenge
+instance TuringC y z => Size (Turing y z) where 
+    -- size = size . zustandsmenge
+    size = length . unCollect' . tafel
 
 instance Container (x, y, z) (x, (y, z)) where
     label _ = "Triple"
