@@ -120,6 +120,7 @@ import qualified Code.LZ
 import qualified Code.Compress
 import qualified Code.Hamming
 import qualified Code.Nonprefix 
+import qualified Code.Nocode
 
 import qualified Rewriting.Derive
 import qualified Rewriting.Numerical
@@ -327,6 +328,7 @@ tmakers =
          , heading "Codierung und Kompression"
               [ heading "Codierung"
                     [ item Code.Nonprefix.make_fixed
+		    , item Code.Nocode.make_fixed
 		    , item Code.Huffman.Boiler.make_fixed
                     , item Code.Huffman.Boiler.make_quiz
                     , item $ Code.Class.enc BW.Burrows_Wheeler
