@@ -25,6 +25,8 @@ instance Partial Nonprefix () ( Set String ) where
 	]
     initial Nonprefix () = mkSet [ "10", "11" ]
     partial Nonprefix () ws = do
+        when ( any null $ setToList ws ) 
+             $ reject $ text "Kein Codewort darf leer sein." 
         should_not_be_prefix_free 
             ( text "" ) ws
 	should_not_be_prefix_free 
