@@ -329,6 +329,7 @@ tmakers =
               [ heading "Codierung"
                     [ item Code.Nonprefix.make_fixed
 		    , item Code.Nocode.make_fixed
+		    , item Code.Nocode.make_quiz
 		    , item Code.Huffman.Boiler.make_fixed
                     , item Code.Huffman.Boiler.make_quiz
                     , item $ Code.Class.enc BW.Burrows_Wheeler
