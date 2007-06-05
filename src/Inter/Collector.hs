@@ -119,6 +119,7 @@ import qualified Code.Burrows_Wheeler as BW
 import qualified Code.LZ
 import qualified Code.Compress
 import qualified Code.Hamming
+import qualified Code.Nonprefix 
 
 import qualified Rewriting.Derive
 import qualified Rewriting.Numerical
@@ -325,7 +326,8 @@ tmakers =
                 ]
          , heading "Codierung und Kompression"
               [ heading "Codierung"
-                    [ item Code.Huffman.Boiler.make_fixed
+                    [ item Code.Nonprefix.make_fixed
+		    , item Code.Huffman.Boiler.make_fixed
                     , item Code.Huffman.Boiler.make_quiz
                     , item $ Code.Class.enc BW.Burrows_Wheeler
                     , item $ Code.Class.dec BW.Burrows_Wheeler 
