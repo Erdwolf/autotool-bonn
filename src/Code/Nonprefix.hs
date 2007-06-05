@@ -25,8 +25,10 @@ instance Partial Nonprefix () ( Set String ) where
 	]
     initial Nonprefix () = mkSet [ "10", "11" ]
     partial Nonprefix () ws = do
-        prefix_free ( text "" ) ws
-	prefix_free ( text "der Spiegelbilder" ) $ smap reverse ws
+        should_not_be_prefix_free 
+            ( text "" ) ws
+	should_not_be_prefix_free 
+            ( text "der Spiegelbilder" ) $ smap reverse ws
     total   Nonprefix () ws = do
         inform $ text "Ist die Menge" <+> toDoc ws <+> text "ein Code?"
         case code_counter_examples $ setToList ws of
@@ -36,6 +38,14 @@ instance Partial Nonprefix () ( Set String ) where
 		, nest 4 $ text "Hinweis: betrachten Sie das Wort"
 		, nest 8 $ text (take (max 1 (length w `div` 2)) w ++ "..." )
 		]
+
+should_not_be_prefix_free tag ws = do
+    inform $ vcat
+        [ text "Die Menge" <+> tag
+	, nest 4 $ toDoc ws
+	, text "soll nicht präfixfrei sein."
+	]
+    when ( null $ prefix_pairs ws ) $ reject $ text "Sie ist es aber doch."
 
 instance Measure Nonprefix () ( Set String ) where
     measure Nonprefix () ws = 

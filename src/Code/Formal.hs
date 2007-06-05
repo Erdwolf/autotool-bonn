@@ -14,19 +14,21 @@ import Autolib.Reporter
 import Control.Monad ( guard )
 import Data.List 
 
+prefix_pairs ws = do
+            ( u : vs ) <- tails $ setToList ws
+            v <- vs
+            (x,y) <- [(u,v),(v,u)]
+            guard ( x `isPrefixOf` y) 
+	    return (x,y)
+
+
 prefix_free tag ws = do
     inform $ vcat 
 	   [ text "Ist die Menge" <+> tag
 	   , nest 4 $ toDoc ws
 	   , text "präfix-frei?"
 	   ]
-    let wrong = do
-            ( u : vs ) <- tails $ setToList ws
-            v <- vs
-            (x,y) <- [(u,v),(v,u)]
-            guard ( x `isPrefixOf` y) 
-	    return (x,y)
-    case wrong of
+    case prefix_pairs ws of
        [] -> inform $ text "Ja."
        (x,y) : _ -> 
            reject $ vcat 
