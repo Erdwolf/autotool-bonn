@@ -24,17 +24,17 @@ instance ( ToDoc c, Reader c, Reader a, Coder c a b, BitSize b )
 	 => Partial ( Compress c ) [ a ] b where
 
     describe ( Compress c ) i = vcat    
-        [ text "Finden Sie eine mÃÂ¶glichst gute Komprimierung von"
+        [ text "Finden Sie eine möglichst gute Komprimierung von"
 	, nest 4 $ toDoc i
 	, text "nach dem Verfahren"
 	, nest 4 $ toDoc c
-        , text "d. h. eine mÃÂ¶glichst kurze Nachricht,"
+        , text "d. h. eine möglichst kurze Nachricht,"
         , text "deren Dekompression wieder das Original ergibt."
         , let me  = bitSize ( encode c i ) :: Integer
               bound = ( fromIntegral me :: Double ) * 1.1 -- FIXME: arbitrary
           in nest 4 $ vcat
-                    [ text "Es gibt eine LÃÂ¶sung der Bit-GrÃ¶ÃÂŸe" <+> toDoc me
-                    , text "Ihre Nachricht darf hÃÂ¶chstens Bit-GrÃ¶ÃÂŸe"
+                    [ text "Es gibt eine Lösung der Bit-GröÂße" <+> toDoc me
+                    , text "Ihre Nachricht darf höchstens Bit-GröÂße"
                                <+> toDoc bound <+> text "haben."
                     ]
 	]
@@ -49,7 +49,7 @@ instance ( ToDoc c, Reader c, Reader a, Coder c a b, BitSize b )
         let me  = bitSize $ encode c i 
             bound = fromIntegral me * 1.1 -- FIXME: arbitrary
             you = bitSize b
-        inform $ text "Ihre Nachricht hat die GrÃ¶ÃÂŸe" <+> toDoc you
+        inform $ text "Ihre Nachricht hat die GröÂße" <+> toDoc you
         when ( fromIntegral you > bound ) $ reject $ text "Das ist zuviel."
 
 instance BitSize b => Measure ( Compress c ) [ a ] b  where
