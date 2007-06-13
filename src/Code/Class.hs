@@ -66,4 +66,3 @@ dec c b = direct (Decode c) b
 instance Measure ( Decode c ) b [ a ]  where
     measure ( Decode c ) b xs = fromIntegral $ length xs
 
-

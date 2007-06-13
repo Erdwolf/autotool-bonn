@@ -52,6 +52,9 @@ instance ( ToDoc c, Reader c, Reader a, Coder c a b, BitSize b )
         inform $ text "Ihre Nachricht hat die Größe" <+> toDoc you
         when ( fromIntegral you > bound ) $ reject $ text "Das ist zuviel."
 
+instance BitSize b => Measure ( Compress c ) [ a ] b  where
+    measure ( Encode c ) xs b = bitSize b
+
 make_fixed :: ( ToDoc c,  Reader c, Reader b, Coder c Char b ) => c -> Make
 make_fixed c = direct ( Compress c ) "01001010010010100101001001010010"
 
