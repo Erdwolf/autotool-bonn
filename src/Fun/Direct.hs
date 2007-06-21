@@ -1,32 +1,9 @@
-{- Quiz: zweistellige primitiv rekursive Funktion raten
+{-# OPTIONS -fglasgow-exts #-}
 
-  Zum Beispiel:
+module Fun.Direkt where
 
-  @quiz "FUN" "QUIZ" 12 10@
+import qualified Fun.Quiz as Q
 
-@
- |             0    1    2    3    4    5    6    7    8    9   10
- |---------------------------------------------------------------
- |   0    |    0    1    2    3    4    5    6    7    8    9   10
- |   1    |    0    0    1    2    3    4    5    6    7    8    9
- |   2    |    1    1    0    1    2    3    4    5    6    7    8
- |   3    |    0    0    2    0    1    2    3    4    5    6    7
- |   4    |    3    3    1    3    0    1    2    3    4    5    6
- |   5    |    2    2    0    2    4    0    1    2    3    4    5
- |   6    |    1    1    5    1    3    5    0    1    2    3    4
- |   7    |    0    0    4    0    2    4    6    0    1    2    3
- |   8    |    7    7    3    7    1    3    5    7    0    1    2
- |   9    |    6    6    2    6    0    2    4    6    8    0    1
- |   10   |    5    5    1    5    9    1    3    5    7    9    0
-@
--}
-
-
-module Fun.Quiz where
-
---   $Id$
-
-import Fun.Quiz.Type
 import Fun.Type
 import Fun.Table
 import Fun.Examples
@@ -40,17 +17,12 @@ import Inter.Quiz
 import Challenger.Partial
 import Autolib.Informed
 
-
--- import Autolib.Datei
--- import Autolib.Cache
--- import Autolib.Seed
-
 import Data.Array
 import Autolib.Reporter
 import Autolib.ToDoc
 
 
-instance Partial Fun_Quiz2 Tafel2 Fun where
+instance Partial Primrec_2D ( Matrix  Fun where
     --  Anfangsbeispiel
     initial p i   = Fun.Examples.plus
     -- Partiell Korrekt 
@@ -96,7 +68,6 @@ instance Generator Fun_Quiz2 Param ( Fun, Tafel2 ) where
 instance Project Fun_Quiz2 ( Fun, Tafel2 ) Tafel2 where
     project _ ( f, t ) = t
 
-quiz :: Make
-quiz = quiz Fun_Quiz2 Fun.Quiz.Type.example
-
+make :: Make
+make = quiz Fun_Quiz2 Fun.Quiz.Type.example
 

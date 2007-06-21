@@ -77,6 +77,9 @@ instance Reader Mark -- ohne implementierung
 
 {-! for Exp derive : ToDoc, Reader, Haskell2Xml !-}
 
+-- local variables:
+-- mode: haskell
+-- end:
 
 
 
