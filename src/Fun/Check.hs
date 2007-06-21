@@ -4,17 +4,36 @@ module Fun.Check where
 
 --   $Id$
 
+import Condition
+import qualified Autolib.Reporter.Checker as C
+
 import Fun.Type
 import qualified RAM.Builtin
 
-import qualified Machine.Numerical.Config as C
+import qualified Machine.Numerical.Config as NC
 
 import Autolib.Reporter
 import Autolib.ToDoc
 import Autolib.Set
 
-instance C.Check Property Fun where
+instance NC.Check Property Fun where
     check ( Builtins allowed ) f = check_builtins ( mkSet allowed ) f
+
+check :: Property -> C.Type Fun
+check ( Builtins bs ) = C.Make
+     { C.nametag = ""
+     , C.condition = text "Nur diese builtin-Funktionen sind gestattet:"
+		   </> toDoc bs
+     , C.investigate = \ f -> check_builtins ( mkSet bs )  f
+     }
+
+
+instance Condition Property Fun where
+    condition p f = C.run ( check p ) f
+
+instance Explain Property where
+    explain p = C.condition ( check p )
+
 
 check_builtins :: Set Builtin -> Fun -> Reporter ()
 check_builtins allowed f = do

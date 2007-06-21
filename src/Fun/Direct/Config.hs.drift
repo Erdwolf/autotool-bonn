@@ -21,8 +21,15 @@ data Config =
      Config { table :: Matrix Integer
 	    , properties :: [ Property ]
 	    }
+    deriving Typeable
 
 {-! for Config derive: Reader, ToDoc !-}
+
+example :: Config
+example = Config
+    { Fun.Direct.Config.table = examplematrix 10
+    , properties = [ Builtins [] ]
+    }
 
 data ( Reader a, ToDoc a ) => Matrix a =
      Matrix { width :: Integer
@@ -31,6 +38,22 @@ data ( Reader a, ToDoc a ) => Matrix a =
 	    }
 
 {-! for Matrix derive: Reader !-}
+
+examplematrix n = Matrix
+    { width = n
+    , height = n
+    , contents = [ [ abs (x-y) | y <- [ 1 .. n ] ] | x <- [ 1 .. n ] ]
+    }
+
+mkmatrix :: Tafel2 -> Matrix Integer
+mkmatrix t = 
+    let ( (0,0), (h,w)) = bounds $ unTafel2 t
+    in  Matrix { width = w + 1
+	       , height = h + 1
+	       , contents = [ [ unTafel2 t ! (x,y) | y <- [ 0 .. w ] ]
+			    | x <- [ 0 .. h ]
+			    ]
+	       }
 
 mktafel2 :: Matrix Integer -> Reporter Tafel2 
 mktafel2 m = do

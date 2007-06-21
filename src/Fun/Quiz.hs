@@ -96,7 +96,7 @@ instance Generator Fun_Quiz2 Param ( Fun, Tafel2 ) where
 instance Project Fun_Quiz2 ( Fun, Tafel2 ) Tafel2 where
     project _ ( f, t ) = t
 
-quiz :: Make
-quiz = quiz Fun_Quiz2 Fun.Quiz.Type.example
+make :: Make
+make = quiz Fun_Quiz2 Fun.Quiz.Type.example
 
 

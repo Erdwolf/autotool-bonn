@@ -20,6 +20,8 @@ import qualified Turing.Make
 import qualified Fun.Quiz
 import qualified Fun.Make
 
+import qualified Fun.Direct
+
 import qualified Graph.Selfcom
 import qualified Graph.Nachbar
 import qualified Graph.Cross
@@ -235,8 +237,14 @@ tmakers =
          , heading "Berechnungsmodelle"
                 [ item JVM.Make.make
                 , item Turing.Make.computer
-		, item Fun.Make.make
-		, item Fun.Quiz.make
+		, heading "Primitiv rekursive Funktionen (alt)"
+		    [ item Fun.Make.make
+		    , item Fun.Quiz.make
+		    ]
+		, heading "Primitiv rekursive Funktionen (neu)"
+		    [ item Fun.Direct.make_fixed
+		    , item Fun.Direct.make_quiz
+		    ]
                 , item RAM.Make.make
                 , item RM.Make.make
                 ]

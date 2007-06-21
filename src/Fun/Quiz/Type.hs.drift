@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# OPTIONS -fglasgow-exts #-}
 
 module Fun.Quiz.Type where
 
@@ -24,3 +24,7 @@ example = Param { expression_size = 10
 		}
 
 {-! for Param derive : Reader, ToDoc, Haskell2Xml !-}
+
+-- local variables:
+-- mode: haskell
+-- end:
