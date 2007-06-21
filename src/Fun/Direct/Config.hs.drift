@@ -3,11 +3,15 @@
 module Fun.Direct.Config where
 
 import Fun.Type
+import Fun.Table
 
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Reporter
+
 import Data.Typeable
+import Data.Array
+import Data.List
 
 data Primrec_2D = Primrec_2D deriving ( Typeable )
 
@@ -21,8 +25,8 @@ data Config =
 {-! for Config derive: Reader, ToDoc !-}
 
 data ( Reader a, ToDoc a ) => Matrix a =
-     Matrix { width :: Int
-	    , height :: Int
+     Matrix { width :: Integer
+	    , height :: Integer
 	    , contents :: [[a]]
 	    }
 
@@ -30,12 +34,12 @@ data ( Reader a, ToDoc a ) => Matrix a =
 
 mktafel2 :: Matrix Integer -> Reporter Tafel2 
 mktafel2 m = do
-    when ( length ( contents m ) /= height m ) $ reject
+    when ( genericLength ( contents m ) /= height m ) $ reject
 	 $ text "Der Inhalt der Matrix hat nicht die Höhe" 
          <+> toDoc ( height m )
     sequence $ do
-        ( k, xs) <- zip [0..] $ contents m
-        return $ when ( length xs /= width m ) $ reject
+        ( k, xs) <- zip [ 0 :: Int .. ] $ contents m
+        return $ when ( genericLength xs /= width m ) $ reject
 	     $ text "Die Zeile" <+> toDoc k 
 	     <+> text "hat nicht die Breite" <+> toDoc ( width m )
     return $ Tafel2 $ listArray ((0,0), (height m - 1, width m - 1 ))
