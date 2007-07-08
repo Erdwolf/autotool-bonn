@@ -1,5 +1,3 @@
--- -*- mode: haskell -*-
-
 module RSA.Break.Data where
 
 import Autolib.Reader
@@ -13,9 +11,17 @@ data Config =
 	    }
      deriving ( Typeable )
 
+example :: Config
+example = Config
+	{ public_key = ( 7, 55 )
+	, message = 9
+	}
+
 {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
-instance Show Config where show = render . toDoc
-instance Read Config where readsPrec = parsec_readsPrec
+-- local variables:
+-- mode: haskell
+-- end:
+
 
 

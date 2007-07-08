@@ -5,7 +5,7 @@ module Faktor.Certify where
 import Faktor.Prim
 import Autolib.ToDoc
 
-import Autolib.Util.Wort
+-- import Autolib.Util.Wort
 import Autolib.Util.Zufall
 import Autolib.Ana
 import Control.Monad ( guard )

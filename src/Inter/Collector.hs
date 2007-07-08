@@ -52,6 +52,9 @@ import qualified Faktor.Times
 import qualified Faktor.Euklid
 import qualified Faktor.Inverse
 
+import qualified RSA.Break
+import qualified RSA.Quiz
+
 import qualified NFA.Convert
 import qualified NFA.Equiv.Challenger
 import qualified NFA.Nerode.Congruent.Check
@@ -333,7 +336,7 @@ tmakers =
                 , item Faktor.Inverse.make_fixed
                 , item Faktor.Inverse.make_quiz
                 ]
-         , heading "Codierung und Kompression"
+         , heading "Codierung, Kompression, Verschlüsselung"
               [ heading "Codierung"
                     [ item Code.Nonprefix.make_fixed
 		    , item Code.Nocode.make_fixed
@@ -354,6 +357,10 @@ tmakers =
                     , item $ Code.Compress.make_quiz Code.LZ.Lempel_Ziv_77
                     , item $ Code.Compress.make_fixed Code.LZ.Lempel_Ziv_77
                     ]
+	      , heading "Verschlüsselung"
+		    [ item $ RSA.Break.make
+		    , item $ RSA.Quiz.make
+		    ]
               ]
          , heading "noch nicht eingeordnet"
                 [ item Palindrom.Plain.make

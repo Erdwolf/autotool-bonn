@@ -1,8 +1,4 @@
--- -*- mode: haskell -*-
-
 module RSA.Param where
-
---   $Id$
 
 import Autolib.Reader
 import Autolib.ToDoc
@@ -17,13 +13,15 @@ data Param =
 	   }
      deriving ( Typeable )
 
-p :: Param
-p = Param { von = 50
+example :: Param
+example = Param { von = 50
 	  , bis = 70
 	  }
 
 {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show Param where show = render . toDoc
-instance Read Param where readsPrec = parsec_readsPrec
+-- local variables:
+-- mode: emacs
+-- end:
+
 
