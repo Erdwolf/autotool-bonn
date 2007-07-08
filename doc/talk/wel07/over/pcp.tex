@@ -1,0 +1,22 @@
+\begin{slide}{Suchproblem: PCP}
+
+Lösen Sie diese Instanz des Postschen Korrespondenz-Problems:
+\begin{small}
+\begin{verbatim}
+ PCP [ ( "aa" , "ba" ) , ( "ab" , "a" ) , ( "c" , "a" )
+     , ( "bac" , "accbac" ) ]
+\end{verbatim}
+  
+\begin{verbatim}
+gelesen: [ 2 , 1 , 2 , 4 ]
+
+Aus Ihrer Folge entstehen die Zeichenketten:
+abaaabbac
+abaaaccbac
+
+Die eine muß ein Präfix der anderen sein,
+nach Löschen des gemeinsamen Präfixes  "abaaa"
+entstehen jedoch die Reste  ( "bbac" , "ccbac" )
+\end{verbatim}
+\end{small}
+\end{slide}

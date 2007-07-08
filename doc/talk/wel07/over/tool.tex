@@ -1,0 +1,52 @@
+\documentclass[pdf,mpa]{prosper}
+
+\FontText{\usefont{T1}{phv}{m}{n}\fontsize{16.4pt}{16pt}%
+  \selectfont}{%
+  \usefont{T1}{phv}{m}{n}\fontsize{16.4pt}{16pt}\selectfont}
+
+\NewSlideStyle[14.0cm]{t}{5.5,3.5}{}
+
+
+\input{macros}
+
+\title{
+  Das System \autotool\ \\
+  zur automatischen Erzeugung und Kontrolle \\
+  von Übungsaufgaben zur Informatik
+}
+\author{ 
+  Mirko Rahn, Uni Karlsruhe \\
+  Alf Richter, Uni Leipzig \\
+  \emph{Johannes Waldmann}, HTWK Leipzig
+}  
+\slideCaption{WEL 07, Leipzig}
+
+
+\begin{document}
+\maketitle
+
+\input{use}
+\input{col}
+\input{wert}
+
+\input{themen}
+\input{verify}
+
+% \input{data}
+% \input{auto}
+% \input{regexp}
+% \input{gram}
+% \input{score}
+
+\input{einsatz}
+\input{erfahr}
+
+\input{run}
+\input{teile}
+\input{intern}
+\input{wickel}
+
+\input{info1}
+\input{info2}
+
+\end{document}

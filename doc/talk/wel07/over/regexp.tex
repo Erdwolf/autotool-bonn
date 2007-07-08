@@ -1,0 +1,29 @@
+\begin{slide}{Reguläre Ausdrücke}
+
+\begin{verbatim}
+((ba)^* + (bb)^*)^* + (ab)^*
+\end{verbatim}
+
+Definition:
+\begin{itemize}
+\item
+  atomar: Buchstabe oder Name (\verb|Sigma, All|)
+\item 
+  zusammengesetzt mit Operationen:
+
+  Verkettung (\verb|.|), Vereinigung \verb|+|, 
+  Durchschnitt \verb|&|, Differenz \verb|-|,
+  symmetrische Differenz \verb|<>|,
+  Shuffle \verb|$|, Quotienten \verb|\,/|,
+  Potenzen \verb|^int, ^*, ^+|
+\end{itemize}
+
+Eigenschaften:
+\begin{verbatim}
+   Min_Size Int | Max_Size Int | Alphabet ( Set c )
+  | Simple -- nur Plus, Mal, Stern
+  | Extended -- alles
+\end{verbatim}
+
+
+\end{slide}

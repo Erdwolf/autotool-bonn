@@ -1,0 +1,31 @@
+\begin{slide}{Sortiernetze}
+
+% \emph{Aufgabenstellung:}
+Finden Sie ein Sortiernetz für 5 Eingänge \\
+mit weniger als 10 Komparatoren.
+
+% \emph{Einsendung:}
+\begin{small}
+\begin{verbatim}
+mkNetz [ ( 1 , 4 ) , ( 3 , 4 ) , ( 2 , 3 ) , ( 1 , 2 ) , ( 3 , 5 ) ]
+\end{verbatim}
+\end{small}
+
+% \emph{Bewertung:}
+\begin{small}
+\begin{verbatim}
+Diese Eingabe wird nicht korrekt geordnet: [ 5 , 1 , 2 , 3 , 4 ]
+Das Netz berechnet die Ausgabe:            [ 1 , 3 , 2 , 5 , 4 ]
+    ---------------------4--o--4---
+                            v      
+    ---3--o--5--o--5--------v------
+          v     v           v      
+    ------v--2--o--2--o--2--o--2---
+          v           v            
+    ------v--------1--o--1--o--3---
+          v                 v      
+    ---5--o--3-----------3--o--1---
+\end{verbatim}
+\end{small}
+
+\end{slide}
