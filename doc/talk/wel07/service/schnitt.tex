@@ -1,0 +1,41 @@
+\begin{slide}{Service-Schnittstelle (Ansatz)}
+
+\begin{verbatim}
+list_types :: List<Task>
+
+-- | liefert Beispiel-Konfiguration:
+get_config :: Task -> Config   
+
+verify_config :: Task -> Config -> Boolean
+
+-- | liefert persönliche Instanz und Beispiel-Lösung
+get_instance :: Task -> Config -> Seed -> Pair<Instance,Solution>
+
+grade :: Task -> Instance -> Solution -> Boolean
+\end{verbatim}
+  
+
+\end{slide}
+
+
+\begin{slide}{Service-Schnittstelle (genauer)}
+
+\begin{verbatim}
+class Documented<E> { E contents, String documentation }
+class Signed<E> { E contents, String signature }
+\end{verbatim}
+
+Ausgaben dokumentieren
+und Eingaben nur akzeptieren, wenn sie vorher verifiziert 
+(und danach signiert) wurden.
+\begin{verbatim}
+get_config :: Task -> Documented<Config>
+verify_config :: Task -> Config 
+    -> Signed<Config>
+get_instance :: Task -> Signed<Config> -> Seed 
+   -> Pair<Doc<Signed<Instance>,Doc<Solution>>
+grade :: Task -> Signed<Instance> -> Solution 
+   -> Documented<Boolean>
+\end{verbatim}
+
+\end{slide}
