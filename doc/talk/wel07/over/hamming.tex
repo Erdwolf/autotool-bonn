@@ -1,0 +1,24 @@
+\begin{slide}{Codes: Hamming-Abstand}
+
+Gesucht ist ein Code (als Liste von Wörtern über L, R)
+mit diesen Eigenschaften:
+\begin{verbatim}
+Config { width = ( Fixed , 4 ) 
+    , size = ( Atleast , 5 )
+    , distance = ( Atleast , 2 ) 
+    , optimize = Size }
+\end{verbatim}
+\bigskip
+eine Lösung
+\begin{verbatim}
+[ [L,R,R,L], [R,L,L,R], [L,L,L,L]
+, [R,R,R,R], [L,L,R,R] ]
+\end{verbatim}
+Diskussion: Fehlererkennung, -korrektur;
+Dreiecksungleichung, Schranken für Codegröße
+
+\end{slide}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

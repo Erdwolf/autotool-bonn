@@ -1,0 +1,27 @@
+\begin{slide}{Lempel-Zhiv-Komppression}
+
+Finden Sie eine möglichst gute Komprimierung von
+\begin{verbatim}
+    "01001010010010100101001001010010"
+\end{verbatim}
+nach dem Verfahren  \verb|Lempel_Ziv_77|
+
+\bigskip
+
+Form der Lösung:
+\begin{verbatim}
+[ Letter '0'
+, Letter '1'
+, Block {  width = 2, dist = 0 }
+, Block {  width = 3, dist = 1 }
+, ...
+]
+\end{verbatim}
+
+erzeugt \verb| 0 1 01 010 ... |
+
+\end{slide}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
