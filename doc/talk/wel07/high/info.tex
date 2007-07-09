@@ -1,17 +1,24 @@
 \begin{slide}{Informatik II (Medientechniker)}
 
-\begin{itemize}
-\item
-  Boolesche Ausdrücke
+\begin{itemize}\itemsep 2pt
+\item aussagenlogischer Ausdruck \\
+mit Operatoren \verb|mkSet [ <= , false ]| \\
+äquivalent  zu \verb|x == (y == z)|
+\begin{small}
+\begin{verbatim}
+((((z<=y)<=((y<=z)<=false))<=false)<=x)<=((x<=
+(((z<=y)<=((y<=z)<=false))<=false))<=false))<=false
+\end{verbatim}
+\end{small}
 \item Hamming-Abstand
-\item Kompression
+\item Kompression (Lempel-Zhiv)
 \item Faktorisierung
 \end{itemize}
 
 \begin{verbatim}
-84 :      42084 :    6 Platzierungen :   3   1           1           1        
-76 :      42077 :    7 Platzierungen :   1   2   1   1       1   1            
-51 :      38451 :    4 Platzierungen :   1   1   1       1                    
+84 : Benjamin Knofe
+76 : Albrecht Nitsche
+51 : Marcel Jehring
 \end{verbatim}
 
 \end{slide}
