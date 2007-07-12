@@ -20,7 +20,7 @@ import Challenger.Partial
 
 import qualified Text.XHtml
 
-import qualified Autolib.Multilingual as M
+import Autolib.Multilingual hiding ( Make )
 
 import Autolib.Reporter hiding ( wrap, initial )
 import Autolib.ToDoc
@@ -51,7 +51,7 @@ solution vnr manr stud
     parameter_table auf
 
     h3 "Aufgabenstellung"
-    html $ M.specialize lang icom
+    html $ specialize lang icom
 
     when ( not $ A.current auf ) vorbei
 
@@ -81,17 +81,20 @@ solution vnr manr stud
 	      else return b0
 	    open table
 	    open row
-            let helper :: Text.XHtml.Html
-                helper = M.specialize lang
-                    $ Autolib.Output.render 
-                 $ Autolib.Output.Beside
-                      ( Autolib.Output.Text "ein Ausdruck vom Typ" )
-                      ( help ini )
-            html helper
-	    close -- row
-	    open row
             sol <- textarea def
 	    esub  <- submit "Textfeld absenden"
+	    close -- row
+	    open row
+            let helper :: Text.XHtml.Html
+                helper = specialize lang
+                    $ Autolib.Output.render 
+                 $ Autolib.Output.Beside
+                      ( Autolib.Output.Doc
+		      $ multitext [ (DE, "ein Ausdruck vom Typ" )
+				  , (UK, "an expression of type")
+				  ] )
+                      ( help ini )
+            html helper
 	    close -- row
 	    close -- table
             return sol
@@ -106,7 +109,7 @@ solution vnr manr stud
     Just cs <- return mcs
     hr ; h3 "Neue Bewertung"
     (res, com ) <- io $ run $ evaluate p i cs
-    html $ M.specialize lang com
+    html $ specialize lang com
     return ( Just icom, Just cs, fromMaybe No res, Just com )
 
 parameter_table auf = do

@@ -15,6 +15,7 @@ import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.ToDoc
+import Autolib.Multilingual
 import Autolib.Reader
 import Autolib.Reporter
 import Autolib.Set
@@ -45,14 +46,19 @@ data BIC =
 instance Partial Boolean BI ( Exp Bool ) where
 
     describe p i = vcat
-        [ text "Gesucht ist ein aussagenlogischer Ausdruck,"
-	, text "der äquivalent ist zu:"
+        [ multitext [ (DE, "Gesucht ist ein aussagenlogischer Ausdruck, der äquivalent ist zu:")
+		    , (UK, "Find an expression in propositional logic that is equivalent to:")
+		    ]
 	, nest 4 $ toDoc $ formula i
 	, text ""
-	, parens $ vcat [ text "die Baumstruktur dieses Ausdrucks ist:"
+	, parens $ vcat [ multitext [ (DE, "die Baumstruktur dieses Ausdrucks ist:" )
+				    , (UK, "the expression tree is:")
+				    ] 
 			, nest 4 $ draw  $ formula i
 			]
-	, text "und nur diese Operatoren enthält:"
+	, multitext [ (DE, "und nur diese Operatoren enthält:")
+		    , (UK, "and which contains only these operators:")
+		    ] 
 	, nest 4 $ toDoc $ operators i
 	]
 
@@ -60,16 +66,26 @@ instance Partial Boolean BI ( Exp Bool ) where
 
     partial p i b = do
         inform $ vcat
-	       [ text "Die Baumstruktur Ihrer Einsendung ist:"
+	       [ multitext [ (DE, "Die Baumstruktur Ihrer Einsendung ist:")
+			   , (UK, "The tree structure of your submission is:")
+			   ]
 	       , nest 4 $ draw b
 	       , text ""
 	       ]
         Autolib.Reporter.Set.subeq
-	    ( parens $ text "benutzte Operatoren" , syms b )
-	    ( parens $ text "erlaubte Operatoren" , operators i )
+	    ( parens $ multitext [ (DE, "benutzte Operatoren")
+				 , (UK, "operators used")
+				 ] , syms b )
+	    ( parens $ multitext [ ( DE, "erlaubte Operatoren" )
+				 , ( UK, "operators allowed" )
+				 ] , operators i )
 	Autolib.Reporter.Set.subeq
-	    ( parens $ text "benutzte Variablen" , vars b )
-	    ( parens $ text "Variablen der Aufgabenstellung",vars $ formula i )
+	    ( parens $ multitext [ (DE, "benutzte Variablen")
+				 , (UK, "variables used")
+				 ] , vars b )
+	    ( parens $ multitext [ (DE, "Variablen der Aufgabenstellung")
+				 , (UK, "variables given")
+				 ] ,vars $ formula i )
 
     total p i b = do
         Boolean.Equiv.check ( formula i ) b

@@ -10,6 +10,7 @@ import qualified Autolib.Output as O
 import Control.Types (toString)
 import Challenger.Partial
 import Autolib.Reporter
+import Autolib.ToDoc ( text )
 
 -- import qualified Text.XHtml
 import qualified Autolib.Multilingual.Html as Html
@@ -72,17 +73,19 @@ pure_punkte tutor stud auf ( minst, mcs, mres, com ) =
 -----------------------------------------------------------------------------
 
 footer scores = do
-    hr ; h3 "Informationen zum autotool"
+    hr 
+    -- h3 "Informationen zum autotool"
     let entry name url = O.Named_Link name url
     embed $ output
           $ foldr1 O.Beside
-	      [ entry "autotool home" 
+	      [ O.Text "autotool", O.Text ":"
+	      , entry "home" 
 		      "http://dfa.imn.htwk-leipzig.de/auto/"
-              , O.Text "/"
-	      , entry "bugs (ansehen und melden)" 
+              , O.Text  " / "
+	      , entry " bugs " 
 		      "http://dfa.imn.htwk-leipzig.de/bugzilla/buglist.cgi?component=autotool&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED"
-              , O.Text "/"
-	      , entry "highscores" scores
+              , O.Text " / "
+	      , entry " highscores" scores
 	      ]
     hr
 
