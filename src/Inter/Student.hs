@@ -16,6 +16,9 @@ import Control.Types (toString)
 import Challenger.Partial
 
 import qualified Text.XHtml
+
+import qualified Autolib.Multilingual as M
+
 import Autolib.Reporter hiding ( wrap, initial )
 import Autolib.ToDoc
 import Autolib.Reader
@@ -43,7 +46,7 @@ solution vnr manr stud
     parameter_table auf
 
     h3 "Aufgabenstellung"
-    html icom
+    html $ M.specialize M.DE icom
 
     when ( not $ A.current auf ) vorbei
 
@@ -74,7 +77,8 @@ solution vnr manr stud
 	    open table
 	    open row
             let helper :: Text.XHtml.Html
-                helper = Autolib.Output.render 
+                helper = M.specialize M.DE 
+                    $ Autolib.Output.render 
                  $ Autolib.Output.Beside
                       ( Autolib.Output.Text "ein Ausdruck vom Typ" )
                       ( help ini )
@@ -96,8 +100,8 @@ solution vnr manr stud
 
     Just cs <- return mcs
     hr ; h3 "Neue Bewertung"
-    (res, com :: Text.XHtml.Html) <- io $ run $ evaluate p i cs
-    html com
+    (res, com ) <- io $ run $ evaluate p i cs
+    html $ M.specialize M.DE com
     return ( Just icom, Just cs, fromMaybe No res, Just com )
 
 parameter_table auf = do

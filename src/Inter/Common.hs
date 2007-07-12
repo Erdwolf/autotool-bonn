@@ -11,7 +11,9 @@ import Control.Types (toString)
 import Challenger.Partial
 import Autolib.Reporter
 
-import qualified Text.XHtml
+-- import qualified Text.XHtml
+import qualified Autolib.Multilingual.Html as Html
+
 import System.Directory
 import qualified Control.Exception
 
@@ -30,8 +32,8 @@ make_instant_common vnr manr stud var = do
     let mat = S.mnr stud
     k <- key var $ toString mat 
     g <- gen var vnr manr k 
-    let ( Just i  , _ :: Text.XHtml.Html ) = export g
-    ( _, icom :: Text.XHtml.Html) <- run $ report p i
+    let ( Just i  , _ :: Html.Html ) = export g
+    ( _, icom :: Html.Html) <- run $ report p i
     return ( p, i, icom )
 
 -- | erreichte punkte in datenbank schreiben 

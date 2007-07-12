@@ -59,6 +59,9 @@ import Autolib.Reader
 import Autolib.Util.Sort
 import Autolib.FiniteMap
 
+import qualified Autolib.Multilingual as M
+import qualified Autolib.Multilingual.Html as H
+
 import qualified Util.Datei as D
 import Debug
 import qualified Local
@@ -358,11 +361,15 @@ aufgaben tmk ( stud, vnr, tutor ) = do
 
     case action of
         Config -> do
-	    solution vnr manr stud' mk auf' 
+            ( minst :: Maybe H.Html, cs, res, com :: Maybe H.Html ) 
+	        <- solution vnr manr stud' mk auf' 
 	    return ()
         Solve -> do
-            ( minst, cs, res, com ) <- solution vnr manr stud' mk auf' 
-	    Inter.Common.punkte False stud' auf' ( minst, cs, Just res, com )
+            ( minst, cs, res, com ) 
+                <- solution vnr manr stud' mk auf'
+            let deutsch = M.specialize M.DE 
+	    Inter.Common.punkte False stud' auf' 
+                     ( fmap deutsch minst, cs, Just res, fmap deutsch com )
 	Edit | tutor -> do
 	    find_previous True  vnr mks stud' auf'
             return ()
@@ -428,7 +435,8 @@ fix_instant vnr mks stud auf sa = case SA.instant sa of
                 let p = mkpar stud auf
                     d = Inter.Store.location Inter.Store.Instant
                            p "latest" False
-                file <- io $ D.schreiben d $ show com
+                file <- io $ D.schreiben d 
+                        $ show $ M.specialize M.DE com
                 let inst = fromCGI file
                 io $ Control.Punkt.bepunkteStudentDB 
                          (P.ident p) (P.anr p) 

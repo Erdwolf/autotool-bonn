@@ -79,6 +79,9 @@ import Data.List ( partition )
 import Control.Monad
 import qualified Text.XHtml
 
+import qualified Autolib.Multilingual as M
+import qualified Autolib.Multilingual.Html as H
+
 import Inter.DateTime ( defaults )
 
 my_name = "Trial.cgi"
@@ -147,7 +150,8 @@ common_aufgaben tmk ( stud, vnr, tutor ) mauf conf = do
     hr
     h2 "(Student) Aufgabe lösen"
     hr
-    solution vnr Nothing stud' mk auf' 
+    ( minst :: Maybe H.Html, cs, res, com :: Maybe H.Html ) 
+        <- solution vnr Nothing stud' mk auf' 
     scores <- scores_link
     footer scores
 
