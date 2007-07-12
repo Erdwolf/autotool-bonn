@@ -1,9 +1,12 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Inter.Student where
 
 import Inter.Types
 import Inter.Bank
 import Inter.Evaluate
 import Inter.Common
+import qualified Inter.Language
 import qualified Inter.Store
 
 import Gateway.CGI
@@ -37,6 +40,8 @@ data Method = Textarea | Upload
 solution vnr manr stud 
         ( Make p0 doc ( fun :: conf -> Var p i b ) verify ex ) auf = do
 
+    lang <- Inter.Language.choose
+
     ( p, i, icom ) <- make_instant vnr manr stud fun auf
 
     let past = mkpar stud auf
@@ -46,7 +51,7 @@ solution vnr manr stud
     parameter_table auf
 
     h3 "Aufgabenstellung"
-    html $ M.specialize M.DE icom
+    html $ M.specialize lang icom
 
     when ( not $ A.current auf ) vorbei
 
@@ -77,7 +82,7 @@ solution vnr manr stud
 	    open table
 	    open row
             let helper :: Text.XHtml.Html
-                helper = M.specialize M.DE 
+                helper = M.specialize lang
                     $ Autolib.Output.render 
                  $ Autolib.Output.Beside
                       ( Autolib.Output.Text "ein Ausdruck vom Typ" )
@@ -101,7 +106,7 @@ solution vnr manr stud
     Just cs <- return mcs
     hr ; h3 "Neue Bewertung"
     (res, com ) <- io $ run $ evaluate p i cs
-    html $ M.specialize M.DE com
+    html $ M.specialize lang com
     return ( Just icom, Just cs, fromMaybe No res, Just com )
 
 parameter_table auf = do
