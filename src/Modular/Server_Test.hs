@@ -49,7 +49,7 @@ main :: IO ()
 main = do
     ts <- list_types server
     print $ zip [0.. ] ts
-    let task = ts !! 79
+    let task = ts !! 93
 
     dconf <- get_config server task
     print $ dconf
