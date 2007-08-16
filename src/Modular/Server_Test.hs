@@ -49,7 +49,7 @@ main :: IO ()
 main = do
     ts <- list_types server
     print $ zip [0.. ] ts
-    let task = ts !! 93
+    let [ task ] = filter ( \ t -> Modular.Task.contents t == "Faktor-Direct" ) ts
 
     dconf <- get_config server task
     print $ dconf

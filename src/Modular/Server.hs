@@ -25,7 +25,11 @@ import Autolib.ToDoc
 import Autolib.Reporter
 
 import Control.Monad ( guard )
-import qualified Text.XHtml as H
+-- import qualified Text.XHtml as H
+
+import qualified Autolib.Multilingual as M
+import qualified Autolib.Multilingual.Html as H
+
 import Data.Typeable
 
 
@@ -97,7 +101,7 @@ get_instance makers task sconf seed = find_and_apply "get_instance" makers task
                 let start = Challenger.Partial.initial p i 
                 return $ Pair
                        { first = Documented
-                               { documentation = show icom
+                               { documentation = emit icom
                                , Modular.Documented.contents = si
                                }
                        , second = Documented
@@ -123,7 +127,7 @@ grade makers task sinst sol = find_and_apply "grade" makers task
                    ( Modular.Solution.contents sol )
        ( res, com :: H.Html) <- run action
        return $ Documented
-              { documentation = show com
+              { documentation = emit com
               , Modular.Documented.contents = 
                   Pair { first = case res of
                                Nothing -> False
@@ -133,6 +137,8 @@ grade makers task sinst sol = find_and_apply "grade" makers task
                                Just x -> fromIntegral $ size x
                        }
               }
+
+emit h = show $ M.specialize M.UK h
 
 
 main :: IO ()
