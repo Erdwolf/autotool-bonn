@@ -22,7 +22,10 @@ import Challenger.Partial
 import Network.XmlRpc.Server
 
 import Autolib.ToDoc
+import Autolib.Reader
 import Autolib.Reporter
+
+import Gateway.Errmsg
 
 import Control.Monad ( guard )
 -- import qualified Text.XHtml as H
@@ -69,8 +72,14 @@ verify_config :: [ Make ]
 	      -> IO ( Signed Config ) 
 verify_config makers task conf = find_and_apply "verify_config" makers task
     $ \ ( Make p _ _ verify _ ) -> do
-            let ( iconf  ) = read $ Modular.Config.contents conf 
-            -- when ( size iconf < 0 ) $ error "reading failed (probably)"            
+            let input = Modular.Config.contents conf 
+            iconf <- case parse ( parse_complete reader ) "rpc input" input of
+		 Left e -> do
+                      let msg = render $ errmsg 80 e input
+		      debug $ "verify_config input:\n" ++ input
+		      debug $ "verify_config error:\n" ++ msg
+		      error $ msg
+		 Right x -> return x 
 	    let ( result, doc :: Doc ) = export $ verify iconf
 	    case result of
 	        Just () -> sign conf
