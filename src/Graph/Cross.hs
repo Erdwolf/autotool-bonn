@@ -1,4 +1,4 @@
-
+{-# OPTIONS -fglasgow-exts #-}
 
 module Graph.Cross where
 
@@ -90,7 +90,8 @@ b = C.initial Cross (1 :: Int, g)
 --------------------------------------------------------------
 
 data Pin a = Pin ( Graph a ) ( Karte a )
-    deriving ( Eq, Ord, Show )
+    deriving ( Show , Eq, Ord
+	     )
 
 instance GraphC a  => Hash ( Pin a ) where
     hash (Pin g f) = hash (g, f)

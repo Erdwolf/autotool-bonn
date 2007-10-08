@@ -24,7 +24,8 @@ import Autolib.Set
 
 data Algebraic_Graph = Algebraic_Graph deriving ( Read, Show, Typeable )
 
-instance Algebraic Algebraic_Graph ( Graph Int ) where
+instance GraphC Int =>
+      Algebraic Algebraic_Graph ( Graph Int ) where
     -- evaluate         :: tag -> Exp a -> Reporter a
     evaluate tag exp = do
         g <- tfoldR ( \ it -> reject $ text "unbekannt:" <+> toDoc it

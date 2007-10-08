@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-incoherent-instances -fallow-overlapping-instances -fallow-undecidable-instances #-}
 
 module Rewriting.Derive.Instance where
 
@@ -12,13 +11,20 @@ import Data.Typeable
 
 
 
-data ( Symbol c, Symbol v, ToDoc ( TRS v c ), Reader ( TRS v c ) ) 
+data (  Symbol c, Symbol v
+       , ToDoc ( TRS v c )
+       , Reader ( TRS v c )
+--     , Eq ( TRS v c ), Ord ( TRS v c ) 
+--     , Eq ( Term v c) , Ord ( Term v c )
+     ) 
     => Instance v c = Instance
         { system :: TRS v c
         , from   :: Term v c
         , to     :: Term v c
         }
-    deriving ( Eq, Ord, Typeable )
+    deriving ( Typeable 
+	     -- , Eq, Ord
+	     )
 
 example :: Instance Identifier Identifier
 example = Instance
@@ -31,4 +37,4 @@ example = Instance
 
 -- local variables:
 -- mode: haskell
--- end;
+-- end:

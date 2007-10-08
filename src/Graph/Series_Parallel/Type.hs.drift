@@ -15,11 +15,13 @@ data GraphC a => STGraph a = STGraph
                , target :: a
                , contents :: Graph a
                }
-    deriving ( Typeable )
+    deriving ( Typeable 
+	     -- , Ord, Eq 
+	     )
 
 {-! for STGraph derive: Reader, ToDoc !-}
 
-example :: STGraph Int
+example :: GraphC Int => STGraph Int
 example = STGraph { source = 1, target = 3
                   , contents = circle [ 1 .. 5 ]
                   }
@@ -36,5 +38,5 @@ instance ( Hash a, Hash b ) => Hash ( Threeway a b ) where
 
 -- local variables:
 -- mode: haskell
--- end;
+-- end:
 

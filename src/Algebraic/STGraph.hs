@@ -25,7 +25,9 @@ import Autolib.Choose
 import Autolib.Reader
 import Autolib.Set
 
-instance Ops ( STGraph Int ) where
+instance ( GraphC Int
+	 , GraphC ( Threeway Int Int )
+	 ) => Ops ( STGraph Int ) where
    bops = B.Binu
         { B.nullary = 
               [ Op { name = "v", arity = 0
@@ -62,7 +64,8 @@ data Algebraic_STGraph = Algebraic_STGraph
 instance Condition () ( STGraph a ) where 
     condition p g = return ()
 
-instance Algebraic Algebraic_STGraph ( STGraph Int ) where
+instance ( GraphC Int , GraphC ( Threeway Int Int ) )
+      => Algebraic Algebraic_STGraph ( STGraph Int ) where
     -- evaluate         :: tag -> Exp a -> Reporter a
     evaluate tag exp = do
         g <- tfoldR ( \ it -> reject $ text "unbekannt:" <+> toDoc it

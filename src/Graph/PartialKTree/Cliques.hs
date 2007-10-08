@@ -15,9 +15,12 @@ import Autolib.Reporter
 
 
 class  ( Ord a , Hash a, Show a, ToDoc a, Reader a, Haskell2Xml a
-	 , ToDoc [a], Reader [a] ) => CC a
+	 , ToDoc [a], Reader [a] 
+       , GraphC a ) => CC a
 instance ( Ord a , Hash a, Show a, ToDoc a, Reader a, Haskell2Xml a
-	 , ToDoc [a], Reader [a] ) => CC a
+	 , ToDoc [a], Reader [a] 
+	 , GraphC a
+	 ) => CC a
 
 -- | liefert maximale Größe einer Clique,
 -- die in der Eliminationsordnung verwendet wird

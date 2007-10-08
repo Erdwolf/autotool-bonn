@@ -8,14 +8,14 @@ import qualified Autolib.Graph.Basic as GB
 import Autolib.FiniteMap
 import Data.Maybe
 
-point :: STGraph Int
+point :: GraphC Int => STGraph Int
 point = STGraph
      { source = 0
      , target = 0
      , contents = GB.path [0]
      }
 
-edge :: STGraph Int
+edge :: GraphC Int => STGraph Int
 edge = STGraph
      { source = 0
      , target = 1
@@ -23,7 +23,7 @@ edge = STGraph
      }
 
 -- | identifiziert jeweils sourcen und targets
-parallel :: ( GraphC a, GraphC b )
+parallel :: ( GraphC a, GraphC b,  GraphC ( Threeway a b ) )
          => STGraph a -> STGraph b
          -> STGraph ( Threeway a b )
 parallel g h =
@@ -33,7 +33,7 @@ parallel g h =
            ( Both 1 )
 
 -- | identif. target vom ersten mit source vom zweiten
-serial :: ( GraphC a, GraphC b )
+serial :: ( GraphC a, GraphC b, GraphC ( Threeway a b ) )
          => STGraph a -> STGraph b
          -> STGraph ( Threeway a b )
 serial g h =
@@ -43,7 +43,7 @@ serial g h =
            ( Both 2 )
 
 
-normalize :: GraphC a 
+normalize :: ( GraphC a , GraphC Int )
            => STGraph a -> STGraph Int
 normalize g =
     let ks = source g : target g : ( setToList $ knoten $ contents g )

@@ -69,7 +69,7 @@ weighted_nachfolger a k = do
     let lift k = ( weight a k, k )
     let handle done todo = case S.minView todo of
 	    Nothing -> []
-	    Just ( rest, (w, top) ) ->
+	    Just ( (w, top) , rest ) ->
                 let done' = S.insert top done 
                     succs = map lift
 			  $ filter ( \ x -> not $ S.member x done' )
