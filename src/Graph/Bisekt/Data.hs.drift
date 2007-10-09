@@ -12,7 +12,7 @@ data ( GraphC a ) => Solution a =
 	      , knoten1 :: Set a
 	      , knoten2 :: Set a
 	      }
---    deriving ( Eq, Ord, Typeable )
+    deriving ( Eq, Ord, Typeable )
 
 {-! for Solution derive: Reader, ToDoc, Haskell2Xml !-}
 

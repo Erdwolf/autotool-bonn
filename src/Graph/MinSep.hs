@@ -83,7 +83,7 @@ make :: Make
 make = direct MinSep petersen
 
 
-separates :: ( ToDoc [a], Ord a )
+separates :: ( ToDoc [a], GraphC a )
 	  => Graph a -> ((a, a), Set a) -> Bool
 separates g ( (a, b), s ) =
     let h = restrict ( knoten g `minusSet` s ) g

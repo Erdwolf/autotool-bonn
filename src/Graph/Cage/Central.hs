@@ -1,3 +1,5 @@
+{-# OPTIONS -Onot #-}
+
 module Graph.Cage.Central where
 
 --  $Id$
@@ -24,7 +26,7 @@ import Data.Typeable
 
 data Cage = Cage deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance C.Partial Cage Config ( Graph Int ) where
+instance GraphC Int => C.Partial Cage Config ( Graph Int ) where
 
     report p conf = do
         inform $ vcat
@@ -61,8 +63,11 @@ instance C.Partial Cage Config ( Graph Int ) where
 instance  C.Measure Cage Config ( Graph Int) where
     measure p conf g = fromIntegral $ size g
 
+
+{-
 make :: Make
 make = direct Cage Graph.Cage.Config.rc
+-}
 
 -------------------------------------------------------------------------
 

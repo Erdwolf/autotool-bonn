@@ -13,7 +13,7 @@ import Autolib.Util.Zufall
 
 -- | entfernt eine kante
 -- von Knoten mit Grad > 2
-remove_kante :: ( ToDoc [a], Ord a ) 
+remove_kante :: ( ToDoc [a], GraphC a ) 
 	      => Graph a -> IO ( Graph a )
 remove_kante g = do
     let thick = sfilter ( \ v -> degree g v > 2 ) $ knoten g
@@ -23,7 +23,7 @@ remove_kante g = do
 	    k <- eins $ lkanten $ restrict thick g
 	    return $ unlink g k
 
-remove_kanten :: ( ToDoc [a], Ord a ) 
+remove_kanten :: ( ToDoc [a], GraphC a ) 
 	      => Int -> Graph a -> IO ( Graph a )
 remove_kanten 0 g = return g
 remove_kanten k g = do
@@ -32,7 +32,7 @@ remove_kanten k g = do
 
 
 -- | erzeuge vollständigen k-tree, mit perf. elim. scheme
-roll :: (ToDoc [a], ToDoc a, Ord a)
+roll :: (ToDoc [a], GraphC a)
      => Int -- ^ intended tree width (upper bound)
      -> [ a ] -- ^ nodes
      -> IO ( Graph a, [a] )
@@ -50,7 +50,7 @@ roll k xs = do
     let h = no_fixed_layout ( clique $ unitSet x ) `union0` g
     return ( links h ks , x : scheme )
 
-cliquen :: ( ToDoc [a], Ord a ) => Graph a -> [ Set a ]
+cliquen :: ( ToDoc [a], GraphC a ) => Graph a -> [ Set a ]
 cliquen g | isEmptySet ( knoten g ) = [ emptySet ]
 cliquen g = 
     let x : xs = lknoten g 

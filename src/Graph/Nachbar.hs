@@ -1,3 +1,5 @@
+{-# OPTIONS -Onot #-}
+
 module Graph.Nachbar where
 
 --  $Id$
@@ -52,8 +54,10 @@ instance C.Partial Nachbar () ( Graph Int ) where
     total p _ g = do
         check_nach g
 
+{-
 make :: Make
 make = direct Nachbar ()
+-}
 
 ----------------------------------------------------------------------------
 

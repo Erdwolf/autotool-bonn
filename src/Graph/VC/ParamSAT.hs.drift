@@ -1,3 +1,5 @@
+{-# OPTIONS -Onot #-}
+
 module Graph.VC.ParamSAT where
 
 --  $Id$
@@ -16,9 +18,13 @@ data Param = Param
 	    }
      deriving ( Typeable )
 
-{-! for Param derive: Reader, ToDoc, Haskell2Xml !-}
+{-! for Param derive: Reader, ToDoc !-}
 
 p0 :: Param
 p0 = Param { formel          = SAT.Param.p 5
 	   , anzeige_groesse = 10 
 	   }
+
+-- local variables:
+-- mode: haskell
+-- end:

@@ -5,9 +5,9 @@ module Graph.Bi.Proof where
 import Autolib.Graph.Graph
 import Autolib.Set
 
-----------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
-is_bi_proof :: Ord a => Graph a -> Set a -> Bool
+is_bi_proof :: GraphC a => Graph a -> Set a -> Bool
 is_bi_proof g v = and [ not $ isEmptySet v
 		      , not $ subseteq (knoten g) v
 		      , subseteq v (knoten g)

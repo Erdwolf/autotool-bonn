@@ -263,12 +263,12 @@ tmakers =
                 ]
          , heading "Graphen"
                 [ item Graph.Selfcom.make
-                , item Graph.Nachbar.make
+--                , item Graph.Nachbar.make
 	        , item Graph.Cross.make
 	        , item Graph.MinSep.make
 	        , item Graph.Col.Plain.make
 	        , item Graph.Col.Quiz.make
-	        , item Graph.Cage.Central.make
+--	        , item Graph.Cage.Central.make
 	        , item Graph.Graceful.Central.make
                 , item Graph.TreeWidth.make
                 , item Graph.PartialKTree.make
