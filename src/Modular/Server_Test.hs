@@ -47,6 +47,8 @@ grade url = remote url "autotool.grade"
 
 main :: IO ()
 main = do
+    putStrLn $ "using server: " ++ server
+
     ts <- list_types server
     print $ zip [0.. ] ts
     let [ task ] = filter ( \ t -> Modular.Task.contents t == "Faktor-Direct" ) ts

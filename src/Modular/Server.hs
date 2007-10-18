@@ -73,13 +73,7 @@ verify_config :: [ Make ]
 verify_config makers task conf = find_and_apply "verify_config" makers task
     $ \ ( Make p _ _ verify _ ) -> do
             let input = Modular.Config.contents conf 
-            iconf <- case parse ( parse_complete reader ) "rpc input" input of
-		 Left e -> do
-                      let msg = render $ errmsg 80 e input
-		      debug $ "verify_config input:\n" ++ input
-		      debug $ "verify_config error:\n" ++ msg
-		      error $ msg
-		 Right x -> return x 
+            iconf <- lies input
 	    let ( result, doc :: Doc ) = export $ verify iconf
 	    case result of
 	        Just () -> sign conf
@@ -130,9 +124,9 @@ grade :: [ Make ]
 grade makers task sinst sol = find_and_apply "grade" makers task 
     $ \ ( Make p _ ( _ :: c -> Var p i b ) _ _  ) -> do
        inst <- unsign sinst
-       let action = Inter.Evaluate.evaluate 
-                   ( read ( Modular.Instance.tag inst ) :: p )
-                   ( read ( Modular.Instance.contents inst ) :: i )
+       let p :: p = read $ Modular.Instance.tag inst 
+       i <- ( lies $ Modular.Instance.contents inst ) :: IO i
+       let action = Inter.Evaluate.evaluate p i
                    ( Modular.Solution.contents sol )
        ( res, com :: H.Html) <- run action
        return $ Documented
@@ -146,6 +140,18 @@ grade makers task sinst sol = find_and_apply "grade" makers task
                                Just x -> fromIntegral $ size x
                        }
               }
+
+lies :: Reader a 
+      => String -> IO a
+lies input = case parse ( parse_complete reader ) "rpc input" input of
+	 Left e -> do
+              let msg = render $ errmsg 80 e input
+	      debug $ "parser input:\n" ++ input
+	      debug $ "parser error:\n" ++ msg
+	      error $ msg
+	 Right x -> return x 
+
+
 
 emit h = show $ M.specialize M.UK h
 

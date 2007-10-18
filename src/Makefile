@@ -35,11 +35,12 @@ tags :
 #######################################################################
 
 # GHC_VERSION = 6.4.2.20060121
-GHC_VERSION = 6.6
+# GHC_VERSION = 6.6
+GHC_VERSION = 6.8.0.20070921
 
-GHC_LIBS = base haskell98 parsec unix network readline
+GHC_LIBS = base-2.1 haskell98-1.0 parsec-2.0 unix-2.0 network-2.0.1 readline-1.0 containers-0.1 pretty-1.0
 GHC_LINK = http://www.haskell.org/ghc/docs/$(GHC_VERSION)/html/libraries
-GHC_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries
+GHC_DESC = /usr/local/share/doc/ghc/libraries
 
 HAXML_LINK = http://www.cs.york.ac.uk/fp/HaXml
 # HAXML_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries/HaXml
@@ -57,7 +58,7 @@ HADDOCK_OPTS = -v \
 --source-base=http://141.57.11.163/cgi-bin/cvsweb/tool/src \
 --source-module=http://141.57.11.163/cgi-bin/cvsweb/tool/src/%F \
 $(foreach lib,$(GHC_LIBS), \
---read-interface=$(GHC_LINK)/$(lib),$(GHC_DESC)/$(lib)/$(lib).haddock) \
+--read-interface=$(GHC_LINK)/$(lib),$(GHC_DESC)/$(lib)/$(word 1,$(subst -, ,$(lib))).haddock) \
 --read-interface=$(AUTOLIB_LINK),$(AUTOLIB_DESC)/Autolib.haddock 
 
 # --read-interface=$(HAXML_LINK)/HaXml,$(HAXML_DESC)/HaXml.haddock 
