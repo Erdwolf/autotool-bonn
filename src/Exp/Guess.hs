@@ -49,9 +49,13 @@ make sigma target =
         , num_compact = 5
         }
 
-score vas = mapM_ print $ take 5 $ do
+score vas = mapM_ printf $ take 5 $ do
     (v, x) <- vas
     return ( Autolib.Size.size x, v, x ) 
+
+printf x = do
+    print x
+    hFlush stdout
 
 -----------------------------------------------------------------------------
 
