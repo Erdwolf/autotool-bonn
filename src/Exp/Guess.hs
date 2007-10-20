@@ -8,6 +8,7 @@ import Autolib.NFA.Subseteq
 import Autolib.NFA.Minus
 import Autolib.NFA.Shortest ( some_shortest )
 import Autolib.Util.Zufall
+import Autolib.Util.Sort
 import Autolib.Set
 import Autolib.Size
 
@@ -17,7 +18,9 @@ import System.IO
 main = evolve $ make "ab" 
 	      $ read "All - All a b a b All"
 
-make :: [ Char ] -> Exp -> Config Exp Double
+large = 1000
+
+make :: [ Char ] -> Exp -> Config Exp ( Double, Double, [String ] )
 make sigma target = 
     let a = inter_det (std_sigma sigma) target
     in Config
@@ -26,27 +29,34 @@ make sigma target =
                   ab = some_shortest ( minus a b )
 		  ba = some_shortest ( minus b a )
 		  diff = ab ++ ba
+                  delta :: Double
 		  delta = case ba of
-		      [] -> case ab of
+			[] -> case ab of
 			   [] -> 0
- 		           w : _ -> -- 2 ^^ negate ( length w ) 
-			         1 / (1 + fromIntegral ( length w ) )
-		      _ -> 1000
-	      in  negate 
-		  $ sqrt (fromIntegral ( Autolib.Size.size y )) + 1000 * delta 
+			   w : _ ->
+			       2 ^^ negate ( length w ) 
+                        _ -> large
+                  s :: Double
+                  s =  fromIntegral $ max 20 $ Autolib.Size.size y 
+                  sq = truncate . sqrt . fromIntegral 
+                  lg = truncate . log . fromIntegral 
+	      in  ( negate (log s) - 1000 *  delta 
+		  , negate s 
+		  , diff
+		  )
 
-        , threshold = 0
+        , threshold = ( 0 , 0, [] )
         , present = score
         , trace   = score
-        , Autolib.Genetic.size    = 500
+        , Autolib.Genetic.size    = 1000
         , generate = do
              ( y, b ) <- some ( mkSet sigma ) 50
 	     return y
         , combine = combination
         , num_combine = 100
-        , mutate  = often 5 $ mutation sigma
+        , mutate  = often 10 $ mutation sigma
         , num_mutate = 100
-        , num_compact = 5
+        , num_compact = 1
         }
 
 score vas = mapM_ printf $ take 5 $ do
@@ -100,7 +110,9 @@ often k action x = do y <- action x ; often ( k - 1 ) action y
 mutation :: [Char ] -> Exp -> IO Exp
 mutation sigma x = do
     action <- eins [ combination x x , compress x, turn x, swap x
-		   , simpf sigma x  ]
+		   -- , simpf sigma x  
+		   , eins $ x : smaller x
+		   ]
     action
 
 compress x = do
