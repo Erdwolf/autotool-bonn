@@ -11,6 +11,9 @@ import Autolib.Util.Zufall
 import Autolib.Set
 import Autolib.Size
 
+import Control.Monad ( guard )
+import System.IO
+
 main = evolve $ make "ab" 
 	      $ read "All - All a b a b All"
 
@@ -52,12 +55,48 @@ score vas = mapM_ print $ take 5 $ do
 
 -----------------------------------------------------------------------------
 
+smaller :: Exp -> [ Exp ]
+smaller x = do
+    p <- positions x
+    case peek x p of
+        Union l r -> [ poke x p l, poke x p r ]
+        Dot   l r -> [ poke x p l, poke x p r ]
+	PowerStar a -> [ poke x p a ]
+	_ -> []
+
+simplified sigma x = 
+    let a = inter ( std_sigma sigma ) x
+	f x = 
+	    let ys = do
+	            y <- smaller x
+		    guard $ equivalent sigma a y
+		    return y
+	    in case ys of
+	        y : _ -> y -- f y -- not recursively
+		[]    -> x
+    in  f x
+
+simpf sigma x = do
+    -- hPutStrLn stderr $ "simpf " ++ show x
+    let y = simplified sigma x
+    -- hPutStrLn stderr $ "  ==> " ++ show y
+    return y
+
+equivalent sigma a y = 
+    let 
+	b = inter (std_sigma sigma) y
+    in     null ( some_shortest $ minus a b )
+	&& null ( some_shortest $ minus b a )
+
+-----------------------------------------------------------------------------
+
 often 0 action x = return x
 often k action x = do y <- action x ; often ( k - 1 ) action y
 
 mutation :: [Char ] -> Exp -> IO Exp
 mutation sigma x = do
-    action <- eins [ combination x x , compress x, turn x ]
+    action <- eins [ combination x x , compress x, turn x, swap x
+		   , simpf sigma x  ]
     action
 
 compress x = do
@@ -72,6 +111,18 @@ turn x = do
 
 subturn x = case x of
     Dot l r -> Union l r
+    Union l r -> Dot l r
+    PowerStar a -> PowerStar $ subturn a
+    _ -> x
+
+swap x = do
+    p <- eins $ positions x
+    return $ poke x p $ subswap $ peek x p
+
+subswap x = case x of
+    Dot l r -> Dot r l
+    Union l r -> Union r l
+    PowerStar a -> PowerStar $ subswap a
     _ -> x
 
 combination :: Exp -> Exp -> IO Exp
