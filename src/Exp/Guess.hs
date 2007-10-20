@@ -1,0 +1,114 @@
+-- module Exp.Guess where
+
+import Autolib.Genetic
+import Autolib.Exp
+import Autolib.Exp.Some
+import Autolib.Exp.Inter
+import Autolib.NFA.Subseteq
+import Autolib.NFA.Minus
+import Autolib.NFA.Shortest ( some_shortest )
+import Autolib.Util.Zufall
+import Autolib.Set
+import Autolib.Size
+
+main = evolve $ make "ab" 
+	      $ read "All - All a b a b All"
+
+make :: [ Char ] -> Exp -> Config Exp Double
+make sigma target = 
+    let a = inter_det (std_sigma sigma) target
+    in Config
+        { fitness = \ y -> 
+              let b = inter_det (std_sigma sigma) y
+                  ab = some_shortest ( minus a b )
+		  ba = some_shortest ( minus b a )
+		  diff = ab ++ ba
+		  delta = case ba of
+		      [] -> case ab of
+			   [] -> 0
+ 		           w : _ -> -- 2 ^^ negate ( length w ) 
+			         1 / (1 + fromIntegral ( length w ) )
+		      _ -> 1000
+	      in  negate 
+		  $ sqrt (fromIntegral ( Autolib.Size.size y )) + 1000 * delta 
+
+        , threshold = 0
+        , present = score
+        , trace   = score
+        , Autolib.Genetic.size    = 500
+        , generate = do
+             ( y, b ) <- some ( mkSet sigma ) 50
+	     return y
+        , combine = combination
+        , num_combine = 100
+        , mutate  = often 5 $ mutation sigma
+        , num_mutate = 100
+        , num_compact = 5
+        }
+
+score vas = mapM_ print $ take 5 $ do
+    (v, x) <- vas
+    return ( Autolib.Size.size x, v, x ) 
+
+-----------------------------------------------------------------------------
+
+often 0 action x = return x
+often k action x = do y <- action x ; often ( k - 1 ) action y
+
+mutation :: [Char ] -> Exp -> IO Exp
+mutation sigma x = do
+    action <- eins [ combination x x , compress x, turn x ]
+    action
+
+compress x = do
+    p <- eins $ positions x
+    let y = peek x p
+    q <- eins $ positions y
+    return $ poke x p $ peek y q
+
+turn x = do
+    p <- eins $ positions x
+    return $ poke x p $ subturn $ peek x p
+
+subturn x = case x of
+    Dot l r -> Union l r
+    _ -> x
+
+combination :: Exp -> Exp -> IO Exp
+combination x y = do
+    p <- eins $ positions x
+    q <- eins $ positions y
+    return $ poke x p $ peek y q
+
+-----------------------------------------------------------------------------
+
+type Position = [Int]
+
+positions :: Exp -> [Position]
+positions x = [] : case x of
+    Dot   l r -> map (0:) ( positions l ) ++ map (1:) ( positions r )
+    Union l r -> map (0:) ( positions l ) ++ map (1:) ( positions r )
+    PowerStar a -> map (0:) ( positions a ) 
+    _ -> []
+
+peek :: Exp -> Position -> Exp
+peek x [] = x
+peek x (p : ps) = case x of
+    Dot   l r -> peek (case p of 0 -> l ; 1 -> r ) ps 
+    Union l r -> peek (case p of 0 -> l ; 1 -> r ) ps 
+    PowerStar a -> peek ( case p of 0 -> a ) ps
+
+poke :: Exp -> Position -> Exp -> Exp
+poke x [] y = y
+poke x (p : ps) y = case x of
+    Dot   l r -> case p of
+        0 -> Dot ( poke l ps y ) r
+	1 -> Dot l ( poke r ps y )
+    Union l r -> case p of
+        0 -> Union ( poke l ps y ) r
+	1 -> Union l ( poke r ps y )
+    PowerStar a -> case p of
+        0 -> PowerStar ( poke a ps y ) 
+
+-----------------------------------------------------------------------------
+
