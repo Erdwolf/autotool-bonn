@@ -48,13 +48,13 @@ make sigma target =
         , threshold = ( 0 , 0, [] )
         , present = score
         , trace   = score
-        , Autolib.Genetic.size    = 1000
+        , Autolib.Genetic.size    = 100
         , generate = do
              ( y, b ) <- some ( mkSet sigma ) 50
 	     return y
         , combine = combination
         , num_combine = 100
-        , mutate  = often 10 $ mutation sigma
+        , mutate  = often 5 $ mutation sigma
         , num_mutate = 100
         , num_compact = 1
         }
@@ -112,6 +112,7 @@ mutation sigma x = do
     action <- eins [ combination x x , compress x, turn x, swap x
 		   -- , simpf sigma x  
 		   , eins $ x : smaller x
+                   , implant x
 		   ]
     action
 
@@ -120,6 +121,11 @@ compress x = do
     let y = peek x p
     q <- eins $ positions y
     return $ poke x p $ peek y q
+
+implant x = do
+    p <- eins $ positions x
+    r <- eins [ "Eps", "Sigma" ]
+    return $ poke x p $ Ref r
 
 turn x = do
     p <- eins $ positions x
