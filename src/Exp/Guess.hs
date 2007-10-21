@@ -52,7 +52,7 @@ make sigma target =
         , generate = do
              ( y, b ) <- some ( mkSet sigma ) 50
 	     return y
-        , combine = combination
+        , combine = combination sigma
         , num_combine = 100
         , mutate  = often 5 $ mutation sigma
         , num_mutate = 100
@@ -109,7 +109,8 @@ often k action x = do y <- action x ; often ( k - 1 ) action y
 
 mutation :: [Char ] -> Exp -> IO Exp
 mutation sigma x = do
-    action <- eins [ combination x x , compress x, turn x, swap x
+    action <- eins [ combination sigma x x 
+                   , compress x, turn x, swap x
 		   -- , simpf sigma x  
 		   , eins $ x : smaller x
                    , implant x
@@ -147,11 +148,12 @@ subswap x = case x of
     PowerStar a -> PowerStar $ subswap a
     _ -> x
 
-combination :: Exp -> Exp -> IO Exp
-combination x y = do
+combination :: [Char] -> Exp -> Exp -> IO Exp
+combination sigma x y = do
     p <- eins $ positions x
     q <- eins $ positions y
-    return $ poke x p $ peek y q
+    let z = poke x p $ peek y q
+    mutation sigma z
 
 -----------------------------------------------------------------------------
 
