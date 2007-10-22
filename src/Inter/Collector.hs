@@ -14,6 +14,7 @@ import qualified Boolean.Quiz
 import qualified Sortier.Netz.Check 
 import qualified Sortier.Merge.Check 
 import qualified Sortier.Median.Check 
+import qualified Sortier.Programm.Check
 
 import qualified JVM.Make
 import qualified Turing.Make
@@ -305,6 +306,9 @@ tmakers =
 		  [ item Sortier.Netz.Check.make
 		  , item Sortier.Merge.Check.make
 		  , item Sortier.Median.Check.make
+		  ] 
+                , heading "Sortierprogramme"
+		  [ item Sortier.Programm.Check.make
 		  ] 
                 ]
          , heading "Datenstrukturen"

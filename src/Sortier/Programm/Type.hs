@@ -20,20 +20,12 @@ data Program = Sequence [ Statement ]
     deriving Typeable
 
 instance Size Program where
-    size p = maximum $ 0 : map length ( paths p )
+    size ( Sequence xs ) = sum $ map size xs
 
-type Path = [(Identifier, Identifier)] 
-
-paths :: Program -> [ Path ]
-paths ( Sequence xs ) = do x <- xs ; statement_paths x
-
-statement_paths :: Statement -> [ Path ]
-statement_paths s = case s of
-    If_Greater_Else x y s t -> [] : do
-        ( tag, u ) <- [ ((x,y), s), ((y,x), t) ]
-	p <- paths u
-	return $ tag : p
-    _ -> []
+instance Size Statement where
+    size s = case s of
+        If_Greater_Else x y s t -> 1 + max ( size s ) ( size t )
+	_ -> 0
 
 -------------------------------------------------------------------------
 

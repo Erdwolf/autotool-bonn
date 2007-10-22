@@ -62,26 +62,15 @@ instance C.Partial Sortier_Programm Config Program where
 		 <+> text "Vergleiche ausführt."
 	  ]        
 
-    initial p i   = line $ names $ width i 
+    initial p i   = nonsense $ names $ width i 
 
     partial p i b = do
-        s <- deep b
+        let s = size b
+	inform $ text "Die größtmögliche Anzahl von Vergleichen ist" <+> toDoc s
 	when ( s > max_size i ) $ reject $ text "Das ist zuviel."
 
     total   p i b =  do
 	check ( width i ) b
-
-deep prog = do
-    let long = case sortBy ( negate . length ) $ paths prog of
-            [] -> [] 
-	    p : _ -> p
-    let s = length long
-    inform $ vcat
-	[ text "Ihr Programm hat Tiefe" <+> toDoc s
-	, text "Ein Ausführungspfad mit dieser Länge ist"
-	, nest 4 $ toDoc long
-	]
-    return s
 
 make :: Make
 make = direct Sortier_Programm Sortier.Common.Config.example
