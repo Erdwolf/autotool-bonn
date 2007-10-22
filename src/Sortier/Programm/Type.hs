@@ -54,7 +54,7 @@ iffed = do
     
 comp = R.my_parens $ do
     x <- R.reader
-    R.my_reserved ">"
+    R.my_symbol ">"
     y <- R.reader
     return ( x, y )
 
