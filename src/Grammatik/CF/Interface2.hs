@@ -33,6 +33,13 @@ import Data.Typeable
 
 data CFG2 = CFG2 deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance Verify CFG2 I2.Config where
+
+    verify p i = if Kontextfrei `elem` I2.properties i
+                 then return ()
+                 else reject $ text "property 'Kontextfrei' ist zwingend notwendig"
+
+
 instance Partial CFG2 I2.Config Grammatik where
 
     describe p i = vcat
@@ -56,12 +63,11 @@ instance Partial CFG2 I2.Config Grammatik where
 	   }
 
     partial p i b = do
-          Grammatik.Property.check ( Typ 2 ) b
+          mapM_ ( \ p -> Grammatik.Property.check p b ) ( I2.properties i )
 
     total p i0 b = do
           let i = add_test_cases p i0 b
           cf_yeah_noh i b
-          mapM_ ( \ p -> Grammatik.Property.check p b ) ( I.properties i )
 
 
 ---------------------------------------------------------------------------
