@@ -146,24 +146,32 @@ linear = C.make "Lin" ( text "Die Grammatik soll linear sein." ) $ \ g -> do
 
 rechtslinear :: C.Type Grammatik
 rechtslinear = C.make "RightLin" ( text "Die Grammatik soll rechtslinear sein." ) $ \ g -> do
-    let schlecht 
-	  = sfilter ( not . ( `elementOf` nichtterminale g ) . last . snd ) 
-	  $ sfilter ( (> 0) . length . filter ( `elementOf` nichtterminale g ) . snd ) 
-	  $ regeln g
+
+    let schlecht = do
+          lr @ ( l, r ) <- setToList $ regeln g
+          case reverse r of
+              x : xs | any ( (`elementOf` terminale g ) xs ) ->
+                  return lr
+              _ -> []
+
     verboten ( not $ isEmptySet schlecht ) 
-	     "sind nicht von der Form M -> A^* M"
+	     "sind nicht von der Form V -> T^* V"
 	     schlecht
 
 ------------------------------------------------------------------------------
 
 linkslinear :: C.Type Grammatik
 linkslinear = C.make "LeftLin" ( text "Die Grammatik soll linkslinear sein." ) $ \ g -> do
-    let schlecht 
-	  = sfilter ( not . ( `elementOf` nichtterminale g ) . head . snd ) 
-	  $ sfilter ( (> 0) . length . filter ( `elementOf` nichtterminale g ) . snd ) 
-	  $ regeln g
+
+    let schlecht = do
+          lr @ ( l, r ) <- setToList $ regeln g
+          case r of
+              x : xs | any ( (`elementOf` terminale g ) xs ) ->
+                  return lr
+              _ -> []
+
     verboten ( not $ isEmptySet schlecht )
-	     "sind nicht von der Form M -> M A^*"
+	     "sind nicht von der Form V -> V T^*"
 	     schlecht
 
 ---------------------------------------------------------------------------
