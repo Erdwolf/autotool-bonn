@@ -35,8 +35,14 @@ instance ( Ord a, Reader a ) => Reader ( Type a ) where
 instance Size ( Type a ) where
     size ( Make xs ) = sum $ map size $ S.setToList xs
 
+full_size ( Make xs ) = succ $ sum $ map full_item_size $ S.setToList xs
+
+top_length ( Make xs  ) = S.cardinality xs
+
 instance Depth ( Type a ) where
     depth ( Make xs ) = 1 + maximum ( 0 : map depth ( S.setToList xs ) )
+
+flatten ( Make xs ) = concat $ map flatten_item $ S.setToList xs
 
 -----------------------------------------------------------------------
 
@@ -55,6 +61,14 @@ instance ( Ord a, Reader a ) => Reader ( Item a ) where
 instance Size ( Item a ) where
     size ( Unit a ) = 1
     size ( Packed t ) = 1 + size t
+
+full_item_size i = case i of
+    Unit a -> 1
+    Packed t -> 1 + full_size t
+
+flatten_item i = case i of
+    Unit a -> [ a ]
+    Packed t -> flatten t
 
 instance Depth ( Item a ) where
     depth ( Unit a ) = 0
