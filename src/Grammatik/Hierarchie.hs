@@ -150,11 +150,11 @@ rechtslinear = C.make "RightLin" ( text "Die Grammatik soll rechtslinear sein." 
     let schlecht = do
           lr @ ( l, r ) <- setToList $ regeln g
           case reverse r of
-              x : xs | any ( (`elementOf` terminale g ) xs ) ->
+              x : xs | any (`elementOf` terminale g ) xs ->
                   return lr
               _ -> []
 
-    verboten ( not $ isEmptySet schlecht ) 
+    verboten ( not $ null schlecht ) 
 	     "sind nicht von der Form V -> T^* V"
 	     schlecht
 
@@ -166,11 +166,11 @@ linkslinear = C.make "LeftLin" ( text "Die Grammatik soll linkslinear sein." ) $
     let schlecht = do
           lr @ ( l, r ) <- setToList $ regeln g
           case r of
-              x : xs | any ( (`elementOf` terminale g ) xs ) ->
+              x : xs | any (`elementOf` terminale g ) xs ->
                   return lr
               _ -> []
 
-    verboten ( not $ isEmptySet schlecht )
+    verboten ( not $ null schlecht )
 	     "sind nicht von der Form V -> V T^*"
 	     schlecht
 
