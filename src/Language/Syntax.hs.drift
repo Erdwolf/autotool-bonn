@@ -30,8 +30,8 @@ data Type
      | Vielfache Int
      | Form String
      | Reg String String
+     | Regular String String
      | Center String Char
-
      | Uneps Type
      | Komplement Type
    deriving ( Eq, Ord, Typeable )

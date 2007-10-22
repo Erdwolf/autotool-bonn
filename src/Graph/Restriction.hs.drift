@@ -1,5 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
-
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
 module Graph.Restriction where
 
@@ -77,4 +76,4 @@ instance GraphC a => Condition Restriction ( Graph a ) where
 
 -- local variables:
 -- mode: haskell
--- end;
+-- end:

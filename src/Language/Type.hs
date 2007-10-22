@@ -95,9 +95,6 @@ anti_samples :: Language -> Int -> Int
 anti_samples l = samples ( komplement l )
 
 
--- | TODO: das ist nicht OK, weil es IO benutzt.
--- es sollte ein Random-State genügen.
--- das würde auch andere Würfel-probleme lösen.
 
 present :: Language -> RandoM Doc
 present l = do

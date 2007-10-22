@@ -49,7 +49,8 @@ inter l = case l of
 --    Potenzen i -> potenzen i
     Power vs i -> power vs i
     NoPower vs i -> nopower vs i
-    Reg sigma rx -> regular sigma $ read rx
+    Reg     sigma rx -> regular sigma $ read rx
+    Regular sigma rx -> regular sigma $ read rx
     Center sigma c -> center sigma c
 --    Vielfache i -> vielfache i
 

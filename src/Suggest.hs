@@ -1,3 +1,5 @@
+{-# LANGUAGE OverlappingInstances #-}
+
 module Suggest where
 
 class Suggest a where 
