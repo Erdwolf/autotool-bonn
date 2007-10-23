@@ -2,6 +2,7 @@
 
 module Language.Syntax where
 
+import Grammatik.Type
 
 import Autolib.Reader
 import Autolib.ToDoc
@@ -31,10 +32,11 @@ data Type
      | Form String
      | Reg String String
      | Regular String String
+     | From_Grammatik Grammatik
      | Center String Char
      | Uneps Type
      | Komplement Type
-   deriving ( Eq, Ord, Typeable )
+   deriving ( Eq, Typeable )
 
 {-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
 

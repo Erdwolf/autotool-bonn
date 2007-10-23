@@ -26,6 +26,8 @@ import  Language.Power
 -- import  Language.WWRW
 
 import Language.RX
+import Language.Grammatik
+
 import Language.Center
 
 inter :: Language.Syntax.Type 
@@ -51,6 +53,7 @@ inter l = case l of
     NoPower vs i -> nopower vs i
     Reg     sigma rx -> regular sigma $ read rx
     Regular sigma rx -> regular sigma $ read rx
+    From_Grammatik g -> grammatik g
     Center sigma c -> center sigma c
 --    Vielfache i -> vielfache i
 
