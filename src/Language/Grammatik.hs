@@ -8,14 +8,7 @@ import qualified Grammatik.CF.Chomsky as C
 import qualified Grammatik.CF.DPL_CYK as D
 
 
-import Autolib.Exp ( Exp )
-import Autolib.Exp.Inter ( inter , std_sigma )
-import Autolib.NFA ( is_accepted_by, accepted )
-import Autolib.NFA.Minus
-import Autolib.Set ( mkSet )
-
 import Autolib.Util.Zufall
-
 
 import Autolib.ToDoc
 
@@ -25,7 +18,7 @@ grammatik g =
         l = Language
             { nametag = "Grammatik"
             , abbreviation = show $ vcat
-                  [ text "die durch die Grammatik"
+                  [ text "die durch"
                   , nest 4 $ toDoc g
                   , text "erzeugte Sprache"
                   ]
