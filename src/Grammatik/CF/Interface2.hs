@@ -63,6 +63,7 @@ instance Partial CFG2 I2.Config Grammatik where
 	   }
 
     partial p i b = do
+          Grammatik.Property.check ( Typ 0 ) b
           mapM_ ( \ p -> Grammatik.Property.check p b ) ( I2.properties i )
 
     total p i0 b = do
