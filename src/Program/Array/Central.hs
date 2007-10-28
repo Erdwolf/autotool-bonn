@@ -29,8 +29,14 @@ instance C.Partial Program_Array ( Program, Environment ) Environment where
     initial _ (p, e) = Program.Array.Environment.example
 
     total _ ( p , target) start = do
-        actual <- Program.Array.Semantics.execute start p
-	must_be_equal target actual
+        inform $ text "Ich führe das Programm aus:"
+        actual <- nested 4 $ Program.Array.Semantics.execute start p
+	inform $ vcat
+	    [ text "Die resultierende Belegung ist:"
+	    , nest 4 $ toDoc actual
+	    ]
+	inform $ text "Ich vergleiche mit der Aufgabenstellung:"
+	nested 4 $ must_be_equal target actual
 
 make :: Make
 make = direct 

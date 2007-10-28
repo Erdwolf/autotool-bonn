@@ -2,14 +2,18 @@
 
 module Program.Array.Expression where
 
+import Program.Array.Operator
+
 import Autolib.TES.Identifier
 
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
 
+import Autolib.Util.Zufall
+
 import Text.ParserCombinators.Parsec
-import Text.ParserCombinators.Parsec.Expr
+import Text.ParserCombinators.Parsec.Expr hiding ( Operator )
 
 import Data.Typeable
 
@@ -33,10 +37,7 @@ instance Reader Access where
 -- | arithmetical expression, with multi-dimensional array access
 data Expression = Reference Access
 	| Literal Integer
-	| Binary Op Expression Expression
-    deriving Typeable
-
-data Op = Add | Subtract | Multiply | Divide
+	| Binary Operator Expression Expression
     deriving Typeable
 
 instance Size Expression where
@@ -44,6 +45,7 @@ instance Size Expression where
           Reference acc -> size acc
 	  Literal i -> 1
 	  Binary op l r -> 1 + size l + size r
+
 
 instance ToDoc Expression where
     toDocPrec p e = case e of

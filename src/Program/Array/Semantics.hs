@@ -6,6 +6,7 @@ import qualified Program.Array.Environment as E
 import Program.Array.Program
 import Program.Array.Statement
 import Program.Array.Expression
+import Program.Array.Operator
 import Program.Array.Value
 
 import Autolib.Reporter
@@ -21,20 +22,26 @@ execute start ( Program ss ) = foldM single start ss
 single :: Environment
 	-> Statement
 	-> Reporter Environment
-single env st = case st of
-    Assign target @ ( Access name indices ) exp -> do
-	value <- eval env exp
-        previous <- look env name
-	next <- update env previous indices value
-	return $ E.add env name next
-    Declare name depth value -> do
-        case E.lookup env name of
-	    Just v -> reject $ hsep [ text "Name" , toDoc name
+single env st = do
+    inform $ text "Anweisung:" <+> toDoc st
+    nested 4 $ case st of
+        Assign target @ ( Access name indices ) exp -> do
+	    value <- eval env exp
+            previous <- look env name
+            inform $ text "vorher :" 
+		   <+> toDoc ( Declare name ( depth previous ) previous )
+	    next <- update env previous indices value
+            inform $ text "nachher:" 
+		   <+> toDoc ( Declare name ( depth previous ) next  )
+	    return $ E.add env name next
+        Declare name depth value -> do
+            case E.lookup env name of
+	        Just v -> reject $ hsep [ text "Name" , toDoc name
 				    , text "ist schon deklariert,"
 				    , text "Wert ist", toDoc v
 				    ]
-	    Nothing -> do
-	        return $ E.add env name value
+	        Nothing -> do
+	            return $ E.add env name value
 
 eval :: Environment
      -> Expression 
@@ -44,12 +51,7 @@ eval env exp = case exp of
     Binary op x y -> do
         a <- eval env x
 	b <- eval env y
-	let f = case op of
-	        Add -> (+)
-		Subtract -> (-)
-		Multiply -> (*)
-		Divide-> div
-        return $ f a b
+        return $ Program.Array.Operator.semantics op a b
     Reference p -> dereference env p
 
 look env name = 
@@ -87,6 +89,7 @@ update :: Environment
        -> Integer
        -> Reporter Value
 update env ( Scalar i ) [] new = return $ Scalar new
+
 update env v @ ( Row vs ) ( p : ps ) new = do
     q <- eval env p
     let bnd = ( 0, fromIntegral $ length vs - 1 )
@@ -95,7 +98,10 @@ update env v @ ( Row vs ) ( p : ps ) new = do
 		, text "Wert", toDoc q
 		, text "nicht im erlaubten Bereich", toDoc bnd
 		]
-    update env ( vs !! fromIntegral q ) ps new
+    let ( pre, this : post ) = splitAt ( fromIntegral q ) vs
+    that <- update env this ps new
+    return $ Row $ pre ++ that : post
+
 update env v ps new = reject $ vcat
     [ text "unpassende Dimensionen:"
     , text "Wert" <+> toDoc v

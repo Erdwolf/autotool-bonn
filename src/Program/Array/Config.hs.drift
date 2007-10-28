@@ -1,0 +1,32 @@
+{-# OPTIONS -fglasgow-exts #-}
+
+module Program.Array.Config where
+
+import Program.Array.Operator
+
+import Autolib.Reader
+import Autolib.ToDoc
+
+import Data.Typeable
+
+data Config =
+     Config { variables_per_depth :: [ Int ]
+	    , max_size :: Int
+	    , statements :: Int
+	    , operators :: [ Operator ]
+	    }
+    deriving ( Typeable )
+
+example :: Config
+example = Config
+	{ variables_per_depth = [ 2, 1 ]
+	, max_size = 5
+	, statements = 5
+	, operators = [ Add ]
+	}
+
+{-! for Config derive: Reader, ToDoc !-}
+
+-- local variables:
+-- mode: haskell
+-- end:

@@ -7,6 +7,8 @@ import Autolib.TES.Identifier
 import Autolib.Reader
 import Autolib.ToDoc
 
+import Autolib.Util.Zufall
+
 import Data.List ( nub )
 import Data.Typeable
 
@@ -23,6 +25,47 @@ depth v = case v of
 	      in  case nub ds of
 		     [d] -> length xs : d
 		     _ -> error $ "varying depths" ++ show ds
+
+
+get :: Value -> [Int] -> Integer
+get ( Scalar i ) [] = i
+get ( Row xs ) ( p : ps ) = get ( xs !! p ) ps
+
+
+roll :: RandomC m
+     => Int -- ^ depth
+     -> Int -- ^ size
+     -> m Value
+roll d s = do
+    depth <- roll_depth d s
+    roll_for_depth depth ( 0, fromIntegral s )
+
+roll_depth :: RandomC m
+	   => Int -- ^ depth
+	   -> Int -- ^ total size
+	   -> m [ Int ]
+roll_depth 0 s = return []
+roll_depth 1 s = do
+    f <- randomRIO ( s `div` 2, s )
+    return [f]
+roll_depth d s | d > 1 = do
+    let top = round $ ( fromIntegral s ) ** ( 1 / fromIntegral d )
+    f <- randomRIO ( 2, top )
+    fs <- roll_depth ( d - 1 ) ( max 1 $ s `div` f )
+    return $ f : fs
+
+
+roll_for_depth :: RandomC m
+	   => [ Int ] 
+	   -> ( Integer, Integer )
+	   -> m Value
+roll_for_depth [] bnd = do
+    i <- randomRIO bnd
+    return $ Scalar i
+roll_for_depth (d : ds) bnd = do
+    vs <- sequence $ replicate d $ roll_for_depth ds bnd
+    return $ Row vs
+
 
 instance ToDoc Value where
     toDoc v = case v of

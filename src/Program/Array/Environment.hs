@@ -6,6 +6,7 @@ module Program.Array.Environment
 , empty, lookup, example
 , add
 , must_be_equal
+, contents
 )
 
 where
@@ -29,6 +30,8 @@ import Data.Typeable
 
 data Environment = Environment ( FiniteMap Identifier Value )
     deriving ( Typeable )
+
+contents ( Environment e ) = fmToList e
 
 instance Size Environment where size e = 0
 
@@ -75,6 +78,6 @@ must_be_equal ( Environment e ) ( Environment f ) = do
 		  $ text "falsche Reihenfolge" <+> toDoc (p,q)
 	     when ( v /= w ) $ reject $ vcat
 	         [ text "Werte für Variable" <+> toDoc p
-	         , text "stimmen nicht überein:"
+	            <+> text "stimmen nicht überein:"
 	         , nest 4 $ vcat [ toDoc v, toDoc w ]
 	         ]
