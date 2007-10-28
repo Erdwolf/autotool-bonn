@@ -1,5 +1,9 @@
 module Program.Array.Semantics where
 
+import Program.Array.Environment ( Environment )
+import qualified Program.Array.Environment as E
+
+import Program.Array.Program
 import Program.Array.Statement
 import Program.Array.Expression
 import Program.Array.Value
@@ -11,18 +15,26 @@ import Autolib.TES.Identifier
 
 import Data.Ix
 
-type Environment = FiniteMap Identifier Value
+execute :: Environment -> Program -> Reporter Environment
+execute start ( Program ss ) = foldM single start ss
 
-execute :: Environment
+single :: Environment
 	-> Statement
 	-> Reporter Environment
-execute env st = case st of
+single env st = case st of
     Assign target @ ( Access name indices ) exp -> do
 	value <- eval env exp
         previous <- look env name
 	next <- update env previous indices value
-	return $ addToFM env name next
-
+	return $ E.add env name next
+    Declare name depth value -> do
+        case E.lookup env name of
+	    Just v -> reject $ hsep [ text "Name" , toDoc name
+				    , text "ist schon deklariert,"
+				    , text "Wert ist", toDoc v
+				    ]
+	    Nothing -> do
+	        return $ E.add env name value
 
 eval :: Environment
      -> Expression 
@@ -41,7 +53,7 @@ eval env exp = case exp of
     Reference p -> dereference env p
 
 look env name = 
-        case lookupFM env name of
+        case E.lookup env name of
 	    Nothing -> reject $ text "unbekannter Name" <+> toDoc name
 	    Just value -> return value
 

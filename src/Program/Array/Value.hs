@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Program.Array.Value where
 
 import Autolib.TES.Identifier
@@ -6,10 +8,12 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.List ( nub )
+import Data.Typeable
 
 -- | multidimensional array
 data Value = Scalar Integer
 	   | Row [ Value ]
+    deriving ( Eq, Typeable )
 
 depth :: Value -> [Int]
 depth v = case v of

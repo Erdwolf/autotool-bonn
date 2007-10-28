@@ -116,6 +116,8 @@ import qualified KnapsackFraction.Central
 import qualified RM.Make
 import qualified RAM.Make
 
+import qualified Program.Array.Central
+
 import qualified Code.Huffman.Boiler
 import qualified Code.Quiz
 import qualified Code.Class
@@ -241,13 +243,14 @@ tmakers =
          , heading "Berechnungsmodelle"
                 [ item JVM.Make.make
                 , item Turing.Make.computer
-		, heading "Primitiv rekursive Funktionen (alt)"
-		    [ item Fun.Make.make
-		    , item Fun.Quiz.make
-		    ]
+		, item Program.Array.Central.make
 		, heading "Primitiv rekursive Funktionen (neu)"
 		    [ item Fun.Direct.make_fixed
 		    , item Fun.Direct.make_quiz
+		    ]
+		, heading "Primitiv rekursive Funktionen (alt)"
+		    [ item Fun.Make.make
+		    , item Fun.Quiz.make
 		    ]
                 , item RAM.Make.make
                 , item RM.Make.make

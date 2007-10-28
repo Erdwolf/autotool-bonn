@@ -1,15 +1,24 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 module Program.Array.Expression where
 
 import Autolib.TES.Identifier
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Size
 
 import Text.ParserCombinators.Parsec
 import Text.ParserCombinators.Parsec.Expr
 
+import Data.Typeable
+
 -- | access to array element
 data Access = Access Identifier [ Expression ]
+    deriving Typeable
+
+instance Size Access where
+    size ( Access name inds ) = 1 + sum ( map size inds )
 
 instance ToDoc Access where
     toDoc ( Access name inds ) = 
@@ -25,8 +34,16 @@ instance Reader Access where
 data Expression = Reference Access
 	| Literal Integer
 	| Binary Op Expression Expression
+    deriving Typeable
 
 data Op = Add | Subtract | Multiply | Divide
+    deriving Typeable
+
+instance Size Expression where
+     size exp = case exp of
+          Reference acc -> size acc
+	  Literal i -> 1
+	  Binary op l r -> 1 + size l + size r
 
 instance ToDoc Expression where
     toDocPrec p e = case e of
