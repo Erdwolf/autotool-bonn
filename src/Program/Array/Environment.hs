@@ -6,7 +6,7 @@ module Program.Array.Environment
 , empty, lookup, example
 , add
 , must_be_equal
-, contents
+, contents, make
 )
 
 where
@@ -29,9 +29,11 @@ import Autolib.Size
 import Data.Typeable
 
 data Environment = Environment ( FiniteMap Identifier Value )
-    deriving ( Typeable )
+    deriving ( Typeable, Eq )
 
 contents ( Environment e ) = fmToList e
+
+make kvs = Environment $ listToFM kvs
 
 instance Size Environment where size e = 0
 

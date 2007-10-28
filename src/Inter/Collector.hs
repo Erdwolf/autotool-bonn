@@ -243,7 +243,10 @@ tmakers =
          , heading "Berechnungsmodelle"
                 [ item JVM.Make.make
                 , item Turing.Make.computer
-		, item Program.Array.Central.make
+		, heading "Programme mit Arrays"
+		    [ item Program.Array.Central.make_fixed
+		    , item Program.Array.Central.make_quiz
+		    ]
 		, heading "Primitiv rekursive Funktionen (neu)"
 		    [ item Fun.Direct.make_fixed
 		    , item Fun.Direct.make_quiz

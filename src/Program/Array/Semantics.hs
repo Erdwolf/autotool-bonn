@@ -72,9 +72,9 @@ access env v @ ( Row vs ) ( p : ps ) = do
     q <- eval env p
     let bnd = ( 0, fromIntegral $ length vs - 1 )
     when ( not $ inRange bnd q ) $ reject 
-	 $ hsep [ text "Index", toDoc p 
-		, text "Wert", toDoc q
-		, text "nicht im erlaubten Bereich", toDoc bnd
+	 $ hsep [ text "Index:", toDoc p, comma
+		, text "Wert:", toDoc q, comma
+		, text "nicht im erlaubten Bereich:", toDoc bnd
 		]
     access env ( vs !! fromIntegral q ) ps
 access env v ps = reject $ vcat

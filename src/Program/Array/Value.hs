@@ -27,9 +27,9 @@ depth v = case v of
 		     _ -> error $ "varying depths" ++ show ds
 
 
-get :: Value -> [Int] -> Integer
+get :: Value -> [Integer] -> Integer
 get ( Scalar i ) [] = i
-get ( Row xs ) ( p : ps ) = get ( xs !! p ) ps
+get ( Row xs ) ( p : ps ) = get ( xs !! fromIntegral p ) ps
 
 
 roll :: RandomC m

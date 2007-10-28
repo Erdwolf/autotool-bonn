@@ -5,14 +5,19 @@ module Program.Array.Central where
 import Program.Array.Program
 import Program.Array.Environment
 import Program.Array.Semantics
+import qualified Program.Array.Roll as R
+import qualified Program.Array.Config as F
 
 import Autolib.Reporter
 import Autolib.ToDoc
 import qualified Challenger as C
 import Inter.Types
+import Inter.Quiz
 import Autolib.Size
+import Autolib.Util.Zufall ( repeat_until )
 
 import Data.Typeable
+import Data.Maybe ( isNothing )
 
 data Program_Array = Program_Array deriving ( Eq, Ord, Show, Read, Typeable )
 
@@ -38,7 +43,25 @@ instance C.Partial Program_Array ( Program, Environment ) Environment where
 	inform $ text "Ich vergleiche mit der Aufgabenstellung:"
 	nested 4 $ must_be_equal target actual
 
-make :: Make
-make = direct 
+make_fixed :: Make
+make_fixed = direct 
        Program_Array	
        ( Program.Array.Program.s , Program.Array.Environment.example )
+
+make_quiz :: Make
+make_quiz = quiz Program_Array F.example
+
+instance Generator 
+	     Program_Array 
+	     F.Config 
+	     ( Environment, Program, Environment ) where
+    generator p conf key = 
+        R.roll conf `repeat_until` \ (start, prog, final) -> 
+	    isNothing $ result $ C.total p ( prog, final ) final
+
+instance Project
+	     Program_Array 
+	     ( Environment, Program, Environment )
+	     ( Program, Environment ) where
+    project _ ( start, p, final ) = ( p, final )
+
