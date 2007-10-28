@@ -5,16 +5,21 @@ import Language.Type
 import Grammatik.Type
 
 import qualified Grammatik.CF.Chomsky as C
+import qualified Grammatik.CF.Chomsky.Generate as G
 import qualified Grammatik.CF.DPL_CYK as D
 
 
 import Autolib.Util.Zufall
+import Autolib.Util.Edit
 
 import Autolib.ToDoc
+
+import Data.List
 
 grammatik :: Grammatik -> Language
 grammatik g =
     let ch = C.make g
+        ws = G.main ch
         l = Language
             { nametag = "Grammatik"
             , abbreviation = show $ vcat
@@ -25,8 +30,14 @@ grammatik g =
             , alphabet = terminale g
             , contains = D.accepted ch
             , sample = \ num len -> 
-                random_sample l (5 * num) len
-            , anti_sample = \ num len -> 
-	        random_sample (komplement l) (5 * num) len
+                return $ take num $ do
+                     k <- take num [ len .. ]
+                     ws !! k
+            , anti_sample = \ num len -> do
+	        positive <- sample l num len
+                css <- sequence $ do
+                    w <- positive
+                    return $ mapM edits $ replicate 5 w
+                return $ filter ( not . contains l ) $ nub $ concat css
             }
     in l

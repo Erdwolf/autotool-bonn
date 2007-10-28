@@ -1,5 +1,3 @@
--- -*- mode: haskell -*-
-
 module Grammatik.CF.Chomsky.Type where
 
 --  $Id$
@@ -35,8 +33,8 @@ instance Functor Chomsky where
 
 {-! for Chomsky derive: Reader, ToDoc !-}
 
-instance ToDoc a => Show (Chomsky a) where 
-    show = render . toDoc
-instance Reader a => Read (Chomsky a) where
-    readsPrec = parsec_readsPrec
+-- local variables:
+-- mode: haskell
+-- end:
+
 
