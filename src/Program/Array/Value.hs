@@ -17,6 +17,13 @@ data Value = Scalar Integer
 	   | Row [ Value ]
     deriving ( Eq, Typeable )
 
+positions :: Value -> [[Integer]]
+positions ( Scalar i ) = return [] 
+positions ( Row xs ) = do
+    (p, x) <- zip [ 0.. ] xs
+    ps <- positions x
+    return $ fromIntegral p : ps
+
 depth :: Value -> [Int]
 depth v = case v of
     Scalar i -> []

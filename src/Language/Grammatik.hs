@@ -30,7 +30,7 @@ grammatik g =
             , alphabet = terminale g
             , contains = D.accepted ch
             , sample = \ num len -> 
-                return $ take num $ do
+                pick num $ do
                      k <- take num [ len .. ]
                      ws !! k
             , anti_sample = \ num len -> do
@@ -41,3 +41,13 @@ grammatik g =
                 return $ filter ( not . contains l ) $ nub $ concat css
             }
     in l
+
+pick num xs = do
+    let f k [] = return []
+        f k (y : ys) = do
+            i <- randomRIO ( 0, k )
+            zs <- f (k+1) $ drop i ys
+            return $ y : zs
+    f 1 $ concat $ repeat xs
+
+          

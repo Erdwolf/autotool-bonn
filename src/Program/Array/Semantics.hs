@@ -108,6 +108,13 @@ update env v ps new = reject $ vcat
     , text "Indices" <+> toDoc ps
     ]
 
+patches :: Environment 
+        -> ( Integer, Integer )
+        -> [ Statement ]
+patches env bnd = do
+    ( k, v ) <- E.contents env
+    p <- positions v
+    w <- range bnd
+    return $ Assign ( Access k $ map Literal p ) ( Literal w )
 
- 
-    
+
