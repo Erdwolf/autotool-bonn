@@ -42,12 +42,13 @@ grammatik g =
             }
     in l
 
+pick num [] = return []
 pick num xs = do
-    let f k [] = return []
-        f k (y : ys) = do
+    let f k (y : ys) | k <= num = do
             i <- randomRIO ( 0, k )
             zs <- f (k+1) $ drop i ys
             return $ y : zs
+        f k _ = return []
     f 1 $ concat $ repeat xs
 
           
