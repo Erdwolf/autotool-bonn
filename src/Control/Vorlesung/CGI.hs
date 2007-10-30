@@ -49,7 +49,7 @@ pick_semester u me = do
     sems <- io $ Control.Semester.get_at_school $ Control.Schule.unr u
     let def = 
 	   case filter ( \ (k,sem) -> Just ( Control.Semester.enr sem ) == me ) 
-		$ zip [ 1 .. ] sems
+		$ zip [ 0 .. ] sems
 	   of (k, _) : _ -> Just k
 	      []      -> Nothing
     [sem] <- selectors "Semester" [ ( def, do
