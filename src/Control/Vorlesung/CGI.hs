@@ -24,7 +24,7 @@ edit u mv = do
     open row ; plain "Schule" ; plain $ toString $ Control.Schule.name u ; close
 
     n <- dtf "Vorlesung" T.name
-    sem <- pick_semester u
+    sem <- pick_semester u $ fmap T.enr mv
     v <- Control.Time.edit "einschreiben von" $ fmap T.einschreibVon mv
     b <- Control.Time.edit "einschreiben bis" $ fmap T.einschreibBis mv
     m <- dtf "message of the day" T.motd
@@ -43,10 +43,16 @@ edit u mv = do
 		       }
 
 pick_semester  :: Control.Schule.Schule 
+	       -> Maybe ENr
 	       -> Form IO Control.Semester.Semester
-pick_semester u = do
+pick_semester u me = do
     sems <- io $ Control.Semester.get_at_school $ Control.Schule.unr u
-    [sem] <- selectors "Semester" [ (Nothing, do
+    let def = 
+	   case filter ( \ (k,sem) -> Just ( Control.Semester.enr sem ) == me ) 
+		$ zip [ 1 .. ] sems
+	   of (k, _) : _ -> Just k
+	      []      -> Nothing
+    [sem] <- selectors "Semester" [ ( def, do
          sem <- sems
 	 return ( toString $ Control.Semester.name sem, sem )
       ) ]
