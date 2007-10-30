@@ -37,8 +37,8 @@ conf = AI.Make
                         , unary = read "[ pow ]"
                  , nullary = read "[ 2 , 3 , 4 ]"
                  }
-   ,  AI.predefined = listToFM []
-                 -- $ read " [ ( A , {1, 3, 5, 6} ) , ( B , {2, 3, 6, 7} ) ] "
+     ,  AI.predefined = listToFM 
+            $ read " [ ( A , {1, 3, 5, 6} ) , ( B , {2, 3, 6, 7} ) ] "
      , AI.max_size = 7
      }
 
