@@ -35,5 +35,6 @@ handle top i = do
 	    print $ nice i
 	    print zs
 	    print $ length zs
+	    hFlush stdout
 	    writeIORef top $ length zs
 	_ -> return ()
