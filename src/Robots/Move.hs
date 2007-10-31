@@ -56,6 +56,7 @@ execute k z @ ( n, d ) = do
 			 Just z  -> Nothing  
 	 Just p  -> return $ addZug z $ move   (n, p) k
 
+-- | alle möglichen Vorgänger einer Konfiguration
 reverse_executes :: Config -> Zug -> [ Config ]
 reverse_executes k z @ (n, d) = do
     r <- maybeToList $ look k n
