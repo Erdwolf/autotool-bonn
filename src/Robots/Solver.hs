@@ -33,6 +33,9 @@ nachfolger k = do
     guard $ covered k'
     return k'
 
+reachables :: Config -> [[ Config ]]
+reachables k = map setToList $ schichten ( mkSet . nachfolger ) k
+
 solutions :: Config -> [ ((Int, Int), [[Zug]]) ]
 solutions k = do
     (d, ps) <- zip [0 :: Int ..] $ schichten ( mkSet . nachfolger ) k
