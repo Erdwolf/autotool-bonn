@@ -41,3 +41,6 @@ type Zug = ( String, Richtung )
 
 instance Size Zug where size _ = 1
 
+-- local variables:
+-- mode: haskell
+-- end:

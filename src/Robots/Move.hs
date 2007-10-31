@@ -7,6 +7,7 @@ import Robots.Config
 import Robots.Nice
 
 import Autolib.Set
+import Autolib.Schichten
 import Autolib.FiniteMap
 import Data.Maybe
 import Data.List (sortBy)
@@ -55,6 +56,16 @@ execute k z @ ( n, d ) = do
 			 -- Roboter mit Ziel darf nicht verschwinden
 			 Just z  -> Nothing  
 	 Just p  -> return $ addZug z $ move   (n, p) k
+
+direct_predecessors :: Config -> [ Config ]
+direct_predecessors k = do
+    ( n, r ) <- fmToList $ inhalt k
+    d <- richtungen
+    reverse_executes k ( n, d )
+    
+predecessors :: Config -> [[ Config ]]
+predecessors k = 
+    map setToList $ schichten ( mkSet . direct_predecessors ) k
 
 -- | alle möglichen Vorgänger einer Konfiguration
 reverse_executes :: Config -> Zug -> [ Config ]

@@ -6,7 +6,7 @@ module Robots.Config
 , breit
 , make, geschichte
 , move, remove, addZug
-, look, robots
+, look, robots, inhalt
 , positions, goals
 , valid
 
