@@ -4,6 +4,9 @@ module Hanoi.Semantik where
 
 import Hanoi.Type
 import Hanoi.Move
+import Hanoi.Restriction
+
+import Condition
 
 import Autolib.FiniteMap
 import Autolib.Reporter
@@ -22,15 +25,13 @@ instance C.Partial Hanoi HI [ Zug ] where
 		     , nest 4 $ toDoc ( start i )
 		     , text "nach"
 		     , nest 4 $ toDoc ( ziel i )
-		     ]
+	       , explain $ restriction i
+	       ]
 
     initial p i = [ (A, B) ]
 
-    partial p i b = return ()
-	-- evtl. hier testen, ob alle türme erlaubt sind
-
     total   p i b = do
-        hof <- moves ( start i ) b
+        hof <- moves ( restriction i ) ( start i ) b
         inform $ vcat [ text "Sie erreichen diese Situation:"
 		      , nest 4 $ toDoc hof
 		      ]
@@ -45,6 +46,7 @@ make = direct Hanoi $
         ss = [ 1 .. 5 ]
     in  HI { start = addToFM leer A ss
 	   , ziel  = addToFM leer B ss
+           , restriction = Neighbours
 	   }
 
 
