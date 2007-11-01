@@ -28,6 +28,7 @@ import qualified Graph.Nachbar
 import qualified Graph.Cross
 import qualified Graph.MinSep
 import qualified Robots.Interface
+import qualified Robots.Inverse
 import qualified Graph.Col.Plain
 import qualified Graph.Col.Quiz
 
@@ -235,6 +236,8 @@ tmakers =
 	        , item PCProblem.Quiz.make_fixed
 	        , item Robots.Interface.make
 	        , item Robots.Interface.qmake
+	        , item Robots.Inverse.make
+	        , item Robots.Inverse.qmake
 	        , item Hanoi.Semantik.make
 	        , item Hanoi.Quiz.make
                 , item LCS.Instance.make_fixed

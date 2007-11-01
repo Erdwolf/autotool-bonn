@@ -9,7 +9,7 @@ module Robots.Config
 , look, robots, inhalt
 , positions, goals
 , valid
-
+, bounds, area
 )
 
 where
@@ -24,6 +24,7 @@ import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Hash
 import Autolib.Reader
+import Autolib.Size
 import Autolib.Xml
 import Autolib.Reporter
 
@@ -55,6 +56,17 @@ make rs =
 	       map abs [x,y]
 	, geschichte = []
 	}
+
+bounds k = 
+    let ps = do r <- robots k ; return $ position r
+        xs = map fst ps ; ys = map snd ps
+    in  ( ( minimum xs, minimum ys )
+        , ( maximum xs, maximum ys )
+        )
+
+area k = 
+    let ((a,b),(c,d)) = bounds k
+    in  (c-a +1) * (d-b+1)
 
 -- | fort damit (into outer space)
 remove :: String -> Config -> Config
@@ -107,6 +119,9 @@ instance Ord Config where
     compare k l = compare (essence k) (essence l)
 instance Eq Config where
     (==) k l = (==)  (essence k) (essence l)
+
+instance Size Config where
+    size = fromIntegral . area
 
 -----------------------------------------------------------------
 

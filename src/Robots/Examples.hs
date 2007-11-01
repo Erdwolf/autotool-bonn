@@ -4,6 +4,7 @@ module Robots.Examples where
 
 import Robots.Data
 import Robots.Config
+import Autolib.ToDoc
 
 -- | Aufgabe von Alexander Krabbes
 alex :: Config 

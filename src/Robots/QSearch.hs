@@ -42,16 +42,6 @@ goal_distance c = sum $ do
         Just (x,y)  -> let (a,b) = position r
                        in  abs ( signum (a-x) ) + abs ( signum (b-y) )
 
-bounds k = 
-    let ps = do r <- robots k ; return $ position r
-        xs = map fst ps ; ys = map snd ps
-    in  ( ( minimum xs, minimum ys )
-        , ( maximum xs, maximum ys )
-        )
-
-area k = 
-    let ((a,b),(c,d)) = bounds k
-    in  (c-a +1) + (d-b+1)
 
     
 decreasing [] = []

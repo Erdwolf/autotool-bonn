@@ -14,8 +14,10 @@ import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data Robots = Robots deriving ( Typeable )
+data Robots_Inverse = Robots_Inverse deriving ( Typeable )
 
 {-! for Robots derive : Reader, ToDoc, Haskell2Xml !-}
+{-! for Robots_Inverse derive : Reader, ToDoc, Haskell2Xml !-}
 
 type Position = ( Integer, Integer )
 
@@ -42,6 +44,9 @@ type Zug = ( String, Richtung )
 
 instance Size Zug where size _ = 1
 
+-- local variables:
+-- mode: haskell
+-- end:
 instance Reader Richtung where
     atomic_readerPrec d = readerParenPrec d $ \ d -> do
                       ((do my_reserved "N"
@@ -124,6 +129,23 @@ instance Haskell2Xml Robot where
     toContents v@(Robot aa ab ac) =
         [mkElemC (showConstr 0 (toHType v)) (concat [toContents aa,
                                                      toContents ab,toContents ac])]
+
+instance Reader Robots_Inverse where
+    atomic_readerPrec d = readerParenPrec d $ \ d -> do
+                      ((do my_reserved "Robots_Inverse"
+                           return (Robots_Inverse)))
+
+instance ToDoc Robots_Inverse where
+    toDocPrec d (Robots_Inverse) = text "Robots_Inverse"
+
+instance Haskell2Xml Robots_Inverse where
+    toHType v =
+        Defined "Robots_Inverse" [] [Constr "Robots_Inverse" [] []]
+    fromContents (CElem (Elem constr [] cs):etc)
+        | "Robots_Inverse" `isPrefixOf` constr =
+            (Robots_Inverse,etc)
+    toContents v@Robots_Inverse =
+        [mkElemC (showConstr 0 (toHType v)) []]
 
 instance Reader Robots where
     atomic_readerPrec d = readerParenPrec d $ \ d -> do

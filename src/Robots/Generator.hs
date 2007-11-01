@@ -38,6 +38,14 @@ some n pos = do
     return $ Robots.Config.make 
            $ pre ++ [ x { ziel = Just tgt } ] ++ post
 
+some0 n pos = do
+    let rob (c, p) = Robot { name = [c] , position = p, ziel = Nothing }
+    tgt : ps <- selektion (succ n) pos
+    let rs = map rob $ take n $ zip [ 'A' .. ] ps
+    i <- randomRIO (0, n-1)
+    let ( pre, x : post ) = splitAt i rs
+    return $ Robots.Config.make $ pre ++ [ x { ziel = Just (0,0) } ] ++ post
+
 sol :: Int -> Int -> [(Integer,Integer)] -> IO ( Config, [[Zug]] )
 sol sw n pos = do
     c <- some n pos
@@ -55,4 +63,19 @@ instance Generator Robots RC ( Config, [Zug] ) where
 
 instance Project Robots ( Config, [Zug] ) Config where
    project p ( c, zs ) = c
+
+
+instance Generator Robots_Inverse RC ( [Zug], Config ) where
+    generator p rc key = do
+       let w = width rc
+	   pos = range ((-w,-w), (w,w))
+       ( i, zss ) <- sol (search_width rc) (num rc) pos
+           `repeat_until` \ ( c, zss ) -> case zss of
+	       []      -> False
+	       zs : _  -> at_least rc <= length zs
+       return ( head zss , i )
+
+instance Project Robots_Inverse ( [Zug], Config ) [Zug] where
+   project p ( zs, c ) = zs
+
 

@@ -13,8 +13,10 @@ import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data Robots = Robots deriving ( Typeable )
+data Robots_Inverse = Robots_Inverse deriving ( Typeable )
 
 {-! for Robots derive : Reader, ToDoc, Haskell2Xml !-}
+{-! for Robots_Inverse derive : Reader, ToDoc, Haskell2Xml !-}
 
 type Position = ( Integer, Integer )
 
