@@ -22,8 +22,19 @@ import Autolib.Reporter ( export )
 import Control.Monad ( guard )
 
 
+nachfolger_without_loss :: Config -> [ Config ]
+nachfolger_without_loss k = do
+    n <- nachfolger k
+    guard $ length ( robots n ) == length ( robots k )
+    return n
+
 nachfolger :: Config -> [ Config ]
 nachfolger k = do
+    ( z, k' ) <- znachfolger k
+    return k'
+
+znachfolger :: Config -> [ ( Zug, Config ) ]
+znachfolger k = do
     let ( t, _ :: Doc ) = export $ valid k
     guard $ isJust t
     r <- robots k
@@ -31,7 +42,22 @@ nachfolger k = do
     let z = (name r, d)
     k' <- maybeToList $ execute k z
     guard $ covered k'
-    return k'
+    guard $ not $ empty_quads k' -- ??
+    return ( z, k' )
+
+empty_quads k = 
+    case ( do r <- robots k ; maybeToList $ ziel r ) of
+        [ (x0,y0) ] -> or $ do
+            let comps = [ (<=), (>=) ]
+            gx <- comps
+            gy <- comps
+            return $ null $ do
+                r <- robots k
+                let (x,y) = position r
+                guard $ gx x x0 && gy y y0
+                return ()
+        _ -> False -- DON'T KNOW
+
 
 reachables :: Config -> [[ Config ]]
 reachables k = map setToList $ schichten ( mkSet . nachfolger ) k
@@ -49,7 +75,7 @@ solutions k = do
 solutions' :: Int -> Config -> [ ((Int, Int), [[Zug]]) ]
 solutions' sw k = do
     (d, ps) <- zip [0 :: Int ..] 
-	 $ takeWhile ( \ zss -> cardinality zss < 100 )
+	 $ takeWhile ( \ zss -> cardinality zss < sw )
 	 $ schichten ( mkSet . nachfolger ) k
     let out = do p <- setToList ps
                  let ( t, _ :: Doc ) = export $ final p 

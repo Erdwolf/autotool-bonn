@@ -3,7 +3,62 @@ module Hanoi.Solve where
 --   $Id$
 
 import Hanoi.Type
+
+import Autolib.Util.Sort
+
 import Data.Array
+
+nviers 0 = return [0]
+nviers 1 = return [0,0]
+nviers n | n > 1 = do
+    prev <- nviers ( n-1 )
+    let checks @ ((lbest, kbest) : _ ) = sort $ do
+           k <- [ last prev .. last prev + 1 ]
+           let ms = nvierAD ( prev ++ [k] ) n
+           return ( length ms, k )
+    print checks
+    let res = prev ++ [ kbest ] 
+    print (n, res)
+    return $ res
+    
+   
+
+nvierAD fun n = 
+   if n > 0 
+   then let k = fun !! n
+        in     nvierAD fun k
+            ++ ndreilong (n - k) A B C
+            ++ nvierDA fun k 
+            ++ ndreishort(n - k) C B D
+            ++ nvierAD fun k
+   else []   
+
+nvierDA fun n = map flipped $ nvierAD fun n
+
+flipped (s,t) = (mirror s, mirror t )
+mirror A = D; mirror B = C; mirror C = B; mirror D = A
+
+-- | von v über h nach n
+-- | v und n sind benachbart, h ist auf der Seite von v
+ndreishort s v h n = 
+    if s > 0
+    then    ndreishort (s-1) v n h
+         ++ [ (v,n) ]
+         ++ ndreilong (s-1) h v n
+    else []
+
+-- | von v über h nach n
+ndreilong s v h n = 
+    if s > 0
+    then    ndreilong (s-1) v h n
+         ++ [ (v,h) ]
+         ++ ndreilong (s-1) n h v
+         ++ [ (h,n) ]
+         ++ ndreilong (s-1) v h n
+    else []
+
+
+-------------------------------------------------------------
 
 drei n von nach hilf = 
     if n > 0 

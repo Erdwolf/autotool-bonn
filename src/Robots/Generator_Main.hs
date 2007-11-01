@@ -1,15 +1,18 @@
+{-# language PatternSignatures #-}
+
 module Main (main) where
 
 import Robots.Nice
 import Robots.Generator
 import Robots.Solver
+import Robots.QSearch
 import Robots.Config
 import Robots.Data
 import Robots.Move
 
 import Autolib.ToDoc
 import Autolib.Schichten
-import Autolib.Util.Zufall ( eins )
+import Autolib.Util.Zufall ( eins, repeat_until )
 
 import Control.Monad ( when ) 
 import System.Environment
@@ -25,41 +28,45 @@ main = do
     sequence_ $ repeat $ action top ( read n ) ( read w )
 
 action top n w = do
-    mid0 <- some n $ range ((-w,-w),(w,w))
-    let rss = reachables mid0
-    when ( False )
-         $ hPutStr stderr $ "fore:" ++ show ( map length rss ) 
+    mid0 <- some_without_target n $ range ((-w,-w),(w,w))
 
-    far0 <- eins $ last $ reachables mid0
+    -- print $ vcat [ text "mid0", nice mid0 ]
 
-    let mid = repair mid0 far0
+    let fss :: [[Config]]
+        fss = reachables mid0
+    f :: Config <- eins ( last $ init fss ) 
+           `repeat_until` \ f -> not $ null $ robots f
+    r :: Robot <- eins $ robots f
+    
+    let mid :: Config
+        mid = attach_target r mid0
 
-    let pss = predecessors mid
-    when ( False )
-         $ hPutStr stderr $ "back:" ++ show ( map length pss )
+    -- print $ vcat [ text "mid", nice mid ]
 
-    -- hPutStr stderr "*"
+    ( b, c, zs ) <- qsolve mid
 
-    mapM_ ( handle top ) $ concat 
-                         $ pss
+    let pss = [ mid ] : predecessors mid
 
-repair k target = make $ do
-    r <- robots k
-    let z = do s <- look target ( name r )
-               return $ position s
-    return $ case ziel r of
-               Nothing -> r
-               Just _ -> r { ziel = z }
-
-handle top i = do
-    let zss = shortest  i
+    hPutStr stderr $ show ( length zs ) ++ "."
     best <- readIORef top
-    case zss of
-	( zs : _ ) | length zs >= best -> do
+    mapM_ ( handle top ) 
+         $ drop ( best - length zs )
+         $ pss
+
+attach_target r conf = make $ do
+    s <- robots conf
+    return $ if name r == name s
+       then s { ziel = Just $ position r }
+       else s
+
+handle top is = do
+    i <- eins is
+    ( b, c, zs) <- qsolve i
+    best <- readIORef top
+    when ( length zs >= best ) $ do
 	    print i            
 	    print $ nice i
 	    print zs
 	    putStrLn $ "length: " ++ show ( length zs )
 	    hFlush stdout
 	    writeIORef top $ length zs
-	_ -> return ()

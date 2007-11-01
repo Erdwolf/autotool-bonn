@@ -22,14 +22,21 @@ import Data.IORef
 
 -- | erzeugt eine konfiguration mit n robots,
 -- alle im bereich (-w, -w) .. (+w, +w)
-some :: Int -> [(Integer,Integer)] -> IO Config
-some n pos = do
+some_without_target :: Int -> [(Integer,Integer)] -> IO Config
+some_without_target n pos = do
     let rob (c, p) = Robot { name = [c] , position = p, ziel = Nothing }
-    tgt : ps <- selektion (succ n) pos
+    ps <- selektion n pos
     let rs = map rob $ take n $ zip [ 'A' .. ] ps
+    return $ Robots.Config.make rs
+
+-- | mit Ziel
+some n pos = do
+    c <- some_without_target n pos
     i <- randomRIO (0, n-1)
-    let ( pre, x : post ) = splitAt i rs
-    return $ Robots.Config.make $ pre ++ [ x { ziel = Just tgt } ] ++ post
+    let ( pre, x : post ) = splitAt i $ robots c
+    tgt <- eins pos
+    return $ Robots.Config.make 
+           $ pre ++ [ x { ziel = Just tgt } ] ++ post
 
 sol :: Int -> Int -> [(Integer,Integer)] -> IO ( Config, [[Zug]] )
 sol sw n pos = do

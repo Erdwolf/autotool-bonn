@@ -28,6 +28,27 @@ fourty = make
   , Robot { name = "E", position = (-1,-2), ziel = Just (0,0) }
   ]
 
+e27 :: Config
+e27 = make [ Robot
+           { name = "A" , position = ( 1 , -5 ) , ziel = Nothing }
+     , Robot
+           { name = "B" 
+           , position = ( 1, -4) -- ( 1, 4)  -- (-5, 4) -- ( -5 , -5 )
+           , ziel = Just
+                        ( -1 , -2 )
+           }
+     , Robot
+           { name = "C" , position = ( -6 , 4 ) , ziel = Nothing }
+     , Robot
+           { name = "D" , position = ( -5 , -6 ) , ziel = Nothing }
+     , Robot
+           { name = "E" , position = ( 4 , -5 ) , ziel = Nothing }
+     , Robot
+           { name = "F" , position = ( 1 , 5 ) , ziel = Nothing }
+     ]
+
+
+
 -- | selbst gewürfelte:
 e13 :: Config
 e13 =  make [ Robot { name = "A", position = ( 1, -1 )
