@@ -42,8 +42,8 @@ instance Partial Robots_Inverse
         last_moved_has_goal zs k
 
     total _ zs k = do
-        executes k zs
-	return ()
+        k' <- executes k zs
+	final k'
 
 last_moved_has_goal zs k = 
     let goals = do
