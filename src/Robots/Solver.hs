@@ -45,6 +45,19 @@ znachfolger k = do
     guard $ not $ empty_quads k' -- ??
     return ( z, k' )
 
+znachfolger_all_onboard k = do
+    let ( t, _ :: Doc ) = export $ valid k
+    guard $ isJust t
+    r <- robots k
+    d <- richtungen
+    let z = (name r, d)
+    k' <- maybeToList $ execute k z
+    guard $ covered k'
+    guard $ not $ empty_quads k' -- ??
+    guard $ length ( robots k ) == length ( robots k' )
+    return ( z, k' )
+
+
 empty_quads k = 
     case ( do r <- robots k ; maybeToList $ ziel r ) of
         [ (x0,y0) ] -> or $ do

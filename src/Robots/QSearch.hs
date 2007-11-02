@@ -51,13 +51,17 @@ decreasing ( x @ (b,_,_): rest ) =
 qsolve k = do
     let bczs = takeUntil ( \ (b,_,_) -> b <= 0 )
                   $ decreasing
-                  $ search znachfolger badness k
+                  $ search znachfolger_all_onboard badness k
     when False $ mapM_ ( \ (b,c,zs) -> 
         print $ besides [ vcat [ toDoc b, toDoc ( length zs ) ]
                         , nice c, toDoc zs 
                         ]
           ) bczs
     return $ last bczs
+
+ist_final k = and $ do
+    r @ Robot { ziel = Just z, position = p } <- robots k
+    return $ z == p
 
 takeUntil p  [] = []
 takeUntil p (x : xs) = x : if p x then [] else takeUntil p xs

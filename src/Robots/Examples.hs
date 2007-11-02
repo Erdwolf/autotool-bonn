@@ -72,3 +72,61 @@ e10 = make
       , Robot { name = "E", position = ( -1, -1 ), ziel = Nothing }
       ]
 
+
+c1 = make 
+     [ Robot
+           { name = "A" , position = ( -4 , 6 )
+           , ziel = Just
+                        ( 0 , 0 )
+           }
+     , Robot
+           { name = "B" , position = ( -6 , 6 ) , ziel = Nothing }
+     , Robot
+           { name = "C" , position = ( 6 , 6 ) , ziel = Nothing }
+     , Robot
+           { name = "D" , position = ( -5 , -7 ) , ziel = Nothing }
+     , Robot
+           { name = "E" , position = ( 4 , -7 ) , ziel = Nothing }
+     , Robot
+           { name = "F" , position = ( -6 , -5 ) , ziel = Nothing }
+     , Robot
+           { name = "G" , position = ( 3 , 7 ) , ziel = Nothing }
+     ]
+
+c2 = make [ Robot
+           { name = "A" , position = ( 1 , 7 )
+           , ziel = Just
+                        ( 0 , 0 )
+           }
+     , Robot
+           { name = "B" , position = ( -2 , 8 ) , ziel = Nothing }
+     , Robot
+           { name = "C" , position = ( 8 , -4 ) , ziel = Nothing }
+     , Robot
+           { name = "D" , position = ( 1 , -7 ) , ziel = Nothing }
+     , Robot
+           { name = "E" , position = ( 0 , -8 ) , ziel = Nothing }
+     , Robot
+           { name = "F" , position = ( -2 , -8 ) , ziel = Nothing }
+     , Robot
+           { name = "G" , position = ( 5 , 8 ) , ziel = Nothing }
+     ]
+
+c3 = make [ Robot
+           { name = "A" , position = ( -12 , 10 )
+           , ziel = Just
+                        ( 0 , 0 )
+           }
+     , Robot
+           { name = "B" , position = ( 12 , 11 ) , ziel = Nothing }
+     , Robot
+           { name = "C" , position = ( -12 , -10 ) , ziel = Nothing }
+     , Robot
+           { name = "D" , position = ( 11 , -10 ) , ziel = Nothing }
+     , Robot
+           { name = "E" , position = ( 12 , -3 ) , ziel = Nothing }
+     , Robot
+           { name = "F" , position = ( 11 , 10 ) , ziel = Nothing }
+     , Robot
+           { name = "G" , position = ( 12 , 10 ) , ziel = Nothing }
+     ]
