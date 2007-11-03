@@ -1,0 +1,192 @@
+\documentclass{llncs}
+\usepackage[latin1]{inputenc}
+\usepackage{german}
+
+\textheight 230mm
+\textwidth 150mm
+
+\author{Johannes Waldmann}
+\institute{HTWK Leipzig}
+\title{Theorie zu Lunar Lockout} 
+\begin{document}
+\maketitle
+
+\section{Spieldefinition, Einordnung}
+
+Die schwerste Aufgabe des Original-Spieles ist
+\begin{verbatim}
+A . B . C
+. . . . .
+. . e . .
+. . . . D
+. E . . .
+\end{verbatim}
+ihre kürzeste Lösung hat 12 Züge:
+\begin{verbatim}
+[ ( "B" , W ) , ( "C" , W ) , ( "B" , S ) , ( "A" , O )
+, ( "A" , S ) , ( "B" , O ) , ( "E" , N ) , ( "B" , W )
+, ( "D" , W ) , ( "B" , N ) , ( "E" , O ) , ( "E" , N )
+]
+\end{verbatim}
+Bei diesen Brettgrößen sieht man eigentlich noch gar nichts.
+
+
+\section{Komplexität}
+
+Definition. Für eine Konfiguration von Robotern $c$
+bezeichnet $|c|$ das kleinste achsenparallele Rechteck,
+das alle Roboter enthält.
+
+Satz. Wenn $c_1 \to^* c_2$, dann $|c_1|\supseteq|c_2|$.
+
+Folgerung. Um die Lösbarkeit zu entscheiden,
+muß man nur Konfigurationen innerhalb des Startrechtexks betrachten.
+Um eine solche aufzuschreiben, benötigt man nur polynomiell viel Platz.
+Das Spiel ist also in PSPACE.
+(Es  ist sogar PSPACE-vollständig, das erfordert aber etwas Bastelei.)
+
+
+
+\section{Praktische Suche nach Lösungen}
+
+
+Folgerung. Wenn $|c|$ einen Zielpunkt nicht enthält,
+dann ist $c$ unlösbar.
+
+Beispiel:
+\begin{verbatim}
+. . . . . . . D A
+. . . . G . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. a . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . E . . .
+. . . . . B . . C
+. . . . . . . . F
+\end{verbatim}
+
+Da gibt es aber noch ein schärferes Kriterium
+(für Konfigurationen mit genau einem Ziel).
+
+Definition. Für einen Punkt $p$
+bezeichnen $p_{++},p_{+-},p_{-+}.p_{--}$
+die vier Quadranten mit Ursprung in $p$.
+Die Halbachsen (und der Ursprung) sollen mit zum Quadranten gehören,
+die sind also nicht disjunkt.
+
+Satz: Wenn einer der Quadranten des Zielpunktes einer Konfiguration $c$
+leer ist (keinen Roboter enthält), dann ist $c$ unlösbar.
+
+Beispiel: der obere linke Quadrant ist leer:
+\begin{verbatim}
+. . . . . . . D A
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . a . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. E . . . . . . .
+. B . . . . . . C
+. . . . . . . . F
+\end{verbatim}
+
+Beachte, daß eine gelöster Konfiguration die Bedingung erfüllt:
+auf dem Zielpunkt steht ein Roboter, 
+der nach Definition zu allen Quadranten gehört.
+
+Damit kann man schon recht schnelle Lösungsprogramme bauen,
+die auch hunderte von Zügen vorausschauen können.
+Mit Hilfe dieser wurden die folgenden Konfigurationen gefunden.
+
+\section{Langsame Lösungen}
+
+Definition: zwei lösbare Konfigurationen $c,d$ heißen äquivalent,
+wenn ihre Lösungsmengen übereinstimmen.
+
+Kommentar. Lösung bedeutet Zugfolge (wer fährt in welche Richtung).
+Da steht nicht dran, wie weit gefahren wird.
+Deswegen können verschiedene Konfigurationen durchaus äquivalent sein.
+
+Frage: für eine vorgegebene Zahl $r$ von Robotern:
+gibt es endlich oder unendlich viele Äquivalenzklassen?
+
+Antwort: für $r\ge 6$: unendlich.
+
+Es genügt dazu eine Folge von Konfigurationen anzugeben,
+die alle verschieden lange kürzeste Lösungen haben.
+Das folgende muß man sich beliebig breit vorstellen:
+\begin{verbatim}
+. . . . . . . . . . . . . . . . . . D .
+E . . . . . . . . . . . . . . . . . . .
+. . . . . . . a . . . . . A B . . . . C
+. F . . . . . . . . . . . . . . . . . .
+\end{verbatim}
+Zur Lösung fährt $B$ nach Osten, Norden, Süden, Osten:
+\begin{verbatim}
+. . . . . . . . . . . . . . . . . . D .
+E . . . . . . . . . . . . . . . . . . .
+. . . . . . . a . . . . B A . . . . . C
+. F . . . . . . . . . . . . . . . . . .
+\end{verbatim}
+dann $A$ nach Osten, Norden, Süden, Osten:
+\begin{verbatim}
+. . . . . . . . . . . . . . . . . . D .
+E . . . . . . . . . . . . . . . . . . .
+. . . . . . . a . . . A B . . . . . . C
+. F . . . . . . . . . . . . . . . . . .
+\end{verbatim}
+und so weiter.
+
+\section{Breite langsame Lösungen}
+
+In o.g. Konfigurationen ist anfangs
+das Ziel beliebig weit entfernt von den Robotern,
+aber nur in einer Koordinate. (Die Konfigurationen sind schmal.)
+
+Frage: für $r$ Roboter: gibt es eine Folge von lösbaren Konfigurationen,
+bei denen die Entfernung des Ziels von den Robotern
+in beiden Koordinaten unbeschränkt wächst?
+
+Antwort: ab 7 Robotern ja, linear ist möglich.
+
+Es genügt, die folgende Konstruktion zu benutzen:
+\begin{verbatim}
+C . . . . . . . . . . . . D E  =>
+G . . . . . . . . . . . . . .     C . . . . . . . . . . D F
+. . . . . . . . . . . . . . .     B . . . . . . . . . . . .
+. . . . . . . . . . . . . . .     . . . . . . . . . . . . .
+. . . . . . . . . . . . . . .     . . . . . . . . . . . . .
+. . . . . . . . . . . . . . .     . . . . . . . . . . . . .
+. . . . . . . . . . . . . . .     . . . . . . . . . . . . .
+. . . . . . a . . . . . . . .     . . . . . a . . . . . . .
+. . . . . . . . . . . . . . .     . . . . . . . . . . . . .
+. . . . . . . . . . . . . . .     . . . . . . . . . . . . .
+. . . . . . . . . . . . . . .     . . . . . . . . . . . . .
+. . . . . . . . . . . . . . .     . . . . . . . . . . . . .
+. . . . . . . . . . . . . . .     . . . . . . . . . . . . .
+. . . . . . . . . . . . . . .     . E . . . . . . . . . G .
+. A . . . . . . . . . . . F .     . A . . . . . . . . . . .
+. B . . . . . . . . . . . . .
+
+[ ( "A" , O ) , ( "F" , N ) , ( "D" , W ) , ( "E" , W )
+, ( "D" , S ) , ( "C" , O ) , ( "G" , O ) , ( "G" , S )
+, ( "A" , W ) , ( "D" , N ) , ( "B" , N ) , ( "E" , S )
+, ( "D" , O ) , ( "C" , S )
+]
+\end{verbatim}
+
+d. h. nach 14 Zügen ist alles um eine Position Richtung Zentrum gewandert
+(und einige der Roboter wurden vertauscht).
+Es ist klar, daß man auf diese Weise
+von einer beliebig großen Konfiguration 
+zu einer beliebig kleinen kommt.
+
+
+\end{document}
