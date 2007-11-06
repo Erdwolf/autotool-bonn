@@ -3,6 +3,7 @@
 module Robots.Config 
 
 ( Config -- abstract
+, c_hull
 , breit
 , make, geschichte
 , move, remove, addZug
@@ -17,6 +18,7 @@ where
 --  $Id$
 
 import Robots.Data
+import Robots.Exact
 
 import Autolib.FiniteMap
 import Autolib.Set
@@ -25,6 +27,7 @@ import Autolib.ToDoc
 import Autolib.Hash
 import Autolib.Reader
 import Autolib.Size
+import Autolib.Set
 import Autolib.Xml
 import Autolib.Reporter
 
@@ -38,6 +41,7 @@ data Config = Config { c_hash :: Int32
 		     , inhalt :: FiniteMap String Robot
 		     , breit :: Integer
 		     , geschichte :: [ Zug ]
+		     , c_hull :: Set Position
 		     }
      deriving ( Typeable )
 
@@ -47,7 +51,7 @@ make rs =
     let i = listToFM $ do 
 	      r <- rs
 	      return ( name r, r )
-    in  Config 
+    in  hulled $ Config 
 	{ c_hash = hash i
 	, inhalt = i
 	, breit = maximum $ do 
@@ -56,6 +60,10 @@ make rs =
 	       map abs [x,y]
 	, geschichte = []
 	}
+
+-- | recompute hull (from scratch)
+hulled k = k { c_hull = exact_hull_points $ mkSet $ map position $ robots k }
+
 
 bounds k = 
     let ps = do r <- robots k ; return $ position r
@@ -72,7 +80,7 @@ area k =
 remove :: String -> Config -> Config
 remove n k = 
     let i = delFromFM (inhalt k) n
-    in  k { inhalt = i
+    in  hulled $ k { inhalt = i
 	  , c_hash = hash i
 	  }
 
@@ -83,7 +91,7 @@ move (n, p) k =
         j = addToFM i n 
 	      $ let r = fromMaybe ( error "Robots.Move.move" ) ( lookupFM i n )
 		in  r { position = p }
-    in  k { inhalt = j
+    in  hulled $ k { inhalt = j
 	  , c_hash = hash j
 	  }
 

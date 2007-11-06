@@ -7,6 +7,8 @@ import Robots.Config
 import Robots.Hull
 
 import Autolib.ToDoc
+import Autolib.Set
+
 import Data.Array
 import Data.Maybe
 import Data.Char
@@ -16,8 +18,10 @@ instance Nice Config where
   nice k = vcat $ do
     let bereich @ ((l,u), (r,o)) = hull_with_goals k
                                      --  this is important here, since...
-    let a = array bereich $ do p <- range bereich
+    let f = array bereich $ do p <- range bereich
 			       return ( p, '.' )
+    let a = f // do p <- setToList $ c_hull k 
+		    return ( p, '*' )
     let b = a // do r <- robots k
 		    return ( position r, head $ name r )
     let c = b // do r <- robots k

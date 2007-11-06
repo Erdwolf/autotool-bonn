@@ -4,11 +4,22 @@ module Robots.Hull where
 
 import Robots.Data
 import Robots.Config
+import Robots.Exact
+
+import Autolib.Set
+
 import Data.Maybe
 
+hull = rectangle
+
+
+exact_hull :: Config -> Set Position
+exact_hull k = exact_hull_points $ mkSet $ map position $ robots k
+
+
 -- | kleinstes überdeckendes rechteck ( unten links, oben rechts )
-hull :: Config -> (Position, Position)
-hull k = 
+rectangle :: Config -> (Position, Position)
+rectangle k = 
     let ps = map position $ robots k
 	xs = map fst ps ; ys = map snd ps
     in	( ( minimum xs, minimum ys ) , ( maximum xs, maximum ys) )
