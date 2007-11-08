@@ -20,8 +20,10 @@ instance Nice Config where
                                      --  this is important here, since...
     let f = array bereich $ do p <- range bereich
 			       return ( p, '.' )
-    let a = f // do p <- setToList $ c_hull k 
-		    return ( p, '*' )
+    let a = if show_hull k
+	    then f // do p <- setToList $ c_hull k 
+		         return ( p, '*' )
+	    else f
     let b = a // do r <- robots k
 		    return ( position r, head $ name r )
     let c = b // do r <- robots k

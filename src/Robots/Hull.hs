@@ -13,6 +13,8 @@ import Data.Maybe
 hull = rectangle
 
 
+
+
 exact_hull :: Config -> Set Position
 exact_hull k = exact_hull_points $ mkSet $ map position $ robots k
 

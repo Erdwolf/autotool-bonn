@@ -42,7 +42,8 @@ znachfolger k = do
     let z = (name r, d)
     k' <- maybeToList $ execute k z
     guard $ covered k'
-    guard $ not $ empty_quads k' -- ??
+    guard $ each_goal_in_right_cluster k'
+    -- guard $ not $ empty_quads k' -- ??
     return ( z, k' )
 
 znachfolger_all_onboard k = do
@@ -53,10 +54,14 @@ znachfolger_all_onboard k = do
     let z = (name r, d)
     k' <- maybeToList $ execute k z
     guard $ covered k'
-    guard $ not $ empty_quads k' -- ??
+    -- guard $ not $ empty_quads k' -- ??
+    guard $ each_goal_in_right_cluster k'
     guard $ length ( robots k ) == length ( robots k' )
     return ( z, k' )
 
+each_goal_in_right_cluster k = and $ do 
+    r @ Robot { ziel = Just z } <- robots k
+    return $ cluster_of k ( position r ) == cluster_of k z
 
 empty_quads k = 
     case ( do r <- robots k ; maybeToList $ ziel r ) of

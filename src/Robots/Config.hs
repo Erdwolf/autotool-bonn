@@ -3,9 +3,10 @@
 module Robots.Config 
 
 ( Config -- abstract
-, c_hull
+, c_hull, cluster_of
+, showing_hull, show_hull
 , breit
-, make, geschichte
+, make, make_with_hull, geschichte
 , move, remove, addZug
 , look, robots, inhalt
 , positions, goals
@@ -28,6 +29,7 @@ import Autolib.Hash
 import Autolib.Reader
 import Autolib.Size
 import Autolib.Set
+import Autolib.FiniteMap
 import Autolib.Xml
 import Autolib.Reporter
 
@@ -42,9 +44,12 @@ data Config = Config { c_hash :: Int32
 		     , breit :: Integer
 		     , geschichte :: [ Zug ]
 		     , c_hull :: Set Position
+		     , c_clusters :: FiniteMap Position Int
+		     , show_hull :: Bool
 		     }
      deriving ( Typeable )
 
+cluster_of k p = lookupFM ( c_clusters k ) p 
 
 make :: [ Robot ] -> Config
 make rs = 
@@ -59,11 +64,24 @@ make rs =
 	       let (x,y) = position r
 	       map abs [x,y]
 	, geschichte = []
+	, show_hull = False
 	}
 
--- | recompute hull (from scratch)
-hulled k = k { c_hull = exact_hull_points $ mkSet $ map position $ robots k }
+make_with_hull :: [ Robot ] -> Config
+make_with_hull rs = showing_hull $ make rs
 
+-- | recompute hull (from scratch)
+hulled k = 
+    let ps = mkSet $ map position $ robots k 
+	fm = listToFM $ do
+	       ( i, cl ) <- zip [ 0 .. ] $ clusters ps
+	       p <- setToList cl
+	       return ( p, i )
+    in  k { c_hull = exact_hull_points ps
+	  , c_clusters = fm
+	  }
+
+showing_hull k = k { show_hull = True }
 
 bounds k = 
     let ps = do r <- robots k ; return $ position r

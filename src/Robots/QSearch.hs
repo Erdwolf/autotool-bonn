@@ -12,6 +12,7 @@ import Control.Monad ( guard, when )
 import Data.Set ( Set )
 import Data.Maybe
 import qualified Data.Set as S
+import System.IO
 
 search :: Ord a
        => ( a -> [ (z, a) ] ) -- ^ ( move, neighbour reached )
@@ -32,15 +33,15 @@ search neigh badness start =
     in  helper S.empty $ S.singleton ( badness start, start, Hide [] )
        
 
-badness c = fromIntegral ( goal_distance c * area c ) 
-          / ( fromIntegral ( length $ robots c )  )
+badness c = fromIntegral ( goal_distance c ) -- * area c ) 
+--          / ( fromIntegral ( length $ robots c )  )
 
 goal_distance c = sum $ do
     r <- robots c
     return $ case ziel r of
         Nothing -> 0
         Just (x,y)  -> let (a,b) = position r
-                       in  abs ( signum (a-x) ) + abs ( signum (b-y) )
+                       in  abs (  (a-x) ) + abs (  (b-y) )
 
 
     
@@ -50,13 +51,18 @@ decreasing ( x @ (b,_,_): rest ) =
 
 qsolve k = do
     let bczs = takeUntil ( \ (b,_,_) -> b <= 0 )
-                  $ decreasing
+                  -- $ decreasing
+	     $ take 100
                   $ search znachfolger_all_onboard badness k
     when False $ mapM_ ( \ (b,c,zs) -> 
         print $ besides [ vcat [ toDoc b, toDoc ( length zs ) ]
                         , nice c, toDoc zs 
                         ]
           ) bczs
+    when True $ mapM_ ( \ (b,c,zs) -> do
+            hPutStr stderr $ ( take 4 $ show b ) ++ " "
+         ) bczs
+    print $ text "qsolve:" <+> toDoc ( length bczs )
     return $ last bczs
 
 ist_final k = and $ do

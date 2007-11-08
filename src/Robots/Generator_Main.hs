@@ -6,17 +6,19 @@ import Robots.Nice
 import Robots.Generator
 import Robots.Solver
 import Robots.QSearch
-import Robots.Config
+import Robots.Config hiding ( breit )
 import Robots.Data
 import Robots.Move
 
 import Autolib.ToDoc
 import Autolib.Schichten
-import Autolib.Util.Zufall ( eins, repeat_until )
+import Autolib.Util.Zufall ( eins, repeat_until, selektion )
 import Autolib.Util.Sort 
 
 import Control.Monad ( when, guard ) 
 import System.Environment
+import System.Random
+
 import Data.IORef
 import Data.Ix
 import Data.List ( tails ) 
@@ -27,8 +29,16 @@ main :: IO ()
 main = do
     [ n, w ] <- getArgs
     top <- newIORef 0
-    sequence_ $ repeat $ action2 top ( read n ) ( read w )
+    sequence_ $ repeat $ action3 top ( read n :: Int ) ( read w :: Int )
 
+action3 top n w = do
+    k <- stairway st
+    when ( each_goal_in_right_cluster k ) $ do
+        print $ vcat [ nice k 
+		 , toDoc $ each_goal_in_right_cluster k
+		 , text $ replicate 50 '-' 
+		 ]
+        handle top [k]
 
 action2 top n w = do
     start0 <- some_without_target n $ border w
@@ -92,6 +102,38 @@ unfold k zs = k : case zs of
 
 --------------------------------------------------------------------------
 
+data Stair = Stair 
+	   { breit :: Integer
+	   , dist :: Integer
+	   , hoch :: Integer
+	   , robs :: Int 
+	   } deriving ( Show )
+
+st = Stair { breit = 3, dist = 5, hoch = 3, robs = 3 }
+
+stairway st = do
+    let punkt w = do
+	    [ x,y ] <- sequence $ replicate 2 $ randomRIO ( 0, w - 1 )
+	    return ( x, y)
+    let block (x,y) = do
+            k <- randomRIO ( 2, robs st )
+	    let d = breit st - 1
+	    selektion k $ range ((x,y),(x+d,y+d))
+    bs <- sequence $ do
+        h <- [ 0 .. hoch st - 1 ]
+	w <- [ 0 , 1 ]
+        let grid = breit st + dist st
+	return $ block ( (h + w) * grid, h * grid )
+    return $ make_with_hull $ make_robots $ concat bs
+    
+-- | drop first position, assign as target to last
+make_robots ( p : ps ) = do
+    let names = map return [ 'A' .. ]
+    ( n, p, z ) <- zip3 names ( reverse ps ) $ Just p : repeat Nothing
+    return $ Robot { name = n, position = p, ziel = z }
+    
+--------------------------------------------------------------------------
+
 action1 top n w = do
     mid0 <- some_without_target n $ corner w
     let mid = attach_target_to_first (0,0) mid0
@@ -152,7 +194,7 @@ handle top is = do
     ( b, c, zs) <- qsolve i
     best <- readIORef top
     when ( ist_final c ) $ do
-        check_for_shifts ( i, reverse zs )	   
+--        check_for_shifts ( i, reverse zs )	   
 	when ( length zs >= best ) $ do
             print i
 	    print $ besides [ nice i , text "=>", nice c ]
