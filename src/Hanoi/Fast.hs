@@ -3,6 +3,7 @@
 module Hanoi.Fast where
 
 import Hanoi.QSearch
+import qualified Hanoi.Type as T
 
 import Autolib.ToDoc
 
@@ -15,6 +16,7 @@ type State = [ Turm ]
 
 type Zug = (Turm, Turm)
 
+
 tabulate targets p s = besides $ do
     k <- [ 0 .. s ]
     return $ vcat $ do
@@ -23,7 +25,13 @@ tabulate targets p s = besides $ do
             Nothing -> text "*"
             Just n  -> toDoc n
 
+present :: [(Int,Int)] -> [T.Zug]
+present = map ( \ (x,y) -> ( toEnum x, toEnum y))
+
 solve targets pegs pieces = 
+    fmap length $ solve_path targets pegs pieces
+
+solve_path targets pegs pieces = 
     let start_peg = 0
         start = replicate pieces start_peg
         goal_peg  = pegs - 1
@@ -36,7 +44,7 @@ solve targets pegs pieces =
     in  case   filter ( \ (b,c,zs) -> c == goal )
              $ take 100000
              $ search ( moves targets )  badness $ start of
-            ( b, c, zs ) : _ -> Just $ length zs 
+            ( b, c, zs ) : _ -> Just zs 
             _ -> Nothing
 
 central top t = 
