@@ -10,25 +10,34 @@ import Autolib.ToDoc
 full :: System
        -> Program
        -> Int
-       -> Reporter ()
-full ( System cs ) p num =
-    mapM_ ( \ c -> single c p num ) cs
+       -> Reporter [ ( Maybe Bool, Doc ) ]
+full ( System cs ) p num = do
+    results <- mapM ( \ c -> single c p num ) cs
+    return $ concat results
 
 single :: Constraint
        -> Program
        -> Int
-       -> Reporter ()
+       -> Reporter [ ( Maybe Bool, Doc ) ]
 single con @ ( Constraint vars body ) p num = do
-    inform $ text "Prüfe Constraint:" <+> toDoc con
-    sequence_ $ do
+    sequence $ do
         values <- take num $ candidates $ length vars
-        return $ silent $ do
+        return $ do
 	    let pairs = zip vars values
-	    x <- eval ( extend p pairs ) body
-            when ( not x ) $ reject $ vcat
-	        [ if null pairs then empty else text "Für Belegung" <+> toDoc pairs <+> text ":"
-		, text "Constraint ist nicht erfüllt."	  
-		]
+	    let ( mmx, doc ) = export $ do
+                     inform $ text "Constraint:" <+> toDoc con
+                     when ( not $ null pairs )
+                          $ inform $ text "Belegung:" <+> bform pairs
+                     nested 4 $ do
+                         inform $ text "dabei berechnete Funktionswerte:"
+                         eval ( extend p pairs ) body
+            case mmx of
+                Nothing -> reject $ doc
+                Just mx -> return ( mx, doc )
+
+bform pairs = hsep $ do
+    ( i, v ) <- pairs
+    return $ hsep [ toDoc i, text "=", toDoc v, semi ]
 
 -- | all tuples of naturals of given length,
 -- listed in order of increasing sum.

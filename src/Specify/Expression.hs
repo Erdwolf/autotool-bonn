@@ -17,6 +17,8 @@ import Data.Typeable
 data Expression a where
 
     Constant :: ToDoc a => a -> Expression a        
+    Undefined :: Expression a
+
 --    Variable :: Identifier -> Expression Integer
     Apply :: Identifier -> [ Expression Integer ] -> Expression Integer
 
@@ -49,6 +51,7 @@ instance ToDoc a => ToDoc ( Expression a ) where
     toDocPrec p x = case x of
         Constant a -> toDoc a
 --        Variable v -> toDoc v
+        Undefined -> text "?"
 
 	Apply fun args -> toDoc fun <+> case args of
 	      [] -> empty
@@ -81,6 +84,7 @@ instance ToDoc a => ToDoc ( Expression a ) where
 instance Size ( Expression a ) where
     size x = case x of
         Constant a -> 1
+        Undefined  -> 1
 
 	Apply fun args -> 1 + sum ( map size args )
         
@@ -124,6 +128,7 @@ instance Reader ( Expression Bool ) where
 		, [ unop "!" Not ] 
                 ] 
                 ( my_parens reader 
+                <|> do my_symbol "?" ; return Undefined
 		<|> do my_reserved "true" ; return $ Constant True
 		<|> do my_reserved "false" ; return $ Constant False
 		<|> branch
@@ -137,7 +142,7 @@ comparison = do
 			 , ( ">=", GreaterEqual), (">", Greater), ("!=", NotEqual) 
 			 ]
 	return $ do
-            my_symbol name
+            try $ my_symbol name
 	    return val
     y <- reader
     return $ op x y
@@ -159,6 +164,7 @@ instance Reader ( Expression Integer ) where
 		  ]
                 ] 
                 ( my_parens reader 
+                <|> do my_symbol "?" ; return Undefined
 		<|> do i <- my_integer ; return $ Constant i
 		<|> application
 		<|> branch

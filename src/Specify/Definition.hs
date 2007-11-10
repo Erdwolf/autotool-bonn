@@ -20,7 +20,7 @@ data Program = Program [ Definition ]
 
 
 example :: Program
-example = read "{ f (x) = 3*x + 1; }"
+example = read "{ f (x) = if 0 == x % 2 then ? else 3*x + 1; }"
 
 instance ToDoc Program where
     toDoc ( Program ds ) = braces $ vcat $ map toDoc ds
@@ -42,6 +42,13 @@ extend :: Program -> [ ( Identifier, Integer ) ] -> Program
 extend ( Program ds ) pairs = 
     Program $ map ( \ (i,v) -> Definition i [] ( Constant v ) ) pairs ++ ds
 
+make :: [ ( Identifier, Maybe Integer ) ] -> Program
+make pairs =  
+    Program $ map ( \ (i,v) -> Definition i [] $ einpack v ) pairs
+
+einpack v = case v of 
+            Nothing -> Undefined
+            Just v  -> Constant v
 
 data Definition = Definition Identifier [ Identifier ] ( Expression Integer ) 
     deriving Typeable

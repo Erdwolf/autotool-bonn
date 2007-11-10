@@ -29,8 +29,19 @@ main :: IO ()
 main = do
     [ n, w ] <- getArgs
     top <- newIORef 0
+<<<<<<< Generator_Main.hs
+    sequence_ $ repeat $ action3 top ( read n ) ( read w )
+=======
     sequence_ $ repeat $ action3 top ( read n :: Int ) ( read w :: Int )
+>>>>>>> 1.11
 
+<<<<<<< Generator_Main.hs
+action3 top n w = do
+    mid <- some n $ rectangle w 1
+    handle top [ mid ]
+
+rectangle w h = range ((-w,-h),(w,h))
+=======
 action3 top n w = do
     k <- stairway st
     when ( each_goal_in_right_cluster k ) $ do
@@ -39,6 +50,7 @@ action3 top n w = do
 		 , text $ replicate 50 '-' 
 		 ]
         handle top [k]
+>>>>>>> 1.11
 
 action2 top n w = do
     start0 <- some_without_target n $ border w

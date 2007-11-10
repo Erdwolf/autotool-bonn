@@ -13,10 +13,13 @@ import Autolib.Reporter
 
 
 eval :: ToDoc a
-     => Program -> Expression a -> Reporter a
+     => Program 
+     -> Expression a 
+     -> Reporter ( Maybe a )
 eval p x = case x of
 
-        Constant c -> return c
+        Constant c -> return $ Just c
+        Undefined  -> return $ Nothing
 
 	Apply fun args -> do
 	    d @ ( Definition _ params body ) <- find p fun
@@ -26,15 +29,18 @@ eval p x = case x of
 		, text "Deklaration:" <+> toDoc d
 		]
             values <- mapM ( eval p ) args
-            res <- eval ( extend p $ zip params values ) body
+            -- static binding: evaluate in fresh environment
+            res <- eval ( make $ zip params values ) body
 	    when ( not $ null args ) $ inform 
-		 $  toDoc fun <+> parens ( sepBy comma $ map toDoc values ) 
-			      <+> equals <+> toDoc res
+		 $  toDoc fun <+> parens ( sepBy comma $ map ( toDoc . einpack ) values ) 
+			      <+> equals <+> toDoc ( einpack res )
             return res
 
 	Branch c y z -> do
-           cc <- eval p c
-           eval p $ if cc then y else z
+           mcc <- eval p c
+           case mcc of
+                Nothing -> return Nothing
+                Just cc -> eval p $ if cc then y else z
      
         Plus      x y -> bin (+) p x y
         Minus     x y -> bin (-) p x y
@@ -60,24 +66,28 @@ bin :: ( ToDoc a, ToDoc b, ToDoc c )
     -> Program 
     -> Expression a 
     -> Expression b 
-    -> Reporter c
+    -> Reporter ( Maybe c )
 bin op p x y = do
-    a <- eval p x
-    b <- eval p y
-    return $ op a b
+    ma <- eval p x
+    mb <- eval p y
+    case ( ma, mb ) of
+        ( Just a, Just b ) -> return $ Just $ op a b
+        _                  -> return $ Nothing
 
 bin_nonzero op p x y = do
-    a <- eval p x
-    b <- eval p y
-    when ( 0 == b ) $ reject $ text "division by zero"
-    return $ op a b
+    ma <- eval p x
+    mb <- eval p y
+    case ( ma, mb ) of
+        ( _ , Just 0 ) -> reject $ text "division by zero"
+        ( Just a, Just b ) -> return $ Just $ op a b
+        _                  -> return $ Nothing
 
 un :: ( ToDoc a, ToDoc b )
    => ( a -> b ) 
    -> Program 
    -> Expression a 
-   -> Reporter b
+   -> Reporter ( Maybe b )
 un op p x = do
-    a <- eval p x
-    return $ op a
+    ma <- eval p x
+    return $ fmap op ma
 
