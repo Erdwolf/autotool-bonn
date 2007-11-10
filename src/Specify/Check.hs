@@ -22,7 +22,7 @@ single con @ ( Constraint vars body ) p num = do
     inform $ text "Prüfe Constraint:" <+> toDoc con
     sequence_ $ do
         values <- take num $ candidates $ length vars
-        return $ do
+        return $ silent $ do
 	    let pairs = zip vars values
 	    x <- eval ( extend p pairs ) body
             when ( not x ) $ reject $ vcat
