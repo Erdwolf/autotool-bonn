@@ -33,8 +33,8 @@ data Constraint = Constraint [ Identifier ] ( Expression Bool )
 instance ToDoc Constraint where
     toDoc ( Constraint [] body ) = toDoc body <+> semi
     toDoc ( Constraint vs body ) = 
-        hsep [ text "forall", hsep $ map toDoc vs
-	     , text "." , toDoc body , semi
+        vcat [ hsep [ text "forall", hsep $ map toDoc vs , text "." ]
+	     , toDoc body , semi
 	     ]
 
 instance Reader Constraint where

@@ -1,5 +1,5 @@
 {-# language GADTs #-}
-{-# OPTIONS -fglasgow-exts -XFlexibleInstances #-}
+{-# OPTIONS -fglasgow-exts -XFlexibleInstances -fno-monomorphism-restriction #-}
 
 module Specify.Expression where
 
@@ -41,7 +41,7 @@ data Expression a where
     Implies :: Expression Bool -> Expression Bool -> Expression Bool
     Not :: Expression Bool -> Expression Bool
 
-    Branch :: Expression Bool -> Expression Integer -> Expression Integer -> Expression Integer
+    Branch :: Expression Bool -> Expression a -> Expression a -> Expression a
 
     deriving Typeable
 
@@ -64,7 +64,7 @@ instance ToDoc a => ToDoc ( Expression a ) where
 --	Forall xs y   -> docParen ( p > 1 ) 
 --	   $ hsep [ text "forall", hsep $ map toDoc $ setToList xs, text ".", toDocPrec 1 y ]
 
-	Branch c y z -> hsep [ text "if", toDoc c, text "then", toDoc y, text "else", toDoc z ]
+	Branch c y z -> vcat [ text "if" <+> toDoc c, text "then" <+> toDoc y, text "else" <+> toDoc z ]
 
         Less      x y -> docParen ( p > 5 ) $ hsep [ toDocPrec 5 x, text "<", toDocPrec 5 y ]
         LessEqual x y -> docParen ( p > 5 ) $ hsep [ toDocPrec 5 x, text "<=", toDocPrec 5 y ]
@@ -124,16 +124,17 @@ instance Reader ( Expression Bool ) where
 		, [ unop "!" Not ] 
                 ] 
                 ( my_parens reader 
-		<|> comparison
 		<|> do my_reserved "true" ; return $ Constant True
 		<|> do my_reserved "false" ; return $ Constant False
+		<|> branch
+		<|> comparison
 		)
 
 comparison = do
     x <- reader
     op <- foldr1 (<|>) $ do 
-        ( name, val ) <- [ ( "<", Less ) , ("<=", LessEqual ), ("==", Equal )
-			 , (">", Greater), ( ">=", GreaterEqual), ("!=", NotEqual) 
+        ( name, val ) <- [  ("<=", LessEqual ),( "<", Less ) , ("==", Equal )
+			 , ( ">=", GreaterEqual), (">", Greater), ("!=", NotEqual) 
 			 ]
 	return $ do
             my_symbol name
@@ -163,13 +164,14 @@ instance Reader ( Expression Integer ) where
 		<|> branch
 		)
 
+
 branch = do
     my_reserved "if"
-    c :: Expression Bool <- reader
+    c <- reader
     my_reserved "then"
-    y :: Expression Integer <- reader
+    y <- reader
     my_reserved "else"
-    z :: Expression Integer <- reader
+    z <- reader
     return $ Branch c y z
 
 application = do

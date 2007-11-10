@@ -17,7 +17,8 @@ data Specify = Specify deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance C.Partial Specify Config Program where
     describe s c = vcat
-        [ text "Deklarieren Sie Funktionen mit den folgenden Eigenschaften:"
+        [ text "Deklarieren Sie Funktionen mit den folgenden Eigenschaften,"
+	, text "wobei die Variablen über alle natürlichen Zahlen laufen:"
 	, nest 4 $ toDoc $ constraints c
 	]
     initial s c = Specify.Definition.example
