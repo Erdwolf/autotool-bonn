@@ -3,6 +3,7 @@
 
 module Specify.Expression where
 
+import Autolib.Set
 import Autolib.TES.Identifier
 import Autolib.ToDoc
 import Autolib.Reader
@@ -15,7 +16,8 @@ import Data.Typeable
 data Expression a where
 
     Constant :: ToDoc a => a -> Expression a        
-    Variable :: Identifier -> Expression Integer
+--    Variable :: Identifier -> Expression Integer
+    Apply :: Identifier -> [ Expression Integer ] -> Expression Integer
 
     Plus :: Expression Integer -> Expression Integer -> Expression Integer
     Minus :: Expression Integer -> Expression Integer -> Expression Integer
@@ -24,24 +26,32 @@ data Expression a where
     Quotient :: Expression Integer -> Expression Integer -> Expression Integer
     Remainder :: Expression Integer -> Expression Integer -> Expression Integer
 
+--    Forall :: Set Identifier -> Expression Bool -> Expression Bool
+
     Less :: Expression Integer -> Expression Integer -> Expression Bool
     LessEqual :: Expression Integer -> Expression Integer -> Expression Bool
-    Equal :: ToDoc a => Expression a -> Expression a -> Expression Bool
+    Equal :: ( Eq a, ToDoc a ) => Expression a -> Expression a -> Expression Bool
     GreaterEqual :: Expression Integer -> Expression Integer -> Expression Bool
     Greater :: Expression Integer -> Expression Integer -> Expression Bool
-    NotEqual :: ToDoc a => Expression a -> Expression a -> Expression Bool
+    NotEqual :: ( Eq a, ToDoc a ) => Expression a -> Expression a -> Expression Bool
 
     And :: Expression Bool -> Expression Bool -> Expression Bool
     Or :: Expression Bool -> Expression Bool -> Expression Bool
     Implies :: Expression Bool -> Expression Bool -> Expression Bool
     Not :: Expression Bool -> Expression Bool
 
+    Branch :: Expression Bool -> Expression Integer -> Expression Integer -> Expression Integer
+
     deriving Typeable
 
 instance ToDoc a => ToDoc ( Expression a ) where
     toDocPrec p x = case x of
         Constant a -> toDoc a
-        Variable v -> toDoc v
+--        Variable v -> toDoc v
+
+	Apply fun args -> toDoc fun <+> case args of
+	      [] -> empty
+	      _ -> parens ( Autolib.ToDoc.sepBy comma $ map toDoc args )
         
         Plus      x y -> docParen ( p > 5 ) $ hsep [ toDocPrec 5 x, text "+", toDocPrec 6 y ]
         Minus     x y -> docParen ( p > 5 ) $ hsep [ toDocPrec 5 x, text "-", toDocPrec 6 y ]
@@ -49,6 +59,11 @@ instance ToDoc a => ToDoc ( Expression a ) where
         Times     x y -> docParen ( p > 7 ) $ hsep [ toDocPrec 7 x, text "*", toDocPrec 8 y ]
         Quotient  x y -> docParen ( p > 7 ) $ hsep [ toDocPrec 7 x, text "/", toDocPrec 8 y ]
         Remainder x y -> docParen ( p > 7 ) $ hsep [ toDocPrec 7 x, text "%", toDocPrec 8 y ]
+
+--	Forall xs y   -> docParen ( p > 1 ) 
+--	   $ hsep [ text "forall", hsep $ map toDoc $ setToList xs, text ".", toDocPrec 1 y ]
+
+	Branch c y z -> hsep [ text "if", toDoc c, text "then", toDoc y, text "else", toDoc z ]
 
         Less      x y -> docParen ( p > 5 ) $ hsep [ toDocPrec 5 x, text "<", toDocPrec 5 y ]
         LessEqual x y -> docParen ( p > 5 ) $ hsep [ toDocPrec 5 x, text "<=", toDocPrec 5 y ]
@@ -87,7 +102,7 @@ comparison = do
     x <- reader
     op <- foldr1 (<|>) $ do 
         ( name, val ) <- [ ( "<", Less ) , ("<=", LessEqual ), ("==", Equal )
-			 , ( ">=", GreaterEqual), (">", Greater), ("!=", NotEqual) 
+			 , (">", Greater), ( ">=", GreaterEqual), ("!=", NotEqual) 
 			 ]
 	return $ do
             my_symbol name
@@ -102,18 +117,33 @@ instance Reader ( Expression Integer ) where
             unop name f =
                  Prefix ( do { my_symbol name; return $ f }  ) 
 	in  buildExpressionParser
-	        [ [ binop "+" Plus AssocLeft 
-		  , binop "-" Minus AssocLeft 
-		  ]
+	        [ [ unop "-" Negate ] 
 		, [ binop "*" Times AssocLeft
 		  , binop "/" Quotient AssocLeft
 		  , binop "%" Remainder AssocLeft
 		  ]
-		, [ unop "-" Negate ] 
+		, [ binop "+" Plus AssocLeft 
+		  , binop "-" Minus AssocLeft 
+		  ]
                 ] 
                 ( my_parens reader 
 		<|> do i <- my_integer ; return $ Constant i
-		<|> do i <- my_identifier ; return $ Variable $ mkunary i
+		<|> application
+		<|> branch
 		)
 
+branch = do
+    my_reserved "if"
+    c :: Expression Bool <- reader
+    my_reserved "then"
+    y :: Expression Integer <- reader
+    my_reserved "else"
+    z :: Expression Integer <- reader
+    return $ Branch c y z
 
+application = do
+    fun <- ident
+    args <- option [] $ my_parens $ Autolib.Reader.sepBy reader my_comma 
+    return $ Apply fun args
+
+ident = fmap mkunary my_identifier
