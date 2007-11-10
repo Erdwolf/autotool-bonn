@@ -26,7 +26,11 @@ eval p x = case x of
 		, text "Deklaration:" <+> toDoc d
 		]
             values <- mapM ( eval p ) args
-            eval ( extend p $ zip params values ) body
+            res <- eval ( extend p $ zip params values ) body
+	    when ( not $ null args ) $ inform 
+		 $  toDoc fun <+> parens ( sepBy comma $ map toDoc values ) 
+			      <+> equals <+> toDoc res
+            return res
 
 	Branch c y z -> do
            cc <- eval p c

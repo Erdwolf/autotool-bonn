@@ -17,13 +17,15 @@ data System = System [ Constraint ]
     deriving Typeable
 
 instance ToDoc System where
-    toDoc ( System cs ) = vcat $ map toDoc cs
+    toDoc ( System cs ) = braces $ vcat $ map toDoc cs
 
 instance Reader System where
-    reader = do
+    reader = my_braces $ do
         cs <- many reader
 	return $ System cs
 
+example :: System
+example = read "{ forall x .  f (x + 1) == 2 + f(x) ; }" 
 
 data Constraint = Constraint [ Identifier ] ( Expression Bool ) 
     deriving Typeable

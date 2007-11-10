@@ -1,3 +1,6 @@
+{-# language FlexibleContexts #-}
+{-# OPTIONS -fallow-undecidable-instances #-}
+
 module Challenger.Einsendung where
 
 --   $Id$

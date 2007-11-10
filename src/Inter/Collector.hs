@@ -23,6 +23,8 @@ import qualified Fun.Make
 
 import qualified Fun.Direct
 
+import qualified Specify.Inter
+
 import qualified Graph.Selfcom
 import qualified Graph.Nachbar
 import qualified Graph.Cross
@@ -309,6 +311,7 @@ tmakers =
 		, item FP.Quiz.make
 		, item Flow.Central.goto_to_struct_fixed
 		, item Flow.Central.struct_to_goto_fixed
+		, item Specify.Inter.make
                 ]
          , heading "Algorithmen"
                 [ heading "Sortiernetze"

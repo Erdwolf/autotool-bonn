@@ -7,6 +7,7 @@ import Specify.Expression
 import Autolib.TES.Identifier
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Size
 import Autolib.Reporter
 
 import Text.ParserCombinators.Parsec
@@ -18,13 +19,19 @@ data Program = Program [ Definition ]
     deriving Typeable
 
 
+example :: Program
+example = read "{ f (x) = 3*x + 1; }"
+
 instance ToDoc Program where
-    toDoc ( Program ds ) = vcat $ map toDoc ds
+    toDoc ( Program ds ) = braces $ vcat $ map toDoc ds
 
 instance Reader Program where
-    reader = do
+    reader = my_braces $ do
         ds <- many reader
 	return $ Program ds
+
+instance Size Program where
+    size ( Program ds ) = sum $ map size ds
 
 find :: Program -> Identifier -> Reporter Definition
 find ( Program ds ) name = case filter ( \ ( Definition n _ _ ) -> n == name ) ds of
@@ -38,6 +45,9 @@ extend ( Program ds ) pairs =
 
 data Definition = Definition Identifier [ Identifier ] ( Expression Integer ) 
     deriving Typeable
+
+instance Size Definition where
+    size ( Definition _ _ x ) = size x
 
 instance ToDoc Definition where
     toDoc ( Definition fun args body ) = 

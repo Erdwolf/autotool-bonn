@@ -7,6 +7,7 @@ import Autolib.Set
 import Autolib.TES.Identifier
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Size
 
 import Text.ParserCombinators.Parsec
 import Text.ParserCombinators.Parsec.Expr hiding ( Operator )
@@ -76,6 +77,36 @@ instance ToDoc a => ToDoc ( Expression a ) where
         And       x y -> docParen ( p > 3 ) $ hsep [ toDocPrec 3 x, text "&&", toDocPrec 4 y ]
         Implies   x y -> docParen ( p > 2 ) $ hsep [ toDocPrec 2 x, text "==>", toDocPrec 3 y ]
         Not       x   -> docParen ( p > 4 ) $ hsep [ text "!", toDocPrec 8 x ]
+
+instance Size ( Expression a ) where
+    size x = case x of
+        Constant a -> 1
+
+	Apply fun args -> 1 + sum ( map size args )
+        
+        Plus      x y -> 1 + size x + size y
+        Minus     x y -> 1 + size x + size y
+        Negate    x   -> 1 + size x 
+        Times     x y -> 1 + size x + size y
+        Quotient  x y -> 1 + size x + size y
+        Remainder x y -> 1 + size x + size y
+
+--	Forall xs y   -> docParen ( p > 1 ) 
+--	   $ hsep [ text "forall", hsep $ map toDoc $ setToList xs, text ".", toDocPrec 1 y ]
+
+	Branch c y z ->  1 + size c + size y + size z
+
+        Less      x y -> 1 + size x + size y
+        LessEqual x y -> 1 + size x + size y
+        Equal     x y -> 1 + size x + size y
+        GreaterEqual x y ->1 + size x + size y
+        Greater   x y -> 1 + size x + size y
+        NotEqual  x y -> 1 + size x + size y
+
+        Or        x y -> 1 + size x + size y
+        And       x y -> 1 + size x + size y
+        Implies   x y -> 1 + size x + size y
+        Not       x   -> 1 + size x 
 
 instance Reader ( Expression Bool ) where
     reader = 
