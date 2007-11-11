@@ -17,18 +17,18 @@ conf target = Config
           , threshold = ( 1, 0 )
           , present = display
           , trace   = display
-          , size    = 1000
+          , size    = 10000
           , generate = some 5
           , combine = \ p q -> do
 	       ( px, py ) <- some_split p
 	       ( qx, qy ) <- some_split q
 	       return $ px ++ qy 
-          , num_combine = 500
+          , num_combine = 5000
           , mutate = mehrfach 3 $ \ p -> do
 	        action <- eins [ cut, change_program ]
 		action p
-          , num_mutate = 500
-          , num_compact = 10
+          , num_mutate = 5000
+          , num_compact = 2
           , num_parallel = 1
           }
 

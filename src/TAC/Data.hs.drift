@@ -60,11 +60,11 @@ change_operation i j k = do
 -- | costs on the Smallnums 1 model
 cost :: Statement -> Int
 cost s = case s of
-    Constant i c -> 2 * patch i + 1000 * ( patch c - 1 )
-    Add i j k  -> 2 * sum [ patch i, patch j, patch k ]
-    Mul i j k  -> 2 * sum [ patch i, patch j, patch k ]
+    Constant i c -> patch i + patch c + 1
+    Add i j k  -> 4 + sum [ patch i, patch j, patch k ]
+    Mul i j k  -> 4 + sum [ patch i, patch j, patch k ]
 
-patch i = max 1 i
+patch i = max 1 $ 2*i-1
 
 -- | the value that is left in x0 finally
 value :: Program -> Integer
