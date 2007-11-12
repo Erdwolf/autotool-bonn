@@ -23,17 +23,20 @@ conf target = Config
 	       ( px, py ) <- some_split p
 	       ( qx, qy ) <- some_split q
 	       return $ px ++ qy 
-          , num_combine = 1000
-          , mutate = mehrfach 1 $ \ p -> do
-	        action <- eins [ cut, change_program, shorten ]
-		action p
-          , num_mutate = 1000
+          , num_combine = 10000
+          , mutate = \ p -> do
+                k <- randomRIO ( 1, 10 )
+                mehrfach k ( \ p -> do
+	            action <- eins [ cut, change_program, shorten ]
+		    action p
+                  ) p
+          , num_mutate = 10000
           , num_compact = 10
           , num_parallel = 1
           }
 
 display vas = sequence_ $ do
-    ( v, a ) <- reverse $ take 3 vas
+    ( v@(val,c), a ) <- reverse $ take 3 vas
     let p = TAC.Emit.program a
     return $ do
         print $ vcat
@@ -41,8 +44,8 @@ display vas = sequence_ $ do
 	      , text "length" <+> toDoc ( length a )
 	      , text "cost" <+> toDoc (sum $ map cost a )
 	      , text "fitness" <+> toDoc v
-	      , text $ unwords $ words $ show a	
-	      , fsep $ map text $ words $ show p
+	      , if val == 0 then text $ unwords $ words $ show a	else empty
+	      , if val == 0 then fsep $ map text $ words $ show p else empty
 	      , text "value" <+> toDoc (value a )
 	      , text "transformed length" <+> toDoc ( length p )
 	      ]
