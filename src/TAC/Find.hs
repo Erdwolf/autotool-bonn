@@ -23,16 +23,17 @@ conf target = Config
 	       ( px, py ) <- some_split p
 	       ( qx, qy ) <- some_split q
 	       return $ px ++ qy 
-          , num_combine = 10000
+          , num_combine = 1000
           , mutate = \ p -> do
                 k <- randomRIO ( 1, 10 )
                 mehrfach k ( \ p -> do
 	            action <- eins [ cut, change_program, shorten ]
 		    action p
                   ) p
-          , num_mutate = 10000
+          , num_mutate = 1000
           , num_compact = 10
-          , num_parallel = 1
+          , num_parallel = 10
+          , num_steps = Nothing
           }
 
 display vas = sequence_ $ do

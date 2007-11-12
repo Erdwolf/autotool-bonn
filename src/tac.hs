@@ -1,4 +1,4 @@
-import Autolib.Genetic
+import Autolib.Genetic.Parallel
 import TAC.Find
 
 import System.Environment
