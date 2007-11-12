@@ -17,18 +17,18 @@ conf target = Config
           , threshold = ( 1, 0 )
           , present = display
           , trace   = display
-          , size    = 10000
+          , size    = 1000
           , generate = some 5
           , combine = \ p q -> do
 	       ( px, py ) <- some_split p
 	       ( qx, qy ) <- some_split q
 	       return $ px ++ qy 
-          , num_combine = 5000
-          , mutate = mehrfach 3 $ \ p -> do
-	        action <- eins [ cut, change_program ]
+          , num_combine = 1000
+          , mutate = mehrfach 1 $ \ p -> do
+	        action <- eins [ cut, change_program, shorten ]
 		action p
-          , num_mutate = 5000
-          , num_compact = 2
+          , num_mutate = 1000
+          , num_compact = 10
           , num_parallel = 1
           }
 
@@ -46,6 +46,12 @@ display vas = sequence_ $ do
 	      , text "value" <+> toDoc (value a )
 	      , text "transformed length" <+> toDoc ( length p )
 	      ]
+
+shorten [] = return []
+shorten xs = do
+    k <- randomRIO ( 0, length xs - 1 )
+    let ( pre, this : post ) = splitAt k xs
+    return $ pre ++ post
 
 some_split xs = do
     k <- randomRIO ( 0, length xs - 1 )
