@@ -3,7 +3,10 @@ module TAC.Find where
 import TAC.Data
 import qualified TAC.Emit
 
-import Autolib.Genetic
+-- import Autolib.Genetic
+import Genetic.Central
+import Genetic.Config
+
 import Autolib.Util.Zufall
 
 import Autolib.ToDoc
@@ -17,24 +20,26 @@ conf target = Config
           , threshold = ( 1, 0 )
           , present = display
           , trace   = display
-          , size    = 1000
+          , size    = 5000
           , generate = some 5
           , combine = \ p q -> do
 	       ( px, py ) <- some_split p
 	       ( qx, qy ) <- some_split q
 	       return $ px ++ qy 
-          , num_combine = 1000
-          , mutate = \ p -> do
+          , num_combine = 5000
+          , mutate = original_mutator
+          , num_mutate = 5000
+          , num_compact = 10
+          , num_parallel = 10
+          , num_steps = Nothing
+          }
+
+original_mutator p = do
                 k <- randomRIO ( 1, 10 )
                 mehrfach k ( \ p -> do
 	            action <- eins [ cut, change_program, shorten ]
 		    action p
                   ) p
-          , num_mutate = 1000
-          , num_compact = 10
-          , num_parallel = 10
-          , num_steps = Nothing
-          }
 
 display vas = sequence_ $ do
     ( v@(val,c), a ) <- reverse $ take 3 vas
