@@ -12,6 +12,7 @@ import qualified Challenger as C
 import Data.List ( nub )
 import Data.Typeable
 
+
 data Instance = Instance
 	      { max_size :: Int
 	      , original :: [ [ Int ] ]

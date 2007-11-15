@@ -2,6 +2,7 @@ module NFA.Compress.Inter where
 
 import NFA.Compress.Compressed
 import NFA.Compress.Instance
+import NFA.Compress.Data
 import NFA.Compress.Look
 
 import Data.Typeable
