@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
-module NFA.Compress.Data where
+module NFA.Compress.Compressed where
 
 import qualified Challenger as C
 
@@ -12,7 +12,7 @@ import Autolib.Size
 import Data.Typeable
 import Data.List ( nub )
 
-data DFA_Compress = DFA_Compress
+data DFA_Compress = DFA_Compress deriving Typeable 
 
 {-! for DFA_Compress derive: Reader, ToDoc !-}
 

@@ -1,6 +1,6 @@
 module NFA.Compress.Look where
 
-import NFA.Compress.Data
+import NFA.Compress.Compressed
 
 import Autolib.ToDoc
 import Autolib.Reader

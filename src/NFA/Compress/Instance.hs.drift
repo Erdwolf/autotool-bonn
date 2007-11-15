@@ -6,7 +6,10 @@ import NFA.Compress.Data
 
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Reporter
+import qualified Challenger as C
 
+import Data.List ( nub )
 import Data.Typeable
 
 data Instance = Instance
@@ -23,7 +26,7 @@ instance C.Verify DFA_Compress Instance where
 	case nub lengths of
 	    [] -> reject $ text "Tabelle ist leer"
 	    [l] -> return ()
-	    ls -> reject $ text "Tabelle enthält verschieden lange Zeilen"
+	    ls -> reject $ text "Tabelle enthÃ¤lt verschieden lange Zeilen"
 	when ( max_size i >= 0 ) $  reject
 	       $ text "max_size ist negativ."
 

@@ -1,6 +1,6 @@
 module NFA.Compress.Inter where
 
-import NFA.Compress.Data
+import NFA.Compress.Compressed
 import NFA.Compress.Instance
 import NFA.Compress.Look
 
@@ -12,32 +12,31 @@ import qualified Challenger as C
 import Inter.Types
 import Autolib.Size
 
-instance C.Partial DFA_Compress Original Compressed where
+instance C.Partial DFA_Compress Instance Compressed where
     
     describe p i = vcat
         [ text "Gesucht ist eine komprimierte Darstellung der Automatentabelle"
 	, nest 4 $ toDoc $ original i
-	, text "Das next/check-Array soll höchstens"
-	, text "die Länge" <+> toDoc ( max_size i ) <+> text "haben".
+	, text "Das next/check-Array soll hÃ¶chstens"
+	, text "die LÃ¤nge" <+> toDoc ( max_size i ) <+> text "haben."
 	]
 
-    initial p i = NFA.Compressed.Data.example
+    initial p i = NFA.Compress.Compressed.example
 
     partial p i b = do
-        C.verify b
-        let Original zss = original i
+        C.verify p b
 	sequence_ $ do
-	    (x, zs) <- zip [ 0.. ] zss
-	    (y, z ) <- zip [ 0 ..] zs
+	    (x, zs) <- zip [ 0 .. ] $ original i
+	    (y, z ) <- zip [ 0 .. ] zs
 	    return $ silent $ do
+		inform $ hsep [ text "lookup" , toDoc (x,y), text "=?=", toDoc z ]
 	        t <- NFA.Compress.Look.up b x y
-		inform $ text "gegeben war:" <+> toDoc z
-		assert ( t == z ) $ text "stimmt überein?"
-        inform $ text "alle Werte stimmen überein."
+		assert ( t == z ) $ text "Wert ist korrekt?"
+        inform $ text "alle Werte sind korrekt."
 			
     total p i b = do
         assert ( size b <= max_size i ) 
-	       $ text "Lösung ist klein genug?"
+	       $ text "LÃ¶sung ist klein genug?"
 
 make :: Make
 make = direct DFA_Compress NFA.Compress.Instance.example
