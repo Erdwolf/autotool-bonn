@@ -30,7 +30,7 @@ conf target = Config
           , mutate = original_mutator
           , num_mutate = 5000
           , num_compact = 10
-          , num_parallel = 10
+          , num_parallel = 3
           , num_steps = Nothing
           }
 

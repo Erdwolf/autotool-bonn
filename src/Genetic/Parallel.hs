@@ -17,16 +17,17 @@ evolve :: (Ord v, ToDoc v, ToDoc a, Ord a)
        -> IO [(v,a)]
 evolve conf = do
     pools <- startup conf
-    ring_buffer pools
+--    ring_buffer pools
     collector <- newChan
     handle pools collector
     result <- sequence $ replicate ( length pools ) $ readChan collector
     return result
 
+
 handle pools sink = 
     sequence $ do 
         p <- pools
-        return $ forkOS $ do
+        return $ forkIO $ do
             result <- C.handle p
             mapM_ ( writeChan sink ) $ take 1 $ C.popul result
 
