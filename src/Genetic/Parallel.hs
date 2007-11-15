@@ -11,17 +11,21 @@ import qualified  Genetic.Central as C
 import Autolib.ToDoc
 
 import Control.Concurrent
+import System.IO
+
 
 evolve :: (Ord v, ToDoc v, ToDoc a, Ord a)
        => Config a v
        -> IO [(v,a)]
 evolve conf = do
-    pools <- startup conf
+    p : pools <- startup conf
 --    ring_buffer pools
     collector <- newChan
     handle pools collector
-    result <- sequence $ replicate ( length pools ) $ readChan collector
-    return result
+    C.handle p
+    return undefined
+--    result <- sequence $ replicate ( length pools ) $ readChan collector
+--    return result
 
 
 handle pools sink = 
@@ -29,7 +33,9 @@ handle pools sink =
         p <- pools
         return $ forkIO $ do
             result <- C.handle p
-            mapM_ ( writeChan sink ) $ take 1 $ C.popul result
+            hPutStrLn stderr "after C.handle"
+            -- mapM_ ( writeChan sink ) $ take 1 $ C.popul result
+            return ()
 
 startup conf =
     sequence $ replicate ( num_parallel conf ) $ C.startup conf
