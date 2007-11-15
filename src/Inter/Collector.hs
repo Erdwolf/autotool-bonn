@@ -66,6 +66,7 @@ import qualified NFA.Nerode.Congruent.Quiz
 import qualified NFA.Nerode.Incongruent.Check
 import qualified NFA.Nerode.Incongruent.Quiz
 import qualified NFA.Nerode.Separation.Check
+import qualified NFA.Compress.Inter
 import qualified Exp.Convert
 import qualified Exp.Smaller
 
@@ -177,6 +178,7 @@ tmakers =
 	             , item NFA.Convert.qmake
 	             , item NFA.Equiv.Challenger.make
 	             , item NFA.Equiv.Challenger.qmake
+		     , item NFA.Compress.Inter.make
                      ]
                 , heading "reguläre Ausdrücke"
 	             [ item Exp.Convert.make
