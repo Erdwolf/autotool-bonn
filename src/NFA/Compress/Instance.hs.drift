@@ -28,7 +28,7 @@ instance C.Verify DFA_Compress Instance where
 	    [] -> reject $ text "Tabelle ist leer"
 	    [l] -> return ()
 	    ls -> reject $ text "Tabelle enthält verschieden lange Zeilen"
-	when ( max_size i >= 0 ) $  reject
+	when ( max_size i < 0 ) $  reject
 	       $ text "max_size ist negativ."
 
 example :: Instance

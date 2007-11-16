@@ -9,6 +9,16 @@ import Autolib.Set
 
 import Data.Ix ( inRange )
 
+table :: Compressed
+      -> Int -- ^ number of rows
+      -> Int -- ^ number of columns
+      -> Reporter [[Int]]
+table com r c = sequence $ do
+    x <- [ 0 .. r - 1 ]
+    return $ sequence $ do
+        y <- [ 0 .. c - 1 ]
+        return $ up com x y 
+
 up :: Compressed 
    -> Int -- ^ row
    -> Int -- ^ column
