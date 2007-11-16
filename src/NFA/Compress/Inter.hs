@@ -4,6 +4,7 @@ import NFA.Compress.Compressed
 import NFA.Compress.Instance
 import NFA.Compress.Data
 import NFA.Compress.Look
+import NFA.Compress.Quiz
 
 import Data.Typeable
 
@@ -41,3 +42,9 @@ instance C.Partial DFA_Compress Instance Compressed where
 
 make :: Make
 make = direct DFA_Compress NFA.Compress.Instance.example
+
+instance Generator DFA_Compress Config Instance where
+    generator p conf key = roller conf
+
+instance Project DFA_Compress Instance Instance where
+    project = id    
