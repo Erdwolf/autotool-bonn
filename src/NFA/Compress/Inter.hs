@@ -4,21 +4,27 @@ import NFA.Compress.Compressed
 import NFA.Compress.Instance
 import NFA.Compress.Data
 import NFA.Compress.Look
-import NFA.Compress.Quiz
+import NFA.Compress.Roll
+import NFA.Compress.Config
 
-import Data.Typeable
+import qualified Fun.Table as F
+
 
 import Autolib.Reporter
 import Autolib.ToDoc
 import qualified Challenger as C
 import Inter.Types
+import Inter.Quiz
 import Autolib.Size
+
+import Data.Typeable
+import Data.Array (array)
 
 instance C.Partial DFA_Compress Instance Compressed where
     
     describe p i = vcat
         [ text "Gesucht ist eine komprimierte Darstellung der Automatentabelle"
-	, nest 4 $ toDoc $ original i
+	, nest 4 $ toDoc $ tafel $ original i
 	, text "Das next/check-Array soll höchstens"
 	, text "die Länge" <+> toDoc ( max_size i ) <+> text "haben."
 	]
@@ -40,11 +46,25 @@ instance C.Partial DFA_Compress Instance Compressed where
         assert ( size b <= max_size i ) 
 	       $ text "Lösung ist klein genug?"
 
-make :: Make
-make = direct DFA_Compress NFA.Compress.Instance.example
+tafel zss =
+        let r = fromIntegral $ length zss
+            c = fromIntegral $ length $ head zss
+        in  F.Tafel2 $ array ((0,0), (r-1,c-1)) $ do
+                    ( x, zs ) <- zip [0..] zss
+                    ( y, z ) <- zip [ 0..] zs
+                    return ((x,y), fromIntegral z)
+        
+
+
+make_fixed :: Make
+make_fixed = direct DFA_Compress NFA.Compress.Instance.example
 
 instance Generator DFA_Compress Config Instance where
-    generator p conf key = roller conf
+    generator p conf key = roll conf
 
 instance Project DFA_Compress Instance Instance where
-    project = id    
+    project p = id    
+
+
+make_quiz :: Make
+make_quiz = quiz DFA_Compress NFA.Compress.Config.example

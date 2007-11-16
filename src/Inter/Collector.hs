@@ -178,7 +178,8 @@ tmakers =
 	             , item NFA.Convert.qmake
 	             , item NFA.Equiv.Challenger.make
 	             , item NFA.Equiv.Challenger.qmake
-		     , item NFA.Compress.Inter.make
+		     , item NFA.Compress.Inter.make_fixed
+		     , item NFA.Compress.Inter.make_quiz
                      ]
                 , heading "reguläre Ausdrücke"
 	             [ item Exp.Convert.make

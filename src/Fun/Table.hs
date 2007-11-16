@@ -102,7 +102,7 @@ frame2 :: Show a
 frame2 a = 
     let ((0,0), (h,w)) = bounds a
     in accumArray ( \ alt neu -> neu ) "" ((-2, -2), (h, w)) 
-	    $ sideline w ++  topline w ++ topnums w ++ sidenums h 
+	    $ sideline h ++  topline w ++ topnums w ++ sidenums h 
 	       ++ contents2 a
 
 contents2 a = do (k,v) <- assocs a ; return (k, show v)
