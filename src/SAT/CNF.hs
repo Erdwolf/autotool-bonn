@@ -1,3 +1,5 @@
+{-# OPTIONS -fglasgow-exts #-}
+
 -- | Bemerkungen: 
 -- 1. Aussagenlogische Formel in konjunktiver Normalform (KNF):
 -- Literal = Variable oder nonVariableVariable
@@ -10,8 +12,8 @@ import Autolib.TES.Identifier
 
 import Autolib.FiniteMap
 import Autolib.Set
-import Autolib.ToDoc
-import Autolib.Reader
+import Autolib.ToDoc as T
+import Autolib.Reader as R
 
 import Data.Typeable
 
@@ -30,7 +32,7 @@ opposite ( Pos v ) = Neg v
 opposite ( Neg v ) = Pos v
 
 instance ToDoc Literal where
-    toDoc ( Pos v ) = toDoc v
+    toDoc ( Pos v ) = text " " <+> toDoc v
     toDoc ( Neg v ) = text "!" <+> toDoc v
 
 instance Reader Literal where
@@ -47,11 +49,11 @@ literale :: Klausel -> [ Literal ]
 literale (Or lits) = lits
 
 instance ToDoc Klausel where
-    toDoc ( Or lits ) = parens $ sepBy ( text "||" ) $ map toDoc lits
+    toDoc ( Or lits ) = parens $ T.sepBy ( text "||" ) $ map toDoc lits
 
 instance Reader Klausel where
     reader = my_parens $ do
-        lits <- reader `sepBy` my_symbol "||"
+        lits <- reader `R.sepBy` my_symbol "||"
 	return $ Or lits
 
 -- | Formeln in 3KNF = Liste von Klauseln
@@ -61,11 +63,14 @@ klauseln :: Formel -> [ Klausel ]
 klauseln (And cls) = cls
 
 instance ToDoc Formel where
-    toDoc ( And klaus ) = sepBy ( text "&&" ) $ map toDoc klaus
+    toDoc ( And klaus ) = vcat $ do
+        ( i, k ) <- zip [ 0.. ] klaus
+	let prefix = text $ if i == 0 then "  " else "&&"
+	return $ prefix <+> toDoc k
 
 instance Reader Formel where
     reader = do
-        klaus <- reader `sepBy` my_symbol "&&"
+        klaus <- reader `R.sepBy` my_symbol "&&"
 	return $ And klaus
 
 

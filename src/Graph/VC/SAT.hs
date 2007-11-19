@@ -37,13 +37,13 @@ vc p f =
 selektor_knoten :: Formel -> [(String,Punkt)]
 selektor_knoten f = do (i,v) <- zip [0..] (vars f)
 		       (j,x) <- zip [0..] sigs
-		       return ( x:v , ( 1 + 2*i + j , 2 ) )
+		       return ( x: show v , ( 1 + 2*i + j , 2 ) )
 
 selektor_kanten :: Formel -> [Kante String]
-selektor_kanten f = do v <- vars f ; return $ kante ( p:v ) ( n:v )
+selektor_kanten f = do v <- vars f ; return $ kante ( p: show v ) ( n: show v )
 
-kk_name :: Integer -> String -> String
-kk_name i v = foldl1 (++) [ "c_" , show i , "_" , v ]
+kk_name :: Integer -> Variable -> String
+kk_name i v = foldl1 (++) [ "c_" , show i , "_" , show v ]
 
 kk_knoten :: Integer -> (Klausel,Integer) -> [(String,Punkt)]
 kk_knoten nv (c,i) = do (j,v) <- zip [0..] (vars c)
@@ -67,8 +67,8 @@ klausel_kreis_kanten f = concatMap (kk_kanten (numv f)) (kis f)
 verbindungen :: Formel -> [Kante String]
 verbindungen f = do (c,i) <- kis f
 		    l <- literale c
-		    return $ case l of Pos v -> kante (kk_name i v) ( p:v )
-				       Neg v -> kante (kk_name i v) ( n:v )
+		    return $ case l of Pos v -> kante (kk_name i v) ( p: show v )
+				       Neg v -> kante (kk_name i v) ( n: show v )
 
 kis :: Formel -> [(Klausel,Integer)]
 kis f = zip (klauseln f) [0..]

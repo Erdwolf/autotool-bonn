@@ -1,3 +1,7 @@
+{-# language FlexibleInstances #-}
+{-# language MultiParamTypeClasses #-}
+{-# language TypeSynonymInstances #-}
+
 -- | 3SAT
 -- 
 -- Mohammad Esad-Djou (c) 2002
@@ -8,7 +12,7 @@
 
 module SAT.SAT 
 
-( SAT (..)
+( CNF_SAT (..)
 , Variable, Literal (..)
 , Klausel, Formel, Belegung
 , module Autolib.FiniteMap
@@ -46,18 +50,18 @@ import SAT.Beispiel
 
 ---------------------------------------------------------------------------
 
-instance Partial SAT Formel Belegung where
+instance Partial CNF_SAT Formel Belegung where
 
-    describe SAT f = vcat
+    describe p f = vcat
         [ text "finden Sie eine erfuellende Belegung fuer die Formel"
 	, nest 4 $ toDoc f
 	]
 
-    initial SAT f = 
+    initial p f = 
         let v : vs = setToList $ variablen f
 	in  listToFM [ ( v, True ) ]
 
-    partial SAT f b = do
+    partial p f b = do
 
         let domain = mkSet $ keysFM b
 	    out = minusSet domain ( variablen f )
@@ -86,7 +90,7 @@ instance Partial SAT Formel Belegung where
 	       , nest 4 $ toDoc open
 	       ]
 
-    total SAT f b = do
+    total p f b = do
         let fehl = minusSet ( variablen f ) ( mkSet $ keysFM b )
 	when ( not $ isEmptySet fehl ) $ reject $ vcat
 	     [ text "Diese Variablen sind nicht belegt:"
@@ -96,16 +100,16 @@ instance Partial SAT Formel Belegung where
 
 
 make_fixed :: Make
-make_fixed = direct SAT SAT.Beispiel.formel
+make_fixed = direct CNF_SAT SAT.Beispiel.formel
 
-instance Generator SAT Param ( Formel, Belegung ) where
-    generator SAT conf key = hgen2 conf
+instance Generator CNF_SAT Param ( Formel, Belegung ) where
+    generator p conf key = hgen2 conf
 
-instance Project SAT ( Formel, Belegung ) Formel where
-    project SAT ( f, b ) = f
+instance Project CNF_SAT ( Formel, Belegung ) Formel where
+    project p ( f, b ) = f
 
 make_quiz :: Make
-make_quiz = quiz SAT $ SAT.Param.p 5
+make_quiz = quiz CNF_SAT $ SAT.Param.p 5
 
 
 

@@ -1,6 +1,8 @@
+{-# language TypeSynonymInstances #-}
+
 module SAT.Wert where
 
--- -- $Id$
+-- $Id$
 
 import SAT.Types
 import Autolib.FiniteMap

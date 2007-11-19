@@ -16,11 +16,13 @@ data Input = Input
 	    }
      deriving ( Typeable )
 
-{-! for Input derive: Reader, ToDoc, Haskell2Xml !-}
+{-! for Input derive: Reader, ToDoc !-}
 
 i0 :: Input
-i0 = Input { formel          =  And [ Or [ Pos "x" , Pos "y" , Pos "z" ] 
-				    , Or [ Neg "x" , Pos "y" , Neg "z" ]
-				    ]
+i0 = Input { formel = read "(x || y || z) && (! x || y || !z )"
 	   , anzeige_groesse = 6 
 	   }
+
+-- local variables:
+-- mode: haskell
+-- end:

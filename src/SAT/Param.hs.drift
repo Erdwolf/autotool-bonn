@@ -1,4 +1,4 @@
-{-# OPTIONS -Onot #-}
+{-# OPTIONS -Onot -fglasgow-exts #-}
 
 
 module SAT.Param where
@@ -23,7 +23,7 @@ data Param =
 
 p :: Int -> Param
 p n = let f = 3.5 :: Double
-      in  Param { vars = mkSet $ take n $ do c <- [ 'p' .. ] ; return [c]
+      in  Param { vars = mkSet $ take n $ do c <- [ 'p' .. ] ; return $ read [c]
 	      , clauses = round $ f * fromIntegral n 
 	      }
 

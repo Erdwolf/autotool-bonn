@@ -86,9 +86,7 @@ instance C.Measure VC (Graph Int,Int) (Set Int) where
     measure VC _ ns = fromIntegral $ cardinality ns
 
 make_fixed :: Make
-make_fixed = let (g,c) = vc 6 $ And [ Or [ Pos "x" , Pos "y" , Pos "z" ] 
-				    , Or [ Neg "x" , Pos "y" , Neg "z" ]
-				    ]
+make_fixed = let (g,c) = vc 6 $ read "(x || y || z) && (! x || y || !z )"
              in direct VC ( normalize g , c )
 
 instance Generator VC P.Param ( Graph Int , Int , Set Int ) where

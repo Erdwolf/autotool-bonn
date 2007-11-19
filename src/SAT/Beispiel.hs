@@ -5,14 +5,19 @@ module SAT.Beispiel where
 import SAT.Types
 import Autolib.FiniteMap
 
-l1 = Pos "x" :: Literal
-v1 = "x" :: Variable
-k1 = Or [Pos "x", Neg "y", Pos "z"] :: Klausel
-k2 = Or [Neg "x", Pos "y", Pos "z"] :: Klausel
+l1 = Pos (read "x") :: Literal
+
+v1 = read "x" :: Variable
+
+k1 = Or [Pos $ read "x", Neg $ read  "y", Pos $ read  "z"] :: Klausel
+k2 = Or [Neg  $ read "x", Pos  $ read "y", Pos  $ read "z"] :: Klausel
+
 formel = And [ k1, k2 ] :: Formel
 
 b1 :: Belegung
-b1 = listToFM [ ("x", True), ("y", False) ]
+b1 = listToFM [ ( read "x", True), ( read "y", False) ]
+
 belegung :: Belegung
-belegung = listToFM [("x", False), ("y" , True), ("z" , False)]
+belegung = listToFM 
+	 [( read "x", False), ( read "y" , True), ( read "z" , False)]
 
