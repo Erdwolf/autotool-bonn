@@ -31,6 +31,7 @@ import qualified Graph.Cross
 import qualified Graph.MinSep
 import qualified Robots.Interface
 import qualified Robots.Inverse
+import qualified Rushhour.Central
 import qualified Graph.Col.Plain
 import qualified Graph.Col.Quiz
 
@@ -243,6 +244,8 @@ tmakers =
 	        , item Robots.Interface.qmake
 	        , item Robots.Inverse.make
 	        , item Robots.Inverse.qmake
+	        , item Rushhour.Central.make
+	        -- , item Rushhour.Central.qmake
 	        , item Hanoi.Semantik.make
 	        , item Hanoi.Quiz.make
                 , item LCS.Instance.make_fixed
