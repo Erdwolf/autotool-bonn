@@ -1,7 +1,6 @@
--- -*- mode: haskell -*-
+module SAT.Original_Types where
 
-module SAT.Types where
-
+import Autolib.TES.Identifier
 
 import Autolib.FiniteMap
 import Autolib.Set
@@ -62,3 +61,6 @@ variablen (And cls) = mkSet $ do
     lit <- lits
     return $ case lit of Pos v -> v ; Neg v -> v
 
+-- local variables:
+-- mode: haskell
+-- end:
