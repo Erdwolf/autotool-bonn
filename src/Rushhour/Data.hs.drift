@@ -22,10 +22,10 @@ data Rushhour_Inverse = Rushhour_Inverse deriving ( Typeable )
 {-! for Rushhour derive : Reader, ToDoc !-}
 {-! for Rushhour_Inverse derive : Reader, ToDoc !-}
 
-type Position = ( Integer, Integer )
+type Position = ( Int, Int )
 
 data Orientation = Vertical | Horizontal 
-     deriving ( Eq, Ord, Typeable, Enum, Bounded )
+     deriving ( Eq, Ord, Typeable, Enum, Bounded, Ix )
 
 {-! for Orientation derive : Reader, ToDoc !-}
 
@@ -34,20 +34,20 @@ offset Vertical = ( 0, 1 )
 offset Horizontal = ( 1, 0 )
 
 data Car = Car { orientation :: Orientation
-               , extension :: Integer
+               , extension :: Int
 		   , position :: Position
 		   }
      deriving ( Eq, Ord, Typeable )
 
 {-! for Car derive : Reader, ToDoc !-}
 
-type Zug = ( Identifier, Integer )
+type Zug = ( Identifier, Int )
 
 instance Size Zug where size _ = 1
 
 data Instance =
-     Instance { width :: Integer -- ^ range is [ - width .. width ]
-	      , height :: Integer -- ^  range ist [ - height .. height ]
+     Instance { width  :: Int -- ^ range is [ - width .. width ]
+	      , height :: Int -- ^  range ist [ - height .. height ]
 	      ,  cars :: FiniteMap Identifier Car
 	      , target :: Identifier -- ^ free this car (in positive direction)
 	      }
@@ -87,6 +87,33 @@ occupied i =
 	    d <- [ 0 .. extension car - 1 ]
 	    return ( (x+d*dx, y+d*dy), name )
 
+-- | list of maximal extension  of a fresh car beginning here
+-- return only extensions >= first param
+-- omit cases that block the target car (same direction, nearer to exit)
+spaces :: Int
+       -> Instance 
+       -> [ ( Position , Orientation , Int ) ]
+spaces atleast i = do
+    let Just t = lookupFM ( cars i ) ( target i )
+    let occ = occupied i
+        ( ul, or ) = bounds occ
+        bnd = ((ul, minBound), (or, maxBound ))
+        ok q = inRange ( bounds occ ) q && null ( occ ! q )
+    ( p @ (x,y) , o ) <- range bnd
+    let ( dx, dy ) = offset o
+    guard $ not 
+          ( orientation t == o && dominates ( position t ) p )
+    let e = length $ takeWhile ok $ do
+                    d <- [ 0 .. ]
+                    let q = ( x + d*dx, y + d*dy )
+                    return q
+    guard $ e > atleast
+    return ( p, o, e - 1 )
+
+dominates (a,b) (c,d) = 
+    (a == c && b < d) || (a < c && b == d)
+
+
 collisions :: Instance -> [ Doc ]
 collisions i = do
     (p, names) <- assocs $ occupied i
@@ -125,8 +152,9 @@ present i =
 	hole = do
 	    ( name, car ) <- fmToList $ cars i
 	    guard $ name == target i
-	    let (dx, dy ) = offset $ orientation car
-	    return ((2 * (dx * w), dy * h), ' ')
+	    let (x,y) = position car
+                (dx, dy ) = offset $ orientation car
+	    return ((2 * (x + dx * (w-x)), y + dy * (h-y)), ' ')
         b = a // left_right // top_bottom // core // hole
     in  vcat $ do
 	    let ((l,u),(r,o)) = bounds b

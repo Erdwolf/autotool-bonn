@@ -22,15 +22,15 @@ search :: Ord a
 search neigh badness start = 
     let helper done todo = case S.minView todo of
              Nothing -> []
-             Just (t @ ( b, c, Hide zs ), odo ) -> 
+             Just (t @ ( b, k, c, Hide zs ), odo ) -> 
                  let next = S.fromList $ do
                         ( z, c' ) <- neigh c
                         guard $ not $ S.member c' done
-                        return ( badness c', c', Hide $ z : zs )
+                        return ( badness c', k+1, c', Hide $ z : zs )
                  in  ( b, c, zs ) 
                      : helper ( S.insert c done ) 
                               ( S.union odo next )
-    in  helper S.empty $ S.singleton ( badness start, start, Hide [] )
+    in  helper S.empty $ S.singleton ( badness start, 0, start, Hide [] )
        
 
 badness c = fromIntegral ( goal_distance c ) -- * area c ) 

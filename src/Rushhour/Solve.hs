@@ -4,6 +4,8 @@ module Rushhour.Solve where
 import Rushhour.Data
 import Rushhour.Move ( solved )
 
+import Robots.QSearch ( search )
+
 import Autolib.FiniteMap
 import Autolib.ToDoc
 import Autolib.Set
@@ -14,21 +16,41 @@ import Data.Array
 import Control.Monad ( guard )
 
 solutions ::  Int -- ^  max length (depth)
+          -> Int -- ^  max width (of search tree level)
 	  -> Instance 
 	  -> [(Instance, [Zug])]
-solutions depth i = do
-    ( k, zs ) <- reachables depth i
+solutions depth width i = do
+    ( k, zs ) <- reachables1 depth width i
     guard $ solved k
     return ( k, zs )
 
-reachables :: Int -- ^  max length (depth)
+reachables1 depth width i = do 
+    (d, k, zs ) <- take ( depth * width ) $ search next obstructions i
+    return ( k, reverse zs )
+
+obstructions i = sum $ do
+    let occ = occupied i
+        Just t = lookupFM ( cars i ) ( target i )
+        (x, y) = position t
+        (dx, dy) = offset $ orientation t
+    p <- takeWhile ( inRange ( bounds occ ) ) $ do
+        d <- [ extension t .. ]
+        return ( x+d*dx, y+d*dy )
+    guard $ not $ null $ occ ! p
+    return 1
+
+
+reachables0 :: Int -- ^  max length (depth)
+          -> Int -- ^  max width (of search tree level)
 	  -> Instance 
 	  -> [(Instance, [Zug])]
-reachables depth i = do
+reachables0 depth width i = do
     let nach (k, m) = mkSet $ do
 	    (z, k') <- next k
 	    return ( k', Hide $ z : unHide m )
-    kms <- take depth $ schichten nach ( i, Hide [] )
+    kms <- take depth 
+         $ takeWhile ( \ s -> cardinality s <= width )
+         $ schichten nach ( i, Hide [] )
     (k,m) <- setToList kms
     return (k, reverse $ unHide m )
 
