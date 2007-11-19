@@ -1,0 +1,31 @@
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
+
+module String_Matching.KMP.Config where
+
+import Autolib.TES.Identifier
+
+import Autolib.Set
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+
+data Ord  a => Config a =
+     Config { alphabet :: Set a
+            , word_length :: Int
+            , take_best_of :: Int
+            }
+    deriving ( Typeable )
+
+{-! for Config derive: Reader, ToDoc !-}
+
+example :: Config Identifier
+example = Config
+        { alphabet = mkSet [ read "a", read "b" ]
+        , word_length = 15
+        , take_best_of = 5
+        }
+
+-- local variables:
+-- mode: haskell
+-- end:

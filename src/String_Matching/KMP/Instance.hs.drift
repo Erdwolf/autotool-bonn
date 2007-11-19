@@ -1,0 +1,33 @@
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
+
+module String_Matching.KMP.Instance where
+
+import String_Matching.Option
+
+import Autolib.TES.Identifier
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Autolib.Set
+
+import Data.Typeable
+
+data  Ord a => Instance a = 
+     Instance { alphabet :: Set a
+           , word :: [ Option a ] 
+           , failures :: [ Option Int] 
+           }
+    deriving ( Eq, Typeable )
+
+{-! for Instance derive: Reader, ToDoc !-}
+
+example :: Instance Identifier
+example = Instance { alphabet = mkSet [ read "a", read "b" ]
+                , word = read "[ ? , ? , ? , ? , ? , b , a , ? ]"
+                , failures = read "[ ? , ? , 0 , ? , 1 , ? , ? , 0 ]"
+                }
+
+-- local variables:
+-- mode: haskell
+-- end:

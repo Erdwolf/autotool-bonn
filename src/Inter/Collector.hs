@@ -25,6 +25,8 @@ import qualified Fun.Direct
 
 import qualified Specify.Inter
 
+import qualified String_Matching.KMP.Central
+
 import qualified Graph.Selfcom
 import qualified Graph.Nachbar
 import qualified Graph.Cross
@@ -328,6 +330,10 @@ tmakers =
                 , heading "Sortierprogramme"
 		  [ item Sortier.Programm.Check.make
 		  ] 
+                , heading "String-Matching"
+                  [ item String_Matching.KMP.Central.make_fixed
+                  , item String_Matching.KMP.Central.make_quiz
+                  ]
                 ]
          , heading "Datenstrukturen"
                 [ item Baum.Reconstruct.make_fixed
