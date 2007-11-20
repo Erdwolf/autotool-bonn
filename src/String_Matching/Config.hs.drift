@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
-module String_Matching.KMP.Config where
+module String_Matching.Config where
 
 import Autolib.TES.Identifier
 
@@ -22,7 +22,7 @@ data Ord  a => Config a =
 example :: Config Identifier
 example = Config
         { alphabet = mkSet [ read "a", read "b" ]
-        , word_length = 15
+        , word_length = 12
         , take_best_of = 5
         }
 

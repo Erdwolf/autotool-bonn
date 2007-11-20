@@ -4,7 +4,7 @@ import String_Matching.Option
 import String_Matching.KMP.Instance
 
 import Autolib.Util.Splits
-import Autolib.Util.Zufall
+import Autolib.Util.Zufall 
 import Autolib.Set
 
 import Data.List
@@ -29,8 +29,8 @@ self_overlap u= maximum $ do
 
 start :: Ord a => Set a -> [a] -> Instance a
 start s w = Instance 
-              { word = map Yes w
-              , failures = map Yes $ failure w 
+              { word = inject w
+              , failures = inject $ failure w 
               , alphabet = s
               }
 
@@ -81,9 +81,9 @@ reconstruct_helper sigma [] = return  []
 reconstruct_helper sigma ((c,n) : cns) = do
     w <- reconstruct_helper sigma cns
     x <- setToList sigma
-    guard $ c `sub` Yes x
+    guard $ c `sub` x
     let w' = x : w
     let s = self_overlap w'
-    guard $ n `sub` Yes s
+    guard $ n `sub` s
     return w'
 

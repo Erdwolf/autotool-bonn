@@ -2,7 +2,7 @@ module String_Matching.KMP.Central where
 
 import String_Matching.Option
 import String_Matching.KMP.Instance as I
-import String_Matching.KMP.Config as C
+import String_Matching.Config as C
 import String_Matching.KMP.Semantics
 
 import Challenger.Partial hiding ( No )
@@ -29,7 +29,7 @@ instance ( Ord a, Reader a, ToDoc a )
     => Partial String_Matching_KMP ( Instance a ) [a] where
 
     describe p i = vcat
-        [ text "Gesucht ist ein Wort, das mit seiner KMP-failure-function"
+        [ text "Gesucht ist ein Wort, das als Muster im KMP-Algorithmus"
         , text "folgende Bedingungen erfüllt:"
         , nest 4 $ toDoc i
         , text "Ersetzen Sie die Fragezeichen!"
@@ -43,14 +43,12 @@ instance ( Ord a, Reader a, ToDoc a )
             No    -> a
 
     total p i b = do
-        assert ( sub ( word i ) $ map Yes b )
-               $ text "Wort paßt zum Muster?"
-        let f = failure b
-        inform $ vcat
-               [ text "die failure-function Ihrer Eingabe ist"
-               , nest 4 $ toDoc f 
-               ]
-        assert ( sub ( failures i ) $ map Yes f )
+        let s = start ( I.alphabet i ) b
+	inform $ vcat
+	       [ text "Die Eigenschaften Ihres Wortes sind:"
+	       , nest 4 $ toDoc s 
+	       ]
+        assert ( sub i s )
                $ text "paßt zum Muster?"
 
 make_fixed :: Make 

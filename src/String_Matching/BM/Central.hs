@@ -29,28 +29,26 @@ instance ( Ord a, Reader a, ToDoc a )
     => Partial String_Matching_BM ( Instance a ) [a] where
 
     describe p i = vcat
-        [ text "Gesucht ist ein Wort, das mit seiner BM-failure-function"
+        [ text "Gesucht ist ein Wort, das als Muster im Boyer-Moore-Algorithmus"
         , text "folgende Bedingungen erfüllt:"
         , nest 4 $ toDoc i
         , text "Ersetzen Sie die Fragezeichen!"
         ]
 
     initial p i = do
-        let a : rest = setToList $ I.alphabet i
+        let a : rest = I.alphabet i
         x <- word i
         return $ case x of
             Yes x -> x
             No    -> a
 
     total p i b = do
-        assert ( sub ( word i ) $ map Yes b )
-               $ text "Wort paßt zum Muster?"
-        let f = failure b
-        inform $ vcat
-               [ text "die failure-function Ihrer Eingabe ist"
-               , nest 4 $ toDoc f 
-               ]
-        assert ( sub ( failures i ) $ map Yes f )
+        let s = start ( I.alphabet i ) b
+	inform $ vcat
+	    [ text "Die Eigenschaften Ihrer Eingabe sind:"
+	    , nest 4 $ toDoc s 
+	    ]
+        assert ( sub i s )
                $ text "paßt zum Muster?"
 
 make_fixed :: Make 
@@ -64,7 +62,7 @@ instance ( Ord a, Reader a, ToDoc a )
     generator _ conf key = do
         bs <- sequence $ replicate ( take_best_of conf ) $ do
             w <- someIO ( setToList $ C.alphabet conf ) ( word_length conf )
-            reduce ( C.alphabet conf ) w
+            reduce ( setToList $ C.alphabet conf ) w
         return $ head $ sortBy ( yes . word ) bs
 
 instance ( Ord a, Reader a, ToDoc a )

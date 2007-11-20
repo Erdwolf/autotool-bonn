@@ -41,10 +41,9 @@ longest_match w k = maximum $ do
 
 -------------------------------------------------------------------------
 
-start :: Ord a => Set a -> [a] -> Instance a
-start s w = 
-    let sigma = setToList s
-    in  Instance 
+start :: Ord a => [a] -> [a] -> Instance a
+start sigma w = 
+    Instance 
               { word = map Yes w
               , bad_character = map Yes $ bad_char sigma w
 	      , good_suffix = map Yes $ good_suff w
@@ -73,7 +72,7 @@ next b = do
 ----------------------------------------------------------------------------
 
 reduce :: ( RandomC m, Ord a )
-       => Set a
+       => [a]
        -> [a] 
        -> m ( Instance a )
 reduce sigma w = do

@@ -26,6 +26,7 @@ import qualified Fun.Direct
 import qualified Specify.Inter
 
 import qualified String_Matching.KMP.Central
+import qualified String_Matching.BM.Central
 
 import qualified Graph.Selfcom
 import qualified Graph.Nachbar
@@ -333,6 +334,8 @@ tmakers =
                 , heading "String-Matching"
                   [ item String_Matching.KMP.Central.make_fixed
                   , item String_Matching.KMP.Central.make_quiz
+                  , item String_Matching.BM.Central.make_fixed
+                  , item String_Matching.BM.Central.make_quiz
                   ]
                 ]
          , heading "Datenstrukturen"

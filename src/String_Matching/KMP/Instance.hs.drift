@@ -22,6 +22,12 @@ data  Ord a => Instance a =
 
 {-! for Instance derive: Reader, ToDoc !-}
 
+instance Ord a => Sub ( Instance a ) ( Instance a ) where
+    sub i j = and
+	    [ sub ( word i ) ( word j ) 
+	    , sub ( failures i ) ( failures j )
+	    ]
+
 example :: Instance Identifier
 example = Instance { alphabet = mkSet [ read "a", read "b" ]
                 , word = read "[ ? , ? , ? , ? , ? , b , a , ? ]"
