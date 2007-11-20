@@ -1,0 +1,38 @@
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
+
+module String_Matching.BM.Instance where
+
+import String_Matching.Option
+
+import Autolib.TES.Identifier
+
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Autolib.Set
+
+import Data.Typeable
+
+data  Ord a => Instance a = 
+     Instance { alphabet :: [ a ] 
+                -- ^ as List because we need ordering for lambda
+           , word :: [ Option a ] 
+           , bad_character :: [ Option Int] 
+	   , good_suffix :: [ Option Int ]
+	     -- ^ this is m - \gamma (as in CLR)
+           }
+    deriving ( Eq, Typeable )
+
+{-! for Instance derive: Reader, ToDoc !-}
+
+example :: Instance Identifier
+example = Instance 
+	{ alphabet = [ read "a", read "b", read "c" ]
+        , word = read "[ ? , ? , ? , ? , ? , b , a , ? ]"
+        , bad_character = read "[ ? , ? , 0 ]"
+        , good_suffix = read "[ ? , ? , 0 , ? , 1 , ? , ? , 0 ]"
+        }
+
+-- local variables:
+-- mode: haskell
+-- end:
