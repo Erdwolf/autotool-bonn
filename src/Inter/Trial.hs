@@ -19,13 +19,18 @@ import Inter.Tutor
 import Inter.Student
 
 
+import qualified Control.Aufgabe.DB
 import qualified Inter.Param as P
 import qualified Inter.Statistik
 
 import Gateway.Help
 
+import Autolib.Multilingual ( Language (..), specialize )
+
 import Autolib.Set
 import qualified Autolib.Output
+import qualified Autolib.Output as O
+
 
 import Control.Types 
     ( toString, fromCGI, Name, Typ , Remark, HiLo (..), Status (..)
@@ -88,9 +93,18 @@ my_name = "Trial.cgi"
 
 main :: IO ()
 main = Gateway.CGI.execute ( my_name ++ "#hotspot" ) $ do
-   let stud = S.Student { }
    wrap $ do
-       selektor stud
+       mtopic <- look "topic"
+       case mtopic of
+           Just topic -> fixed_topic topic
+	   Nothing -> do
+	       mproblem <- look "problem"
+	       case mproblem of
+	           Just problem -> fixed_problem problem
+		   Nothing -> free_choice
+
+free_choice = do
+       selektor
        con <- io $ Inter.Motd.contents
        html con
        hr
@@ -103,18 +117,18 @@ mutexed :: ( Typeable a, Monad m ) => Form m () -> Form m a
 mutexed action = do begin ; action ; end
 bracketed b action = do open b; x <- action ; close ; return x
 
-selektor stud = do
+selektor = do
     hr
     h2 "(Tutor) Aufgabe auswählen und konfigurieren"
     hr
     let tmk = Inter.Collector.tmakers
     action <- btabled $ click_choice "Auswahl..." 
         [ ( "nach Vorlesungen", vor tmk )
-	, ( "nach Themen"
-	  , aufgaben tmk 
-	  )
+	, ( "nach Themen" , aufgaben tmk )
 	]
-    action ( stud, VNr 42, True )   
+    action dummy
+
+dummy = ( S.Student { }, VNr 42, True )   
 
 vor tmk pack = do
     schulen <- io $ U.get
@@ -137,12 +151,30 @@ vor tmk pack = do
 		click ( "config and solve", ( True, auf ) )
     common_aufgaben tmk pack ( Just auf ) conf   
 
+fixed_problem problem = do
+    [(anr, "")] <- return $ reads problem 
+    [ auf ] <- io $ Control.Aufgabe.DB.get_this anr
+    common_aufgaben Inter.Collector.tmakers dummy ( Just auf ) False
+
+fixed_topic topic = do
+    let mks =  do Right mk <- flatten Inter.Collector.tmakers ; return mk
+    [ mk ] <- return $ do 
+	 mk @ ( Make p _ _ _ _ ) <- mks
+	 guard $ show p == topic
+	 return mk
+    common_aufgaben_trailer dummy Nothing True mks mk False
+
+-----------------------------------------------------------------------------
+
 aufgaben tmk pack = do
     common_aufgaben tmk pack Nothing True
 
-common_aufgaben tmk ( stud, vnr, tutor ) mauf conf = do
+common_aufgaben tmk svt @ ( stud, vnr, tutor ) mauf conf = do
     let mks = do Right mk <- flatten tmk ; return mk
     ( mk, type_click ) <- find_mk tmk True mauf
+    common_aufgaben_trailer svt mauf conf mks mk type_click
+
+common_aufgaben_trailer ( stud, vnr, tutor ) mauf conf mks mk type_click = do
     auf' <- case ( mauf, conf ) of
 	 ( Just auf, False ) -> return auf
 	 _ -> edit_aufgabe mks mk Nothing vnr Nothing type_click
@@ -153,6 +185,14 @@ common_aufgaben tmk ( stud, vnr, tutor ) mauf conf = do
     ( minst :: Maybe H.Html, cs, res, com :: Maybe H.Html ) 
         <- solution vnr Nothing stud' mk auf' 
     scores <- scores_link
+    hr
+    plain "Link zu diesem Aufgabentyp:"
+    let target = case mk of 
+           Make p _ _ _ _ -> 
+               "Trial.cgi?topic=" ++ show p
+    html $ specialize Autolib.Multilingual.DE  
+	 $ ( O.render $ O.Link $ target :: H.Html )
+    hr
     footer scores
 
 
