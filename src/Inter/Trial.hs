@@ -94,7 +94,7 @@ import Inter.DateTime ( defaults )
 my_name = "Trial.cgi"
 
 main :: IO ()
-main = Gateway.CGI.execute ( my_name ++ "#hotspot" ) $ do
+main = Gateway.CGI.execute ( my_name ) $ do
    wrap $ do
        mtopic <- look "topic"
        case mtopic of
@@ -156,6 +156,7 @@ vor tmk pack = do
 fixed_problem problem = do
     [(anr, "")] <- return $ reads problem 
     [ auf ] <- io $ Control.Aufgabe.DB.get_this anr
+    open btable -- ?
     common_aufgaben Inter.Collector.tmakers dummy ( Just auf ) False
 
 fixed_topic topic = do
@@ -164,6 +165,7 @@ fixed_topic topic = do
 	 mk @ ( Make _ doc _ _ _ ) <- mks
 	 guard $ doc == topic
 	 return mk
+    open btable -- ?
     common_aufgaben_trailer dummy Nothing True mks mk False
 
 -----------------------------------------------------------------------------
