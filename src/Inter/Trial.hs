@@ -32,6 +32,8 @@ import qualified Autolib.Output
 import qualified Autolib.Output as O
 
 
+import qualified Network.CGI
+
 import Control.Types 
     ( toString, fromCGI, Name, Typ , Remark, HiLo (..), Status (..)
     , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr, UNr
@@ -159,8 +161,8 @@ fixed_problem problem = do
 fixed_topic topic = do
     let mks =  do Right mk <- flatten Inter.Collector.tmakers ; return mk
     [ mk ] <- return $ do 
-	 mk @ ( Make p _ _ _ _ ) <- mks
-	 guard $ show p == topic
+	 mk @ ( Make _ doc _ _ _ ) <- mks
+	 guard $ doc == topic
 	 return mk
     common_aufgaben_trailer dummy Nothing True mks mk False
 
@@ -188,8 +190,8 @@ common_aufgaben_trailer ( stud, vnr, tutor ) mauf conf mks mk type_click = do
     hr
     plain "Link zu diesem Aufgabentyp:"
     let target = case mk of 
-           Make p _ _ _ _ -> 
-               "Trial.cgi?topic=" ++ show p
+           Make _ doc _ _ _ -> 
+               "Trial.cgi?topic=" ++ Network.CGI.urlEncode doc 
     html $ specialize Autolib.Multilingual.DE  
 	 $ ( O.render $ O.Link $ target :: H.Html )
     hr
