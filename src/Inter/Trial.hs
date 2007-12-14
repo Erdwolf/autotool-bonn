@@ -154,8 +154,7 @@ vor tmk pack = do
     common_aufgaben tmk pack ( Just auf ) conf   
 
 fixed_problem problem = do
-    [(anr, "")] <- return $ reads problem 
-    [ auf ] <- io $ Control.Aufgabe.DB.get_this anr
+    [ auf ] <- io $ Control.Aufgabe.DB.get_this $ fromCGI problem
     open btable -- ?
     common_aufgaben Inter.Collector.tmakers dummy ( Just auf ) False
 
