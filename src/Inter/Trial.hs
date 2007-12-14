@@ -190,6 +190,7 @@ common_aufgaben_trailer ( stud, vnr, tutor ) mauf conf mks mk type_click = do
         <- solution vnr Nothing stud' mk auf' 
     scores <- scores_link
     hr
+
     plain "Link zu diesem Aufgabentyp:"
     let target = case mk of 
            Make _ doc _ _ _ -> 
@@ -197,6 +198,16 @@ common_aufgaben_trailer ( stud, vnr, tutor ) mauf conf mks mk type_click = do
     html $ specialize Autolib.Multilingual.DE  
 	 $ ( O.render $ O.Link $ target :: H.Html )
     hr
+
+    case mauf of
+      Nothing -> return ()
+      Just auf -> do
+        plain "Link zu dieser Aufgabeninstanz:"
+        let problem = "Trial.cgi?problem=" 
+                    ++ Control.Types.toString ( A.anr auf' )
+        html $ specialize Autolib.Multilingual.DE  
+	     $ ( O.render $ O.Link $ problem :: H.Html )
+
     footer scores
 
 
