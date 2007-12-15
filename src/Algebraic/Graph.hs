@@ -16,6 +16,7 @@ import Data.Typeable
 
 import Autolib.Dot ( peng, Layout_Program (..) )
 import Autolib.Graph.Graph
+import Autolib.Graph.Util
 
 import Autolib.ToDoc
 import Autolib.Choose
@@ -30,6 +31,13 @@ instance GraphC Int =>
     evaluate tag exp = do
         g <- tfoldR ( \ it -> reject $ text "unbekannt:" <+> toDoc it
                     ) inter exp
+
+{-
+	let degs = do v <- lknoten g ; return $ grad g v
+	when ( minimum degs < 2 ) $ reject $ text "mindegree"
+	when ( maximum degs > 5 ) $ reject $ text "maxdegree"
+-}
+
 	inform $ vcat [ text "Graph ist" , nest 4 $ toDoc g ]
         ping g
 	return g
