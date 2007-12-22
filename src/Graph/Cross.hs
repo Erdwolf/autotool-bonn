@@ -65,6 +65,17 @@ instance ( Show a, GraphC a )
         inform $ text "Haben Sie jedem Knoten einen Punkt zugeordnet?"
         equal_set ( text "V(G)"     , knoten g         )
                   ( text "domain(f)", mkSet $ keysFM b )
+        inform $ text "Sind alle Punkte verschieden?"
+        let multis = do
+              ( pos, ks ) <- fmToList $ addListToFM_C (++) emptyFM $ do
+                  ( k, pos ) <- fmToList b
+                  return ( pos, [k] )
+              guard $ length ks > 1
+              return ( pos, ks )
+        when ( not $ null multis ) $ reject $ vcat
+             [ text "nein, diese Punkte gehören zu mehreren Knoten:"
+             , nest 4 $ vcat $ map toDoc multis
+             ]
 
     total p (c, g) b = do
         inform $ text "Ihre Zeichnung ist:"
