@@ -22,7 +22,7 @@ import System.IO
 main :: IO ()
 main = wrap "main" $ do
     mapM recompute_for_type 
-             $ filter ( \ m -> show m == "Acceptor-NPDA-Quiz" )
+             $ filter ( \ m -> show m == "Cross-Direct" )
              $ Inter.Collector.makers
     return ()
 
