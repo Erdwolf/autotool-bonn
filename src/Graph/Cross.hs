@@ -6,6 +6,7 @@ module Graph.Cross where
 import Graph.Util
 import Autolib.Graph.Basic
 import Autolib.Dot
+import Autolib.Util.Splits
 
 import Autolib.Hash
 import Autolib.FiniteMap
@@ -15,7 +16,7 @@ import Autolib.Reporter
 import qualified Challenger as C
 
 import Data.Typeable
-import Data.Maybe ( fromMaybe )
+import Data.Maybe ( fromMaybe, isNothing )
 import Data.List ( tails )
 
 type Punkt = ( Integer, Integer )
@@ -62,20 +63,9 @@ instance ( Show a, GraphC a )
 	return (x, (k, k^2))
 
     partial p (c, g) b = do
-        inform $ text "Haben Sie jedem Knoten einen Punkt zugeordnet?"
-        equal_set ( text "V(G)"     , knoten g         )
-                  ( text "domain(f)", mkSet $ keysFM b )
-        inform $ text "Sind alle Punkte verschieden?"
-        let multis = do
-              ( pos, ks ) <- fmToList $ addListToFM_C (++) emptyFM $ do
-                  ( k, pos ) <- fmToList b
-                  return ( pos, [k] )
-              guard $ length ks > 1
-              return ( pos, ks )
-        when ( not $ null multis ) $ reject $ vcat
-             [ text "nein, diese Punkte gehören zu mehreren Knoten:"
-             , nest 4 $ vcat $ map toDoc multis
-             ]
+        alle_zugeordnet ( knoten g ) b
+        -- alle_verschieden b
+        keiner_auf_strecke b
 
     total p (c, g) b = do
         inform $ text "Ihre Zeichnung ist:"
@@ -134,6 +124,53 @@ toPos ( x , y ) = Position { width  = fromIntegral x
 				   }
 ---------------------------------------------------------------
 
+alle_zugeordnet v b = do
+    inform $ text "Haben Sie jedem Knoten einen Punkt zugeordnet?"
+    let missing = do
+          k <- setToList v
+          guard $ isNothing $ lookupFM b k
+          return k
+    if null missing 
+       then inform $ text "Ja."
+       else reject $ text "Nein, diesen nicht:" <+> toDoc missing
+
+---------------------------------------------------------------
+
+keiner_auf_strecke b = sequence_ $ do
+    ( pre0 , ap @ ( a , p ) : post0 ) <- splits $ fmToList b
+    ( pre1 , bq @ ( b , q ) : post1 ) <- splits $ pre0 ++ post0
+    cr @ ( c, r ) <- pre1 ++ post1
+    let present (a,p) = hsep [ text "Knoten", toDoc a, parens ( text "Position" <+> toDoc p ) ]
+    return $ when ( between p q r ) $ reject $ text "Fehler:" <+> vcat
+           [ present bq
+           , text "liegt auf der Strecke"
+           , text "zwischen" <+> present ap
+           , text "und     " <+> present cr 
+           ]
+
+between p q r =
+    let a = dist2 p q
+        b = dist2 q r
+        c = dist2 p r
+    in  4 * a * b == ( c  - a - b ) ^ 2
+
+dist2 (px,py) (qx,qy) = (px-qx)^2 + (py-qy)^2    
+
+-----------------------------------------------------------
+
+alle_verschieden b = do
+        inform $ text "Sind alle Punkte verschieden?"
+        let multis = do
+              ( pos, ks ) <- fmToList $ addListToFM_C (++) emptyFM $ do
+                  ( k, pos ) <- fmToList b
+                  return ( pos, [k] )
+              guard $ length ks > 1
+              return ( pos, ks )
+        when ( not $ null multis ) $ reject $ vcat
+             [ text "nein, diese Punkte gehören zu mehreren Knoten:"
+             , nest 4 $ vcat $ map toDoc multis
+             ]
+
 crossings :: GraphC a 
           => Graph a 
           -> Karte a 
@@ -159,7 +196,7 @@ is_crossing ab cd                  = trennt ab cd && trennt cd ab
    
 -- | liegen auf verschiedenen Seiten der Geraden
 trennt :: Strecke -> Strecke -> Bool
-trennt (a, b) (c, d) = 0 <= area2 a c d * area2 b d c
+trennt (a, b) (c, d) = 0 < area2 a c d * area2 b d c
 
 -- | doppeltes des orientierten Flächeninhalts
 area2 :: Punkt -> Punkt -> Punkt -> Integer
