@@ -81,7 +81,7 @@ recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
         if ( compatible old_result res )
            then hPutStr stderr "."
            else do
-              putStrLn $ show $ vcat
+              hPutStrLn stderr $ show $ vcat
                    [ text "tag:" <+> toDoc tag
                    , text "aufgabe:" <+> toDoc auf
                    , text "einsendung:" <+> toDoc eins
@@ -91,7 +91,7 @@ recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
                    , text "computed result:" <+> toDoc res
                    , text "stored result:" <+> toDoc old_result
                    ]
-              hFlush stdout
+              hFlush stderr
         let Just inf = SA.input   eins
         clock <- System.Directory.getModificationTime $ toString inf
         cal <- System.Time.toCalendarTime clock    
