@@ -9,6 +9,7 @@ module Util.Datei
 , existiert
 , dirlesen
 , dirgehen
+, Util.Datei.getModificationTime
 , erzeugeVerzeichnisse
 , home
 , Datei (..)
@@ -21,6 +22,7 @@ where
 import Debug
 import Data.List (inits, intersperse)
 import System.Directory
+import System.Time
 import Control.Monad (guard, when)
 import System.Cmd ( system)
 import System.IO
@@ -162,6 +164,11 @@ dirlesen :: Datei -> IO [String]
 dirlesen d  = do
     h <- home d
     getDirectoryContents h
+
+getModificationTime :: Datei -> IO ClockTime
+getModificationTime d = do
+    h <- home d
+    System.Directory.getModificationTime h
 
 ----------------------------------------------------------------------------
 

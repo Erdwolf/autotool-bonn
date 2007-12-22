@@ -9,7 +9,10 @@ import Inter.Collector
 import Inter.Evaluate
 import Inter.Common
 import Inter.Types
+import qualified Inter.Param as P
+import qualified Inter.Bank
 
+import qualified Util.Datei
 import Challenger.Partial
 
 import Autolib.Reporter hiding ( wrap )
@@ -18,6 +21,8 @@ import Autolib.Reader
 
 import Control.Exception ( catch )
 import System.IO
+import qualified System.Time
+import qualified System.Directory
 
 main :: IO ()
 main = wrap "main" $ do
@@ -70,7 +75,7 @@ recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
         ( p, instant, icom ) <- 
             make_instant_common (A.vnr auf) (Just $ A.anr auf) stud 
                    ( fun $ read $ toString $ A.config auf ) 
-        input   <- read_from_file   ( SA.input   eins )
+        input   <- read_from_file $ SA.input eins
         let ( res, doc :: Doc ) = export $ evaluate p instant input
         let old_result = SA.result  eins
         if ( compatible old_result res )
@@ -87,6 +92,19 @@ recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
                    , text "stored result:" <+> toDoc old_result
                    ]
               hFlush stdout
+        let Just inf = SA.input   eins
+        clock <- System.Directory.getModificationTime $ toString inf
+        cal <- System.Time.toCalendarTime clock    
+        let time = System.Time.calendarTimeToString cal
+        let param = P.Param { P.mmatrikel = Just $ S.mnr stud 
+                            , P.vnr = A.vnr auf
+                            , P.anr = A.anr auf
+                            }
+        case res of
+            Just res -> do
+                putStrLn $ Inter.Bank.logline time "771" param res
+            Nothing -> return ()
+
 
 compatible ( Just Pending ) _ = True
 compatible ( Just No ) Nothing = True
