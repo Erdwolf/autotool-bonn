@@ -88,14 +88,15 @@ single deco u arg @( anr, es ) = do
 
     putStrLn $ unlines $ [ header , strich ] ++ decorated
 
-decorate :: UNr -> Einsendung -> IO ( SNr , Einsendung )
+
+decorate :: UNr -> Einsendung -> IO SE
 decorate u e = do
 
    studs <- S.get_unr_mnr ( u , matrikel e ) 
 
    case studs of 
-       []    -> return ( read "SNr 0" , e )
-       (s:_) -> return ( S.snr s , e )
+       []    -> return $ SE ( read "SNr 0" ) e 
+       (s:_) -> return $ SE ( S.snr s      ) e 
 
 totalize :: Bool -> UNr -> DataFM -> IO ()
 totalize deco u fm = do
@@ -134,7 +135,7 @@ collect :: Bool
 	->  IO [ ( String , (Int , [Int] ) ) ] -- ^ ( Matrikel, Punkt, Plätze )
 collect deco u fm = do
 
-    let nice (e,p) = if deco then do (s,_) <- decorate u e
+    let nice (e,p) = if deco then do SE s _ <- decorate u e
 				     return (show s,p)
 			     else return (toString $ matrikel e,p)
 

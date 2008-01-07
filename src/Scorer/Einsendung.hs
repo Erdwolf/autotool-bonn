@@ -1,6 +1,7 @@
 module Scorer.Einsendung 
 
 ( Einsendung (..)
+, SE (..)
 , slurp -- datei-inhalt verarbeiten
 )
 
@@ -20,7 +21,7 @@ import Control.Monad ( guard )
 
 -- | das ist die information zu jeweils einer studentischen einsendung
 data Einsendung = Einsendung
-          { size     :: Int
+          { size     :: Integer -- Int
 	  , date     :: [Int]
 	  , time     :: String -- ^ original time entry
 	  , matrikel :: MNr
@@ -29,8 +30,9 @@ data Einsendung = Einsendung
 	  , pid	     :: String
 	  }	deriving (Eq,Ord)
 
-instance Show ( SNr , Einsendung ) where
-    show (s,i) = unwords 
+data SE = SE SNr Einsendung
+instance Show SE where 
+    show ( SE s i ) = unwords 
         [ spaci 10 $ show $ abs $ size i
 	, spaci 12 $ toString s
 	,    (nulli 2 $ date i !! 2) ++ "."
