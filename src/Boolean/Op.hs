@@ -27,7 +27,7 @@ nullary = do
     (v, cs) <- [ (False, "false"), (True, "true") ]
     return $ Op { name = cs, arity = 0
 		, precedence = Nothing , assoc = AssocNone
-		, inter = lift $ const v
+		, inter = lift0 $  v
 		}
 
 functions :: [ Op Bool ]
@@ -46,28 +46,28 @@ functions = do
 unary :: [ Op Bool ]
 unary = [     Op { name = "!" , arity = 1
 		, precedence = Just 10 , assoc = AssocNone
-		, inter = lift $ \ [x] -> not x
+		, inter = lift1 $ not
 		}
         , nicht
 	]
 
 nicht =     Op { name = "not" , arity = 1
 		, precedence = Just 10 , assoc = AssocNone
-		, inter = lift $ \ [x] -> not x
+		, inter = lift1 $ not
 		}
 
 und =  Op { name = "&&" , arity = 2
 	      , precedence = Just 8 , assoc = AssocLeft
-	      , inter = lift $ \ [x, y] -> x && y
+	      , inter = lift2 ( && )
 	      }
 oder = Op { name = "||" , arity = 2
 	      , precedence = Just 7 , assoc = AssocLeft
-	      , inter = lift $ \ [x, y] -> x || y
+	      , inter = lift2 (||)
 	      }
 
 implies = Op { name = "->", arity = 2
 			 , precedence = Just 6 , assoc = AssocNone
-			 , inter = lift $ \ [x,y] -> x <= y
+			 , inter = lift2 (<=)
 			 }
 
 
@@ -83,6 +83,6 @@ binary = [ und, oder ]
 			]
 	     return $ Op { name = cs, arity = 2
 			 , precedence = Just 6 , assoc = AssocNone
-			 , inter = lift $ \ [x,y] -> f x y
+			 , inter = lift2 f
 			 }
 
