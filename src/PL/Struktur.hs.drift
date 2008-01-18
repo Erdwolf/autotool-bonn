@@ -25,11 +25,11 @@ instance ToDoc u => ToDoc ( Predicate u ) where
 
 data Tuple a = Tuple [a] 
 instance ToDoc a => ToDoc ( Tuple a ) where
-    toDoc xs = parens $ Autolib.ToDoc.sepBy comma $ map toDoc xs
+    toDoc  ( Tuple xs ) = parens $ Autolib.ToDoc.sepBy comma $ map toDoc xs
 
 as_set ts = braces $ Autolib.ToDoc.sepBy comma $ do
         t <- setToList $ ts
-	return $ map toDoc $ Tuple t
+	return $ toDoc $ Tuple t
 
 instance ( Ord u, Reader u ) => Reader ( Predicate u ) where
     reader = fmap Predicate from_set
@@ -73,37 +73,46 @@ instance Ord u => Size ( Struktur u ) where
 
 instance ( ToDoc u, Ord u ) => Signed ( Struktur u ) where
      check sig s = do
+          let dom = universum s
 	  checkit "Funktionssymbol" 
-		  ( keysFM . unFunction ) ( funktionen sig ) ( functions s )
+		  ( keysFM . unFunction ) ( funktionen sig ) ( functions s ) dom
 	  checkit "Relationssymbol" 
-		  ( setToList . unPredicate ) ( relationen sig ) ( predicates s )
+		  ( setToList . unPredicate ) ( relationen sig ) ( predicates s ) dom
 
-checkit tag get_args arities values = do
+checkit tag get_args arities values dom = do
 	required_symbols_are_present tag get_args arities values
 	no_additional_symbols tag arities values
-	check_domain tag values        
+	check_domain_for tag dom values        
+
+check_domain_for tag dom values = sequence_ $ do
+    ( k, v ) <- fmToList values
+    let msg = vcat
+	    [ text "Interpretation für" <+> text tag <+> toDoc k
+	    ,  text "verwendet Elemente außerhalb des Universums:" 
+	    ] 
+    return $ check_domain msg dom v
 
 class Check_Domain con where 
-    check_domain :: Ord u => String -> Set u -> con u -> Reporter ()
+    check_domain :: ( Ord u, ToDoc u )
+		  => Doc -> Set u -> con u 
+		  -> Reporter ()
 
 instance Check_Domain Function where
-    check_domain tag dom f = sequence_ $ do
-        ( ks, v ) <- fmToList $ unFunction f
+    check_domain tag dom fun = sequence_ $ do
+        ( ks, v ) <- fmToList $ unFunction fun
 	let ok = all ( `elementOf` dom ) $ v : ks
-	when ( not ok ) $ reject $ vcat
-	     [ text "Interpretation für" <+> text tag <+> toDoc f
-	     , text "verwendet Elemente außerhalb des Universums:" 
-	          <+> toDoc ( Tuple $ ks ++ [v] )	       
+	return $ when ( not ok ) $ reject $ vcat
+	     [ tag
+	     , nest 4 $ toDoc ( Tuple $ ks ++ [v] )	       
 	     ]
 
 instance Check_Domain Predicate where
-    check_domain tag dom p = sequence_ $ do
-        ks <- fmToList $ unPredicate p
+    check_domain tag dom pred = sequence_ $ do
+        ks <- setToList $ unPredicate pred
 	let ok = all ( `elementOf` dom ) ks
-	when ( not ok ) $ reject $ vcat
-	     [ text "Interpretation für" <+> text tag <+> toDoc f
-	     , text "verwendet Elemente außerhalb des Universums:" 
-	          <+> toDoc ( Tupe ks )
+	return $ when ( not ok ) $ reject $ vcat
+	     [ tag
+	     , nest 4 $ toDoc ( Tuple ks )
 	     ]
 
 
