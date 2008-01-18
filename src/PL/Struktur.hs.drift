@@ -68,15 +68,25 @@ instance Ord u => Size ( Struktur u ) where
 
 -- | wir testen, ob alle Symbole der Signatur
 -- wirklich in der Struktur vorkommen.
--- es ist erlaubt, daÃ zusÃ¤tzlichen Symbole vorkommen.
 instance ( ToDoc u, Ord u ) => Signed ( Struktur u ) where
      check sig s = do
-	  checkit "Funktion" 
+	  checkit "Funktionssymbol" 
 		  ( keysFM . unFunction ) ( funktionen sig ) ( functions s )
-	  checkit "Relation" 
+	  checkit "Relationssymbol" 
 		  ( setToList . unPredicate ) ( relationen sig ) ( predicates s )
 
-checkit tag get_args arities values = sequence_ $ do
+checkit tag get_args arities values = do
+	required_symbols_are_present tag get_args arities values
+	no_additional_symbols tag arities values
+
+no_additional_symbols tag arities values = sequence_ $ do
+    ( f, _ ) <- fmToList values
+    return $ case lookupFM arities f of
+        Just _ -> return ()
+	Nothing -> reject $ hsep [ text tag, toDoc f, text "ist nicht in Signatur" ]
+    
+
+required_symbols_are_present tag get_args arities values = sequence_ $ do
     ( f, arity ) <- fmToList $ arities
     return $ do
         this <- find_or_complain tag values f
@@ -84,9 +94,8 @@ checkit tag get_args arities values = sequence_ $ do
             arg <- get_args this
             return $ do
                 when ( length arg /= arity ) $ reject $ vcat
-                     [ text "Interpretation fÃ¼r" <+> text tag <> text "ssymbol" 
-		             <+> toDoc f
-                     , text "Falsche Stelligkeit fÃ¼r" <+> toDoc arg
+                     [ text "Interpretation für" <+> text tag <+> toDoc f
+                     , text "Falsche Stelligkeit für" <+> toDoc arg
                      ]
 	      
 empty :: Ord u
@@ -108,5 +117,5 @@ empty sig uni =
 
 -- local variables:
 -- mode: haskell
--- end
+-- end:
 

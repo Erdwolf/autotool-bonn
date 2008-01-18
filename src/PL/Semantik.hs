@@ -16,7 +16,8 @@ import Autolib.Set
 import Autolib.FiniteMap
 
 evaluate :: ( ToDoc u, Ord u ) 
-	 => Interpretation u -> Formel -> Reporter Bool
+	 => Interpretation u -> Formel 
+	 -> Reporter Bool
 evaluate int f = case f of
     Operation op fs -> evaluate_operation int op fs
     PL.Data.Predicate p args -> evaluate_predicate int p args
