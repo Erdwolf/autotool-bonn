@@ -55,8 +55,15 @@ instance ( Ord u, Reader u ) => Reader ( Function u ) where
 from_set :: ( Ord u, Reader u ) => Parser ( Set [u] )
 from_set = fmap mkSet
 	 $ my_braces $ ( `Autolib.Reader.sepBy` my_comma ) 
-	 $ my_parens $ ( `Autolib.Reader.sepBy` my_comma ) 
-	 $ reader
+	 $ tuple
+
+tuple :: Reader u => Parser [u]
+tuple =  do my_parens $ ( `Autolib.Reader.sepBy` my_comma ) $ reader
+     <|> do x <- reader ; return [x]
+
+instance Reader u => Reader ( Tuple u ) where
+    reader = fmap Tuple tuple
+
 
 data Ord u => Struktur u = 
      Struktur { universum  :: Set u

@@ -1,0 +1,11 @@
+Param
+    { model_size = 6, formel =
+( forall x . P(x) <=> not G(x) )
+
+&& ( forall x  y . I(x,y) => P(x) && G(y) )
+&&  ( forall x . P(x) => count == 2 y . I (x , y) )
+&& ( forall y . G(y) => count == 2 x . I (x,y) )
+&& ( forall x y . P(x) => P(y) => not (x == y)  => count == 1 z .  I(x,z) && I(y,z))
+
+&& ( forall x y . G(x) => G(y) => not (x == y)  => count == 1 z .  I(z,x) && I(z,y))
+ }

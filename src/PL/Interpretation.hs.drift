@@ -51,4 +51,4 @@ leere_belegung sig uni = listToFM
 
 -- local variables:
 -- mode: haskell
--- end
+-- end:

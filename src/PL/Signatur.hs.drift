@@ -32,6 +32,8 @@ instance Signed Formel where
 	    add_relation (p, length ts ) $ vereinige $ map signatur ts
         Operation op fs -> 
             vereinige $ map signatur fs
+	Equals l r -> 
+	    vereinige $ map signatur [ l, r ]
     check sig f = case f of
         Quantified q v f -> check ( add_variable v sig ) f
 	Operation op fs -> mapM_ ( check sig ) fs
@@ -90,4 +92,4 @@ add_variable v sig =
 
 -- local variables:
 -- mode: haskell
--- end
+-- end:

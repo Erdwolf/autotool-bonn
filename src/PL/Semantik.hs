@@ -22,14 +22,28 @@ evaluate int f = case f of
     Operation op fs -> evaluate_operation int op fs
     PL.Data.Predicate p args -> evaluate_predicate int p args
     Quantified q v f -> evaluate_quantified int q v f
+    Equals l r -> evaluate_equals int l r
+
+evaluate_equals int l r = do
+    [ x , y ] <- mapM ( compute int ) [ l, r ]
+    return $ x == y
 
 evaluate_quantified int q v f = do
     vals <- sequence $ do
         x <- setToList $ universum $ struktur int
 	let extended_int = int { belegung = addToFM ( belegung int ) v x }
 	return $ evaluate extended_int f
-    let op = case q of Forall -> and ; Exists -> or
+    let op = case q of Forall -> and ; Exists -> or ; Count c n -> count c n 
     return $ op vals
+
+count c n vals = 
+    let m = fromIntegral $ length $ filter id vals
+        op = case c of
+	   Less -> (<) ; Less_Equal -> (<=) 
+	   Equal -> (==) ; Not_Equal -> (/=)
+	   Greater_Equal -> (>=) ; Greater -> (>)
+    in  m `op` n
+
 
 evaluate_predicate int p args = do
     PL.Struktur.Predicate r <- 
