@@ -68,7 +68,10 @@ recompute_for_einsendung
 recompute_for_einsendung  mk auf eins = 
     {- wrap ("for einsendung " ++ show eins ) $ -} do
         studs <- S.get_snr $ SA.snr eins
-        mapM_ ( recompute_for_student mk auf eins ) studs
+        mapM ( \ s -> recompute_for_student mk auf eins s 
+		  `Control.Exception.catch` \ any -> do
+	              hPutStrLn stderr $ "err: " ++ show any
+	     ) studs
         return ()
 
 recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
