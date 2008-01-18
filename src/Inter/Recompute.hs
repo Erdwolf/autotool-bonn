@@ -27,12 +27,12 @@ import qualified System.Directory
 main :: IO ()
 main = wrap "main" $ do
     mapM recompute_for_type 
-             $ filter ( \ m -> show m == "Cross-Direct" )
+             $ filter ( \ m -> show m == "Find_Model-Direct" )
              $ Inter.Collector.makers
     return ()
 
 verbose :: Bool
-verbose = True
+verbose = False -- True
 
 wrap msg action = do
     if verbose 
