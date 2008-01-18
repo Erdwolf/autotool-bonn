@@ -11,11 +11,12 @@ import Autolib.ToDoc
 import Autolib.TES.Identifier
 
 instance ToDoc Formel where
-    toDocPrec p ( Operation op xs ) = docParen ( p > 0 ) $ case xs of
-        [x]   -> toDoc op <+> toDocPrec 0 x
-	[x,y] -> sep [ toDocPrec 1 x 
-                     , toDoc op <+> toDocPrec 1 y
-                     ]
+    toDocPrec p ( Operation op xs ) = case xs of
+        [x]   -> toDoc op <+> toDocPrec 9 x
+	[x,y] -> let q = case op of  
+		       And -> 8 ; Or -> 6 ; Iff -> 4 ; Implies -> 2
+		 in  docParen ( p > q )
+		     $ sep [ toDocPrec q x , toDoc op <+> toDocPrec (q+1) y ]
     toDocPrec p ( Quantified q x f ) = docParen ( p > 0 ) $
         toDoc q <+> toDoc x <+> text "." <+> toDoc f
     toDocPrec p ( Predicate r xs ) = 

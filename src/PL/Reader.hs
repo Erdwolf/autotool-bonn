@@ -10,6 +10,7 @@ import Autolib.Reader
 import Autolib.TES.Identifier
 
 import Text.ParserCombinators.Parsec.Expr
+import Text.ParserCombinators.Parsec
 
 instance Reader Formel where
     reader = buildExpressionParser 
