@@ -23,9 +23,13 @@ instance Size ( Predicate u ) where
 instance ToDoc u => ToDoc ( Predicate u ) where
     toDoc ( Predicate ts ) = as_set ts
 
+data Tuple a = Tuple [a] 
+instance ToDoc a => ToDoc ( Tuple a ) where
+    toDoc xs = parens $ Autolib.ToDoc.sepBy comma $ map toDoc xs
+
 as_set ts = braces $ Autolib.ToDoc.sepBy comma $ do
         t <- setToList $ ts
-	return $ parens $ Autolib.ToDoc.sepBy comma $ map toDoc t
+	return $ map toDoc $ Tuple t
 
 instance ( Ord u, Reader u ) => Reader ( Predicate u ) where
     reader = fmap Predicate from_set
@@ -66,8 +70,7 @@ instance Ord u => Size ( Struktur u ) where
 	   + sum ( do ( r, rr ) <- fmToList $ predicates s ; return $ size rr )
 	   + sum ( do ( f, ff ) <- fmToList $ functions  s ; return $ size ff )
 
--- | wir testen, ob alle Symbole der Signatur
--- wirklich in der Struktur vorkommen.
+
 instance ( ToDoc u, Ord u ) => Signed ( Struktur u ) where
      check sig s = do
 	  checkit "Funktionssymbol" 
@@ -78,6 +81,32 @@ instance ( ToDoc u, Ord u ) => Signed ( Struktur u ) where
 checkit tag get_args arities values = do
 	required_symbols_are_present tag get_args arities values
 	no_additional_symbols tag arities values
+	check_domain tag values        
+
+class Check_Domain con where 
+    check_domain :: Ord u => String -> Set u -> con u -> Reporter ()
+
+instance Check_Domain Function where
+    check_domain tag dom f = sequence_ $ do
+        ( ks, v ) <- fmToList $ unFunction f
+	let ok = all ( `elementOf` dom ) $ v : ks
+	when ( not ok ) $ reject $ vcat
+	     [ text "Interpretation für" <+> text tag <+> toDoc f
+	     , text "verwendet Elemente außerhalb des Universums:" 
+	          <+> toDoc ( Tuple $ ks ++ [v] )	       
+	     ]
+
+instance Check_Domain Predicate where
+    check_domain tag dom p = sequence_ $ do
+        ks <- fmToList $ unPredicate p
+	let ok = all ( `elementOf` dom ) ks
+	when ( not ok ) $ reject $ vcat
+	     [ text "Interpretation für" <+> text tag <+> toDoc f
+	     , text "verwendet Elemente außerhalb des Universums:" 
+	          <+> toDoc ( Tupe ks )
+	     ]
+
+
 
 no_additional_symbols tag arities values = sequence_ $ do
     ( f, _ ) <- fmToList values
