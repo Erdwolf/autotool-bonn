@@ -15,6 +15,21 @@ import Autolib.ToDoc
 import Autolib.Set
 import Autolib.FiniteMap
 
+evaluate_top :: ( ToDoc u, Ord u ) 
+	 => Interpretation u -> Formel 
+	 -> Reporter Bool
+evaluate_top int f = case f of
+    Operation And fs -> do
+        vs <- sequence $ do
+            f <- fs
+            return $ do
+                inform $ vcat [ text "Teilformel", nest 4 $ toDoc f ]
+                v <- nested 4 $ evaluate int f
+                inform $ vcat [ text "hat Wert", nest 4 $ toDoc f ]
+                return v
+        return $ and vs
+    _ -> evaluate int f
+
 evaluate :: ( ToDoc u, Ord u ) 
 	 => Interpretation u -> Formel 
 	 -> Reporter Bool
