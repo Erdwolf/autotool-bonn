@@ -30,8 +30,8 @@ instance ( Ord u, ToDoc u ) => Signed ( Interpretation u ) where
         check sig $ struktur i
 	check_variablen ( freie_variablen sig ) ( belegung i )
 
-check_variablen fvs bel = 
-    S.subeq ( text "Variablenmenge aus Signatur", fvs )
+check_variablen fvs bel = do
+    silent $ S.eq ( text "Variablenmenge aus Signatur", fvs )
 	    ( text "Variablen aus Belegung", mkSet $ keysFM bel )
 
 empty :: Ord u
