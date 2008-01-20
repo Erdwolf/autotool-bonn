@@ -49,7 +49,7 @@ instance Partial Find_Model Param ( Interpretation Int ) where
 	   check ( signatur $ formel p ) i
 
     total Find_Model p i = do
-        v <- evaluate i ( formel p ) 
+        v <- evaluate_top i ( formel p ) 
 	inform $ text "Wert der Formel unter der Interpretation ist" <+> toDoc v
 	when ( not v ) $ reject $ text "Interpretation ist kein Modell"
 
