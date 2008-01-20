@@ -25,7 +25,7 @@ evaluate_top int f = case f of
             return $ do
                 inform $ vcat [ text "Teilformel", nest 4 $ toDoc f ]
                 v <- nested 4 $ evaluate int f
-                inform $ vcat [ text "hat Wert", nest 4 $ toDoc f ]
+                inform $ vcat [ text "hat Wert", nest 4 $ toDoc v ]
                 return v
         return $ and vs
     _ -> evaluate int f
