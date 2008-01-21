@@ -34,8 +34,8 @@ mkTree ( Node f args ) = D.Node f $ map mkTree $ reverse args
 present :: ( Symbol c, ToDoc v, Show v )
 	=> Term v c -> Doc
 present t = 
-    let make = tfold ( \ v    -> D.Node ( show v ) [] )
-                     ( \ c xs -> D.Node ( show c ) xs )
+    let make = tfold ( \ v    -> D.Node ( show v ++ " " ) [] )
+                     ( \ c xs -> D.Node ( show c ++ " " ) xs )
     in  vcat [ toDoc t
 	 , text ""
 	 , nest 4 -- $ Autolib.TES.Draw.draw t
