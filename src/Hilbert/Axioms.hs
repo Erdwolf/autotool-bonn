@@ -3,6 +3,7 @@ module Hilbert.Axioms
 ( axioms
 , meredith
 , small_axioms
+, halle
 )
 
 where
@@ -49,6 +50,13 @@ axioms = Hilbert.Env.make
      , read "(H14, A -> not (not A) )"
      , read "(H15, not (not A) -> A )"
      ]                                                
+
+halle :: Env ( Exp Bool )
+halle =  Hilbert.Env.make
+      [ read "(H1 , A -> (B -> A) )"
+      , read "(H2 , (A -> (B -> C)) -> ((A -> B) -> (A -> C)) )"
+      , read "(H3 , (not A -> not B) -> ((not A -> B) -> A) )"
+      ]
 
 small_axioms :: Env ( Exp Bool )
 small_axioms = Hilbert.Env.make

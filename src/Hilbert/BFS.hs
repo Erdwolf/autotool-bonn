@@ -1,3 +1,5 @@
+{-# language PatternSignatures #-}
+
 module Hilbert.BFS where
 
 import Data.Set 
@@ -10,18 +12,18 @@ bfs next start =
     let result = uniq $ start : ( do x <- result ; toList $ next x )
     in  result
 
-weighted_search :: forall a w . ( Ord a , Ord w )
+weighted_search :: ( Ord a , Ord w )
     => ( a -> w )
     -> (a -> Set a )
     -> a
     -> [a]
 weighted_search weight next start = 
-    let lift :: a  -> ( w, a )
+    let -- lift :: a  -> ( w, a )
         lift t = ( weight t, t )
-	fun :: Set ( w, a ) -> Set a -> [ a ]
+	-- fun :: Set ( w, a ) -> Set a -> [ a ]
         fun todo done = case minView todo of
             Nothing -> []
-	    Just ( odo, (w, t) ) -> 
+	    Just (  (w, t) , odo ) -> 
 	        if member t done
 		then fun odo done
 		else let ns = Data.Set.map lift $ next t \\ done

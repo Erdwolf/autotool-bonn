@@ -15,10 +15,12 @@ import Boolean.Op
 import Expression.Op
 
 import Autolib.Util.Uniq
-import Autolib.TES.Term hiding ( unvar, assoc, precedence, arity )
+import Autolib.TES.Term 
+    hiding ( unvar, assoc, precedence, arity )
 import Autolib.Size
 import Autolib.TES.Position
 
+import Autolib.Reporter.Type
 
 satisfiable targets = 
     let form_variables = uniq $ do
@@ -45,4 +47,7 @@ assignments ( v : vs ) = do
 evaluate f g t = case t of
     Var  v    -> lookupWithDefaultFM g ( error "g" ) v
     Node v [] -> lookupWithDefaultFM f ( error "f" ) v
-    Node op args -> inter op $ map ( evaluate f g ) args
+    Node op args -> 
+        let Just r = result
+                   $ inter op $ map ( evaluate f g ) args
+        in  r

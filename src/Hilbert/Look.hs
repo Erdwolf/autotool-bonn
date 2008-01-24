@@ -33,12 +33,12 @@ import Data.Tree
 import Control.Monad ( guard, when )
 import System.IO
 
-maxdepth = 15	-- of tree
+maxdepth = 4	-- of tree
 maxbranch = 500	-- of number of children of a tree node
-maxwidth = 4	-- of clauses in search target
+maxwidth = 5	-- of clauses in search target
 
 maxsize = 20	-- of formulas in target
-maxvars = 4	-- of variables in target
+maxvars = 5	-- of variables in target
 
 maxsols = 10	-- number of solutions
 
@@ -60,19 +60,19 @@ lookfor_bfs alphabet targets top path = do
     ( n, Hide inf ) <- Hilbert.BFS.weighted_search 
       ( \ ( ts, Hide p ) -> 
               ( not $ null ts
-	      ,  0 
-	       + ( sum $ map ( size ) ts )
+	      ,  
+	        ( sum $ map ( \ t -> ( size t ) ^1 ) ts )
 	      -- , ( length ts ) 
 	      ) 
       )
       ( \ ( ts, Hide p ) ->  mkSet $ do
-        let alphabet' = alphabet `union` mkSet [ nicht ]
+        let alphabet' = alphabet -- `union` mkSet [ nicht ]
 	( n, Hide i ) <- 
-	    infer ( usable_rules alphabet' axioms ) ts
+	    infer ( usable_rules alphabet' halle ) ts
 	guard $ not $ subseteq ( mkSet targets ) ( mkSet n )
 	guard $ all ( not . isvar ) n
         guard $ satisfiable n
-	guard $ klein top n
+	-- guard $ klein top n
 	return ( n , Hide ( i : p ) )
       ) 
       ( targets, Hide path ) 
