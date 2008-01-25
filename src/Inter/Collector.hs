@@ -37,6 +37,7 @@ import qualified Robots.Inverse
 import qualified Rushhour.Central
 import qualified Graph.Col.Plain
 import qualified Graph.Col.Quiz
+import qualified Graph.Col.Gadget.Central
 
 import qualified Graph.Cage.Central
 import qualified Graph.Graceful.Central
@@ -290,6 +291,7 @@ tmakers =
 	        , item Graph.Col.Plain.make
 	        , item Graph.Col.Quiz.make
 --	        , item Graph.Cage.Central.make
+	        , item Graph.Col.Gadget.Central.make
 	        , item Graph.Graceful.Central.make
                 , item Graph.TreeWidth.make
                 , item Graph.PartialKTree.make

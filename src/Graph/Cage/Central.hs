@@ -1,4 +1,5 @@
 {-# OPTIONS -Onot #-}
+{-# language DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
 
 module Graph.Cage.Central where
 
@@ -78,6 +79,22 @@ colourings :: GraphC a
 colourings c g = list_colourings g 
     ( listToFM $ do v <- lknoten g ; return (v, mkSet [ 1 .. c ] ) )
     ( emptyFM )
+
+-- | all colourings with at most c colours
+-- and some precoloured nodes 
+-- (warning: precolouring must be conflict free, not checked)
+extend_colourings :: GraphC a
+	   => Int -> Graph a 
+	   -> FiniteMap a Int
+           -> [ FiniteMap a Int ]
+extend_colourings c g pre = list_colourings g 
+    ( listToFM $ do 
+          v <- lknoten g 
+	  return ( v, mkSet $ case lookupFM pre v of
+		          Just x -> [ x ]
+			  Nothing -> [ 1 .. c ]
+		 )
+    ) pre 
 
 list_colourings :: GraphC a
      => Graph a
