@@ -6,7 +6,7 @@ module Inter.Login where
 
 import Gateway.CGI
 import Control.Types ( VNr, toString, TimeStatus (..) )
-import Control.Monad ( when )
+import Control.Monad ( when, mzero )
 
 import qualified Control.Vorlesung as V
 import qualified Control.Semester
@@ -40,12 +40,18 @@ form = do
     aule stud
 
 aule stud = do
-    let snr = S.snr stud
-
     sems0 <- io $ Control.Semester.get_at_school $ S.unr stud
     let sems = sortBy ( \ s -> Control.Semester.status s /= Current ) 
 	     $ sems0
- 
+
+    if null sems
+       then do
+           plain "Für diese Schule wurden noch keine Semester definiert."
+	   mzero
+       else continue stud sems
+
+continue stud sems = do 
+    let snr = S.snr stud
     open btable
     sem <- click_choice_with_default 0 "Semester" $ do
 	 sem <- sems
