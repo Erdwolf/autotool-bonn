@@ -9,27 +9,32 @@ where
 import Grammatik.Type
 import Grammatik.Trace
 
-import Util.Zufall
-import Data.Set
-import Reporter
+import qualified Grammatik.Trace.Config as T
+import qualified Grammatik.Ableitung.Config as A
 
-gens :: Int -> Int -> Grammatik -> IO Track
-    -- erzeugt eine Ableitung mit höchstens `steps' meilensteinen
-    -- und jeder abstand ist <= `width' 
-    -- d. h. jeder ausgegebene track
-    -- läßt sich mit `trace b g' verifizieren
-gens s b g = gen s b g [ startsymbol g ]
+import Autolib.Util.Zufall
+import Autolib.Set
+import Autolib.Reporter
 
-gen s b g u | s <= 0 = return [ u ]
-gen s b g u = 
-    case setToList $ nachfolger b g u of
+-- | erzeugt eine Ableitung mit höchstens `steps' meilensteinen
+-- und jeder abstand ist <= `width' 
+-- d. h. jeder ausgegebene track
+-- läßt sich mit `trace b g' verifizieren
+gens :: T.Config -> IO Track
+gens conf = gen conf [ startsymbol $ T.grammatik conf ]
+
+gen :: T.Config -> String -> IO Track
+gen conf u | T.steps conf <= 0 = return [ u ]
+gen conf u = 
+    case setToList $ nachfolger conf u of
 	 [] -> return [u]
 	 vs -> do v <- eins vs
-		  rest <- gen (s-1) b g v
+		  rest <- gen ( conf { T.steps = T.steps conf - 1 } ) v
 		  return $ u : rest
 
-generate :: Int -> Int -> Grammatik -> IO [ String ]
-generate steps width g = do
-    ws0 <- mapM ( \ s ->  gens s width g ) [ 1 .. steps ]
+generate :: T.Config -> IO [ String ]
+generate conf = do
+    ws0 <- mapM ( \ s ->  gens $ conf { T.steps = s } ) 
+           [ 1 .. T.steps conf ]
     return $ map last $ ws0
 

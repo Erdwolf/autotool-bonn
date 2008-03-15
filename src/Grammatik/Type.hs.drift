@@ -26,6 +26,14 @@ data Grammatik = Grammatik
 	       }
          deriving ( Eq, Typeable )
 
+example :: Grammatik
+example = Grammatik
+        { terminale = mkSet "ab"
+        , variablen = mkSet "S"
+        , start = 'S'
+        , regeln = mkSet [ ("S", ""), ("S", "aSbS") ]
+        }
+
 {-! for Grammatik derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance Hash Grammatik where
@@ -41,7 +49,7 @@ rules = setToList . regeln
 
 instance Size Grammatik where size = cardinality . regeln
 
--- for compatibility:
+-- | for compatibility:
 nichtterminale = variablen
 startsymbol = start
 

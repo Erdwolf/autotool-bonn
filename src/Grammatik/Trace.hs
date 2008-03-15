@@ -2,34 +2,38 @@ module Grammatik.Trace where
 
 import Grammatik.Type
 import Grammatik.Ableitung
-import Schichten
+import qualified Grammatik.Ableitung.Config as A
+import Grammatik.Trace.Config
 
-import Reporter
-import Data.Set
-import ToDoc
+import Autolib.Schichten
+
+import Autolib.Reporter
+import Autolib.Set
+import Autolib.ToDoc
 
 type Track = [ String ]
 type Tracks = [[ String ]]
 
-nachfolger :: Int -> Grammatik -> String -> Set String
-nachfolger b g u = mkSet $ do
-    vss <- take b $ schichten ( schritt Nothing g ) $ cons u nil
+nachfolger :: Config -> String -> Set String
+nachfolger conf u = mkSet $ do
+    vss <- take ( A.max_depth $ search conf ) 
+           $ schichten ( schritt ( search conf ) ( grammatik conf ) ) $ cons u nil
     v <- setToList vss
     return $ car v
 
-jump :: Int -> Grammatik -> (String, String) -> Reporter ()
-jump b g (u, v) = do 
-    let f = v `elementOf` nachfolger b g u
+jump :: Config -> (String, String) -> Reporter ()
+jump conf (u, v) = do 
+    let f = v `elementOf` nachfolger conf u
     inform $ fsep [ text "Gibt es eine kurze Ableitung"
 		  , text "von" , toDoc u, text "nach", toDoc v, text "?"
 		  , toDoc f
 		  ]
     when ( not f ) $ reject empty
 
-jumps :: Int -> Grammatik -> Track -> Reporter ()
-jumps b g us = do
+jumps :: Config -> Track -> Reporter ()
+jumps conf us = do
     inform $ text "Ich verifiziere die Kette" <+> toDoc us
-    mapM_ (nested 4 . jump b g) $ zip us $ tail us
+    mapM_ (nested 4 . jump conf ) $ zip us $ tail us
     newline
 
 starts :: (Grammatik, Set String) -> Tracks -> Reporter ()
@@ -54,8 +58,10 @@ complete (g, vs) ts = do
     inform $ text "OK"
     newline
 
-trace :: Int -> ( Grammatik, Set String ) -> Tracks -> Reporter Int
-trace b ( g, vs ) ts = do
+trace :: Config ->  Set String -> Tracks -> Reporter Int
+trace conf vs ts = do
+    let g = grammatik conf
+        b = A.max_depth $ search conf
     inform $ text "Sie sollen nachweisen,"
     inform $ text "daß diese Wörter aus dem Startsymbol ableitbar sind:"
     inform $ nest 4 $ toDoc vs
@@ -72,7 +78,7 @@ trace b ( g, vs ) ts = do
 
     starts (g, vs) ts
     inform $ text "Sind alle Ableitungsketten korrekt?"
-    mapM_ ( nested 4 . jumps b g ) ts
+    mapM_ ( nested 4 . jumps conf ) ts
     complete (g, vs) ts
 
     return 0

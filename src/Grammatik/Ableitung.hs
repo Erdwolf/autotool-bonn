@@ -1,28 +1,17 @@
 module Grammatik.Ableitung where
 
+import Grammatik.Type
+import Grammatik.Ableitung.Config
+
 import Control.Monad (guard)
 import Autolib.Set
 import Autolib.Schichten
 import Autolib.ToDoc
 
 import Autolib.Util.Wort
-import Grammatik.Type
+
 
 -------------------------------------------------------------------
-
-data Config = Config
-	   { max_length :: Int -- wortlänge
-	   , max_depth :: Int -- anzahl schichten
-	   , max_width :: Int -- breite der schicht
-	   }
-    deriving ( Read, Show )
-
-config :: Config -- als default benutzbar
-config = Config
-       { max_length = 10
-       , max_depth = 10
-       , max_width = 1000
-       }
 
 -- | trick: ableitung steht hierin falschrum
 data Ableitung = Ableitung [ String ]
@@ -72,10 +61,9 @@ nil = Ableitung []
 -------------------------------------------------------------------
 
 
-
+-- | nur die wörter, die nicht zu lang sind
 schritt :: Config
 	-> Grammatik -> Ableitung -> Set Ableitung
--- nur die wörter, die nicht zu lang sind
 schritt conf g a = mkSet $ do
     let w = car a
     (vorn, hinten) <- zerlegungen w
@@ -86,8 +74,8 @@ schritt conf g a = mkSet $ do
     guard $ length w' <= max_length conf
     return $ cons w' a
 
+-- | beachte config
 ableitungen :: Config -> Grammatik -> [ Set Ableitung ]
--- beachte config
 ableitungen conf g 
     = take ( max_depth conf )
     $ takeWhile ( \ s -> cardinality s < max_width conf )
