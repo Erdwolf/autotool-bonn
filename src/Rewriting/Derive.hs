@@ -62,7 +62,8 @@ instance ( RDT tag, RDT action, RDT object , RDT system
         -- peng $ to inst
         
 
-    initial ( Derive tag ) inst = return $ head $ actions tag ( system inst ) ( from inst )
+    initial ( Derive tag ) inst = 
+        take 1 $ actions tag ( system inst ) ( from inst ) 
 
     total ( Derive tag ) inst steps = do
         let sys = system inst
