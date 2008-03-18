@@ -1,3 +1,5 @@
+{-# language DeriveDataTypeable #-}
+
 module Lambda.Data 
 
 ( module Lambda.Data
@@ -10,12 +12,13 @@ import Autolib.TES.Identifier
 import Autolib.Set
 import Autolib.Size
 import Control.Monad ( guard )
+import Data.Typeable
 
 data Lambda 
     = Variable Identifier
     | Apply Lambda Lambda
     | Abstract Identifier Lambda
-    deriving ( Eq, Ord )
+    deriving ( Eq, Ord, Typeable )
 
 instance Size Lambda where
     size t = case t of

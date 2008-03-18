@@ -145,6 +145,7 @@ import qualified Rewriting.TRS.Numerical
 import qualified Rewriting.Derive
 import qualified Rewriting.TRS.Apply
 import qualified Rewriting.SRS.Apply
+import qualified Lambda.Apply
 
 import qualified Lambda.Derive
 import qualified Lambda.Backward_Join
@@ -285,6 +286,9 @@ tmakers =
                         [ item $ Rewriting.Derive.make_fixed Rewriting.TRS.Apply.For_TRS
                         , item RD.make_quiz
                         , item Rewriting.TRS.Numerical.make
+                        ]
+                , heading "Lambda-Kalkül"
+                        [ item $ Rewriting.Derive.make_fixed Lambda.Apply.For_Lambda
                         ]
                 ]
          , heading "Lambda-Kalkül"

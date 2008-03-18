@@ -27,6 +27,36 @@ derive start xs = do
     ts <- derivation start xs
     return $ last ts
 
+single_derivation :: Lambda -> Int -> Reporter Lambda
+single_derivation t x = do
+    inform $ vcat 
+        [ text "*****************************************************"
+        , text "aktueller Term ist" 
+        , nest 4 $ toDoc t 
+        ]
+    peng t
+
+    inform $ text "Liste der Redex-Positionen ist ..."
+    let ps = redex_positions t
+    
+    inform $ nest 4 $ case ps of
+        [] -> text "leer."
+        ps -> vcat $ map toDoc $ do
+                     ( n, p ) <-  zip [ 0 :: Int .. ] ps
+                     redex <- peek t p 
+                     return ( n, p, redex )
+    inform $ text "Sie wählen den Redex Nummer" <+> toDoc x
+    silent $ assert ( 0 <= x && x < length ps )
+           $ text "Nummer ist zulässig?"
+    let p = ps !! x
+    redex <- peek t p
+    inform $ vcat [ text "Redex ist", nest 4 $ toDoc redex ]
+    redukt <- step redex
+    inform $ vcat [ text "Redukt ist", nest 4 $ toDoc redukt ]
+    result <- poke t ( p, redukt )
+    return result
+
+
 derivation :: Lambda -> [ Int ] -> Reporter [ Lambda ]
 derivation t xxs = do
     inform $ vcat 
