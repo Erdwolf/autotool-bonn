@@ -36,15 +36,8 @@ single_derivation t x = do
         ]
     peng t
 
-    inform $ text "Liste der Redex-Positionen ist ..."
-    let ps = redex_positions t
-    
-    inform $ nest 4 $ case ps of
-        [] -> text "leer."
-        ps -> vcat $ map toDoc $ do
-                     ( n, p ) <-  zip [ 0 :: Int .. ] ps
-                     redex <- peek t p 
-                     return ( n, p, redex )
+    ps <- redex_info t
+
     inform $ text "Sie wählen den Redex Nummer" <+> toDoc x
     silent $ assert ( 0 <= x && x < length ps )
            $ text "Nummer ist zulässig?"
@@ -54,7 +47,23 @@ single_derivation t x = do
     redukt <- step redex
     inform $ vcat [ text "Redukt ist", nest 4 $ toDoc redukt ]
     result <- poke t ( p, redukt )
+    inform $ vcat [ text "Resultat ist", nest 4 $ toDoc result ]
+
+    nested 4 $ redex_info result
+
     return result
+
+redex_info :: Lambda -> Reporter [Position]
+redex_info t = do
+    inform $ text "Liste der Redex-Positionen ist ..."
+    let ps = redex_positions t
+    inform $ nest 4 $ case ps of
+        [] -> text "leer."
+        ps -> vcat $ map toDoc $ do
+                     ( n, p ) <-  zip [ 0 :: Int .. ] ps
+                     redex <- peek t p 
+                     return ( n, p, redex )
+    return ps
 
 
 derivation :: Lambda -> [ Int ] -> Reporter [ Lambda ]
