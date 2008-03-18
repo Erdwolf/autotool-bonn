@@ -38,6 +38,11 @@ data For_TRS = For_TRS
 instance  A.Apply For_TRS ( TRS Identifier Identifier ) 
                        ( Term Identifier Identifier ) 
                        ( Step Identifier Identifier ) where
+    example tag = Instance
+        { system = Rewriting.TRS.example
+        , from = read "f(a,f(a,b))"
+        , to = read "f(f(b,a),a)"
+        }
     apply tag system object action = do
         exec system object action
     actions tag system object = 

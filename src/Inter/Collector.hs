@@ -144,6 +144,7 @@ import qualified Rewriting.TRS.Numerical
 
 import qualified Rewriting.Derive
 import qualified Rewriting.TRS.Apply
+import qualified Rewriting.SRS.Apply
 
 import qualified Lambda.Derive
 import qualified Lambda.Backward_Join
@@ -277,7 +278,10 @@ tmakers =
                 , item RM.Make.make
                 ]
          , heading "Ableitungen in Ersetzungssystemen"
-                [ heading "Termersetzung"
+                [ heading "Wortersetzung"
+                        [ item $ Rewriting.Derive.make_fixed Rewriting.SRS.Apply.For_SRS
+                        ]
+                , heading "Termersetzung"
                         [ item $ Rewriting.Derive.make_fixed Rewriting.TRS.Apply.For_TRS
                         , item RD.make_quiz
                         , item Rewriting.TRS.Numerical.make
