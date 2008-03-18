@@ -24,4 +24,4 @@ instance Size ( Step v c ) where size _ = 1
 
 -- local variables:
 -- mode: haskell
--- end;
+-- end:
