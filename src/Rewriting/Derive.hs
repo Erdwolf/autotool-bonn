@@ -1,15 +1,20 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
+{-# language UndecidableInstances #-}
+{-# OPTIONS -fglasgow-exts #-}
+
+
+-- | this is the general module (top module after refactoring)
 
 module Rewriting.Derive where
 
-import Rewriting.TRS
-import Type.Tree
-
+import Rewriting.Apply
 import Rewriting.Derive.Instance
+
+{-
 import Rewriting.Step
 import Rewriting.Steps
 import Rewriting.Derive.Quiz
 import Rewriting.Derive.Config
+-}
 
 import Autolib.Reporter
 import Autolib.ToDoc
@@ -23,43 +28,55 @@ import Inter.Quiz
 import Control.Monad
 import Data.Typeable
 
-data Derive = Derive 
-    deriving ( Eq, Ord, Show, Read, Typeable )
+data Derive tag = Derive tag 
+    deriving ( Eq, Ord, Typeable )
 
-instance (  Symbol c )
-    => Partial Derive ( Instance c c ) [ Step c c ] where
+instance ToDoc tag => ToDoc ( Derive tag ) where
+    toDoc ( Derive t ) = text "Derive-" <> toDoc t
 
-    report Derive inst = do 
+instance Reader tag => Reader ( Derive tag ) where
+    reader = do 
+        my_symbol "Derive-"
+        tag <- reader
+        return $ Derive tag
+
+class ( Reader x, ToDoc x ) => RD x
+instance ( Reader x, ToDoc x ) => RD x
+
+instance ( RD tag, RD action, RD object , RD system
+         , Eq object
+         , Apply tag system object action 
+         )
+    => Partial ( Derive tag ) ( Instance system object ) [ action ] where
+
+    report ( Derive tag ) inst = do 
         inform $ vcat
-            [ text "gesucht ist für das Term-Ersetzungs-System"
+            [ text "gesucht ist für das System"
             , nest 4 $ toDoc $ system inst
             , text "eine Folge von Schritten, die"
             , nest 4 $ toDoc $ from inst
             , text "überführt in"
             , nest 4 $ toDoc $ to inst
             ]
-        peng $ from inst
-        peng $ to inst
+        -- peng $ from inst
+        -- peng $ to inst
         
 
-    initial Derive inst = 
-        [ Step { rule_number = 2
-               , position = [0,2]
-               , substitution = listToFM 
-                              $ zip ( variablen $ system inst )
-                              $ drop 2 $ subterms $ from inst
-               }
-        ]
+    initial ( Derive tag ) inst = return $ head $ actions tag ( system inst ) ( from inst )
 
-    total Derive inst steps = do
+    total ( Derive tag ) inst steps = do
         let sys = system inst
-        t <- foldM ( exec sys ) ( from inst ) steps
+        t <- foldM ( apply tag sys ) ( from inst ) steps
         assert ( t == to inst )
                $ text "stimmt mit Ziel überein?"
 
+instance Measure ( Derive tag ) ( Instance system object ) [ action ] where
+    measure ( Derive tag ) inst actions = fromIntegral $ length actions
 
-make_fixed :: Make
-make_fixed = direct Derive Rewriting.Derive.Instance.example
+
+{-
+make_fixed :: tag -> Make
+make_fixed tag = direct ( Derive tag  Rewriting.Derive.Instance.example
 
 make_quiz :: Make
 make_quiz = quiz Derive Rewriting.Derive.Config.example
@@ -77,3 +94,5 @@ firstvar trs = take 1 $ do
     r <- regeln trs
     t <- [ lhs r, rhs r ]
     lvars t
+-}
+
