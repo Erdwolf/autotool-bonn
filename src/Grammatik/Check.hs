@@ -10,7 +10,7 @@ where
 import Grammatik.Type
 import Grammatik.Zeige
 
-import Grammatik.Ableitung ( Config (..) )
+import Grammatik.Ableitung.Config 
 
 import Language.Type
 

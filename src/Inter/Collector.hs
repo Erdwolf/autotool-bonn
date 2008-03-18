@@ -139,7 +139,7 @@ import qualified Code.Hamming
 import qualified Code.Nonprefix 
 import qualified Code.Nocode
 
-import qualified Rewriting.Derive
+import qualified Rewriting.TRS.Derive as RD
 import qualified Rewriting.Numerical
 
 import qualified Lambda.Derive
@@ -274,8 +274,8 @@ tmakers =
                 , item RM.Make.make
                 ]
          , heading "Termersetzung"
-                [ item Rewriting.Derive.make_fixed
-                , item Rewriting.Derive.make_quiz
+                [ item RD.make_fixed
+                , item RD.make_quiz
                 , item Rewriting.Numerical.make
                 ]
          , heading "Lambda-Kalkül"

@@ -9,6 +9,7 @@ where
 
 import Grammatik.Type
 import Grammatik.Ableitung
+import Grammatik.Ableitung.Config
 
 import Grammatik.Reduziert
 
