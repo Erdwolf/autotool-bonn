@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
-module Rewriting.Numerical
+module Rewriting.TRS.Numerical
 
 ( make )
 
@@ -12,7 +12,7 @@ import Inter.Types
 import Autolib.Set
 import Autolib.Size
 
-import Rewriting.Machine
+import Rewriting.TRS.Machine
 import Rewriting.TRS
 import Rewriting.Check
 

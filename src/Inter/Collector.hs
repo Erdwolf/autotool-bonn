@@ -140,7 +140,10 @@ import qualified Code.Nonprefix
 import qualified Code.Nocode
 
 import qualified Rewriting.TRS.Derive as RD
-import qualified Rewriting.Numerical
+import qualified Rewriting.TRS.Numerical
+
+import qualified Rewriting.Derive
+import qualified Rewriting.TRS.Apply
 
 import qualified Lambda.Derive
 import qualified Lambda.Backward_Join
@@ -273,10 +276,12 @@ tmakers =
                 , item RAM.Make.make
                 , item RM.Make.make
                 ]
-         , heading "Termersetzung"
-                [ item RD.make_fixed
-                , item RD.make_quiz
-                , item Rewriting.Numerical.make
+         , heading "Ableitungen in Ersetzungssystemen"
+                [ heading "Termersetzung"
+                        [ item $ Rewriting.Derive.make_fixed Rewriting.TRS.Apply.For_TRS
+                        , item RD.make_quiz
+                        , item Rewriting.TRS.Numerical.make
+                        ]
                 ]
          , heading "Lambda-Kalkül"
                 [ item Lambda.Derive.make_fixed

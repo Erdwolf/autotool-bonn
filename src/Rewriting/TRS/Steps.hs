@@ -1,8 +1,8 @@
 {-# OPTIONS -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
-module Rewriting.Steps where
+module Rewriting.TRS.Steps where
 
-import Rewriting.Step
+import Rewriting.TRS.Step
 import Rewriting.TRS
 
 import Type.Tree

@@ -5,9 +5,9 @@ module Rewriting.TRS.Derive where
 import Rewriting.TRS
 import Type.Tree
 
-import Rewriting.Derive.Instance
-import Rewriting.Step
-import Rewriting.Steps
+import Rewriting.TRS.Instance
+import Rewriting.TRS.Step
+import Rewriting.TRS.Steps
 import Rewriting.Derive.Quiz
 import Rewriting.Derive.Config
 
@@ -59,7 +59,7 @@ instance (  Symbol c )
 
 
 make_fixed :: Make
-make_fixed = direct Derive Rewriting.Derive.Instance.example
+make_fixed = direct Derive Rewriting.TRS.Instance.example
 
 make_quiz :: Make
 make_quiz = quiz Derive Rewriting.Derive.Config.example

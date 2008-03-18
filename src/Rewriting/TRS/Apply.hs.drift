@@ -8,8 +8,9 @@ import Rewriting.TRS
 import Type.Tree
 
 import Rewriting.Derive.Instance
-import Rewriting.Step
-import Rewriting.Steps
+import Rewriting.TRS.Step
+import Rewriting.TRS.Steps
+
 {-
 import Rewriting.Derive.Quiz
 import Rewriting.Derive.Config
@@ -30,20 +31,18 @@ import Control.Monad
 import Data.Typeable
 
 data For_TRS = For_TRS
-    deriving ( Eq, Ord, Show, Read, Typeable )
+    deriving ( Eq, Ord, Typeable )
 
+{-! for For_TRS derive: Reader, ToDoc  !-}
 
-class Apply tag system object action  where
-    -- | apply one action to object
-    apply :: tag -> system -> object -> action 
-          -> Reporter object
-    -- | list of all possible actions
-    actions :: tag -> system -> object 
-            -> [ action ]
-
-instance (  Symbol c )
-    => A.Apply For_TRS ( TRS c c ) ( Term c c ) ( Step c c ) where
+instance  A.Apply For_TRS ( TRS Identifier Identifier ) 
+                       ( Term Identifier Identifier ) 
+                       ( Step Identifier Identifier ) where
     apply tag system object action = do
         exec system object action
     actions tag system object = 
         steps system object
+
+-- local variables:
+-- mode: haskell
+-- end:

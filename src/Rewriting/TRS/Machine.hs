@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
-module Rewriting.Machine where
+module Rewriting.TRS.Machine where
 
 --   $Id$
 
@@ -8,7 +8,7 @@ import Machine.Class
 import Machine.History
 
 import Rewriting.TRS
-import Rewriting.Steps
+import Rewriting.TRS.Steps
 
 import Autolib.Set
 import Autolib.ToDoc

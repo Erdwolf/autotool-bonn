@@ -3,9 +3,9 @@
 module Rewriting.Derive.Quiz where
 
 import Rewriting.TRS
-import Rewriting.Step
-import Rewriting.Steps 
-import Rewriting.Derive.Instance
+import Rewriting.TRS.Step
+import Rewriting.TRS.Steps 
+import Rewriting.TRS.Instance
 import qualified Rewriting.Roller as R
 import Rewriting.Derive.Config
 

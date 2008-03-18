@@ -40,10 +40,10 @@ instance Reader tag => Reader ( Derive tag ) where
         tag <- reader
         return $ Derive tag
 
-class ( Reader x, ToDoc x ) => RD x
-instance ( Reader x, ToDoc x ) => RD x
+class ( Reader x, ToDoc x, Typeable x ) => RDT x
+instance ( Reader x, ToDoc x, Typeable x ) => RDT x
 
-instance ( RD tag, RD action, RD object , RD system
+instance ( RDT tag, RDT action, RDT object , RDT system
          , Eq object
          , Apply tag system object action 
          )
@@ -74,9 +74,15 @@ instance Measure ( Derive tag ) ( Instance system object ) [ action ] where
     measure ( Derive tag ) inst actions = fromIntegral $ length actions
 
 
+make_fixed :: ( RDT tag, RDT action, RDT object , RDT system
+         , Eq object
+         , Apply tag system object action 
+         )
+           => tag -> Make
+make_fixed tag = direct ( Derive tag ) ( example tag )
+
+
 {-
-make_fixed :: tag -> Make
-make_fixed tag = direct ( Derive tag  Rewriting.Derive.Instance.example
 
 make_quiz :: Make
 make_quiz = quiz Derive Rewriting.Derive.Config.example
