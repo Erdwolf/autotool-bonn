@@ -38,6 +38,6 @@ present t =
                      ( \ c xs -> D.Node ( show c ++ " " ) xs )
     in  vcat [ toDoc t
 	 , text ""
-	 , nest 4 -- $ Autolib.TES.Draw.draw t
+	 , nest 4 --  $ Autolib.TES.Draw.draw t
 	         $ vcat $ map text $ lines $ Baum.Draw.compact' $ make t
 	 ]

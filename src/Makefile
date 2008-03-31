@@ -36,36 +36,41 @@ tags :
 
 # GHC_VERSION = 6.4.2.20060121
 # GHC_VERSION = 6.6
-GHC_VERSION = 6.8.0.20070921
+# GHC_VERSION = 6.8.0.20070921
+GHC_VERSION = 6.8.2
 
-GHC_LIBS = base-2.1 haskell98-1.0 parsec-2.0 unix-2.0 network-2.0.1 readline-1.0 containers-0.1 pretty-1.0
+GHC_LIBS = base haskell98 parsec unix network readline containers pretty
 GHC_LINK = http://www.haskell.org/ghc/docs/$(GHC_VERSION)/html/libraries
 GHC_DESC = /usr/local/share/doc/ghc/libraries
 
 HAXML_LINK = http://www.cs.york.ac.uk/fp/HaXml
 # HAXML_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries/HaXml
-HAXML_DESC = /usr/local/share/HaXml-1.13.2/doc/html
+HAXML_DESC = /usr/local/share/doc/HaXml-1.13.2/html
 
 AUTOLIB_LINK = http://141.57.11.163/auto/lib/haddock
 # AUTOLIB_DESC = /usr/local/share/ghc-$(GHC_VERSION)/html/libraries/Autolib
-AUTOLIB_DESC = /usr/local/share/Autolib-0.0/doc/html
+AUTOLIB_DESC = /usr/local/share/doc/Autolib-0.0/html
 
 HADDOCK_OUTPUT = $(WWW)/auto/tool/haddock
 
 HADDOCK_OPTS = -v \
+-B /usr/local/lib/ghc-$(GHC_VERSION) \
+--optghc=-fglasgow-exts \
+--optghc=-fallow-undecidable-instances \
+--optghc=-fallow-overlapping-instances \
 --html \
 --title=auto/tool \
 --source-base=http://141.57.11.163/cgi-bin/cvsweb/tool/src \
 --source-module=http://141.57.11.163/cgi-bin/cvsweb/tool/src/%F \
 $(foreach lib,$(GHC_LIBS), \
 --read-interface=$(GHC_LINK)/$(lib),$(GHC_DESC)/$(lib)/$(word 1,$(subst -, ,$(lib))).haddock) \
---read-interface=$(AUTOLIB_LINK),$(AUTOLIB_DESC)/Autolib.haddock 
-
-# --read-interface=$(HAXML_LINK)/HaXml,$(HAXML_DESC)/HaXml.haddock 
+--read-interface=$(AUTOLIB_LINK),$(AUTOLIB_DESC)/Autolib.haddock \
+--read-interface=$(HAXML_LINK)/HaXml,$(HAXML_DESC)/HaXml.haddock 
 
 GHC_DEFINES = $(shell ./ghc-defs.sh)
 
 haddock :
+	rm -rf doc
 	mkdirhier doc
 	for file in `find . -name "*.hi" -print | sed -e 's/hi$$/hs/'`; \
 		do  \
@@ -74,7 +79,7 @@ haddock :
 			| grep -v "Id: " > doc/$$file; \
 		done 
 	mkdirhier $(HADDOCK_OUTPUT) 
-	cd doc ; ( find . -name "*.hs" -print ) \
+	cd doc ; ( find . -name "*.hs" -print | egrep -v "Inter/Super|Inter/Trial" ) \
 	| xargs $(HADDOCK) $(HADDOCK_OPTS) -o $(HADDOCK_OUTPUT)
 
 .PHONY : haddock
