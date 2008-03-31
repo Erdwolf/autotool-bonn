@@ -123,7 +123,8 @@ step vpool = do
     sequence $ do
         out <- outs
         return $ do 
-            hPutStrLn stderr $ "sending alien " -- ++ show ( toDoc top )
+            hPutStrLn stderr $ "sending alien " 
+                          ++ show ( length $ show $ toDoc top )
             tryPutMVar out top
 
     return $ vpool

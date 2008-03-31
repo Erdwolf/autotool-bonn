@@ -1,6 +1,6 @@
 {-# language NoMonomorphismRestriction #-}
 
-module Hanoi.Fast where
+-- module Hanoi.Fast where
 
 import Hanoi.QSearch
 import qualified Hanoi.Type as T
@@ -16,15 +16,31 @@ type State = [ Turm ]
 
 type Zug = (Turm, Turm)
 
+<<<<<<< Fast.hs
+main = sequence_ $ do
+    ( tag, fun ) <- [ ( "neighbours", neighbours )
+                    , ( "cyclic", cyclic )
+                    ]
+    return $ do
+        putStrLn tag
+        print $ tabulate fun 10 10 1000000
+        hFlush stdout
+
+tabulate targets p s depth = besides $ do
+=======
 
 tabulate targets p s = besides $ do
+>>>>>>> 1.3
     k <- [ 0 .. s ]
     return $ vcat $ do
         q <- [ 3 .. p ]
-        return $ case solve ( targets q ) q k of
+        return $ case solve depth ( targets q ) q k of
             Nothing -> text "*"
             Just n  -> toDoc n
 
+<<<<<<< Fast.hs
+solve depth targets pegs pieces = 
+=======
 present :: [(Int,Int)] -> [T.Zug]
 present = map ( \ (x,y) -> ( toEnum x, toEnum y))
 
@@ -32,6 +48,7 @@ solve targets pegs pieces =
     fmap length $ solve_path targets pegs pieces
 
 solve_path targets pegs pieces = 
+>>>>>>> 1.3
     let start_peg = 0
         start = replicate pieces start_peg
         goal_peg  = pegs - 1
@@ -42,7 +59,7 @@ solve_path targets pegs pieces =
                 else 1 + fromIntegral ( length zs )
         
     in  case   filter ( \ (b,c,zs) -> c == goal )
-             $ take 100000
+             $ take depth
              $ search ( moves targets )  badness $ start of
             ( b, c, zs ) : _ -> Just zs 
             _ -> Nothing
