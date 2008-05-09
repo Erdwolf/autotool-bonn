@@ -1,3 +1,5 @@
+{-# language PatternSignatures, ScopedTypeVariables #-}
+
 module LCS.Code 
 
 ( lcs
@@ -48,7 +50,19 @@ lcs ( xs :: [a] ) ( ys :: [a] ) =
     in  reverse $ path (a ! top)
 
 -- | check if subsequence relation holds
--- use quadratic space and time
 is_embedded_in :: Eq a => [a] -> [a] -> Bool
-is_embedded_in xs ys = xs == lcs xs ys
+is_embedded_in = is_embedded_in2
+
+-- | use quadratic space and time
+is_embedded_in1 xs ys = xs == lcs xs ys
+
+-- | better?
+is_embedded_in2 [] ys = True
+is_embedded_in2 xs [] = False
+is_embedded_in2 xxs @ (x:xs) (y:ys) = 
+    if x == y 
+    then is_embedded_in2 xs ys
+    else is_embedded_in2 xxs ys
+
+
 

@@ -67,10 +67,7 @@ instance
 			  , text "ist länger als meine Lösung"
 			  , nest 4 $ toDoc zs'
 			  ]
-	   else if length zs < ( length zs' `div` 2 )
-		then reject 
-		   $ text "Ihre Folge ist kürzer als die Hälfte meiner Lösung."
-		else return ()
+	   else return ()
 
 merge :: [a] -> [a] -> [a]
 merge [] ys = ys
