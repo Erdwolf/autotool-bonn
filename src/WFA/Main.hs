@@ -60,7 +60,7 @@ b = let s = WFA.RGB.maxplus2
         }
 
 writePBM file aut dep = do
-    let pic = picture aut dep
+    let pic = picture_opt aut dep
         w = 2^dep
         contents = unlines $ do
             row <- [ 0 .. w - 1 ]
@@ -101,4 +101,26 @@ picture aut dep =
     in  array bnd $ do
             p <- paths dep
             return ( position p, weight aut p )
+
+picture_opt aut dep = 
+    let top = 2^dep - 1
+        bnd = ((0,0),(top,top))
+    in  array bnd $ positions_with_weights aut dep 
+
+positions_with_weights aut dep =
+    let initialize v = 
+            let res = WFA.Matrix.times ( initial aut ) v
+            in  WFA.Matrix.get res ( (),() )
+        f path v dep =
+            if dep == 0 then [ ( position $ path, initialize v ) ]
+            else do
+                q <- quads
+                let m = M.findWithDefault ( error "pww_opt" ) q $ transition aut
+                    v' = WFA.Matrix.times m v
+                f ( q : path ) v' ( dep - 1 )
+    in  f [] ( final aut ) dep
+
+
+
+
 
