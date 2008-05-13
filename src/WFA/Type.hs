@@ -27,10 +27,16 @@ interpretation a w =
         c <- w
         return $ M.findWithDefault ( error "interpretation" ) c $ transition a
 
+final_interpretation :: ( Ord c, Ord s ) => WFA c s a -> [c] -> Matrix s () a
+final_interpretation a w = 
+    foldr ( WFA.Matrix.times ) ( final a ) $ do
+        c <- w
+        return $ M.findWithDefault ( error "interpretation" ) c $ transition a
+
 weight :: ( Ord c, Ord s ) => WFA c s a -> [c] -> a
 weight a w =  
     let res = WFA.Matrix.times ( initial a ) 
-            $ WFA.Matrix.times ( interpretation a w ) $ final a
+            $ final_interpretation a w 
     in  WFA.Matrix.get res ( (),() )
 
 

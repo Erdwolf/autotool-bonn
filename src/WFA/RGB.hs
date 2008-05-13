@@ -27,9 +27,17 @@ blue = RGB 0 0 top
 maxplus :: Semiring RGB
 maxplus = Semiring
         { zero = black
-        , one  = white
+        , one  = black -- white
         , plus = map2 max
         , times = map2 ( \ x y -> min top ( x + y ) )
+        }
+
+maxplus2 :: Semiring RGB
+maxplus2 = Semiring
+        { zero = black
+        , one  = black -- white
+        , plus = map2 max
+        , times = map2 ( \ x y -> div ( x + y ) 2 )
         }
 
 top :: Int

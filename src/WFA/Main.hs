@@ -13,7 +13,7 @@ import qualified Data.Set as S
 import Data.Array
 
 main :: IO ()
-main = writePBM "bild.pbm" a 3
+main = writePBM "bild-b.pbm" Main.b 8
        
 
 data LR = L | R deriving ( Eq, Ord, Show, Enum, Bounded )
@@ -41,6 +41,22 @@ a = let s = WFA.RGB.maxplus
               , ( (R,D), WFA.Matrix.make s [ (1, white, 2) ] )
               ]
         , final    = WFA.Matrix.make s [ ( 2, red, () ) ]
+        }
+
+b :: WFA Quad Int RGB 
+b = let s = WFA.RGB.maxplus2
+    in  WFA 
+        { WFA.Type.semiring = s
+        , alphabet = S.fromList quads
+        , states   = S.fromList [ 1 ]
+        , initial  = WFA.Matrix.make s [ ( (), white, 1 ) ]
+        , transition = M.fromList
+              [ ( (L,U), WFA.Matrix.make s [ (1, red, 1) ] )
+              , ( (L,D), WFA.Matrix.make s [ (1, green, 1) ] )
+              , ( (R,U), WFA.Matrix.make s [ (1, white, 1) ] )
+              , ( (R,D), WFA.Matrix.make s [ (1, blue, 1) ] )
+              ]
+        , final    = WFA.Matrix.make s [ ( 1, white, () ) ]
         }
 
 writePBM file aut dep = do
