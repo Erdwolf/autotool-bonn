@@ -15,20 +15,32 @@ import Data.Array
 main :: IO ()
 main = writePBM "bild.pbm" a 3
        
-a :: WFA Char Int RGB 
+
+data LR = L | R deriving ( Eq, Ord, Show, Enum, Bounded )
+data UD = U | D deriving ( Eq, Ord, Show, Enum, Bounded )
+
+type Quad = ( LR, UD )
+
+quads :: [ Quad ]
+quads = do 
+    h <- [ minBound .. maxBound ]
+    v <- [ minBound .. maxBound ]
+    return ( h, v )
+
+a :: WFA Quad Int RGB 
 a = let s = WFA.RGB.maxplus
     in  WFA 
         { WFA.Type.semiring = s
-        , alphabet = S.fromList "lrud"
+        , alphabet = S.fromList quads
         , states   = S.fromList [ 1,2 ]
-        , initial  = M.fromList [ ( 1, blue ) ]
+        , initial  = WFA.Matrix.make s [ ( (), blue, 1 ) ]
         , transition = M.fromList
-              [ ( 'l', WFA.Matrix.make s [ (1, white, 2) ] )
-              , ( 'r', WFA.Matrix.make s [ (1, white, 2) ] )
-              , ( 'u', WFA.Matrix.make s [ (1, white, 2) ] )
-              , ( 'd', WFA.Matrix.make s [ (1, white, 2) ] )
+              [ ( (L,U), WFA.Matrix.make s [ (1, white, 2) ] )
+              , ( (L,D), WFA.Matrix.make s [ (1, white, 2) ] )
+              , ( (R,U), WFA.Matrix.make s [ (1, white, 2) ] )
+              , ( (R,D), WFA.Matrix.make s [ (1, white, 2) ] )
               ]
-        , final    = M.fromList [ ( 2, red ) ]
+        , final    = WFA.Matrix.make s [ ( 2, red, () ) ]
         }
 
 writePBM file aut dep = do
@@ -47,24 +59,23 @@ writePBM file aut dep = do
         ]
 
 
-type Path = [ Char ]
+type Path = [ Quad ]
 
 paths :: Int -> [ Path ]
 paths 0 = return []
 paths d | d > 0 = do
-    h <- "lr"
-    v <- "ud"
+    x <- quads
     rest <- paths ( d - 1 )
-    return $ h : v : rest
+    return $ x : rest
 
 type Point = ( Int, Int )
 
 position :: Path -> Point
 position p =
     let f (x,y) [] = (x, y)
-        f (x,y) (h : v : rest) =
-            let hh = case h of 'l' -> 1 ; 'r' -> 0
-                vv = case v of 'u' -> 1 ; 'd' -> 0
+        f (x,y) ((h,v) : rest) =
+            let hh = fromEnum h
+                vv = fromEnum v
             in  f ( 2 * x + hh, 2 * y + vv ) rest
     in  f (0,0) p
 

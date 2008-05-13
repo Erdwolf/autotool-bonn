@@ -15,12 +15,12 @@ import qualified WFA.Semiring
 data WFA c s a = WFA { semiring :: Semiring a
                      , alphabet :: Set c
                      , states   :: Set s
-                     , initial  :: Map s a
-                     , transition :: Map c ( Matrix s a )
-                     , final    :: Map s a
+                     , initial  :: Matrix () s a
+                     , transition :: Map c ( Matrix s s a )
+                     , final    :: Matrix s () a
                      }
 
-interpretation :: ( Ord c, Ord s ) => WFA c s a -> [c] -> Matrix s a
+interpretation :: ( Ord c, Ord s ) => WFA c s a -> [c] -> Matrix s s a
 interpretation a w = 
     foldr ( WFA.Matrix.times )
           ( WFA.Matrix.unit ( semiring a ) ( states a ) ) $ do
@@ -28,10 +28,10 @@ interpretation a w =
         return $ M.findWithDefault ( error "interpretation" ) c $ transition a
 
 weight :: ( Ord c, Ord s ) => WFA c s a -> [c] -> a
-weight a w = foldr ( WFA.Semiring.plus $ semiring a ) ( WFA.Semiring.zero $ semiring a ) $ do
-    ((x,y), h) <- M.toList $ WFA.Matrix.contents $ interpretation a w
-    let get m x = M.findWithDefault ( WFA.Semiring.zero $ semiring a ) x m
-    return $ foldr1 ( WFA.Semiring.times $ semiring a ) 
-           [ get ( initial a ) x , h, get ( final a ) y ]
+weight a w =  
+    let res = WFA.Matrix.times ( initial a ) 
+            $ WFA.Matrix.times ( interpretation a w ) $ final a
+    in  WFA.Matrix.get res ( (),() )
+
 
 
