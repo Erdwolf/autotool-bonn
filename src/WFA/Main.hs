@@ -36,14 +36,14 @@ b = let s = WFA.RGB.maxplus2
         { WFA.Type.semiring = s
         , alphabet = S.fromList quads
         , states   = S.fromList [ 1,2 ]
-        , initial  = WFA.Matrix.make s [ ( (), white, 1 ) ]
+        , initial  = WFA.Matrix.make s [ ( (), white, 1 ), ( (), white, 2 ) ]
         , transition = M.fromList
-              [ ( (L,U), WFA.Matrix.make s [ (1, red, 1) ] )
-              , ( (L,D), WFA.Matrix.make s [ (1, green, 2) ] )
-              , ( (R,U), WFA.Matrix.make s [ (2, white, 1) ] )
-              , ( (R,D), WFA.Matrix.make s [ (1, blue, 1) ] )
+              [ ( (L,U), WFA.Matrix.make s [ (1, red, 2), (1, blue, 1) ] )
+              , ( (L,D), WFA.Matrix.make s [ (2, green, 1), (2, blue, 2) ] )
+              , ( (R,U), WFA.Matrix.make s [ (1, white, 1), (1, red, 2) ] )
+              , ( (R,D), WFA.Matrix.make s [ (1, red, 1), (1, green, 2) ] )
               ]
-        , final    = WFA.Matrix.make s [ ( 1, white, () ) ]
+        , final    = WFA.Matrix.make s [ ( 1, white, () ), ( 2, white, () ) ]
         }
 
 

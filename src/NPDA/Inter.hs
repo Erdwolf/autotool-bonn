@@ -8,6 +8,7 @@ import NPDA.Beispiel
 
 import NPDA.Config
 import NPDA.Property
+import NPDA.Check
 
 import qualified Machine.Acceptor.Type as A
 import qualified Machine.Acceptor.Inter

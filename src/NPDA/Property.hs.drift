@@ -3,14 +3,12 @@
 module NPDA.Property where
 
 import NPDA.Type
-import NPDA.Det
-import NPDA.Sane
 
 import Condition
 
 import Autolib.Reporter
 import Autolib.Reporter.Type
-import qualified Autolib.Reporter.Checker as C
+
 
 import Autolib.ToDoc
 import Autolib.Reader
@@ -20,18 +18,12 @@ import Data.Typeable
 
 data Property = Det
 	      | Sane
+              | Accept_by Acceptance_Mode
     deriving ( Eq, Ord, Typeable )
-
 {-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
 
-instance Condition  Property ( NPDA Char Char Int ) where
-    condition p a = C.run ( NPDA.Property.check p ) a
-
-instance Explain Property where
-    explain p = C.condition ( NPDA.Property.check p )
-
-check :: Property -> C.Type  ( NPDA Char Char Int )
-check p = case p of
-	 Sane -> NPDA.Sane.sanity
-         Det -> NPDA.Det.check 
+data Acceptance_Mode = Empty_Stack
+          | Final_States
+    deriving ( Eq, Ord, Typeable )
+{-! for Acceptance_Mode derive: Reader, ToDoc, Haskell2Xml !-}
 

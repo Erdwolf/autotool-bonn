@@ -64,6 +64,9 @@ import qualified Faktor.Inverse
 import qualified RSA.Break
 import qualified RSA.Quiz
 
+import qualified Diffie_Hellman.Break
+import qualified Diffie_Hellman.Quiz
+
 import qualified NFA.Convert
 import qualified NFA.Equiv.Challenger
 import qualified NFA.Nerode.Congruent.Check
@@ -406,6 +409,8 @@ tmakers =
 	      , heading "Verschlüsselung"
 		    [ item $ RSA.Break.make
 		    , item $ RSA.Quiz.make
+                    , item $ Diffie_Hellman.Break.make
+		    , item $ Diffie_Hellman.Quiz.make
 		    ]
               ]
          , heading "noch nicht eingeordnet"
