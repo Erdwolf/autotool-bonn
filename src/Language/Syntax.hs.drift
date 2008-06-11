@@ -36,6 +36,7 @@ data Type
      | Center String Char
      | Uneps Type
      | Komplement Type
+     | Mirror Type
    deriving ( Eq, Typeable )
 
 {-! for Type derive: Reader, ToDoc, Haskell2Xml !-}

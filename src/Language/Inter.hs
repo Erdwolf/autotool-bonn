@@ -57,6 +57,7 @@ inter l = case l of
     Center sigma c -> center sigma c
 --    Vielfache i -> vielfache i
 
-    Uneps l -> uneps ( inter l )
-    Komplement l -> komplement ( inter l )
+    Uneps l -> uneps $ inter l 
+    Komplement l -> komplement $ inter l 
+    Mirror l -> mirror $ inter l 
 

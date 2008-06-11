@@ -29,8 +29,6 @@ data Language = Language
 
 	      }
 
-
-
 uneps :: Language -> Language
 uneps l = l  { nametag = "Uneps" ++ nametag l
              , abbreviation = abbreviation l ++ " ohne Epsilon"
@@ -46,6 +44,15 @@ komplement l = l { nametag = "Com" ++ nametag l
 		 , sample = anti_sample l
 		 , anti_sample = sample l
 		 }
+
+mirror :: Language -> Language
+mirror l = l { nametag = "Mirror" ++ nametag l
+		 , abbreviation = "Spiegelsprache von " ++ abbreviation l
+		 , contains = \ w -> contains l ( reverse w )
+		 , sample = \ c n -> do ws <- sample l c n ; return $ map reverse ws
+		 , anti_sample = \ c n -> do ws <- anti_sample l c n ; return $ map reverse ws
+		 }
+
 
 instance ToDoc Language where
     toDoc l = text ( abbreviation l )
