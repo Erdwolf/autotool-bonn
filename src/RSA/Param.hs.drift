@@ -21,7 +21,7 @@ example = Param { von = 50
 {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
 -- local variables:
--- mode: emacs
+-- mode: haskell
 -- end:
 
 
