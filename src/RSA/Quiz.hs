@@ -25,12 +25,13 @@ import Util.Cache
 import Inter.Types
 import Inter.Quiz hiding ( make )
 
+import Data.List (nub )
 
 roll p = do
     let ps = dropWhile ( < fromIntegral ( von p ) ) 
 	   $ takeWhile ( < fromIntegral ( bis p ) ) 
 	   $ primes ( 100 :: Integer )
-    [p, q] <- someIO ps 2
+    [p, q] <- someDifferentIO ps 2
     let n = p * q
     let phi = pred p * pred q
     d <- coprime phi
@@ -39,6 +40,15 @@ roll p = do
 	   { public_key = ( d, n )
 	   , message = powmod x d n
 	   }
+
+-- | don't use for large n (stupid implementation)
+someDifferentIO :: Eq a => [a] -> Int -> IO [a]
+someDifferentIO xs n = someIO xs n 
+    `repeat_until` all_different
+
+all_different :: Eq a => [a] -> Bool
+all_different xs = length xs == length (nub xs)
+    
 
 coprime :: Integer -> IO Integer
 coprime n = randomRIO (1, n-1)
