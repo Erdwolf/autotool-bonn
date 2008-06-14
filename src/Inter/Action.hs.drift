@@ -53,8 +53,8 @@ instance XmlRpcType Wert where
         Pending -> toValue [("tag", toValue "Pending")]
         No -> toValue [("tag", toValue "No")]
         Ok s -> toValue [("tag", toValue "OK"), ("size", toValue s) ]
-	Okay {punkte=p, size=s} -> toValue [("tag", toValue "Okay")
-                  , ("punkte", toValue p), ("size", toValue s) ]
+	Okay {} -> toValue [("tag", toValue "Okay")
+                  , ("punkte", toValue $ punkte w ), ("size", toValue $ size w) ]
     fromValue v = do
         it <- fromValue v
 	tag <- getField "tag" it
@@ -65,7 +65,7 @@ instance XmlRpcType Wert where
 	    "Ok" -> do s <- getField "size" it ; return $ ok s
 	    "Okay" -> do 
                p <- getField "punkte" it; s <- getField "size" it
-	       return $ Okay { punkte = p , size = s }
+	       return $ okay p s
     getType _ = TStruct
 
 -- FIXME

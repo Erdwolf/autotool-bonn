@@ -52,9 +52,10 @@ execute k z @ ( n, d ) = do
     r <- look k n
     case slide k ( position r ) d of
 	 Nothing -> case ziel r of
-			 Nothing -> return $ addZug z $ remove n k  
 			 -- Roboter mit Ziel darf nicht verschwinden
 			 Just z  -> Nothing  
+                         -- überhaupt keiner darf verschwinden:
+			 Nothing -> Nothing -- return $ addZug z $ remove n k  
 	 Just p  -> return $ addZug z $ move   (n, p) k
 
 direct_predecessors :: Config -> [ Config ]

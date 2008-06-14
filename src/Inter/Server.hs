@@ -1,3 +1,5 @@
+{-# language CPP #-}
+
 -- main module
 
 import Inter.Action
@@ -10,6 +12,8 @@ import Inter.Evaluate
 
 import Control.Types (toString)
 import Challenger.Partial
+
+import qualified Autolib.Multilingual 
 
 import qualified Inter.Param as P
 import qualified Util.Datei as D
@@ -118,14 +122,14 @@ get_question act prob = do
     case mmk of
             Nothing -> do
                 error "Aufgabenstellung nicht auffindbar"
-            Just ( Make doc fun veri ex ) -> do
+            Just ( Make p doc fun veri ex ) -> do
                 ( _, i, com ) <- make_instant_common
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
                 let p = mkpar stud auf
                     d = Inter.Store.location Inter.Store.Instant
                            p "latest" False
-                file <- D.schreiben d $ show com
+                file <- D.schreiben d $ show $ outform com
                 let inst = fromCGI file
                 Control.Punkt.bepunkteStudentDB
                          (P.ident p) (P.anr p)
@@ -144,7 +148,7 @@ put_answer act prob ans = do
     case mmk of
             Nothing -> do
                 error "Aufgabenstellung nicht auffindbar"
-            Just ( Make doc fun veri ex ) -> do
+            Just ( Make p doc fun veri ex ) -> do
                 ( p, i, icom ) <- make_instant_common
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
@@ -157,7 +161,8 @@ put_answer act prob ans = do
                                  , show res 
                                  ]
                 Inter.Common.pure_punkte False stud auf
-                     ( Just icom, Just ans, res, Just com2 )
+                     ( Just $ outform icom, Just ans, res, Just $ outform com2 )
 		return $ show res
                        
+outform = Autolib.Multilingual.specialize Autolib.Multilingual.UK
 

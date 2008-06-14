@@ -54,8 +54,8 @@ instance XmlRpcType Wert where
         Pending -> toValue [("tag", toValue "Pending")]
         No -> toValue [("tag", toValue "No")]
         Ok s -> toValue [("tag", toValue "OK"), ("size", toValue s) ]
-	Okay {punkte=p, size=s} -> toValue [("tag", toValue "Okay")
-                  , ("punkte", toValue p), ("size", toValue s) ]
+	Okay {} -> toValue [("tag", toValue "Okay")
+                  , ("punkte", toValue $ punkte w ), ("size", toValue $ size w) ]
     fromValue v = do
         it <- fromValue v
 	tag <- getField "tag" it
@@ -66,7 +66,7 @@ instance XmlRpcType Wert where
 	    "Ok" -> do s <- getField "size" it ; return $ ok s
 	    "Okay" -> do 
                p <- getField "punkte" it; s <- getField "size" it
-	       return $ Okay { punkte = p , size = s }
+	       return $ okay p s
     getType _ = TStruct
 
 -- FIXME
@@ -80,106 +80,106 @@ instance XmlRpcType Integer where
 -- End:
 instance ToDoc Answer where
     toDocPrec d (Answer aa ab) = docParen (d >= 10)
-	      (text "Answer" <+> dutch_record
-	       [text "wert" <+> equals <+> toDocPrec 0 aa,
-		text "kommentar" <+> equals <+> toDocPrec 0 ab])
+              (text "Answer" </> dutch_record
+               [text "wert" <+> equals <+> toDocPrec 0 aa,
+                text "kommentar" <+> equals <+> toDocPrec 0 ab])
 
 instance Reader Answer where
     atomic_readerPrec d = readerParenPrec d $ \ d -> do
-		      ((do guard (d < 9)
-			   my_reserved "Answer"
-			   my_braces ((do my_reserved "wert"
-					  my_equals
-					  aa <- readerPrec 0
-					  my_comma
-					  my_reserved "kommentar"
-					  my_equals
-					  ab <- readerPrec 0
-					  return (Answer aa ab)))))
+                      ((do guard (d < 9)
+                           my_reserved "Answer"
+                           my_braces ((do my_reserved "wert"
+                                          my_equals
+                                          aa <- readerPrec 0
+                                          my_comma
+                                          my_reserved "kommentar"
+                                          my_equals
+                                          ab <- readerPrec 0
+                                          return (Answer aa ab)))))
 
 instance Haskell2Xml Answer where
     toHType v =
-	Defined "Answer" [] [Constr "Answer" [] [toHType aa,toHType ab]]
+        Defined "Answer" [] [Constr "Answer" [] [toHType aa,toHType ab]]
       where
-	(Answer aa ab) = v
+        (Answer aa ab) = v
     fromContents (CElem (Elem constr [] cs):etc)
-	| "Answer" `isPrefixOf` constr =
-	    (\(aa,cs00)-> (\(ab,_)-> (Answer aa ab, etc)) (fromContents cs00))
-	    (fromContents cs)
+        | "Answer" `isPrefixOf` constr =
+            (\(aa,cs00)-> (\(ab,_)-> (Answer aa ab, etc)) (fromContents cs00))
+            (fromContents cs)
     toContents v@(Answer aa ab) =
-	[mkElemC (showConstr 0 (toHType v)) (concat [toContents aa,
-						     toContents ab])]
+        [mkElemC (showConstr 0 (toHType v)) (concat [toContents aa,
+                                                     toContents ab])]
 
 instance ToDoc Problem where
     toDocPrec d (Problem aa ab) = docParen (d >= 10)
-	      (text "Problem" <+> dutch_record
-	       [text "vorlesung" <+> equals <+> toDocPrec 0 aa,
-		text "aufgabe" <+> equals <+> toDocPrec 0 ab])
+              (text "Problem" </> dutch_record
+               [text "vorlesung" <+> equals <+> toDocPrec 0 aa,
+                text "aufgabe" <+> equals <+> toDocPrec 0 ab])
 
 instance Reader Problem where
     atomic_readerPrec d = readerParenPrec d $ \ d -> do
-		      ((do guard (d < 9)
-			   my_reserved "Problem"
-			   my_braces ((do my_reserved "vorlesung"
-					  my_equals
-					  aa <- readerPrec 0
-					  my_comma
-					  my_reserved "aufgabe"
-					  my_equals
-					  ab <- readerPrec 0
-					  return (Problem aa ab)))))
+                      ((do guard (d < 9)
+                           my_reserved "Problem"
+                           my_braces ((do my_reserved "vorlesung"
+                                          my_equals
+                                          aa <- readerPrec 0
+                                          my_comma
+                                          my_reserved "aufgabe"
+                                          my_equals
+                                          ab <- readerPrec 0
+                                          return (Problem aa ab)))))
 
 instance Haskell2Xml Problem where
     toHType v =
-	Defined "Problem" [] [Constr "Problem" [] [toHType aa,toHType ab]]
+        Defined "Problem" [] [Constr "Problem" [] [toHType aa,toHType ab]]
       where
-	(Problem aa ab) = v
+        (Problem aa ab) = v
     fromContents (CElem (Elem constr [] cs):etc)
-	| "Problem" `isPrefixOf` constr =
-	    (\(aa,cs00)-> (\(ab,_)-> (Problem aa ab, etc)) (fromContents cs00))
-	    (fromContents cs)
+        | "Problem" `isPrefixOf` constr =
+            (\(aa,cs00)-> (\(ab,_)-> (Problem aa ab, etc)) (fromContents cs00))
+            (fromContents cs)
     toContents v@(Problem aa ab) =
-	[mkElemC (showConstr 0 (toHType v)) (concat [toContents aa,
-						     toContents ab])]
+        [mkElemC (showConstr 0 (toHType v)) (concat [toContents aa,
+                                                     toContents ab])]
 
 instance ToDoc Actor where
     toDocPrec d (Actor aa ab ac) = docParen (d >= 10)
-	      (text "Actor" <+> dutch_record
-	       [text "schule" <+> equals <+> toDocPrec 0 aa,
-		text "matrikel" <+> equals <+> toDocPrec 0 ab,
-		text "passwort" <+> equals <+> toDocPrec 0 ac])
+              (text "Actor" </> dutch_record
+               [text "schule" <+> equals <+> toDocPrec 0 aa,
+                text "matrikel" <+> equals <+> toDocPrec 0 ab,
+                text "passwort" <+> equals <+> toDocPrec 0 ac])
 
 instance Reader Actor where
     atomic_readerPrec d = readerParenPrec d $ \ d -> do
-		      ((do guard (d < 9)
-			   my_reserved "Actor"
-			   my_braces ((do my_reserved "schule"
-					  my_equals
-					  aa <- readerPrec 0
-					  my_comma
-					  my_reserved "matrikel"
-					  my_equals
-					  ab <- readerPrec 0
-					  my_comma
-					  my_reserved "passwort"
-					  my_equals
-					  ac <- readerPrec 0
-					  return (Actor aa ab ac)))))
+                      ((do guard (d < 9)
+                           my_reserved "Actor"
+                           my_braces ((do my_reserved "schule"
+                                          my_equals
+                                          aa <- readerPrec 0
+                                          my_comma
+                                          my_reserved "matrikel"
+                                          my_equals
+                                          ab <- readerPrec 0
+                                          my_comma
+                                          my_reserved "passwort"
+                                          my_equals
+                                          ac <- readerPrec 0
+                                          return (Actor aa ab ac)))))
 
 instance Haskell2Xml Actor where
     toHType v =
-	Defined "Actor" []
-		[Constr "Actor" [] [toHType aa,toHType ab,toHType ac]]
+        Defined "Actor" []
+                [Constr "Actor" [] [toHType aa,toHType ab,toHType ac]]
       where
-	(Actor aa ab ac) = v
+        (Actor aa ab ac) = v
     fromContents (CElem (Elem constr [] cs):etc)
-	| "Actor" `isPrefixOf` constr =
-	    (\(aa,cs00)-> (\(ab,cs01)-> (\(ac,_)-> (Actor aa ab ac, etc))
-					(fromContents cs01))
-			  (fromContents cs00))
-	    (fromContents cs)
+        | "Actor" `isPrefixOf` constr =
+            (\(aa,cs00)-> (\(ab,cs01)-> (\(ac,_)-> (Actor aa ab ac, etc))
+                                        (fromContents cs01))
+                          (fromContents cs00))
+            (fromContents cs)
     toContents v@(Actor aa ab ac) =
-	[mkElemC (showConstr 0 (toHType v)) (concat [toContents aa,
-						     toContents ab,toContents ac])]
+        [mkElemC (showConstr 0 (toHType v)) (concat [toContents aa,
+                                                     toContents ab,toContents ac])]
 
 --  Imported from other files :-

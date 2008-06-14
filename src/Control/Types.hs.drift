@@ -14,7 +14,7 @@ module Control.Types
 -- d. h. jeder müßte erst haskell-XML-rpc installieren
 , Wert ( Ok )
 
-, ok, size, punkte
+, ok, okay, size, punkte
 
 -- , MNr, SNr, ANr, GNr, VNr -- abstrakt
 , MNr(..), SNr(..), ANr(..), GNr(..), VNr(..) -- not abstrakt, see above
@@ -172,6 +172,8 @@ data Wert = Reset
 	  | Ok Integer
           | Okay { punkte :: Integer, size_ :: Integer } 
     deriving ( Eq, Ord, Typeable )
+
+okay p s = Okay { punkte = p, size_ = s }
 
 size w = case w of 
     Ok p -> p
