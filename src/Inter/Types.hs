@@ -1,5 +1,5 @@
 {-# OPTIONS -fglasgow-exts #-}
-{-# language UndecidableInstances, IncoherentInstances, ScopedTypeVariables #-}
+{-# language OverlappingInstances, UndecidableInstances, IncoherentInstances, ScopedTypeVariables #-}
 
 module Inter.Types where
 
