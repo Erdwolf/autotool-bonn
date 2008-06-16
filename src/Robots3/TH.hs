@@ -20,7 +20,8 @@ instance XmlRpcType Config where
 	, ("goals", toValue $ goals k )
 	]
     fromValue ( ValueStruct vs ) = do
-        let [ ("robots", rs) , ("goals", gs) ] = vs
+	rs <- getField "robots" vs
+	gs <- getField "goals" vs
 	rsv <- fromValue rs
 	gsv <- fromValue gs
 	return $ make rsv gsv
