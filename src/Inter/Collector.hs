@@ -32,8 +32,14 @@ import qualified Graph.Selfcom
 import qualified Graph.Nachbar
 import qualified Graph.Cross
 import qualified Graph.MinSep
+
 import qualified Robots.Interface
 import qualified Robots.Inverse
+
+import qualified Robots2.Interface
+-- import qualified Robots2.Inverse
+
+
 import qualified Rushhour.Central
 import qualified Graph.Col.Plain
 import qualified Graph.Col.Quiz
@@ -256,6 +262,10 @@ tmakers =
 	        , item Robots.Interface.qmake
 	        , item Robots.Inverse.make
 	        , item Robots.Inverse.qmake
+	        , item Robots2.Interface.make
+	        , item Robots2.Interface.qmake
+	        -- , item Robots2.Inverse.make
+	        -- , item Robots2.Inverse.qmake
 	        , item Rushhour.Central.make
 	        -- , item Rushhour.Central.qmake
 	        , item Hanoi.Semantik.make
