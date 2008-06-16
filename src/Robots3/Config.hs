@@ -119,7 +119,7 @@ addZug :: Zug -> Config -> Config
 addZug z k = k { geschichte = z : geschichte k }
 
 instance ToDoc Config where
-    toDoc k = text "make" <+> toDoc ( robots k )
+    toDoc k = text "make" <+> toDoc ( robots k ) <+> toDoc ( goals k )
 
 instance Reader Config where
     atomic_readerPrec p = do
