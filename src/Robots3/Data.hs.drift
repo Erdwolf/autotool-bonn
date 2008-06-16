@@ -16,7 +16,7 @@ data Robots3_Inverse = Robots3_Inverse deriving ( Typeable )
 {-! for Robots3 derive : Reader, ToDoc !-}
 {-! for Robots3_Inverse derive : Reader, ToDoc !-}
 
-data Position = Position { x :: Integer, y :: Integer }
+data Position = Position { x :: Int, y :: Int }
      deriving ( Eq, Ord, Typeable )
 
 {-! for Position derive : Reader, ToDoc !-}

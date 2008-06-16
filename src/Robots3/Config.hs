@@ -42,7 +42,7 @@ import Data.Int
 data Config = Config { c_hash :: Int32
 		     , inhalt :: FiniteMap String Robot
 		     , targets :: Set Position
-		     , breit :: Integer
+		     , breit :: Int
 		     , geschichte :: [ Zug ]
 		     , c_hull :: Set Position
 		     , c_clusters :: FiniteMap Position Int
