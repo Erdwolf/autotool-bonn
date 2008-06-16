@@ -15,8 +15,7 @@ import Autolib.Reporter
 
 import Data.Typeable
 
-
-instance ( ToDoc c, Reader c, Reader a, Coder c a b, Read b )
+instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b )
 	 => Partial ( Encode c ) [ a ] b where
 
     describe ( Encode c ) i = vcat    
@@ -40,7 +39,7 @@ instance BitSize b => Measure ( Encode c ) [ a ] b  where
 enc :: ( Reader c, Reader b, ToDoc c, Coder c Char b, Read b ) => c -> Make
 enc c = direct (Encode c) "abracadabra"
 
-instance ( ToDoc c, Reader c,  Coder c a b, Read b )
+instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b )
 	 => Partial ( Decode c ) b [ a ] where
 
     describe ( Decode c ) i = vcat
@@ -59,7 +58,7 @@ instance ( ToDoc c, Reader c,  Coder c a b, Read b )
 	   else reject $ text "Die Antwort ist nicht korrekt."
 	 
 
-dec :: (Reader b, Reader c, ToDoc c, Coder c a b , Show b, Read b ) 
+dec :: (Reader b, Reader c, ToDoc c, ToDoc a, Reader a, Coder c a b , Show b, Read b ) 
        => c -> b -> Make
 dec c b = direct (Decode c) b
 

@@ -16,11 +16,12 @@ import Autolib.Reporter
 import Autolib.ToDoc
 import Autolib.Reader
 
+import Inter.Types ()
 
 data Huffman = Huffman deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance -- ( ToDoc a, ToDoc [a], Ord a, ToDoc [ (a, [ LR ] )] ) 
-     ( Reader a, ToDoc a, ToDoc [a], Ord a )
+     ( Reader a, ToDoc a, ToDoc [a], Ord a, Typeable a )
 	 => Partial Huffman ( Frequency a ) ( Code a LR ) where
 
     describe p i = vcat

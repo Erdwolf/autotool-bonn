@@ -2,7 +2,7 @@
 
 module Code.Hamming.Partial where
 
-
+import Inter.Types ()
 
 import Code.Hamming.Data
 import Code.Hamming.Check

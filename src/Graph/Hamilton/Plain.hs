@@ -1,3 +1,5 @@
+{-# language OverlappingInstances,IncoherentInstances #-}
+
 module Graph.Hamilton.Plain where
 
 --  $Id$
@@ -8,6 +10,7 @@ import Autolib.Graph.Kneser
 import Autolib.Dot ( peng, Layout_Program (..) )
 
 import Inter.Types
+
 import Autolib.Reporter.Set
 import Autolib.Set
 import Autolib.Graph.Ops ( restrict )

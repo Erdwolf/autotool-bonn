@@ -27,7 +27,7 @@ type Traversals c = [ ( Order, [ c ]  ) ]
 
 
 
-instance ( Symbol c, ToDoc [c], Read c ) 
+instance ( Symbol c, ToDoc [c], Read c, Typeable c ) 
        => Partial Reconstruct ( Traversals c ) ( Term () c ) 
     where
         describe Reconstruct ocs = vcat

@@ -29,6 +29,7 @@ class ( Show t, Typeable t, Read t
       , Reader ( baum a ) , Read ( baum a )
       , ToDot ( baum a), Eq (baum a), Hash (baum a)
       , Typeable (baum a)
+      , Typeable a
       ) 
     => Tag t baum a | t -> baum, t -> a where
    tag :: t

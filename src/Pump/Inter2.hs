@@ -48,7 +48,7 @@ instance Reader PUMP where
             many alphaNum
         return $ PUMP cs
 
-instance (  Hash ( Pump z ), Pumping z )
+instance (  Hash ( Pump z ), Pumping z, Typeable z )
 	 => Partial PUMP ( Conf z ) ( Pump z ) where
 
     describe ( PUMP {} ) ( conf :: Conf z ) = vcat 

@@ -75,13 +75,6 @@ data Zug = Zug { robot :: String, richtung :: Richtung }
 
 instance Size Zug where size _ = 1
 
-data Folge a = Folge [a]
-     deriving ( Eq, Ord, Typeable )
-     
-{-! for Folge derive : Reader, ToDoc !-}
-
-instance Size ( Folge a ) where size (Folge xs) = length xs
-
 -- local variables:
 -- mode: haskell
 -- end:

@@ -26,7 +26,7 @@ import Data.Typeable
 data Derive = Derive 
     deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance (  Symbol c )
+instance (  Symbol c, Typeable c )
     => Partial Derive ( Instance c c ) [ Step c c ] where
 
     report Derive inst = do 

@@ -16,11 +16,6 @@ $(asXmlRpcStruct ''Position)
 $(asXmlRpcStruct ''Robot)
 $(asXmlRpcStruct ''Zug)
 
-instance XmlRpcType (Folge Zug) where
-    getType f = TArray
-    toValue ( Folge xs ) = ValueArray $ map toValue xs
-    fromValue ( ValueArray vs ) = fmap Folge $ mapM fromValue vs
-
 instance XmlRpcType Richtung where
     getType k = TString
     toValue k = ValueString $ "Richtung." ++ show k

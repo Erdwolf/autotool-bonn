@@ -1,4 +1,4 @@
-{-# language CPP #-}
+{-# language CPP, OverlappingInstances, IncoherentInstances #-}
 
 -- main module
 
@@ -41,7 +41,7 @@ import Control.Monad ( when )
 import Control.Monad.Error
 
 import Data.List ( intersperse )
-
+import Data.Typeable
 
 main :: IO ()
 main = cgiXmlRpcServer 
@@ -155,13 +155,12 @@ put_answer act prob val = do
                 ( p, i, icom ) <- make_instant_common
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
-             
+
                 mobj <- runErrorT $ fromValue val 
 		let obj = case mobj of
 		        Left msg -> error $ "parse error, msg: " ++ msg
 		        Right obj -> obj
                 let ans = show $ asTypeOf obj ( Challenger.Partial.initial p i) 
-                appendFile "/tmp/RPC.log" ans
 
 		( res, com2 ) <- run $ evaluate p i ans
                 appendFile "/tmp/RPC.log"

@@ -17,7 +17,7 @@ import Data.Typeable
 
 --------------------------------------------------------------------------
 
-class ( Hash z, Ord z,  Show z, ToDoc z, ToDoc [z], Reader z ) 
+class ( Hash z, Ord z,  Show z, ToDoc z, ToDoc [z], Reader z, Typeable z ) 
        => Pumping z where
     tag :: z -> String
     tag_show :: z -> String

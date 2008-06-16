@@ -10,11 +10,11 @@ import Data.Typeable
 import Autolib.Xml
 import Text.XML.HaXml.Haskell2Xml
 
-class    ( Ord a,  ToDoc a, Reader a, ToDoc [a], Reader [a]
+class    ( Ord a,  ToDoc a, Reader a, Typeable a, ToDoc [a], Reader [a]
 	 -- , Haskell2Xml [a] 
 	 )
     => InstanceC a 
-instance ( Ord a, ToDoc a, Reader a, ToDoc [a], Reader [a]
+instance ( Ord a, ToDoc a, Reader a, Typeable a,  ToDoc [a], Reader [a]
 	 -- , Haskell2Xml [a] 
 	 )
     => InstanceC a 

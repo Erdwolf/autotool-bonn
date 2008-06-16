@@ -45,8 +45,6 @@ data Make = forall conf p i b
 	    -- , Read conf
 	    , Help conf, Help i, Help b
 	    , Verify p conf
-	  , XmlRpcType i
-	  , XmlRpcType b
 	    )
 	  => Make p
                   String --  description
@@ -81,8 +79,6 @@ direct :: ( V p i b
 	  , ToDoc i
 	  , Help i, Help b
 	  , Verify p i
-	  , XmlRpcType i
-	  , XmlRpcType b
 	  )
          => p 
 	 -> i -- ^ example instance

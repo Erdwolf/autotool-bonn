@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-incoherent-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances -fallow-incoherent-instances #-}
 
 -- | Autotool Challenger Partial
 module Challenger.Partial 
@@ -17,6 +17,8 @@ import Autolib.Reporter
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
+
+import Network.XmlRpc.Internals
 
 import Control.Types ( Wert (..), ok )
 
@@ -48,6 +50,7 @@ instance ( Show i ) => Verify p i where
 class ( Show p, Read p
       , ToDoc i, Read i -- Modular/Server muß auch Instanzen lesen
       , Reader b, ToDoc b
+      , XmlRpcType i, XmlRpcType b
       , Measure p i b 
       )
     => Partial p i b | p i -> b  where

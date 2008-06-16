@@ -25,7 +25,7 @@ data String_Matching_BM = String_Matching_BM
 instance Measure String_Matching_BM ( Instance a ) [a] where
     measure p i b = fromIntegral $ length b
 
-instance ( Ord a, Reader a, ToDoc a ) 
+instance ( Ord a, Reader a, ToDoc a, Typeable a ) 
     => Partial String_Matching_BM ( Instance a ) [a] where
 
     describe p i = vcat
