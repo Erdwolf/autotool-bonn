@@ -10,7 +10,7 @@ import Autolib.Reader
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
-data RC = RC { width :: Integer -- ^ feld geht von (-w.-w) .. (w,w)
+data RC = RC { width :: Int -- ^ feld geht von (-w.-w) .. (w,w)
 	     , num_robots :: Int 
 	     , num_targets :: Int 
 	     , at_least :: Int -- ^ req length of solution
