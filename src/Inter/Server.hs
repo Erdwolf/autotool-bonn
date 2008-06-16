@@ -38,6 +38,7 @@ import qualified Control.Stud_Aufg.DB
 import Network.XmlRpc.Server
 import Network.XmlRpc.Internals
 import Control.Monad ( when )
+import Control.Monad.Error
 
 import Data.List ( intersperse )
 
@@ -140,8 +141,8 @@ get_question act prob = do
                          Nothing
                 return $ toValue i
 
-put_answer :: Actor -> Problem -> String -> IO String
-put_answer act prob ans = do
+put_answer :: Actor -> Problem -> Value -> IO String
+put_answer act prob val = do
     (vor, stud, auf) <- login act prob
     -- FIXME: duplicated code from Inter.Super follows
     let mmk = lookup ( toString $ A.typ auf )
@@ -153,6 +154,13 @@ put_answer act prob ans = do
                 ( p, i, icom ) <- make_instant_common
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
+             
+                mobj <- runErrorT $ fromValue val 
+		let obj = case mobj of
+		        Left msg -> error "parse error"
+		        Right obj -> obj
+                let ans = show $ ( Challenger.Partial.initial p i) `asTypeOf` obj
+
 		( res, com2 ) <- run $ evaluate p i ans
                 appendFile "/tmp/RPC.log"
                        $ unwords 

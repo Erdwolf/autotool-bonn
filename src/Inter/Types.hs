@@ -124,6 +124,10 @@ data Var p i b =
 get_i_type :: Var p i b -> i
 get_i_type = error "get_i_type: don't call"
 
+
+get_b_type :: Var p i b -> b
+get_b_type = error "get_b_type: don't call"
+
 class ( Show p, Typeable p , Read p
       , Typeable i, ToDoc i
       -- , Haskell2Xml i
