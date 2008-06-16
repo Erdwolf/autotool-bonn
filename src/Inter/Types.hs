@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
+{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-incoherent-instances #-}
 
 module Inter.Types where
 
@@ -21,7 +21,7 @@ import Data.Typeable
 import Data.Char
 
 -- import Text.XML.HaXml.Haskell2Xml
--- import Network.XmlRpc.Internals
+import Network.XmlRpc.Internals
 
 type Matrikel = String
 
@@ -36,11 +36,14 @@ data Make = forall conf p i b
           . ( V p i b 
 	    , Typeable conf 
 
-	    -- , Haskell2Xml conf
-	    -- , XmlRpcType conf
+	    , XmlRpcType conf
+	    , XmlRpcType i
+	    , XmlRpcType b
 
-	    , ToDoc conf , Show conf
-	    , Reader conf , Read conf
+	    , ToDoc conf -- 
+	    -- , Show conf
+	    , Reader conf -- 
+	    -- , Read conf
 	    , Help conf, Help i, Help b
 	    , Verify p conf
 	    )
@@ -49,6 +52,14 @@ data Make = forall conf p i b
 		  (conf -> Var p i b) --  maker function
 		  (conf -> Reporter ()) -- verify config
                   conf --  example
+
+instance ( Reader a, ToDoc a ) => XmlRpcType a where 
+    getType x = TString
+    toValue x = ValueString $ show $ toDoc x
+    fromValue ( ValueString s ) = 
+	    case parse ( parsec_wrapper 0 ) "input" s of
+		 Right (x, []) -> return x
+		 res   -> fail "parse error"
 
 instance Typeable Make where 
     typeOf _ = mkTyConApp ( mkTyCon "Inter.Types.Make" ) []
@@ -60,8 +71,10 @@ instance ToDoc Make
 -- (suitable for simple problems that don't need generation of instances)
 direct :: ( V p i b 
 	  -- , Haskell2Xml i
-	  -- , XmlRpcType i
-	  , Reader i , Read i , Show i
+	  , XmlRpcType i
+	  , Reader i 
+	  -- , Read i 
+	  , ToDoc i
 	  , Help i, Help b
 	  , Verify p i
 	  )

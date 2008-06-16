@@ -56,7 +56,8 @@ instance Partial Robots3_Inverse
 
 make :: Make
 make = direct Robots3_Inverse 
-     [("C",W),("E",W),("D",S),("A",O),("D",N),("B",N),("E",N),("D",W),("A",S)]
+     $ map ( \ (s,d) -> Zug {robot = s, richtung = d} )
+     $ [("C",W),("E",W),("D",S),("A",O),("D",N),("B",N),("E",N),("D",W),("A",S)]
 
 qmake :: Make
 qmake = quiz Robots3_Inverse Robots3.Quiz.rc

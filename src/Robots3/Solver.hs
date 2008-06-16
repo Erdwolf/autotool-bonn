@@ -32,7 +32,7 @@ znachfolger k = do
     guard $ isJust t
     r <- robots k
     d <- richtungen
-    let z = (name r, d)
+    let z = Zug { robot = name r, richtung = d }
     k' <- maybeToList $ execute k z
     guard $ covered k'
     return ( z, k' )
@@ -78,7 +78,7 @@ vorganger :: Config -> [ Config ]
 vorganger c = do
     r <- robots c
     d <- richtungen
-    let z = (name r, d)
+    let z = Zug { robot = name r, richtung = d }
     reverse_executes c z
 
 ancestors :: Config -> [[Config]]

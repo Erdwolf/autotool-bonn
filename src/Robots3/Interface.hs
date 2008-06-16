@@ -5,6 +5,7 @@ module Robots3.Interface where
 --  $Id$
 
 import Robots3.Data
+import Robots3.TH
 import Robots3.Config
 import Robots3.Move
 import Robots3.Nice
@@ -38,7 +39,7 @@ instance Partial Robots3
 
     initial Robots3 k = 
         let a : b : _ = robots k
-	in  [ ( name a, N ), ( name b, O ) ]
+	in  [ Zug ( name a) N , Zug ( name b) O  ]
 
     partial Robots3 k zs = do
         executes k zs

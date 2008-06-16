@@ -48,16 +48,17 @@ slide k p dir =
 	     q : rest -> Just $ q - d
 
 execute :: Config -> Zug -> Maybe Config
-execute k z @ ( n, d ) = do
+execute k z = do
+    let n = robot z
     r <- look k n
-    p <- slide k ( position r ) d 
+    p <- slide k ( position r ) $ richtung z
     return $ addZug z $ move   (n, p) k
 
 direct_predecessors :: Config -> [ Config ]
 direct_predecessors k = do
     ( n, r ) <- fmToList $ inhalt k
     d <- richtungen
-    reverse_executes k ( n, d )
+    reverse_executes k $ Zug { robot =  n, richtung = d }
     
 predecessors :: Config -> [[ Config ]]
 predecessors k = 
@@ -65,7 +66,9 @@ predecessors k =
 
 -- | alle möglichen Vorgänger einer Konfiguration
 reverse_executes :: Config -> Zug -> [ Config ]
-reverse_executes k z @ (n, dir) = do
+reverse_executes k z  = do
+    let n = robot z
+	dir = richtung z
     r <- maybeToList $ look k n
     let p = position r
         dir' = gegen dir
