@@ -16,13 +16,6 @@ $(asXmlRpcStruct ''Position)
 $(asXmlRpcStruct ''Robot)
 $(asXmlRpcStruct ''Zug)
 
-instance XmlRpcType Richtung where
-    getType k = TString
-    toValue k = ValueString $ "Richtung." ++ show k
-    fromValue (ValueString s) = do
-        let pre = "Richtung."
-        guard $ isPrefixOf pre s
-        return $ read $ drop ( length pre ) s
 
 instance XmlRpcType Config where
     getType k = TStruct

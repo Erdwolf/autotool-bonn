@@ -155,7 +155,7 @@ put_answer act prob val = do
                 ( p, i, icom ) <- make_instant_common
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
-
+                appendFile "/tmp/RPC.log" $ "argument: " ++ show val
                 mobj <- runErrorT $ fromValue val 
 		let obj = case mobj of
 		        Left msg -> error $ "parse error, msg: " ++ msg
