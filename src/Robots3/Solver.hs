@@ -89,10 +89,10 @@ ancestors c = map setToList
 
 ex :: Config
 ex = Robots3.Config.make 
-     [ Robot { name = "A", position = ( -2, -2 )  }
-       , Robot { name = "B", position = ( 2, 3 )  }
-       , Robot { name = "C", position = ( -2, 1 ) }
-       , Robot { name = "D", position = ( 2, 0 )  }
-       , Robot { name = "E", position = ( -3, 1 ) }
+     [ Robot { name = "A", position = Position {x= -2, y = -2 }  }
+       , Robot { name = "B", position = Position {x=  2, y = 3 }  }
+       , Robot { name = "C", position = Position {x=  -2, y = 1 } }
+       , Robot { name = "D", position = Position {x=  2, y = 0 } }
+       , Robot { name = "E", position = Position {x=  -3, y = 1 } }
        ]
-     [ (0,0) ]
+     [ Position {x= 0, y =0 } ]

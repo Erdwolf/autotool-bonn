@@ -11,6 +11,7 @@ import Autolib.Hash
 
 import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
+import Data.Ix
 
 data Robots3 = Robots3 deriving ( Typeable )
 data Robots3_Inverse = Robots3_Inverse deriving ( Typeable )
@@ -18,7 +19,37 @@ data Robots3_Inverse = Robots3_Inverse deriving ( Typeable )
 {-! for Robots3 derive : Reader, ToDoc, Haskell2Xml !-}
 {-! for Robots3_Inverse derive : Reader, ToDoc, Haskell2Xml !-}
 
-type Position = ( Integer, Integer )
+data Position = Position { x :: Integer, y :: Integer }
+     deriving ( Eq, Ord, Typeable )
+
+instance Hash Position where hash p = hash (x p, y p)
+
+same_line p q = x p == x q || y p == y q
+
+
+interval_rectangle p q = do
+    a <- [ min (x p) (x q) .. max (x p) (x q) ]
+    b <- [ min (y p) (y q) .. max (y p) (y q) ]
+    return $ Position { x = a, y = b }
+
+extension p = maximum $ map abs [ x p, y p ]
+
+
+instance Ix Position where
+    range (p, q ) = do a <- [x p .. x q]; b <- [y p .. y q ] ; return $ Position a b
+    index (p, q) r = fromIntegral $ (x r - x p) * (y q - y p + 1) + (y r - y p)
+    inRange (p, q) r = x p <= x r && x r <= x q && y p <= y r && y r <= y q 
+    rangeSize (p,q) = fromIntegral $ (x q - x p + 1) * (y q - y p + 1)
+
+instance Num Position where
+    p + q = Position ( x p + x q ) ( y p + y q)
+    negate p = Position ( negate $ x p ) ( negate $ y p )
+
+scalar k p = Position ( k * x p ) ( k * y p )
+
+{-! for Position derive : Reader, ToDoc, Haskell2Xml !-}
+
+
 
 data Robot = Robot { name :: String
 		   , position :: Position

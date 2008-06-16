@@ -63,8 +63,7 @@ make rs ts =
 	, targets = mkSet ts
 	, breit = maximum $ do 
                r <- rs 
-	       let (x,y) = position r
-	       map abs [x,y]
+	       return $ extension $ position r
 	, geschichte = []
 	, show_hull = False
 	}
@@ -87,7 +86,7 @@ showing_hull k = k { show_hull = True }
 
 bounds k = 
     let ps = do r <- robots k ; return $ position r
-        xs = map fst ps ; ys = map snd ps
+        xs = map x ps ; ys = map y ps
     in  ( ( minimum xs, minimum ys )
         , ( maximum xs, maximum ys )
         )

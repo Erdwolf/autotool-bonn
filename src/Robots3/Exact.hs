@@ -51,12 +51,6 @@ meet ps = mkSet $ do
        then interval_rectangle p q
        else [p,q]
 
-same_line (a,b) (c,d) = a == c || b == d
-
-interval_rectangle (a,b) (c,d) = do
-    x <- [ min a c .. max a c ]
-    y <- [ min b d .. max b d ]
-    return (x, y)
 
 all_pairs ps = do
     p : qs <- tails $ setToList $ ps

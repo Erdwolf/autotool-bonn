@@ -16,7 +16,7 @@ import Data.Char
 -- | hübsches layout
 instance Nice Config where
   nice k = vcat $ do
-    let bereich @ ((l,u), (r,o)) = hull_with_goals k
+    let bereich @ (lu,ro) = hull_with_goals k
                                      --  this is important here, since...
     let f = array bereich $ do p <- range bereich
 			       return ( p, '.' )
@@ -29,6 +29,6 @@ instance Nice Config where
 		    return ( p, '*' )
     let c = b // do r <- robots k
 		    return ( position r, head $ name r )
-    y <- reverse [ u .. o ]
-    return $ text $ do x <- [ l .. r ] ; [ c ! (x, y) , ' ' ]
+    yy <- reverse [ y lu .. y ro ]
+    return $ text $ do xx <- [ x lu .. x ro ] ; [ c ! Position xx yy , ' ' ]
 

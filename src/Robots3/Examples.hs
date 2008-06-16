@@ -10,25 +10,25 @@ import Autolib.ToDoc
 -- | Aufgabe von Alexander Krabbes
 alex :: Config 
 alex = make
-  [ Robot { name = "A", position = ( 4, 5) }
-  , Robot { name = "B", position = (-4, 5) }
-  , Robot { name = "C", position = ( 3, 4) }
-  , Robot { name = "D", position = (-3, 4) }
-  , Robot { name = "E", position = ( 0, 5) }
-  , Robot { name = "F", position = ( 4,-4) }
-  , Robot { name = "G", position = (-4,-4) }
+  [ Robot { name = "A", position = Position { x = 4, y = 5} }
+  , Robot { name = "B", position = Position { x = -4,y =  5} }
+  , Robot { name = "C", position = Position { x = 3, y = 4} }
+  , Robot { name = "D", position = Position { x = -3,y =  4} }
+  , Robot { name = "E", position = Position { x = 0, y = 5} }
+  , Robot { name = "F", position = Position { x = 4,y = -4} }
+  , Robot { name = "G", position = Position { x = -4,y = -4} }
   ]
-  [ (0,0) ]
+  [ Position {x = 0, y = 0} ]
 
 -- | die beispielkarte nr. 40 aus dem original-spiel
 -- von binaryarts.com
 fourty :: Config
 fourty = make
-  [ Robot { name = "A", position = (-2, 2) }
-  , Robot { name = "B", position = ( 0, 2) }
-  , Robot { name = "C", position = ( 2, 2) }
-  , Robot { name = "D", position = ( 2,-1) }
-  , Robot { name = "E", position = (-1,-2) }
+  [ Robot { name = "A", position = Position { x = -2, y = 2} }
+  , Robot { name = "B", position = Position { x = 0,y =  2} }
+  , Robot { name = "C", position = Position { x = 2, y = 2} }
+  , Robot { name = "D", position = Position { x = 2,y = -1} }
+  , Robot { name = "E", position = Position { x = -1,y = -2} }
   ]
-  [ (0,0) ]
+  [ Position { x = 0, y = 0} ]
 

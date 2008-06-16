@@ -16,20 +16,20 @@ import Control.Monad ( foldM )
 import Autolib.Reporter
 import Autolib.ToDoc
 
-offset :: Richtung -> ( Integer, Integer )
-offset N = ( 0, 1 )
-offset O = ( 1, 0 )
-offset S = ( 0,-1 )
-offset W = (-1, 0 )
+offset :: Richtung -> Position
+offset N = Position  0 1 
+offset O = Position 1 0 
+offset S = Position  0 (negate 1) 
+offset W = Position (negate 1)  0
 
 gegen d = case d of
     N -> S; S -> N; W -> O; O -> W
 
-blocking d (px,py) (qx,qy) = 
-    let (dx, dy) = offset d
-    in	if 0 == dx 
-	then px == qx && (dy * py < dy * qy)
-	else py == qy && (dx * px < dx * qx)
+blocking dir p q = 
+    let d = offset dir
+    in	if 0 == x d 
+	then x p == x q && (y d * y p  < y d * y q)
+	else y p == y q  && (x d * x p < x d * x q )
 
 -- | alle, die in dieser Richtung im Weg sind
 blocks :: Config -> Position -> Richtung -> [ Position ]
@@ -39,13 +39,13 @@ blocks k p d = filter ( blocking d p )
 
 -- | letzter freier platz in dieser richtung
 slide :: Config -> Position -> Richtung -> Maybe Position
-slide k p d =
-    let bs = sortBy ( \ q r -> if blocking d q r then LT else GT )
-	   $ blocks k p d
-	( dx, dy ) = offset d
+slide k p dir =
+    let bs = sortBy ( \ q r -> if blocking dir q r then LT else GT )
+	   $ blocks k p dir
+	d = offset dir
     in	case bs of
 	     [] -> Nothing
-	     (qx, qy) : rest -> Just (qx-dx, qy-dy)
+	     q : rest -> Just $ q - d
 
 execute :: Config -> Zug -> Maybe Config
 execute k z @ ( n, d ) = do
@@ -65,28 +65,29 @@ predecessors k =
 
 -- | alle möglichen Vorgänger einer Konfiguration
 reverse_executes :: Config -> Zug -> [ Config ]
-reverse_executes k z @ (n, d) = do
+reverse_executes k z @ (n, dir) = do
     r <- maybeToList $ look k n
-    let p @ (x,y) = position r
-        d' = gegen d
-	(dx', dy') = offset d'
-    case slide k p d of
+    let p = position r
+        dir' = gegen dir
+	d = offset dir'
+    case slide k p dir of
          Just q | q == p -> do
              -- ist blockiert in richtung d,
 	     -- könnte also von gegenüber gekommen sein
-             let st = case slide k p d' of
-                   Nothing -> ( if 0 == dx' then x else breit k * dx'
-			      , if 0 == dy' then y else breit k * dy'
+             let st = case slide k p dir' of
+                   Nothing -> Position ( if 0 == x d then x p else breit k * x d
+			      ) ( if 0 == y d then y p else breit k * y d
 			      )
 		   Just q  -> q
-	     zw <- zwischen d' p st 
+	     zw <- zwischen dir' p st 
              return $ move (n, zw) k
          _ -> []
 
-zwischen d p @ (x,y) st = drop 1 $ takeWhile (/= st) $ do
-    let (dx, dy) = offset d
+zwischen dir p  st = drop 1 $ takeWhile (/= st) $ do
+    let d = offset dir
     k <- [ 0 .. ]
-    return (x + k*dx, y + k*dy)
+    let dk = scalar k d
+    return $ p + dk
 
 executes :: Config -> [ Zug ] -> Reporter Config    
 executes k [] = do

@@ -20,7 +20,7 @@ import Data.Array ( range )
 import System.IO
 import Data.IORef
 
-sol :: Int -> Int -> Int -> [(Integer,Integer)] -> IO ( Config, [[Zug]] )
+sol :: Int -> Int -> Int -> [ Position ] -> IO ( Config, [[Zug]] )
 sol sw n t pos = do
     psts <- selektion (n + t) pos
     let ( ps, ts ) = splitAt n psts
@@ -32,7 +32,8 @@ sol sw n t pos = do
 instance Generator Robots3 RC ( Config, [Zug] ) where
     generator p rc key = do
        let w = width rc
-	   pos = range ((-w,-w), (w,w))
+           u = negate w
+	   pos = range (Position u u, Position w w )
        ( i, zss ) <- sol (search_width rc) (num_robots rc) (num_targets rc) pos
            `repeat_until` \ ( c, zss ) -> case zss of
 	       []      -> False
@@ -46,7 +47,8 @@ instance Project Robots3 ( Config, [Zug] ) Config where
 instance Generator Robots3_Inverse RC ( [Zug], Config ) where
     generator p rc key = do
        let w = width rc
-	   pos = range ((-w,-w), (w,w))
+           u = negate w
+	   pos = range (Position u u, Position w w )
        ( i, zss ) <- sol (search_width rc) (num_robots rc) (num_targets rc) pos
            `repeat_until` \ ( c, zss ) -> case zss of
 	       []      -> False

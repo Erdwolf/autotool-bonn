@@ -9,6 +9,7 @@ import Robots3.Exact
 import Autolib.Set
 
 import Data.Maybe
+import Data.Ix
 
 hull = rectangle
 
@@ -23,18 +24,17 @@ exact_hull k = exact_hull_points $ mkSet $ map position $ robots k
 rectangle :: Config -> (Position, Position)
 rectangle k = 
     let ps = map position $ robots k
-	xs = map fst ps ; ys = map snd ps
-    in	( ( minimum xs, minimum ys ) , ( maximum xs, maximum ys) )
+	xs = map x ps ; ys = map y ps
+    in	( Position ( minimum xs) ( minimum ys ) 
+	, Position ( maximum xs) ( maximum ys) 
+	)
 
-inrange ::  (Position, Position) -> Position -> Bool
-inrange ((l,u),(r,o)) (x,y) = 
-	l <= x && x <= r && u <= y && y <= o
 
 -- | ist jedes Ziel im Hüll-rechteck?
 covered :: Config -> Bool
 covered k = 
     let h = hull k
-    in	and $ map (inrange h) $ goals k
+    in	and $ map (inRange h) $ goals k
 
     
 -- | kleinstes überdeckendes rechteck, basierend auch auf den Positionen
@@ -42,5 +42,8 @@ covered k =
 hull_with_goals :: Config -> (Position,Position)
 hull_with_goals k =     
     let ps = goals k ++ ( map position $ robots k )
-	xs = map fst ps ; ys = map snd ps
-    in	( ( minimum xs, minimum ys ) , ( maximum xs, maximum ys) )
+	xs = map x ps ; ys = map y ps
+    in	( Position ( minimum xs) ( minimum ys ) 
+	, Position ( maximum xs) ( maximum ys) 
+	)
+
