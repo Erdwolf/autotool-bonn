@@ -42,6 +42,7 @@ import Control.Monad.Error
 
 import Data.List ( intersperse )
 
+
 main :: IO ()
 main = cgiXmlRpcServer 
      $ {- for_tutor ++ -} for_student
@@ -157,9 +158,10 @@ put_answer act prob val = do
              
                 mobj <- runErrorT $ fromValue val 
 		let obj = case mobj of
-		        Left msg -> error "parse error"
+		        Left msg -> error $ "parse error, msg: " ++ msg
 		        Right obj -> obj
-                let ans = show $ ( Challenger.Partial.initial p i) `asTypeOf` obj
+                let ans = show $ asTypeOf obj ( Challenger.Partial.initial p i) 
+                appendFile "/tmp/RPC.log" ans
 
 		( res, com2 ) <- run $ evaluate p i ans
                 appendFile "/tmp/RPC.log"

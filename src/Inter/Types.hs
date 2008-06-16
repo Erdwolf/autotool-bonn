@@ -38,8 +38,6 @@ data Make = forall conf p i b
 	    , Typeable conf 
 
 	    , XmlRpcType conf
-	    , XmlRpcType i
-	    , XmlRpcType b
 
 	    , ToDoc conf -- 
 	    -- , Show conf
@@ -47,6 +45,8 @@ data Make = forall conf p i b
 	    -- , Read conf
 	    , Help conf, Help i, Help b
 	    , Verify p conf
+	  , XmlRpcType i
+	  , XmlRpcType b
 	    )
 	  => Make p
                   String --  description
@@ -61,9 +61,10 @@ instance ( Reader a, ToDoc a, Typeable a ) => XmlRpcType a where
        ( ValueString s ) ->
 	    case parse ( parsec_wrapper 0 ) "input" s of
 		 Right (x, []) -> return x
-		 res   -> fail "parse error"
+		 res   -> fail $ "parse error, input: " ++ s
        _ -> fail 
-              $ "using (wrong) default XmlRpcType instance for " ++ show (typeOf ( undefined :: a ))
+              $ "using (wrong) default XmlRpcType instance for " 
+                  ++ show (typeOf ( undefined :: a ))
 
 instance Typeable Make where 
     typeOf _ = mkTyConApp ( mkTyCon "Inter.Types.Make" ) []
@@ -75,12 +76,13 @@ instance ToDoc Make
 -- (suitable for simple problems that don't need generation of instances)
 direct :: ( V p i b 
 	  -- , Haskell2Xml i
-	  , XmlRpcType i
 	  , Reader i 
 	  -- , Read i 
 	  , ToDoc i
 	  , Help i, Help b
 	  , Verify p i
+	  , XmlRpcType i
+	  , XmlRpcType b
 	  )
          => p 
 	 -> i -- ^ example instance
@@ -134,6 +136,8 @@ get_b_type = error "get_b_type: don't call"
 
 class ( Show p, Typeable p , Read p
       , Typeable i, ToDoc i
+	  , XmlRpcType i
+	  , XmlRpcType b
       -- , Haskell2Xml i
       , Reader i, Read i
       , Typeable b
@@ -142,6 +146,8 @@ class ( Show p, Typeable p , Read p
       , Partial p i b
       ) => V p i b -- ohne methoden
 instance ( Show p, Typeable p, Read p
+	  , XmlRpcType i
+	  , XmlRpcType b
       -- , Roller i i
       , Typeable i, ToDoc i
       -- , Haskell2Xml i

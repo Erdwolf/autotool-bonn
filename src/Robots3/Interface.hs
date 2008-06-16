@@ -26,7 +26,7 @@ import Data.List ( partition )
 
 instance Partial Robots3 
 		 Config
-		 [ Zug ]
+		 (Folge Zug)
 	 where
 
     describe Robots3 k = vcat
@@ -39,13 +39,13 @@ instance Partial Robots3
 
     initial Robots3 k = 
         let a : b : _ = robots k
-	in  [ Zug ( name a) N , Zug ( name b) O  ]
+	in  Folge [ Zug ( name a) N , Zug ( name b) O  ]
 
-    partial Robots3 k zs = do
+    partial Robots3 k (Folge zs) = do
         executes k zs
 	return ()
 
-    total Robots3 k zs = do
+    total Robots3 k (Folge zs) = do
         k' <- silent $ executes k zs
 	final k'
 
