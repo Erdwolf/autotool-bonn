@@ -36,6 +36,7 @@ import qualified Control.Stud_Aufg as SA
 import qualified Control.Stud_Aufg.DB
 
 import Network.XmlRpc.Server
+import Network.XmlRpc.Internals
 import Control.Monad ( when )
 
 import Data.List ( intersperse )
@@ -113,7 +114,7 @@ get_student act prob snr = do
 
 ----------------------------------------------------------------------------------
     
-get_question :: Actor -> Problem -> IO String
+get_question :: Actor -> Problem -> IO Value
 get_question act prob = do
     (vor, stud, auf) <- login act prob
     -- FIXME: duplicated code from Inter.Super follows
@@ -137,7 +138,7 @@ get_question act prob = do
                          Nothing (P.highscore p)
                          Nothing
                          Nothing
-                return $ show i
+                return $ toValue i
 
 put_answer :: Actor -> Problem -> String -> IO String
 put_answer act prob ans = do
