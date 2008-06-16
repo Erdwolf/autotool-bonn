@@ -1,4 +1,5 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-incoherent-instances #-}
+{-# OPTIONS -fglasgow-exts #-}
+{-# language UndecidableInstances, IncoherentInstances, ScopedTypeVariables #-}
 
 module Inter.Types where
 
@@ -53,13 +54,16 @@ data Make = forall conf p i b
 		  (conf -> Reporter ()) -- verify config
                   conf --  example
 
-instance ( Reader a, ToDoc a ) => XmlRpcType a where 
+instance ( Reader a, ToDoc a, Typeable a ) => XmlRpcType a where 
     getType x = TString
     toValue x = ValueString $ show $ toDoc x
-    fromValue ( ValueString s ) = 
+    fromValue  = \ v -> case v of
+       ( ValueString s ) ->
 	    case parse ( parsec_wrapper 0 ) "input" s of
 		 Right (x, []) -> return x
 		 res   -> fail "parse error"
+       _ -> fail 
+              $ "using (wrong) default XmlRpcType instance for " ++ show (typeOf ( undefined :: a ))
 
 instance Typeable Make where 
     typeOf _ = mkTyConApp ( mkTyCon "Inter.Types.Make" ) []
