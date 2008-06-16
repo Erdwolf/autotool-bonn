@@ -1,0 +1,47 @@
+{-# OPTIONS -fglasgow-exts #-}
+
+module Robots3.Data where
+
+--   $Id$
+
+import Autolib.Reader
+import Autolib.ToDoc
+import Autolib.Size
+import Autolib.Hash
+
+import Text.XML.HaXml.Haskell2Xml
+import Data.Typeable
+
+data Robots3 = Robots3 deriving ( Typeable )
+data Robots3_Inverse = Robots3_Inverse deriving ( Typeable )
+
+{-! for Robots3 derive : Reader, ToDoc, Haskell2Xml !-}
+{-! for Robots3_Inverse derive : Reader, ToDoc, Haskell2Xml !-}
+
+type Position = ( Integer, Integer )
+
+data Robot = Robot { name :: String
+		   , position :: Position
+		   }
+     deriving ( Eq, Ord, Typeable )
+
+{-! for Robot derive : Reader, ToDoc, Haskell2Xml !-}
+
+instance Hash Robot where
+    hash r = hash ( name r, position r )
+
+data Richtung = N | O | S | W 
+     deriving ( Eq, Ord, Enum, Bounded, Typeable )
+
+{-! for Richtung derive : Reader, ToDoc, Haskell2Xml !-}
+
+richtungen :: [ Richtung ]
+richtungen = [ minBound .. maxBound ]
+
+type Zug = ( String, Richtung )
+
+instance Size Zug where size _ = 1
+
+-- local variables:
+-- mode: haskell
+-- end:

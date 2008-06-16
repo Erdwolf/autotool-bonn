@@ -36,8 +36,8 @@ import qualified Graph.MinSep
 import qualified Robots.Interface
 import qualified Robots.Inverse
 
-import qualified Robots2.Interface
--- import qualified Robots2.Inverse
+import qualified Robots3.Interface
+import qualified Robots3.Inverse
 
 
 import qualified Rushhour.Central
@@ -258,15 +258,19 @@ tmakers =
          , heading "Kombinatorik"
                 [ item PCProblem.Quiz.make_quiz 
 	        , item PCProblem.Quiz.make_fixed
-	        , item Robots.Interface.make
-	        , item Robots.Interface.qmake
-	        , item Robots.Inverse.make
-	        , item Robots.Inverse.qmake
-	        , item Robots2.Interface.make
-	        , item Robots2.Interface.qmake
-	        -- , item Robots2.Inverse.make
-	        -- , item Robots2.Inverse.qmake
-	        , item Rushhour.Central.make
+		, heading "Lunar Lockout (original)"
+		  [ item Robots.Interface.make
+		  , item Robots.Interface.qmake
+		  , item Robots.Inverse.make
+		  , item Robots.Inverse.qmake
+		  ]
+	        , heading "Solar Lockout (modified)"
+		  [ item Robots3.Interface.make
+		  , item Robots3.Interface.qmake
+		  , item Robots3.Inverse.make
+		  , item Robots3.Inverse.qmake
+		  , item Rushhour.Central.make
+		  ]
 	        -- , item Rushhour.Central.qmake
 	        , item Hanoi.Semantik.make
 	        , item Hanoi.Quiz.make
