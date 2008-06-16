@@ -31,8 +31,8 @@ instance Partial Robots3
     describe Robots3 k = vcat
         [ text "Lunar Lockout (c) Binary Arts:"
         , text "Geben Sie eine Zugfolge an,"
-	, text "die den Roboter (Großbuchstabe)"
-	, text "ins Ziel (entsprechender Kleinbuchstabe) bringt:"
+	, text "nach der alle Zielfelder (*)"
+	, text "mit Robotern (Großbuchstaben) belegt sind."
 	, nest 4 $ nice k
 	]
 
