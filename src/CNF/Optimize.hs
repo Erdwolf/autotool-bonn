@@ -18,6 +18,9 @@ import Autolib.Size
 import Inter.Types
 import Inter.Quiz
 
+import qualified Data.Set as S
+import Data.Set (Set)
+
 import Data.Typeable
 
 data CNF_Optimize = CNF_Optimize deriving ( Read, Show, Typeable )
@@ -28,14 +31,21 @@ instance Partial CNF_Optimize CNF CNF where
              [ text "Gesucht ist eine Formel in konjunktiver Normalform,"
              , text "die äquivalent ist zu"
              , nest 4 $ toDoc i
-             , text "und kleiner ist als diese"
+             , text "und weniger Klauseln enthält als diese."
+             , text "Die gesuchte Formel darf zusätzliche Variablen enthalten,"
+             , text "über diese wird existentiell quantifiziert."
              ]
 
     initial _ i = i
 
     partial _ i b = do
+        let extra = S.difference ( variables b ) ( variables i )
+        when ( not $ S.null extra ) $ inform $ vcat
+             [ text "zusätzliche Variablen"
+             , nest 4 $ toDoc extra
+             ]
         let mi = eval i
-            mb = eval b
+            mb = O.exists_many extra $ eval b
             diff = O.binary ( \ x y ->  x /= y ) mi mb
             mods = P.all_models diff
         when ( P.satisfiable diff ) $ reject $ vcat

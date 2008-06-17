@@ -26,7 +26,7 @@ instance Reader CNF where
         cs <- Autolib.Reader.sepBy reader ( my_reserved "*" ) 
         return $ CNF cs
 
-instance Size CNF where size ( CNF cs ) = sum $ map size cs
+instance Size CNF where size ( CNF cs ) = length cs
 
 --------------------------------------------------------------------------
 
@@ -75,6 +75,15 @@ instance Reader Variable where
         my_symbol "x"
         n <- my_integer
         return $ Variable { number = fromIntegral n }
+
+--------------------------------------------------------------------
+
+class Variables a  where variables :: a -> Set Variable
+
+instance Variables Variable where variables v = S.singleton v
+instance Variables Literal  where variables l = variables $ variable l
+instance Variables Clause   where variables ( Clause ls ) = S.unions $ map variables ls
+instance Variables CNF      where variables ( CNF    cs ) = S.unions $ map variables cs
 
 --------------------------------------------------------------------
 

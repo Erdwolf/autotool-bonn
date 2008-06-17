@@ -12,3 +12,29 @@ e1 = read
              , "(-x4 + -x5 + x8) * (-x4 + x7)"
              ]
 
+vars ks = do k <- ks ; return $ Variable k
+
+e2 :: CNF
+e2 = equiv $ vars [ 1 .. 5 ]
+
+equiv   vs = CNF $ map Clause $ fun True  vs
+inequiv vs = CNF $ map Clause $ fun False vs
+
+fun True  [] = return []
+fun False [] = []
+fun p (v : vs) = 
+             map ( Literal v True  : ) ( fun p vs )
+          ++ map ( Literal v False : ) ( fun (not p) vs )
+
+merge :: [ CNF ] -> CNF
+merge cnfs = CNF $ concat $ map ( \ (CNF cs) -> cs ) cnfs
+
+e2better :: CNF
+e2better = merge [ inequiv $ vars [ 1,2,6 ]
+                 , inequiv $ vars [ 3,4,7 ]
+                 , equiv $ vars [5,6,7]
+                 ]
+    
+
+
+
