@@ -40,7 +40,7 @@ instance Partial CNF_Optimize CNF CNF where
             mods = P.all_models diff
         when ( P.satisfiable diff ) $ reject $ vcat
              [ text "nicht äquivalent, z. B. bei Belegung(en)"
-             , nest 4 $ vcat $ map toDoc mods
+             , nest 4 $ vcat $ map toDoc $ take 3 mods
              ]
 
     total _ i b = do
