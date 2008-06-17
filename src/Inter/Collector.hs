@@ -95,6 +95,7 @@ import qualified NPDA.Inter
 import qualified NPDA.Inter2
 -- import qualified Turing.Inter
 
+import qualified CNF.Optimize
 import qualified SAT.SAT
 import qualified Baum.Reconstruct
 import qualified Baum.Binary
@@ -245,6 +246,7 @@ tmakers =
 		    , item Boolean.Quiz.make
 		    , item SAT.SAT.make_fixed
 		    , item SAT.SAT.make_quiz
+                    , item CNF.Optimize.make_fixed
 		    , item Hilbert.Central.make_fixed
 		    ]
 		, heading "Prädikatenlogik"
