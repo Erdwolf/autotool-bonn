@@ -20,7 +20,7 @@ pick c = do
 
 select top k (b : bs) = 
     if k <= b
-    then let k' = min top k
+    then let k' = if k > top then max 1 (2*top - k) else k
          in ( k', ( b - k' ) : bs )
     else let ( w, rest ) = select top ( k - b ) bs
          in  ( w, b : rest )
