@@ -76,6 +76,13 @@ instance (XmlRpcType a, XmlRpcType b) => XmlRpcType (a,b) where
         yy <- fromValue y
         return ( xx, yy )
 
+
+-- FIXME: this is fundamentally not right
+instance XmlRpcType Integer where
+    getType _ = getType ( undefined :: Int )
+    toValue x = toValue ( fromIntegral x :: Int )
+    fromValue v = fmap ( fromIntegral :: Int -> Integer ) ( fromValue v )
+
 ---------------------------------------------------------------------------------
 
 instance Typeable Make where 
