@@ -52,6 +52,8 @@ data Make = forall conf p i b
 		  (conf -> Reporter ()) -- verify config
                   conf --  example
 
+---------------------------------------------------------------------------------
+
 instance ( Reader a, ToDoc a, Typeable a ) => XmlRpcType a where 
     getType x = TString
     toValue x = ValueString $ show $ toDoc x
@@ -63,6 +65,18 @@ instance ( Reader a, ToDoc a, Typeable a ) => XmlRpcType a where
        _ -> fail 
               $ "using (wrong) default XmlRpcType instance for " 
                   ++ show (typeOf ( undefined :: a ))
+
+instance (XmlRpcType a, XmlRpcType b) => XmlRpcType (a,b) where
+    getType _ = TStruct
+    toValue (x,y) = ValueStruct [("first", toValue x), ("second", toValue y)]
+    fromValue ( ValueStruct v ) = do
+        x <- getField "first" v
+        xx <- fromValue x
+        y <- getField "second" v
+        yy <- fromValue y
+        return ( xx, yy )
+
+---------------------------------------------------------------------------------
 
 instance Typeable Make where 
     typeOf _ = mkTyConApp ( mkTyCon "Inter.Types.Make" ) []

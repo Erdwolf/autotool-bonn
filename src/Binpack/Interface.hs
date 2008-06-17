@@ -7,6 +7,7 @@ import Binpack.Example
 import qualified Binpack.Param as P
 import Binpack.Quiz
 import Binpack.Approximation
+import Binpack.InstanceTH ()
 
 import Autolib.FiniteMap
 import Autolib.Set

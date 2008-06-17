@@ -9,6 +9,8 @@ import qualified Binpack.Param as P
 import Binpack.Approximation
 
 import Binpack.Interface ()
+import Binpack.InstanceTH ()
+import Binpack.ParamTH ()
 
 import Autolib.FiniteMap
 import Autolib.Set
