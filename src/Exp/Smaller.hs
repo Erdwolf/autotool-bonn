@@ -44,9 +44,9 @@ instance C.Partial Exp_Smaller
 	    , nest 4 $ toDoc rx
 	    , text "der Größe"
 	    , nest 4 $ toDoc $ size rx
-	    , text "erzeugt, aber kleiner ist und die Eigenschaften"
+	    , text "erzeugt und die Eigenschaften"
 	    , nest 4 $ toDoc props
-	    , text "hat!"
+	    , text "hat."
             ]
 
     initial Exp_Smaller ( rx, props ) = 
@@ -58,16 +58,6 @@ instance C.Partial Exp_Smaller
 --        sanity_keys ( mkSet [ "Eps", "Empty" ] ) exp
         inform $ text "Sind alle Eigenschaften erfüllt?"
         nested 4 $ mapM_ ( flip test exp ) props
-
-        inform $ text "Ist Ihr Ausdruck kleiner?"
-
-        when ( size exp >= size rx ) $ reject $ vcat 
-	     [ text "Nein. Die Größe Ihres Ausdrucks ist"
-	     , nest 4 $ toDoc $ size exp
-	     , text "darf aber höchstens"
-	     , nest 4 $ toDoc $ pred $ size rx
-	     , text "sein." 
-	     ]
 
         inform $ text "Ja."
 
