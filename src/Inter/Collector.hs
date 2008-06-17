@@ -130,7 +130,7 @@ import qualified Graph.VC.Central
 import qualified Graph.VC.VCSAT
 import qualified Partition.Central
 
-import qualified Binpack.Instance
+import qualified Binpack.Interface
 import qualified KnapsackFraction.Central
 
 import qualified RM.Make
@@ -430,7 +430,7 @@ tmakers =
 		    ]
               ]
          , heading "NP-vollständige Probleme"
-                [ item Binpack.Instance.make_fixed
+                [ item Binpack.Interface.make_fixed
                 , item Partition.Central.make_fixed
 		    , item SAT.SAT.make_fixed
 		    , item SAT.SAT.make_quiz
