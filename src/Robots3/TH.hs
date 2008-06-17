@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fth -fallow-overlapping-instances #-}
+{-# OPTIONS -fglasgow-exts -fth -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
 module Robots3.TH where
 

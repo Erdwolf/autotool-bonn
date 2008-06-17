@@ -41,6 +41,7 @@ import qualified Robots3.Inverse
 
 
 import qualified Rushhour.Central
+
 import qualified Graph.Col.Plain
 import qualified Graph.Col.Quiz
 import qualified Graph.Col.Gadget.Central
@@ -129,6 +130,7 @@ import qualified Graph.VC.Central
 import qualified Graph.VC.VCSAT
 import qualified Partition.Central
 
+import qualified Binpack.Instance
 import qualified KnapsackFraction.Central
 
 import qualified RM.Make
@@ -427,9 +429,11 @@ tmakers =
 		    , item $ Diffie_Hellman.Quiz.make
 		    ]
               ]
-         , heading "noch nicht eingeordnet"
-                [ item Palindrom.Plain.make
+         , heading "NP-vollständige Probleme"
+                [ item Binpack.Instance.make_fixed
                 , item Partition.Central.make_fixed
+		    , item SAT.SAT.make_fixed
+		    , item SAT.SAT.make_quiz
                 , item Partition.Central.make_quiz
                 , item KnapsackFraction.Central.make_fixed
                 , item KnapsackFraction.Central.make_quiz
@@ -437,6 +441,10 @@ tmakers =
                 , item Graph.VC.Central.make_quiz
                 , item Graph.VC.VCSAT.make_fixed
                 , item Graph.VC.VCSAT.make_quiz               
+                ]
+
+         , heading "noch nicht eingeordnet"
+                [ item Palindrom.Plain.make
                 ]
 	  , heading "experimentell"
 	        [ item $ Algebraic2.Central.make Algebraic_Integer
