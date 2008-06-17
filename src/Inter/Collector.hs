@@ -433,6 +433,7 @@ tmakers =
               ]
          , heading "NP-vollständige Probleme"
                 [ item Binpack.Interface.make_fixed
+                , item Binpack.Interface.make_quiz
                 , item Partition.Central.make_fixed
 		    , item SAT.SAT.make_fixed
 		    , item SAT.SAT.make_quiz

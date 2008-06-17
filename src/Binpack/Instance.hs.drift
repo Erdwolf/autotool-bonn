@@ -14,12 +14,13 @@ data Binpack = Binpack
 data Instance =
      Instance { weights :: [ Integer ]
               , capacity :: Integer
-              , bins :: Integer
+              , bins :: Int
               }
     deriving Typeable
 
 {-! for Instance derive: Reader, ToDoc !-}
 
+type Assignment = [[Integer]]
 
 -- local variables:
 -- mode: haskell
