@@ -20,13 +20,17 @@ import Data.Array ( range )
 import System.IO
 import Data.IORef
 
-sol :: Int -> Int -> Int -> [ Position ] -> IO ( Config, [[Zug]] )
-sol sw n t pos = do
+someconf :: Int -> Int -> [ Position ] -> IO Config
+someconf n t pos = do
     psts <- selektion (n + t) pos
     let ( ps, ts ) = splitAt n psts
     let rob (c, p) = Robot { name = [c] , position = p }
     let rs = map rob $ take n $ zip [ 'A' .. ] ps
-    let c = Robots3.Config.make rs ts
+    return $ Robots3.Config.make rs ts
+
+sol :: Int -> Int -> Int -> [ Position ] -> IO ( Config, [[Zug]] )
+sol sw n t pos = do
+    c <- someconf n t pos
     return ( c, shortest' sw c )
 
 instance Generator Robots3 RC ( Config, [Zug] ) where

@@ -7,6 +7,7 @@ module Robots3.Config
 , showing_hull, show_hull
 , breit
 , make, make_with_hull, geschichte
+, with_targets
 , move, remove, addZug
 , look, robots, inhalt
 , positions, goals
@@ -49,6 +50,8 @@ data Config = Config { c_hash :: Int32
 		     , show_hull :: Bool
 		     }
      deriving ( Typeable )
+
+with_targets c ts = c { targets = mkSet ts }
 
 cluster_of k p = lookupFM ( c_clusters k ) p 
 
