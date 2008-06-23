@@ -28,14 +28,18 @@ mkpar stud auf = P.empty
 	    , P.ident = S.snr stud
             }
 
-make_instant_common vnr manr stud var = do
+make_instant_common vnr manr stud var = 
+    make_instant_common_with vnr manr stud var $ toString $ S.mnr stud 
+
+make_instant_common_with vnr manr stud var seed = do
     let p = problem var
     let mat = S.mnr stud
-    k <- key var $ toString mat 
+    k <- key var seed
     g <- gen var vnr manr k 
     let ( Just i  , _ :: Html.Html ) = export g
     ( _, icom :: Html.Html) <- run $ report p i
     return ( p, i, icom )
+
 
 -- | erreichte punkte in datenbank schreiben 
 -- und lösung abspeichern

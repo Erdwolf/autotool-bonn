@@ -43,6 +43,8 @@ import Control.Monad.Error
 
 import Data.List ( intersperse )
 import Data.Typeable
+import System.Random
+import System.Time
 
 main :: IO ()
 main = cgiXmlRpcServer 
@@ -59,6 +61,7 @@ for_tutor =
 for_student = 
      [ ( "get_current_questions_for_type", fun get_current_questions_for_type )
      , ( "get_question", fun get_question )
+     , ( "get_random_question", fun get_question )
      , ( "put_answer", fun put_answer )
      ]
 
@@ -133,6 +136,15 @@ get_current_questions_for_type act vorles typ = do
 
 get_question :: Actor -> Problem -> IO Value
 get_question act prob = do
+    get_question_with act prob  ( toString . S.mnr )
+
+get_random_question :: Actor -> Problem -> IO Value
+get_random_question act prob = do
+    ct <- System.Time.getClockTime
+    get_question_with act prob  ( const $ show ct )
+
+get_question_with :: Actor -> Problem -> ( S.Student -> String ) -> IO Value
+get_question_with act prob seed = do
     (vor, stud, auf) <- login act prob
     -- FIXME: duplicated code from Inter.Super follows
     let mmk = lookup ( toString $ A.typ auf )
@@ -141,9 +153,10 @@ get_question act prob = do
             Nothing -> do
                 error "Aufgabenstellung nicht auffindbar"
             Just ( Make p doc fun veri ex ) -> do
-                ( _, i, com ) <- make_instant_common
+                ( _, i, com ) <- make_instant_common_with
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
+			   ( seed stud )
                 let p = mkpar stud auf
                     d = Inter.Store.location Inter.Store.Instant
                            p "latest" False
