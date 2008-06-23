@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# language TemplateHaskell #-}
 
 module PCProblem.Data where
 
@@ -11,6 +11,9 @@ import Autolib.Letters
 import Data.Typeable
 import Text.XML.HaXml.Haskell2Xml
 
+import Network.XmlRpc.Internals
+import Network.XmlRpc.THDeriveXmlRpcType
+
 data PCP = PCP [(String, String)] deriving ( Typeable )
 
 instance Letters PCP Char where
@@ -18,5 +21,13 @@ instance Letters PCP Char where
 
 {-! for PCP derive: ToDoc, Reader, Haskell2Xml !-}
 
-instance Show PCP where show = render . toDoc
-instance Read PCP where readsPrec = parsec_readsPrec
+instance XmlRpcType PCP where
+    getType (PCP ps) = getType ps
+    toValue (PCP ps) = toValue ps
+    fromValue v = do
+        ps <- fromValue v
+	return $ PCP ps
+
+-- local variables:
+-- mode: haskell
+-- end:
