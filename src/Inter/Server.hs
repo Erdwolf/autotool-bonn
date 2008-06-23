@@ -122,20 +122,13 @@ get_student act prob snr = do
 
 ----------------------------------------------------------------------------------
 
-data Problem_Info =
-     Problem_Info { problem_name :: String
-		  , has_highscore :: Bool
-		  }
-
-get_current_questions_for_type :: Actor -> String -> String -> IO [ Problem_Info ]
+get_current_questions_for_type :: Actor -> String -> String -> IO [ String ]
 get_current_questions_for_type act vorles typ = do
     (vor, stud, aufs) <- login0 act vorles
     let selected = filter ( \ auf ->  typ == toString ( A.typ auf ) ) 
 		 $ filter ( \ auf ->  Current == A.timeStatus auf )
 		 $ aufs
-    return $ map ( \ auf -> Problem_Info { problem_name = toString $ A.name auf
-					 , has_highscore = Keine /= A.highscore auf 
-					 }
+    return $ map ( \ auf -> toString $ A.name auf
 		 ) selected
 
 get_question :: Actor -> Problem -> IO Value
@@ -199,5 +192,4 @@ put_answer act prob val = do
 outform = Autolib.Multilingual.specialize Autolib.Multilingual.UK
 
 
-$(asXmlRpcStruct ''Problem_Info)
 
