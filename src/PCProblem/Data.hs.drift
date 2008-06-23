@@ -21,12 +21,19 @@ instance Letters PCP Char where
 
 {-! for PCP derive: ToDoc, Reader, Haskell2Xml !-}
 
+data Pair = Pair { top :: String, bot :: String }
+
+topair (x,y) = Pair x y
+frompair p = ( top p, bot p )
+
 instance XmlRpcType PCP where
-    getType (PCP ps) = getType ps
-    toValue (PCP ps) = toValue ps
+    getType (PCP ps) = getType $ map topair ps
+    toValue (PCP ps) = toValue $ map topair ps
     fromValue v = do
         ps <- fromValue v
-	return $ PCP ps
+	return $ PCP $ map frompair ps
+
+$(asXmlRpcStruct ''Pair)
 
 -- local variables:
 -- mode: haskell
