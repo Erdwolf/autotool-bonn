@@ -161,6 +161,7 @@ get_question_with act prob seed = do
                     d = Inter.Store.location Inter.Store.Instant
                            p "latest" False
                 file <- D.schreiben d $ show $ outform com
+{-
                 let inst = fromCGI file
                 Control.Punkt.bepunkteStudentDB
                          (P.ident p) (P.anr p)
@@ -168,6 +169,7 @@ get_question_with act prob seed = do
                          Nothing (P.highscore p)
                          Nothing
                          Nothing
+-}
                 return $ toValue i
 
 put_answer :: Actor -> Problem -> Value -> IO String
