@@ -91,13 +91,16 @@ make_fixed = direct Binpack Binpack.Example.e1
 
 
 instance Generator Binpack P.Param Instance  where
-    generator p conf key = do
+    generator p conf key = generate_with_distance 1 conf 
+
+
+generate_with_distance d conf = 
         do ws <- pick conf
            return $ Instance { capacity = P.capacity conf
                              , bins = P.bins conf
                              , weights = ws
                              }
-        `repeat_until` \ i -> first_fit_decreasing_size i >  bins i
+        `repeat_until` \ i -> first_fit_decreasing_size i >= d + bins i
         
 
 instance Project Binpack Instance Instance where

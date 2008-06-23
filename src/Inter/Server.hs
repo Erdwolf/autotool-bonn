@@ -1,4 +1,4 @@
-{-# language CPP, OverlappingInstances, IncoherentInstances #-}
+{-# language TemplateHaskell, CPP, OverlappingInstances, IncoherentInstances #-}
 
 -- main module
 
@@ -20,7 +20,7 @@ import qualified Util.Datei as D
 import qualified Control.Punkt
 import qualified Inter.Store
 
-import Control.Types ( VNr, SNr, ANr, Wert (..), fromCGI )
+import Control.Types ( VNr, SNr, ANr, Wert (..), fromCGI, HiLo(..), TimeStatus(..) )
 import Control.TH
 import Control.Student.TH
 import Autolib.Reporter
@@ -37,6 +37,7 @@ import qualified Control.Stud_Aufg.DB
 
 import Network.XmlRpc.Server
 import Network.XmlRpc.Internals
+import Network.XmlRpc.THDeriveXmlRpcType
 import Control.Monad ( when )
 import Control.Monad.Error
 
@@ -56,16 +57,26 @@ for_tutor =
 #endif
 
 for_student = 
-     [ ( "get_question", fun get_question )
+     [ ( "get_current_questions_for_type", fun get_current_questions_for_type )
+     , ( "get_question", fun get_question )
      , ( "put_answer", fun put_answer )
      ]
 
 -- | student login
 login :: Actor -> Problem -> IO (V.Vorlesung, S.Student, A.Aufgabe)
 login act prob = do
-
-    appendFile "/tmp/RPC.log" $ show $ act { passwort = "..." }
+    ( vor, stud, aufs ) <- login0 act $ vorlesung prob
     appendFile "/tmp/RPC.log" $ show prob
+    let auf = case filter ( \ auf -> A.name auf == fromCGI (aufgabe prob)) 
+                          aufs of
+           [] -> error $ "no such aufgabe " ++ show (act, prob)
+	   [auf] -> auf
+	   aufs -> error "more than one aufgabe"
+    return (vor, stud, auf)
+
+login0 :: Actor -> String -> IO (V.Vorlesung, S.Student, [A.Aufgabe])
+login0 act vorles = do
+    appendFile "/tmp/RPC.log" $ show $ act { passwort = "..." }
 
     us <- U.get
     u <- case [ u | u <- us , U.name u == fromCGI ( schule act ) ] of
@@ -76,18 +87,13 @@ login act prob = do
     when ( not $ Inter.Crypt.compare ( S.passwort stud ) $ passwort act )
 	 $ error "password does not match"
     vors <- V.get_attended $ S.snr stud
-    let vor = case filter ( \ vor -> V.name vor == fromCGI (vorlesung prob )) 
+    let vor = case filter ( \ vor -> V.name vor == fromCGI vorles ) 
                           vors of
-           [] -> error $ "no vorlesungen for " ++ show (act, prob)
+           [] -> error $ "no vorlesungen for " ++ show (act, vorles)
 	   [vor] -> vor
 	   vors -> error "more than one vorlesung for you"
     aufs <- A.get $ Just $ V.vnr vor
-    let auf = case filter ( \ auf -> A.name auf == fromCGI (aufgabe prob)) 
-                          aufs of
-           [] -> error $ "no such aufgabe " ++ show (act, prob)
-	   [auf] -> auf
-	   aufs -> error "more than one aufgabe"
-    return (vor, stud, auf)
+    return ( vor, stud, aufs )
     
 #if(0)
 -- | all students that have sent in a solution to given problem
@@ -115,7 +121,23 @@ get_student act prob snr = do
 #endif
 
 ----------------------------------------------------------------------------------
-    
+
+data Problem_Info =
+     Problem_Info { problem_name :: String
+		  , has_highscore :: Bool
+		  }
+
+get_current_questions_for_type :: Actor -> String -> String -> IO [ Problem_Info ]
+get_current_questions_for_type act vorles typ = do
+    (vor, stud, aufs) <- login0 act vorles
+    let selected = filter ( \ auf ->  typ == toString ( A.typ auf ) ) 
+		 $ filter ( \ auf ->  Current == A.timeStatus auf )
+		 $ aufs
+    return $ map ( \ auf -> Problem_Info { problem_name = toString $ A.name auf
+					 , has_highscore = Keine /= A.highscore auf 
+					 }
+		 ) selected
+
 get_question :: Actor -> Problem -> IO Value
 get_question act prob = do
     (vor, stud, auf) <- login act prob
@@ -175,4 +197,7 @@ put_answer act prob val = do
 		return $ show res
                        
 outform = Autolib.Multilingual.specialize Autolib.Multilingual.UK
+
+
+$(asXmlRpcStruct ''Problem_Info)
 
