@@ -34,7 +34,7 @@ instance Source Turm where source _ = drift __FILE__
 type Hof = FiniteMap Turm [ Scheibe ]
 
 instance XmlRpcType Hof where
-    getType = TValueStruct
+    getType _ = TStruct
     toValue h = ValueStruct $ do
         ( k, v ) <- fmToList h
         return ( show k, toValue v )
