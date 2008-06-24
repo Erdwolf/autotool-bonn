@@ -1,4 +1,4 @@
-{-# OPTIONS -cpp #-}
+{-# OPTIONS -cpp -fth #-}
 
 module Hanoi.Type where
 
@@ -17,6 +17,11 @@ import Data.Typeable
 
 import Gateway.Help
 
+import Network.XmlRpc.Internals
+import Network.XmlRpc.THDeriveXmlRpcType
+import Inter.Types ()
+
+
 type Scheibe = Integer
 
 data Turm = A | B | C | D
@@ -28,6 +33,19 @@ instance Source Turm where source _ = drift __FILE__
 
 type Hof = FiniteMap Turm [ Scheibe ]
 
+instance XmlRpcType Hof where
+    getType = TValueStruct
+    toValue h = ValueStruct $ do
+        ( k, v ) <- fmToList h
+        return ( show k, toValue v )
+    fromValue ( ValueStruct kvs ) = do
+        kvs <- sequence $ do
+             ( k, v) <- kvs
+             return $ do
+                 vv <- fromValue v
+                 return ( read k, vv )
+        return $ listToFM kvs
+
 type Zug = ( Turm, Turm )
 
 instance Size Zug where size _ = 1
@@ -37,6 +55,8 @@ data HI = HI { start :: Hof
 	     , restriction :: Restriction
 	     }
     deriving ( Typeable )
+
+$(asXmlRpcStruct ''HI)
 
 instance Source HI where source _ = drift __FILE__
 

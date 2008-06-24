@@ -8,6 +8,8 @@ import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Reporter
 
+import Inter.Types ()
+
 import Data.Typeable
 
 data Restriction 
