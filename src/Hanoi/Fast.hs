@@ -44,6 +44,7 @@ solve depth targets pegs pieces =
 present :: [(Int,Int)] -> [T.Zug]
 present = map ( \ (x,y) -> ( toEnum x, toEnum y))
 
+
 solve targets pegs pieces = 
     fmap length $ solve_path targets pegs pieces
 
