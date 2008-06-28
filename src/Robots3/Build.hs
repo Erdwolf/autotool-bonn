@@ -6,6 +6,8 @@ import Robots3.Data
 import Robots3.Nice
 import Robots3.Generator
 
+import Robots3.Form
+
 import Inter.Quiz
 
 import Autolib.ToDoc
@@ -31,12 +33,15 @@ searcher k = do
             let sigma = [ '0' .. '9' ] ++ [ 'a' .. 'z' ]
             key <- someIO sigma 5
             print key
-            print $ vcat [ text key, nice conf, short sol ]
-
-            appendFile ( "solar-questions.text" ) $ show $
-                text key <+> nice conf
-            appendFile ( "solar-answers.text" ) $ show $
-                text key <+> short sol
+            print $ vcat 
+		  [ text key, nice conf, short sol 
+		  , form conf 
+		  ]
+	    when (False) $ do
+                appendFile ( "solar-questions.text" ) $ show $
+                    text key <+> nice conf
+                appendFile ( "solar-answers.text" ) $ show $
+                    text key <+> short sol
         else do
             -- putStr "*"
             return ()
