@@ -33,14 +33,7 @@ searcher k = do
             let sigma = [ '0' .. '9' ] ++ [ 'a' .. 'z' ]
             key <- someIO sigma 5
             print key
-<<<<<<< Build.hs
-            print $ vcat [ text key, nice conf, short sol ]
 
-            appendFile ( "solar-questions.text" ) $ 
-                       "\n\n" ++ show ( text key <+> nice conf ) ++ "\n"
-            appendFile ( "solar-answers.text" ) $ 
-                       "\n\n" ++ show ( text key <+> short sol ) ++ "\n"
-=======
             print $ vcat 
 		  [ text key, nice conf, short sol 
 		  , form conf 
@@ -50,7 +43,7 @@ searcher k = do
                     text key <+> nice conf
                 appendFile ( "solar-answers.text" ) $ show $
                     text key <+> short sol
->>>>>>> 1.3
+
         else do
             -- putStr "*"
             return ()
