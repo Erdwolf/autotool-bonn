@@ -16,7 +16,7 @@ import Control.Monad ( when )
 import Autolib.Util.Wort ( someIO )
 
 p :: RC
-p = RC { width = 3
+p = RC { width = 4
 	, num_robots = 5
 	, num_targets = 1
 	, at_least = 5
@@ -33,6 +33,14 @@ searcher k = do
             let sigma = [ '0' .. '9' ] ++ [ 'a' .. 'z' ]
             key <- someIO sigma 5
             print key
+<<<<<<< Build.hs
+            print $ vcat [ text key, nice conf, short sol ]
+
+            appendFile ( "solar-questions.text" ) $ 
+                       "\n\n" ++ show ( text key <+> nice conf ) ++ "\n"
+            appendFile ( "solar-answers.text" ) $ 
+                       "\n\n" ++ show ( text key <+> short sol ) ++ "\n"
+=======
             print $ vcat 
 		  [ text key, nice conf, short sol 
 		  , form conf 
@@ -42,6 +50,7 @@ searcher k = do
                     text key <+> nice conf
                 appendFile ( "solar-answers.text" ) $ show $
                     text key <+> short sol
+>>>>>>> 1.3
         else do
             -- putStr "*"
             return ()
