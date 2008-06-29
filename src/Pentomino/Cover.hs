@@ -130,6 +130,20 @@ unreach fig =
         h = hull f $ Position (l-1) (u-1)
     in  rangeSize bnd - S.size h
 
+-- | number of reachables (from first )
+reach ::  Figure -> Int
+reach fig = 
+    let ps = S.unions $ covers fig
+        f p = S.fromList $ do
+              dx <- [ -1 .. 1 ]
+              dy <- [ -1 .. 1 ]
+              let q = p +  Position dx dy
+              guard $ S.member q ps
+              return q
+        start = head $ S.toList $ head $ covers fig
+        h = hull f start
+    in  S.size h
+
 hull :: Ord a 
      => ( a -> Set a ) 
      -> a 

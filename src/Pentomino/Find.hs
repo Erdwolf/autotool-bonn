@@ -19,10 +19,10 @@ main = G.evolve conf
 conf = G.Config 
     { G.fitness = \ f -> 
           ( negate $ overlaps f
+          , reach f
           , unreach f 
-          , negate $ rangeSize $ container f
           )
-    , G.threshold = ( 0, 130 + 5 * 12, 0 )
+    , G.threshold = ( 0, 60, 130 + 5 * 12 )
     , G.present = mapM_ ( \ (v,f) -> print (toDoc v <+> form f ) )
                 . reverse . take 3
     , G.trace = print . map fst . take 10 
