@@ -13,14 +13,22 @@ import Inter.Quiz
 import Autolib.ToDoc
 
 import Control.Monad ( when )
+<<<<<<< Build.hs
+import System.Random
+=======
 import Autolib.Util.Wort ( someIO )
+>>>>>>> 1.5
 
 p :: RC
+<<<<<<< Build.hs
+p = RC { width = 6
+=======
 p = RC { width = 4
+>>>>>>> 1.5
 	, num_robots = 5
 	, num_targets = 1
 	, at_least = 5
-	, search_width = 10000
+	, search_width = 100000
 	}
 
 
@@ -30,6 +38,17 @@ searcher k = do
     ( conf :: Config, sol :: [ Zug] ) <- generator Robots3 p undefined
     if ( length sol >= k ) 
         then do
+<<<<<<< Build.hs
+            let msg = show $ vcat
+	           [ toDoc $ length sol
+	       	   , toDoc conf
+                   , nice conf
+                   , toDoc  sol
+                   ]
+            n :: Integer <- randomRIO ( 0, 10^10 ) 
+            putStrLn msg
+            writeFile ( "robots-" ++ show n ++ ".conf" ) msg
+=======
             let sigma = [ '0' .. '9' ] ++ [ 'a' .. 'z' ]
             key <- someIO sigma 5
             print key
@@ -44,6 +63,7 @@ searcher k = do
                 appendFile ( "solar-answers.text" ) $ show $
                     text key <+> short sol
 
+>>>>>>> 1.5
         else do
             -- putStr "*"
             return ()

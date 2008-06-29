@@ -24,17 +24,16 @@ conf = G.Config
           )
     , G.threshold = ( 0, 130 + 5 * 12, 0 )
     , G.present = mapM_ ( \ (v,f) -> print (toDoc v <+> form f ) )
-                . take 3
-    , G.trace = mapM_ ( \ (v,f) -> print v ) 
-              . take 3
-    , G.size  = 100
+                . reverse . take 3
+    , G.trace = print . map fst . take 10 
+    , G.size  = 500
     , G.generate = roll
     , G.combine = \ f g -> fmap figure $ sequence $ do
           k <- [ 0 .. length ( pieces f ) - 1 ]
           return $ do
               s <- randomRIO ( False, True )
               return $ pieces ( if s then f else g ) !! k
-    , G.num_combine = 20
+    , G.num_combine = 200
     , G.mutate = \ f -> fmap figure $ sequence $ do
           p <- pieces f
           return $ do
@@ -42,8 +41,8 @@ conf = G.Config
               if ( m > 1 ) 
                  then return p
                  else modify p
-    , G.num_mutate = 20
-    , G.num_compact = 100
+    , G.num_mutate = 200
+    , G.num_compact = 10
     , G.num_steps = Nothing
     , G.num_parallel = 1
     }
