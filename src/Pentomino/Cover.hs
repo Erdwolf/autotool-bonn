@@ -117,8 +117,8 @@ roll_shift = fmap figure_shift $ sequence $ do
     return $ do
         t <- randomRIO ( 0, 3 ) 
         m <- randomRIO ( 0, 1 )
-	dx <- randomRIO ( -10, 10 )
-	dy <- randomRIO ( -10, 10 )
+	dx <- randomRIO ( -5, 5 )
+	dy <- randomRIO ( -5, 5 )
         return $ Piece
                { orig = p
                , turns = t
