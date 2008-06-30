@@ -21,6 +21,8 @@ import Data.Ix
 import System.Environment
 import System.IO
 
+import Control.Monad ( guard )
+
 main = main2
 
 main2 = run
@@ -61,32 +63,67 @@ printf x = do print x ; hFlush stdout
 diversity f = S.size $ S.fromList $ map orig $ pieces f
 
 
-best_for f = do
-    let bnd = container f
-    ( pre, this : post ) <- splits $ pieces f
-    t <- [ 0 .. 3 ]   
-    m <- [ 0 .. 1 ]
-    let w = 3
-    let bnd0 = ((negate w, negate w),(w,w))
-    (sx,sy) <- range bnd0
-    let that = this
-               { turns = t
-               , mirrors = m
-               , shift = shift this + P.Position sx sy
-               }
+complete_best_for f = do
+    k <- [ 0 .. length ( pieces f ) - 1 ]
+    best_for f k
+
+best_for f k = do
+    let ( pre, this : post ) = splitAt k $ pieces f
+    that <- changes this
+    guard $ that /= this
     let g = figure_shift $ pre ++ that : post
     return ( unreach g
 	   , g	     
 	   )
 
+-- | with swap
+best2_for f i j = do
+    let ps = pieces f
+        x0 = ps !! i
+        y0 = ps !! j
+    x <- changes $ x0 { orig = orig y0 }
+    y <- changes $ y0 { orig = orig x0 }
+    let g = figure_shift $ ps // [(i,x),(j,y)]
+    return ( unreach g, g )
+
+xs // [] = xs
+xs // ((i,x) : rest ) = 
+    let ( pre, _ : post ) = splitAt i xs
+        ys = pre ++ x : post
+    in  ys // rest
+
+changes this = do
+    t <- [ 0 .. 3 ]   
+    m <- [ 0 .. 1 ]
+    let w = 3
+    let bnd0 = ((negate w, negate w),(w,w))
+    (sx,sy) <- range bnd0
+    return $ this
+               { turns = t
+               , mirrors = m
+               , shift = shift this + P.Position sx sy
+               }
 
 run = do 
     f <- roll_shift
-    let runner f = do
-	    let ( v, g ) = maximum $ best_for f
-	    print $ toDoc v <+> form g
-	    runner g
-    runner f
+    let runner ( v, f ) = do
+            -- k <- randomRIO ( 0, pred $ length $ pieces f )
+            -- print $ text "select:" <+> toDoc k <+> toDoc ( ['a' .. ] !! k )
+	    -- let ( w, g ) = maximum $ best_for f k
+	    let ( w, g ) = maximum $ complete_best_for f 
+	    print $ toDoc w <+> form g
+            if ( w > v ) 
+	       then runner ( w, g )
+	       else do
+	          print $ text "stagnation"
+		  i <- randomRIO ( 0, length ( pieces f ) - 2 )
+		  j0 <- randomRIO ( 0, length ( pieces f ) - 2 )
+		  let j = if j0 >= i then j0 + 1 else j0
+		  print $ text "select:" <+> toDoc (i,j)
+		  let ( w, g ) = maximum $ best2_for f i j
+	          print $ toDoc v <+> form g
+                  runner ( w, g )
+    runner ( unreach f, f )
 
 
 
