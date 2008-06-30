@@ -111,7 +111,7 @@ run = do
             -- print $ text "select:" <+> toDoc k <+> toDoc ( ['a' .. ] !! k )
 	    -- let ( w, g ) = maximum $ best_for f k
 	    let ( w, g ) = maximum $ complete_best_for f 
-	    print $ toDoc w <+> form g
+	    printf $ toDoc w <+> form g
             if ( w > v ) 
 	       then runner ( w, g )
 	       else do
@@ -119,9 +119,9 @@ run = do
 		  i <- randomRIO ( 0, length ( pieces f ) - 2 )
 		  j0 <- randomRIO ( 0, length ( pieces f ) - 2 )
 		  let j = if j0 >= i then j0 + 1 else j0
-		  print $ text "select:" <+> toDoc (i,j)
+		  printf $ text "select:" <+> toDoc (i,j)
 		  let ( w, g ) = maximum $ best2_for f i j
-	          print $ toDoc v <+> form g
+	          printf $ toDoc v <+> form g
                   runner ( w, g )
     runner ( unreach f, f )
 
