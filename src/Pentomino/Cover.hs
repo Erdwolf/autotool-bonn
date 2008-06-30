@@ -36,15 +36,16 @@ data Piece = Piece
            { orig :: Set Position
            , turns :: Int
            , mirrors :: Int
-           , shift :: Position
+           -- , shift :: Position
+	   , delta :: Int
            }
     deriving (Show, Eq, Ord)
 
-points :: Piece -> Set Position
-points p = 
+points :: Position -> Piece -> Set Position
+points s p = 
     let ap 0 f x = x
         ap k f x = f (ap (k-1) f x)
-    in  S.map ( ( \ x -> x + shift p )
+    in  S.map ( ( \ x -> x + s )
              . ap (turns p) turn 
              . ap (mirrors p) mirror
              ) $ orig p
@@ -54,6 +55,20 @@ data Figure = Figure
             , covers :: [ Set Position ]
             }
     deriving (Show, Eq, Ord)
+
+
+-- | using deltas
+figure_delta ps = 
+    let f pivot [] = []
+	f pivot (p : ps) = 
+            let s = points pivot p 
+		h = S.toList $ halo s
+		i = delta p `mod` length h
+	    in  s : f ( h !! i ) ps
+	cs = f ( Position 0 0 ) ps
+    in  Figure { pieces = ps, covers = cs }
+
+
 
 instance ToDoc Figure where 
     toDoc = text . show
@@ -72,37 +87,35 @@ form f =
               x <- [ l .. r ]
               [ a ! (x,y), ' ' ]
 
-figure ps = Figure 
-          { pieces = ps
-          , covers = map points ps
-          }
 
 roll :: IO Figure
-roll = fmap figure $ sequence $ do
+roll = fmap figure_delta $ sequence $ do
     p <- twelve
     return $ do
         t <- randomRIO ( 0, 3 ) 
         m <- randomRIO ( 0, 1 )
-        sx <- randomRIO ( 0, 15 )
-        sy <- randomRIO ( 0, 15 )
+        -- sx <- randomRIO ( 0, 15 )
+        -- sy <- randomRIO ( 0, 15 )
+	d <- randomRIO ( 0, 20 )
         return $ Piece
                { orig = p
                , turns = t
                , mirrors = m
-               , shift = Position sx sy
+               -- , shift = Position sx sy
+	       , delta = d
                }
 
 modify :: Piece -> IO Piece
 modify p = do
         t <- randomRIO ( 0, 3 ) 
         m <- randomRIO ( 0, 1 )
-        sx <- randomRIO ( -1, 1 )
-        sy <- randomRIO ( -1, 1 )
+	d <- randomRIO ( 0, 20 )
         return $ Piece
                { orig = orig p
                , turns = t
                , mirrors = m
-               , shift = shift p + Position sx sy
+               -- , shift = shift p + Position sx sy
+	       , delta = d
                }
 
 container :: Figure -> ((Int,Int),(Int,Int))
@@ -121,9 +134,7 @@ unreach fig =
     let ps = S.unions $ covers fig
         bnd @ ((l,u),(r,o)) = container fig
         f p = S.fromList $ do
-              dx <- [ -1 .. 1 ]
-              dy <- [ -1 .. 1 ]
-              let q = p +  Position dx dy
+              q <- neighbours8 p
               guard $ S.notMember q ps
               guard $ inRange bnd ( P.x q, P.y q )
               return q
@@ -135,20 +146,44 @@ reach ::  Figure -> Int
 reach fig = 
     let ps = S.unions $ covers fig
         f p = S.fromList $ do
-              dx <- [ -1 .. 1 ]
-              dy <- [ -1 .. 1 ]
-              let q = p +  Position dx dy
+              q <- neighbours4 p
               guard $ S.member q ps
               return q
         start = head $ S.toList $ head $ covers fig
         h = hull f start
     in  S.size h
 
+neighbours8 :: Position -> [ Position ]
+neighbours8 p = do
+    dx <- [ -1 .. 1 ]
+    dy <- [ -1 .. 1 ]
+    return $ p +  Position dx dy
+
+neighbours4 :: Position -> [ Position ]
+neighbours4 p = do
+    dx <- [ -1 .. 1 ]
+    dy <- [ -1 .. 1 ]
+    guard $ ( dx == 0 ) /= ( dy == 0 )
+    return $ p +  Position dx dy
+
+
+-- | exactly of distance 1
+halo :: Set Position -> Set Position
+halo s = 
+    let h = shull ( \ x -> 
+	           S.filter ( \ y -> S.member x s )
+	         . S.filter ( \ y -> S.notMember y s )
+		 $ S.fromList $ neighbours4 x
+		 ) s
+    in  S.difference h s
+    
 hull :: Ord a 
      => ( a -> Set a ) 
      -> a 
      -> Set a
-hull f x0 = 
+hull f x0 = shull f $ S.singleton x0
+
+shull f todo =
     let h done todo = case S.minView todo of
             Nothing -> done
             Just ( t, odo ) -> 
@@ -156,7 +191,8 @@ hull f x0 =
                     next  = S.filter ( \ x -> S.notMember x done' )
                           $ f t
                 in  h done' $ S.union odo next
-    in  h S.empty ( S.singleton x0 )
+    in  h S.empty todo
+
 
 
                               

@@ -9,7 +9,7 @@ form :: Config -> Doc
 form c = 
     let ((u,l),(o,r)) = bounds c
         grid = text 
-	    $ "\\psgrid" ++ "[subgriddiv=1,griddots=1]"
+	    $ "\\psgrid" ++ "[subgriddiv=1,griddots=10]"
 	robs = vcat $ do
 	    r <- robots c
             return $ rform r
