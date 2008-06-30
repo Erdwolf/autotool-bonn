@@ -9,6 +9,7 @@ import qualified Autolib.Genetic as G
 
 import Autolib.ToDoc
 import Autolib.Util.Zufall
+import Autolib.Util.Splits
 
 import Data.Map ( Map )
 import qualified Data.Map as M
@@ -20,7 +21,11 @@ import Data.Ix
 import System.Environment
 import System.IO
 
-main = do
+main = main2
+
+main2 = run
+
+main1 = do
     argv <- getArgs
     let z = case argv of
 	      [ zz ] -> read zz
@@ -56,16 +61,18 @@ printf x = do print x ; hFlush stdout
 diversity f = S.size $ S.fromList $ map orig $ pieces f
 
 
-best_for f k = do
+best_for f = do
     let bnd = container f
-        ( pre, this : post ) = splitAt k $ pieces f
+    ( pre, this : post ) <- splits $ pieces f
     t <- [ 0 .. 3 ]   
     m <- [ 0 .. 1 ]
-    (sx,sy) <- range bnd
+    let w = 3
+    let bnd0 = ((negate w, negate w),(w,w))
+    (sx,sy) <- range bnd0
     let that = this
                { turns = t
                , mirrors = m
-               , shift = P.Position sx sy
+               , shift = shift this + P.Position sx sy
                }
     let g = figure_shift $ pre ++ that : post
     return ( unreach g
@@ -76,8 +83,7 @@ best_for f k = do
 run = do 
     f <- roll_shift
     let runner f = do
-	    k <- randomRIO ( 0, length $ pieces f )
-	    let ( v, g ) = maximum $ best_for f k
+	    let ( v, g ) = maximum $ best_for f
 	    print $ toDoc v <+> form g
 	    runner g
     runner f
