@@ -185,12 +185,13 @@ put_answer act prob val = do
                 ( p, i, icom ) <- make_instant_common
                     (V.vnr vor) ( Just $ A.anr auf ) stud 
 			   ( fun $ read $ toString $ A.config auf )
-                appendFile "/tmp/RPC.log" $ "argument: " ++ show val
+                appendFile "/tmp/RPC.log" $ "argument (external): " ++ show val
                 mobj <- runErrorT $ fromValue val 
 		let obj = case mobj of
 		        Left msg -> error $ "parse error, msg: " ++ msg
 		        Right obj -> obj
-                let ans = show $ asTypeOf obj ( Challenger.Partial.initial p i) 
+                let ans = show $ asTypeOf obj ( Challenger.Partial.initial p i ) 
+                appendFile "/tmp/RPC.log" $ "argument (internal): " ++ show ans
 
 		( res, com2 ) <- run $ evaluate p i ans
                 appendFile "/tmp/RPC.log"
