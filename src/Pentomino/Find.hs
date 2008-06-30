@@ -16,6 +16,7 @@ import qualified Data.Set as S
 import System.Random
 import Data.Ix
 import System.Environment
+import System.IO
 
 main = do
     argv <- getArgs
@@ -26,21 +27,17 @@ main = do
 
 conf z = G.Config 
     { G.fitness = \ f -> 
-          ( negate $ overlaps f
-          , negate $ returning f
-          , unreach f 
+          ( unreach f - overlaps f - returning f 
+	  , unreach f
+          , negate $ overlaps f
           )
-    , G.threshold = ( 0, 60, 130 + 5 * 12 )
-    , G.present = mapM_ ( \ (v,f) -> print (toDoc v <+> form f ) )
+    , G.threshold = ( 130 + 5 * 12 + 10 * 12, 0, 0 )
+    , G.present = mapM_ ( \ (v,f) -> printf (toDoc v <+> form f ) )
                 . reverse . take 3
-    , G.trace = print . map fst . take 10 
+    , G.trace = printf . map fst . take 5
     , G.size  = 5 * z
     , G.generate = roll
-    , G.combine = \ f g -> fmap figure_delta $ sequence $ do
-          k <- [ 0 .. length ( pieces f ) - 1 ]
-          return $ do
-              s <- randomRIO ( False, True )
-              return $ pieces ( if s then f else g ) !! k
+    , G.combine = glue
     , G.num_combine = 2 * z
     , G.mutate = \ f -> fmap figure_delta $ sequence $ do
           p <- pieces f
@@ -55,6 +52,23 @@ conf z = G.Config
     , G.num_parallel = 1
     }
 
+printf x = do print x ; hFlush stdout
+
+diversity f = S.size $ S.fromList $ map orig $ pieces f
+
+glue f g = do
+    let gs = do
+	( p, o ) <- zip ( pieces g ) $ map orig $ pieces f
+	return $ p { orig = o }
+    k <- randomRIO ( 0, length ( pieces f ) )
+    let ps = reverse ( drop k gs ) ++ take k ( pieces f ) 
+    return $ figure_delta ps
+
+merge f g = fmap figure_delta $ sequence $ do
+          k <- [ 0 .. length ( pieces f ) - 1 ]
+          return $ do
+              s <- randomRIO ( False, True )
+              return $ pieces ( if s then f else g ) !! k
 
 returning :: Figure -> Int
 returning f = minimum $ do
