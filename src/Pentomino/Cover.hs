@@ -36,8 +36,8 @@ data Piece = Piece
            { orig :: Set Position
            , turns :: Int
            , mirrors :: Int
-           -- , shift :: Position
-	   , delta :: Int
+           , shift :: Position
+	   -- , delta :: Int
            }
     deriving (Show, Eq, Ord)
 
@@ -57,6 +57,12 @@ data Figure = Figure
     deriving (Show, Eq, Ord)
 
 
+-- | using shifts
+figure_shift ps = 
+    let cs = map ( \ p -> points ( shift p ) p ) ps
+    in  Figure { pieces = ps, covers = cs }
+
+{-
 -- | using deltas
 figure_delta ps = 
     let f pivot [] = []
@@ -68,7 +74,7 @@ figure_delta ps =
 	cs = f ( Position 0 0 ) ps
     in  Figure { pieces = ps, covers = cs }
 
-
+-}
 
 instance ToDoc Figure where 
     toDoc = text . show
@@ -88,14 +94,13 @@ form f =
               [ a ! (x,y), ' ' ]
 
 
-roll :: IO Figure
-roll = fmap figure_delta $ sequence $ do
+{-
+roll_delta :: IO Figure
+roll_delta = fmap figure_delta $ sequence $ do
     p <- twelve
     return $ do
         t <- randomRIO ( 0, 3 ) 
         m <- randomRIO ( 0, 1 )
-        -- sx <- randomRIO ( 0, 15 )
-        -- sy <- randomRIO ( 0, 15 )
 	d <- randomRIO ( 0, 20 )
         return $ Piece
                { orig = p
@@ -104,19 +109,36 @@ roll = fmap figure_delta $ sequence $ do
                -- , shift = Position sx sy
 	       , delta = d
                }
+-}
+
+roll_shift :: IO Figure
+roll_shift = fmap figure_shift $ sequence $ do
+    p <- twelve
+    return $ do
+        t <- randomRIO ( 0, 3 ) 
+        m <- randomRIO ( 0, 1 )
+	dx <- randomRIO ( -10, 10 )
+	dy <- randomRIO ( -10, 10 )
+        return $ Piece
+               { orig = p
+               , turns = t
+               , mirrors = m
+               , shift = Position dx dy
+               }
+
 
 modify :: Piece -> IO Piece
 modify p = do
         t <- randomRIO ( 0, 3 ) 
         m <- randomRIO ( 0, 1 )
-	d <- randomRIO ( 0, 20 )
-        return $ Piece
-               { orig = orig p
-               , turns = t
+        return $ p
+               { turns = t
                , mirrors = m
-               -- , shift = shift p + Position sx sy
-	       , delta = d
                }
+
+
+area :: Figure -> Int
+area = rangeSize . container
 
 container :: Figure -> ((Int,Int),(Int,Int))
 container fig = 
