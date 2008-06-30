@@ -15,8 +15,14 @@ import qualified Data.Set as S
 
 import System.Random
 import Data.Ix
+import System.Environment
 
-main = G.evolve ( conf 10 )
+main = do
+    argv <- getArgs
+    let z = case argv of
+	      [ zz ] -> read zz
+	      [] -> 10
+    G.evolve $ conf z
 
 conf z = G.Config 
     { G.fitness = \ f -> 
