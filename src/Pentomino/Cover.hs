@@ -29,7 +29,8 @@ x = make [ (1,0),(1,1),(0,1),(2,1),(1,2) ]
 y = make [ (0,0),(0,1),(0,2),(0,3),(1,2) ]
 z = make [ (0,0),(1,0),(1,1),(1,2),(2,2) ]
 
-make = S.fromList . map ( \ (x,y) -> Position x y ) 
+make = S.fromList 
+     . map ( \ (x,y) -> Position x ( y - 2 ) ) 
 
 
 data Piece = Piece

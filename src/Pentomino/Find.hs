@@ -110,19 +110,24 @@ run = do
             -- k <- randomRIO ( 0, pred $ length $ pieces f )
             -- print $ text "select:" <+> toDoc k <+> toDoc ( ['a' .. ] !! k )
 	    -- let ( w, g ) = maximum $ best_for f k
-	    let ( w, g ) = maximum $ complete_best_for f 
-	    printf $ toDoc w <+> form g
-            if ( w > v ) 
-	       then runner ( w, g )
-	       else do
+	    case  filter ( \ (w,g) -> w > v ) 
+		         $ complete_best_for f of
+                ( w,g ) : _ -> do
+	            printf $ toDoc w <+> form g
+		    runner ( w, g )
+                [] -> do 
 	          print $ text "stagnation"
 		  i <- randomRIO ( 0, length ( pieces f ) - 2 )
 		  j0 <- randomRIO ( 0, length ( pieces f ) - 2 )
 		  let j = if j0 >= i then j0 + 1 else j0
 		  printf $ text "select:" <+> toDoc (i,j)
-		  let ( w, g ) = maximum $ best2_for f i j
-	          printf $ toDoc v <+> form g
-                  runner ( w, g )
+      	          case  filter ( \ (w,g) -> w > v ) 
+		         $ best2_for f i j of
+                      (w,g) : _ -> do
+	                 printf $ toDoc v <+> form g
+                  	 runner ( w, g )
+                      [] -> do
+		         runner ( v, f)
     runner ( unreach f, f )
 
 
