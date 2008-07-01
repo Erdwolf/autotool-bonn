@@ -51,6 +51,9 @@ points s p =
              . ap (mirrors p) mirror
              ) $ orig p
 
+spoints :: Piece -> Set Position
+spoints p = points ( shift p ) p
+
 data Figure = Figure 
             { pieces :: [ Piece ]
             , covers :: [ Set Position ]
@@ -60,7 +63,7 @@ data Figure = Figure
 
 -- | using shifts
 figure_shift ps = 
-    let cs = map ( \ p -> points ( shift p ) p ) ps
+    let cs = map spoints ps
     in  Figure { pieces = ps, covers = cs }
 
 {-
@@ -118,8 +121,9 @@ roll_shift = fmap figure_shift $ sequence $ do
     return $ do
         t <- randomRIO ( 0, 3 ) 
         m <- randomRIO ( 0, 1 )
-	dx <- randomRIO ( -5, 5 )
-	dy <- randomRIO ( -5, 5 )
+        let w = 3
+	dx <- randomRIO ( negate w, w )
+	dy <- randomRIO ( negate w, w )
         return $ Piece
                { orig = p
                , turns = t
