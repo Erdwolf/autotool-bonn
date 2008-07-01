@@ -41,7 +41,7 @@ main1 = do
 
 conf z = G.Config 
     { G.fitness = \ f -> let ( v, _ ) = evaluate f in v
-    , G.threshold = 130
+    , G.threshold = ( 130, 0 )
     , G.present = mapM_ ( \ (v,f) -> printf (toDoc v <+> form f ) )
                 . reverse . take 3
     , G.trace = printf . map fst . take 5
@@ -115,7 +115,6 @@ changes rest this = do
     guard $ S.null $ S.intersection ( spoints p ) others
     return p
 
-some_best :: [ Figure ] -> IO ( Int, Figure )
 some_best fs = do
     let m = M.fromListWith S.union $ do
             f <- fs
@@ -175,10 +174,13 @@ get f i = pieces f !! i
 
 
 
-evaluate f = ( unreach f - 5 * 12, f )
+evaluate f = ( (unreach f - 5 * 12, negate $ max_extension f ) , f )
 
 
 
+max_extension f = 
+    let ((l,u),(r,o)) = container  f
+    in  max (r-l) (o-u)
 
 
 {-
