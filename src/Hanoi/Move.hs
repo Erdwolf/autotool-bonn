@@ -18,7 +18,7 @@ move r hof zug @ (von, nach) = do
     inform $ vcat [ text "Situation:" <+> toDoc hof
 		  , text "Zug:" <+> toDoc zug
 		  ]
-    check r zug
+    check r hof zug
 
     silent $ assert ( von `elem` keysFM hof )
 	   $ fsep [ text "Start-Turm", toDoc von, text "erlaubt?" ]
@@ -46,13 +46,19 @@ move r hof zug @ (von, nach) = do
 	   [ ( von, rest ) , ( nach, top : to ) ]
 
 
-check :: Restriction -> Zug -> Reporter ()
-check r ( von, nach ) = case r of
-    None -> return ()
-    Neighbours -> silent $ assert ( 1 == abs ( fromEnum von - fromEnum nach ) )
+check :: Restriction 
+      -> Hof 
+      -> Zug 
+      -> Reporter ()
+check r hof ( von, nach ) = 
+    let v = position hof von
+        n = position hof nach
+    in  case r of
+        None -> return ()
+        Neighbours -> silent $ assert ( 1 == abs ( v - n ) )
 			 $ text "Diese Türme sind nicht benachbart."
-    Clockwise  -> silent $ assert ( von == maxBound && nach == minBound
-				    || succ von == nach )
+        Clockwise  -> silent $ assert ( succ v `mod` sizeFM hof == n ) 
 			 $ text "Zug geht nicht zum Nachbarn im Uhrzeigersinn."
 
-        
+position :: Hof -> Turm -> Int
+position hof t = length $ takeWhile ( /= t ) $ keysFM hof

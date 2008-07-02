@@ -1,4 +1,6 @@
 {-# OPTIONS -cpp -fth #-}
+{-# language DeriveDataTypeable, TypeSynonymInstances #-}
+
 
 module Hanoi.Type where
 
