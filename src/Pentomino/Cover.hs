@@ -121,7 +121,7 @@ roll_shift = fmap figure_shift $ sequence $ do
     return $ do
         t <- randomRIO ( 0, 3 ) 
         m <- randomRIO ( 0, 1 )
-        let w = 3
+        let w = 5
 	dx <- randomRIO ( negate w, w )
 	dy <- randomRIO ( negate w, w )
         return $ Piece

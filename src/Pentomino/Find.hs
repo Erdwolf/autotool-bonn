@@ -1,3 +1,5 @@
+{-# language PatternSignatures #-}
+
 module Pentomino.Find where
 
 import qualified Pentomino.Position as P
@@ -23,10 +25,11 @@ import qualified Data.Set as S
 import Data.Ix
 import System.Environment
 import System.IO
+import Data.List ( partition )
 
 import Control.Monad ( guard )
 
-main = main1
+main = run2
 
 main2 = run
 
@@ -49,7 +52,7 @@ conf z = G.Config
     , G.generate = roll_shift
     , G.combine = undefined
     , G.num_combine = 0 * z
-    , G.mutate = improve
+    , G.mutate = improve_straight 3
     , G.num_mutate = 2 * z
     , G.num_compact = z
     , G.num_steps = Nothing
@@ -62,26 +65,35 @@ diversity f = S.size $ S.fromList $ map orig $ pieces f
 
 ---------------------------------------------------------------------------
 
-complete_changes f = do
+complete_changes w f = do
     k <- [ 0 .. length ( pieces f ) - 1 ]
-    changes_for f k
+    changes_for w f k
 
-changes_for f k = do
+changes_for w f k = do
     let ( pre, this : post ) = splitAt k $ pieces f
         ( xs, _ : ys ) = splitAt k $ covers f
         rest = xs ++ ys
-    that <- changes rest this
+    that <- changes w rest this
     return $ figure_shift $ pre ++ that : post
 
-
+several_complete_changes width f n = 
+    let fun pre 0 ps = return $ reverse pre ++ ps
+        fun pre n (p : ps) = 
+               do guard $ n <= length ps 
+                  guard $ S.null $ S.intersection ( spoints p ) $ S.unions ( map spoints pre )
+                  fun (p : pre ) n ps
+            ++ do q <- changes width ( map spoints $ pre ) p
+                  fun (q : pre) (n-1) ps 
+    in  map figure_shift $ fun [] n $ pieces f
+    
 -- | with swap
-changes2_for f i j = do
+changes2_for w f i j = do
     let ps = pieces f
         x0 = ps !! i
         y0 = ps !! j
         rest = covers f `without` [ i, j ]
-    x <- changes rest $ x0 { orig = orig y0 }
-    y <- changes rest $ y0 { orig = orig x0 }
+    x <- changes w rest $ x0 { orig = orig y0 }
+    y <- changes w rest $ y0 { orig = orig x0 }
     return $ figure_shift $ ps // [(i,x),(j,y)]
 
 ---------------------------------------------------------------------
@@ -100,11 +112,10 @@ xs `without` (i : rest) =
 
 ---------------------------------------------------------------------
 
-changes rest this = do
+changes w rest this = do
     let others = S.unions rest
     t <- [ 0 .. 3 ]   
     m <- [ 0 .. 1 ]
-    let w = 5
     let bnd0 = ((negate w, negate w),(w,w))
     (sx,sy) <- range bnd0
     let p = this
@@ -126,42 +137,72 @@ some_best fs = do
 
 
 run = do
+    let width = 3
     f <- roll_shift
     let runner ( v, f ) = do
             printf $ toDoc v <+> form f
             r <- randomRIO ( 0, 10 :: Int )
             let action = if 0 ==  r 
-                         then improve_double_repeat 
-                         else \ ( v,f) -> improve_simple f
+                         then improve_double_repeat width 
+                         else \ ( v,f) -> improve_simple width f
             (w, g) <- action (v, f)
 	    runner ( w, g )
     runner $ evaluate f
 
-improve f = do
-    r <- randomRIO ( 0, 10 :: Int )
-    let action = if 0 ==  r then improve_double else improve_simple
-    (w, g) <- action f
+first_best v fs = 
+    let ( yeah, hmnoh ) = partition ( \(w,_) -> w > v ) $ map evaluate fs
+        ( hm, noh ) = partition ( \(w,_) -> w == v ) $ map evaluate fs
+    in  case yeah of
+          [] -> eins $ hm
+          p : _ -> return p
+
+run2 = do
+    f <- roll_shift
+    let strat0 = [(1,1),(2,1),(1,2)]
+    let runner strat ( v @ ( u,_ ) , f ) = do
+            printf $ toDoc v <+> form f
+            let (width,num) = head strat
+            print $ toDoc ( width, num )
+            ( w @ (u',_), g ) <- first_best v -- some_best 
+                        $ several_complete_changes width f num
+            let strat' = if w > v then strat0 
+                         else if null ( tail strat ) then strat0
+                         else tail strat
+            runner strat' ( w, g )
+    runner strat0 $ evaluate f
+
+improve_straight width f = do
+    ( w, g ) <- some_best $ complete_changes width f 
     return g
 
-improve_simple f = do
+
+
+improve w f = do
+    r <- randomRIO ( 0, 10 :: Int )
+    let action = if 0 ==  r then improve_double else improve_simple
+    (w, g) <- action w f
+    return g
+
+improve_simple w f = do
     let n = length $ pieces f
     k <- eins [ 0 .. n-1 ]
      -- print $ text "simple/select:" <+> toDoc k <+> toDoc ( ['a' .. ] !! k )
-    some_best $ changes_for f k
+    some_best $ changes_for w f k
 
-improve_double_repeat (v, f) = do
-    (w,g) <- improve_double f
-    if w >= v then return( w, g) else improve_double_repeat (v,f)
+improve_double_repeat width (v, f) = do
+    (w,g) <- improve_double width f
+    if w >= v then return( w, g) 
+              else improve_double_repeat width (v,f)
 
-improve_double f = do
+improve_double w f = do
     let n = length $ pieces f
         ks = [ 0 .. n - 1 ]
     i <- eins ks
     j <- eins ( ks `without` [i] )
     -- print $ text "double/select:" <+> toDoc (i,j)
     let x = orig $ get f i ; y = orig $ get f j    
-    ( _ , g ) <- some_best $ changes_for ( reshape f  i y  ) i
-    some_best $ changes_for ( reshape g j x ) j
+    ( _ , g ) <- some_best $ changes_for w ( reshape f  i y  ) i
+    some_best $ changes_for w ( reshape g j x ) j
 
 
 reshape f i s =
