@@ -20,7 +20,10 @@ import Data.Array ( range )
 import System.IO
 import Data.IORef
 
-someconf :: Int -> Int -> [ Position ] -> IO Config
+someconf :: Int -- ^ number of cars
+	-> Int -- ^ number of targets
+	-> [ Position ] -- ^ list of all positions on the board
+	-> IO Config
 someconf n t pos = do
     psts <- selektion (n + t) pos
     let ( ps, ts ) = splitAt n psts
@@ -28,7 +31,11 @@ someconf n t pos = do
     let rs = map rob $ take n $ zip [ 'A' .. ] ps
     return $ Robots3.Config.make rs ts
 
-sol :: Int -> Int -> Int -> [ Position ] -> IO ( Config, [[Zug]] )
+sol :: Int -- ^ search width 
+	-> Int -- ^ num of cars
+	-> Int -- ^ num of targets
+	-> [ Position ] -- ^ positions on board
+	-> IO ( Config, [[Zug]] )
 sol sw n t pos = do
     c <- someconf n t pos
     return ( c, shortest' sw c )

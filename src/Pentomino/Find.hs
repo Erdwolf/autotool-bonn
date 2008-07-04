@@ -29,7 +29,7 @@ import Data.List ( partition )
 
 import Control.Monad ( guard )
 
-main = run2
+main = main1
 
 main2 = run
 
@@ -52,7 +52,7 @@ conf z = G.Config
     , G.generate = roll_shift
     , G.combine = undefined
     , G.num_combine = 0 * z
-    , G.mutate = improve_straight 3
+    , G.mutate = improve 3
     , G.num_mutate = 2 * z
     , G.num_compact = z
     , G.num_steps = Nothing
@@ -153,22 +153,27 @@ first_best v fs =
     let ( yeah, hmnoh ) = partition ( \(w,_) -> w > v ) $ map evaluate fs
         ( hm, noh ) = partition ( \(w,_) -> w == v ) $ map evaluate fs
     in  case yeah of
-          [] -> eins $ hm
-          p : _ -> return p
+          [] -> case hm of
+		p : _ -> eins $ take 5 hm
+          p : _ -> eins $ take 5 yeah
 
 run2 = do
     f <- roll_shift
-    let strat0 = [(1,1),(2,1),(1,2)]
+    let strat0 = [(3,1)]
     let runner strat ( v @ ( u,_ ) , f ) = do
             printf $ toDoc v <+> form f
-            let (width,num) = head strat
-            print $ toDoc ( width, num )
-            ( w @ (u',_), g ) <- first_best v -- some_best 
+            if null strat 
+		then do
+		   (w,g) <- improve_double_repeat 2 (v, f)
+	           runner strat0 (w,g)
+		else do
+            	   let (width,num) = head strat
+            	   print $ toDoc ( width, num )
+                   ( w @ (u',_), g ) <- first_best v -- some_best 
                         $ several_complete_changes width f num
-            let strat' = if w > v then strat0 
-                         else if null ( tail strat ) then strat0
+                   let strat' = if w > v then strat0 
                          else tail strat
-            runner strat' ( w, g )
+                   runner strat' ( w, g )
     runner strat0 $ evaluate f
 
 improve_straight width f = do
