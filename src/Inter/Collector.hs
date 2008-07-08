@@ -95,6 +95,8 @@ import qualified NPDA.Inter
 import qualified NPDA.Inter2
 -- import qualified Turing.Inter
 
+import qualified Grammatik.Akzeptor
+
 import qualified CNF.Optimize
 import qualified SAT.SAT
 import qualified Baum.Reconstruct
@@ -211,7 +213,7 @@ tmakers =
                      ]
                 , heading "Grammatiken (neu)"
                      [ item Grammatik.CF.Interface2.make
-                     -- , item Grammatik.Interface.make
+                     , item Grammatik.Akzeptor.acceptor
                      ]
                 , heading "Grammatiken (veraltet)"
                      [ item Grammatik.CF.Interface.make

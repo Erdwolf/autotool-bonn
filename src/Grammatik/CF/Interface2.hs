@@ -22,6 +22,8 @@ import Autolib.Set
 import Autolib.Util.Zufall
 import Autolib.Util.Wort ( alle )
 
+import Autolib.Reporter.Checker as C
+
 import Inter.Types
 import Challenger.Partial
 import Autolib.Reporter
@@ -63,8 +65,8 @@ instance Partial CFG2 I2.Config Grammatik where
 	   }
 
     partial p i b = do
-          Grammatik.Property.check ( Typ 0 ) b
-          mapM_ ( \ p -> Grammatik.Property.check p b ) ( I2.properties i )
+          C.run ( Grammatik.Property.check ( Typ 0 ) ) b
+          mapM_ ( \ p -> C.run ( Grammatik.Property.check p ) b ) ( I2.properties i )
 
     total p i0 b = do
           let i = add_test_cases p i0 b

@@ -1,3 +1,5 @@
+{-# language FlexibleInstances, MultiParamTypeClasses, FlexibleContexts, UndecidableInstances #-}
+
 module Machine.Acceptor.Inter where
 
 import qualified Machine.Acceptor.Type as A

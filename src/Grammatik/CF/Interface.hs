@@ -16,6 +16,8 @@ import Grammatik.CF.Baum
 
 import Grammatik.Property
 
+import Autolib.Reporter.Checker as C
+
 import Autolib.Set
 import Autolib.Util.Zufall
 import Autolib.Util.Wort ( alle )
@@ -55,11 +57,11 @@ instance Partial CFG I.Config Grammatik where
 	   }
 
     partial p i b = do
-          Grammatik.Property.check ( Typ 2 ) b
+          C.run ( Grammatik.Property.check ( Typ 2 ) ) b
 
     total p i b = do
           cf_yeah_noh i b
-          mapM_ ( \ p -> Grammatik.Property.check p b ) ( I.properties i )
+          mapM_ ( \ p -> C.run ( Grammatik.Property.check p ) b ) ( I.properties i )
 
 
 ---------------------------------------------------------------------------

@@ -1,21 +1,31 @@
+{-# language DeriveDataTypeable #-}
+
 module Grammatik.Ableitung where
 
 import Grammatik.Type
 import Grammatik.Ableitung.Config
 
+import Machine.History
+
 import Control.Monad (guard)
 import Autolib.Set
 import Autolib.Schichten
 import Autolib.ToDoc
+import Autolib.Size
 
 import Autolib.Util.Wort
 
+import Data.Typeable
+import Data.List ( tails )
 
 -------------------------------------------------------------------
 
 -- | trick: ableitung steht hierin falschrum
 data Ableitung = Ableitung [ String ]
+    deriving Typeable
 
+instance Size Ableitung where 
+    size (Ableitung ws) = length ws
 
 instance Eq Ableitung where 
     a == b = car a == car b
@@ -26,9 +36,11 @@ instance Ord Ableitung where
 instance ToDoc Ableitung where
     toDoc (Ableitung xs) = toDoc $ reverse xs
 
-
-instance Show Ableitung where 
-    show = render . toDoc
+instance History Ableitung where
+    history (Ableitung a) = do
+        ws <- drop 1 $ tails a
+        guard $ not $ null ws
+        return $ Ableitung ws
 
 car  :: Ableitung -> String
 car (Ableitung xs) = head xs

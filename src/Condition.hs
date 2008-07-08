@@ -1,5 +1,5 @@
 {-# OPTIONS -fglasgow-exts #-}
-{-# language UndecidableInstances #-}
+{-# language UndecidableInstances, OverlappingInstances #-}
 
 module Condition 
 

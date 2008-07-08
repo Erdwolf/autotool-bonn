@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# language MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, TypeSynonymInstances, DeriveDataTypeable, UndecidableInstances #-}
 
 module Machine.Acceptor.Type where
 
@@ -52,3 +52,6 @@ data Class dat prop => Type m dat prop =
 
 {-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
 
+-- local variables:
+-- mode: haskell
+-- end:

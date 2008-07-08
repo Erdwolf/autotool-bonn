@@ -14,11 +14,13 @@ module Grammatik.Hierarchie
 , kontextfrei
 , linear
 , rechtslinear, linkslinear
+, at_most_one_terminal_in_rhs
 
 , epsfrei
 , kettenfrei
 , chomsky
 , greibach
+
 )
 
 where
@@ -158,23 +160,17 @@ rechtslinear = C.make "RightLin" ( text "Die Grammatik soll rechtslinear sein." 
 	     "sind nicht von der Form V -> T^* V"
 	     schlecht
 
-streng_rechtslinear :: C.Type Grammatik
-streng_rechtslinear = C.make "StrictRightLin" 
-                      ( text "Die Grammatik soll rechtslinear sein." ) $ \ g -> do
+at_most_one_terminal_in_rhs :: C.Type Grammatik
+at_most_one_terminal_in_rhs = C.make "at_most_one_terminal" 
+                      ( text "In rechter Regelseite höchstens ein Terminal" ) $ \ g -> do
 
     let schlecht = do
           lr @ ( l, r ) <- setToList $ regeln g
-          let ok = case r of
-                  [] -> True
-                  x : ys -> x `elementOf` terminale g && case ys of
-                      [] -> True
-                      [y] -> y `elementOf` nichtterminale g
-                      _ -> False
-          guard $ not ok
+          guard $ 2 <= length ( filter ( `elementOf` terminale g ) r )
           return lr
 
     verboten ( not $ null schlecht ) 
-	     "sind nicht von der Form V -> T V, V -> T, V -> Epsilon"
+	     "Regeln enthalten rechts mehr als ein Terminal"
 	     schlecht
 
 ------------------------------------------------------------------------------
