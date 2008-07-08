@@ -1,3 +1,5 @@
+{-# language TypeSynonymInstances #-}
+
 -- | derivation trees
 
 module Grammatik.CF.Baum where

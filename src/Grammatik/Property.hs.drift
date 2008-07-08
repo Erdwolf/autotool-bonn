@@ -1,4 +1,4 @@
--- -*- mode: haskell -*-
+{-# language DeriveDataTypeable #-}
 
 module Grammatik.Property where
 
@@ -49,3 +49,6 @@ check p = C.run $ case p of
     Greibach_Normal -> greibach
     Eindeutig i -> eindeutig i
 
+-- local variables:
+-- mode: haskell
+-- end:

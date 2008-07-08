@@ -158,6 +158,25 @@ rechtslinear = C.make "RightLin" ( text "Die Grammatik soll rechtslinear sein." 
 	     "sind nicht von der Form V -> T^* V"
 	     schlecht
 
+streng_rechtslinear :: C.Type Grammatik
+streng_rechtslinear = C.make "StrictRightLin" 
+                      ( text "Die Grammatik soll rechtslinear sein." ) $ \ g -> do
+
+    let schlecht = do
+          lr @ ( l, r ) <- setToList $ regeln g
+          let ok = case r of
+                  [] -> True
+                  x : ys -> x `elementOf` terminale g && case ys of
+                      [] -> True
+                      [y] -> y `elementOf` nichtterminale g
+                      _ -> False
+          guard $ not ok
+          return lr
+
+    verboten ( not $ null schlecht ) 
+	     "sind nicht von der Form V -> T V, V -> T, V -> Epsilon"
+	     schlecht
+
 ------------------------------------------------------------------------------
 
 linkslinear :: C.Type Grammatik
