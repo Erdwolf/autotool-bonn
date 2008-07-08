@@ -44,6 +44,6 @@ instance Generator A.Acceptor GC.Config Accept where
            , A.yeah = take m $ filter small yeah
            , A.noh  = take m $ filter small noh
            , A.cut  = GC.cut config
-           , A.properties = Typ 0 : GC.properties config
+           , A.properties = Typ 0 : Monoton : GC.properties config
            , A.start = GC.start config
            }

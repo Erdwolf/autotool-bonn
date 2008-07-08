@@ -34,7 +34,8 @@ instance Ord Ableitung where
     a `compare` b = car a `compare` car b
 
 instance ToDoc Ableitung where
-    toDoc (Ableitung xs) = toDoc $ reverse xs
+    toDoc (Ableitung xs) = 
+        toDoc $ reverse xs
 
 instance History Ableitung where
     history (Ableitung a) = do
