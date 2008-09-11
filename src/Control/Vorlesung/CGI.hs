@@ -9,6 +9,20 @@ import qualified Control.Semester
 import qualified Control.Schule
 import Control.Monad
 
+delete :: Control.Schule.Schule 
+     -> Vorlesung 
+     -> Form IO ()
+delete u v = do
+    open btable
+    open row
+    plain $ "Vorlesung löschen:"
+    plain $ show v
+    close -- row
+    close -- btable
+    up <- submit "ausführen"
+    when up $ do
+        io $ Control.Vorlesung.DB.delete $ T.vnr v
+
 edit :: Control.Schule.Schule 
      -> Maybe Vorlesung 
      -> Form IO ()

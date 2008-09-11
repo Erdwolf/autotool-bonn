@@ -159,6 +159,7 @@ vorlesung_bearbeiten u sem = do
     action <- click_choice "Aktion" $ 
         [ ("Parameter", vorlesung_parameter u vor )
 	, ("Tutoren", vorlesung_tutoren u vor )
+        , ("Vorlesung löschen", Control.Vorlesung.delete u vor )
 	]
     close
     action

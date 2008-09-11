@@ -10,7 +10,7 @@ module Control.Vorlesung
 where
 
 import Control.Vorlesung.Typ
-import Control.Vorlesung.DB
+import Control.Vorlesung.DB hiding ( delete )
 import Control.Vorlesung.CGI
 
 
