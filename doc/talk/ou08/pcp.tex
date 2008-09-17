@@ -1,6 +1,6 @@
-\begin{slide}{Suchproblem: PCP}
+\begin{slide}{search problem: PCP}
 
-Lösen Sie diese Instanz des Postschen Korrespondenz-Problems:
+solve this instance of Post's Correspondence Problem:
 \begin{small}
 \begin{verbatim}
  PCP [ ( "aa" , "ba" ) , ( "ab" , "a" ) , ( "c" , "a" )
@@ -8,15 +8,15 @@ Lösen Sie diese Instanz des Postschen Korrespondenz-Problems:
 \end{verbatim}
   
 \begin{verbatim}
-gelesen: [ 2 , 1 , 2 , 4 ]
+input: [ 2 , 1 , 2 , 4 ]
 
-Aus Ihrer Folge entstehen die Zeichenketten:
+your input creates these sequences
     abaaabbac
     abaaaccbac
-Die eine muß ein Präfix der anderen sein,
-nach Löschen des gemeinsamen Präfixes  "abaaa"
-entstehen jedoch die Reste  ( "bbac" , "ccbac" )
+One must be a prefix of the other.
+After deleting the common prefix "abaaa",
+remainders are  ( "bbac" , "ccbac" )
 \end{verbatim}
 \end{small}
-Diskussion: unbeschränkter Suchraum, Halteproblem
+discuss: unbounded search space, halting problem
 \end{slide}

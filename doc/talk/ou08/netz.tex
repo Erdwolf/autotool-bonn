@@ -1,25 +1,25 @@
-\begin{slide}{Sortiernetze}
+\begin{slide}{Sorting Networks}
 
-% \emph{Aufgabenstellung:}
-Finden Sie ein Sortiernetz für 5 Eingänge \\
-mit weniger als 10 Komparatoren.
 
-% \emph{Einsendung:}
+Find a sorting network for 5 inputs \\
+with less than 10 comparator circuits
+
+
 \begin{small}
 \begin{verbatim}
 mkNetz [ ( 1 , 4 ) , ( 3 , 4 ) , ( 2 , 3 ) , ( 1 , 2 ) , ( 3 , 5 ) ]
 \end{verbatim}
 \end{small}
 
-% \emph{Bewertung:}
-\begin{minipage}{0.5\textwidth}
+
+\begin{minipage}{0.4\textwidth}
 \begin{small}
 \begin{verbatim}
-Diese Eingabe wird 
-nicht korrekt geordnet: 
+This input
+is not handled correctly:
 [ 5 , 1 , 2 , 3 , 4 ]
-Das Netz berechnet 
-die Ausgabe:            
+The output
+of the network is:
 [ 1 , 3 , 2 , 5 , 4 ]
 \end{verbatim}
 \end{small}
@@ -40,8 +40,7 @@ die Ausgabe:
 \end{small}
 \end{minipage}
 
-Diskussion: Spezifikation, Korrektheitsbeweise, \\
-untere Schranken.
+discuss: specification, correctness, lower bounds
 
 
 \end{slide}

@@ -1,9 +1,8 @@
-\begin{slide}{Suchproblem: Lunar Lockout}
+\begin{slide}{Search problem: Lunar Lockout}
 
 \begin{minipage}{0.6\textwidth}
-Geben Sie eine Zugfolge an,
-die den Roboter (Großbuchstabe)
-ins Ziel (entsprechender Kleinbuchstabe) bringt:
+Cars at A,B,C,D,E; task: move E to e.
+Car stops only when hitting other car.
 \end{minipage}\quad
 \begin{minipage}{0.3\textwidth}
 \begin{verbatim}
@@ -16,11 +15,10 @@ B e . . .
 \end{verbatim}
 \end{minipage}
 
-Lösung:
+Solution
 \begin{verbatim}
  [ ( "A" , N ) , ("A", W), ("A", N)
 , ("C", W), ( "E" , N ), ("E", W) ] 
 \end{verbatim}
-Diskussion: Begriff Konfiguration; Anzahl der Konfigurationen
-als Funktion von Breite, Höhe, Anzahl.
+discuss: configuration, number of configurations, bound
 \end{slide}

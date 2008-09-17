@@ -1,8 +1,8 @@
-\begin{slide}{Typen (mehrsortige Algebren)}
+\begin{slide}{Types (many-sorted algebras)}
 
-Gesucht ist ein Ausdruck vom Typ \verb|boolean|  
+Construct an expression of type \verb|boolean|  
 
-in der Signatur
+given the signature
 \begin{verbatim}
 char a;
 String b;
@@ -12,12 +12,12 @@ static boolean e ( Bar x , Bar y );
 \end{verbatim}
 \bigskip
 
-Lösung:
+solution
 \begin{verbatim}
 e (d (b, a, b), d (b, a, b))
 \end{verbatim}
 
-Diskussion: Syntax und Semantik von Ausdrücken,
+discuss: syntax and semantics of expressions,
+type checking (abstract interpretation)
 
-Typprüfung (abstrakte Interpretation)
 \end{slide}
