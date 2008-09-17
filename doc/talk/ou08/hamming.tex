@@ -1,7 +1,6 @@
-\begin{slide}{Codes: Hamming-Abstand}
+\begin{slide}{Codes: Hamming-distance}
 
-Gesucht ist ein Code (als Liste von Wörtern über L, R)
-mit diesen Eigenschaften:
+Find a code (as set of words over L,R) with
 \begin{verbatim}
 Config { width = ( Fixed , 4 ) 
     , size = ( Atleast , 5 )
@@ -9,13 +8,13 @@ Config { width = ( Fixed , 4 )
     , optimize = Size }
 \end{verbatim}
 \bigskip
-eine Lösung
+solution
 \begin{verbatim}
 [ [L,R,R,L], [R,L,L,R], [L,L,L,L]
 , [R,R,R,R], [L,L,R,R] ]
 \end{verbatim}
-Diskussion: Fehlererkennung, -korrektur;
-Dreiecksungleichung, Schranken für Codegröße
+discuss: error detection, error correction,
+triangle inequality, bounds
 
 \end{slide}
 %%% Local Variables: 

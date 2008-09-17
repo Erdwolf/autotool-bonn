@@ -1,106 +1,106 @@
-\begin{slide}{Math. Grundlagen d. Informatik (Uni Halle)}
+\begin{slide}{Mathematical for CS (Univ. Halle)}
 
 \begin{itemize}
 \item
-  Mengen und algebraische Strukturen
+   Sets and algebras
 
-  \emph{Mengenoperationen}  (Algebraic-Set)
-  \\  \emph{Verknüpfungen von Relationen}  (Algebraic-Relation)
-  \\ \emph{mehrsortige Algebren} (Sorten)
+  \emph{operations on sets}  (Algebraic-Set)
+  \\  \emph{operations on relations}  (Algebraic-Relation)
+  \\ \emph{many-sorted algebras} (Sorten)
 \item
-  Graphen
+  graphs
   
-  \emph{Circle}, \emph{Wegematrix} (Way), \emph{Bitpartit} (Bi),
-  \\ \emph{Färbung} (Col), \emph{Hamilton} 
-  \\ \emph{Selbstkomplementärer Graph}, \emph{Nachbar}
-  \\ \emph{Operationen auf Graphen} (Algebraic-Graph)
+  \emph{Circle}, \emph{Bitpartit} (Bi),
+  \\ \emph{colouring} (Col), \emph{Hamilton} 
+  \\ \emph{self dual graphs}, 
+  \\ \emph{graph operations} (Algebraic-Graph)
 \end{itemize}
 
 \end{slide}
 %% -----------------------------------------------------
-\begin{slide}{Logik}
+\begin{slide}{Logic}
 
 \begin{itemize}
 \item
-  Aussagenlogik
+   propositional
 
-  \emph{erfüllende Belegung} (SAT)
-  \\ \emph{äquivalente boolesche Ausdrücke} (Boolean)
-  \\ \emph{Beweise im Hilbert-Kalkül} (Hilbert)
+  \emph{satisfiability} (SAT)
+  \\ \emph{equivalent boolean expressions} (Boolean)
+  \\ \emph{derivations in Hilbert calculus} (Hilbert)
 \item
-  Prädikatenlogik
+   predicate
   
-  \emph{Modelle für Formeln} (Find-Model)
+  \emph{models} (Find-Model)
 \end{itemize}
 
 \end{slide}
 %% -----------------------------------------------------
-\begin{slide}{Mengenoperationen}
+\begin{slide}{Set operations}
 \begin{verbatim}  
-Gesucht ist ein Ausdruck mit dieser Bedeutung:
+Find an expression with value
 {1, 5, {}, {4}}
-Sie dürfen diese Symbole benutzen
-    zweistellige : [ + , - , & ]
-    einstellige  : [ pow ]
-    nullstellige : [ 0 , 1 , 2 , 3 , 4 , 5 , 6]
-und diese vordefinierten Konstanten:
+You may use these symbols:
+    binary : [ + , - , & ]
+    unary  : [ pow ]
+    nullary : [ 0 , 1 , 2 , 3 , 4 , 5 , 6]
+and these constants
     A = {1, 3, 5, 6}
     B = {2, 3, 6}
 \end{verbatim}
 
-Lösung: \begin{verbatim}  A - B + pow (4)  \end{verbatim}
+solution: \begin{verbatim}  A - B + pow ({4})  \end{verbatim}
 \end{slide}
 %% -----------------------------------------------------
-\begin{slide}{Relationen}
+\begin{slide}{Relations}
 \begin{verbatim}
-Gesucht ist ein Ausdruck mit dieser Bedeutung:
+Find an expression with value
    {(2 , 3) , (4 , 1)}
-Sie dürfen diese Symbole benutzen
-    zweistellige : [ + , - , & , * ]
-    einstellige  : [ inv , tcl , rcl ]
-    nullstellige : [ ]
-und diese vordefinierten Konstanten:
+You may use these symbols
+    binary : [ + , - , & , * ]
+    unary  : [ inv , tcl , rcl ]
+    nullary : [ ]
+and these constants
     R = {(1 , 2) , (3 , 4)}
     S = {(2 , 3) , (4 , 1) , (5 , 2)}
 \end{verbatim}
 
-Lösung: \begin{verbatim}  inv (R * S * R) \end{verbatim}
+solution: \begin{verbatim}  inv (R * S * R) \end{verbatim}
 
 \end{slide}
 %% -----------------------------------------------------
-\begin{slide}{Operationen auf Graphen}
+\begin{slide}{Graph operations}
 {\small 
 \begin{verbatim}  
-Gesucht ist ein Ausdruck mit dieser Bedeutung:
+Find an expression with value
 \end{verbatim}
 \begin{minipage}{0.4\textwidth}
 \includegraphics[width=4cm]{mathgrundbild.eps}
 \end{minipage}%
 
 \begin{verbatim}  
-der nur diese Symbole enthält:
+using these symbols
     Binu { binary = [ * , % , + ] , unary = [ co ]
          , nullary = [ K1 , K2 , K3 , K4 , K5 , P3 , P4 , P5 
                       , C3 , C4 , C5] }
 \end{verbatim}
 
-Lösung: \begin{verbatim} C5 % P3 \end{verbatim}
+solution: \begin{verbatim} C5 % P3 \end{verbatim}
 }
 \end{slide}
 %% -----------------------------------------------------
-\begin{slide}{Hilbert-Kalkül}
+\begin{slide}{Hilbert calculus}
 {\small
 \begin{verbatim}
-Gesucht ist eine Ableitung für die Formel
+find a derivation for
     p -> p
-im Hilbert-Kalkül mit den Axiomen
+using the axioms
     { H1 = A -> (B -> A)
     , H2 = (A -> (B -> C)) -> ((A -> B) -> (A -> C))
     , H3 = (A -> B) -> (not B -> not A) , H4 = A -> (not A -> B)
     , H5 = (not A -> A) -> A
     }
 \end{verbatim}
-Lösung:
+solution
 \begin{verbatim}
 let { F1 = sub H1 { A = p , B = q -> p }
     , F2 = sub H2 { A = p , B = q -> p, C = p}
@@ -111,22 +111,22 @@ in mopo F4 F3
 }
 \end{slide}
 %% -----------------------------------------------------
-\begin{slide}{Modelle (Prädikatenlogik)}
+\begin{slide}{Predicate logic (models)}
 {\small
 \begin{verbatim}
-Finden Sie für die Formel
+For the formula
     forall x . exists y. R (x , y) && (not P (y))
-ein Modell (eine Interpretation) der Größe
+find a model of size
     3
 \end{verbatim}
 
-Lösung: \begin{verbatim} 
+solution: \begin{verbatim} 
 Interpretation { struktur = 
-Struktur { universum = mkSet [ 1 , 2, 3]
+Struktur { universe = mkSet [ 1 , 2, 3]
          , predicates = listToFM [ ( P , {} ) 
                 , ( R , {(1,1), (2,2), (3,1)} ) ]
          , functions = listToFM [ ]}
-         , belegung = listToFM [ ] 
+         , assignment = listToFM [ ] 
          } 
 \end{verbatim}
 }

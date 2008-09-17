@@ -1,15 +1,15 @@
-\begin{slide}{Kryptografie (RSA)}
+\begin{slide}{cryptography (RSA)}
 
 \begin{itemize}
 \item
-Gegeben ist das Zahlenpaar \verb|(a, b) = ( 2548 , 1496 )|.
-Gesucht ist ein Paar \verb|(c, d)| von Zahlen
-mit der Eigenschaft  \verb|a * c + b * d = ggT (a, b)|.
+given the pair of numbers \verb|(a, b) = ( 2548 , 1496 )|,
+find a pair of numbers \verb|(c, d)| 
+such that  \verb|a * c + b * d = gcd (a, b)|.
 \item
-Gesucht sind 2 Zahlen \verb|x_1 .. x_3| mit \verb|x_i > 1|
-und \verb|product [ x_1 , ... , x_3 ] = 580932019|
+find numbers \verb|x_1 .. x_3| with \verb|x_i > 1|
+and \verb|product [ x_1 , ... , x_3 ] = 580932019|
 \item
-Finden Sie den Klartext für eine RSA-Verschlüsselung mit
+find the cleartext for this RSA key and message
 \begin{verbatim}
 Config { public_key = ( 1691, 2809 ) 
        , message = 1404 }

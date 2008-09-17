@@ -1,14 +1,13 @@
 \begin{slide}{Huffman-Codes}
 
-gesucht ist ein optimaler Präfix-Code
-    über dem Code-Alphabet \verb|[L, R]|    für die Buchstabenanzahl
+find an optimal binary prefix-free code for the frequencies
 \begin{verbatim}
 [ ( 'a' , 11 ) , ( 'b' , 47 ) , ( 'c' , 6 ) 
 , ( 'd' , 20 ) , ( 'e' , 30 ) , ( 'f' , 31 ) ]
 \end{verbatim}
     
 \bigskip
-Form der Lösung:
+form of solution
 \begin{verbatim}
 Code [ ( 'a' , [ R ] ) , ( 'b' , [ L , R ] ) 
     , ...
