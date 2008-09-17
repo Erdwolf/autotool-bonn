@@ -1,0 +1,26 @@
+\begin{slide}{Suchproblem: Lunar Lockout}
+
+\begin{minipage}{0.6\textwidth}
+Geben Sie eine Zugfolge an,
+die den Roboter (Großbuchstabe)
+ins Ziel (entsprechender Kleinbuchstabe) bringt:
+\end{minipage}\quad
+\begin{minipage}{0.3\textwidth}
+\begin{verbatim}
+. D . . . 
+. . . . C 
+B e . . . 
+. . . . . 
+. . E . . 
+. . . . A 
+\end{verbatim}
+\end{minipage}
+
+Lösung:
+\begin{verbatim}
+ [ ( "A" , N ) , ("A", W), ("A", N)
+, ("C", W), ( "E" , N ), ("E", W) ] 
+\end{verbatim}
+Diskussion: Begriff Konfiguration; Anzahl der Konfigurationen
+als Funktion von Breite, Höhe, Anzahl.
+\end{slide}

@@ -1,0 +1,20 @@
+\begin{slide}{Eine clevere Lösung}
+
+\newcommand{\reverse}{\mathop{\textrm{reverse}}}
+
+Aufgabe war: finde (kleine) CFG für
+$L = \Sigma^* \setminus \{w w \mid  w \in\Sigma^* \}$
+für $\Sigma=\{0,1\}$.
+
+Die wesentliche Idee der Lösung ist:
+\begin{itemize}
+\item $L \to AB, L \to BA$ (start)
+\item $A \to 0, A \to SAS$ (in der Mitte eine 0)
+\item $B \to 1, B \to SBS$ (in der Mitte eine 1)
+\item $S \to 0,S \to 1$ (ein beliebiges Zeichen)
+\end{itemize}
+jetzt fehlt aber noch etwas triviales.
+
+Wie schafft man das mit nur zwei (nicht drei) weiteren Regeln?
+
+\end{slide}
