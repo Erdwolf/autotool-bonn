@@ -22,6 +22,9 @@ import qualified Text.XHtml
 
 import Autolib.Multilingual hiding ( Make )
 
+import qualified Autolib.Multilingual as M
+import qualified Autolib.Multilingual.Html as H
+
 import Autolib.Reporter hiding ( wrap, initial )
 import Autolib.ToDoc
 import Autolib.Reader
