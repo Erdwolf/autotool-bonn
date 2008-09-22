@@ -1,0 +1,34 @@
+\begin{slide}{Fun with Regular Expressions (I)}
+
+of course this works:
+\begin{itemize}
+\item given an extended reg. exp.
+  (complement, intersection, shuffle, \dots)
+\item find an equivalent simple reg. exp.
+\end{itemize}
+but finding a \emph{small} answer is hard (PSPACE?)
+
+\newcommand{\shuffle}{\mathbin{\raisebox{8pt}{\rotatebox{-90}{$\exists$}}}}
+
+try $a^{2*} \shuffle b^{2*}$ and then $a^{2*} \shuffle b^{2*} \shuffle c^{2*}$ 
+
+\end{slide}
+
+\begin{slide}{Fun with Regular Expressions (II)}
+
+star height of an expression: maximal nesting number of stars
+
+(extended) star height of a language: 
+minimal star height of equiv. (extended) reg. exp.
+
+\newcommand{\REG}{\operatorname{REG}}
+\newcommand{\ESH}{\operatorname{ESH}}
+Conjecture: $L\in\REG \Rightarrow \ESH(L)\le 1$.
+
+exercise:
+\begin{itemize}
+\item given any (simple) reg. exp.
+\item find equiv. extended reg. exp. of ESH $\le 1$
+\end{itemize}
+
+\end{slide}

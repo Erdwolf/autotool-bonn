@@ -1,0 +1,39 @@
+\begin{slide}{Implementation: ``class'' design}
+
+Relation between (p)roblem type, (i)nstance, (s)olution
+\begin{verbatim}
+-- internal API, also provided via XML-RPC
+class ToDoc s , Reader s =>
+        Exercise p i s | p i -> s where
+    describe :: p -> i -> Doc
+    initial  :: p -> i -> s
+    grade    :: p -> i -> s -> Reporter Grade
+        ( instance MonadWriter Doc Reporter ... )
+-- currently about 80 instances like
+instance 
+   Exercise Col (Graph v, Int) (Map v Int) ...
+\end{verbatim}
+  
+\end{slide}
+
+\begin{slide}{Implementation: Multilingual output}
+
+(proof of concept)
+\begin{small}
+\begin{verbatim}
+inform $ fsep
+    [ M.make [ ( M.DE, T.text "mit höchstens" )
+             , ( M.UK, T.text "with at most" )   ]
+    , toDoc c
+    , M.make [ ( M.DE, T.text "verschiedenen Farben." )
+             , ( M.UK, T.text "different colours." ) ]
+    ]
+\end{verbatim}
+\end{small}  
+all \verb|Doc| combinators are lifted to \verb|Multilingual Doc|
+\begin{verbatim}
+data Multilingual a = 
+     Multilingual ( Map Language a )
+\end{verbatim}
+
+\end{slide}

@@ -1,20 +1,19 @@
-\begin{slide}{Eine clevere Lösung}
+\begin{slide}{Find a small context-free grammar}
 
 \newcommand{\reverse}{\mathop{\textrm{reverse}}}
 
-Aufgabe war: finde (kleine) CFG für
-$L = \Sigma^* \setminus \{w w \mid  w \in\Sigma^* \}$
-für $\Sigma=\{0,1\}$.
+for $L = \Sigma^* \setminus \{w w \mid  w \in\Sigma^* \}$
+where $\Sigma=\{0,1\}$.
 
-Die wesentliche Idee der Lösung ist:
+solution plan
 \begin{itemize}
 \item $L \to AB, L \to BA$ (start)
-\item $A \to 0, A \to SAS$ (in der Mitte eine 0)
-\item $B \to 1, B \to SBS$ (in der Mitte eine 1)
-\item $S \to 0,S \to 1$ (ein beliebiges Zeichen)
+\item $A \to 0, A \to SAS$ (0 in the middle)
+\item $B \to 1, B \to SBS$ (1 in the middle)
+\item $S \to 0,S \to 1$ (any letter)
 \end{itemize}
-jetzt fehlt aber noch etwas triviales.
+which words are missing? (easy)
 
-Wie schafft man das mit nur zwei (nicht drei) weiteren Regeln?
+how to create them with \emph{two} (not three) additional rules?
 
 \end{slide}

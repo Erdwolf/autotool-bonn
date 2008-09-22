@@ -1,18 +1,19 @@
-\begin{slide}{Installation, Nutzung}
+\begin{slide}{Requirements}
 
-\emph{separate Installation}:
+Client (student, tutor): any web browser
+
+Server:
 \begin{itemize}
+\item 
+  for running: standard GNU/Linux machine with (Apache) web server,
+  MySQL data base server 
+\item for building: GHC Haskell compiler, some libraries (from hackage)
 \item
-  halbwegs schnellen Rechner mit GNU/Linux, Apache Webserver,
-  GHC-Compiler, MySQL-Datenbankserver 
-\item
-  dafür Administrator, der System und Datenbank einrichtet
-  und im Betrieb bei Bedarf Patches einspielt und kompiliert
+  tricky parts (currently not well-documented):
+  build from source, initialize data base
+\item one central server can be used for several institutions
+  with several lectures each
 \end{itemize}
-
-\emph{zentrale Installation}: Benutzung eines gemeinsamen 
-\autotool-Servers (@ HTWK) durch mehrere Einrichtungen 
-(HTWK, Uni Leipzig, Uni Halle)
 
 
 \end{slide}
