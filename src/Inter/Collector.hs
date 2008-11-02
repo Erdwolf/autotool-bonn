@@ -11,6 +11,8 @@ import qualified Upload
 import qualified PCProblem.Quiz
 import qualified Boolean.Instance
 import qualified Boolean.Quiz
+import qualified Boolean2.Instance
+import qualified Boolean2.Quiz
 import qualified Sortier.Netz.Check 
 import qualified Sortier.Merge.Check 
 import qualified Sortier.Median.Check 
@@ -245,8 +247,14 @@ tmakers =
                 ]
          , heading "Logik"
 	        [ heading "Aussagenlogik"
-                    [ item Boolean.Instance.make
-		    , item Boolean.Quiz.make
+                    [ heading "Umformen (neu)"
+                              [ item Boolean2.Instance.make
+		              , item Boolean2.Quiz.make
+                              ]
+                    , heading "Umformen (alt)"
+                              [ item Boolean.Instance.make
+		              , item Boolean.Quiz.make
+                              ]
 		    , item SAT.SAT.make_fixed
 		    , item SAT.SAT.make_quiz
                     , item CNF.Optimize.make_fixed
