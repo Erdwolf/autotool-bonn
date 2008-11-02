@@ -114,27 +114,28 @@ check b c = case c of
     Normalform f -> case f of
         Negationstechnisch -> do
             inform $ text "prüfe negationstechnische Normalform"
-            forM_ ( subterms b ) $ \ s -> case s of
-                Node f args | name f == "!" -> case args of
-                    [ Var { } ] -> return ()
-                    _ -> reject $ vcat 
-                            [ nest 4 $ text "Argument der Negation muß eine Variable sein:"
-                            , nest 8 $ toDoc s
-                            ]
+            subcheck "!"  [] b
         Konjunktiv -> do 
             inform $ text "prüfe konjunktive Normalform"
-            subcheck "&&" [ "&&", "||" ] b ; subcheck "||" [ "||", "!" ] b
+            subcheck "&&" [ "&&", "||" ] b
+            subcheck "||" [ "||", "!" ] b
+            subcheck "!"  [] b
         Disjunktiv -> do 
             inform $ text "prüfe disjunktive Normalform"
-            subcheck "||" [ "||", "&&" ] b ; subcheck "&&" [ "&&", "!" ] b
+            subcheck "||" [ "||", "&&" ] b 
+            subcheck "&&" [ "&&", "!" ] b
+            subcheck "!"  [] b
 
 subcheck parent children b = forM_ ( subterms b ) $ \ s -> case s of
     Node f ts | name f == parent -> forM_ ts $ \ t ->  case t of
-        Node g _ -> when ( not ( name g `elem` children )) 
-                         $ reject $ vcat [ text "Kind von" <+> toDoc parent
-                                           <+> text "ist nicht in" <+> toDoc children
-                                         , nest 4 $ toDoc s
-                                         ]
+        Node g _ -> when ( not ( name g `elem` children )) $ reject $ vcat 
+                         [ text "Kind von" <+> toDoc parent
+                          <+> ( if null children then empty
+                               else text "darf nur" <+> toDoc children <+> text "oder"
+                              )
+                          <+> text "Variable sein"
+                         , nest 4 $ toDoc s
+                         ]
         _ -> return ()
     _ -> return ()
 
