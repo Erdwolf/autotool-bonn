@@ -41,6 +41,7 @@ data Expression a where
     And :: Expression Bool -> Expression Bool -> Expression Bool
     Or :: Expression Bool -> Expression Bool -> Expression Bool
     Implies :: Expression Bool -> Expression Bool -> Expression Bool
+    Equiv :: Expression Bool -> Expression Bool -> Expression Bool
     Not :: Expression Bool -> Expression Bool
 
     Branch :: Expression Bool -> Expression a -> Expression a -> Expression a
@@ -79,6 +80,7 @@ instance ToDoc a => ToDoc ( Expression a ) where
         Or        x y -> docParen ( p > 1 ) $ hsep [ toDocPrec 1 x, text "||", toDocPrec 2 y ]
         And       x y -> docParen ( p > 3 ) $ hsep [ toDocPrec 3 x, text "&&", toDocPrec 4 y ]
         Implies   x y -> docParen ( p > 2 ) $ hsep [ toDocPrec 2 x, text "==>", toDocPrec 3 y ]
+        Equiv     x y -> docParen ( p > 2 ) $ hsep [ toDocPrec 2 x, text "<==>", toDocPrec 3 y ]
         Not       x   -> docParen ( p > 4 ) $ hsep [ text "!", toDocPrec 8 x ]
 
 instance Size ( Expression a ) where
@@ -120,14 +122,14 @@ instance Reader ( Expression Bool ) where
                  Prefix ( do { my_symbol name; return $ f }  ) 
 	in  buildExpressionParser
 	        [ [ binop "==>" Implies AssocNone ]
-		, [ binop "==" Equal AssocNone 
+		, [ binop "<==>" Equiv AssocNone 
 		  , binop "!=" NotEqual AssocNone
 		  ]
 		, [ binop "||" Or AssocLeft ]
 		, [ binop "&&" And AssocLeft ]
 		, [ unop "!" Not ] 
                 ] 
-                ( my_parens reader 
+                ( try ( my_parens reader )
                 <|> do my_symbol "?" ; return Undefined
 		<|> do my_reserved "true" ; return $ Constant True
 		<|> do my_reserved "false" ; return $ Constant False
@@ -142,7 +144,7 @@ comparison = do
 			 , ( ">=", GreaterEqual), (">", Greater), ("!=", NotEqual) 
 			 ]
 	return $ do
-            try $ my_symbol name
+            my_symbol name
 	    return val
     y <- reader
     return $ op x y
