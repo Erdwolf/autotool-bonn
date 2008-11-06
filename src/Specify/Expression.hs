@@ -144,7 +144,7 @@ comparison = do
 			 ,  ( ">=", GreaterEqual), (">", Greater),  ("!=", NotEqual) 
 			 ]
 	return $ do
-            my_symbol name
+            try $ my_symbol name
 	    return val
     y <- reader
     return $ op x y
