@@ -140,8 +140,8 @@ instance Reader ( Expression Bool ) where
 comparison = do
     x <- reader
     op <- foldr1 (<|>) $ do 
-        ( name, val ) <- [  ("<=", LessEqual ),( "<", Less ) , ("==", Equal )
-			 , ( ">=", GreaterEqual), (">", Greater), ("!=", NotEqual) 
+        ( name, val ) <- [  ("<=", LessEqual ), ( "<", Less ) , ("==", Equal )
+			 ,  ( ">=", GreaterEqual), (">", Greater),  ("!=", NotEqual) 
 			 ]
 	return $ do
             my_symbol name
