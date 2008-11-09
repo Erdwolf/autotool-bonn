@@ -117,12 +117,12 @@ check b c = case c of
             subcheck "!"  [] b
         Konjunktiv -> do 
             inform $ text "prüfe konjunktive Normalform"
-            subcheck "&&" [ "&&", "||" ] b
+            subcheck "&&" [ "&&", "||", "!" ] b
             subcheck "||" [ "||", "!" ] b
             subcheck "!"  [] b
         Disjunktiv -> do 
             inform $ text "prüfe disjunktive Normalform"
-            subcheck "||" [ "||", "&&" ] b 
+            subcheck "||" [ "||", "&&", "!" ] b 
             subcheck "&&" [ "&&", "!" ] b
             subcheck "!"  [] b
 

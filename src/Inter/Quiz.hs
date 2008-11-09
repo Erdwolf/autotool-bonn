@@ -49,7 +49,7 @@ make ( p :: p ) ( conf :: conf ) = this
 
              --  generate this $ fromIntegral $ hash ( vnr, manr, key )
 
-                   seed $ read key
+                   seed $ fromIntegral $ hash key
                    k <- cache 
 	               (  Datei { pfad = [ "autotool", "cache"
 			   , toString vnr
