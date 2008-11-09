@@ -29,7 +29,7 @@ class Project p k i | p k -> i where
       project :: p -> k -> i
 
 
-make :: ( Generator p conf k, Project p k i 
+make :: ( Generator p conf k, Project p k i , ToDoc conf
 	, Partial p i b 
 	, V p i b
 	)
@@ -42,14 +42,14 @@ make ( p :: p ) ( conf :: conf ) = this
 	     , tag = dashed p ++ "-" ++ "Quiz"
 	     -- erzeugt cached version der instanz (o. ä.)
 	     -- key :: Matrikel -> IO Key
-	     , key = \ mat -> return mat
+	     , key = \ mat -> return $ mat
 	     -- holt tatsächliche instanz
 	     -- gen :: Key -> IO ( Reporter i )
 	     , gen = \ vnr manr key -> do
 
              --  generate this $ fromIntegral $ hash ( vnr, manr, key )
 
-                   seed $ fromIntegral $ hash key
+                   seed $ fromIntegral $ hash $ show ( toDoc conf ) ++ key
                    k <- cache 
 	               (  Datei { pfad = [ "autotool", "cache"
 			   , toString vnr
