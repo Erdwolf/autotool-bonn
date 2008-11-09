@@ -33,9 +33,6 @@ mkpar stud auf = P.empty
 make_instant_common vnr manr stud var = 
     make_instant_common_with vnr manr stud var $ toString $ S.mnr stud 
 
-make_instant_common_seeded vnr manr stud var seed = 
-    make_instant_common_with vnr manr stud var $ seed ++ toString ( S.mnr stud )
-
 make_instant_common_with vnr manr stud var seed = do
     let p = problem var
     let mat = S.mnr stud

@@ -131,6 +131,6 @@ make_instant vnr manr stud fun auf = do
 		  pre $ show err
 		  pre $ show $ A.config auf
 		  mzero
-    io $ make_instant_common_seeded vnr manr stud ( fun conf ) ( show conf )
+    io $ make_instant_common vnr manr stud $ fun conf
 
 
