@@ -41,7 +41,7 @@ extension f =
 
 data Cross = Cross deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance ( Show a, GraphC a )
+instance ( Show a, GraphC a, Typeable a )
        => C.Partial Cross ( Int, Graph a ) ( Karte a ) where
 
     report p (c, g) = do
