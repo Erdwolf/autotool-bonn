@@ -15,8 +15,8 @@ data State = State [ Clause ]
     deriving Typeable
 
 instance ToDoc State where
-    toDoc ( State cs ) = text "aktuelle Klauseln:" </> ( vcat $ do
-        (k, c) <- zip [ 1 :: Int .. ] cs
+    toDoc ( State cs ) = vcat $ do
+        (k, c) <- zip [ 0 :: Int .. ] cs
         return $ toDoc k <+> text ":" <+> toDoc c
       )
 
@@ -25,8 +25,8 @@ extend ( State cs ) c = State ( cs ++ [c] )
 
 execute :: State -> Action -> Reporter State
 execute st act = do
-    inform $ toDoc st
-    inform $ toDoc act
+    inform $ text "aktuelle Klauseln" </> toDoc st
+    inform $ text "nächster Befehl" </> toDoc act
     l <- pick st $ left act 
     r <- pick st $ right act 
     ll <- remove l $ literal act 
