@@ -18,7 +18,6 @@ instance ToDoc State where
     toDoc ( State cs ) = vcat $ do
         (k, c) <- zip [ 0 :: Int .. ] cs
         return $ toDoc k <+> text ":" <+> toDoc c
-      )
 
 extend :: State -> Clause -> State
 extend ( State cs ) c = State ( cs ++ [c] )
