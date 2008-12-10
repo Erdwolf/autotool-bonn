@@ -169,6 +169,7 @@ import qualified Lambda.Backward_Join
 
 import qualified PL.Find_Model
 import qualified Hilbert.Central
+import qualified Resolution.Central
 
 import qualified Algebraic.Central
 import qualified Algebraic.Quiz
@@ -259,6 +260,7 @@ tmakers =
 		    , item SAT.SAT.make_quiz
                     , item CNF.Optimize.make_fixed
 		    , item Hilbert.Central.make_fixed
+		    , item Resolution.Central.make_fixed
 		    ]
 		, heading "Prädikatenlogik"
 		    [ item PL.Find_Model.make_fixed
