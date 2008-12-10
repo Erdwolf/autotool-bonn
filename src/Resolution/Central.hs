@@ -32,7 +32,7 @@ instance Partial Resolution ( [Clause], Clause ) [ Action ] where
 
     total _ ( cs, target ) prog = do
         State cs' <- foldM execute ( State cs ) prog
-        assert ( last cs == target ) 
+        assert ( last cs' == target ) 
                $ text "letzte abgeleitete Klausel ist Zielklausel?" 
                
         

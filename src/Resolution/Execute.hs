@@ -8,11 +8,14 @@ import Resolution.Action
 import Autolib.Reporter
 import Autolib.ToDoc
 import Autolib.Set
+import Autolib.Size
 
 import Data.Typeable
 
 data State = State [ Clause ]
     deriving Typeable
+
+instance Size State where size ( State cs ) = length cs
 
 instance ToDoc State where
     toDoc ( State cs ) = vcat $ do
@@ -31,7 +34,8 @@ execute st act = do
     ll <- remove l $ literal act 
     rr <- remove r $ turn $ literal act 
     let c = merge ll rr
-    inform $ nest 4 $ text "neue Klausel" <+> toDoc c
+    inform $ nest 4 $ text "neue Klausel" </> 
+           ( toDoc ( size st ) <+> equals <+> toDoc c )
     return $ extend st c
 
 merge :: Clause -> Clause -> Clause
