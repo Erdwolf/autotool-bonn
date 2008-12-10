@@ -35,7 +35,7 @@ execute st act = do
     rr <- remove r $ turn $ literal act 
     let c = merge ll rr
     inform $ nest 4 $ text "neue Klausel" </> 
-           ( toDoc ( size st ) <+> equals <+> toDoc c )
+           ( toDoc ( size st ) <+> text ":" <+> toDoc c )
     return $ extend st c
 
 merge :: Clause -> Clause -> Clause
