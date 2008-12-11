@@ -261,6 +261,7 @@ tmakers =
                     , item CNF.Optimize.make_fixed
 		    , item Hilbert.Central.make_fixed
 		    , item Resolution.Central.make_fixed
+		    , item Resolution.Central.make_quiz
 		    ]
 		, heading "Prädikatenlogik"
 		    [ item PL.Find_Model.make_fixed
