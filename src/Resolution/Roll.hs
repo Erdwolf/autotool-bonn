@@ -36,14 +36,21 @@ rset conf = do
     t <- case target conf of
            Empty -> return $ Clause emptySet
            Random -> rclause conf
-    let extend current cs = 
-            if O.null current then return cs else do
-                  c <- rclause conf
-                  if c `elem` cs 
-                      then extend current cs
-                      else extend ( current O.&&  semantics c ) ( c : cs )
+    let extend current cs = do
+            c <- rclause conf
+            if or $ do c' <- cs ; return $ issubset c c'
+                then extend current cs
+                else do
+                    let next = current O.&&  semantics c
+                        cs' = c : cs
+                    if O.null next 
+                       then return cs' 
+                       else extend next cs'
     cs <- extend ( O.not $ semantics t ) []
     return ( cs, t )
+
+issubset ( Clause xs ) ( Clause ys ) = 
+    subseteq xs ys
 
 medium :: Config -> IO ( [ Clause ], Clause )
 medium conf = do

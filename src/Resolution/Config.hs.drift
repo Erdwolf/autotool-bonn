@@ -23,8 +23,8 @@ data Config =
 example :: Config
 example = Config
     { num_variables = 5
-    , literals_per_clause_bounds = ( 3, 5 )
-    , target = Random
+    , literals_per_clause_bounds = ( 2, 3 )
+    , target = Empty
     }
 
 -- local variables:
