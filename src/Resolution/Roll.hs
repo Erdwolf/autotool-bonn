@@ -39,7 +39,9 @@ rset conf = do
     let extend current cs = 
             if O.null current then return cs else do
                   c <- rclause conf
-                  extend ( current O.&&  semantics c ) ( c : cs )
+                  if c `elem` cs 
+                      then extend current cs
+                      else extend ( current O.&&  semantics c ) ( c : cs )
     cs <- extend ( O.not $ semantics t ) []
     return ( cs, t )
 
