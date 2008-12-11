@@ -1,16 +1,19 @@
 {-# OPTIONS -fglasgow-exts #-}
 
-module Resolution.Central ( make_fixed ) where
+module Resolution.Central ( make_fixed, make_quiz ) where
 
 import Resolution.Data
 import Resolution.Action
 import Resolution.Execute
+import Resolution.Config
+import Resolution.Roll
 
 import Challenger.Partial
 import Autolib.ToDoc
 import Autolib.Reporter hiding ( execute )
 
 import Inter.Types
+import Inter.Quiz
 import Data.Typeable
 
 data Resolution = Resolution deriving ( Show, Read, Typeable )
@@ -43,3 +46,11 @@ make_fixed = direct Resolution
              , read "False" :: Clause
              )
 
+instance Generator Resolution Config ( [Clause], Clause ) where
+    generator _ conf key = Resolution.Roll.medium conf
+
+instance Project Resolution ( [Clause], Clause ) ( [Clause], Clause ) where
+    project _ = id
+
+make_quiz :: Make
+make_quiz = quiz Resolution Resolution.Config.example

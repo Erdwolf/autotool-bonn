@@ -32,7 +32,7 @@ instance ToDoc Clause where
     toDoc ( Clause xs ) = 
         if cardinality xs == 0 
         then text "False"
-        else fsep $ punctuate ( text "||" ) 
+        else fsep $ punctuate ( text " ||" ) 
                         $ map toDoc $ setToList xs
 
 instance Reader Clause where
