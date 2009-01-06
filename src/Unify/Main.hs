@@ -28,22 +28,30 @@ import Autolib.FiniteMap
 
 import Data.Typeable
 
+
 data Unify = Unify deriving ( Eq, Ord, Show, Read, Typeable )
+
+
+type CII = Config Identifier Identifier
+type III = Instance Identifier Identifier
 
 
 instance Measure Unify ( Instance v c ) ( Term v c, Term v c ) where
     measure p i ( t1, t2 ) = fromIntegral $ size t1 + size t2
 
-instance InstanceC v c => Partial Unify ( Instance v c ) ( Term v c, Term v c ) where
+-- instance InstanceC v c => Partial Unify ( Instance v c ) ( Term v c, Term v c ) where
+instance Partial Unify III ( I.TII, I.TII ) where
     describe p i = I.describe i
 
     initial p i = ( I.left i, I.right i )
 
-    partial p i ( t1, t2 ) = do
+    partial p i ( vt1, vt2 ) = do
+        let [ t1, t2 ] = map I.patch_variables [ vt1, vt2 ]
         conforms ( I.wildcard i ) ( I.left i ) t1
         conforms ( I.wildcard i ) ( I.right i ) t2
 
-    total p i ( t1, t2 ) = do
+    total p i ( vt1, vt2 ) = do
+        let [ t1, t2 ] = map I.patch_variables [ vt1, vt2 ]
         let t1s = flip apply_partial t1 $ I.unifier i
             t2s = flip apply_partial t2 $ I.unifier i
         inform $ vcat
@@ -92,16 +100,7 @@ instance InstanceC v c => Project  Unify ( Instance v c ) ( Instance v c ) where
     project p i = i
 
 
-{-
-type CII = Config Identifier Identifier
-type III = Instance Identifier Identifier
 
-instance Generator Unify CII III where
-    generator p conf key = roll conf
-
-instance Project  Unify III III where
-    project p i = i
--}
 
 make_quiz :: Make
 make_quiz = quiz Unify C.example

@@ -19,14 +19,27 @@ data InstanceC v c => Instance v c = Instance { wildcard :: c
               }
     deriving ( Typeable )
 
+
+type TII = Term Identifier Identifier
+
+patch_variables :: TII -> TII
+patch_variables ( Node f xs ) = 
+    if isvariable f
+    then if null xs then Var f else error "Unify.Main.patch_variable: with arguments?"
+    else Node f $ map patch_variables xs
+
+isvariable :: Identifier -> Bool
+isvariable i = isUpper $ head $ show i
+
 {-! for Instance derive: Reader, ToDoc !-}
 
 example :: Instance Identifier Identifier
 example = Instance
     { wildcard = read "undefined"
-    , left = read "f (f (Y, undefined), f (f (Z, f (a, undefined)), undefined))"
-    , right = read "f (f (f (X, a), X), undefined)"
-    , unifier = read "listToFM [ ( X , f (Z, f (a, a)) ) , ( Y , f (f (Z, f (a, a)), a) ) ]"
+    , left = patch_variables $ read "f (f (Y, undefined), f (f (Z, f (a, undefined)), undefined))"
+    , right = patch_variables $ read "f (f (f (X, a), X), undefined)"
+    , unifier = mapFM ( \ k v -> patch_variables v ) 
+              $ listToFM $ read "[ ( X , f (Z, f (a, a)) ) , ( Y , f (f (Z, f (a, a)), a) ) ]"
     }
 
 
