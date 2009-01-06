@@ -8,6 +8,7 @@ import Autolib.FiniteMap
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
+import Data.Char (isUpper)
 
 class    ( Symbol v, Symbol c, Typeable v, Typeable c ) => InstanceC v c
 instance ( Symbol v, Symbol c, Typeable v, Typeable c ) => InstanceC v c
