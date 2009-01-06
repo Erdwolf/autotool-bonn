@@ -1,0 +1,35 @@
+{-# language DeriveDataTypeable, GADTs, MultiParamTypeClasses, FlexibleInstances, TemplateHaskell #-}
+
+module Unify.Instance.Data where
+
+import Autolib.TES.Term
+import Autolib.TES.Identifier
+import Autolib.FiniteMap
+import Autolib.Reader
+import Autolib.ToDoc
+import Data.Typeable
+
+class    ( Symbol v, Symbol c, Typeable v, Typeable c ) => InstanceC v c
+instance ( Symbol v, Symbol c, Typeable v, Typeable c ) => InstanceC v c
+
+data InstanceC v c => Instance v c = Instance { wildcard :: c
+              , left :: Term v c
+              , right :: Term v c
+              , unifier :: FiniteMap v ( Term v c )
+              }
+    deriving ( Typeable )
+
+{-! for Instance derive: Reader, ToDoc !-}
+
+example :: Instance Identifier Identifier
+example = Instance
+    { wildcard = read "undefined"
+    , left = read "f (f (Y, undefined), f (f (Z, f (a, undefined)), undefined))"
+    , right = read "f (f (f (X, a), X), undefined)"
+    , unifier = read "listToFM [ ( X , f (Z, f (a, a)) ) , ( Y , f (f (Z, f (a, a)), a) ) ]"
+    }
+
+
+-- local variables:
+-- mode: haskell
+-- end:

@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances -fallow-incoherent-instances #-}
+{-# language OverlappingInstances, UndecidableInstances, IncoherentInstances, MultiParamTypeClasses, FunctionalDependencies, FlexibleInstances #-}
 
 -- | Autotool Challenger Partial
 module Challenger.Partial 
