@@ -167,6 +167,8 @@ import qualified Lambda.Apply
 import qualified Lambda.Derive
 import qualified Lambda.Backward_Join
 
+import qualified Unify.Main
+
 import qualified PL.Find_Model
 import qualified Hilbert.Central
 import qualified Resolution.Central
@@ -313,7 +315,7 @@ tmakers =
                 , item RAM.Make.make
                 , item RM.Make.make
                 ]
-         , heading "Ableitungen in Ersetzungssystemen"
+         , heading "Terme, Ersetzungssysteme"
                 [ heading "Wortersetzung"
                         [ item $ Rewriting.Derive.make_fixed Rewriting.SRS.Apply.For_SRS
                         ]
@@ -324,6 +326,10 @@ tmakers =
                         ]
                 , heading "Lambda-Kalkül"
                         [ item $ Rewriting.Derive.make_fixed Lambda.Apply.For_Lambda
+                        ]
+                , heading "Unifikation"
+                        [ item $ Unify.Main.make_fixed 
+                        , item $ Unify.Main.make_quiz 
                         ]
                 ]
          , heading "Lambda-Kalkül"
