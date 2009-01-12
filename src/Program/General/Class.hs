@@ -9,6 +9,6 @@ import Autolib.ToDoc
 import Autolib.Reporter
 
 class ( Reader st, ToDoc st , Reader val, ToDoc val ) 
-        => Program st val where
+        => Class st val where
     single :: Environment val -> st -> Reporter ( Environment val )
 
