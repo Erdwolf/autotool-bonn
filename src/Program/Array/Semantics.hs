@@ -1,7 +1,7 @@
 module Program.Array.Semantics where
 
-import Program.Array.Environment ( Environment )
-import qualified Program.Array.Environment as E
+import Program.General.Environment ( Environment )
+import qualified Program.General.Environment as E
 
 import Program.Array.Program
 import Program.Array.Statement
@@ -16,12 +16,9 @@ import Autolib.TES.Identifier
 
 import Data.Ix
 
-execute :: Environment -> Program -> Reporter Environment
-execute start ( Program ss ) = foldM single start ss
-
-single :: Environment
+single :: Environment Value
 	-> Statement
-	-> Reporter Environment
+	-> Reporter ( Environment Value )
 single env st = do
     inform $ text "Anweisung:" <+> toDoc st
     nested 4 $ case st of
@@ -43,7 +40,7 @@ single env st = do
 	        Nothing -> do
 	            return $ E.add env name value
 
-eval :: Environment
+eval :: Environment Value
      -> Expression 
      -> Reporter Integer
 eval env exp = case exp of
@@ -63,7 +60,7 @@ dereference env (Access name indices) = do
     value <- look env name
     access env value indices
 
-access :: Environment
+access :: Environment Value
        -> Value
        -> [ Expression ]
        -> Reporter Integer
@@ -83,7 +80,7 @@ access env v ps = reject $ vcat
     , text "Indices" <+> toDoc ps
     ]
 
-update :: Environment
+update :: Environment Value
        -> Value
        -> [ Expression ]
        -> Integer
@@ -108,7 +105,7 @@ update env v ps new = reject $ vcat
     , text "Indices" <+> toDoc ps
     ]
 
-patches :: Environment 
+patches :: Environment Value
         -> ( Integer, Integer )
         -> [ Statement ]
 patches env bnd = do

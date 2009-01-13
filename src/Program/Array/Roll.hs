@@ -1,11 +1,14 @@
 module Program.Array.Roll where
 
-import Program.Array.Program
+import Program.Array.Value
+import Program.Array.Statement
 import Program.Array.Semantics
 import Program.Array.Expression
 import Program.Array.Statement
 import Program.Array.Operator
-import qualified Program.Array.Environment as E
+
+import qualified Program.General.Environment as E
+import qualified Program.General.Program as P
 
 
 import qualified Program.Array.Config as C
@@ -17,19 +20,22 @@ import Autolib.Reporter
 
 import Data.Ix
 
+type Environment = E.Environment Value
+type Program = P.Program Statement
+
 roll :: RandomC m
      => C.Config
-     -> m ( E.Environment, Program, E.Environment )
+     -> m ( Environment , Program, Environment )
 roll c = do
     env0 <- rollenv c
     ( sts, env1 ) <- statements c env0
-    return ( env0, Program sts, env1 )
+    return ( env0, P.Program sts, env1 )
   `repeat_until` \ ( e0, p, e1 ) -> e0 /= e1
 
 statements :: RandomC m
 	   => C.Config
-	   -> E.Environment
-	   -> m ( [Statement], E.Environment )
+	   -> Environment
+	   -> m ( [Statement], Environment )
 statements c env0 = 
     if C.statements c <= 0 
     then return ( [], env0 )
@@ -44,11 +50,11 @@ statements c env0 =
 
 -- | from given environment, roll statement and present resulting environment
 rollstat :: RandomC m
-     => E.Environment    
+     => Environment    
      -> [ Operator ]
      -> ( Integer, Integer )
      -> Int -- ^  size
-     -> m ( Statement, E.Environment )
+     -> m ( Statement, Environment )
 rollstat env ops bnd s = do
     ( acc @ ( Access name inds ) , vs ) <- rollacc env ops bnd s
     ( exp, val ) <- rollex env ops bnd s
@@ -60,7 +66,7 @@ rollstat env ops bnd s = do
 
 rollenv :: RandomC m
 	=> C.Config
-	-> m E.Environment
+	-> m Environment
 rollenv c = do
     let vds = zip [ 'a' .. ] $ do
 	        (d, n) <- zip [ 0.. ] $ C.variables_per_depth c
@@ -77,7 +83,7 @@ rollenv c = do
 -- it is important to adhere to the range
 -- since expression will be used for array indexing
 rollex :: RandomC m
-     => E.Environment    
+     => Environment    
      -> [ Operator ]
      -> ( Integer, Integer )
      -> Int -- ^  size

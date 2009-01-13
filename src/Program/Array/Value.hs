@@ -2,6 +2,8 @@
 
 module Program.Array.Value where
 
+import qualified Program.General.Environment as E
+
 import Autolib.TES.Identifier
 
 import Autolib.Reader
@@ -16,6 +18,21 @@ import Data.Typeable
 data Value = Scalar Integer
 	   | Row [ Value ]
     deriving ( Eq, Typeable )
+
+example :: Value
+example = Row $ map Scalar [ 3,1,4,1,5 ]
+
+instance E.Value Value where
+    typeform v = text "int" <+> hsep ( do d <- depth v ; return $ brackets $ toDoc d )
+    typeread = do -- :: Parser ( Parser val )
+        my_reserved "int"
+        ds <- many $ do my_brackets reader
+        return $ read_with ds
+            
+read_with :: [ Integer ] -> Parser Value
+read_with [] = scalar
+read_with (d : ds) = my_braces $ do
+    fmap Row $ replicate_comma d $ read_with ds
 
 positions :: Value -> [[Integer]]
 positions ( Scalar i ) = return [] 
@@ -90,7 +107,7 @@ value (d : ds) = my_braces $ do
 replicate_comma 0 parser = return []
 replicate_comma d parser | d > 0 = do
     x <- parser
-    xs <- sequence $ replicate ( d-1 ) $ do my_comma ; parser 
+    xs <- sequence $ replicate ( fromIntegral d - 1 ) $ do my_comma ; parser 
     return $ x : xs
 
 scalar = do 

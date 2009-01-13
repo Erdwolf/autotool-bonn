@@ -43,12 +43,24 @@ add :: Environment val -> Identifier -> val -> Environment val
 add ( Environment e ) k v = Environment $ addToFM e k v
 
 
-class ToDoc val => Value val where typeform :: val -> Doc
+class ( ToDoc val, Reader val, Eq val, Typeable val ) => Value val where 
+    typeform :: val -> Doc
+    typeread :: Parser ( Parser val )
 
 instance Value val => ToDoc ( Environment val ) where
     toDoc ( Environment e ) = vcat $ do
         ( k, v ) <- fmToList e
         return $ hsep [ typeform v , toDoc k, equals, toDoc v, semi ]
+
+instance Value val => Reader ( Environment val ) where
+    reader = fmap make $ many $ do
+        ty <- typeread 
+        id <- reader
+        my_equals
+        val <- ty 
+        my_semi
+        return ( id, val )
+
 
 must_be_equal :: ( ToDoc val, Eq val ) 
     => Environment val -> Environment val -> Reporter ()

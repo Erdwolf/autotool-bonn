@@ -1,14 +1,21 @@
-{-# language MultiParamTypeClasses #-}
+{-# language MultiParamTypeClasses, FunctionalDependencies, IncoherentInstances #-}
 
 module Program.General.Class where
 
 import Program.General.Environment
+import Program.General.Program
 
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Reporter
 
-class ( Reader st, ToDoc st , Reader val, ToDoc val ) 
-        => Class st val where
-    single :: Environment val -> st -> Reporter ( Environment val )
+import Data.Typeable
+
+class ( Read p, Show p, Typeable p
+      , Reader st, ToDoc st , Typeable st
+      , Value val ) 
+        => Class p st val | p -> st, p -> val where
+    single :: p -> Environment val -> st -> Reporter ( Environment val )
+    example :: p -> ( Program st, Environment val )
+
 

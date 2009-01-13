@@ -142,7 +142,8 @@ import qualified KnapsackFraction.Central
 import qualified RM.Make
 import qualified RAM.Make
 
-import qualified Program.Array.Central
+import qualified Program.General.Central
+import qualified Program.Array.Instance
 
 import qualified Code.Huffman.Boiler
 import qualified Code.Quiz
@@ -301,8 +302,9 @@ tmakers =
                 [ item JVM.Make.make
                 , item Turing.Make.computer
 		, heading "Programme mit Arrays"
-		    [ item Program.Array.Central.make_fixed
-		    , item Program.Array.Central.make_quiz
+		    [ item $ Program.General.Central.make_fixed 
+                             Program.Array.Instance.Program_Array
+		    , item Program.Array.Instance.make_quiz
 		    ]
 		, heading "Primitiv rekursive Funktionen (neu)"
 		    [ item Fun.Direct.make_fixed

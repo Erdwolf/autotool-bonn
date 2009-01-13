@@ -3,7 +3,7 @@
 module Program.Array.Environment 
 
 ( Environment
-, empty, lookup, example
+, empty, lookup -- , example
 , add
 , must_be_equal
 , contents, make

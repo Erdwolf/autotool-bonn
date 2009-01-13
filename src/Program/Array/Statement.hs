@@ -1,3 +1,5 @@
+{-# language DeriveDataTypeable #-}
+
 module Program.Array.Statement where
 
 import Program.Array.Expression
@@ -8,8 +10,11 @@ import Autolib.ToDoc
 import Autolib.TES.Identifier
 import Autolib.Size
 
+import Data.Typeable
+
 data Statement = Assign Access Expression
 	       | Declare Identifier [ Int ] Value
+    deriving Typeable
 
 s0 :: Statement
 s0 = read "x[x[2]] = x[x[0]+1];"

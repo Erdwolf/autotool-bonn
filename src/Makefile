@@ -1,4 +1,8 @@
 include ../config.mk
+
+# EXTRA_PACKS=-package base-3.0.3.0
+GHC_COMMAND=ghc-6.8.3
+
 include Makefile-defs
 
 ###############################################################################
@@ -37,7 +41,7 @@ tags :
 # GHC_VERSION = 6.4.2.20060121
 # GHC_VERSION = 6.6
 # GHC_VERSION = 6.8.0.20070921
-GHC_VERSION = 6.8.2
+GHC_VERSION = 6.8.3
 
 GHC_LIBS = base haskell98 parsec unix network readline containers pretty
 GHC_LINK = http://www.haskell.org/ghc/docs/$(GHC_VERSION)/html/libraries

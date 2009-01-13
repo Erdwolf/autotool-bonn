@@ -23,11 +23,12 @@ import Data.Maybe ( isNothing, isJust )
 
 data Program_General = Program_General deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance ( Eq val, Value val, Program.General.Class.Class st val 
+instance ( Value val
+         , Program.General.Class.Class p st val 
          , Reader ( Environment val )
-         , Typeable st, Typeable val
+         , Typeable st
          )
-    => C.Partial Program_General ( Program st , Environment val ) ( Environment val ) where
+    => C.Partial p ( Program st , Environment val ) ( Environment val ) where
 
     describe _ (p, e) = vcat
         [ text "Deklarieren und initialisieren Sie die Variablen,"
@@ -39,9 +40,9 @@ instance ( Eq val, Value val, Program.General.Class.Class st val
 
     initial _ (p, e) = e -- Program.Array.Environment.example
 
-    total _ ( p , target) start = do
+    total tag ( p , target) start = do
         inform $ text "Ich führe das Programm aus:"
-        actual <- nested 4 $ Program.General.Central.execute start p
+        actual <- nested 4 $ Program.General.Central.execute tag start p
 	inform $ vcat
 	    [ text "Die resultierende Belegung ist:"
 	    , nest 4 $ toDoc actual
@@ -49,18 +50,19 @@ instance ( Eq val, Value val, Program.General.Class.Class st val
 	inform $ text "Ich vergleiche mit der Aufgabenstellung:"
 	nested 4 $ must_be_equal target actual
 
-execute :: Class st val
-        => Environment val -> Program st -> Reporter ( Environment val )
-execute start ( Program ss ) = foldM single start ss
+execute :: Class p st val
+        => p -> Environment val -> Program st 
+        -> Reporter ( Environment val )
+execute p start ( Program ss ) = foldM ( single p ) start ss
 
 
+
+make_fixed :: Class p st val => p -> Make
+make_fixed p = direct 
+       p
+       ( example p )
 
 {-
-make_fixed :: Make
-make_fixed = direct 
-       Program_General	
-       ( Program.Array.Program.s , Program.Array.Environment.example )
-
 make_quiz :: Make
 make_quiz = quiz Program_General F.example
 
