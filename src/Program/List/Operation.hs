@@ -6,6 +6,8 @@ import qualified Program.List.Store as S
 import Autolib.Reporter hiding ( result )
 import Autolib.ToDoc
 
+import Control.Monad.State
+
 data Type = Void 
          | Index -- ^ 0 to length - 1
          | Index' -- ^ 0 to length (used to List.add)
@@ -24,7 +26,9 @@ data Operation =
                }
 
 ops :: [ Operation ]
-ops = 
+ops = list_ops ++ stack_ops ++ queue_ops
+
+list_ops =
     [ Operation { object = V.List , method = "add"
                 , args = [ Index', Element ], result = Void
                 , semantics = \ self [ a1, a2 ] -> do
@@ -62,3 +66,63 @@ ops =
 
     ] 
 
+stack_ops = 
+    [ Operation { object = V.Stack , method = "push"
+                , args = [ Element ], result = Void
+                , semantics = \ self [ a2 ] -> do
+                      sc <- S.access self
+                      S.update self $ sc { S.contents = S.contents sc ++ [ a2 ] }
+                      S.void
+                }
+    , Operation { object = V.Stack , method = "pop"
+                , args = [ ], result = Element
+                , semantics = \ self [ ] -> do
+                      sc <- S.access self
+                      lift $ when ( null $ S.contents sc ) $ reject
+                           $ text "pop: Stack darf nicht leer sein"
+                      S.update self $ sc { S.contents = init $ S.contents sc }
+                      return $ last $ S.contents sc
+                }
+    , Operation { object = V.Stack , method = "peek"
+                , args = [ ], result = Element
+                , semantics = \ self [ ] -> do
+                      sc <- S.access self
+                      sc <- S.access self
+                      lift $ when ( null $ S.contents sc ) $ reject
+                           $ text "peek: Stack darf nicht leer sein"
+                      return $ last $ S.contents sc
+                }
+    , Operation { object = V.Stack , method = "size"
+                , args = [ ], result = Index
+                , semantics = \ self [ ] -> do
+                      sc <- S.access self
+                      S.scalar $ fromIntegral $ length $ S.contents sc
+                }
+
+    ] 
+
+queue_ops = 
+    [ Operation { object = V.Queue , method = "add"
+                , args = [ Element ], result = Void
+                , semantics = \ self [ a2 ] -> do
+                      sc <- S.access self
+                      S.update self $ sc { S.contents = S.contents sc ++ [ a2 ] }
+                      S.void
+                }
+    , Operation { object = V.Queue , method = "remove"
+                , args = [ ], result = Element
+                , semantics = \ self [ ] -> do
+                      sc <- S.access self
+                      lift $ when ( null $ S.contents sc ) $ reject
+                           $ text "remove: Queue darf nicht leer sein"
+                      S.update self $ sc { S.contents = tail $ S.contents sc }
+                      return $ head $ S.contents sc
+                }
+    , Operation { object = V.Queue , method = "size"
+                , args = [ ], result = Index
+                , semantics = \ self [ ] -> do
+                      sc <- S.access self
+                      S.scalar $ fromIntegral $ length $ S.contents sc
+                }
+
+    ] 
