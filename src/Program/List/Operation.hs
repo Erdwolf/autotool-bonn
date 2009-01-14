@@ -35,6 +35,16 @@ ops =
                       S.update self $ sc { S.contents = pre ++ a2 : post }
                       S.void
                 }
+    , Operation { object = V.List , method = "remove"
+                , args = [ Index ], result = Element
+                , semantics = \ self [ a1 ] -> do
+                      sc <- S.access self
+                      i <- S.access a1
+                      let ( pre, a2 : post ) = splitAt ( fromIntegral $ S.scontents i ) 
+                                        $ S.contents sc
+                      S.update self $ sc { S.contents = pre ++ post }
+                      return a2
+                }
     , Operation { object = V.List , method = "get"
                 , args = [ Index ], result = Element
                 , semantics = \ self [ a1 ] -> do
@@ -43,5 +53,12 @@ ops =
                       let a2 = S.contents sc !! ( fromIntegral $ S.scontents i )
                       return a2
                 }
+    , Operation { object = V.List , method = "size"
+                , args = [ ], result = Index
+                , semantics = \ self [ ] -> do
+                      sc <- S.access self
+                      S.scalar $ fromIntegral $ length $ S.contents sc
+                }
+
     ] 
 
