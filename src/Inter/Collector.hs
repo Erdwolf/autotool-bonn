@@ -144,6 +144,7 @@ import qualified RAM.Make
 
 import qualified Program.General.Central
 import qualified Program.Array.Instance
+import qualified Program.List.Instance
 
 import qualified Code.Huffman.Boiler
 import qualified Code.Quiz
@@ -305,6 +306,11 @@ tmakers =
 		    [ item $ Program.General.Central.make_fixed 
                              Program.Array.Instance.Program_Array
 		    , item Program.Array.Instance.make_quiz
+		    ]
+		, heading "Programme mit Listen, Stacks, Queues"
+		    [ item $ Program.General.Central.make_fixed 
+                             Program.List.Instance.Program_List
+		    -- , item Program.List.Instance.make_quiz
 		    ]
 		, heading "Primitiv rekursive Funktionen (neu)"
 		    [ item Fun.Direct.make_fixed

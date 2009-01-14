@@ -13,9 +13,9 @@ import Data.Typeable
 
 class ( Read p, Show p, Typeable p
       , Reader st, ToDoc st , Typeable st
-      , Value val ) 
+      , Value val 
+      ) 
         => Class p st val | p -> st, p -> val where
-    single :: p -> Environment val -> st -> Reporter ( Environment val )
+    execute :: p -> Environment val -> Program st -> Reporter ( Environment val )
     example :: p -> ( Program st, Environment val )
-
 

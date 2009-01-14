@@ -42,18 +42,13 @@ instance ( Value val
 
     total tag ( p , target) start = do
         inform $ text "Ich führe das Programm aus:"
-        actual <- nested 4 $ Program.General.Central.execute tag start p
+        actual <- nested 4 $ Program.General.Class.execute tag start p
 	inform $ vcat
 	    [ text "Die resultierende Belegung ist:"
 	    , nest 4 $ toDoc actual
 	    ]
 	inform $ text "Ich vergleiche mit der Aufgabenstellung:"
 	nested 4 $ must_be_equal target actual
-
-execute :: Class p st val
-        => p -> Environment val -> Program st 
-        -> Reporter ( Environment val )
-execute p start ( Program ss ) = foldM ( single p ) start ss
 
 
 

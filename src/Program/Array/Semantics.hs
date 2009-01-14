@@ -3,7 +3,7 @@ module Program.Array.Semantics where
 import Program.General.Environment ( Environment )
 import qualified Program.General.Environment as E
 
-import Program.Array.Program
+import Program.General.Program
 import Program.Array.Statement
 import Program.Array.Expression
 import Program.Array.Operator
@@ -15,6 +15,8 @@ import Autolib.ToDoc
 import Autolib.TES.Identifier
 
 import Data.Ix
+
+execute start ( Program ss ) = foldM single  start ss
 
 single :: Environment Value
 	-> Statement

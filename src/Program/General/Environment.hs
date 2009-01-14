@@ -6,23 +6,24 @@ module Program.General.Environment
 , empty, lookup
 , add
 , must_be_equal
-, contents, make
+, contents, make, mapM
 )
 
 where
 
-import Prelude hiding ( lookup )
+import Program.General.Value
 
 import Autolib.FiniteMap
 import Autolib.Set
 import Autolib.TES.Identifier
 
-import Autolib.Reporter
+import Autolib.Reporter hiding ( mapM )
 import Autolib.ToDoc hiding ( empty )
 import Autolib.Reader
 import Autolib.Size
 
 import Data.Typeable
+import Prelude hiding ( mapM, lookup )
 
 data Environment val = Environment ( FiniteMap Identifier val )
     deriving ( Typeable, Eq )
@@ -42,10 +43,17 @@ lookup ( Environment e ) = lookupFM e
 add :: Environment val -> Identifier -> val -> Environment val
 add ( Environment e ) k v = Environment $ addToFM e k v
 
-
-class ( ToDoc val, Reader val, Eq val, Typeable val ) => Value val where 
-    typeform :: val -> Doc
-    typeread :: Parser ( Parser val )
+mapM :: Monad m 
+     => ( v -> m w )
+     -> Environment v 
+     -> m ( Environment w )
+mapM f env = do
+    binds <- sequence $ do
+        ( k, v ) <- contents env
+        return $ do
+            w <- f v
+            return ( k, w )
+    return $ make binds
 
 instance Value val => ToDoc ( Environment val ) where
     toDoc ( Environment e ) = vcat $ do
