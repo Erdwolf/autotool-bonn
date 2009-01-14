@@ -17,7 +17,8 @@ import Autolib.Reporter
 import Control.Monad.State
 
 data Key = Key Int deriving ( Eq, Ord )
-data Contents = Scalar Integer | Void
+data Contents = Scalar { typeof :: V.Type , scontents :: Integer } 
+              | Void { typeof :: V.Type }
               | Row { typeof :: V.Type, contents :: [ Key ] }
 type Store = FiniteMap Key Contents 
 type StoreT = StateT Store 
@@ -27,13 +28,13 @@ empty :: Store
 empty = emptyFM
 
 scalar :: Monad m => Integer -> StoreT m Key
-scalar i = build $ Scalar i
+scalar i = build $ Scalar V.TScalar i
 
 row :: Monad m => V.Type -> [ Key ] -> StoreT m Key
 row ty ks = build $ Row ty ks
 
 void :: Monad m => StoreT m Key
-void = build $ Void
+void = build $ Void V.TVoid
 
 build :: Monad m => Contents -> StoreT m Key
 build c = do
@@ -65,7 +66,7 @@ unmake :: Monad m => Key -> StoreT m V.Value
 unmake k = do
     c <- access k
     case c of
-        Scalar s -> return $ V.Scalar s
+        Scalar {} -> return $ V.Scalar $ scontents c
         Row {}   -> do
              xs <- mapM unmake $ contents c
              return $ V.Collect ( typeof c ) xs

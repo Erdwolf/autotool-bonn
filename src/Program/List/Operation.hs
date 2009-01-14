@@ -29,10 +29,19 @@ ops =
                 , args = [ Index', Element ], result = Void
                 , semantics = \ self [ a1, a2 ] -> do
                       sc <- S.access self
-                      S.Scalar i <- S.access a1
-                      let ( pre, post ) = splitAt ( fromIntegral i ) $ S.contents sc
+                      i <- S.access a1
+                      let ( pre, post ) = splitAt ( fromIntegral $ S.scontents i ) 
+                                        $ S.contents sc
                       S.update self $ sc { S.contents = pre ++ a2 : post }
                       S.void
+                }
+    , Operation { object = V.List , method = "get"
+                , args = [ Index ], result = Element
+                , semantics = \ self [ a1 ] -> do
+                      sc <- S.access self
+                      i <- S.access a1
+                      let a2 = S.contents sc !! ( fromIntegral $ S.scontents i )
+                      return a2
                 }
     ] 
 

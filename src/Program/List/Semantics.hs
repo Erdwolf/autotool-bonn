@@ -1,3 +1,5 @@
+{-# language DeriveDataTypeable #-}
+
 module Program.List.Semantics where
 
 import Program.General.Environment as E
@@ -9,22 +11,31 @@ import Program.List.Store as S
 
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Reader
 
 import Control.Monad ( forM )
 import Control.Monad.State
 import Data.Ix (inRange)
+import Data.Typeable
 
 execute ::  Environment V.Value
-        -> Program Expression 
+        -> Program Statement
         -> Reporter ( Environment V.Value )
 execute env xs = evalStateT ( executeST env xs ) S.empty
 
+data Statement = Statement Expression
+    deriving Typeable
+instance ToDoc Statement where 
+    toDoc ( Statement x ) = toDoc x <> semi
+instance Reader Statement where
+    reader = do x <- reader ; my_semi ; return $ Statement x
+
 executeST :: Environment V.Value
-        -> Program Expression 
+        -> Program Statement 
         -> ReporterST ( Environment V.Value )
 executeST env0 ( Program xs ) = do
     env <- inject env0
-    forM xs $ \ x -> do 
+    forM xs $ \ ( Statement x ) -> do 
         lift $ inform $ text "execute:" </> toDoc x
         eval env x
         env1 <- extract env
@@ -81,10 +92,10 @@ conform :: O.Type -> S.Contents -> S.Key -> ReporterST ()
 conform ty vself varg = do
     val <- S.access varg
     case ( ty, S.typeof vself, val ) of
-        ( Index, TCollect {}, S.Scalar i ) -> 
-            conform_range i ( 0, length ( S.contents vself ) - 1 )
-        ( Index', TCollect {}, S.Scalar i ) -> 
-            conform_range i ( 0, length ( S.contents vself )  )
+        ( Index, TCollect {}, S.Scalar {} ) -> 
+            conform_range ( S.scontents val ) ( 0, length ( S.contents vself ) - 1 )
+        ( Index', TCollect {}, S.Scalar {} ) -> 
+            conform_range ( S.scontents val ) ( 0, length ( S.contents vself )  )
         ( Element, TCollect { V.arg = a }, _ ) | a == S.typeof val ->
             return ()
         _ -> do
