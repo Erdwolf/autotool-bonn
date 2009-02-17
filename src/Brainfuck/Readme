@@ -1,0 +1,8 @@
+Interpreter fuer Brainfuck:
+
+Besonderheiten der Implementierung:
+
+- Programmcode ist in runden Klammern einzuschliessen z.B.: (+-<[-].)
+- zur Ein- und Ausgabe werden Integer anstelle von ASCII-Zeichen genutzt
+- keine Beschraenkung auf 8-Bit-Wertebereich
+- Dekrementierung (-) von 0 bleibt 0
