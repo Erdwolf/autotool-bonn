@@ -20,8 +20,11 @@ import qualified Sortier.Programm.Check
 
 import qualified JVM.Make
 import qualified Turing.Make
+import qualified Brainfuck.Make
+
 import qualified Fun.Quiz
 import qualified Fun.Make
+
 
 import qualified Fun.Direct
 
@@ -322,6 +325,7 @@ tmakers =
 		    ]
                 , item RAM.Make.make
                 , item RM.Make.make
+                , item Brainfuck.Make.computer
                 ]
          , heading "Terme, Ersetzungssysteme"
                 [ heading "Wortersetzung"
