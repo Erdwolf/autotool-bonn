@@ -27,6 +27,20 @@ get = do
     disconnect conn
     return res
 
+
+-- | get alle gruppen aus DB
+-- TODO: implementiere filter
+get_gnr :: GNr -> IO [ Gruppe ]
+get_gnr gnr = do
+    conn <- myconnect
+    stat <- squery conn $ Query qq
+        [ From $ map reed [ "gruppe" ] 
+        , Where $ equals ( reed "gruppe.GNr" ) ( toEx gnr )
+        ]
+    res <- common stat
+    disconnect conn
+    return res
+
 get_this :: VNr -> IO [ Gruppe ]
 get_this vnr = do
     conn <- myconnect

@@ -12,6 +12,9 @@ import qualified Control.Aufgabe.DB
 import qualified Control.Vorlesung.DB
 import qualified Control.Vorlesung.Typ as V
 
+import qualified Control.Gruppe.DB
+import qualified Control.Gruppe.Typ as G
+
 import Control.Stud_Aufg.Typ
 import Control.Stud_Aufg.DB
 import Control.Student.DB
@@ -26,9 +29,12 @@ import Autolib.Set
 import Autolib.Util.Sort
 
 import Control.Monad
+import qualified Data.List
 
 -- main :: IO ()
 -- main = Inter.CGI.execute "Statistik.cgi" $ iface 
+
+data Choice = None | All | Mandat deriving ( Eq, Ord, Show )
 
 main svt @ ( stud, vor, status, attends ) = do
 
@@ -38,15 +44,16 @@ main svt @ ( stud, vor, status, attends ) = do
 
     open btable
     action <- click_choice "zeige" 
-           [ ("Resultate (mandatory)", resultate vor True ) 
-           , ("Resultate (alle)"     , resultate vor False) 
-	   , ("Studenten", studenten vor)
+           [ ("Resultate (mandatory)", resultate vor Mandat ) 
+           , ("Resultate (alle)"     , resultate vor All ) 
+	   , ("Studenten anzeigen", resultate vor None )
+	   , ("einen Studenten bearbeiten", student_bearbeiten vor)
 	   ]
     action
 
 --------------------------------------------------------------------------
 
-studenten vor = do
+student_bearbeiten vor = do
     studs <- io $ Control.Vorlesung.DB.steilnehmer $ V.vnr vor
     edit_studenten studs
 
@@ -63,17 +70,20 @@ edit_studenten studs = do
     
 --------------------------------------------------------------------------
 
-resultate vor only_mandatory = do
+resultate vor choice = do
     let vnr = V.vnr vor
     close -- btable
 
-    studs <- io $ Control.Vorlesung.DB.steilnehmer vnr
-    -- let fmt = listToFM t -- snr to (mnr, vorname,  name)
+    sgs <- io $ Control.Vorlesung.DB.snr_gnr_teilnehmer vnr
+
 
     aufs0 <- io $ Control.Aufgabe.DB.get ( Just vnr )
     let aufs = do 
            auf <- aufs0
-	   guard $ only_mandatory <= ( A.status auf == Mandatory )
+	   guard $ case choice of
+               None -> False
+               Mandat -> A.status auf == Mandatory
+               All -> True
 	   return auf
 
     -- anr to name
@@ -93,34 +103,51 @@ resultate vor only_mandatory = do
 	snrs = smap fst keys
 	anrs = smap snd keys
 
+    h3 "Gruppen"
+    open btable 
+    mapM_ plain [ "Nummer", "Bezeichnung", "Referent" ]
+    sequence_ $ do
+        gnr <- Data.List.nub $ map snd sgs 
+        return $ do
+            [ g ] <- io $ Control.Gruppe.DB.get_gnr gnr
+            open row
+            plain $ show gnr
+            plain $ toString $ G.name     g
+            plain $ toString $ G.referent g
+            close -- row
+    close -- table
+
     h3 "Einsendungen (Ok/No)"
 
     let anames = do
         anr <- setToList anrs
 	return $ case lookupFM fma anr of
-	    Just name -> ( if only_mandatory then take 3 else id )
+	    Just name -> ( if choice == Mandat then take 3 else id )
 			 $ toString name
 	    Nothing   -> show anr
-    let headings = [ "Matrikel", "Vorname", "Name" ] ++ anames ++ [ "total" ]
+
+    let headings = [ "Matr.-Nr.", "Vorname", "Name", "Gruppe" ] ++ anames ++ [ "total" ]
     open_btable_with_sorter headings
 
     sequence_ $ do
-        stud <- studs
-	let mnr = S.mnr stud
-            vorname = S.vorname stud
-            name = S.name stud
+        (snr, gnr) <- sgs
 	return $ do
+            [ stud ] <- io $ Control.Student.DB.get_snr snr
+	    let mnr = S.mnr stud
+                vorname = S.vorname stud
+                name = S.name stud
 	    open row 
 	    plain $ toString mnr
             plain $ toString vorname
             plain $ toString name
+            plain $ show gnr
 	    nums <- sequence $ do
 	        anr <- setToList $ anrs
                 let result = lookupFM stud_aufg (S.snr stud, anr) 
 		return $ do
 		     plain $ case result of
 		         Just ( Oks o, Nos n ) -> 
-			     if only_mandatory 
+			     if choice == Mandat
 			     then show o else show (o, n)
 		         Nothing -> "-"
 		     return $ case result of
@@ -130,7 +157,6 @@ resultate vor only_mandatory = do
             plain $ show $ sum nums
             close -- row
 
-        
     close -- btable
 
 

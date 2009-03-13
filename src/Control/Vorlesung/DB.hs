@@ -118,13 +118,12 @@ common = collectRows $ \ state -> do
                           , motd = g_motd
     			   }
 
-
-
-snr_teilnehmer :: VNr -> IO [ SNr ]
-snr_teilnehmer vnr = do
+snr_gnr_teilnehmer :: VNr -> IO [ (SNr, GNr) ]
+snr_gnr_teilnehmer vnr = do
     conn <- myconnect
     stat <- squery conn $ Query
         ( Select $ map reed [ "stud_grp.SNr as SNr" 
+                            , "stud_grp.GNr as GNr"
 			    ] 
 	)
         [ From $ map reed [ "stud_grp", "gruppe" ] 
@@ -134,10 +133,15 @@ snr_teilnehmer vnr = do
 		]
 	]
     res <- collectRows ( \ state -> do
-        getFieldValue state "SNr" 
+        s <- getFieldValue state "SNr" 
+        g <- getFieldValue state "GNr" 
+        return ( s, g )
       ) stat
     disconnect conn
     return res
+
+snr_teilnehmer :: VNr -> IO [ SNr ]
+snr_teilnehmer vnr = fmap ( map fst ) $ snr_gnr_teilnehmer vnr
     
 
 steilnehmer :: VNr -> IO [ CST.Student ]
