@@ -66,22 +66,9 @@ instance ( Reader a, ToDoc a, Typeable a ) => XmlRpcType a where
               $ "using (wrong) default XmlRpcType instance for " 
                   ++ show (typeOf ( undefined :: a ))
 
-instance (XmlRpcType a, XmlRpcType b) => XmlRpcType (a,b) where
-    getType _ = TStruct
-    toValue (x,y) = ValueStruct [("first", toValue x), ("second", toValue y)]
-    fromValue ( ValueStruct v ) = do
-        x <- getField "first" v
-        xx <- fromValue x
-        y <- getField "second" v
-        yy <- fromValue y
-        return ( xx, yy )
+-- the XmlRpcType(a,b) instance is now in Autolib.XmlRpc
+-- the XmlRpcType Integer instance is now in Autolib.XmlRpc
 
-
--- FIXME: this is fundamentally not right
-instance XmlRpcType Integer where
-    getType _ = getType ( undefined :: Int )
-    toValue x = toValue ( fromIntegral x :: Int )
-    fromValue v = fmap ( fromIntegral :: Int -> Integer ) ( fromValue v )
 
 ---------------------------------------------------------------------------------
 

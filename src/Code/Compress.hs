@@ -20,7 +20,11 @@ import Data.IORef
 import Data.Maybe
 import Data.Ratio
 
-instance ( ToDoc c, Reader c, Reader a, ToDoc a, Coder c a b, BitSize b )
+import Network.XmlRpc.Internals ( XmlRpcType )
+
+instance ( ToDoc c, Reader c, Reader a, ToDoc a, Coder c a b, BitSize b 
+         , XmlRpcType [a]
+         )
 	 => Partial ( Compress c ) [ a ] b where
 
     describe ( Compress c ) i = vcat    

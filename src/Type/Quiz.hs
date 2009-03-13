@@ -45,6 +45,9 @@ roller :: NFTAC (Int) s
        -> IO ( NFTA (Int) s )
 roller conf cs stats fin = extend (blank cs stats fin) 
 
+extend :: NFTAC Int s
+       => NFTA Int s 
+       -> IO (NFTA Int s)
 extend au = do
     let tau = trim au
     if  not $ isEmptySet $ finals tau

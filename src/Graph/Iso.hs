@@ -43,6 +43,13 @@ find g h = do
     f <- find_with g h [] (lknoten g) (lknoten h)
     return $ listToFM f
 
+find_with :: ( GraphC a, GraphC b )
+     => Graph a 
+     -> Graph b
+     -> [(a,b)]
+     -> [a] 
+     -> [b]
+     -> [[ (a,b)]]
 find_with g h done [] [] = return done
 find_with g h done (x : xs) yys = do
     ( pre, y : post ) <- splits yys

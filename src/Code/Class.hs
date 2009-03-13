@@ -15,7 +15,11 @@ import Autolib.Reporter
 
 import Data.Typeable
 
-instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b )
+import Network.XmlRpc.Internals ( XmlRpcType )
+
+instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b 
+         , XmlRpcType [a]
+         )
 	 => Partial ( Encode c ) [ a ] b where
 
     describe ( Encode c ) i = vcat    
@@ -39,7 +43,9 @@ instance BitSize b => Measure ( Encode c ) [ a ] b  where
 enc :: ( Reader c, Reader b, ToDoc c, Coder c Char b, Read b ) => c -> Make
 enc c = direct (Encode c) "abracadabra"
 
-instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b )
+instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b 
+         , XmlRpcType [a]
+         )
 	 => Partial ( Decode c ) b [ a ] where
 
     describe ( Decode c ) i = vcat
@@ -58,7 +64,9 @@ instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b )
 	   else reject $ text "Die Antwort ist nicht korrekt."
 	 
 
-dec :: (Reader b, Reader c, ToDoc c, ToDoc a, Reader a, Coder c a b , Show b, Read b ) 
+dec :: (Reader b, Reader c, ToDoc c, ToDoc a, Reader a, Coder c a b , Show b, Read b 
+                        , XmlRpcType [a]
+       ) 
        => c -> b -> Make
 dec c b = direct (Decode c) b
 

@@ -18,6 +18,7 @@ import Inter.Types
 import Inter.Quiz
 
 import Data.Typeable
+import Network.XmlRpc.Internals ( XmlRpcType )
 
 data String_Matching_KMP = String_Matching_KMP 
     deriving ( Read, Show, Typeable )
@@ -25,7 +26,9 @@ data String_Matching_KMP = String_Matching_KMP
 instance Measure String_Matching_KMP ( Instance a ) [a] where
     measure p i b = fromIntegral $ length b
 
-instance ( Ord a, Reader a, ToDoc a, Typeable a ) 
+instance ( Ord a, Reader a, ToDoc a, Typeable a 
+         , XmlRpcType [a]
+         ) 
     => Partial String_Matching_KMP ( Instance a ) [a] where
 
     describe p i = vcat

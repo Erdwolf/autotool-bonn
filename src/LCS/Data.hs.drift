@@ -8,14 +8,17 @@ import Autolib.Set
 
 import Data.Typeable
 import Autolib.Xml
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
+import Network.XmlRpc.Internals
 
 class    ( Ord a,  ToDoc a, Reader a, Typeable a, ToDoc [a], Reader [a]
 	 -- , Haskell2Xml [a] 
+         , XmlRpcType [a]
 	 )
     => InstanceC a 
 instance ( Ord a, ToDoc a, Reader a, Typeable a,  ToDoc [a], Reader [a]
 	 -- , Haskell2Xml [a] 
+         , XmlRpcType [a]
 	 )
     => InstanceC a 
 
@@ -26,7 +29,7 @@ data ( InstanceC a  ) => Instance a =
 	      }
      deriving ( Typeable )
 
-{-! for Instance derive: Reader, ToDoc, Haskell2Xml !-}
+{-! for Instance derive: Reader, ToDoc !-}
 
 example :: Instance Char
 example = Instance

@@ -19,6 +19,7 @@ import Autolib.Util.Seed
 import Inter.Types
 import Inter.Quiz
 import Data.Typeable
+import Network.XmlRpc.Internals ( XmlRpcType )
 
 data Reconstruct = Reconstruct
      deriving ( Eq, Ord, Show, Read, Typeable )
@@ -27,7 +28,9 @@ type Traversals c = [ ( Order, [ c ]  ) ]
 
 
 
-instance ( Symbol c, ToDoc [c], Read c, Typeable c ) 
+instance ( Symbol c, ToDoc [c], Read c, Typeable c 
+         , XmlRpcType [c]                 
+         ) 
        => Partial Reconstruct ( Traversals c ) ( Term () c ) 
     where
         describe Reconstruct ocs = vcat
