@@ -105,7 +105,9 @@ resultate vor choice = do
 
     h3 "Gruppen"
     open btable 
+    open row
     mapM_ plain [ "Nummer", "Bezeichnung", "Referent" ]
+    close -- row
     sequence_ $ do
         gnr <- Data.List.nub $ map snd sgs 
         return $ do
