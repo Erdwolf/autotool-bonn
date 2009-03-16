@@ -6,6 +6,7 @@ import Strings.Reverse.Data
 import Strings.Reverse.Operator
 
 import  Autolib.Genetic 
+import  Autolib.ToDoc ( ToDoc )
 import  qualified Autolib.Size
 import  Autolib.Util.Zufall
 
@@ -24,19 +25,21 @@ tour = 2
 distance ::  Eq a => [a] -> [a] -> Int
 distance u v = 
     let length_diff = abs ( length u - length v )
-        contents_diff = -- sum $ zipWith ( \ x y -> if x /= y then 1 else 0 ) u v 
-           length $ dropWhile id $ zipWith (==) u v
+        contents_diff = 
+           sum $ zipWith ( \ x y -> if x /= y then 1 else 0 ) u v 
+           -- length $ dropWhile id $ zipWith (==) u v
     in  length_diff + contents_diff
 
-config :: ( Show a, Ord a ) 
+config :: ( ToDoc a, Ord a ) 
        => [a] -> [a] -> [a] -> Config [Int] Double
 config items u v = 
      Config { fitness = \ ps ->
                   let x = make items ps
                       p = original x
                       q = semantics x
-                  in  negate ( fromIntegral $ distance u p + distance v q )
-                      + 1 / fromIntegral ( Autolib.Size.size x )
+                  in  negate ( fromIntegral $ distance u p +  distance v q )
+                      -- + 1 / (1 + fromIntegral ( length ps ) )
+                      -- + 1 / (1 + fromIntegral ( Autolib.Size.size x ) )
           , threshold = 0
           , present = \ kvs -> sequence_ $ do
                         (k,v) <- take 3 kvs
@@ -50,10 +53,9 @@ config items u v =
                 com xs ys
           , num_combine = base
           , mutate  = \ xs -> do
-                mut <- eins [ return, shift, uniform ]
+                mut <- eins [ shift, double, turn, uniform ]
                 mut xs
-          , num_mutate = base `div` 10
-          , num_compact = base `div` 10
+          , num_mutate = tour
           , num_steps = Nothing
           , num_parallel = 1
           , scheme = Tournament tour

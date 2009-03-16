@@ -18,6 +18,14 @@ cut xs = do
     ( pre, mid, post ) <- slice xs
     return $ pre ++ post
                           
+turn xs = do
+    ( pre, mid, post ) <- slice xs
+    return $ pre ++ reverse mid ++ post
+                          
+double xs = do
+    ( pre, mid, post ) <- slice xs
+    return $ pre ++ mid ++ mid ++ post
+                          
 shift xs = do
     ( pre, mid, post ) <- slice xs
     off <- eins [ -1, 1 ]
