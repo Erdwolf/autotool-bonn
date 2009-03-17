@@ -19,7 +19,7 @@ main = do
     let sigma = nub $ u ++ v
     evolve $ config sigma u v
 
-base = 100
+base = 200
 tour = 2
 
 distance ::  Eq a => [a] -> [a] -> Int
@@ -28,7 +28,7 @@ distance u v =
         contents_diff = 
            sum $ zipWith ( \ x y -> if x /= y then 1 else 0 ) u v 
            -- length $ dropWhile id $ zipWith (==) u v
-    in  length_diff + contents_diff
+    in  max ( length_diff ) ( contents_diff )
 
 config :: ( ToDoc a, Ord a ) 
        => [a] -> [a] -> [a] -> Config [Int] Double
@@ -37,7 +37,7 @@ config items u v =
                   let x = make items ps
                       p = original x
                       q = semantics x
-                  in  negate ( fromIntegral $ distance u p +  distance v q )
+                  in  negate ( fromIntegral $ distance u p + distance v q )
                       -- + 1 / (1 + fromIntegral ( length ps ) )
                       -- + 1 / (1 + fromIntegral ( Autolib.Size.size x ) )
           , threshold = 0
@@ -49,15 +49,13 @@ config items u v =
           , generate = sequence $ replicate ( length $ u ++ v ) 
                                 $ randomRIO ( 0, length $ u ++ v )
           , combine = \ xs ys -> do
-                com <- eins [ onepoint, twopoint, zipper ]
+                com <- eins [ onepoint, twopoint, zipper, switcher ]
                 com xs ys
           , num_combine = base
           , mutate  = \ xs -> do
-                mut <- eins [ shift, double, turn, uniform ]
+                mut <- eins [ double, turn, uniform ]
                 mut xs
-          , num_mutate = tour
           , num_steps = Nothing
-          , num_parallel = 1
           , scheme = Tournament tour
           }
 

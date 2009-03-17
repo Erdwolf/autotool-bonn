@@ -49,6 +49,10 @@ twopoint xs ys = do
     ( _, mid, _ ) <- slice ys
     return $ pre ++ mid ++ post
 
+switcher xs ys = sequence $ do
+    (x,y) <- zip xs ys
+    return $ eins [x, y]
+
 zipper [] ys = return ys
 zipper xs [] = return xs
 zipper (x:xs) ys = do
