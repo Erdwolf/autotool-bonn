@@ -41,7 +41,8 @@ obfuscate mnr = Obfuscated
               { internal = mnr
               , external = do
                     let cs = toString mnr
-                    ( k, c, s ) <- zip3 [ 0 .. ] cs $ repeat '*'
+                    ( k, c, s ) <- zip3 ( reverse $ take ( length xs ) [ 0 .. ] )
+                                        cs $ repeat '*'
                     return $ if 0 == (length cs - k) `mod` 3 then s else c
               }
 
