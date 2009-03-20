@@ -43,7 +43,7 @@ obfuscate mnr = Obfuscated
                     let cs = toString mnr
                     ( k, c, s ) <- zip3 ( reverse $ take ( length cs ) [ 0 .. ] )
                                         cs $ repeat '*'
-                    return $ if 0 == (length cs - k) `mod` 3 then s else c
+                    return $ if 0 == k `mod` 3 then s else c
               }
 
 instance ToString ( Obfuscated a ) where
