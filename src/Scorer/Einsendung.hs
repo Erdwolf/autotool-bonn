@@ -1,6 +1,7 @@
 module Scorer.Einsendung 
 
 ( Einsendung (..)
+, Obfuscated (..)
 , SE (..)
 , slurp -- datei-inhalt verarbeiten
 )
@@ -24,13 +25,31 @@ data Einsendung = Einsendung
           { size     :: Integer -- Int
 	  , date     :: [Int]
 	  , time     :: String -- ^ original time entry
-	  , matrikel :: MNr
+	  , matrikel :: Obfuscated MNr -- ^ Datenschutz
 	  , auf	     :: ANr
 	  , vor      :: VNr
 	  , pid	     :: String
 	  }	deriving (Eq,Ord)
 
+data Obfuscated a = Obfuscated 
+        { internal :: a
+        , external :: String
+        } deriving ( Eq, Ord, Show )
+
+obfuscate :: MNr -> Obfuscated MNr
+obfuscate mnr = Obfuscated 
+              { internal = mnr
+              , external = do
+                    let cs = toString mnr
+                    ( k, c, s ) <- zip3 [ 0 .. ] cs $ repeat '*'
+                    return $ if 0 == (length cs - k) `mod` 3 then s else c
+              }
+
+instance ToString ( Obfuscated a ) where
+    toString = external
+
 data SE = SE SNr Einsendung
+
 instance Show SE where 
     show ( SE s i ) = unwords 
         [ spaci 10 $ show $ abs $ size i
@@ -95,7 +114,7 @@ instance Read Einsendung where
                        ++                                    -- St:Mi:Se
                        [ read x | x <- words $ map mySub (field 4 date') ]
 	      , size     = read $ field 11 line'
-	      , matrikel = fromCGI $ field  4 line'
+	      , matrikel = obfuscate $ fromCGI $ field  4 line'
 	      , auf	 = fromCGI a
 	      , vor      = fromCGI v
 	      , pid      = field 8 wl			-- process id

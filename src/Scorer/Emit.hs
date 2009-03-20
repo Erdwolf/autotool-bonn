@@ -31,7 +31,7 @@ emit deco u vor fm0 = do
     let smnrs = mkSet $ map S.mnr studs
     let fm = mapFM ( \ key val -> do
 		  e <- val
-		  guard $ matrikel e `elementOf` smnrs
+		  guard $ internal ( matrikel e ) `elementOf` smnrs
 		  return e
 	      ) fm0
                                   
@@ -65,7 +65,7 @@ realize es = take scoreItems -- genau 10 stück
 -- | FIXME: this is badly broken
 -- und zwar für Matrikelnummern, die keine Zahlen sind
 isadmin m = 
-    let cs = toString m
+    let cs = toString $ internal m
     in  if all isDigit cs
         then 1023 > read cs
         else False
@@ -92,7 +92,7 @@ single deco u arg @( anr, es ) = do
 decorate :: UNr -> Einsendung -> IO SE
 decorate u e = do
 
-   studs <- S.get_unr_mnr ( u , matrikel e ) 
+   studs <- S.get_unr_mnr ( u , internal $ matrikel e ) 
 
    case studs of 
        []    -> return $ SE ( read "SNr 0" ) e 
