@@ -37,6 +37,7 @@ import qualified Graph.Selfcom
 import qualified Graph.Nachbar
 import qualified Graph.Cross
 import qualified Graph.MinSep
+import qualified Graph.Ramsey
 
 import qualified Robots.Interface
 import qualified Robots.Inverse
@@ -353,6 +354,7 @@ tmakers =
                 [ item Graph.Selfcom.make
 --                , item Graph.Nachbar.make
 	        , item Graph.Cross.make
+	        , item Graph.Ramsey.make
 	        , item Graph.MinSep.make
 	        , item Graph.Col.Plain.make
 	        , item Graph.Col.Quiz.make
