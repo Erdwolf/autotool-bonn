@@ -109,7 +109,7 @@ totalize deco u fm = do
 	       ] ++ do (i,(p,ps)) <- infos
 		       return $ unwords [ stretch 10 $ show p
 					, ":"
-					, stretch 10 $ i
+					, stretch 10 $ toString i
 					, ":" 
 					, pshow ps
 					]
@@ -132,12 +132,12 @@ fshow pfm = unwords $ do
 collect :: Bool 
         -> UNr
 	-> DataFM 
-	->  IO [ ( String , (Int , [Int] ) ) ] -- ^ ( Matrikel, Punkt, Plätze )
+	->  IO [ ( Obfuscated MNr , (Int , [Int] ) ) ] -- ^ ( Matrikel, Punkt, Plätze )
 collect deco u fm = do
 
     let nice (e,p) = if deco then do SE s _ <- decorate u e
-				     return (show s,p)
-			     else return (toString $ matrikel e,p)
+				     return ( error "Scorer.Emit.collect") -- ( show s , p )
+			     else return ( matrikel e , p )
 
     infos <- mapM nice $ do
 	     (auf,es) <- fmToList fm

@@ -10,10 +10,10 @@ import qualified Control.Aufgabe as A
 
 import Autolib.FiniteMap
 
--- (aufgabe -> aufgaben-record)
+-- | (aufgabe -> aufgaben-record)
 type ScoreDefFM = FiniteMap ANr A.Aufgabe
 
--- highscoretabelle (aufgabe -> beste sendungen)
+-- | highscoretabelle (aufgabe -> beste sendungen)
 type DataFM = FiniteMap ANr [ Einsendung ]
 
 split_vorlesungen :: [ A.Aufgabe ] -> FiniteMap VNr ScoreDefFM
