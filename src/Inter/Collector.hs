@@ -38,6 +38,7 @@ import qualified Graph.Nachbar
 import qualified Graph.Cross
 import qualified Graph.MinSep
 import qualified Graph.Ramsey
+import qualified Graph.Van_der_Waerden
 
 import qualified Robots.Interface
 import qualified Robots.Inverse
@@ -284,6 +285,10 @@ tmakers =
          , heading "Kombinatorik"
                 [ item PCProblem.Quiz.make_quiz 
 	        , item PCProblem.Quiz.make_fixed
+                , heading "Ramsey-Theorie"
+                  [ item Graph.Ramsey.make
+                  , item Graph.Van_der_Waerden.make
+                  ]
 		, heading "Lunar Lockout (original)"
 		  [ item Robots.Interface.make
 		  , item Robots.Interface.qmake
