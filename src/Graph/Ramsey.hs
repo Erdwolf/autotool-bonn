@@ -63,7 +63,7 @@ instance C.Partial Ramsey [Int] ( Int, FiniteMap ( Kante Int ) Int ) where
         sequence_ $ do 
             (c, x_c) <- zip [ 1.. ] i
             cl <- monochromatic_cliques n c f
-            return $ when ( length cl > x_c ) $ reject $ vcat
+            return $ when ( length cl >= x_c ) $ reject $ vcat
                         [ text "Der Teilgraph mit dieser Knotenmenge"
                         , nest 4 $ toDoc cl
                         , text "ist einfarbig mit Farbe" <+> toDoc c
