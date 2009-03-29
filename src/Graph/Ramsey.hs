@@ -62,19 +62,20 @@ instance C.Partial Ramsey [Int] ( Int, FiniteMap ( Kante Int ) Int ) where
     total p i (n, f) = do
         sequence_ $ do 
             (c, x_c) <- zip [ 1.. ] i
-            return $ sequence $ do
-                nodes <- teilmengen x_c $ mkSet [ 1 .. n ]
-                return $ do
-                    let non_c = do
-                            k <- lkanten $ clique nodes
-                            d <- maybeToList $ lookupFM f k
-                            guard $ c /= d
-                            return ()
-                    when ( null non_c ) $ reject $ vcat
+            cl <- monochromatic_cliques n c f
+            return $ when ( length cl > c ) $ reject $ vcat
                         [ text "Der Teilgraph mit dieser Knotenmenge"
-                        , nest 4 $ toDoc nodes
+                        , nest 4 $ toDoc cl
                         , text "ist einfarbig mit Farbe" <+> toDoc c
                         ]
+
+monochromatic_cliques n c f = 
+    let find cand [] = [ cand ]
+        find cand xs = do
+              (y : ys) <- tails xs
+              guard $ and $ do x <- cand ; return $ Just c == lookupFM f ( kante x y )
+              find (y : cand) ys
+    in  find [] [ 1 .. n ]
 
 instance C.Measure Ramsey [Int] ( Int , FiniteMap (Kante Int) Int ) where 
     measure p i ( n, f ) = fromIntegral n
