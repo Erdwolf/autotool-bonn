@@ -25,7 +25,7 @@ import Control.Monad (guard)
 import Data.List (nub)
 import Autolib.ToDoc
 import Autolib.Size
-import Autolib.Fix
+import Autolib.Util.Fix
 
 
 

@@ -1,3 +1,6 @@
+{-# language OverlappingInstances #-}
+{-# language IncoherentInstances #-}
+
 -- -*- mode: haskell -*-
 
 module NPDA.Type
@@ -91,7 +94,7 @@ instance  ( NPDAC x y z )
     atomic_readerPrec p = default_readerPrec p <|> do
         guard $ p < 9
         my_reserved "collect"
-        xys <- reader :: Parser  [ (Maybe x, z, y, z, [y]) ]
+        xys <- reader -- :: Parser  [ (Maybe x, z, y, z, [y]) ]
         return $ collect' xys
 
 -- | collect transition function from list of quintuples

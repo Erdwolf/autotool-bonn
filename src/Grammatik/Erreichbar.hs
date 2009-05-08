@@ -10,7 +10,7 @@ where
 import Control.Monad (guard)
 
 import Autolib.Set
-import Autolib.Fix
+import Autolib.Util.Fix
 import Grammatik.Type
 
 -- eigentlich ist das nur für CFG definiert.

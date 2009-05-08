@@ -4,7 +4,7 @@ module Grammatik.CF.Nullable where
 
 import Grammatik.Type
 import Autolib.Set
-import Autolib.Fix
+import Autolib.Util.Fix
 import Control.Monad ( guard )
 
 

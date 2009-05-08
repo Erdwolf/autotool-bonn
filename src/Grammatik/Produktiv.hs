@@ -15,7 +15,7 @@ where
 
 import Control.Monad (guard)
 
-import Autolib.Fix
+import Autolib.Util.Fix
 import Autolib.Set
 import Grammatik.Type
 
