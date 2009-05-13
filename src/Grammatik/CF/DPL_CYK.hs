@@ -2,7 +2,10 @@ module Grammatik.CF.DPL_CYK
 
 -- -- $Id$
 
-( accepted, accepteds )
+( accepted, accepteds 
+, ctable, vtable
+, ctable_lookup, vtable_lookup
+)
 
 where
 
@@ -14,7 +17,7 @@ import Grammatik.CF.Chomsky
 -- eins der beiden auswählen:
 
 -- benutzt FiniteMap (besser für hugs?)
--- import CYK_Tables
+-- import Grammatik.CF.CYK_Tables
 
 -- benutzt Arrays (auf jeden fall besser für ghc -O)
 

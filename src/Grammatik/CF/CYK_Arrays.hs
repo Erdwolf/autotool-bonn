@@ -29,16 +29,20 @@ safe_set_lookup a i =
     else emptySet
 
 -- polymorph ==> frißt rechenzeit
-table_lookup :: Ix a => Array a (Set b) -> a -> Set b
+table_lookup :: Ix a 
+             => Array a (Set b) -> a -> Set b
 table_lookup = safe_set_lookup
 
-ctable_lookup :: Array Char (Set b) -> Char -> Set b
+ctable_lookup :: Array Char (Set b) 
+              -> Char -> Set b
 ctable_lookup = safe_set_lookup
 
-vtable_lookup :: Array (Int, Int) (Set b) -> (Int, Int) -> Set b
+vtable_lookup :: Array (Int, Int) (Set b) 
+              -> (Int, Int) -> Set b
 vtable_lookup = safe_set_lookup
 
-grenzen :: ( Ord a, Bounded a ) => [ a ] -> ( a, a )
+grenzen :: ( Ord a, Bounded a ) 
+        => [ a ] -> ( a, a )
 grenzen [] = ( minBound , maxBound ) -- UGLY UGLY
 grenzen ks = (minimum ks, maximum ks) 
 
@@ -58,12 +62,8 @@ vtable rules =
 	fm = C.vtable rules
     in	fmToArray b emptySet fm
 
-fmToArray :: (Ord a, Ix a) => (a, a) -> b -> FiniteMap a b -> Array a b
-fmToArray b def fm = accumArray ( \ _ n -> n ) def b $ fmToList fm
-
-
-
-
-
-
-    
+fmToArray :: (Ord a, Ix a) 
+          => (a, a) -> b -> FiniteMap a b 
+          -> Array a b
+fmToArray b def fm = 
+    accumArray ( \ _ n -> n ) def b $ fmToList fm

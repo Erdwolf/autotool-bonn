@@ -23,13 +23,15 @@ import Data.Array
 table_lookup fm = lookupWithDefaultFM fm emptySet
 
 -- | tafel für characters (terminale)
-ctable :: Ord a => Rules a -> FiniteMap Char (Set a)
+ctable :: Ord a 
+       => Rules a -> FiniteMap Char (Set a)
 ctable rules = addListToFM_C union emptyFM $ do
     ( lhs, Left c ) <- rules
     return ( c, unitSet lhs )
 
-vtable :: Ord a => Rules a -> FiniteMap (a, a) (Set a)
--- tafel für paare von variablen
+-- | tafel für paare von variablen
+vtable :: Ord a 
+       => Rules a -> FiniteMap (a, a) (Set a)
 vtable rules = addListToFM_C union emptyFM $ do
     ( lhs, Right (x, y) ) <- rules
     return ( (x, y), unitSet lhs )

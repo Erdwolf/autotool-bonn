@@ -135,6 +135,7 @@ import qualified Number.Float.From
 import qualified Number.Float.To
 
 import qualified LCS.Instance
+import qualified SCS.Instance
 
 import qualified Graph.VC.Central
 import qualified Graph.VC.VCSAT
@@ -305,8 +306,14 @@ tmakers =
 	        -- , item Rushhour.Central.qmake
 	        , item Hanoi.Semantik.make
 	        , item Hanoi.Quiz.make
-                , item LCS.Instance.make_fixed
-                , item LCS.Instance.make_quiz
+                , heading "lange gemeinsame Teilfolge" 
+                          [ item LCS.Instance.make_fixed
+                          , item LCS.Instance.make_quiz
+                          ]
+                , heading "kurze gemeinsame Superfolge" 
+                          [ item SCS.Instance.make_fixed
+                          , item SCS.Instance.make_quiz
+                          ]
                 ]
          , heading "Berechnungsmodelle"
                 [ item JVM.Make.make
