@@ -1,5 +1,6 @@
 {-# OPTIONS -cpp -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Control.Types 
 
 ( HiLo (..)
@@ -52,7 +53,7 @@ import Database.HSQL.Types
 
 import qualified Control.Exception
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml hiding ( Name )
+-- import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
 -------------------------------------------------------------
 
@@ -115,7 +116,8 @@ instance ToString Time where
 
 data TimeStatus = Early | Current | Late deriving ( Eq, Ord, Typeable )
 
-{-! for TimeStatus derive : Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''TimeStatus])
+-- {-! for TimeStatus derive : Reader, ToDoc, Haskell2Xml !-}
 
 timer :: Int -> Int -> TimeStatus
 timer 1 _ = Early
@@ -127,7 +129,8 @@ timer 0 0 = Current
 data HiLo = Keine | High | Low 
     deriving ( Eq, Ord, Typeable, Bounded, Enum )
 
-{-! for HiLo derive : Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''HiLo])
+-- {-! for HiLo derive : Reader, ToDoc, Haskell2Xml !-}
 
 instance SqlBind HiLo where 
     fromSqlValue _ s = Just 
@@ -148,7 +151,8 @@ instance ToString HiLo where
 data Status = Demo | Mandatory | Optional
     deriving ( Eq, Ord, Typeable, Bounded, Enum )
 
-{-! for Status derive : Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Status])
+-- {-! for Status derive : Reader, ToDoc, Haskell2Xml !-}
 
 instance SqlBind Status where 
     fromSqlValue _ s = Just 
@@ -197,7 +201,8 @@ renovate w = case w of
     Ok s -> ok s
     _    -> w
 
-{-! for Wert derive : Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Wert])
+-- {-! for Wert derive : Reader, ToDoc, Haskell2Xml !-}
 
 instance SqlBind Wert where 
     fromSqlValue _ s = Just $ case reads s of
@@ -216,7 +221,8 @@ instance ToString Wert where
 -- | Matrikel-Nummer
 data MNr = MNr String deriving ( Eq, Ord, Typeable )
 
-{-! for MNr derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''MNr])
+-- {-! for MNr derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind MNr where 
     fromSqlValue _ s = Just $ MNr $ s
@@ -233,7 +239,8 @@ instance ToEx MNr where
 -- | Aufgaben-Typ
 data Typ = Typ String deriving ( Eq, Ord, Typeable )
 
-{-! for Typ derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Typ])
+-- {-! for Typ derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind Typ where 
     fromSqlValue ty s = Just $ Typ s
@@ -250,7 +257,8 @@ instance ToString Typ where
 -- | Aufgaben-Email
 data Email = Email String deriving ( Eq, Ord, Typeable )
 
-{-! for Email derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Email])
+-- {-! for Email derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind Email where 
     fromSqlValue ty s = Just $ Email s
@@ -266,7 +274,8 @@ instance ToString Email where
 
 -- | Aufgaben-Config
 data Config = Config String deriving ( Eq, Ord, Typeable )
-{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 
 instance SqlBind Config where 
@@ -282,7 +291,8 @@ instance FromCGI Config where
 -- | Aufgaben-Remark
 data Remark = Remark String deriving ( Eq, Ord, Typeable )
 
-{-! for Remark derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Remark])
+-- {-! for Remark derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind Remark where 
     fromSqlValue ty s = Just $ Remark s
@@ -297,7 +307,8 @@ instance FromCGI Remark where
 -- | Aufgaben-Name
 data Name = Name String deriving ( Eq, Ord, Typeable )
 
-{-! for Name derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Name])
+-- {-! for Name derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind Name where 
     fromSqlValue ty s = Just $ Name s
@@ -312,7 +323,8 @@ instance FromCGI Name where
 -- | File-Name
 data File = File String deriving ( Eq, Ord, Typeable )
 
-{-! for File derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''File])
+-- {-! for File derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind File where 
     fromSqlValue ty s = Just $ File s
@@ -329,7 +341,8 @@ instance FromCGI File where
 -- | Studenten-Nummer
 data SNr = SNr Int deriving ( Eq, Ord, Typeable )
 
-{-! for SNr derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''SNr])
+-- {-! for SNr derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind SNr where 
     fromSqlValue _ s = Just $ SNr $ read s -- FIXME: check SqlType
@@ -344,7 +357,8 @@ instance ToString SNr where
 
 data ANr = ANr Int deriving ( Eq, Ord, Typeable )
 
-{-! for ANr derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''ANr])
+-- {-! for ANr derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind ANr where 
     fromSqlValue _ s = Just $ ANr $ read s -- FIXME: check SqlType
@@ -362,7 +376,8 @@ instance Hash ANr where
 
 data UNr = UNr Int deriving ( Eq, Ord, Typeable )
 
-{-! for UNr derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''UNr])
+-- {-! for UNr derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind UNr where 
     fromSqlValue _ s = Just $ UNr $ read s -- FIXME: check SqlType
@@ -379,7 +394,8 @@ instance FromCGI UNr where
 
 data ENr = ENr Int deriving ( Eq, Ord, Typeable )
 
-{-! for ENr derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''ENr])
+-- {-! for ENr derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind ENr where 
     fromSqlValue _ s = Just $ ENr $ read s -- FIXME: check SqlType
@@ -396,7 +412,8 @@ instance FromCGI ENr where
 
 data GNr = GNr Int deriving ( Eq, Ord, Typeable )
 
-{-! for GNr derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''GNr])
+-- {-! for GNr derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind GNr where 
     fromSqlValue _ s = Just $ GNr $ read s -- FIXME: check SqlType
@@ -410,7 +427,8 @@ instance FromCGI GNr where
 
 data VNr = VNr Int deriving ( Eq, Ord, Typeable )
 
-{-! for VNr derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''VNr])
+-- {-! for VNr derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind VNr where 
     fromSqlValue _ s = Just $ VNr $ read s -- FIXME: check SqlType
@@ -428,7 +446,8 @@ instance Hash VNr where
 
 data Oks = Oks Int deriving ( Eq, Ord, Typeable )
 
-{-! for Oks derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Oks])
+-- {-! for Oks derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind Oks where 
     fromSqlValue ty s = Just $ Oks $ read s
@@ -442,7 +461,8 @@ instance ToString Oks where
 
 data Nos = Nos Int deriving ( Eq, Ord, Typeable )
 
-{-! for Nos derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Nos])
+-- {-! for Nos derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance SqlBind Nos where 
     fromSqlValue ty s = Just $ Nos $ read s

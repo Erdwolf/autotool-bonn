@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Turing.Property where
 
 import Turing.Type
@@ -15,7 +16,7 @@ import qualified Machine.Numerical.Config
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Data.Typeable
 
@@ -26,7 +27,8 @@ data Property = Det
               | Max_Number_Of_States Int
     deriving ( Eq, Ord, Typeable )
 
-{-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Property])
+-- {-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance Condition  Property ( Turing Char Int ) where
     condition p a = C.run ( Turing.Property.check p ) a

@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module FP.Instance where
 
 --  $Id$
@@ -17,7 +18,7 @@ import Autolib.Xml
 import Autolib.Hash
 import Autolib.Size
 
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 
@@ -35,7 +36,8 @@ example = TI { target = read "forall a b . a -> (b -> a)"
 		    ]
 	}
 
-{-! for TI derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''TI])
+-- {-! for TI derive: ToDoc, Reader !-}
 
 
 -- local variables:

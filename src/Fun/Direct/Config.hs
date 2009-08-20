@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fno-monomorphism-restriction #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Fun.Direct.Config where
 
 import Fun.Type
@@ -15,15 +16,11 @@ import Data.List
 
 data Primrec_2D = Primrec_2D deriving ( Typeable )
 
-{-! for Primrec_2D derive: Reader, ToDoc !-}
-
 data Config = 
      Config { table :: Matrix Integer
 	    , properties :: [ Property ]
 	    }
     deriving Typeable
-
-{-! for Config derive: Reader, ToDoc !-}
 
 example :: Config
 example = Config
@@ -36,8 +33,6 @@ data ( Reader a, ToDoc a ) => Matrix a =
 	    , height :: Integer
 	    , contents :: [[a]]
 	    }
-
-{-! for Matrix derive: Reader !-}
 
 examplematrix n = Matrix
     { width = n
@@ -85,6 +80,15 @@ dutch_combined_list com xs =
 	helper op (x : xs) = ( op <+> x ) : helper comma xs
     in  com $ helper ( text "[" ) xs
 
+
+$(derives [makeReader, makeToDoc] [''Primrec_2D])
+-- {-! for Primrec_2D derive: Reader, ToDoc !-}
+
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc !-}
+
+$(derives [makeReader] [''Matrix])
+-- {-! for Matrix derive: Reader !-}
 
 -- local variables:
 -- mode: haskell

@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Rushhour.Data where
 
 --   $Id$
@@ -19,15 +20,18 @@ import Control.Monad ( guard )
 data Rushhour = Rushhour deriving ( Typeable )
 data Rushhour_Inverse = Rushhour_Inverse deriving ( Typeable )
 
-{-! for Rushhour derive : Reader, ToDoc !-}
-{-! for Rushhour_Inverse derive : Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Rushhour])
+-- {-! for Rushhour derive : Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Rushhour_Inverse])
+-- {-! for Rushhour_Inverse derive : Reader, ToDoc !-}
 
 type Position = ( Int, Int )
 
 data Orientation = Vertical | Horizontal 
      deriving ( Eq, Ord, Typeable, Enum, Bounded, Ix )
 
-{-! for Orientation derive : Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Orientation])
+-- {-! for Orientation derive : Reader, ToDoc !-}
 
 offset :: Orientation -> Position
 offset Vertical = ( 0, 1 )
@@ -39,7 +43,8 @@ data Car = Car { orientation :: Orientation
 		   }
      deriving ( Eq, Ord, Typeable )
 
-{-! for Car derive : Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Car])
+-- {-! for Car derive : Reader, ToDoc !-}
 
 type Zug = ( Identifier, Int )
 
@@ -53,7 +58,8 @@ data Instance =
 	      }
      deriving ( Eq, Ord, Typeable )
 
-{-! for Instance derive : Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Instance])
+-- {-! for Instance derive : Reader, ToDoc !-}
 
 -- | Problem 9 of Railroad Rushhour (Binary Arts)
 example :: Instance

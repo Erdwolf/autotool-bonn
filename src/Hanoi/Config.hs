@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -cpp #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Hanoi.Config where
 
 import qualified Hanoi.Restriction as R
@@ -19,7 +20,8 @@ data Config = Config { scheiben :: Int
 
 instance Source Config where source _ = drift __FILE__
 
-{-! for Config derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config
 example = Config { scheiben = 6 , turme = 3, restriction = R.Neighbours }

@@ -1,9 +1,10 @@
+{-# LANGUAGE TemplateHaskell #-}
 module RSA.Break.Data where
 
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Config =
      Config { public_key :: ( Integer, Integer )
@@ -17,7 +18,8 @@ example = Config
 	, message = 9
 	}
 
-{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

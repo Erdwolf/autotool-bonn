@@ -2,12 +2,13 @@
 
 --  $Id$
 
+{-# LANGUAGE TemplateHaskell #-}
 module Graph.MST.Weight where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.Graph.Type ( Kante (..) )
 import Autolib.FiniteMap ( FiniteMap , lookupWithDefaultFM , listToFM )
@@ -52,7 +53,8 @@ wfun (Direct fm) k = lookupWithDefaultFM fm (error "gewichte nicht komplett!?") 
 direct :: Weight -> [Kante Int] -> Weight
 direct f ks = Direct $ listToFM $ do k <- ks ; return (k,wfun f k)
 
-{-! for Weight derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Weight])
+-- {-! for Weight derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- Local Variables:
 -- mode: haskell

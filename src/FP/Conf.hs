@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module FP.Conf where
 
 import Autolib.ToDoc
@@ -27,7 +28,8 @@ example = Conf { typecons = read "[( List, 1), ( Tuple, 0 ), ( Tuple, 2), ( Arro
 		 , solution_size_bounds = ( 3, 15 )
 	    }
 
-{-! for Conf derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''Conf])
+-- {-! for Conf derive: ToDoc, Reader !-}
 
 
 -- local variables:

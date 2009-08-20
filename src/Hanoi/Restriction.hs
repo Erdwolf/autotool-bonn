@@ -1,5 +1,5 @@
 {-# OPTIONS -cpp #-}
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Hanoi.Restriction where
 
@@ -19,6 +19,9 @@ data Restriction
      | Clockwise
    deriving ( Typeable )
 
+$(derives [makeReader, makeToDoc] [''Restriction])
+-- {-! for Restriction derive: Reader, ToDoc !-}
+
 instance Explain Restriction where
     explain r = case r of
         None -> empty
@@ -26,8 +29,6 @@ instance Explain Restriction where
 	Clockwise -> text "Scheiben dürfen nur im Uhrzeigersinn bewegt werden."
 
     
-
-{-! for Restriction derive: Reader, ToDoc !-}
 
 
 -- local variables:

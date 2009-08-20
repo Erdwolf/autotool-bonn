@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Binpack.Instance where
 
@@ -9,7 +9,8 @@ import Data.Typeable
 data Binpack = Binpack
     deriving ( Eq, Ord, Typeable )
 
-{-! for Binpack derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Binpack])
+-- {-! for Binpack derive: Reader, ToDoc !-}
 
 data Instance =
      Instance { weights :: [ Integer ]
@@ -18,7 +19,8 @@ data Instance =
               }
     deriving Typeable
 
-{-! for Instance derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Instance])
+-- {-! for Instance derive: Reader, ToDoc !-}
 
 type Assignment = [[Integer]]
 

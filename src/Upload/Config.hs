@@ -1,12 +1,13 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Upload.Config where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Config =
      Config { aufgabe :: String
@@ -14,7 +15,8 @@ data Config =
 	    }
      deriving ( Typeable )
 
-{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: Config 
 example = Config

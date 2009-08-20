@@ -17,7 +17,7 @@ import Autolib.Hash
 import Data.Maybe
 import Data.Char
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 -- | generator könnte noch zusätzliche information erzeugen
 -- (und in cache schreiben) bsp. zu PCP-instanz auch die lösung

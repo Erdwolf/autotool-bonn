@@ -1,11 +1,12 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module NFA.Property where
 
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.Set
 import Autolib.NFA
@@ -24,7 +25,8 @@ data NFAC c Int => Property c
 	      | Reduced -- no useless states
      deriving ( Typeable , Eq )
 
-{-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Property])
+-- {-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: [ Property Char ]
 example = [ Sane

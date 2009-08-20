@@ -1,4 +1,4 @@
-{-# language MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, TypeSynonymInstances, DeriveDataTypeable, UndecidableInstances #-}
+{-# LANGUAGE MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, TypeSynonymInstances, DeriveDataTypeable, UndecidableInstances, TemplateHaskell #-}
 
 module Machine.Acceptor.Type where
 
@@ -13,7 +13,7 @@ import Autolib.Reporter hiding ( output )
 import Machine.Class
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Acceptor = Acceptor String -- include machine type ??
     deriving Typeable
@@ -28,7 +28,7 @@ instance Reader Acceptor where
         cs <- many alphaNum
         return $ Acceptor cs
 
-{-! for Acceptor derive :  Haskell2Xml !-}
+-- {-! for Acceptor derive :  Haskell2Xml !-}
 
 class ( Reader [dat], ToDoc [dat], Reader [prop], ToDoc [prop]  ) 
       => Class dat prop 
@@ -50,7 +50,8 @@ data Class dat prop => Type m dat prop =
 	      }
      deriving ( Typeable )
 
-{-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Type])
+-- {-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

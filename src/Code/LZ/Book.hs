@@ -12,7 +12,7 @@ import Autolib.Set
 import Autolib.FiniteMap
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 lookup :: ( ToDoc [a], Reader [a], Ord a ) 
        => Book a -> [a] -> Maybe ( Code_Letter a )

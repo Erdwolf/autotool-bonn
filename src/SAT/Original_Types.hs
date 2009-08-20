@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module SAT.Original_Types where
 
 import Autolib.TES.Identifier
@@ -8,7 +9,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 -- | Bemerkungen: 
 -- 1. Aussagenlogische Formel in konjunktiver Normalform (KNF):
@@ -28,7 +29,8 @@ unLiteral ( Neg v ) = v
 opposite ( Pos v ) = Neg v
 opposite ( Neg v ) = Pos v
 
-{-! for Literal derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Literal])
+-- {-! for Literal derive : ToDoc, Reader, Haskell2Xml !-}
 
 
 -- | Klausel = Tripeln von Literalen
@@ -38,7 +40,8 @@ data Klausel = Or [ Literal ] deriving ( Eq, Ord , Typeable)
 literale :: Klausel -> [ Literal ]
 literale (Or lits) = lits
 
-{-! for Klausel derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Klausel])
+-- {-! for Klausel derive : ToDoc, Reader, Haskell2Xml !-}
 
 
 -- | Formeln in 3KNF = Liste von Klauseln
@@ -47,7 +50,8 @@ data Formel = And [Klausel] deriving ( Typeable )
 klauseln :: Formel -> [ Klausel ]
 klauseln (And cls) = cls
 
-{-! for Formel derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Formel])
+-- {-! for Formel derive : ToDoc, Reader, Haskell2Xml !-}
 
 
 type Variable = String 

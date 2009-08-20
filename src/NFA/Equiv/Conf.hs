@@ -1,12 +1,13 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module NFA.Equiv.Conf where
 
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Set
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Conf = Conf { alphabet :: Set Char
 		 , nfa_size :: Int
@@ -15,7 +16,8 @@ data Conf = Conf { alphabet :: Set Char
 		 }
      deriving ( Eq, Ord, Typeable )
 
-{-! for Conf derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Conf])
+-- {-! for Conf derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: Conf
 example = Conf { alphabet = mkSet "ab"

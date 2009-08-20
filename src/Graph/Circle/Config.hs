@@ -2,13 +2,14 @@
 
 --  $Id$
 
+{-# LANGUAGE TemplateHaskell #-}
 module Graph.Circle.Config where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Config = Config 
 	    { nodes_circle   :: Int -- ^ knoten im kreis
@@ -17,7 +18,8 @@ data Config = Config
 	    }
      deriving ( Typeable )
 
-{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 rc :: Config
 rc = Config { nodes_circle   = 5

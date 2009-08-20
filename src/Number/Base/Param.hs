@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Number.Base.Param where
 
 --   $Id$
@@ -7,13 +8,14 @@ module Number.Base.Param where
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Quelle = Bereich { von :: Integer, bis :: Integer }
             | Matrikel
      deriving ( Typeable )
 
-{-! for Quelle derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Quelle])
+-- {-! for Quelle derive: ToDoc, Reader, Haskell2Xml !-}
 
 
 data Param = 
@@ -29,7 +31,8 @@ p = Param { quelle = Matrikel
           , nach_basis = 5
 	  }
 
-{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
 
 -- local variables:

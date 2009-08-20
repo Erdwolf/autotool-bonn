@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Robots.Quiz where
 
 import Inter.Types
@@ -8,7 +9,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data RC = RC { width :: Integer -- ^ feld geht von (-w.-w) .. (w,w)
 	     , num :: Int -- ^ of robots
@@ -17,7 +18,8 @@ data RC = RC { width :: Integer -- ^ feld geht von (-w.-w) .. (w,w)
 	     }
      deriving ( Typeable )
 
-{-! for RC derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''RC])
+-- {-! for RC derive: Reader, ToDoc, Haskell2Xml !-}
 
 rc :: RC
 rc = RC { width = 3

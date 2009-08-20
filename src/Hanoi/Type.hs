@@ -1,5 +1,5 @@
 {-# OPTIONS -cpp -fth #-}
-{-# language DeriveDataTypeable, TypeSynonymInstances #-}
+{-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, TemplateHaskell #-}
 
 
 module Hanoi.Type where
@@ -31,7 +31,8 @@ data Turm = A | B | C | D
 
 instance Source Turm where source _ = drift __FILE__
 
-{-! for Turm derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Turm])
+-- {-! for Turm derive: Reader, ToDoc !-}
 
 type Hof = FiniteMap Turm [ Scheibe ]
 
@@ -62,7 +63,8 @@ $(asXmlRpcStruct ''HI)
 
 instance Source HI where source _ = drift __FILE__
 
-{-! for HI derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''HI])
+-- {-! for HI derive: Reader, ToDoc !-}
 
 
 -- local variables:

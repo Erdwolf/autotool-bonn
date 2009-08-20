@@ -1,12 +1,13 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module KnapsackFraction.Param where
 
 import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Data.Ratio
 
@@ -28,13 +29,15 @@ p0 =  Param { anzahl      = 12
 	    , kapazitaet0 = ( 40 , 60 )
 	    }
 
-{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
 data Objekt = A | B | C | D | E | F | G | H | I | J | K | L | M 
 	    | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
 	      deriving ( Eq , Ord , Read , Show , Typeable , Enum , Bounded )
 
-{-! for Objekt derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Objekt])
+-- {-! for Objekt derive: ToDoc, Reader, Haskell2Xml !-}
 
 data Inp = 
      Inp { objekte         :: Set Objekt
@@ -57,7 +60,8 @@ inp0 = Inp (mkSet [A,B,C,D,E,F])
 	   (listToFM $ zip [A,B,C,D,E,F] [4,3,5,5, 9,6])
 	   (listToFM $ zip [A,B,C,D,E,F] [6,4,9,8,12,9])
 
-{-! for Inp derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Inp])
+-- {-! for Inp derive: ToDoc, Reader, Haskell2Xml !-}
 
 data Pack =
      Pack { pwert :: Rational
@@ -65,7 +69,8 @@ data Pack =
 	  }
      deriving ( Typeable )
 
-{-! for Pack derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Pack])
+-- {-! for Pack derive: ToDoc, Reader, Haskell2Xml !-}
 
 
 -- local variables:

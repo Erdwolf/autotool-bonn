@@ -7,17 +7,17 @@ import Autolib.Graph.Graph
 import Autolib.Graph.Ops
 import Autolib.Graph.Basic
 import Autolib.Dot
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Autolib.Reader
 import Autolib.Hash
 import Autolib.ToDoc
 import Autolib.Reporter
 
 
-class  ( Ord a , Hash a, Show a, ToDoc a, Reader a, Haskell2Xml a
+class  ( Ord a , Hash a, Show a, ToDoc a, Reader a -- , Haskell2Xml a
 	 , ToDoc [a], Reader [a] 
        , GraphC a ) => CC a
-instance ( Ord a , Hash a, Show a, ToDoc a, Reader a, Haskell2Xml a
+instance ( Ord a , Hash a, Show a, ToDoc a, Reader a -- , Haskell2Xml a
 	 , ToDoc [a], Reader [a] 
 	 , GraphC a
 	 ) => CC a

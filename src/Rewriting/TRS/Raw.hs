@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-incoherent-instances -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Rewriting.TRS.Raw where
 
 import Autolib.Symbol
@@ -13,7 +14,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 -- | this is the raw type,
 -- needs to be processed because what should be variables
@@ -26,10 +27,11 @@ data ( Symbol c, Symbol v ) => TRS v c =
 
 
 
-{-! for TRS derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''TRS])
+-- {-! for TRS derive: Reader, ToDoc !-}
 
 
-instance Haskell2Xml ( TRS v c  ) --- dummy
+-- instance Haskell2Xml ( TRS v c  ) --- dummy
 
 
 

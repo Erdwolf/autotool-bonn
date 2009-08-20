@@ -11,7 +11,7 @@ import Lambda.Alpha
 
 import Challenger.Partial
 import Inter.Types
-import Autolib.ToDoc
+import Autolib.ToDoc hiding (derive)
 import Autolib.Size
 import Autolib.Reporter
 import Data.Typeable

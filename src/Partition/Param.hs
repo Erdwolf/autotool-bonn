@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Partition.Param where
 
 --   $Id$
@@ -9,7 +10,7 @@ import Autolib.ToDoc
 import Autolib.Set ( Set )
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Param = 
      Param { elements :: Int
@@ -23,11 +24,13 @@ p =  Param { elements = 15
 	   }
 
 
-{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
 data Conf = Conf { nums ::  Set Integer } deriving ( Typeable )
 
-{-! for Conf derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Conf])
+-- {-! for Conf derive: ToDoc, Reader, Haskell2Xml !-}
 
 -- Local Variables:
 -- mode: haskell 

@@ -1,11 +1,12 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Exp.Property where
 
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 
 import Autolib.Set
@@ -20,7 +21,8 @@ data ( Ord c, ToDoc [c], Reader [c] )
 	      | AllowedKeys (Set String)
      deriving ( Typeable )
 
-{-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Property])
+-- {-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: [ Property Char ]
 example = [ Simple

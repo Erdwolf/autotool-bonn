@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable, GADTs, MultiParamTypeClasses, FlexibleInstances, TemplateHaskell #-}
+{-# LANGUAGE DeriveDataTypeable, GADTs, MultiParamTypeClasses, FlexibleInstances, TemplateHaskell, TemplateHaskell #-}
 
 module Unify.Instance.Data where
 
@@ -32,7 +32,8 @@ patch_variables ( Node f xs ) =
 isvariable :: Identifier -> Bool
 isvariable i = isUpper $ head $ show i
 
-{-! for Instance derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Instance])
+-- {-! for Instance derive: Reader, ToDoc !-}
 
 example :: Instance Identifier Identifier
 example = Instance

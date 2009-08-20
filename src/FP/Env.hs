@@ -10,7 +10,7 @@ import Autolib.FiniteMap
 import Autolib.ToDoc
 import Autolib.Reader
 
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 

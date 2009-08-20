@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module NPDA.Config where
 
 import Language.Syntax
@@ -24,7 +25,8 @@ data Config =
 	    }
      deriving ( Typeable )
 
-{-! for Config derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: ToDoc, Reader !-}
 
 
 

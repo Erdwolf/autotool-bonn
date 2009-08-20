@@ -1,12 +1,13 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module PCProblem.Param where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Param =
      Param { alpha :: String -- ^ zu benutzende Buchstaben
@@ -27,7 +28,8 @@ g = Param { alpha = "abc"
 	      , viel = 1000
 	      }
 
-{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance Show Param where show = render . toDoc
 instance Read Param where readsPrec = parsec_readsPrec

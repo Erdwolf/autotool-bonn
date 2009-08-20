@@ -12,8 +12,8 @@ where
 import Hilbert.Env
 import Hilbert.Actions
 
-import Autolib.ToDoc
-import Autolib.Reader
+import Autolib.ToDoc hiding (derive)
+import Autolib.Reader hiding (derive)
 import Autolib.Reporter
 import Autolib.FiniteMap
 import Autolib.TES.Identifier

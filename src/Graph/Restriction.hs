@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Graph.Restriction where
 
 import Graph.Util
@@ -25,7 +26,8 @@ data Restriction
      | Irregular
    deriving ( Typeable, Eq, Ord )
 
-{-! for Restriction derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Restriction])
+-- {-! for Restriction derive: Reader, ToDoc !-}
 
 instance Suggest Restriction where
     suggest = [ Min_Size 8, Max_Size 12, Max_Degree 5

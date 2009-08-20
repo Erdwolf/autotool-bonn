@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Fun.Type 
 
 ( Fun (..), Exp (..), Mark (..)
@@ -20,12 +21,13 @@ import Autolib.Xml
 import qualified RAM.Builtin
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Property = Builtins [ RAM.Builtin.Builtin ]
     deriving ( Eq, Ord, Typeable )	      
 
-{-! for Property derive : Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Property])
+-- {-! for Property derive : Reader, ToDoc, Haskell2Xml !-}
 
 data Fun = 
 	 -- | Grundfunktionen
@@ -71,11 +73,13 @@ data Mark = Mark Exp deriving (Eq, Ord, Typeable)
 instance ToDoc  Mark where toDoc m = text "{..}"
 instance Reader Mark -- ohne implementierung
 
-{-! for Mark derive :                Haskell2Xml !-}
+-- {-! for Mark derive :                Haskell2Xml !-}
 
-{-! for Fun derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Fun])
+-- {-! for Fun derive : ToDoc, Reader, Haskell2Xml !-}
 
-{-! for Exp derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Exp])
+-- {-! for Exp derive : ToDoc, Reader, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

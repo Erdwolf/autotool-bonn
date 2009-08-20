@@ -1,5 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Sortier.Merge.Param where
 
 import Autolib.ToDoc
@@ -12,7 +13,8 @@ data Param =
 	   }
      deriving ( Typeable )
 
-{-! for Param derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Pump.Type where
 
 --   $Id$
@@ -42,7 +43,8 @@ data Pumping z =>
 	     }
     deriving ( Eq, Typeable )
 
-{-! for Pump derive: Reader, ToDoc !-}     
+$(derives [makeReader, makeToDoc] [''Pump])
+-- {-! for Pump derive: Reader, ToDoc !-}     
 
 instance Pumping z => Size ( Pump z ) where
     size p @ Nein {} = sum [ length $ w | (n,w) <- fmToList $ wort p ]

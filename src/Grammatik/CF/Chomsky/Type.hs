@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Grammatik.CF.Chomsky.Type where
 
 --  $Id$
@@ -31,7 +32,8 @@ instance Functor Chomsky where
 		 , eps = eps ch
 		 }
 
-{-! for Chomsky derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Chomsky])
+-- {-! for Chomsky derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

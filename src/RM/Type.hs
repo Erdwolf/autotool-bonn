@@ -12,6 +12,7 @@
 -- | * Conc []     => nop
 -- | * Conc (p:ps) => p; Conc ps
 
+{-# LANGUAGE TemplateHaskell #-}
 module RM.Type 
 
 ( Register
@@ -28,7 +29,7 @@ import Autolib.Size
 import Autolib.Set
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Text.ParserCombinators.Parsec
 
@@ -42,7 +43,7 @@ data Program = Add Register
 	     | Conc [ Program ]
 	       deriving ( Eq , Ord , Typeable )
 
-{-! for Program derive: Haskell2Xml !-}
+-- {-! for Program derive: Haskell2Xml !-}
 
 measure :: Program -> Int
 measure (While _ p) = succ $ measure p

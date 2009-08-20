@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module RAM.Type where
 
 --   $Id$
@@ -14,7 +15,7 @@ import Autolib.TES.Identifier
 
 import Data.Typeable
 import Autolib.Xml
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 type Var = Identifier
 
@@ -46,7 +47,8 @@ flatten ps = do
 		  While v q -> flatten q
 		  _ -> []
 
-{-! for Statement derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Statement])
+-- {-! for Statement derive: ToDoc, Reader, Haskell2Xml !-}
 
 -- Local variables:
 -- mode: haskell;

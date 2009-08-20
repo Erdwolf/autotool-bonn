@@ -17,7 +17,7 @@ import Autolib.Reporter
 import qualified Autolib.Reporter.Set
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Check = Left_Linear
            | Linear
@@ -157,6 +157,7 @@ instance ToDoc Check where
     toDocPrec d (Max_Variables aa) = docParen (d >= 10)
               (text "Max_Variables" </> fsep [toDocPrec 10 aa])
 
+{-
 instance Haskell2Xml Check where
     toHType v =
         Defined "Check" []
@@ -204,5 +205,5 @@ instance Haskell2Xml Check where
         [mkElemC (showConstr 6 (toHType v)) (toContents ac)]
     toContents v@(Max_Variables ad) =
         [mkElemC (showConstr 7 (toHType v)) (toContents ad)]
-
+-}
 --  Imported from other files :-

@@ -1,5 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module PL.Interpretation where
 
 import PL.Struktur
@@ -47,7 +48,8 @@ leere_belegung sig uni = listToFM
 		     $ zip ( setToList $ freie_variablen sig )
 		     $ concat $ repeat $ setToList uni
 
-{-! for Interpretation derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Interpretation])
+-- {-! for Interpretation derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

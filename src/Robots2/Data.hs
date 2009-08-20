@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Robots2.Data where
 
 --   $Id$
@@ -9,14 +10,16 @@ import Autolib.ToDoc
 import Autolib.Size
 import Autolib.Hash
 
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data Robots = Robots deriving ( Typeable )
 data Robots_Inverse = Robots_Inverse deriving ( Typeable )
 
-{-! for Robots derive : Reader, ToDoc, Haskell2Xml !-}
-{-! for Robots_Inverse derive : Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Robots])
+-- {-! for Robots derive : Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Robots_Inverse])
+-- {-! for Robots_Inverse derive : Reader, ToDoc, Haskell2Xml !-}
 
 
 type Position = ( Integer, Integer )
@@ -29,7 +32,8 @@ data Robot = Robot { name :: String
 data Richtung = N | O | S | W 
      deriving ( Eq, Ord, Enum, Bounded, Typeable )
 
-{-! for Richtung derive : Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Richtung])
+-- {-! for Richtung derive : Reader, ToDoc, Haskell2Xml !-}
 
 richtungen :: [ Richtung ]
 richtungen = [ minBound .. maxBound ]

@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Rewriting.Overlap where
 
 import Rewriting.TRS
@@ -43,7 +44,8 @@ overlaps trs = do
            , substitution = u
            }
 
-{-! for Overlap derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Overlap])
+-- {-! for Overlap derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

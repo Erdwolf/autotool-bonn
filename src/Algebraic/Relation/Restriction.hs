@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Algebraic.Relation.Restriction where
 
 import Condition
@@ -18,7 +19,8 @@ data Restriction
     = Size_Range (Int, Int)
     deriving ( Eq, Ord, Typeable )
 
-{-! for Restriction derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Restriction])
+-- {-! for Restriction derive: Reader, ToDoc !-}
 
 	    
 

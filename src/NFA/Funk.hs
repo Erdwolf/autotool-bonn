@@ -3,6 +3,7 @@
 -- | expressions that describe linear family
 -- of automata
 
+{-# LANGUAGE TemplateHaskell #-}
 module NFA.Funk where
 
 import Autolib.ToDoc
@@ -22,8 +23,10 @@ ex = Sizecase { fixed = [(1, 1)]
 	      , linear = (Relative 1, Relative 0)
 	      }
 
-{-! for Entry derive: ToDoc, Reader !-} 
-{-! for Funk derive: ToDoc, Reader !-} 
+$(derives [makeReader, makeToDoc] [''Entry])
+-- {-! for Entry derive: ToDoc, Reader !-} 
+$(derives [makeReader, makeToDoc] [''Funk])
+-- {-! for Funk derive: ToDoc, Reader !-} 
 
 instance Show Entry where show = render . toDoc
 instance Show Funk  where show = render . toDoc

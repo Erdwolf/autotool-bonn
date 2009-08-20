@@ -9,7 +9,7 @@ import Expression.Op
 import Boolean.Op
 
 import Challenger.Partial
-import Autolib.ToDoc
+import Autolib.ToDoc hiding (derive)
 import Autolib.Reporter
 
 import Inter.Types

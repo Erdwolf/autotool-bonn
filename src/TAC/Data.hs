@@ -1,5 +1,6 @@
 {-# OPTIONS -fno-monomorphism-restriction #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module TAC.Data where
 
 import Autolib.Reader
@@ -16,7 +17,8 @@ data Statement
      | Mul Int Int Int
    deriving ( Eq, Ord )
 
-{-! for Statement derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Statement])
+-- {-! for Statement derive: Reader, ToDoc !-}
 
 some :: Int -> IO Program
 some l = sequence $ replicate l $ do

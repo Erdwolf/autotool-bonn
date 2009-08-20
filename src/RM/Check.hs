@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module RM.Check where
 
 import RM.Type
@@ -10,14 +11,15 @@ import Autolib.Reader
 import Autolib.Set
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Checker = MaxReg Register
 	     | NumReg Int
 	     | UseReg (Set Register)
 	       deriving ( Typeable )
 
-{-! for Checker derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Checker])
+-- {-! for Checker derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance Check Checker Program where
     check (MaxReg r) p = do

@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module NFA.Compress.Config where
 
 import NFA.Compress.Data
@@ -22,7 +23,8 @@ data Config = Config
 	      }
     deriving ( Typeable )
 
-{-! for Config derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: ToDoc, Reader !-}
 
 instance C.Verify DFA_Compress Config where
     verify p c = do

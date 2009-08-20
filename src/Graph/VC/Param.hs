@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Graph.VC.Param where
 
 --  $Id$
@@ -6,7 +7,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Param = Param
 	    { knoten               :: Int
@@ -17,7 +18,8 @@ data Param = Param
 	    }
      deriving ( Typeable )
 
-{-! for Param derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: Reader, ToDoc, Haskell2Xml !-}
 
 p0 :: Param
 p0 = Param { knoten               = 15

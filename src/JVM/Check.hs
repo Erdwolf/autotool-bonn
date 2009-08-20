@@ -16,7 +16,6 @@ import Autolib.Reader
 import Autolib.Set
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
 
 data Checker = Builtins (Set Statement)
 	   | Smallnums Integer
@@ -66,6 +65,7 @@ instance ToDoc Checker where
     toDocPrec d (Smallnums aa) = docParen (d >= 10)
               (text "Smallnums" </> fsep [toDocPrec 10 aa])
 
+{-
 instance Haskell2Xml Checker where
     toHType v =
         Defined "Checker" []
@@ -83,5 +83,6 @@ instance Haskell2Xml Checker where
         [mkElemC (showConstr 0 (toHType v)) (toContents aa)]
     toContents v@(Smallnums ab) =
         [mkElemC (showConstr 1 (toHType v)) (toContents ab)]
+-}
 
 --  Imported from other files :-

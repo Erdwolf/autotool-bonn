@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Code.Huffman.Config where
 
 --  $Id$
@@ -5,7 +6,7 @@ module Code.Huffman.Config where
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Set
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data ( Reader [a], ToDoc [a], Ord a ) => Config a = 
@@ -19,7 +20,8 @@ example = Config { alphabet = mkSet [ 'a' .. 'f' ]
                  , range    = ( 5, 50 )
                  }
 
-{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

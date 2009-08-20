@@ -33,8 +33,8 @@ import qualified Exp.Roll
 import qualified NFA.Roll
 import Convert.Input
 
-import Text.XML.HaXml.Haskell2Xml
-import Text.XML.HaXml.Pretty
+-- import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Pretty
 
 data Convert_To_NFA = Convert_To_NFA 
     deriving ( Eq, Ord, Show, Read, Typeable )

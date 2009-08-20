@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Type.Data where
 
 --  $Id$
@@ -14,7 +15,7 @@ import Autolib.Xml
 import Autolib.Hash
 import Autolib.Size
 
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 instance Container Identifier String where
@@ -31,7 +32,7 @@ instance ToDoc Type where toDoc (Type t) = toDoc t
 instance Reader Type where 
      reader = do t <- reader; return $ Type t
 
-{-! for Type derive: Haskell2Xml !-}
+-- {-! for Type derive: Haskell2Xml !-}
 
 data Variable = 
      Variable { vname :: Identifier
@@ -47,7 +48,7 @@ instance Reader Variable where
         n <- reader -- name
         return $ Variable { vname = n, vtype = t }
 
-{-! for Variable derive: Haskell2Xml !-}
+-- {-! for Variable derive: Haskell2Xml !-}
 
 data Function = 
      Function { fname :: Identifier
@@ -82,7 +83,7 @@ instance Reader Function where
 			  , result = r 
 			  }
 
-{-! for Function derive: Haskell2Xml !-}
+-- {-! for Function derive: Haskell2Xml !-}
 
 data Signature =
      Signature { functions :: [ Function ]
@@ -112,14 +113,15 @@ sammel vfs = Signature
 	       }
 
 
-{-! for Signature derive: Haskell2Xml !-}
+-- {-! for Signature derive: Haskell2Xml !-}
 
 data TI = TI { target :: Type
 	     , signature :: Signature
 	     }
     deriving  ( Typeable )
 
-{-! for TI derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''TI])
+-- {-! for TI derive: ToDoc, Reader, Haskell2Xml !-}
 
 data Conf = Conf { max_arity :: Int
 		 , types :: [ Type ]
@@ -139,4 +141,5 @@ conf = Conf { max_arity = 3
 	    , max_size = 10
 	    }
 
-{-! for Conf derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Conf])
+-- {-! for Conf derive: ToDoc, Reader, Haskell2Xml !-}

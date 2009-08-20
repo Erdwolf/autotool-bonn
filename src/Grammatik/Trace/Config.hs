@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Grammatik.Trace.Config where
 
@@ -16,7 +16,8 @@ data Config = Config
 	   }
     deriving ( Typeable )
 
-{-! for Config derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc !-}
 
 -- | als default benutzbar
 example :: Config 

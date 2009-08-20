@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Exp.Quiz where
 
 import Autolib.NFA
@@ -10,7 +11,7 @@ import qualified Exp.Property as E
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 
 data NFAC c Int => 
@@ -19,7 +20,8 @@ data NFAC c Int =>
 		 }
     deriving ( Typeable )
 
-{-! for Quiz derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Quiz])
+-- {-! for Quiz derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: Quiz Char
 example = Quiz { generate = [ A.Alphabet $ mkSet "ab"

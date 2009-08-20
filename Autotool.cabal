@@ -20,7 +20,7 @@ Executable Trial.cgi
     autolib-graph,autolib-relation,autolib-exp,
     autolib-rewriting,autolib-dot,autolib-algorithm,
     base == 3.*,parsec==2.*, old-locale,old-time,
-    xhtml==3000.*,HaXml==1.13.*,cgi,
+    xhtml==3000.*,cgi,
     hsql==1.7.1,hsql-mysql==1.7.1,
     containers,directory,random,mtl,
     process,unix,
@@ -36,5 +36,5 @@ Executable Trial.cgi
      IncoherentInstances,
      ScopedTypeVariables,
      FunctionalDependencies
-  Hs-source-dirs: src , src/control
+  Hs-source-dirs: src , src/control, common
   Main-Is: Inter/Trial.hs

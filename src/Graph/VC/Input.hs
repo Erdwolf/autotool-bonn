@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Graph.VC.Input where
 
 --  $Id$
@@ -6,7 +7,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import SAT.Types
 
@@ -16,7 +17,8 @@ data Input = Input
 	    }
      deriving ( Typeable )
 
-{-! for Input derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Input])
+-- {-! for Input derive: Reader, ToDoc !-}
 
 i0 :: Input
 i0 = Input { formel = read "(x || y || z) && (! x || y || !z )"

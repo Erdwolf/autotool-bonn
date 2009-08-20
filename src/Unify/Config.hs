@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable, DisambiguateRecordFields #-}
+{-# LANGUAGE DeriveDataTypeable, DisambiguateRecordFields, TemplateHaskell #-}
 
 module Unify.Config where
 
@@ -21,7 +21,8 @@ data InstanceC v c => Config v c = Config
        }
     deriving ( Typeable )
 
-{-! for Config derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config Identifier Identifier
 example = Config

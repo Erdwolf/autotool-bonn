@@ -1,12 +1,13 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Collatz.Config where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Config = Config 
 	     { min_start :: Integer
@@ -18,7 +19,8 @@ data Config = Config
 	     }
      deriving ( Typeable )
 
-{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 rc :: Config
 rc = Config { min_start = 10 ^ 3

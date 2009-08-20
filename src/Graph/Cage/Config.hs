@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Graph.Cage.Config where
 
 import Inter.Types
@@ -8,7 +9,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Config = Config 
 	    { girth :: Int -- ^ at least
@@ -16,7 +17,8 @@ data Config = Config
 	     }
      deriving ( Typeable )
 
-{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 rc :: Config
 rc = Config { girth = 4

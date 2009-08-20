@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module DB.Data where
 
 -- das wird serverseitig benutzt
@@ -7,8 +8,8 @@ module DB.Data where
 
 import Data.FiniteMap
 
-import Text.XML.HaXml.Types
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Types
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Contents  = Contents { unContents :: [ Content ] }
 
@@ -26,7 +27,7 @@ data Entry = Entry { ident :: String
 		   , contents :: Maybe Contents
 		   }
 
-{-! for Entry derive : Haskell2Xml !-}
+-- {-! for Entry derive : Haskell2Xml !-}
 
 type Map = FiniteMap String Entry
 

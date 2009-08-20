@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Control.Stud_Aufg.Typ where
 
 import Control.Types
@@ -8,7 +9,7 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml hiding ( Name )
+-- import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
 -- | das sollte exactly das sein, was auch in DB-tabelle  steht
 
@@ -25,7 +26,8 @@ data Stud_Aufg  =
 	     }
      deriving ( Eq, Ord, Typeable )
 
-{-! for Stud_Aufg derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Stud_Aufg])
+-- {-! for Stud_Aufg derive: Reader, ToDoc, Haskell2Xml !-}
 
 
 

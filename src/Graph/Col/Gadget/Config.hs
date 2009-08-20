@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Graph.Col.Gadget.Config where
 
@@ -17,7 +17,8 @@ data GraphC a => Config a =
 	    }
     deriving Typeable
 
-{-! for Config derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config Int
 example = Config

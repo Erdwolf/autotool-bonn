@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Grammatik.Config where
 
@@ -23,7 +23,8 @@ data Config =
 	    }
      deriving ( Typeable )
 
-{-! for Config derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: ToDoc, Reader !-}
 
 
 example = Config

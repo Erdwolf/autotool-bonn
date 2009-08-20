@@ -1,12 +1,13 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Baum.Binary.Type where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Baum a = Null
 	    | Baum { key :: a
@@ -27,7 +28,8 @@ isNull :: Baum a -> Bool
 isNull Null = True
 isNull _ = False
 
-{-! for Baum derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Baum])
+-- {-! for Baum derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

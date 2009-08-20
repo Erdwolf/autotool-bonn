@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Algebraic.Nested.Restriction where
 
 import Algebraic.Nested.Type
@@ -21,7 +22,8 @@ data Restriction
     | Depth_Range (Int, Int)
     deriving ( Eq, Ord, Typeable )
 
-{-! for Restriction derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Restriction])
+-- {-! for Restriction derive: Reader, ToDoc !-}
 
 instance ( Ord a, ToDoc a ) 
          => Condition Restriction ( Type a ) where

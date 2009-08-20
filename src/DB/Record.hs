@@ -1,8 +1,9 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module DB.Record where
 
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Record = Record { name :: String
 		     , vorname :: String
@@ -11,5 +12,5 @@ data Record = Record { name :: String
 		     }
     deriving Show
 
-{-! for Record derive : Haskell2Xml !-}
+-- {-! for Record derive : Haskell2Xml !-}
 

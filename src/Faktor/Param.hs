@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Faktor.Param where
 
 --   $Id$
@@ -8,7 +9,7 @@ import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
 import Autolib.Set
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Param = 
      Param { von :: Int
@@ -23,7 +24,8 @@ p = Param { von = 100
 	  , anzahl = 3
 	  }
 
-{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance Show Param where show = render . toDoc
 instance Read Param where readsPrec = parsec_readsPrec

@@ -1,12 +1,13 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Number.Base.Data where
 
 import Autolib.ToDoc
 import Autolib.Reporter
 import Autolib.Reader
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Number.Wert
 import Data.Char
@@ -14,7 +15,7 @@ import Data.Char
 data Ziffer = Ziffer Int
     deriving ( Eq, Ord, Typeable )
 
-{-! for Ziffer derive: Haskell2Xml !-}
+-- {-! for Ziffer derive: Haskell2Xml !-}
 
 zehn :: Int
 zehn = 10
@@ -44,7 +45,8 @@ data Zahl = Zahl { basis :: Int
                  }
     deriving ( Eq, Ord, Typeable )
 
-{-! for Zahl derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Zahl])
+-- {-! for Zahl derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance Wert_at [ Ziffer ] Integer where
     wert_at b zs = 

@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Rewriting.Check where
 
 import Rewriting.TRS
@@ -16,7 +17,7 @@ import Autolib.Reporter
 import qualified Autolib.Reporter.Set
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Check = Left_Linear
            | Linear
@@ -103,7 +104,8 @@ linear name t = do
  
 terms trs = do rule <- regeln trs ; [ lhs rule, rhs rule ]
 
-{-! for Check derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Check])
+-- {-! for Check derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module PL.Signatur where
 
 import PL.Data
@@ -17,7 +18,8 @@ data Signatur =
 	      , freie_variablen :: Set Identifier
 	      }
 
-{-! for Signatur deriver: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Signatur])
+-- {-! for Signatur deriver: Reader, ToDoc !-}
 
 
 class Signed s where 

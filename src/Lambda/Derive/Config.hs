@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Lambda.Derive.Config where
 
 import Lambda.Type hiding ( free_variables )
@@ -19,7 +20,8 @@ data Type = Make
           }
      deriving ( Typeable, Eq, Ord )
 
-{-! for Type derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''Type])
+-- {-! for Type derive: ToDoc, Reader !-}
 
 example :: Type
 example = Make

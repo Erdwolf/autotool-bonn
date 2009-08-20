@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module NFA.Nerode.Congruent.Instance where
 
 import Autolib.Reader
@@ -22,7 +23,8 @@ data NFAC c Int => Instance c =
               }
     deriving ( Typeable )
 
-{-! for Instance derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Instance])
+-- {-! for Instance derive: Reader, ToDoc !-}
 
 example :: Instance Char
 example = Instance

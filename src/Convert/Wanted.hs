@@ -1,11 +1,12 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Convert.Wanted where
 
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import qualified NFA.Property
 import qualified Exp.Property
@@ -17,4 +18,5 @@ data NFAC c Int =>
 	        | Exp  [ Exp.Property.Property c ]
      deriving ( Typeable )
 
-{-! for Wanted derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Wanted])
+-- {-! for Wanted derive: Reader, ToDoc, Haskell2Xml !-}

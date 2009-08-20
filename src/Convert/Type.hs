@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Convert.Type where
 
 import Autolib.Reader
@@ -20,7 +21,8 @@ data Convert =
 	     }
     deriving ( Typeable , Show )
 
-{-! for Convert derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Convert])
+-- {-! for Convert derive: Reader, ToDoc !-}
 
 form :: Convert -> Doc
 form conv = case name conv of

@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Pump.Conf2 where
 
 import qualified Language.Syntax
@@ -19,7 +20,8 @@ example = Conf { sampler = Language.Sampler.example
 	       , ja_bound = 10
 	       }
 
-{-! for Conf derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Conf])
+-- {-! for Conf derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

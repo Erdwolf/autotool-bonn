@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module LCS.Data where
 
 import Autolib.ToDoc
@@ -29,7 +30,8 @@ data ( InstanceC a  ) => Instance a =
 	      }
      deriving ( Typeable )
 
-{-! for Instance derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Instance])
+-- {-! for Instance derive: Reader, ToDoc !-}
 
 example :: Instance Char
 example = Instance

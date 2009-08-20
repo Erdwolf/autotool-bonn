@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Program.Array.Config where
 
 import Program.Array.Operator
@@ -27,7 +28,8 @@ example = Config
 	, operators = [ Add, Subtract, Multiply ]
 	}
 
-{-! for Config derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

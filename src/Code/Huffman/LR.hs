@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Code.Huffman.LR where
 
 --  $Id$
@@ -8,19 +9,21 @@ import Autolib.Reader
 import Code.Type
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data LR = L | R 
      deriving ( Eq, Ord, Enum, Bounded, Typeable )
 
-{-! for LR derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''LR])
+-- {-! for LR derive : ToDoc, Reader, Haskell2Xml !-}
 
 data Ord a => Letter a = Letter 
 	      { weight :: Int
 	      , codes  :: Code a LR
 	      }
      
-{-! for Letter derive : ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''Letter])
+-- {-! for Letter derive : ToDoc, Reader !-}
 
 -- local variables:
 -- mode: haskell

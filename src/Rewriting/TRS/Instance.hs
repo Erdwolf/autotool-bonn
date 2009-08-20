@@ -1,4 +1,4 @@
-{-# language FlexibleContexts, DeriveDataTypeable, UndecidableInstances #-}
+{-# LANGUAGE FlexibleContexts, DeriveDataTypeable, UndecidableInstances, TemplateHaskell #-}
 
 module Rewriting.TRS.Instance where
 
@@ -34,7 +34,8 @@ example = Instance
         , to = read "f(f(b,a),a)"
         }
 
-{-! for Instance derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Instance])
+-- {-! for Instance derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

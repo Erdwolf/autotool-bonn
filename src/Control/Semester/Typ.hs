@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Control.Semester.Typ where
 
 import Control.Types 
@@ -8,7 +9,7 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml hiding ( Name )
+-- import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
 -- | das sollte exactly das sein, was auch in DB-tabelle  steht
 
@@ -23,7 +24,8 @@ data Semester =
 	    }
 	deriving ( Eq, Ord, Typeable )
 
-{-! for Semester derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Semester])
+-- {-! for Semester derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

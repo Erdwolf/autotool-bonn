@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 -- | Eingebaute Standard Funktionen
+{-# LANGUAGE TemplateHaskell #-}
 module RAM.Builtin 
 
 ( Table, Entry, Builtin (..)
@@ -14,7 +15,7 @@ import Autolib.Reader
 import Data.Array
 import Autolib.Set
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml hiding ( Plus )
+-- import Text.XML.HaXml.Haskell2Xml hiding ( Plus )
 
 data Builtin = Copy 
              | Plus  | Minus
@@ -23,7 +24,8 @@ data Builtin = Copy
              | Suc   | Pre
      deriving ( Eq, Ord, Enum, Ix, Typeable )
 
-{-! for Builtin derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Builtin])
+-- {-! for Builtin derive: Reader, ToDoc, Haskell2Xml !-}
 
 
 none :: Set Builtin

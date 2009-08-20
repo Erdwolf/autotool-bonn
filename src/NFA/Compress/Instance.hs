@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module NFA.Compress.Instance where
 
 import NFA.Compress.Data
@@ -19,7 +20,8 @@ data Instance = Instance
 	      }
     deriving ( Typeable )
 
-{-! for Instance derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''Instance])
+-- {-! for Instance derive: ToDoc, Reader !-}
 
 instance C.Verify DFA_Compress Instance where
     verify p i = do

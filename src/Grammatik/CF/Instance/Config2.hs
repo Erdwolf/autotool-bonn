@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Grammatik.CF.Instance.Config2 
 
 ( Config (..)
@@ -25,7 +26,8 @@ data Config =
 	    }
      deriving ( Eq, Typeable )
 
-{-! for Config derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: ToDoc, Reader !-}
 
 example :: Config
 example = Config

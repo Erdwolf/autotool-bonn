@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Machine.Numerical.Type where
 
 import Autolib.Informed
@@ -8,12 +9,13 @@ import Autolib.Reader
 import Autolib.Reporter
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Computer = Computer
      deriving Typeable
 
-{-! for Computer derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Computer])
+-- {-! for Computer derive : ToDoc, Reader, Haskell2Xml !-}
 
 data Type m = 
      Make { fun ::  [ Integer ] -> Reporter Integer -- zu berechnende funktion

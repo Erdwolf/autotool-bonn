@@ -1,5 +1,6 @@
 --  -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module NFA.AI where
 
 import Autolib.NFA.Example
@@ -9,7 +10,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data AI = AI { name :: String -- abkürzung
 	     , automat :: NFA Char Int   
@@ -23,7 +24,8 @@ example =
 	   , automat = example_sigma sigma
 	   }
 
-{-! for AI derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''AI])
+-- {-! for AI derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance  Show AI where show = render . toDoc
 instance  Read AI where readsPrec = parsec_readsPrec

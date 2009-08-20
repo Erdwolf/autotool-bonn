@@ -1,5 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Modular.Task where
 
 import Autolib.ToDoc
@@ -19,7 +20,8 @@ instance XmlRpcType ( Task ) where
     getType _ = TStruct
 
 
-{-! for Task derive: ToDoc !-}
+$(derives [makeToDoc] [''Task])
+-- {-! for Task derive: ToDoc !-}
 
 -- local variables:
 -- mode: haskell

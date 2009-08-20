@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Program.Array.Operator where
 
 import Autolib.Reader
@@ -18,7 +19,8 @@ semantics op = case op of
 		Multiply -> (*)
 		Divide-> div
 
-{-! for Operator derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Operator])
+-- {-! for Operator derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

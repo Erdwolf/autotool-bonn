@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Pump.Conf where
 
 import qualified Language.Syntax
@@ -13,7 +14,8 @@ data Conf z = Conf { lang :: Language.Syntax.Type
 		 }
      deriving Typeable
 
-{-! for Conf derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Conf])
+-- {-! for Conf derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

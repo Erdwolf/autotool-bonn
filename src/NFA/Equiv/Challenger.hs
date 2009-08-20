@@ -19,7 +19,7 @@ import Autolib.Xml
 import Autolib.Dot.Dotty ( peng )
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import qualified Challenger as C
 import Inter.Types

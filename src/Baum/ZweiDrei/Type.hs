@@ -1,12 +1,13 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Baum.ZweiDrei.Type where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Key a = This a | Infinity 
      deriving ( Typeable, Eq, Ord )
@@ -15,7 +16,8 @@ instance Functor Key where
     fmap f (This x ) = This ( f x )
     fmap f Infinity = Infinity
 
-{-! for Key derive:  Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Key])
+-- {-! for Key derive:  Reader, ToDoc, Haskell2Xml !-}
 
 -- |  zweites element ist jeweils der schlüssel,
 -- schlüssel sind aufsteigend geordnet (je Knoten)
@@ -36,7 +38,8 @@ isNull :: Baum a -> Bool
 isNull Null = True
 isNull _ = False
 
-{-! for Baum derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Baum])
+-- {-! for Baum derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

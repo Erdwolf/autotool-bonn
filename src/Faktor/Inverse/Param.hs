@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Faktor.Inverse.Param where
 
 --   $Id$
@@ -7,7 +8,7 @@ module Faktor.Inverse.Param where
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Param = 
      Param { von :: Integer
@@ -22,6 +23,7 @@ p = Param { von = 1000
 	  , hat_inverses_in_faellen_von_hundert = 90
 	  }
 
-{-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
 

@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Modular.Config where
 
 import Network.XmlRpc.Internals
@@ -21,7 +22,8 @@ instance XmlRpcType ( Config ) where
 		  return $ Config { contents = c }
     getType _ = TStruct
 
-{-! for Config derive: ToDoc !-}
+$(derives [makeToDoc] [''Config])
+-- {-! for Config derive: ToDoc !-}
 
 -- local variables:
 -- mode: haskell

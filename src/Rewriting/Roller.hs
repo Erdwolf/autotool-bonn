@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Rewriting.Roller where
 
 import Rewriting.TRS
@@ -88,7 +89,8 @@ example = Config
 mksig :: Symbol c => [(c,Int)] -> [c]
 mksig cas = do ( c,a) <- cas ; return $ set_arity a c
 
-{-! for Config derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

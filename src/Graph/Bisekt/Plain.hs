@@ -12,7 +12,7 @@ import Autolib.Dot ( peng, Layout_Program (..) )
 import Autolib.Graph.Adj ( adjazenz_matrix , schoen )
 import Autolib.Graph.Ops ( unlinks )
 import Autolib.Xml
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Autolib.Reader
 import Autolib.Set
 
@@ -24,7 +24,7 @@ import Data.Typeable
 
 data Bisect = Bisect deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance ( GraphC a, Show a, Haskell2Xml (Solution a) )
+instance ( GraphC a, Show a) -- , Haskell2Xml (Solution a) )
     => C.Partial Bisect (Int, Graph a) (Solution a) where
 
     report _ (_,g) = do

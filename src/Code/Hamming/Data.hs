@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Code.Hamming.Data 
 
 ( Goal (..)
@@ -15,7 +16,7 @@ where
 import Code.Huffman.LR
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Autolib.Reader
 import Autolib.ToDoc
 
@@ -28,7 +29,8 @@ data Goal = Fixed
 	  | Atmost 
      deriving ( Eq, Ord )
 
-{-! for Goal derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Goal])
+-- {-! for Goal derive : ToDoc, Reader, Haskell2Xml !-}
 
 data Config = 
      Config { width  :: ( Goal, Int )
@@ -40,11 +42,13 @@ data Config =
 
 data Attribut = Width | Size | Distance deriving ( Eq, Ord, Typeable )
 
-{-! for Attribut derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Attribut])
+-- {-! for Attribut derive : ToDoc, Reader, Haskell2Xml !-}
 
 attributes = [ (width, "Breite"), (size, "Größe"), (distance, "Abstand") ]
 
-{-! for Config derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive : ToDoc, Reader, Haskell2Xml !-}
 
 example = Config { size = ( Atleast, 5 )
 	      , width = ( Fixed,  4 )

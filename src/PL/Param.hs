@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module PL.Param where
 
 import PL.Type
@@ -21,7 +22,8 @@ example = Param
 	, formel = read "forall x . exists y . R(x,y)"
 	}
 
-{-! for Param derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

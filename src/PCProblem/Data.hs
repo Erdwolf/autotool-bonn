@@ -1,4 +1,4 @@
-{-# language TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, TemplateHaskell #-}
 
 module PCProblem.Data where
 
@@ -9,7 +9,7 @@ import Autolib.Set
 import Autolib.Letters
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Network.XmlRpc.Internals
 import Network.XmlRpc.THDeriveXmlRpcType
@@ -19,7 +19,8 @@ data PCP = PCP [(String, String)] deriving ( Typeable )
 instance Letters PCP Char where
     letters ( PCP uvs ) = mkSet $ do (u, v) <- uvs ; u ++ v
 
-{-! for PCP derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''PCP])
+-- {-! for PCP derive: ToDoc, Reader, Haskell2Xml !-}
 
 data Pair = Pair { top :: String, bot :: String }
 

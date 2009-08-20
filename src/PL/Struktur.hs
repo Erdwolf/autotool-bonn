@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances  #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module PL.Struktur where
 
 import PL.Signatur
@@ -158,7 +159,8 @@ empty sig uni =
 	     }
 
 	    
-{-! for Struktur derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Struktur])
+-- {-! for Struktur derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

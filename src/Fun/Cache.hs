@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Fun.Cache 
 
 --   $Id$
@@ -32,7 +33,8 @@ instance (  Ord k
 data CacheC k e
 	=> Cache k e = Cache ( FiniteMap k e )
 
-{-! for Cache derive : Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Cache])
+-- {-! for Cache derive : Reader, ToDoc !-}
 
 empty :: CacheC k e => Cache k e
 empty = Cache emptyFM

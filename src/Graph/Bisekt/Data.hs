@@ -1,10 +1,11 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Graph.Bisekt.Data where
 
 import Graph.Util
 import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Reader
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data ( GraphC a ) => Solution a = 
@@ -14,7 +15,8 @@ data ( GraphC a ) => Solution a =
 	      }
     deriving ( Eq, Ord, Typeable )
 
-{-! for Solution derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Solution])
+-- {-! for Solution derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

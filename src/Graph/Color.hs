@@ -1,11 +1,12 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Graph.Color where
 
 import Data.Typeable
 import Autolib.ToDoc
 import Autolib.Reader
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Autolib.Hash
 
 data Color = A | B | C | D | E | F | G | H
@@ -13,7 +14,8 @@ data Color = A | B | C | D | E | F | G | H
 
 instance Hash Color where hash = hash . fromEnum
 
-{-! for Color derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Color])
+-- {-! for Color derive: Reader, ToDoc, Haskell2Xml !-}
 
 
 

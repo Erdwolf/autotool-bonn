@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Diffie_Hellman.Param where
 
@@ -15,7 +15,8 @@ data Param =
 example :: Param
 example = Param { digits = 12 }
 
-{-! for Param derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

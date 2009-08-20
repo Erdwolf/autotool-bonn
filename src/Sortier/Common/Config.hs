@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Sortier.Common.Config where
 
 import Autolib.ToDoc
@@ -10,7 +11,8 @@ data Config =
 	    }
      deriving ( Typeable )
 
-{-! for Config derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config
 example = Config { width = 6, max_size = 13 }

@@ -1,5 +1,6 @@
 {-# OPTIONS -Onot #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Graph.VC.ParamSAT where
 
 --  $Id$
@@ -8,7 +9,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import qualified SAT.Param
 
@@ -18,7 +19,8 @@ data Param = Param
 	    }
      deriving ( Typeable )
 
-{-! for Param derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: Reader, ToDoc !-}
 
 p0 :: Param
 p0 = Param { formel          = SAT.Param.p 5

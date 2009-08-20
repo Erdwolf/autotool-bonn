@@ -1,5 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Code.LZ.Data where
 
 import Code.Type ( BitSize (..), bits )
@@ -11,13 +12,15 @@ import Autolib.Set
 import Autolib.FiniteMap
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data Lempel_Ziv_Welch  = Lempel_Ziv_Welch  deriving ( Eq, Ord, Typeable )
 data Lempel_Ziv_77 = Lempel_Ziv_77 deriving ( Eq, Ord, Typeable )
 
-{-! for Lempel_Ziv_Welch derive: Reader, ToDoc, Haskell2Xml !-}
-{-! for Lempel_Ziv_77 derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Lempel_Ziv_Welch])
+-- {-! for Lempel_Ziv_Welch derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Lempel_Ziv_77])
+-- {-! for Lempel_Ziv_77 derive: Reader, ToDoc, Haskell2Xml !-}
 
 data Code_Letter a = Letter a
                    | Entry Int -- ^ num in dict
@@ -25,7 +28,8 @@ data Code_Letter a = Letter a
                       -- ^ relative position in stream
      deriving ( Eq, Ord, Typeable )
 
-{-! for Code_Letter derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Code_Letter])
+-- {-! for Code_Letter derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance Size ( Code_Letter a ) where
     size _ = 1 -- not used
@@ -46,7 +50,8 @@ data ( ToDoc [a], Ord a, Reader [a] )
           }
     deriving ( Eq, Ord, Typeable )
 
-{-! for Book derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Book])
+-- {-! for Book derive: Reader, ToDoc, Haskell2Xml !-}
 
 leer :: ( ToDoc [a], Reader [a], Ord a ) => Book a
 leer = Book { short = emptySet , long = emptyFM }
@@ -57,7 +62,8 @@ data ( ToDoc [a], ToDoc [b], Ord a, Reader [a], Reader [b] )
           , output  :: [ b ] 
           }
 
-{-! for Cache derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Cache])
+-- {-! for Cache derive: Reader, ToDoc, Haskell2Xml !-}
 
 blank ::  ( ToDoc [a], ToDoc [b], Ord a, Reader [a], Reader [b] ) 
       => Cache a b

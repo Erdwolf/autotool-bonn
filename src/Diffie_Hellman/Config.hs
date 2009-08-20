@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Diffie_Hellman.Config where
 
@@ -21,17 +21,12 @@ example = Config
                   { a = 16, b = 11, g_ab = 18 }
         }
 
-{-! for Config derive: Reader, ToDoc !-}
-
 data Private =
      Private { a :: Integer
             , b :: Integer
             , g_ab :: Integer
             }
      deriving Typeable
-
-
-{-! for Private derive: Reader, ToDoc !-}
 
 data Public =
      Public { p :: Integer
@@ -41,7 +36,14 @@ data Public =
             }
     deriving Typeable
 
-{-! for Public derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc !-}
+
+$(derives [makeReader, makeToDoc] [''Private])
+-- {-! for Private derive: Reader, ToDoc !-}
+
+$(derives [makeReader, makeToDoc] [''Public])
+-- {-! for Public derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

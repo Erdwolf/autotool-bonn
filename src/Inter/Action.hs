@@ -2,6 +2,7 @@
 
 -- | Interface für externe Korrektoren
 
+{-# LANGUAGE TemplateHaskell #-}
 module Inter.Action where
 
 import Control.Types
@@ -10,7 +11,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Network.XmlRpc.THDeriveXmlRpcType
 import Network.XmlRpc.Internals
@@ -23,7 +24,8 @@ data Actor
 	     }
      deriving ( Eq, Ord, Typeable )
 
-{-! for Actor derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Actor])
+-- {-! for Actor derive: ToDoc, Reader, Haskell2Xml !-}
 
 $(asXmlRpcStruct ''Actor)
 
@@ -33,7 +35,8 @@ data Problem
 	       }
      deriving ( Eq, Ord, Typeable )
 
-{-! for Problem derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Problem])
+-- {-! for Problem derive: ToDoc, Reader, Haskell2Xml !-}
 
 $(asXmlRpcStruct ''Problem)
 
@@ -47,7 +50,8 @@ data Answer =
 
 $(asXmlRpcStruct ''Answer)
 
-{-! for Answer derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Answer])
+-- {-! for Answer derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance XmlRpcType Wert where
     toValue w = case w of

@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Rewriting.Derive.Instance where
 
@@ -22,7 +22,8 @@ data (  Reader system, ToDoc system
     deriving ( Typeable 
 	     )
 
-{-! for Instance derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Instance])
+-- {-! for Instance derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

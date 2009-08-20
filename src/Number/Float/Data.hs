@@ -1,5 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts -fallow-undecidable-instances #-} 
 
+{-# LANGUAGE TemplateHaskell #-}
 module Number.Float.Data where
 
 import Prelude hiding ( exponent )
@@ -13,7 +14,7 @@ import Autolib.Size
 
 import Data.Ratio
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 
 -------------------------------------------------------------------
@@ -50,7 +51,7 @@ instance Reader a => Reader (Signed a) where
         c <- reader
         return $ Signed { negative = sign, contents = c }
 
-{-! for Signed derive: Haskell2Xml !-}
+-- {-! for Signed derive: Haskell2Xml !-}
 
 -------------------------------------------------------------------
 
@@ -81,7 +82,7 @@ instance Reader Natural where
         zs <- many reader
 	return $ Natural { ziffern = zs }
 
-{-! for Natural derive: Haskell2Xml !-}
+-- {-! for Natural derive: Haskell2Xml !-}
 
 -------------------------------------------------------------------
 
@@ -122,7 +123,7 @@ instance Reader Fixed where
         o <- reader
 	return $ Fixed { pre = e, post = o }
 
-{-! for Fixed derive: Haskell2Xml !-}
+-- {-! for Fixed derive: Haskell2Xml !-}
 
 -------------------------------------------------------------------
 
@@ -158,7 +159,8 @@ instance B.Range Zahl where
 instance Size Zahl where
     size z = size ( mantisse z ) + size ( exponent z )
 
-{-! for Zahl derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Zahl])
+-- {-! for Zahl derive: Reader, ToDoc, Haskell2Xml !-}
 
 ist_normalisiert :: Zahl -> Bool
 ist_normalisiert z = case ziffern $ pre $ contents $ mantisse z of

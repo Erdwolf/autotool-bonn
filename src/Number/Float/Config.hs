@@ -1,5 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts -fallow-undecidable-instances #-} 
 
+{-# LANGUAGE TemplateHaskell #-}
 module Number.Float.Config where
 
 import Prelude hiding ( exponent )
@@ -10,7 +11,7 @@ import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.Reporter
 import qualified Number.Float.Data as F
@@ -24,7 +25,8 @@ data Config = Config
 	    }
     deriving ( Typeable )
 
-{-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: Config
 example = Config

@@ -1,5 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Modular.Pair where
 
 import Network.XmlRpc.Internals
@@ -24,7 +25,8 @@ instance ( XmlRpcType a, XmlRpcType b ) =>  XmlRpcType ( Pair a b ) where
 		  return $ Pair { first = f, second = s }
     getType _ = TStruct
 
-{-! for Pair derive: ToDoc !-}
+$(derives [makeToDoc] [''Pair])
+-- {-! for Pair derive: ToDoc !-}
 
 -- local variables:
 -- mode: haskell

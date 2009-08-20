@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module String_Matching.KMP.Instance where
 
 import String_Matching.Option
@@ -20,7 +21,8 @@ data  Ord a => Instance a =
            }
     deriving ( Eq, Typeable )
 
-{-! for Instance derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Instance])
+-- {-! for Instance derive: Reader, ToDoc !-}
 
 instance Ord a => Sub ( Instance a ) ( Instance a ) where
     sub i j = and

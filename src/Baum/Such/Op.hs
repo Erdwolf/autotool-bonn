@@ -1,25 +1,27 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Baum.Such.Op where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.Reporter
 import System.Random
 
-class    ( Eq a, Ord a, Show a, ToDoc a, Reader a, Haskell2Xml a, Random a ) 
+class    ( Eq a, Ord a, Show a, ToDoc a, Reader a, Random a ) 
     => OpC a
-instance ( Eq a, Ord a, Show a, ToDoc a, Reader a, Haskell2Xml a, Random a ) 
+instance ( Eq a, Ord a, Show a, ToDoc a, Reader a, Random a ) 
     => OpC a
 
 data OpC a => Op a = Insert a | Delete a | Any
      deriving ( Eq, Typeable )
 
-{-! for Op derive: Reader,  ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Op])
+-- {-! for Op derive: Reader,  ToDoc, Haskell2Xml !-}
 
 conforms :: OpC a => Op a -> Op a -> Reporter ()
 conforms _ Any = reject $ 

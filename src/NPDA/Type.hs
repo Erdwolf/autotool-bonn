@@ -1,4 +1,4 @@
-{-# language OverlappingInstances #-}
+{-# LANGUAGE OverlappingInstances, TemplateHaskell #-}
 {-# language IncoherentInstances #-}
 
 -- -*- mode: haskell -*-
@@ -47,7 +47,8 @@ instance RTO z => Hash ( Modus z ) where
     hash Leerer_Keller = 67
     hash ( Zustand xs ) = hash xs
 
-{-! for Modus derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Modus])
+-- {-! for Modus derive: Reader, ToDoc !-}
 
 class ( RTO x, RTO y, RTO z )
     => NPDAC x y z
@@ -76,7 +77,8 @@ instance Container (x, z, y) (x, (z, y)) where
     pack (x, y, z) = (x, (y, z))
     unpack (x, (y, z)) = (x, y, z)
 
-{-! for NPDA derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''NPDA])
+-- {-! for NPDA derive: Reader, ToDoc !-}
 
 instance NPDAC x y z => Size (NPDA x y z) where
     size a = length $ unCollect' $ transitionen a

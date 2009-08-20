@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Binpack.Param where
 
@@ -12,7 +12,8 @@ data Param =
            }
     deriving ( Typeable )
 
-{-! for Param derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive: Reader, ToDoc !-}
 
 example :: Param
 example = Param { capacity = 20, bins = 10 }

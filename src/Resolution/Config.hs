@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Resolution.Config where
 
@@ -9,7 +9,8 @@ import Data.Typeable
 data Target = Empty | Random 
     deriving ( Eq, Ord, Typeable )
 
-{-! for Target derive : Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Target])
+-- {-! for Target derive : Reader, ToDoc !-}
 
 data Config =
      Config { num_variables :: Int
@@ -18,7 +19,8 @@ data Config =
             }
     deriving ( Typeable )
 
-{-! for Config derive : Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Config])
+-- {-! for Config derive : Reader, ToDoc !-}
 
 example :: Config
 example = Config

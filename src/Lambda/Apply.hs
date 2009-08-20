@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Lambda.Apply where
 
 import Lambda.Type
@@ -21,12 +22,14 @@ import Data.Typeable
 data For_Lambda = For_Lambda
     deriving ( Eq, Ord, Typeable )
 
-{-! for For_Lambda derive: Reader, ToDoc  !-}
+$(derives [makeReader, makeToDoc ] [''For_Lambda])
+-- {-! for For_Lambda derive: Reader, ToDoc  !-}
 
 data Lambda_Calculus = Lambda_Calculus
     deriving ( Eq, Ord, Typeable )
 
-{-! for Lambda_Calculus derive: Reader, ToDoc  !-}
+$(derives [makeReader, makeToDoc ] [''Lambda_Calculus])
+-- {-! for Lambda_Calculus derive: Reader, ToDoc  !-}
 
 instance  A.Apply For_Lambda Lambda_Calculus 
                        Lambda

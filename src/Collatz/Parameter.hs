@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module Collatz.Parameter where
 
 import Prelude hiding ( length )
@@ -7,7 +8,7 @@ import qualified Prelude
 
 import Autolib.Reader
 import Autolib.ToDoc
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 import qualified Data.List
 
@@ -16,7 +17,8 @@ data Parameter = Parameter { length :: Integer
 		   }
     deriving ( Eq, Ord, Typeable )
 
-{-! for Parameter derive: ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Parameter])
+-- {-! for Parameter derive: ToDoc, Reader, Haskell2Xml !-}
 
 compute :: Integer -> Parameter
 compute x =

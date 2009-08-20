@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Turing.Type 
 
 ( module Turing.Type
@@ -20,31 +21,33 @@ import Autolib.Reader
 
 import Data.Typeable
 import Autolib.Xml
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 
 data Bewegung = L | O | R
      deriving (Eq, Ord, Typeable)
 
-{-! for Bewegung derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Bewegung])
+-- {-! for Bewegung derive : ToDoc, Reader, Haskell2Xml !-}
 
 data TM = TM -- for challenger instances
      deriving (Eq, Ord, Typeable)
      
-{-! for TM derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''TM])
+-- {-! for TM derive : ToDoc, Reader, Haskell2Xml !-}
 
 -- ohne methoden, soll nur die constraints aufsammeln
 class ( Ord y
       , Show y, Show [y]
       , ToDoc y, ToDoc [y]
       , Reader y, Reader [y]  
-      , Typeable y , Haskell2Xml y
+      , Typeable y -- , Haskell2Xml y
       ) 
     => UM y
 instance ( Ord y, Show y
 	 , ToDoc y, ToDoc [y]
 	 , Reader y, Reader [y]  
-	 , Typeable y, Haskell2Xml y
+	 , Typeable y -- , Haskell2Xml y
 	 )
     => UM y
 
@@ -63,7 +66,8 @@ data TuringC y z => Turing y z =
 	    }
      deriving ( Typeable )
 
-{-! for Turing derive : ToDoc, Reader, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Turing])
+-- {-! for Turing derive : ToDoc, Reader, Haskell2Xml !-}
 
 instance TuringC y z => Size (Turing y z) where 
     size = length . unCollect' . tafel

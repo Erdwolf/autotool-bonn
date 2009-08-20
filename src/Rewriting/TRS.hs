@@ -23,7 +23,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 data ( Symbol c, Symbol v ) => TRS v c = 
      TRS { variablen :: [ v ]
@@ -82,6 +82,6 @@ pack trs = Autolib.TES.from_strict_rules False
 {-! for TRS derive: Reader, ToDoc !-}
 
 
-instance Haskell2Xml ( TRS v c  ) --- dummy
+-- instance Haskell2Xml ( TRS v c  ) --- dummy
 
 

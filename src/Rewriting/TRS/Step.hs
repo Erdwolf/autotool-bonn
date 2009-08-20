@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Rewriting.TRS.Step where
 
 import Rewriting.TRS
@@ -20,7 +21,8 @@ data ( Ord v, Symbol c ) => Step v c = Step
 
 instance Size ( Step v c ) where size _ = 1
 
-{-! for Step derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Step])
+-- {-! for Step derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

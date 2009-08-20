@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Algebraic2.Instance where
 
 import Expression.Op
@@ -7,7 +8,7 @@ import qualified Autolib.TES.Binu as B
 import Autolib.TES.Identifier
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.ToDoc
 import Autolib.Reader
@@ -24,7 +25,8 @@ data Ops a => Type c a =
 	  }
      deriving ( Typeable )
 
-{-! for Type derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''Type])
+-- {-! for Type derive: ToDoc, Reader !-}
 
 -- local variables:
 -- mode: haskell

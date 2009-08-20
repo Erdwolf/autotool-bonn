@@ -1,5 +1,6 @@
 -- -*- mode: haskell -*-
 
+{-# LANGUAGE TemplateHaskell #-}
 module SAT.State where
 
 --   $Id$
@@ -26,6 +27,7 @@ data State =
 	   , dependencies :: Relation.Type Variable Variable
 	   }
 
-{-! for State derive: ToDoc, Reader !-}
+$(derives [makeReader, makeToDoc] [''State])
+-- {-! for State derive: ToDoc, Reader !-}
 
 

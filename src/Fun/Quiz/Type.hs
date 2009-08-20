@@ -1,16 +1,18 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Fun.Quiz.Type where
 
 import Autolib.Reader
 import Autolib.ToDoc
 
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data Fun_Quiz2 = Fun_Quiz2 deriving ( Eq, Ord, Read, Show, Typeable )
 
-{-! for Fun_Quiz2 derive : Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''Fun_Quiz2])
+-- {-! for Fun_Quiz2 derive : Reader, ToDoc !-}
 
 data Param = Param
 	   { expression_size :: Int
@@ -23,7 +25,8 @@ example = Param { expression_size = 10
 		, table_size = 10
 		}
 
-{-! for Param derive : Reader, ToDoc, Haskell2Xml !-}
+$(derives [makeReader, makeToDoc] [''Param])
+-- {-! for Param derive : Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

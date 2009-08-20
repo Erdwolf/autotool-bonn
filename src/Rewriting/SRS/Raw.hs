@@ -1,5 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-incoherent-instances -fallow-overlapping-instances #-}
 
+{-# LANGUAGE TemplateHaskell #-}
 module Rewriting.SRS.Raw where
 
 import Autolib.Symbol
@@ -12,7 +13,7 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
-import Text.XML.HaXml.Haskell2Xml
+-- import Text.XML.HaXml.Haskell2Xml
 
 
 data ( Symbol c ) => SRS c = 
@@ -23,10 +24,11 @@ data ( Symbol c ) => SRS c =
 example :: SRS Identifier
 example = read "SRS { regeln = [ a b -> b a ] }"
 
-{-! for SRS derive: Reader, ToDoc !-}
+$(derives [makeReader, makeToDoc] [''SRS])
+-- {-! for SRS derive: Reader, ToDoc !-}
 
 
-instance Haskell2Xml ( SRS c  ) --- dummy
+-- instance Haskell2Xml ( SRS c  ) --- dummy
 
 
 
