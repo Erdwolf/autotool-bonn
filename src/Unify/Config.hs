@@ -22,7 +22,6 @@ data InstanceC v c => Config v c = Config
     deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config Identifier Identifier
 example = Config

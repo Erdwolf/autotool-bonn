@@ -17,7 +17,6 @@ import Autolib.Reader
 import Autolib.Size
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 type Comp = (Int, Int)
 type Comps = [ Comp ]
@@ -50,12 +49,3 @@ instance Reader Netz where
         return $ mkNetz xys
 instance ToDoc Netz where
     toDoc n = text "mkNetz" <+> toDoc (comps n)
-
-{-
-instance Haskell2Xml Netz where
-    toContents s = toContents $ XmlNetz $ comps s
-    fromContents cs =
-        let ( XmlNetz x, rest ) = fromContents cs
-        in  ( mkNetz x, rest )
-    toHType (_ :: Netz) = toHType (undefined :: XmlNetz) -- ??
--}

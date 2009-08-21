@@ -1,4 +1,5 @@
 {-# OPTIONS -fglasgow-exts -fallow-incoherent-instances -fallow-overlapping-instances #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Rewriting.TRS 
 ( module Rewriting.TRS
@@ -23,7 +24,6 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data ( Symbol c, Symbol v ) => TRS v c = 
      TRS { variablen :: [ v ]
@@ -78,10 +78,3 @@ pack :: ( Symbol c, Symbol v )
      => TRS v c -> Autolib.TES.RS c ( Term v c )
 pack trs = Autolib.TES.from_strict_rules False 
          $ do r <- regeln trs ; return ( lhs r, rhs r )
-
-{-! for TRS derive: Reader, ToDoc !-}
-
-
--- instance Haskell2Xml ( TRS v c  ) --- dummy
-
-

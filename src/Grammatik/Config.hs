@@ -24,7 +24,6 @@ data Config =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: ToDoc, Reader !-}
 
 
 example = Config

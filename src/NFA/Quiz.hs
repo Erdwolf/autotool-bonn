@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module NFA.Quiz where
 
 import Autolib.NFA
@@ -12,14 +12,12 @@ import Autolib.Reader
 import Autolib.Symbol
 import Autolib.ToDoc
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data NFAC c Int => From c = From_Exp [ E.Property c ]
 	    | From_NFA [ A.Property c ]
     deriving ( Typeable )
 
 $(derives [makeToDoc] [''From])
--- {-! for From derive: ToDoc, Haskell2Xml !-}
 
 -- damit wir die alten Records noch lesen können
 instance ( Reader [c], Symbol c ) => Reader ( From c ) where
@@ -35,7 +33,6 @@ data NFAC c Int =>
     deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Quiz])
--- {-! for Quiz derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: Quiz Char
 example = Quiz { generate = From_Exp [ E.Alphabet $ mkSet "ab"

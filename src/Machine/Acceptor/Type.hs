@@ -13,7 +13,6 @@ import Autolib.Reporter hiding ( output )
 import Machine.Class
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data Acceptor = Acceptor String -- include machine type ??
     deriving Typeable
@@ -27,8 +26,6 @@ instance Reader Acceptor where
         Autolib.Reader.char '-'
         cs <- many alphaNum
         return $ Acceptor cs
-
--- {-! for Acceptor derive :  Haskell2Xml !-}
 
 class ( Reader [dat], ToDoc [dat], Reader [prop], ToDoc [prop]  ) 
       => Class dat prop 
@@ -51,7 +48,6 @@ data Class dat prop => Type m dat prop =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Type])
--- {-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

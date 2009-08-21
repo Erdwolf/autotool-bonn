@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module SAT.State where
 
 --   $Id$
@@ -28,6 +28,5 @@ data State =
 	   }
 
 $(derives [makeReader, makeToDoc] [''State])
--- {-! for State derive: ToDoc, Reader !-}
 
 

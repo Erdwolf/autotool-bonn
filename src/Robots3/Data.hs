@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts  #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Robots3.Data where
 
 import Autolib.Reader
@@ -15,15 +15,12 @@ data Robots3 = Robots3 deriving ( Typeable )
 data Robots3_Inverse = Robots3_Inverse deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Robots3])
--- {-! for Robots3 derive : Reader, ToDoc !-}
 $(derives [makeReader, makeToDoc] [''Robots3_Inverse])
--- {-! for Robots3_Inverse derive : Reader, ToDoc !-}
 
 data Position = Position { x :: Int, y :: Int }
      deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Position])
--- {-! for Position derive : Reader, ToDoc !-}
 
 
 instance Hash Position where hash p = hash (x p, y p)
@@ -57,7 +54,6 @@ data Robot = Robot { name :: String
      deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Robot])
--- {-! for Robot derive : Reader, ToDoc !-}
 
 
 
@@ -68,7 +64,6 @@ data Richtung = N | O | S | W
      deriving ( Eq, Ord, Enum, Bounded, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Richtung])
--- {-! for Richtung derive : Reader, ToDoc !-}
 
 
 richtungen :: [ Richtung ]
@@ -78,7 +73,6 @@ data Zug = Zug { robot :: String, richtung :: Richtung }
      deriving ( Eq, Ord, Typeable )
      
 $(derives [makeReader, makeToDoc] [''Zug])
--- {-! for Zug derive : Reader, ToDoc !-}
 
 instance Size Zug where size _ = 1
 

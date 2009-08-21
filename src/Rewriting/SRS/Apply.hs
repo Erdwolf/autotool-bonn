@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Rewriting.SRS.Apply where
 
 import qualified Rewriting.Apply as A
@@ -23,7 +23,6 @@ data For_SRS = For_SRS
     deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc ] [''For_SRS])
--- {-! for For_SRS derive: Reader, ToDoc  !-}
 
 instance  A.Apply For_SRS ( SRS Identifier ) 
                        [ Identifier ]

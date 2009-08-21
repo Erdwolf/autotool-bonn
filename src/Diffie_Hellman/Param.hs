@@ -16,7 +16,6 @@ example :: Param
 example = Param { digits = 12 }
 
 $(derives [makeReader, makeToDoc] [''Param])
--- {-! for Param derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

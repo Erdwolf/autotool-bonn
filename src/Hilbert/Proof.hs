@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+
 module Hilbert.Proof where
 
 import Autolib.ToDoc
@@ -24,7 +25,6 @@ data Proof
     deriving ( Eq, Ord )
 
 $(derives [makeReader, makeToDoc] [''Proof])
--- {-! for Proof derive: ToDoc, Reader !-}
 
 -- local variables:
 -- mode: haskell

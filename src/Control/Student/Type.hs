@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Control.Student.Type where
 
 import Control.Types
@@ -10,7 +10,6 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
 data Student =
      Student { snr :: SNr
@@ -25,6 +24,5 @@ data Student =
      deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Student])
--- {-! for Student derive: Reader, ToDoc, Haskell2Xml !-}
 
 

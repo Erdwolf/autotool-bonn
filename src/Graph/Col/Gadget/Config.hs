@@ -18,7 +18,6 @@ data GraphC a => Config a =
     deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config Int
 example = Config

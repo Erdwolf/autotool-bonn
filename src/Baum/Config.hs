@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Baum.Config where
 
 import Baum.Order
@@ -9,7 +9,6 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data Config = 
      Config { nodes  :: Int
@@ -18,7 +17,6 @@ data Config =
      deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: ToDoc, Reader, Haskell2Xml !-}
 
 hash :: Config -> Int
 hash conf = foldl ( \ x y -> 13 * x + y + 29 ) 0

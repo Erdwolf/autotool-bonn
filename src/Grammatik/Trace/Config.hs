@@ -17,7 +17,6 @@ data Config = Config
     deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 -- | als default benutzbar
 example :: Config 

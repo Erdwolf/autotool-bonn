@@ -14,7 +14,7 @@ import Autolib.Set
 import Autolib.Size
 import Autolib.Schichten
 import Autolib.Reporter
-import Autolib.ToDoc hiding (derive)
+import Autolib.ToDoc
 
 import System.Random ( randomRIO )
 import Data.Ix

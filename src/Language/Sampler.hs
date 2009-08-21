@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Language.Sampler where
 
 import Language.Syntax
@@ -26,7 +26,6 @@ data Sampler =
     deriving ( Eq, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Sampler])
--- {-! for Sampler derive: Reader, ToDoc !-}
 
 example = Sampler 
     { language = Lukas

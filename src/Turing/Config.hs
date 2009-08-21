@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Turing.Config where
 
 import Language.Syntax
@@ -11,7 +11,6 @@ import Turing.Property
 
 import Autolib.ToDoc
 import Autolib.Reader
--- import Text.XML.HaXml.Haskell2Xml
 
 import Data.Typeable
 
@@ -27,7 +26,6 @@ data Config =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: ToDoc, Reader, Haskell2Xml !-}
 
 
 

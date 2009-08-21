@@ -1,13 +1,12 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Baum.Such.Config where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data Config a = -- use phantom type for baum 
      Config { start_size   :: Int
@@ -21,7 +20,6 @@ data Config a = -- use phantom type for baum
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: Config Int
 example = Config 

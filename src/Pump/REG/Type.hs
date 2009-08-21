@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Pump.REG.Type where
 
 --   $Id$
@@ -20,7 +20,6 @@ data Zerlegung = Zerlegung
      deriving (Eq, Ord, Typeable)
 
 $(derives [makeReader, makeToDoc] [''Zerlegung])
--- {-! for Zerlegung derive: ToDoc, Reader !-}
 
 instance Hash Zerlegung where
     hash z = hash ( u z, v z, w z )

@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module NFA.Nerode.Separation.Solution where
 
 import Autolib.Reader
@@ -24,7 +24,6 @@ data NFAC c Int => Solution c =
     deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Solution])
--- {-! for Solution derive: Reader, ToDoc !-}
 
 example :: [ Char ] -> Solution Char
 example w = Solution

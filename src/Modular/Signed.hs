@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Modular.Signed 
 
 ( Signed, sign, unsign )
@@ -56,7 +56,6 @@ instance XmlRpcType a => XmlRpcType ( Signed a ) where
     getType _ = TStruct
 
 $(derives [makeToDoc] [''Signed])
--- {-! for Signed derive: ToDoc !-}
 
 -- local variables:
 -- mode: haskell

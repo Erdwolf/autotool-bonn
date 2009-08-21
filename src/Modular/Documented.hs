@@ -1,6 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Modular.Documented where
 
 import Network.XmlRpc.Internals
@@ -23,7 +23,6 @@ instance XmlRpcType a => XmlRpcType ( Documented a ) where
     getType _ = TStruct
 
 $(derives [makeToDoc] [''Documented])
--- {-! for Documented derive: ToDoc !-}
 
 -- local variables:
 -- mode: haskell

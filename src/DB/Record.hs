@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module DB.Record where
 
 -- import Text.XML.HaXml.Haskell2Xml

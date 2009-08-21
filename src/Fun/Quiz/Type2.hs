@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Fun.Quiz.Type2 where
 
 import Fun.Type
@@ -24,7 +24,6 @@ example = Param { expression_size = 10
 		}
 
 $(derives [makeReader, makeToDoc] [''Param])
--- {-! for Param derive : Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

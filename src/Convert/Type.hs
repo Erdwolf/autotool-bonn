@@ -1,12 +1,11 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Convert.Type where
 
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 import qualified Convert.Input
 
@@ -22,7 +21,6 @@ data Convert =
     deriving ( Typeable , Show )
 
 $(derives [makeReader, makeToDoc] [''Convert])
--- {-! for Convert derive: Reader, ToDoc !-}
 
 form :: Convert -> Doc
 form conv = case name conv of

@@ -1,4 +1,3 @@
-{-# LINE 1 "Rewriting/Check.hs.drift" #-}
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 
 module Rewriting.Check where
@@ -17,7 +16,6 @@ import Autolib.Reporter
 import qualified Autolib.Reporter.Set
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data Check = Left_Linear
            | Linear
@@ -104,11 +102,6 @@ linear name t = do
  
 terms trs = do rule <- regeln trs ; [ lhs rule, rhs rule ]
 
-{-! for Check derive: Reader, ToDoc, Haskell2Xml !-}
-
--- local variables:
--- mode: haskell
--- end;
 instance Reader Check where
     atomic_readerPrec d = readerParenPrec d $ \ d -> do
                       ((do my_reserved "Left_Linear"
@@ -156,54 +149,3 @@ instance ToDoc Check where
               (text "Max_Symbols" </> fsep [toDocPrec 10 aa])
     toDocPrec d (Max_Variables aa) = docParen (d >= 10)
               (text "Max_Variables" </> fsep [toDocPrec 10 aa])
-
-{-
-instance Haskell2Xml Check where
-    toHType v =
-        Defined "Check" []
-                [Constr "Left_Linear" [] [],Constr "Linear" [] [],
-                 Constr "Non_Overlapping" [] [],Constr "Constructor" [] [],
-                 Constr "Max_Rules" [] [toHType aa],
-                 Constr "Max_Size" [] [toHType ab],
-                 Constr "Max_Symbols" [] [toHType ac],
-                 Constr "Max_Variables" [] [toHType ad]]
-      where
-        (Max_Rules aa) = v
-        (Max_Size ab) = v
-        (Max_Symbols ac) = v
-        (Max_Variables ad) = v
-    fromContents (CElem (Elem constr [] cs):etc)
-        | "Non_Overlapping" `isPrefixOf` constr =
-            (Non_Overlapping,etc)
-        | "Max_Variables" `isPrefixOf` constr =
-            (\(ad,_)-> (Max_Variables ad, etc)) (fromContents cs)
-        | "Max_Symbols" `isPrefixOf` constr =
-            (\(ac,_)-> (Max_Symbols ac, etc)) (fromContents cs)
-        | "Max_Size" `isPrefixOf` constr =
-            (\(ab,_)-> (Max_Size ab, etc)) (fromContents cs)
-        | "Max_Rules" `isPrefixOf` constr =
-            (\(aa,_)-> (Max_Rules aa, etc)) (fromContents cs)
-        | "Linear" `isPrefixOf` constr =
-            (Linear,etc)
-        | "Left_Linear" `isPrefixOf` constr =
-            (Left_Linear,etc)
-        | "Constructor" `isPrefixOf` constr =
-            (Constructor,etc)
-    toContents v@Left_Linear =
-        [mkElemC (showConstr 0 (toHType v)) []]
-    toContents v@Linear =
-        [mkElemC (showConstr 1 (toHType v)) []]
-    toContents v@Non_Overlapping =
-        [mkElemC (showConstr 2 (toHType v)) []]
-    toContents v@Constructor =
-        [mkElemC (showConstr 3 (toHType v)) []]
-    toContents v@(Max_Rules aa) =
-        [mkElemC (showConstr 4 (toHType v)) (toContents aa)]
-    toContents v@(Max_Size ab) =
-        [mkElemC (showConstr 5 (toHType v)) (toContents ab)]
-    toContents v@(Max_Symbols ac) =
-        [mkElemC (showConstr 6 (toHType v)) (toContents ac)]
-    toContents v@(Max_Variables ad) =
-        [mkElemC (showConstr 7 (toHType v)) (toContents ad)]
--}
---  Imported from other files :-

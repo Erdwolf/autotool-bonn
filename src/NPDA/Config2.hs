@@ -1,4 +1,3 @@
-{-# LINE 1 "NPDA/Config2.hs.drift" #-}
 module NPDA.Config2 where
 
 import Machine.Acceptor.Type2

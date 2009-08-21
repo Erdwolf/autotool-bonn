@@ -1,13 +1,12 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Graph.Col.Config where
 
 import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data Config = Config 
 	    { nodes :: Int -- ^ number of nodes
@@ -17,7 +16,6 @@ data Config = Config
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 
 

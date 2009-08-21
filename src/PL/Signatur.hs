@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+
 module PL.Signatur where
 
 import PL.Data
@@ -19,7 +20,6 @@ data Signatur =
 	      }
 
 $(derives [makeReader, makeToDoc] [''Signatur])
--- {-! for Signatur deriver: Reader, ToDoc !-}
 
 
 class Signed s where 

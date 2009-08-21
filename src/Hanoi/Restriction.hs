@@ -20,7 +20,6 @@ data Restriction
    deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Restriction])
--- {-! for Restriction derive: Reader, ToDoc !-}
 
 instance Explain Restriction where
     explain r = case r of

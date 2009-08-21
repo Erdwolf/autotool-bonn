@@ -1,4 +1,3 @@
-{-# LINE 1 "Hilbert/Actions.hs.drift" #-}
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
 
 module Hilbert.Actions

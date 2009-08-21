@@ -1,6 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Modular.Seed where
 
 import Network.XmlRpc.Internals
@@ -21,7 +21,6 @@ instance XmlRpcType ( Seed ) where
     getType _ = TStruct
 
 $(derives [makeToDoc] [''Seed])
--- {-! for Seed derive: ToDoc !-}
 
 -- local variables:
 -- mode: haskell

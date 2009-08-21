@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module NFA.Nerode.Incongruent.Solution where
 
 import Autolib.Reader
@@ -22,7 +22,6 @@ data NFAC c Int => Solution c =
     deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Solution])
--- {-! for Solution derive: Reader, ToDoc !-}
 
 example :: NFAC c Int => [c] -> Solution c
 example w = Solution

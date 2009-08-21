@@ -23,7 +23,6 @@ data (  Reader system, ToDoc system
 	     )
 
 $(derives [makeReader, makeToDoc] [''Instance])
--- {-! for Instance derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fno-monomorphism-restriction #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Fun.Direct.Config where
 
 import Fun.Type
@@ -82,13 +82,10 @@ dutch_combined_list com xs =
 
 
 $(derives [makeReader, makeToDoc] [''Primrec_2D])
--- {-! for Primrec_2D derive: Reader, ToDoc !-}
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 $(derives [makeReader] [''Matrix])
--- {-! for Matrix derive: Reader !-}
 
 -- local variables:
 -- mode: haskell

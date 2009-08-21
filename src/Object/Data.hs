@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Object.Data where
 
 --  $Id$
@@ -14,7 +14,6 @@ import Autolib.Xml
 import Autolib.Hash
 import Autolib.Size
 
--- import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 import Data.Typeable
 
 ----------------------------------------------------------------------------
@@ -27,8 +26,6 @@ instance Hash Name where hash (Name t) = hash t
 instance ToDoc Name where toDoc (Name t) = toDoc t
 instance Reader Name where 
      reader = do t <- reader; return $ Name t
-
--- {-! for Name derive: Haskell2Xml !-}
 
 instance Container Identifier String where
      label _ = "Identifier"
@@ -56,9 +53,6 @@ instance Reader Expression where
 dc =   do my_dot ; i <- reader ; return $ \ x -> Dot x i
    <|> my_parens ( do xs <- my_commaSep reader ; return $ \ f -> Call f xs )
 
--- FIXME
-{- ! for Expresssion derive: Haskell2Xml !-}
-
 ----------------------------------------------------------------------------
 
 data Variable = 
@@ -74,8 +68,6 @@ instance Reader Variable where
         t <- reader -- type
         n <- reader -- name
         return $ Variable { vname = n, vtype = t }
-
--- {-! for Variable derive: Haskell2Xml !-}
 
 ----------------------------------------------------------------------------
 
@@ -109,9 +101,6 @@ instance Reader Method where
 			  , arguments = map vtype ps
 			  , result = r 
 			  }
-
--- {-! for Method derive: Haskell2Xml !-}
-
 
 ----------------------------------------------------------------------------
 
@@ -153,8 +142,6 @@ instance Reader Class where
 	       , declarations = ds
 	       }
 
--- {-! for Class derive: Haskell2Xml !-}
-
 ---------------------------------------------------------------------------
 
 data Declaration =
@@ -176,8 +163,6 @@ instance Reader Declaration where
 	m <- reader
 	return $ Declaration { access = a, static = s, member = m }
 
--- {-! for Declaration derive: Haskell2Xml !-}
-
 ---------------------------------------------------------------------------
 
 data Static = Static | Dynamic
@@ -191,8 +176,6 @@ instance ToDoc Static where
 instance Reader Static where
     reader = do my_reserved "static" ; return Static
 	 <|> do                        return Dynamic
-
--- {-! for Static derive: Haskell2Xml !-}
 
 ---------------------------------------------------------------------------
 
@@ -212,8 +195,6 @@ instance Reader Access where
          <|> do my_reserved "protected" ; return Protected
 	 <|> do                           return Default
 
--- {-! for Access derive: Haskell2Xml !-}
-
 ---------------------------------------------------------------------------
 
 data Member = V Variable
@@ -231,6 +212,3 @@ instance Reader Member where
     reader =  do c <-     reader ;          return $ C c
           <|> do m <- try reader ; my_semi; return $ M m
           <|> do v <-     reader ; my_semi; return $ V v
-
--- {-! for Member derive: Haskell2Xml !-}
-

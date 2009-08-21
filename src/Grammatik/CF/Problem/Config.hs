@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Grammatik.CF.Problem.Config where
 
 -- -- $Id$
@@ -10,7 +10,6 @@ import Grammatik.Property
 
 import Autolib.ToDoc
 import Autolib.Reader
--- import Text.XML.HaXml.Haskell2Xml
 
 import Data.Typeable
 
@@ -24,7 +23,6 @@ data Config =
      deriving ( Eq, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: ToDoc, Reader, Haskell2Xml !-}
 
 example :: Config
 example = Config

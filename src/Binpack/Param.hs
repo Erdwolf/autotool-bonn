@@ -13,7 +13,6 @@ data Param =
     deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Param])
--- {-! for Param derive: Reader, ToDoc !-}
 
 example :: Param
 example = Param { capacity = 20, bins = 10 }

@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Rewriting.TRS.Apply where
 
 import qualified Rewriting.Apply as A
@@ -35,7 +35,6 @@ data For_TRS = For_TRS
     deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc ] [''For_TRS])
--- {-! for For_TRS derive: Reader, ToDoc  !-}
 
 instance  A.Apply For_TRS ( TRS Identifier Identifier ) 
                        ( Term Identifier Identifier ) 

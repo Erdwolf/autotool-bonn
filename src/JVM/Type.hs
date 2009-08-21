@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module JVM.Type where
 
 --   $Id$
@@ -10,7 +10,6 @@ import Autolib.Reader
 import Autolib.Size
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data Statement = 
 	   Push Integer	 | Drop | Dup
@@ -31,7 +30,6 @@ instance Size Statement where
     size _ = 1
 
 $(derives [makeReader, makeToDoc] [''Statement])
--- {-! for Statement derive: ToDoc, Reader, Haskell2Xml !-}
 
 
 

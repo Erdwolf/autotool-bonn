@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Faktor.Euklid.Param where
 
 --   $Id$
@@ -8,7 +8,6 @@ module Faktor.Euklid.Param where
 import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data Param = 
      Param { von :: Integer
@@ -24,6 +23,5 @@ p = Param { von = 1000
 	  }
 
 $(derives [makeReader, makeToDoc] [''Param])
--- {-! for Param derive: ToDoc, Reader, Haskell2Xml !-}
 
 

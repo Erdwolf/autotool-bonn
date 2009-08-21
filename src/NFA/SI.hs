@@ -1,6 +1,6 @@
 --  -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module NFA.SI where
 
 import Autolib.Exp
@@ -9,7 +9,6 @@ import Autolib.Set
 import Autolib.ToDoc
 import Autolib.Reader
 
--- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data SI = SI { name :: String -- abkürzung
@@ -31,7 +30,6 @@ example =
 	   }
 
 $(derives [makeReader, makeToDoc] [''SI])
--- {-! for SI derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance  Show SI where show = render . toDoc
 instance  Read SI where readsPrec = parsec_readsPrec

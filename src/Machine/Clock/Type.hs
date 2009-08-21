@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Machine.Clock.Type where
 
 --   $Id$
@@ -13,7 +13,6 @@ import Reporter
 data Clock = Clock
 
 $(derives [makeReader, makeToDoc] [''Clock])
--- {-! for Clock derive : Show, Read, ToDoc, Reader !-}
 
 data Type m = 
      Make { fun ::  Integer -> Integer -- gewünschte Laufzeitfunktion

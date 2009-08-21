@@ -1,4 +1,3 @@
-{-# LINE 1 "JVM/Check.hs.drift" #-}
 -- -*- mode: haskell -*-
 
 module JVM.Check where
@@ -20,8 +19,6 @@ import Data.Typeable
 data Checker = Builtins (Set Statement)
 	   | Smallnums Integer
      deriving Typeable
-
-{-! for Checker derive: Reader, ToDoc , Haskell2Xml !-}
 
 instance Check Checker Program where
     check (Builtins allowed) p = do
@@ -64,25 +61,3 @@ instance ToDoc Checker where
               (text "Builtins" </> fsep [toDocPrec 10 aa])
     toDocPrec d (Smallnums aa) = docParen (d >= 10)
               (text "Smallnums" </> fsep [toDocPrec 10 aa])
-
-{-
-instance Haskell2Xml Checker where
-    toHType v =
-        Defined "Checker" []
-                [Constr "Builtins" [] [toHType aa],
-                 Constr "Smallnums" [] [toHType ab]]
-      where
-        (Builtins aa) = v
-        (Smallnums ab) = v
-    fromContents (CElem (Elem constr [] cs):etc)
-        | "Smallnums" `isPrefixOf` constr =
-            (\(ab,_)-> (Smallnums ab, etc)) (fromContents cs)
-        | "Builtins" `isPrefixOf` constr =
-            (\(aa,_)-> (Builtins aa, etc)) (fromContents cs)
-    toContents v@(Builtins aa) =
-        [mkElemC (showConstr 0 (toHType v)) (toContents aa)]
-    toContents v@(Smallnums ab) =
-        [mkElemC (showConstr 1 (toHType v)) (toContents ab)]
--}
-
---  Imported from other files :-

@@ -1,13 +1,12 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Algebraic.Config where
 
 import qualified Autolib.TES.Binu as B
 import Expression.Op
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.ToDoc
 import Autolib.Reader
@@ -16,7 +15,6 @@ import Autolib.Set
 data Information = Formula | Value deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''Information])
--- {-! for Information derive: Haskell2Xml, ToDoc, Reader !-}
 
 data Ops a => Type c a =
      Make { max_formula_size_for_instance :: Int
@@ -29,7 +27,6 @@ data Ops a => Type c a =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Type])
--- {-! for Type derive: Haskell2Xml, ToDoc, Reader !-}
 
 
 

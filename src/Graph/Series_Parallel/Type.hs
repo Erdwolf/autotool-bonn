@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Graph.Series_Parallel.Type where
 
 import Autolib.Graph.Type
@@ -8,7 +8,6 @@ import Autolib.Graph.Basic
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Hash
--- import Text.XML.HaXml.Haskell2Xml
 import Data.Typeable
 
 data GraphC a => STGraph a = STGraph
@@ -21,7 +20,6 @@ data GraphC a => STGraph a = STGraph
 	     )
 
 $(derives [makeReader, makeToDoc] [''STGraph])
--- {-! for STGraph derive: Reader, ToDoc !-}
 
 example :: GraphC Int => STGraph Int
 example = STGraph { source = 1, target = 3
@@ -32,7 +30,6 @@ data Threeway a b = This a | That b | Both Int
    deriving ( Typeable , Ord, Eq )
 
 $(derives [makeReader, makeToDoc] [''Threeway])
--- {-! for Threeway derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance ( Hash a, Hash b ) => Hash ( Threeway a b ) where
     hash ( This x ) = hash ( 15 :: Int , x )

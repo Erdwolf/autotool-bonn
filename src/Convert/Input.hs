@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Convert.Input where
 
 import Autolib.Reader
@@ -8,7 +8,6 @@ import Autolib.ToDoc
 import Autolib.Reporter
 import Autolib.Set
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.NFA ( NFAC )
 import qualified Autolib.NFA
@@ -29,7 +28,6 @@ data Autolib.NFA.NFAC c Int =>
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Input])
--- {-! for Input derive: Reader, ToDoc !-}
 
 example :: Input Char
 example = Regular_Expression { alphabet = mkSet "ab"

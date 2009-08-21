@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Inter.ID where
 
 import Reader
@@ -15,7 +15,6 @@ data ID = ID
           }
 
 $(derives [makeReader, makeToDoc] [''ID])
--- {-! for ID derive : Reader, ToDoc !-}
 
 instance Show ID where
     show = render . toDoc

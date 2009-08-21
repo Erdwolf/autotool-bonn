@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Convert.Language where
 
 import Convert.Input
@@ -10,7 +10,6 @@ import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Reporter
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 import qualified Autolib.NFA
 import qualified Autolib.Exp
@@ -23,7 +22,6 @@ data NFAC c Int => Language c = Language
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Language])
--- {-! for Language derive: Reader, ToDoc !-}
 
 example :: Language Char
 example = Language

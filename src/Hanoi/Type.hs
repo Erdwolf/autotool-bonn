@@ -32,7 +32,6 @@ data Turm = A | B | C | D
 instance Source Turm where source _ = drift __FILE__
 
 $(derives [makeReader, makeToDoc] [''Turm])
--- {-! for Turm derive: Reader, ToDoc !-}
 
 type Hof = FiniteMap Turm [ Scheibe ]
 
@@ -64,7 +63,6 @@ $(asXmlRpcStruct ''HI)
 instance Source HI where source _ = drift __FILE__
 
 $(derives [makeReader, makeToDoc] [''HI])
--- {-! for HI derive: Reader, ToDoc !-}
 
 
 -- local variables:

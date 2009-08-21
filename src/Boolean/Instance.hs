@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Boolean.Instance where
 
 --  $Id$
@@ -13,7 +13,6 @@ import Challenger.Partial
 import qualified Autolib.Reporter.Set
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 import Autolib.ToDoc
 import Autolib.Multilingual
@@ -26,7 +25,6 @@ import Inter.Types
 data Boolean = Boolean deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Boolean])
--- {-! for Boolean derive: Haskell2Xml, ToDoc, Reader !-}
 
 data BI =
      BI { formula :: Exp Bool
@@ -35,7 +33,6 @@ data BI =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''BI])
--- {-! for BI derive: Haskell2Xml, ToDoc, Reader !-}
 
 data BIC =
      BIC { formula_size :: Int
@@ -45,7 +42,6 @@ data BIC =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''BIC])
--- {-! for BIC derive: Haskell2Xml, ToDoc, Reader !-}
 
 instance Partial Boolean BI ( Exp Bool ) where
 

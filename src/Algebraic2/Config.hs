@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Algebraic2.Config where
 
 import Autolib.TES.Identifier
@@ -17,7 +17,6 @@ import Autolib.FiniteMap
 data Information = Formula | Value deriving Typeable
 
 $(derives [makeToDoc, makeReader] [''Information])
--- {-! for Information derive:  ToDoc, Reader !-}
 
 data Ops a => Type c r a =
      Make { context :: c
@@ -35,7 +34,6 @@ data Ops a => Type c r a =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Type])
--- {-! for Type derive: ToDoc, Reader !-}
 
 
 

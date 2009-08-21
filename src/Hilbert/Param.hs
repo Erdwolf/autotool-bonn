@@ -1,6 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Hilbert.Param where
 
 import Autolib.Reader
@@ -27,7 +27,6 @@ example = Param
 	}
 
 $(derives [makeReader, makeToDoc] [''Param])
--- {-! for Param derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

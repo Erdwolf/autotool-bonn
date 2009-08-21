@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module NPDA.Config where
 
 import Language.Syntax
@@ -10,7 +10,6 @@ import NPDA.Property
 
 import Autolib.ToDoc
 import Autolib.Reader
--- import Text.XML.HaXml.Haskell2Xml
 
 import Data.Typeable
 
@@ -26,7 +25,6 @@ data Config =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: ToDoc, Reader !-}
 
 
 

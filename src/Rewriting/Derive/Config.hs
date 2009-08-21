@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Rewriting.Derive.Config where
 
 import qualified Rewriting.Roller as R
@@ -32,7 +32,6 @@ example = Config
         }
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

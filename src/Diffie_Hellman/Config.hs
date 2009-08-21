@@ -37,13 +37,10 @@ data Public =
     deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 $(derives [makeReader, makeToDoc] [''Private])
--- {-! for Private derive: Reader, ToDoc !-}
 
 $(derives [makeReader, makeToDoc] [''Public])
--- {-! for Public derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

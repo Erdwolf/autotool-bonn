@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-overlapping-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Machine.Numerical.Config where
 
 --   $Id$
@@ -13,7 +13,6 @@ import Autolib.Reader
 import Autolib.Reporter
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 class  Check c m where
     check :: c -> m -> Reporter ()
@@ -21,14 +20,12 @@ class  Check c m where
 class ( Reader [c], Reader m, Reader c
       , ToDoc [c], ToDoc m , ToDoc c
       , Typeable c, Typeable m
-      -- , Haskell2Xml [c], Haskell2Xml m, Haskell2Xml c
       )
     => ConfigC c m
 
 instance  ( Reader [c], Reader m, Reader c
       , ToDoc [c], ToDoc m , ToDoc c
       , Typeable c, Typeable m
-      -- , Haskell2Xml [c], Haskell2Xml m, Haskell2Xml c
       )
     => ConfigC c m
 
@@ -46,5 +43,3 @@ data  ConfigC c m => Config c m =
      deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
-

@@ -1,6 +1,6 @@
 {-# OPTIONS -fallow-overlapping-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Modular.Instance where
 
 import Network.XmlRpc.Internals
@@ -26,7 +26,6 @@ instance XmlRpcType ( Instance ) where
     getType _ = TStruct
 
 $(derives [makeToDoc] [''Instance])
--- {-! for Instance derive: ToDoc !-}
 
 -- local variables:
 -- mode: haskell

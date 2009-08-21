@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Control.Vorlesung.Typ where
 
 import Control.Types
@@ -9,7 +9,6 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml hiding ( Name )
 
 -- | das sollte exactly das sein, was auch in DB-tabelle  steht
 
@@ -27,7 +26,6 @@ data Vorlesung =
      deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''Vorlesung])
--- {-! for Vorlesung derive: Reader, ToDoc, Haskell2Xml !-}
 
 
 

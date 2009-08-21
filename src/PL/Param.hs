@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module PL.Param where
 
 import PL.Type
@@ -23,7 +23,6 @@ example = Param
 	}
 
 $(derives [makeReader, makeToDoc] [''Param])
--- {-! for Param derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

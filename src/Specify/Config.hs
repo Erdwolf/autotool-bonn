@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Specify.Config where
 
 import Specify.Constraint
@@ -17,7 +17,6 @@ data Config =
     deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config
 example = Config 

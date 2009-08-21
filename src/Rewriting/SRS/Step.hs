@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Rewriting.SRS.Step where
 
 -- import Rewriting.SRS
@@ -21,7 +21,6 @@ data ( Symbol c ) => Step c = Step
 instance Size ( Step c ) where size _ = 1
 
 $(derives [makeReader, makeToDoc] [''Step])
--- {-! for Step derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module String_Matching.BM.Instance where
 
 import String_Matching.Option
@@ -25,7 +25,6 @@ data  Ord a => Instance a =
     deriving ( Eq, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Instance])
--- {-! for Instance derive: Reader, ToDoc !-}
 
 instance Ord a => Sub ( Instance a ) ( Instance a ) where
     sub i j = and

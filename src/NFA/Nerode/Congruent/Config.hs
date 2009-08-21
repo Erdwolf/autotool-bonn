@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module NFA.Nerode.Congruent.Config where
 
 import Autolib.ToDoc
@@ -17,7 +17,6 @@ data Ord c => Config c = Config
     deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config Char
 example = Config

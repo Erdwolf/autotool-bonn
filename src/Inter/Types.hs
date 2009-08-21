@@ -21,7 +21,6 @@ import  Autolib.Informed
 import Data.Typeable
 import Data.Char
 
--- import Text.XML.HaXml.Haskell2Xml
 import Network.XmlRpc.Internals
 
 type Matrikel = String
@@ -81,7 +80,6 @@ instance ToDoc Make
 -- | build maker just from Challenger.Partial instance
 -- (suitable for simple problems that don't need generation of instances)
 direct :: ( V p i b 
-	  -- , Haskell2Xml i
 	  , Reader i 
 	  -- , Read i 
 	  , ToDoc i
@@ -142,10 +140,8 @@ class ( Show p, Typeable p , Read p
       , Typeable i, ToDoc i
 	  , XmlRpcType i
 	  , XmlRpcType b
-      -- , Haskell2Xml i
       , Reader i, Read i
       , Typeable b
-      -- , Haskell2Xml b
       , ToDoc b, Reader b 
       , Partial p i b
       ) => V p i b -- ohne methoden
@@ -154,10 +150,8 @@ instance ( Show p, Typeable p, Read p
 	  , XmlRpcType b
       -- , Roller i i
       , Typeable i, ToDoc i
-      -- , Haskell2Xml i
       , Reader i, Read i
       , Typeable b
-      -- , Haskell2Xml b
       , ToDoc b, Reader b 
       , Partial p i b
       ) => V p i b -- ohne methoden

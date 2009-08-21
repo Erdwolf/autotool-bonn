@@ -9,7 +9,6 @@ import Autolib.Set
 import Autolib.Letters
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 import Network.XmlRpc.Internals
 import Network.XmlRpc.THDeriveXmlRpcType
@@ -20,7 +19,6 @@ instance Letters PCP Char where
     letters ( PCP uvs ) = mkSet $ do (u, v) <- uvs ; u ++ v
 
 $(derives [makeReader, makeToDoc] [''PCP])
--- {-! for PCP derive: ToDoc, Reader, Haskell2Xml !-}
 
 data Pair = Pair { top :: String, bot :: String }
 

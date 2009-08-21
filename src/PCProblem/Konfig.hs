@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module PCProblem.Konfig where
 
 import PCProblem.Type
@@ -28,7 +28,6 @@ instance Ord Konfig where
     compare k1 k2 = compare ( wesen k1 ) ( wesen k2 )
 
 $(derives [makeReader, makeToDoc] [''Konfig])
--- {-! for Konfig derive: ToDoc, Reader !-}
 
 instance Show Konfig where show = render . toDoc
 instance Read Konfig where readsPrec = parsec_readsPrec

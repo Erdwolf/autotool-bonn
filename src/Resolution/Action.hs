@@ -16,7 +16,6 @@ data Action = Resolve { left :: Int, right :: Int, literal :: Literal }
 instance Size Action where size _ = 1
 
 $(derives [makeReader, makeToDoc] [''Action])
--- {-! for Action derive: Reader, ToDoc !-}
 
 example :: Action
 example = Resolve { left = 0, right = 1, literal = read "! x" }

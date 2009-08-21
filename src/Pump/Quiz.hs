@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+
 module Pump.Quiz where
 
 import Language.Syntax
@@ -16,7 +17,6 @@ example :: Conf z
 example = Conf { lang = Lukas, ja_bound = 10 }
 
 $(derives [makeReader, makeToDoc] [''Conf])
--- {-! for Conf derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

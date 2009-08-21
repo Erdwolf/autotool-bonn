@@ -1,13 +1,12 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Language.Syntax where
 
 import Grammatik.Type
 
 import Autolib.Reader
 import Autolib.ToDoc
--- import Text.XML.HaXml.Haskell2Xml
 
 import Data.Typeable
 
@@ -41,7 +40,6 @@ data Type
    deriving ( Eq, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Type])
--- {-! for Type derive: Reader, ToDoc, Haskell2Xml !-}
 
 -- local variables:
 -- mode: haskell

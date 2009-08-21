@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Program.Array.Config where
 
 import Program.Array.Operator
@@ -29,7 +29,6 @@ example = Config
 	}
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell

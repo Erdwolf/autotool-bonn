@@ -17,7 +17,6 @@ import Autolib.Hash
 import Data.Maybe
 import Data.Char
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 -- | generator könnte noch zusätzliche information erzeugen
 -- (und in cache schreiben) bsp. zu PCP-instanz auch die lösung
@@ -78,7 +77,6 @@ quiz :: ( Generator p conf k , Project p k i
 	, V p i b
 	, Verify p conf
 	, Typeable conf, Reader conf, ToDoc conf
-	-- , Haskell2Xml conf
 	, Show conf, Read conf
 	)
      => p -- ^ problem type

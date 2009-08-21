@@ -12,7 +12,7 @@ import Lambda.Step
 import Challenger.Partial
 import Inter.Types
 import Inter.Quiz
-import Autolib.ToDoc hiding (derive)
+import Autolib.ToDoc
 import Autolib.Reporter
 import Data.Typeable
 

@@ -1,5 +1,5 @@
 {-# LANGUAGE OverlappingInstances, TemplateHaskell #-}
-{-# language IncoherentInstances #-}
+{-# LANGUAGE IncoherentInstances #-}
 
 -- -*- mode: haskell -*-
 
@@ -29,13 +29,11 @@ import Data.Maybe
 import Autolib.Reporter
 
 class ( Read z, Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z 
---      , Haskell2Xml z
       , Hash z
       )
       
     => RTO z
 instance ( Read z, Reader z , Reader [z], ToDoc z, ToDoc [z], Ord z 
---      , Haskell2Xml z
         , Hash z
 	 )
     => RTO z
@@ -48,7 +46,6 @@ instance RTO z => Hash ( Modus z ) where
     hash ( Zustand xs ) = hash xs
 
 $(derives [makeReader, makeToDoc] [''Modus])
--- {-! for Modus derive: Reader, ToDoc !-}
 
 class ( RTO x, RTO y, RTO z )
     => NPDAC x y z
@@ -78,7 +75,6 @@ instance Container (x, z, y) (x, (z, y)) where
     unpack (x, (y, z)) = (x, y, z)
 
 $(derives [makeReader, makeToDoc] [''NPDA])
--- {-! for NPDA derive: Reader, ToDoc !-}
 
 instance NPDAC x y z => Size (NPDA x y z) where
     size a = length $ unCollect' $ transitionen a

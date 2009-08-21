@@ -11,7 +11,6 @@ import Autolib.Reader
 import Autolib.Set
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data ( ToDoc [a], Reader [a], Ord a ) => Config a =
      Config { alphabet :: Set a
@@ -22,7 +21,6 @@ data ( ToDoc [a], Reader [a], Ord a ) => Config a =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc, Haskell2Xml !-}
 
 example :: Config Char
 example = Config

@@ -1,6 +1,6 @@
 {-# OPTIONS -XMultiParamTypeClasses #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Rushhour.Config where
 
 import Rushhour.Data ( Rushhour )
@@ -25,7 +25,6 @@ data Config =
 	    }
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config
 example = Config

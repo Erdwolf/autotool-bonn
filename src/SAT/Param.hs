@@ -1,7 +1,6 @@
 {-# OPTIONS -Onot -fglasgow-exts #-}
-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module SAT.Param where
 
 --   $Id$
@@ -13,7 +12,6 @@ import Autolib.ToDoc
 import Autolib.Set
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data Param = 
      Param { vars :: Set Variable
@@ -30,7 +28,6 @@ p n = let f = 3.5 :: Double
 
 
 $(derives [makeReader, makeToDoc] [''Param])
--- {-! for Param derive: ToDoc, Reader !-}
 
 -- local variables:
 -- mode: haskell

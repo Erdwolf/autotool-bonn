@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module PCProblem.Pick where
 
 import Autolib.ToDoc
@@ -14,7 +14,6 @@ data Pick =
      deriving ( Eq, Ord )
 
 $(derives [makeReader, makeToDoc] [''Pick])
--- {-! for Pick derive: Reader, ToDoc !-}
 
 instance Show Pick where show = render . toDoc
 instance Read Pick where readsPrec = parsec_readsPrec

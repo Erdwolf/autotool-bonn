@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Grammatik.Type 
 
 ( module Grammatik.Type
@@ -17,7 +17,6 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 data Grammatik = Grammatik
 	       { terminale      :: Set Char
@@ -36,7 +35,6 @@ example = Grammatik
         }
 
 $(derives [makeReader, makeToDoc] [''Grammatik])
--- {-! for Grammatik derive: ToDoc, Reader, Haskell2Xml !-}
 
 instance Hash Grammatik where
     hash g = hash [ hash $ terminale g

@@ -13,7 +13,6 @@ import qualified Autolib.Reporter.Checker as C
 
 import Autolib.Reader
 import Autolib.ToDoc
--- import Text.XML.HaXml.Haskell2Xml
 
 import Data.Typeable
 
@@ -33,7 +32,6 @@ data Property = Eindeutig Int
      deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Property])
--- {-! for Property derive: Reader, ToDoc, Haskell2Xml !-}
 
 instance Condition  Property Grammatik where
     condition p a = C.run ( Grammatik.Property.check p ) a

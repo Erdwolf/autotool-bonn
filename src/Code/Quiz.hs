@@ -17,7 +17,6 @@ import Autolib.Util.Seed
 
 import System.Random
 import Data.Typeable
--- import Text.XML.HaXml.Haskell2Xml
 
 -- testing
 import qualified Code.Move_To_Front as MTF

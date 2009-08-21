@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module NFA.Compress.Compressed where
 
 import NFA.Compress.Data
@@ -26,7 +26,6 @@ data Compressed =
   deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Compressed])
--- {-! for Compressed derive: Reader, ToDoc !-}
 
 example :: Compressed
 example = Compressed

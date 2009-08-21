@@ -10,7 +10,6 @@ data Target = Empty | Random
     deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Target])
--- {-! for Target derive : Reader, ToDoc !-}
 
 data Config =
      Config { num_variables :: Int
@@ -20,7 +19,6 @@ data Config =
     deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive : Reader, ToDoc !-}
 
 example :: Config
 example = Config

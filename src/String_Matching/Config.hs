@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module String_Matching.Config where
 
 import Autolib.TES.Identifier
@@ -19,7 +19,6 @@ data Ord  a => Config a =
     deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Config])
--- {-! for Config derive: Reader, ToDoc !-}
 
 example :: Config Identifier
 example = Config

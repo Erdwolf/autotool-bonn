@@ -1,6 +1,6 @@
 {-# OPTIONS -fglasgow-exts #-}
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Lambda.Backward_Join.Solution where
 
 import Lambda.Type
@@ -18,7 +18,6 @@ data Type = Make
      deriving ( Typeable, Eq, Ord )
 
 $(derives [makeReader, makeToDoc] [''Type])
--- {-! for Type derive: ToDoc, Reader !-}
 
 example :: Type
 example = Make

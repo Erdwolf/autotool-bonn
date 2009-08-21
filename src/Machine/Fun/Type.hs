@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Machine.Fun.Type where
 
 --   $Id$
@@ -13,7 +13,6 @@ import Reporter
 data Computer = Computer
 
 $(derives [makeReader, makeToDoc] [''Computer])
--- {-! for Computer derive : Show, Read, ToDoc, Reader !-}
 
 data Type m dat = 
      Make { pairs :: [ (dat, dat) ] -- zu berechnende funktion

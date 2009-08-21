@@ -1,6 +1,6 @@
 -- -*- mode: haskell -*-
-
 {-# LANGUAGE TemplateHaskell #-}
+
 module Pump.CF.Type where
 
 --   $Id$
@@ -17,7 +17,6 @@ data Zerlegung = Zerlegung
      deriving (Eq, Ord, Typeable)
 
 $(derives [makeReader, makeToDoc] [''Zerlegung])
--- {-! for Zerlegung derive: Reader, ToDoc !-}
 
 instance Hash Zerlegung where
     hash e = hash ( hash ( u e, v e ), x e , hash ( y e, z e ) )

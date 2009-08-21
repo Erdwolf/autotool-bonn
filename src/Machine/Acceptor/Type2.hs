@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+
 module Machine.Acceptor.Type2 where
 
 --   $Id$
@@ -45,7 +46,6 @@ data Class dat prop => Type m dat prop =
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Type])
--- {-! for Type derive: Reader, ToDoc !-}
 
 -- local variables:
 -- mode: haskell
