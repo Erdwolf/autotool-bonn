@@ -12,7 +12,17 @@ Stability:      Experimental
 Cabal-Version:  >=1.2
 Build-Type:     Simple
 
+Flag super
+  Description: Build Super.cgi
+  Default: False
+
+Flag trial
+  Description: Build Trial.cgi
+  Default: True
+
 Executable Trial.cgi
+  if !flag(trial)
+    Buildable: False
   Build-Depends:
     autolib-todoc,autolib-data,autolib-reader,
     autolib-output,autolib-reporter,
@@ -35,6 +45,37 @@ Executable Trial.cgi
      UndecidableInstances,
      IncoherentInstances,
      ScopedTypeVariables,
-     FunctionalDependencies
+     FunctionalDependencies,
+     TemplateHaskell
   Hs-source-dirs: src , src/control, common
   Main-Is: Inter/Trial.hs
+
+Executable Super.cgi
+  if !flag(super)
+    Buildable: False
+  Build-Depends:
+    autolib-todoc,autolib-data,autolib-reader,
+    autolib-output,autolib-reporter,
+    autolib-util,autolib-fa,autolib-fta,
+    autolib-graph,autolib-relation,autolib-exp,
+    autolib-rewriting,autolib-dot,autolib-algorithm,
+    base == 3.*,parsec==2.*, old-locale,old-time,
+    xhtml==3000.*,cgi,
+    hsql==1.7.1,hsql-mysql==1.7.1,
+    containers,directory,random,mtl,
+    process,unix,
+    haxr==3000.1.1.3,haxr-th,
+    obdd,array,pretty
+  GHC-Options:    -Wall
+  Extensions: DeriveDataTypeable,
+     MultiParamTypeClasses,
+     TypeSynonymInstances,
+     FlexibleInstances,
+     FlexibleContexts,
+     UndecidableInstances,
+     IncoherentInstances,
+     ScopedTypeVariables,
+     FunctionalDependencies,
+     TemplateHaskell
+  Hs-source-dirs: src , src/control, common
+  Main-Is: Inter/Super.hs
