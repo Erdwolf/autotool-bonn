@@ -151,8 +151,10 @@ lesen d  = do
     if ex then do
             f <- openFile h ReadMode
             cs <- hGetContents f
-	    hClose f
-	    return cs
+            -- hGetContents is lazy - force its result before closing the file
+            Control.Exception.evaluate (last cs)
+            hClose f
+            return cs
         else error $ "file: " ++ h ++ " does not exist"
 
 existiert :: Datei -> IO Bool
