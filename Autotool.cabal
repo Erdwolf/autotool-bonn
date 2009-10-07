@@ -34,7 +34,7 @@ Executable Trial.cgi
     hsql==1.7.1,hsql-mysql==1.7.1,
     containers,directory,random,mtl,
     process,unix,
-    haxr==3000.1.1.3,haxr-th,
+    autolib-transport,
     obdd,array,pretty
   GHC-Options:    -Wall
   Extensions: DeriveDataTypeable,
