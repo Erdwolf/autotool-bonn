@@ -1,0 +1,21 @@
+Name:           autotool-server
+Version:        0.9
+Author:         Bertram Felgenhauer
+Maintainer:     Bertram Felgenhauer
+Stability:      Experimental
+Cabal-Version:  >= 1.2
+Build-Type:     Simple
+
+Executable autotool.cgi
+    Main-Is:        Main.hs
+    Hs-Source-Dirs: src
+    Build-Depends:
+        autotool-collection,
+        autolib-transport,
+	autolib-todoc,
+	autolib-output,
+        base >= 3 && < 3.1,
+        haxr >= 3000.1 && < 3000.2
+    Extensions:
+        FlexibleInstances
+        UndecidableInstances
