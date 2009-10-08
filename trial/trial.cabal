@@ -1,0 +1,42 @@
+Name:           autotool-trial
+Version:        1.0
+-- License:        GPL
+-- License-File:   LICENSE
+Author:         Johannes Waldmann
+Maintainer:     Johannes Waldmann
+Homepage:       http://dfa.imn.htwk-leipzig.de/auto/
+Category:       E-Testing
+Synopsis:       E-Testing
+Description:    E-Testing
+Stability:      Experimental
+Cabal-Version:  >=1.2
+Build-Type:     Simple
+
+Executable Trial.cgi
+  Build-Depends:
+    autolib-todoc,autolib-data,autolib-reader,
+    autolib-output,autolib-reporter,
+    autolib-util,autolib-fa,autolib-fta,
+    autolib-graph,autolib-relation,autolib-exp,
+    autolib-rewriting,autolib-dot,autolib-algorithm,
+    autotool-collection,
+    base == 3.*,parsec==2.*, old-locale,old-time,
+    xhtml==3000.*,cgi,
+    hsql==1.7.1,hsql-mysql==1.7.1,
+    containers,directory,random,mtl,
+    process,unix,
+    autolib-transport,
+    obdd,array,pretty
+  GHC-Options:    -Wall
+  Extensions:
+     DeriveDataTypeable
+     MultiParamTypeClasses
+     TypeSynonymInstances
+     FlexibleInstances
+     FlexibleContexts
+     UndecidableInstances
+     ScopedTypeVariables
+     FunctionalDependencies
+     TemplateHaskell
+  Hs-source-dirs: src, src/control, common
+  Main-Is: Inter/Trial.hs

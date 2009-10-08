@@ -1,0 +1,7 @@
+#! /bin/sh
+
+# find modules depending on Inter.Trial:
+# 1) use ghc to find all dependencies
+ghc -i -isrc -isrc/control -icommon -odir dist/build -hidir dist/build -stubdir dist/build -XDeriveDataTypeable -XMultiParamTypeClasses -XTypeSynonymInstances -XFlexibleInstances -XFlexibleContexts -XUndecidableInstances -XScopedTypeVariables -XFunctionalDependencies src/Inter/Trial.hs -M
+# 2) select direct dependencies and extract module names
+grep '\.o : .*\.hs$' Makefile | sed -e 's=dist/build/=        =' -e 's=\.o : .*==' -e 's=/=.=g' | sort > modules && wc -l modules
