@@ -9,14 +9,11 @@ import Autolib.Set
 
 import Data.Typeable
 import Autolib.Xml
-import Network.XmlRpc.Internals
 
 class    ( Ord a,  ToDoc a, Reader a, Typeable a, ToDoc [a], Reader [a]
-         , XmlRpcType [a]
 	 )
     => InstanceC a 
 instance ( Ord a, ToDoc a, Reader a, Typeable a,  ToDoc [a], Reader [a]
-         , XmlRpcType [a]
 	 )
     => InstanceC a 
 

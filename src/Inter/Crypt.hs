@@ -14,8 +14,6 @@ where
 import Codec.Encryption.MD5 ( hash )
 import Codec.Encryption.Utils ( Octet )
 
-import Control.SQL
-
 import System.Random
 import Data.Word
 import Data.Typeable

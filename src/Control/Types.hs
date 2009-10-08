@@ -39,7 +39,6 @@ import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Hash
 
--- import System.Time
 import Control.Time
 
 import Control.SQL hiding ( equals )

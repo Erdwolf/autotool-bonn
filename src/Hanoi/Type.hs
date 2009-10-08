@@ -1,4 +1,4 @@
-{-# OPTIONS -cpp -fth #-}
+{-# OPTIONS -cpp #-}
 {-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, TemplateHaskell #-}
 
 
@@ -19,8 +19,6 @@ import Data.Typeable
 
 import Gateway.Help
 
-import Network.XmlRpc.Internals
-import Network.XmlRpc.THDeriveXmlRpcType
 import Inter.Types ()
 
 
@@ -35,6 +33,7 @@ $(derives [makeReader, makeToDoc] [''Turm])
 
 type Hof = FiniteMap Turm [ Scheibe ]
 
+{-
 instance XmlRpcType Hof where
     getType _ = TStruct
     toValue h = ValueStruct $ do
@@ -47,6 +46,7 @@ instance XmlRpcType Hof where
                  vv <- fromValue v
                  return ( read k, vv )
         return $ listToFM kvs
+-}
 
 type Zug = ( Turm, Turm )
 
@@ -58,7 +58,7 @@ data HI = HI { start :: Hof
 	     }
     deriving ( Typeable )
 
-$(asXmlRpcStruct ''HI)
+-- $(asXmlRpcStruct ''HI)
 
 instance Source HI where source _ = drift __FILE__
 

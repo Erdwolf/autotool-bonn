@@ -2,8 +2,6 @@
 
 module Robots3.TH where
 
-import Network.XmlRpc.Internals
-import Network.XmlRpc.THDeriveXmlRpcType
 import Robots3.Data
 import Robots3.Config
 
@@ -12,11 +10,12 @@ import Inter.Types () -- get some default instances
 import Data.List ( isPrefixOf )
 import Control.Monad ( guard )
 
-$(asXmlRpcStruct ''Position)
-$(asXmlRpcStruct ''Robot)
-$(asXmlRpcStruct ''Zug)
+-- $(asXmlRpcStruct ''Position)
+-- $(asXmlRpcStruct ''Robot)
+-- $(asXmlRpcStruct ''Zug)
 
 
+{-
 instance XmlRpcType Config where
     getType k = TStruct
     toValue k = ValueStruct
@@ -29,4 +28,5 @@ instance XmlRpcType Config where
 	rsv <- fromValue rs
 	gsv <- fromValue gs
 	return $ make rsv gsv
+-}
 

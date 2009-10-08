@@ -25,8 +25,6 @@ import Challenger.Partial
 import Inter.Types
 import Inter.Quiz
 
-import Network.XmlRpc.Internals ( XmlRpcType )
-
 import Control.Monad
 import Data.Typeable
 
@@ -47,7 +45,6 @@ class ( Reader x, ToDoc x, Typeable x ) => RDT x
 instance ( Reader x, ToDoc x, Typeable x ) => RDT x
 
 instance ( RDT tag, RDT action, RDT object , RDT system
-         , XmlRpcType [action]
          , Eq object
          , Apply tag system object action 
          )
@@ -81,7 +78,6 @@ instance Measure ( Derive tag ) ( Instance system object ) [ action ] where
 
 make_fixed :: ( RDT tag, RDT action, RDT object , RDT system
          , Eq object
-         , XmlRpcType [action]
          , Apply tag system object action 
          )
            => tag -> Make

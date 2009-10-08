@@ -37,13 +37,13 @@ Executable Trial.cgi
     autolib-transport,
     obdd,array,pretty
   GHC-Options:    -Wall
-  Extensions: DeriveDataTypeable,
+  Extensions:
+     DeriveDataTypeable,
      MultiParamTypeClasses,
      TypeSynonymInstances,
      FlexibleInstances,
      FlexibleContexts,
      UndecidableInstances,
-     IncoherentInstances,
      ScopedTypeVariables,
      FunctionalDependencies,
      TemplateHaskell
@@ -73,7 +73,6 @@ Executable Super.cgi
      FlexibleInstances,
      FlexibleContexts,
      UndecidableInstances,
-     IncoherentInstances,
      ScopedTypeVariables,
      FunctionalDependencies,
      TemplateHaskell

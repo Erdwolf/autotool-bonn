@@ -1,5 +1,6 @@
-{-# LANGUAGE OverlappingInstances, TemplateHaskell #-}
-{-# LANGUAGE IncoherentInstances #-}
+-- {-# LANGUAGE OverlappingInstances #-}
+{-# LANGUAGE TemplateHaskell #-}
+-- {-# LANGUAGE IncoherentInstances #-}
 
 -- -*- mode: haskell -*-
 

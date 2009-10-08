@@ -1,4 +1,5 @@
-{-# language TemplateHaskell, CPP, OverlappingInstances, IncoherentInstances #-}
+{-# LANGUAGE TemplateHaskell, CPP #-}
+-- , OverlappingInstances, IncoherentInstances #-}
 
 -- main module
 

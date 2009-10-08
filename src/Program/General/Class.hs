@@ -1,4 +1,5 @@
-{-# language MultiParamTypeClasses, FunctionalDependencies, IncoherentInstances #-}
+{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
+-- , IncoherentInstances #-}
 
 module Program.General.Class where
 

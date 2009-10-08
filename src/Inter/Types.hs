@@ -1,5 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
-{-# language OverlappingInstances, UndecidableInstances, IncoherentInstances, ScopedTypeVariables #-}
+{-# LANGUAGE GADTs #-}
 
 module Inter.Types where
 
@@ -21,8 +20,6 @@ import  Autolib.Informed
 import Data.Typeable
 import Data.Char
 
-import Network.XmlRpc.Internals
-
 type Matrikel = String
 
 type Key = String
@@ -35,8 +32,6 @@ dashed p = map ( \ c -> if isSpace c then '-' else c )
 data Make = forall conf p i b 
           . ( V p i b 
 	    , Typeable conf 
-
-	    , XmlRpcType conf
 
 	    , ToDoc conf -- 
 	    -- , Show conf
@@ -53,6 +48,7 @@ data Make = forall conf p i b
 
 ---------------------------------------------------------------------------------
 
+{-
 instance ( Reader a, ToDoc a, Typeable a ) => XmlRpcType a where 
     getType x = TString
     toValue x = ValueString $ show $ toDoc x
@@ -64,6 +60,7 @@ instance ( Reader a, ToDoc a, Typeable a ) => XmlRpcType a where
        _ -> fail 
               $ "using (wrong) default XmlRpcType instance for " 
                   ++ show (typeOf ( undefined :: a ))
+-}
 
 -- the XmlRpcType(a,b) instance is now in Autolib.XmlRpc
 -- the XmlRpcType Integer instance is now in Autolib.XmlRpc
@@ -138,16 +135,12 @@ get_b_type = error "get_b_type: don't call"
 
 class ( Show p, Typeable p , Read p
       , Typeable i, ToDoc i
-	  , XmlRpcType i
-	  , XmlRpcType b
       , Reader i, Read i
       , Typeable b
       , ToDoc b, Reader b 
       , Partial p i b
       ) => V p i b -- ohne methoden
 instance ( Show p, Typeable p, Read p
-	  , XmlRpcType i
-	  , XmlRpcType b
       -- , Roller i i
       , Typeable i, ToDoc i
       , Reader i, Read i

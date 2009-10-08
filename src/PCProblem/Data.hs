@@ -10,9 +10,6 @@ import Autolib.Letters
 
 import Data.Typeable
 
-import Network.XmlRpc.Internals
-import Network.XmlRpc.THDeriveXmlRpcType
-
 data PCP = PCP [(String, String)] deriving ( Typeable )
 
 instance Letters PCP Char where
@@ -25,6 +22,7 @@ data Pair = Pair { top :: String, bot :: String }
 topair (x,y) = Pair x y
 frompair p = ( top p, bot p )
 
+{-
 instance XmlRpcType PCP where
     getType (PCP ps) = getType $ map topair ps
     toValue (PCP ps) = toValue $ map topair ps
@@ -33,6 +31,7 @@ instance XmlRpcType PCP where
 	return $ PCP $ map frompair ps
 
 $(asXmlRpcStruct ''Pair)
+-}
 
 -- local variables:
 -- mode: haskell

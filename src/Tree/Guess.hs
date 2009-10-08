@@ -1,4 +1,4 @@
-{-# LANGUAGE OverlappingInstances, IncoherentInstances #-}
+-- {-# LANGUAGE OverlappingInstances, IncoherentInstances #-}
 
 module Tree.Guess where
 

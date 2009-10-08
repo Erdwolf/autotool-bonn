@@ -1,7 +1,7 @@
 module Control.Time 
 
 ( module Control.Time.Typ
-, module Control.Time.CGI
+-- , module Control.Time.CGI
 )
 
 where
@@ -10,7 +10,7 @@ where
 
 
 import Control.Time.Typ
-import Control.Time.CGI
+-- import Control.Time.CGI
 
 
 

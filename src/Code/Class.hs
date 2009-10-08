@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances -fallow-undecidable-instances #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module Code.Class where
 
@@ -15,10 +15,7 @@ import Autolib.Reporter
 
 import Data.Typeable
 
-import Network.XmlRpc.Internals ( XmlRpcType )
-
 instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b 
-         , XmlRpcType [a]
          )
 	 => Partial ( Encode c ) [ a ] b where
 
@@ -44,7 +41,6 @@ enc :: ( Reader c, Reader b, ToDoc c, Coder c Char b, Read b ) => c -> Make
 enc c = direct (Encode c) "abracadabra"
 
 instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b 
-         , XmlRpcType [a]
          )
 	 => Partial ( Decode c ) b [ a ] where
 
@@ -65,7 +61,6 @@ instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b
 	 
 
 dec :: (Reader b, Reader c, ToDoc c, ToDoc a, Reader a, Coder c a b , Show b, Read b 
-                        , XmlRpcType [a]
        ) 
        => c -> b -> Make
 dec c b = direct (Decode c) b

@@ -1,4 +1,4 @@
-{-# language OverlappingInstances,IncoherentInstances #-}
+-- {-# language OverlappingInstances,IncoherentInstances #-}
 
 module Graph.Hamilton.Plain where
 

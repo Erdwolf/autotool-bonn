@@ -14,7 +14,9 @@ import Control.Types
     , Oks (..), Nos (..), Time , Wert (..), MNr, SNr, VNr, ANr, UNr
     , TimeStatus (..)
     )
-import Control.Time 
+import Control.Time
+import Control.Time.CGI
+import qualified Control.Time.CGI as Control.Time
 
 import Autolib.Reporter
 import Autolib.ToDoc

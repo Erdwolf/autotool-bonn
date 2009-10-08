@@ -5,6 +5,7 @@ import Gateway.CGI
 import Control.Semester.Typ as S
 import Control.Semester.DB
 import qualified Control.Time
+import qualified Control.Time.CGI as Control.Time
 import Control.Monad
 
 

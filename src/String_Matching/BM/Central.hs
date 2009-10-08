@@ -18,7 +18,6 @@ import Inter.Types
 import Inter.Quiz
 
 import Data.Typeable
-import Network.XmlRpc.Internals ( XmlRpcType )
 
 data String_Matching_BM = String_Matching_BM 
     deriving ( Read, Show, Typeable )
@@ -27,7 +26,6 @@ instance Measure String_Matching_BM ( Instance a ) [a] where
     measure p i b = fromIntegral $ length b
 
 instance ( Ord a, Reader a, ToDoc a, Typeable a 
-         , XmlRpcType [a]
          ) 
     => Partial String_Matching_BM ( Instance a ) [a] where
 
