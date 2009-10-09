@@ -18,3 +18,18 @@ Test RPC calls:
     <param><value><string>Algebraic_STGraph-Quiz</string></value></param>
   </params>
 </methodCall>
+
+
+Types:
+data Description  = DString String | ...
+data Documented a = Documented { contents :: a, documentation :: Description }
+data Signed a     = Signed { contents :: a, signature :: Signature }
+data Config       = CString String | ...
+
+?? data Instance     = Instance { tag :: String, contents :: String }
+?? data Solution     = Solution { contents :: String }
+
+type Seed = String
+type Task = String
+type Name = String
+type Signature = String

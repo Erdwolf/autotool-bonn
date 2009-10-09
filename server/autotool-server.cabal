@@ -14,9 +14,15 @@ Executable autotool.cgi
         autolib-transport,
         autolib-todoc,
         autolib-output,
+        autolib-reader,
+        autolib-reporter,
+        SHA >= 1.4 && < 1.5,
         base >= 3 && < 3.1,
+        bytestring >= 0.9 && < 0.10,
         containers >= 0.2 && < 0.3,
         haxr >= 3000.1 && < 3000.2,
+        mtl >= 1.1 && < 1.2,
+        parsec >= 2.1 && < 2.2,
         xhtml >= 3000.2 && < 3000.3
     Extensions:
         FlexibleInstances

@@ -1,5 +1,7 @@
 module Util.Description (
     fromDoc,
+    fromToDoc,
+    fromOutput,
     help
 ) where
 
@@ -23,5 +25,8 @@ fromDoc = DString . AT.render
 fromHtml :: AM.Type Html -> Description
 fromHtml = DString . renderHtml . AM.specialize language
 
+fromOutput :: AO.Output -> Description
+fromOutput = fromHtml . AO.render
+
 help :: (Data.Typeable.Typeable a) => a -> Description
-help = fromHtml . AO.render . GH.help
+help = fromOutput . GH.help

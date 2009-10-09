@@ -1,6 +1,7 @@
 module Util.Task (
     ttmakers,
-    lookupTask
+    lookupTask,
+    lookupTaskM
 ) where
 
 import Types.TaskTree
@@ -20,3 +21,6 @@ ttmakers = mkTaskForest (T.subForest tmakers) where
 lookupTask :: String -> Maybe Make
 lookupTask name = listToMaybe
     [m | m@(Make _ name' _ _ _) <- makers, name == name']
+
+lookupTaskM :: Monad m => String -> m Make
+lookupTaskM = maybe (fail "invalid task type") return . lookupTask

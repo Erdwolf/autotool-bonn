@@ -6,6 +6,6 @@ module Types.Config (
 
 import Data.Autolib.Transport
 
-data Config = Config String
+data Config = CString String
 
 $(derives [makeToTransport] [''Config])

@@ -10,15 +10,13 @@ import Types.Documented
 import Types.Config
 import Types.TT
 
-import Inter.Collector
 import Inter.Types
 
 import qualified Autolib.ToDoc as AT
 
 get_task_description :: TT Task -> IO (TT (Documented Config))
 get_task_description (TT name) = TT `fmap` do
-    Make _ _ _ _ conf <-
-        maybe (fail "invalid task type") return (lookupTask name)
+    Make _ _ _ _ conf <- lookupTaskM name
     return $ Documented
-            (Config (AT.render . AT.toDoc $ conf))
+            (CString (AT.render . AT.toDoc $ conf))
             (help conf)
