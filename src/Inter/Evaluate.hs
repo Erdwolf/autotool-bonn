@@ -2,11 +2,8 @@ module Inter.Evaluate where
 
 --   $Id$
 
-import Inter.Area
-
 import Inter.Types
 import Gateway.Errmsg
-import qualified Inter.Param as P
 
 import Control.Types ( Wert (..) )
 
