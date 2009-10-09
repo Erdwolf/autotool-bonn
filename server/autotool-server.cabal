@@ -12,10 +12,12 @@ Executable autotool.cgi
     Build-Depends:
         autotool-collection,
         autolib-transport,
-	autolib-todoc,
-	autolib-output,
+        autolib-todoc,
+        autolib-output,
         base >= 3 && < 3.1,
-        haxr >= 3000.1 && < 3000.2
+        containers >= 0.2 && < 0.3,
+        haxr >= 3000.1 && < 3000.2,
+        xhtml >= 3000.2 && < 3000.3
     Extensions:
         FlexibleInstances
         UndecidableInstances

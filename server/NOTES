@@ -1,0 +1,20 @@
+:m +Text.JSON Data.Autolib.Transport.JSON
+v <- get_server_info
+putStrLn (showJSValue (Data.Autolib.Transport.encode . toTransport $ v) "")
+
+Test RPC calls:
+
+<methodCall>
+  <methodName>get_server_info</methodName>
+</methodCall>
+
+<methodCall>
+  <methodName>get_task_types</methodName>
+</methodCall>
+
+<methodCall>
+  <methodName>get_task_description</methodName>
+  <params>
+    <param><value><string>Algebraic_STGraph-Quiz</string></value></param>
+  </params>
+</methodCall>
