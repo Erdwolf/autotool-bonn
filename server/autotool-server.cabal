@@ -9,6 +9,7 @@ Build-Type:     Simple
 Executable autotool.cgi
     Main-Is:        Main.hs
     Hs-Source-Dirs: src
+    GHC-Options:    -Wall
     Build-Depends:
         autotool-collection,
         autolib-transport,

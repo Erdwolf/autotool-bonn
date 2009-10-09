@@ -17,7 +17,6 @@ import Inter.Types
 import Inter.Evaluate
 import Autolib.Reader
 import Autolib.Reporter
-import Challenger.Partial
 import Control.Types (is_okay, size)
 
 import Control.Monad.Error

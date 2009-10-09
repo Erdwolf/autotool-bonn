@@ -1,4 +1,5 @@
 {-# LANGUAGE UndecidableInstances, FlexibleInstances #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Util.Sign (
     sign,

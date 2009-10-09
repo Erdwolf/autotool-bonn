@@ -17,6 +17,7 @@ ttmakers = mkTaskForest (T.subForest tmakers) where
     mkTaskForest = map mkTaskTree
     mkTaskTree (T.Node (Left label) sub) = Category label (mkTaskForest sub)
     mkTaskTree (T.Node (Right task) [])  = Task (show task)
+    mkTaskTree _ = error "malformed task tree in Inter.Collector"
 
 lookupTask :: String -> Maybe Make
 lookupTask name = listToMaybe

@@ -5,7 +5,7 @@ module Types.TT (
 ) where
 
 import Data.Autolib.Transport
-import Data.Autolib.Transport.HaXR
+import Data.Autolib.Transport.HaXR ()
 import Network.XmlRpc.Internals
 import Control.Monad
 
