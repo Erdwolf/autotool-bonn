@@ -21,15 +21,55 @@ Test RPC calls:
 
 
 Types:
-data Description  = DString String | ...
-data Documented a = Documented { contents :: a, documentation :: Description }
-data Signed a     = Signed { contents :: a, signature :: Signature }
-data Config       = CString String | ...
+    type Name = String
+    type Task = String
+    type Seed = String
+    type Signature = Digest
+    type Digest = String
 
-?? data Instance     = Instance { tag :: String, contents :: String }
-?? data Solution     = Solution { contents :: String }
+    data Config = CString String
+    data Description = DString String
+    data Solution = SString String
 
-type Seed = String
-type Task = String
-type Name = String
-type Signature = String
+    data Documented a = Documented {
+        contents :: a,
+        documentation :: Description
+    }
+
+    data Instance = Instance {
+        tag :: String,
+        contents :: String
+    }
+
+    data ServerInfo = ServerInfo {
+        protocol_version :: Version,
+        server_name      :: String,
+        server_version   :: Version
+    }
+
+    data Signed a = Signed {
+         contents :: a, signature :: Signature
+    }
+
+    data TaskTree
+         = Task Task
+         | Category Name [TaskTree]
+
+    data Version = Version {
+        major :: Int,
+        minor :: Int,
+        micro :: Int
+    }
+
+Calls:
+    get_server_info :: ServerInfo
+    get_task_types :: [TaskTree]
+    get_task_description :: Task -> Documented Config
+    verify_task_config :: Task -> Config
+        -> Either Description (Signed (Task, Config))
+    get_task_instance
+        :: Signed (Task, Config) -> Seed
+        -> ((Signed (Task, Instance), Description, Documented Solution)
+    grade_task_solution
+        :: Signed (Task, Instance) -> Solution
+        -> Either Description (Documented (Bool, Double))
