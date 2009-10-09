@@ -28,3 +28,4 @@ Executable autotool.cgi
     Extensions:
         FlexibleInstances
         UndecidableInstances
+        GeneralizedNewtypeDeriving
