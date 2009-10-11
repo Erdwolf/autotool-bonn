@@ -85,9 +85,14 @@ instance C.Partial Exp_Shortest_Missing Config ( RX Char )  where
                 when ( length w < minimal_length_of_missing_word conf ) 
                      $ reject $ text "Das ist zu kurz."
 
-instance C.Measure Exp_Shortest_Missing Config ( RX Char )
-  where
-    measure _ _ exp = fromIntegral $ size exp
+instance C.Measure Exp_Shortest_Missing Config ( RX Char )  where
+    measure _ conf exp = 
+        let [ alpha ] = do Alphabet a <- properties conf ; return a
+            missing = minus ( sigmastar $ setToList alpha )
+                            ( inter ( std_sigma $ setToList alpha ) exp )
+        in  case some_shortest missing of
+                [] -> 0
+                w : _ -> fromIntegral $ length w
 
 make :: Make
 make = direct Exp_Shortest_Missing default_config

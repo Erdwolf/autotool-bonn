@@ -25,11 +25,13 @@ test :: ( Symbol c, Reader [c], ToDoc [c] )
      -> Reporter ()
 
 test (Min_Size s) exp = do
-    assert ( size exp >= s ) 
-	   $ text "Größe des Ausdrucks ist wenigstens" <+> toDoc s <+> text "?"
+    let g = size exp
+    assert ( g >= s ) 
+	   $ text "Größe des Ausdruck" <+> parens ( toDoc g ) <+> text "ist wenigstens" <+> toDoc s <+> text "?"
 test (Max_Size s) exp = do
-    assert ( size exp <= s ) 
-	   $ text "Größe des Ausdrucks ist höchstens" <+> toDoc s <+> text "?"
+    let g = size exp
+    assert ( g <= s ) 
+	   $ text "Größe des Ausdruck" <+> parens ( toDoc g ) <+> text "ist höchstens" <+> toDoc s <+> text "?"
 
 test (Alphabet a) exp = do
     sanity_alpha a exp
