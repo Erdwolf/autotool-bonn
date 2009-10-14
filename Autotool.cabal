@@ -2,7 +2,7 @@ Name:           autotool
 Version:        1.0
 -- License:        GPL
 -- License-File:   LICENSE
-Author:         Johannes Waldmann
+Author:         Bertram Felgenhauer, Mirko Rahn, Alf Richter, Johannes Waldmann
 Maintainer:     Johannes Waldmann
 Homepage:       http://dfa.imn.htwk-leipzig.de/auto/
 Category:       E-Testing
@@ -64,7 +64,7 @@ Executable Super.cgi
     hsql==1.7.1,hsql-mysql==1.7.1,
     containers,directory,random,mtl,
     process,unix,
-    haxr==3000.1.1.3,haxr-th,
+    haxr==3000.1.1.3,haxr-th==3000.0.1,
     obdd,array,pretty
   GHC-Options:    -Wall
   Extensions: DeriveDataTypeable,

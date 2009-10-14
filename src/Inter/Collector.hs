@@ -91,6 +91,7 @@ import qualified NFA.Nerode.Separation.Check
 import qualified NFA.Compress.Inter
 import qualified Exp.Convert
 import qualified Exp.Smaller
+import qualified Exp.Shortest_Missing
 
 import qualified Pump.Inter
 import qualified Pump.Inter2
@@ -223,6 +224,7 @@ tmakers =
 	             [ item Exp.Convert.make
 	             , item Exp.Convert.qmake
 	             , item Exp.Smaller.make
+	             , item Exp.Shortest_Missing.make
                      ]
                 , heading "Grammatiken (neu)"
                      [ item Grammatik.CF.Interface2.make
