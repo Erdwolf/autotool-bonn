@@ -201,6 +201,7 @@ Library
         Exp.Property
         Exp.Quiz
         Exp.Roll
+        Exp.Shortest_Missing
         Exp.Smaller
         Exp.Test
         Expression.Op
