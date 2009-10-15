@@ -24,7 +24,7 @@ import Text.ParserCombinators.Parsec
 
 grade_task_solution
     :: TT (Signed (Task, Instance)) -> TT Solution
-    -> IO (TT (Either Description (Documented (Bool, Double))))
+    -> IO (TT (Either Description (Documented Double)))
 grade_task_solution (TT sTaskInst) (TT (SString solution))
     = fmap TT . runErrorT $ do
         (task, inst) <- verifyM sTaskInst
@@ -38,6 +38,6 @@ grade_task_solution (TT sTaskInst) (TT (SString solution))
         score <- case result res of
             Nothing -> throwError $ fromOutput $ kommentar res
             Just score -> return score
-        return $ Documented { D.contents = (is_okay score,
-                                            fromIntegral $ size score),
-                              D.documentation = fromOutput (kommentar res) }
+        when (not (is_okay score)) $ throwError $ fromOutput $ kommentar res
+        return $ Documented { D.contents = fromIntegral $ size score,
+                              D.documentation = fromOutput $ kommentar res }
