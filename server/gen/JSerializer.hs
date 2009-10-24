@@ -9,6 +9,7 @@ import Types
 import Java
 import Basic
 
+import Data.String
 import System.FilePath
 import Control.Monad
 import Text.PrettyPrint.HughesPJ
@@ -22,41 +23,45 @@ tpackage = "de.htwk.autolat.connector.types"
 dir :: FilePath
 dir = "out" </> "serialize"
 
+clasz :: IsString s => s
+clasz = "Serializer"
+
 header = [
     "package" <+> text package <> ";",
     "import" <+> text (tpackage ++ ".*") <> ";",
     "import" <+> "java.util.List" <> ";",
     "import" <+> "redstone.xmlrpc.*" <> ";",
     "",
-    "@SuppressWarnings" <> "(" <> "{" <> string "unused" <> "," <+> string "unchecked" <> "}" <> ")"
+    "@SuppressWarnings" <> "(" <> "{" <> string "unused" <> ","
+        <+> string "unchecked" <> "}" <> ")"
  ]
 
 jSerializer :: AData -> IO ()
-jSerializer (AData ty@(AType nm tv) cons) | null tv = do
-    vWriteFile (dir </> (nm ++ "Serializer") <.> "java") $ show $ vcat $ header ++ [
-        "public" <+> "class" <+> text (nm ++ "Serializer"),
+jSerializer (AData ty@(AType nm tv) cons) | null tv =
+    vWriteFile (dir </> (nm ++ clasz) <.> "java") $ show $ vcat $ header ++ [
+        "public" <+> "class" <+> text (nm ++ clasz),
         block [
-            "private" <+> "static" <+> "final" <+> "Serializer"
+            "private" <+> "static" <+> "final" <+> clasz
                 <> vars [AType nm []] <+> "inst" <+> "=",
             nest 4 $ mkSerializer ty cons <> ";",
             "",
-            "public" <+> "static" <+> "Serializer"
+            "public" <+> "static" <+> clasz
                 <> vars [AType nm []] <+> "getInstance" <> "()",
             block [
                 "return" <+> "inst" <> ";"
             ]
         ]
-     ]
-jSerializer (AData ty@(AType nm tv) cons) = do
-    vWriteFile (dir </> (nm ++ "Serializer") <.> "java") $ show $ vcat $ header ++ [
-        "public" <+> "class" <+> tipe (AType (nm ++ "Serializer") tv),
-        nest 4 $ "implements" <+> "Serializer" <> vars [ty],
+   ]
+jSerializer (AData ty@(AType nm tv) cons) =
+    vWriteFile (dir </> (nm ++ clasz) <.> "java") $ show $ vcat $ header ++ [
+        "public" <+> "class" <+> tipe (AType (nm ++ clasz) tv),
+        nest 4 $ "implements" <+> clasz <> vars [ty],
         block $ [
-            "private" <+> "final" <+> "Serializer" <> vars [ty] <+>
-                 ident ["serializer"] <> ";",
+            "private" <+> "final" <+> clasz <> vars [ty] <+>
+                 "serializer" <> ";",
             "",
-            "public" <+> text (nm ++ "Serializer") <> "(" <> sep (punctuate "," [
-                "final" <+> "Serializer" <> vars [ty] <+> ident [nm, "serializer"]
+            "public" <+> text (nm ++ clasz) <> "(" <> sep (punctuate "," [
+                "final" <+> clasz <> vars [ty] <+> ident [nm, clasz]
                 | ty@(AVar nm) <- tv
             ]) <> ")",
             block $ [
@@ -66,28 +71,32 @@ jSerializer (AData ty@(AType nm tv) cons) = do
             "public" <+> "Object" <+> "serialize" <> "("
                      <> tipe ty <+> "val" <> ")",
             block [
-                "return" <+> "serializer" <> "." <> "serialize" <> "(" <> "val" <> ")" <> ";"
+                "return" <+> "serializer" <> "." <> "serialize"
+                    <> "(" <> "val" <> ")" <> ";"
             ]
-         ]
-     ]
+        ]
+    ]
 
 mkSerializer :: AType -> [ACons] -> Doc
 mkSerializer ty@(AType nm tv) [con] | consName con == nm
     = mkSingleSerializer ty con
 mkSerializer ty@(AType nm tv) cons = vcat [
-    "new" <+> "Serializer" <> vars [ty] <> "()",
+    "new" <+> clasz <> vars [ty] <> "()",
     block $ concat [
         [
-             "Serializer" <> vars [ty'] <+> ident [nm', "serializer"] <+> "=",
+             clasz <> vars [ty'] <+> ident [nm', clasz] <+> "=",
              nest 4 $ mkSingleSerializer ty' con <> ";"
         ]
         | con <- cons, let nm' = consName con, let ty' = AType nm' tv
     ] ++ [
-         "public" <+> "Object" <+> "serialize" <> "(" <> tipe ty <+> "val" <> ")",
+         "public" <+> "Object" <+> "serialize"
+             <> "(" <> tipe ty <+> "val" <> ")",
          block $ concat [
              [
                  "if" <+> "(" <> "val" <> "." <> ident ["is", nm'] <> "()" <> ")",
-                 nest 4 $ "return" <+> ident [nm', "serializer"] <> "." <> "serialize" <> "(" <> "val" <> "." <> ident ["get", nm'] <> "()" <> ")" <> ";"
+                 nest 4 $ "return" <+> ident [nm', clasz] <> "."
+                     <> "serialize" <> "(" <> "val" <> "."
+                     <> ident ["get", nm'] <> "()" <> ")" <> ";"
              ]
              | con <- cons, let nm' = consName con
          ] ++ [
@@ -98,38 +107,48 @@ mkSerializer ty@(AType nm tv) cons = vcat [
 
 mkSingleSerializer :: AType -> ACons -> Doc
 mkSingleSerializer ty@(AType nm tv) con = vcat [
-    "new" <+> "Serializer" <> vars [ty] <> "()",
+    "new" <+> clasz <> vars [ty] <> "()",
     block $ [
-         "Serializer" <> vars [ty'] <+> ident [nm', "serializer"] <+> "=" <+> "null" <> ";"
+         clasz <> vars [ty'] <+> ident [nm', clasz] <+> "=" <+> "null" <> ";"
          | (nm', ty') <- consArgs con
     ] ++ [
          "",
-         "public" <+> "Object" <+> "serialize" <> "(" <> tipe ty <+> "val" <> ")",
+         "public" <+> "Object" <+> "serialize"
+             <> "(" <> tipe ty <+> "val" <> ")",
          block $ concat [
               [
-                  "if" <+> "(" <> ident [nm', "serializer"] <+> "==" <+> "null" <> ")",
-                  nest 4 $ ident [nm', "serializer"] <+> "=" <+> makeTypeSerializer ty' <> ";"
+                  "if" <+> "(" <> ident [nm', clasz] <+> "==" <+> "null" <> ")",
+                  nest 4 $ ident [nm', clasz] <+> "="
+                      <+> makeTypeSerializer ty' <> ";"
               ]
               | (nm', ty') <- consArgs con
          ] ++ case con of
          ARec {} -> [
              "",
-             "XmlRpcStruct" <+> "inner" <+> "=" <+> "new" <+> "XmlRpcStruct" <> "()" <> ";"
+             "XmlRpcStruct" <+> "inner" <+> "="
+                 <+> "new" <+> "XmlRpcStruct" <> "()" <> ";"
           ] ++ [
-             "inner" <> "." <> "put" <> "(" <> string nm' <> "," <+> ident [nm', "serializer"] <> "." <> "serialize" <> "(" <> boxFunc ty' ("val" <> "." <> ident ["get", nm'] <> "()") <> ")" <> ")" <> ";"
+             "inner" <> "." <> "put" <> "(" <> string nm' <> ","
+                 <+> ident [nm', clasz] <> "." <> "serialize" <> "("
+                 <> boxFunc ty' ("val" <> "." <> ident ["get", nm'] <> "()")
+                 <> ")" <> ")" <> ";"
              | (nm', ty') <- consArgs con
           ]
          ACons {} -> [
              "",
-             "XmlRpcArray" <+> "inner" <+> "=" <+> "new" <+> "XmlRpcArray" <> "()" <> ";"
+             "XmlRpcArray" <+> "inner" <+> "=" <+> "new"
+                 <+> "XmlRpcArray" <> "()" <> ";"
           ] ++ [
-             "inner" <> "." <> "add" <> "(" <> boxFunc ty' ("val" <> "." <> ident ["get", nm'] <> "()") <> ")" <> ";"
+             "inner" <> "." <> "add" <> "(" <> boxFunc ty' ("val" <> "."
+                 <> ident ["get", nm'] <> "()") <> ")" <> ";"
              | (nm', ty') <- consArgs con
           ]
         ++ [
           "",
-          "XmlRpcStruct" <+> "outer" <+> "=" <+> "new" <+> "XmlRpcStruct" <> "()" <> ";",
-          "outer" <> "." <> "put" <> "(" <> string nm <> "," <+> "inner" <> ")" <> ";",
+          "XmlRpcStruct" <+> "outer" <+> "=" <+> "new"
+              <+> "XmlRpcStruct" <> "()" <> ";",
+          "outer" <> "." <> "put"
+              <> "(" <> string nm <> "," <+> "inner" <> ")" <> ";",
           "return" <+> "outer" <> ";"
         ]
     ]
@@ -137,8 +156,9 @@ mkSingleSerializer ty@(AType nm tv) con = vcat [
 
 makeTypeSerializer :: AType -> Doc
 makeTypeSerializer (AType nm tys) | null tys =
-    text (upcase $ nm ++ "Serializer") <> "." <> "getInstance" <> "()"
+    text (upcase $ nm ++ clasz) <> "." <> "getInstance" <> "()"
 makeTypeSerializer (AType nm tys) =
-    "new" <+> text (upcase $ nm ++ "Serializer") <> vars tys <> "(" <> sep (punctuate "," (map makeTypeSerializer tys)) <> ")"
+    "new" <+> text (upcase $ nm ++ clasz) <> vars tys <> "("
+        <> sep (punctuate "," (map makeTypeSerializer tys)) <> ")"
 makeTypeSerializer (AVar nm) =
-    ident [nm, "Serializer"]
+    ident [nm, clasz]

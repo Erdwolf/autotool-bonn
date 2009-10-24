@@ -32,9 +32,8 @@ tipe (AVar s) = text (map toUpper s)
 tipe (AType s xs) = text s <> vars xs
 
 consProto :: ACons -> Doc
-consProto con = hcat [
-    text (consName con),
-    "(" <> sep (punctuate "," (args (consArgs con))) <> ")"]
+consProto con = text (consName con)
+    <> "(" <> sep (punctuate "," (args (consArgs con))) <> ")"
 
 consArgs :: ACons -> [(String, AType)]
 consArgs (ACons _ tys) = zip ["field" ++ show i | i <- [1..]] tys

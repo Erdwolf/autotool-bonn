@@ -31,7 +31,8 @@ analyseQualConDecl x = error ("analyseQualConDecl " ++ show x)
 -- RecDecl Name [([Name], BangType)]
 analyseConDecl :: ConDecl -> ACons
 analyseConDecl (ConDecl (Ident nm) ts) = ACons nm (map analyseBangType ts)
-analyseConDecl (RecDecl (Ident nm) ts) = ARec nm [(r, analyseBangType t) | ([Ident r], t) <- ts]
+analyseConDecl (RecDecl (Ident nm) ts) =
+    ARec nm [(r, analyseBangType t) | ([Ident r], t) <- ts]
 analyseConDecl x = error ("analyseConDecl " ++ show x)
 
 -- BangedTy Type

@@ -49,14 +49,14 @@ jData (AData ty@(AType nm tv) cons) = do
         let cn = consName con
         vWriteFile (dir </> cn <.> "java") $ show $ vcat $ header ++ [
             "public" <+> "class" <+> text cn <+> "implements" <+> tipe ty,
-            block $ contents ty con ++ [
-            ] ++ concat [
+            block $ contents ty con ++ concat [
                 -- getters
                 [
                     "@Override",
                     "public" <+> text cn' <+> text ("get" ++ cn') <> "()",
                     block [
-                         "return" <+> (if cn == cn' then "this" else "null") <> ";"
+                         "return" <+> res <> ";"
+                         | let res = if cn == cn' then "this" else "null"
                     ]
                 ]
                 | con' <- cons, let cn' = consName con'
@@ -66,7 +66,8 @@ jData (AData ty@(AType nm tv) cons) = do
                     "@Override",
                     "public" <+> "boolean" <+> text ("is" ++ cn') <> "()",
                     block [
-                         "return" <+> (if cn == cn' then "true" else "false") <> ";"
+                         "return" <+> res <> ";"
+                         | let res = if cn == cn' then "true" else "false"
                     ]
                 ]
                 | con' <- cons, let cn' = consName con'
@@ -101,34 +102,35 @@ contents ty@(AType nm ts) con = let
         | (nm, ty) <- consArgs con
      ] ++ [
         -- toString
-        "",
         "public" <+> "String" <+> "toString" <> "()",
         block [
-             "return" <+>
-                  string (cn ++ "("),
-             nest 4 $ vcat $ [
-                 "+" <+> ident [nm] <+> "+" <+> cm
-                 | (nm, _) <- consArgs con,
-                 let cm | nm == fst (last (consArgs con)) = string ")" <> ";"
-                        | otherwise = string ", "
-             ]
+             "return" <+> string (cn ++ "("),
+             nest 4 $ vcat (punctuate (space <> "+" <+> string ", ") [
+                 "+" <+> ident [nm]
+                 | (nm, _) <- consArgs con
+             ]) <+> "+" <+> string ")" <> ";"
         ],
         -- equals
-        "",
-        "public" <+> "boolean" <+> "equals" <> "(" <> "Object" <+> "other" <> ")",
+        "public" <+> "boolean" <+> "equals"
+            <> "(" <> "Object" <+> "other" <> ")",
         block $ [
-            "if" <+> "(" <> "!" <+> "(" <> "other" <+> "instanceof" <+> tipe ty' <> ")" <> ")",
+            "if" <+> "(" <> "!" <+> "(" <> "other" <+> "instanceof"
+                <+> tipe ty' <> ")" <> ")",
             nest 4 $ "return" <+> "false" <> ";",
-            tipe ty' <+> ident ["o", nm] <+> "=" <+> "(" <> tipe ty' <> ")" <+> "other" <> ";"
+            tipe ty' <+> ident ["o", nm] <+> "="
+                <+> "(" <> tipe ty' <> ")" <+> "other" <> ";"
         ] ++ concat [
            [
                if unboxed ty' then
-                   "if" <+> "(" <> ident [nm'] <+> "!=" <+> ident ["o", nm] <> "." <> ident ["get", nm'] <> "()" <> ")"
-               else 
-                   "if" <+> "(" <> "!" <> ident [nm'] <> "." <> "equals" <> "(" <> ident ["o", nm] <> "." <> ident ["get", nm'] <> "()" <> ")" <> ")",
+                   "if" <+> "(" <> ident [nm'] <+> "!=" <+> rhs <> ")"
+               else
+                   "if" <+> "(" <> "!" <> lhs <> "." <> "equals"
+                       <> "(" <> rhs <> ")" <> ")",
                nest 4 $ "return" <+> "false" <> ";"
            ]
-           | (nm', ty' ) <- consArgs con
+           | (nm', ty' ) <- consArgs con,
+             let lhs = ident [nm']
+                 rhs = ident ["o", nm] <> "." <> ident ["get", nm'] <> "()"
         ] ++ [
            "return" <+> "true" <> ";"
         ]
