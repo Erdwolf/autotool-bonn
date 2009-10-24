@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Java (
     block,
     vars,
@@ -19,11 +21,11 @@ import Basic
 import Types
 
 block :: [Doc] -> Doc
-block xs = vcat [text "{", nest 4 (vcat xs), text "}", text ""]
+block xs = vcat [text "{", nest 4 (vcat xs), "}", ""]
 
 vars :: [AType] -> Doc
 vars [] = empty
-vars xs = text "<" <> cat (punctuate (text ", ") (map tipe xs)) <> text ">"
+vars xs = "<" <> sep (punctuate "," (map tipe xs)) <> ">"
 
 tipe :: AType -> Doc
 tipe (AVar s) = text (map toUpper s)
@@ -32,7 +34,7 @@ tipe (AType s xs) = text s <> vars xs
 consProto :: ACons -> Doc
 consProto con = hcat [
     text (consName con),
-    text "(" <> cat (punctuate (text ", ") (args (consArgs con))) <> text ")"]
+    "(" <> sep (punctuate "," (args (consArgs con))) <> ")"]
 
 consArgs :: ACons -> [(String, AType)]
 consArgs (ACons _ tys) = zip ["field" ++ show i | i <- [1..]] tys

@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module JParser (
     dir,
     jParser
@@ -21,50 +23,50 @@ dir :: FilePath
 dir = "out" </> "parse"
 
 header = [
-    text "package" <+> text package <> text ";",
-    text "import" <+> text (tpackage ++ ".*") <> text ";",
-    text "import" <+> text "java.util.List" <> text ";",
-    text "",
-    text "@SuppressWarnings" <> text "(" <> string "unused" <> text ")"
+    "package" <+> text package <> ";",
+    "import" <+> text (tpackage ++ ".*") <> ";",
+    "import" <+> "java.util.List" <> ";",
+    "",
+    "@SuppressWarnings" <> "(" <> string "unused" <> ")"
  ]
 
 jParser :: AData -> IO ()
 jParser (AData ty@(AType nm tv) cons) | null tv = do
     vWriteFile (dir </> (nm ++ "Parser") <.> "java") $ show $ vcat $ header ++ [
-        text "public" <+> text "class" <+> text (nm ++ "Parser"),
+        "public" <+> "class" <+> text (nm ++ "Parser"),
         block [
-            text "private" <+> text "static" <+> text "final" <+> text "Parser"
-                <> vars [AType nm []] <+> text "inst" <+> text "=",
-            (nest 4 $ foldAlternatives nm tv $ map (makeAlternative nm tv) cons) <> text ";",
-            text "",
-            text "public" <+> text "static" <+> text "Parser"
-                <> vars [AType nm []] <+> text "getInstance" <> text "()",
+            "private" <+> "static" <+> "final" <+> "Parser"
+                <> vars [AType nm []] <+> "inst" <+> "=",
+            (nest 4 $ foldAlternatives nm tv $ map (makeAlternative nm tv) cons) <> ";",
+            "",
+            "public" <+> "static" <+> "Parser"
+                <> vars [AType nm []] <+> "getInstance" <> "()",
             block [
-                text "return" <+> text "inst" <> text ";"
+                "return" <+> "inst" <> ";"
             ]
         ]
      ]
 jParser (AData ty@(AType nm tv) cons) = do
     vWriteFile (dir </> (nm ++ "Parser") <.> "java") $ show $ vcat $ header ++ [
-        text "public" <+> text "class" <+> tipe (AType (nm ++ "Parser") tv),
-        nest 4 $ text "implements" <+> text "Parser" <> vars [ty],
+        "public" <+> "class" <+> tipe (AType (nm ++ "Parser") tv),
+        nest 4 $ "implements" <+> "Parser" <> vars [ty],
         block $ [
-            text "private" <+> text "final" <+> text "Parser" <> vars [ty] <+>
-                 ident ["parser"] <> text ";",
-            text "",
-            text "public" <+> text (nm ++ "Parser") <> text "(" <> cat (punctuate (text ", ") [
-                text "final" <+> text "Parser" <> vars [ty] <+> ident [nm, "parser"]
+            "private" <+> "final" <+> "Parser" <> vars [ty] <+>
+                 ident ["parser"] <> ";",
+            "",
+            "public" <+> text (nm ++ "Parser") <> "(" <> sep (punctuate "," [
+                "final" <+> "Parser" <> vars [ty] <+> ident [nm, "parser"]
                 | ty@(AVar nm) <- tv
-            ]) <> text ")",
+            ]) <> ")",
             block $ [
-                text "parser" <+> text "=" <+>
-                    (nest 4 $ foldAlternatives nm tv $ map (makeAlternative nm tv) cons) <> text ";"
+                "parser" <+> "=" <+>
+                    (nest 4 $ foldAlternatives nm tv $ map (makeAlternative nm tv) cons) <> ";"
             ],
-            text "public" <+> tipe ty <+> text "parse" <> text "("
-                     <> text "Object" <+> text "val" <> text ")"
-                     <+> text "throws" <+> text "ParseErrorBase",
+            "public" <+> tipe ty <+> "parse" <> "("
+                     <> "Object" <+> "val" <> ")"
+                     <+> "throws" <+> "ParseErrorBase",
             block [
-                text "return" <+> text "parser" <> text "." <> text "parse" <> text "(" <> text "val" <> text ")" <> text ";"
+                "return" <+> "parser" <> "." <> "parse" <> "(" <> "val" <> ")" <> ";"
             ]
          ]
      ]
@@ -72,61 +74,61 @@ jParser (AData ty@(AType nm tv) cons) = do
 foldAlternatives :: String -> [AType] -> [Doc] -> Doc
 foldAlternatives nm tv [x] = x
 foldAlternatives nm tv (x:xs) = vcat [
-    text "new" <+> text "AlternativeParser" <> vars [AType nm tv] <> text "(",
-    nest 4 (x <> text "," $$ foldAlternatives nm tv xs),
-    text ")"
+    "new" <+> "AlternativeParser" <> vars [AType nm tv] <> "(",
+    nest 4 (x <> "," $$ foldAlternatives nm tv xs),
+    ")"
  ]
 
 makeAlternative :: String -> [AType] -> ACons -> Doc
 makeAlternative nm tv con = let
     cn = consName con
     wrapField = case con of
-        ACons {} -> \nm ty i f -> text "new" <+> text "ArrayElemParser" <>
-            vars [ty] <> text "(" <> text (show i) <> text ","
-                $$ nest 4 (f <> text ")")
-        ARec {} ->  \nm ty i f -> text "new" <+> text "StructFieldParser" <>
-            vars [ty] <> text "(" $$ nest 4 (string nm <> text ","
-                $$ f <> text ")")
+        ACons {} -> \nm ty i f -> "new" <+> "ArrayElemParser" <>
+            vars [ty] <> "(" <> text (show i) <> ","
+                $$ nest 4 (f <> ")")
+        ARec {} ->  \nm ty i f -> "new" <+> "StructFieldParser" <>
+            vars [ty] <> "(" $$ nest 4 (string nm <> ","
+                $$ f <> ")")
   in
     vcat [
-        text "new" <+> text "StructFieldParser" <> vars [AType nm tv]
-            <> text "(",
+        "new" <+> "StructFieldParser" <> vars [AType nm tv]
+            <> "(",
         nest 4 $ vcat [
-            string cn <> text ",",
-            text "new" <+> text "Parser" <> vars [AType nm tv] <> text "()",
+            string cn <> ",",
+            "new" <+> "Parser" <> vars [AType nm tv] <> "()",
             block $ concat [
                 [
-                    text "Parser" <> vars [ty'] <+> ident [nm', "parser"]
-                        <+> text "=" <+> text "null" <> text ";"
+                    "Parser" <> vars [ty'] <+> ident [nm', "parser"]
+                        <+> "=" <+> "null" <> ";"
                 ]
                 | (nm', ty') <- consArgs con
             ] ++ [
-                text "",
-                text "public" <+> tipe (AType nm tv) <+> text "parse" <> text "("
-                     <> text "Object" <+> text "val" <> text ")"
-                     <+> text "throws" <+> text "ParseErrorBase",
+                "",
+                "public" <+> tipe (AType nm tv) <+> "parse" <> "("
+                     <> "Object" <+> "val" <> ")"
+                     <+> "throws" <+> "ParseErrorBase",
                 block $ concat [
                     [
-                        text "if" <+> text "(" <> ident [nm', "parser"] <+> text "==" <+> text "null" <> text ")",
-                        nest 4 $ ident [nm', "parser"] <+> text "=" <+> wrapField nm' ty' i (makeTypeParser ty') <> text ";"
+                        "if" <+> "(" <> ident [nm', "parser"] <+> "==" <+> "null" <> ")",
+                        nest 4 $ ident [nm', "parser"] <+> "=" <+> wrapField nm' ty' i (makeTypeParser ty') <> ";"
                     ]
                     | ((nm', ty'), i) <- zip (consArgs con) [0..]
                 ] ++ [
-                    text "return" <+> text "new" <+> tipe (AType cn tv) <> text "(",
-                    nest 4 $ vcat (punctuate (text ",") [
-                        unboxFunc ty (ident [nm, "parser"] <> text "." <> text "parse" <> text "(" <> text "val" <> text ")")
+                    "return" <+> "new" <+> tipe (AType cn tv) <> "(",
+                    nest 4 $ vcat (punctuate "," [
+                        unboxFunc ty (ident [nm, "parser"] <> "." <> "parse" <> "(" <> "val" <> ")")
                         | (nm, ty) <- consArgs con
-                    ]) <> text ")" <> text ";"
+                    ]) <> ")" <> ";"
                 ]
             ]
         ],
-        text ")"
+        ")"
     ]
 
 makeTypeParser :: AType -> Doc
 makeTypeParser (AType nm tys) | null tys =
-    text (upcase $ nm ++ "Parser") <> text "." <> text "getInstance" <> text "()"
+    text (upcase $ nm ++ "Parser") <> "." <> "getInstance" <> "()"
 makeTypeParser (AType nm tys) =
-    text "new" <+> text (upcase $ nm ++ "Parser") <> vars tys <> text "(" <> cat (punctuate (text ", ") (map makeTypeParser tys)) <> text ")"
+    "new" <+> text (upcase $ nm ++ "Parser") <> vars tys <> "(" <> sep (punctuate "," (map makeTypeParser tys)) <> ")"
 makeTypeParser (AVar nm) =
     ident [nm, "Parser"]

@@ -1,9 +1,12 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Basic (
     basic,
     unbox, unboxed, unboxFunc, boxFunc
 ) where
 
 import Types
+import Util ()
 import Text.PrettyPrint.HughesPJ
 
 basic :: String -> AType
@@ -29,12 +32,12 @@ unboxed (AType "Boolean" []) = True
 unboxed _ = False
 
 unboxFunc :: AType -> Doc -> Doc
-unboxFunc (AType "Integer" []) d = d <> text "." <> text "intValue" <> text "()"
-unboxFunc (AType "Double" []) d = d <> text "." <> text "doubleValue" <> text "()"
-unboxFunc (AType "Boolean" []) d = d <> text "." <> text "booleanValue" <> text "()"
+unboxFunc (AType "Integer" []) d = d <> "." <> "intValue" <> "()"
+unboxFunc (AType "Double" []) d = d <> "." <> "doubleValue" <> "()"
+unboxFunc (AType "Boolean" []) d = d <> "." <> "booleanValue" <> "()"
 unboxFunc _ d = d
 
-boxFunc (AType "Integer" []) d = text "new" <+> text "Integer" <> text "(" <> d <> text ")"
-boxFunc (AType "Double" []) d = text "new" <+> text "Double" <> text "(" <> d <> text ")"
-boxFunc (AType "Boolean" []) d = text "new" <+> text "Boolean" <> text "(" <> d <> text ")"
+boxFunc (AType "Integer" []) d = "new" <+> "Integer" <> "(" <> d <> ")"
+boxFunc (AType "Double" []) d = "new" <+> "Double" <> "(" <> d <> ")"
+boxFunc (AType "Boolean" []) d = "new" <+> "Boolean" <> "(" <> d <> ")"
 boxFunc _ d = d
