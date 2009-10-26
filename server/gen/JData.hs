@@ -15,7 +15,7 @@ import Text.PrettyPrint.HughesPJ
 import Data.Int
 
 package :: String
-package = "de.htwk.autolat.connector.types"
+package = "de.htwk.leipzig.autolat.connector.types"
 
 dir :: FilePath
 dir = "out" </> "types"

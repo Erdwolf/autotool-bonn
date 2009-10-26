@@ -15,10 +15,10 @@ import Control.Monad
 import Text.PrettyPrint.HughesPJ
 
 package :: String
-package = "de.htwk.autolat.connector.xmlrpc.serialize"
+package = "de.htwk.leipzig.autolat.connector.xmlrpc.serialize"
 
 tpackage :: String
-tpackage = "de.htwk.autolat.connector.types"
+tpackage = "de.htwk.leipzig.autolat.connector.types"
 
 dir :: FilePath
 dir = "out" </> "serialize"

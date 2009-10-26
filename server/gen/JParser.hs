@@ -15,10 +15,10 @@ import Control.Monad
 import Text.PrettyPrint.HughesPJ
 
 package :: String
-package = "de.htwk.autolat.connector.xmlrpc.parse"
+package = "de.htwk.leipzig.autolat.connector.xmlrpc.parse"
 
 tpackage :: String
-tpackage = "de.htwk.autolat.connector.types"
+tpackage = "de.htwk.leipzig.autolat.connector.types"
 
 dir :: FilePath
 dir = "out" </> "parse"
