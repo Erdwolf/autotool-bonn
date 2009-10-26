@@ -2,10 +2,6 @@
 
 module Exp.Shortest_Missing where
 
-import Data.DeriveTH
-import Data.Derive.ToDoc
-import Data.Derive.Reader
-
 import Inter.Types
 import Autolib.ToDoc
 import Autolib.Hash
@@ -46,8 +42,7 @@ default_config = Config
           , minimal_length_of_missing_word = 20
           }
 
-$(derive makeToDoc ''Config)
-$(derive makeReader ''Config)
+$(derives [makeToDoc, makeReader] [''Config])
 
 instance C.Partial Exp_Shortest_Missing Config ( RX Char )  where
 

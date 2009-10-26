@@ -25,7 +25,6 @@ Executable Trial.cgi
     Buildable: False
   Build-Depends:
     autolib-todoc,autolib-data,autolib-reader,
-    autolib-derive,derive,
     autolib-output,autolib-reporter,
     autolib-util,autolib-fa,autolib-fta,
     autolib-graph,autolib-relation,autolib-exp,
