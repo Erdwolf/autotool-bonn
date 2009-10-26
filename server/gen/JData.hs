@@ -12,6 +12,7 @@ import Java
 import System.FilePath
 import Control.Monad
 import Text.PrettyPrint.HughesPJ
+import Data.Int
 
 package :: String
 package = "de.htwk.autolat.connector.types"
@@ -133,5 +134,15 @@ contents ty@(AType nm ts) con = let
                  rhs = ident ["o", nm] <> "." <> ident ["get", nm'] <> "()"
         ] ++ [
            "return" <+> "true" <> ";"
+        ],
+        -- hashCode
+        "public" <+> "int" <+> "hashCode" <> "()",
+        block $ [
+            "return",
+            nest 4 $ (vcat $ punctuate " +" $ [
+                boxFunc ty' (ident [nm']) <> "." <> "hashCode" <> "()"
+                    <+> "*" <+> text (show i)
+                | ((nm', ty'), i) <- zip (consArgs con) (iterate (*37) (1 :: Int32))
+            ]) <> ";"
         ]
     ]
