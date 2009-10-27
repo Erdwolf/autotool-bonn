@@ -4,67 +4,85 @@ import Autolib.NFA.Minus
 import Autolib.NFA.Shortest hiding ( present )
 import Autolib.Genetic
 import Autolib.Size
-
-import Control.Monad ( guard, forM_ )
 import Autolib.Util.Zufall
+import Control.Monad ( guard, forM_ )
+import System.IO
 
-main = evolve $ conf 42
+main = evolve $ conf "ab" 42
 
-conf s = 
+printf x = do print x ; hFlush stdout
+
+sinnlos_sterne x = sum $ do
+    p <- positions x
+    Just ( PowerStar y ) <- return $ peek p x
+    case y of
+        Ref _ -> return 1
+        PowerStar _ -> return 1
+        _ -> return 0
+
+sinnvoll_sterne x = sum $ do
+    p <- positions x
+    Just ( PowerStar y ) <- return $ peek p x
+    case y of
+        Ref _ -> return 0
+        PowerStar _ -> return 0
+        _ -> return 1
+
+conf sigma s = 
    Config { fitness = \ x ->
                 if Autolib.Size.size x > s then 0
-                else 1000 * (1 + miss x) 
-                         - Autolib.Size.size x
-          , threshold = 1000 * 59
+                else if sinnlos_sterne x > 0 then 0
+                else if sinnvoll_sterne x == 0 then 0
+                else 1000 * (1 + miss sigma x) 
+                        - Autolib.Size.size x
+          , threshold = 1000 * 100
           , present = \ pop -> forM_ ( take 3 pop ) 
                     $ \ (v,x) -> 
-                    print ( miss x
+                    printf ( miss sigma x
                           , x 
                           , Autolib.Size.size x 
                           )
           , trace   = const $ return ()
-          , generate = roll s
+          , generate = roll sigma s
           , combine = \ s t -> do
                 (x,y) <- cross s t
                 eins [x,y]
           , mutate  = \ s -> do
+                (s0, s1) <- cross s s
+                s <- eins [s0, s1]
                 (c,t0) <- contextIO s
-                (d,t1) <- contextIO s
-                action <- eins 
-                       [ roll $ Autolib.Size.size t0
-                       , return t1 
-                       ]
-                t2 <- action
-                eins [ s,  c t2 ]
+                t1 <- roll sigma $ Autolib.Size.size t0
+                eins [ c t0, c t1 ]
           , num_steps = Nothing
           , num_parallel = 1
-          , Autolib.Genetic.size    = 100
-          , scheme = Tournament 2
+          , Autolib.Genetic.size    = 1000
+          , scheme = Tournament 3
           }
 
-miss :: RX Char -> Int
-miss x = 
-    let sigma = "a"
-        a = inter_det ( std_sigma sigma ) x
+miss :: [Char] -> RX Char -> Int
+miss sigma x = 
+    let a = inter_det ( std_sigma sigma ) x
         c = complement_det  sigma a
         ws = shortest c
     in  case ws of
             [] -> 0
             w : _ -> length w
 
-roll :: Int -> IO ( RX Char )
-roll s = 
+roll :: [Char] -> Int -> IO ( RX Char )
+roll sigma s = 
     if s <= 1
-    then eins [ Letter 'a', Ref "Eps" ]
+    then do
+        x <- eins sigma
+        eins [ Letter x, Ref "Eps", Ref "Sigma", Ref "All" ]
     else do
         l <- randomRIO ( 0, s-2)
         if l == 0 
            then do
-               t <- roll (s-1)
+               t <- roll sigma (s-1)
                return $ PowerStar t
            else do
-               tl <- roll l
-               tr <- roll (s-1-l)
+               tl <- roll sigma l
+               tr <- roll sigma (s-1-l)
                f <- eins [ Dot, Union ]
                return $ f tl tr
 
@@ -93,7 +111,7 @@ contextIO t = do
     if null xs 
        then return ( id, t )
        else do
-          k <- randomRIO ( -1, length xs - 1 )
+          k <- randomRIO ( -length xs + 1, length xs - 1 )
           if k < 0 
              then return ( id, t )
              else do
