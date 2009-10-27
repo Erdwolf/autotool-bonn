@@ -8,9 +8,21 @@ import Autolib.Util.Zufall
 import Control.Monad ( guard, forM_ )
 import System.IO
 
-main = evolve $ conf "ab" 42
+main = evolve $ conf "a" 42
 
 printf x = do print x ; hFlush stdout
+
+sinnlos_times_eps x = sum $ do
+    p <- positions x
+    Just ( Dot l r ) <- return $ peek p x
+    Ref _ <- [ l, r ]
+    return 1
+
+sinnlos_union x = sum $ do
+    p <- positions x
+    Just ( Union l r ) <- return $ peek p x
+    guard $ l == r
+    return 1
 
 sinnlos_sterne x = sum $ do
     p <- positions x
@@ -26,15 +38,24 @@ sinnvoll_sterne x = sum $ do
     case y of
         Ref _ -> return 0
         PowerStar _ -> return 0
-        _ -> return 1
+        _ -> return $ Autolib.Size.size y
+
+einzelbuchstaben x = sum $ do
+    p <- positions x
+    Just ( Letter {} ) <- return $ peek p x
+    return 1
 
 conf sigma s = 
    Config { fitness = \ x ->
                 if Autolib.Size.size x > s then 0
-                else if sinnlos_sterne x > 0 then 0
+                -- else if sinnlos_sterne x > 0 then 0
+                -- else if sinnlos_union x > 0 then 0
+                -- else if sinnlos_times_eps x > 0 then 0
                 else if sinnvoll_sterne x == 0 then 0
-                else 1000 * (1 + miss sigma x) 
-                        - Autolib.Size.size x
+                else (1000 * (1 + miss sigma x))
+                        -- - Autolib.Size.size x
+                        -- + einzelbuchstaben x
+                        -- + sinnvoll_sterne x
           , threshold = 1000 * 100
           , present = \ pop -> forM_ ( take 3 pop ) 
                     $ \ (v,x) -> 
@@ -56,7 +77,7 @@ conf sigma s =
           , num_steps = Nothing
           , num_parallel = 1
           , Autolib.Genetic.size    = 1000
-          , scheme = Tournament 3
+          , scheme = Tournament 2
           }
 
 miss :: [Char] -> RX Char -> Int
@@ -73,7 +94,7 @@ roll sigma s =
     if s <= 1
     then do
         x <- eins sigma
-        eins [ Letter x, Ref "Eps", Ref "Sigma", Ref "All" ]
+        eins [ Letter x , Ref "Eps" ]
     else do
         l <- randomRIO ( 0, s-2)
         if l == 0 
