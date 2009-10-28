@@ -2,8 +2,6 @@
 
 module SAT.Wert where
 
--- $Id$
-
 import SAT.Types
 import Autolib.FiniteMap
 import Control.Monad ( mzero )

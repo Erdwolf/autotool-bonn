@@ -3,8 +3,6 @@
 
 module Boolean2.Instance where
 
---  $Id$
-
 import Boolean.Op
 import qualified Autolib.TES.Binu as B
 import qualified Boolean.Equiv
@@ -37,7 +35,7 @@ data Form
     = Negationstechnisch
     | Konjunktiv
     | Disjunktiv
-    -- | Kanonisch
+    --  | Kanonisch
 
 $(derives [makeReader, makeToDoc] [''Constraint])
 
