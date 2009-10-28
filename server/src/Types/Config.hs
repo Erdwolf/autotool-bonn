@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, TemplateHaskell #-}
 
 module Types.Config (
     Config (..)
@@ -6,6 +6,6 @@ module Types.Config (
 
 import Data.Autolib.Transport
 
-data Config = CString String
+newtype Config = CString String deriving ToTransport
 
-$(derives [makeToTransport] [''Config])
+-- $(derives [makeToTransport] [''Config])

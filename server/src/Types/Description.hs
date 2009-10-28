@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, TemplateHaskell #-}
 
 module Types.Description (
     Description (..)
@@ -10,9 +10,9 @@ import Util.Xml.Output
 
 import qualified Control.Monad.Error as E
 
-data Description = DString String
+newtype Description = DString String deriving ToTransport
 
-$(derives [makeToTransport] [''Description])
+-- $(derives [makeToTransport] [''Description])
 
 instance E.Error Description where
     noMsg      = E.strMsg "unknown error"

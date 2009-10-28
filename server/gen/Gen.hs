@@ -31,8 +31,13 @@ processFile file = do
 --   (Maybe [ExportSpec]) [ImportDecl] [Decl]
 processModule :: Module -> IO ()
 processModule mod = do
-    let decls = analyseModule mod
+    let decls0 = analyseModule mod
+        decls = [d | d@(AData (AType nm _) _) <- decls0,
+                     not $ nm `elem` blacklist]
     when (null decls) $ putStrLn "  Nothing to do!"
     mapM_ jData decls
     mapM_ jParser decls
     mapM_ jSerializer decls
+
+blacklist :: [String]
+blacklist = ["TT", "Config", "Solution", "Description"]

@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, TemplateHaskell #-}
 
 module Types.Solution (
     Solution (..)
@@ -6,6 +6,6 @@ module Types.Solution (
 
 import Data.Autolib.Transport
 
-data Solution = SString String
+newtype Solution = SString String deriving ToTransport
 
-$(derives [makeToTransport] [''Solution])
+-- $(derives [makeToTransport] [''Solution])

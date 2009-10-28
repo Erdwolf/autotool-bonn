@@ -10,6 +10,11 @@ import Util ()
 import Text.PrettyPrint.HughesPJ
 
 basic :: String -> AType
+-- newtypes
+basic "Config" = basic "String"
+basic "Solution" = basic "String"
+basic "Description" = basic "String"
+-- aliases
 basic "Name" = basic "String"
 basic "Task" = basic "String"
 basic "Seed" = basic "String"
