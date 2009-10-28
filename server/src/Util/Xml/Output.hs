@@ -16,7 +16,7 @@ outputToXOutput o = case o of
     O.Empty ->
         X.OBeside $ X.Beside []
     O.Doc doc ->
-        outputToXOutput $ O.Pre (show doc)
+        outputToXOutput $ O.Pre doc
     O.Text txt ->
         X.OText $ X.Text txt
     O.Pre txt ->
