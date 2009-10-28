@@ -35,7 +35,7 @@ secret :: String
 secret = "secret"
 
 instance Hash Config where
-    hash (CString s) = hash s
+    hash (CString s) = hash ("CString", s)
 
 instance Hash Instance where
-    hash (Instance a b) = hash [a, b]
+    hash (Instance a b) = hash ("Instance", (a, b))

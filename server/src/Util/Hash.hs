@@ -19,7 +19,7 @@ class Hash a where
     hashList = hashList0
 
 hashList0 :: Hash a => [a] -> Digest
-hashList0 = hashString . concatMap hash
+hashList0 = hashString . ("List" ++) . concatMap hash
 
 instance Hash a => Hash [a] where
     hash = hashList
@@ -32,7 +32,7 @@ instance Hash Int where
     hash = hashString . show
 
 instance (Hash a, Hash b) => Hash (a, b) where
-    hash (a, b) = hashString $ hash a ++ hash b
+    hash (a, b) = hashString $ "Pair" ++ hash a ++ hash b
 
 hashString :: String -> Digest
 hashString = S.showDigest . hashBase . BL.pack . map (fromIntegral . fromEnum)
