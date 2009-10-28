@@ -1,0 +1,19 @@
+grammar
+{
+    start = Output
+
+    Output
+        = element Pre     { text }
+        | element Text    { text }
+        | element Image   { attribute type { string "png" | string "jpg" },
+                            attribute alt  { string },
+                            xsd:base64Binary }
+        | element Link    { attribute href { xsd:anyURI },
+                            text }
+        | element Above   { Output* }
+        | element Beside  { Output* }
+        | element Itemize { Output* }
+        | element Space   { attribute width  { xsd:double },
+                            attribute height { xsd:double },
+                            attribute unit   { string "px" | string "em" } }
+}

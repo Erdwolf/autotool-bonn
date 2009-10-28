@@ -1,0 +1,28 @@
+<?xml encoding="UTF-8"?>
+
+<!ENTITY % Output "Pre|Text|Image|Link|Above|Beside|Itemize|Space">
+
+<!ELEMENT Pre (#PCDATA)>
+
+<!ELEMENT Text (#PCDATA)>
+
+<!ELEMENT Image (#PCDATA)>
+<!ATTLIST Image
+  type CDATA #REQUIRED
+  alt CDATA #REQUIRED>
+
+<!ELEMENT Link (#PCDATA)>
+<!ATTLIST Link
+  href CDATA #REQUIRED>
+
+<!ELEMENT Above (%Output;)*>
+
+<!ELEMENT Beside (%Output;)*>
+
+<!ELEMENT Itemize (%Output;)*>
+
+<!ELEMENT Space EMPTY>
+<!ATTLIST Space
+  width CDATA #REQUIRED
+  height CDATA #REQUIRED
+  unit CDATA #REQUIRED>
