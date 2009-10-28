@@ -15,7 +15,7 @@ serverName :: String
 serverName = "autotool"
 
 serverVersion :: Version
-serverVersion = Version { major = 0, minor = 0, micro = 0 }
+serverVersion = Version { major = 0, minor = 0, micro = 1 }
 
 language :: AM.Language
 language = AM.DE -- UK, NL
