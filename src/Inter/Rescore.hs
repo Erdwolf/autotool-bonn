@@ -64,19 +64,18 @@ rescore mks e = do
         forM studs $ \ stud -> do
             aufs <- A.get_this $ auf e
             forM aufs $ \ auf -> do
+                -- print $ A.typ auf
                 staufs <- SA.get_snr_anr 
                      ( S.snr stud ) ( A.anr auf )
                 forM staufs $ \ stauf -> do
-                   print $ stauf
+                   let [ mk ] = filter 
+                                ( \ m -> show m == toString (A.typ auf)
+                                ) mks
+                   recompute_for_einsendung mk auf stauf
     return ()
 
 {-
 
-    let [ mk ] = filter 
-                 ( \ (Make p _ _ _ _) -> 
-                       show p == fromCGI ( type auf )
-                 ) mks
-    recompute_for_einsendung mk auf 
 
     let ( aufg , '-' : vers  ) = span (/= '-') $ auf e
 

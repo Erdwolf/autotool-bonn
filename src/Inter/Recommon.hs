@@ -46,7 +46,8 @@ recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
         let ( res, doc :: Doc ) = export $ evaluate p instant input
         let old_result = SA.result  eins
         if ( compatible old_result res )
-           then hPutStr stderr "."
+           then do
+              hPutStr stderr "."
            else do
               hPutStrLn stderr $ show $ vcat
                    [ text "tag:" <+> toDoc tag
@@ -69,7 +70,7 @@ recompute_for_student ( Make p tag fun verify conf ) auf eins stud = do
                             }
         case res of
             Just res -> do
-                putStrLn $ Inter.Bank.logline time "771" param res
+                putStr $ Inter.Bank.logline time "771" param res
             Nothing -> return ()
 
 
