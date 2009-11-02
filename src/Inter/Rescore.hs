@@ -13,20 +13,33 @@ output: ?
 
 -}
 
-import Scorer.Einsendung ( Einsendung (..), slurp )
+import Scorer.Einsendung 
+
+import Inter.Recommon
 
 import Inter.Store ( location, load, store )
 import Inter.Bank ( logline )
-import Inter.Boiler ( boiler )
+-- import Inter.Boiler ( boiler )
+
+import Inter.Collector
+
 import Inter.Types
 import Inter.Evaluate
-import Inter.Timer 
 import qualified Inter.Param as P
 
-import ToDoc
-import Reporter
+import qualified Control.Stud_Aufg as SA
+import qualified Control.Aufgabe as A
+import qualified Control.Student as S
+import qualified Control.Schule as U
+import qualified Control.Vorlesung as V
+import Control.Types
 
-import Control.Monad ( guard )
+
+import Autolib.ToDoc
+import Autolib.Reporter
+import Autolib.Timer 
+
+import Control.Monad ( guard, forM )
 import System
 
 patience :: Int
@@ -34,31 +47,37 @@ patience = 60 -- seconds
 
 main :: IO ()
 main = do
-    variants <- boiler
     args <- getArgs
     contents <- mapM readFile args
-    let einsendungen = slurp $ concat contents
-    mapM_ ( rescore $ blank { P.variants = variants } ) einsendungen
-    
-blank = P.Param 
-	   { P.matrikel = error "Rescore.matrikel"
-	   , P.passwort = error "Rescore.passwort"
-	   , P.problem  = error "Rescore.problem"
-	   , P.aufgabe  = error "Rescore.aufgabe"
-	   , P.version  = error "Rescore.version"
-	   , P.input    = error "Rescore.input"
-	   , P.ident    = error "Rescore.ident"
-	   , P.highscore = error "Rescore.highscore"
-	   , P.anr      = error "Rescore.anr"
-	   , P.variants = error "Rescore.variants"
-	   , P.input_width = 80
-	   , P.variante = error "Rescore.variante"
-	   }
+    let ms = Inter.Collector.makers 
+    forM_ ( slurp $ concat contents ) $ rescore ms
 
-rescore :: P.Type
+    
+rescore :: [ Make ]
 	-> Einsendung 
 	-> IO ()
-rescore p0 e = do
+rescore mks e = do
+    let m = internal $ matrikel e
+    us <- U.get
+    forM us $ \ u -> do
+        studs <- S.get_unr_mnr ( U.unr u, m )
+        forM studs $ \ stud -> do
+            aufs <- A.get_this $ auf e
+            forM aufs $ \ auf -> do
+                staufs <- SA.get_snr_anr 
+                     ( S.snr stud ) ( A.anr auf )
+                forM staufs $ \ stauf -> do
+                   print $ stauf
+    return ()
+
+{-
+
+    let [ mk ] = filter 
+                 ( \ (Make p _ _ _ _) -> 
+                       show p == fromCGI ( type auf )
+                 ) mks
+    recompute_for_einsendung mk auf 
+
     let ( aufg , '-' : vers  ) = span (/= '-') $ auf e
 
     let vs = do
@@ -88,6 +107,7 @@ rescore p0 e = do
 
 	     putStr $ logline (time e) (pid e) p2 res
 
+-}
 
 
 

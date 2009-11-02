@@ -1,6 +1,4 @@
--- | re-evaluate all submissions
-
-import Inter.Recommon
+module Inter.Recommon where
 
 import qualified Control.Stud_Aufg as SA
 import qualified Control.Aufgabe as A
@@ -26,44 +24,8 @@ import System.IO
 import qualified System.Time
 import qualified System.Directory
 
-main :: IO ()
-main = wrap "main" $ do
-    mapM recompute_for_type 
-             $ filter ( \ m -> show m == "Find_Model-Direct" )
-             $ Inter.Collector.makers
-    return ()
-
-
-wrap msg action = do
-    if verbose 
-       then hPutStrLn stderr $ "start: " ++ msg
-       else hPutStr stderr  "/"
-    hFlush stderr
-    x <- action
-    if verbose
-       then hPutStrLn stderr $ "end  : " ++ msg
-       else hPutStr stderr "\\"
-    hFlush stderr
-    return x
-
-recompute_for_type mk = 
-    wrap ( "for type " ++ show mk ) $ do
-        let t = fromCGI $ show mk
-        aufs <- A.get_typed t
-        mapM ( recompute_for_aufgabe mk ) aufs
-        return ()
-
-recompute_for_aufgabe mk @ ( Make p t make v conf ) auf = 
-    wrap ("for aufgabe " ++ show ( A.anr auf ) ) $ do
-        eins <- SA.get_anr $ A.anr auf
-        mapM ( \ e -> recompute_for_einsendung mk auf e
-                  `Control.Exception.catch` \ any -> do
-                      hPutStr stderr $ "err: " ++ show any
-                      return ()
-             ) eins
-        return ()
-
-{-
+verbose :: Bool
+verbose = False -- True
 
 recompute_for_einsendung 
     :: Make -> A.Aufgabe -> SA.Stud_Aufg -> IO ()
@@ -115,6 +77,8 @@ compatible ( Just Pending ) _ = True
 compatible ( Just No ) Nothing = True
 compatible x y = x == y
 
+{-
+
 parse_from_file :: ( ToDoc a, Reader a ) => Maybe File -> IO a
 parse_from_file ( Just fname ) = do
     input <- readFile $ toString fname
@@ -126,9 +90,10 @@ parse_from_string input = do
         Just it -> return it
         Nothing -> error "no parse"
 
+-}
+
 read_from_file :: Maybe File -> IO String
 read_from_file ( Just fname ) = do
     this <- readFile $ toString fname
     return this
 
--}
