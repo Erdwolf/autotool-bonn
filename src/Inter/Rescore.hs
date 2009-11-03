@@ -43,6 +43,7 @@ import Autolib.Reporter
 import Autolib.Timer 
 
 import Control.Monad ( guard, forM )
+import Control.Exception
 import Data.Maybe ( isJust )
 import System
 
@@ -54,7 +55,8 @@ main = do
     args <- getArgs
     contents <- mapM readFile args
     let ms = Inter.Collector.makers 
-    forM_ ( slurp $ concat contents ) $ rescore ms
+    forM_ ( slurp $ concat contents ) $ \ ein -> do
+        rescore ms ein `Control.Exception.catch` \ e -> return ()
 
     
 rescore :: [ Make ]
@@ -62,12 +64,11 @@ rescore :: [ Make ]
 	-> IO ()
 rescore mks e = do    
     let mat = internal $ matrikel e 
-    let infile = Datei { pfad  = [ "done", toString ( vor e )
-                                , toString ( auf e )
-                                , toString mat
-                                , if isJust ( msize e )
-                                  then "OK" else "NO"
-                                ]
+    let infile = Datei { pfad  = [ "autotool", "done"
+                                 , toString ( vor e ) , toString ( auf e )
+                                 , toString mat
+                                 , if isJust ( msize e ) then "OK" else "NO"
+                                 ]
                       , name = pid e
                       , extension = "input"
                       }
@@ -84,7 +85,7 @@ rescore mks e = do
                    ( fun $ read $ toString $ A.config aufgabe ) 
                    ( toString mat )
         let ( res :: Maybe Wert , com :: Doc ) 
-	        = export $ evaluate p instant input
+	        = export $ Inter.Evaluate.evaluate p instant input
         return res
 
     let param = P.Param { P.mmatrikel = Just mat
