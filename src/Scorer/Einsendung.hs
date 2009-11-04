@@ -19,10 +19,11 @@ import Scorer.Util hiding ( size )
 
 import Autolib.FiniteMap
 import Control.Monad ( guard )
+import Data.Maybe ( isJust )
 
 -- | das ist die information zu jeweils einer studentischen einsendung
 data Einsendung = Einsendung
-          { size     :: Integer -- Int
+          { msize     :: Maybe Int
 	  , date     :: [Int]
 	  , time     :: String -- ^ original time entry
 	  , matrikel :: Obfuscated MNr -- ^ Datenschutz
@@ -30,6 +31,13 @@ data Einsendung = Einsendung
 	  , vor      :: VNr
 	  , pid	     :: String
 	  }	deriving (Eq,Ord)
+
+size e = case msize e of
+    Nothing -> error "size"
+    Just s  -> s
+
+okay :: Einsendung -> Bool
+okay = isJust . msize
 
 data Obfuscated a = Obfuscated 
         { internal :: a
@@ -104,7 +112,7 @@ instance Read Einsendung where
             ( v , '-' : a ) = span (/= '-') aufg
 	    ok	    = field 8 line'
 
-	guard $ ok == "OK"
+	-- guard $ ok == "OK"
 
 	let e = Einsendung
 	      {	time = unwords $ take 6 wl
@@ -114,7 +122,9 @@ instance Read Einsendung where
                        ]
                        ++                                    -- St:Mi:Se
                        [ read x | x <- words $ map mySub (field 4 date') ]
-	      , size     = read $ field 11 line'
+	      , msize     = if ok == "OK"
+                            then Just $ read $ field 11 line'
+                            else Nothing
 	      , matrikel = obfuscate $ fromCGI $ field  4 line'
 	      , auf	 = fromCGI a
 	      , vor      = fromCGI v

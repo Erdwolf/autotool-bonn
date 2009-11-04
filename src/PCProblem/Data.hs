@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module PCProblem.Data where
 
@@ -13,7 +13,8 @@ import Data.Typeable
 data PCP = PCP [(String, String)] deriving ( Typeable )
 
 instance Letters PCP Char where
-    letters ( PCP uvs ) = mkSet $ do (u, v) <- uvs ; u ++ v
+    letters ( PCP uvs ) = 
+        mkSet $ do (u, v) <- uvs ; u ++ v
 
 $(derives [makeReader, makeToDoc] [''PCP])
 
@@ -33,6 +34,5 @@ instance XmlRpcType PCP where
 $(asXmlRpcStruct ''Pair)
 -}
 
--- local variables:
--- mode: haskell
--- end:
+
+
