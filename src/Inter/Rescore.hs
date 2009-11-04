@@ -4,8 +4,9 @@
 
 input: log file name with lines like:
 
-Fri Nov 28 18:33:49 CET 2003 ( 2425 ) cgi-318 ( 318 ) Ein-Gleich : OK # Size: 7 
-( all other lines are ignored )
+Fri Nov 28 18:33:49 CET 2003 ( 2425 ) cgi-318 ( 318 ) VNr-ANr : OK # Size: 7 
+Fri Nov 28 18:33:49 CET 2003 ( 2425 ) cgi-318 ( 318 ) VNr-ANr : NO 
+
 
 action: read the corresponding input file and re-do the evaluation
 
@@ -22,6 +23,7 @@ import Inter.Bank ( logline )
 -- import Inter.Boiler ( boiler )
 
 import Inter.Collector
+import Inter.Common
 
 import Inter.Types
 import Inter.Evaluate
@@ -34,12 +36,15 @@ import qualified Control.Schule as U
 import qualified Control.Vorlesung as V
 import Control.Types
 
+import Util.Datei
 
 import Autolib.ToDoc
 import Autolib.Reporter
 import Autolib.Timer 
 
 import Control.Monad ( guard, forM )
+import Control.Exception
+import Data.Maybe ( isJust )
 import System
 
 patience :: Int
@@ -50,33 +55,50 @@ main = do
     args <- getArgs
     contents <- mapM readFile args
     let ms = Inter.Collector.makers 
-    forM_ ( slurp $ concat contents ) $ rescore ms
+    forM_ ( slurp $ concat contents ) $ \ ein -> do
+        rescore ms ein `Control.Exception.catch` \ e -> return ()
 
     
 rescore :: [ Make ]
 	-> Einsendung 
 	-> IO ()
-rescore mks e = do
-    let m = internal $ matrikel e
-    us <- U.get
-    forM us $ \ u -> do
-        studs <- S.get_unr_mnr ( U.unr u, m )
-        forM studs $ \ stud -> do
-            aufs <- A.get_this $ auf e
-            forM aufs $ \ auf -> do
-                staufs <- SA.get_snr_anr 
-                     ( S.snr stud ) ( A.anr auf )
-                forM staufs $ \ stauf -> do
-                   print $ stauf
-    return ()
+rescore mks e = do    
+    let mat = internal $ matrikel e 
+    let infile = Datei { pfad  = [ "autotool", "done"
+                                 , toString ( vor e ) , toString ( auf e )
+                                 , toString mat
+                                 , if isJust ( msize e ) then "OK" else "NO"
+                                 ]
+                      , name = pid e
+                      , extension = "input"
+                      }
+    input <- Util.Datei.lesen infile
+    [ aufgabe ] <- A.get_this $ auf e
+
+    let [ mk ] = filter ( \ m -> show m == toString (A.typ aufgabe) ) mks
+
+    mres :: Maybe Wert <- case mk of 
+      Make p tag fun verify conf -> do
+        ( p, instant, icom ) <-  
+            make_instant_common_with (A.vnr aufgabe) (Just $ A.anr aufgabe) 
+                   ( error "S.Student" )
+                   ( fun $ read $ toString $ A.config aufgabe ) 
+                   ( toString mat )
+        let ( res :: Maybe Wert , com :: Doc ) 
+	        = export $ Inter.Evaluate.evaluate p instant input
+        return res
+
+    let param = P.Param { P.mmatrikel = Just mat
+                            , P.vnr = A.vnr aufgabe
+                            , P.anr = A.anr aufgabe
+                            }
+    case mres of
+       Just res -> do
+           putStr $ Inter.Bank.logline ( time e ) ( pid e ) param res
+
 
 {-
 
-    let [ mk ] = filter 
-                 ( \ (Make p _ _ _ _) -> 
-                       show p == fromCGI ( type auf )
-                 ) mks
-    recompute_for_einsendung mk auf 
 
     let ( aufg , '-' : vers  ) = span (/= '-') $ auf e
 
@@ -105,7 +127,7 @@ rescore mks e = do
 	          <- timed_run patience ( reject $ text "timer expired" ) $ do
 	                 evaluate ( problem v ) i p2
 
-	     putStr $ logline (time e) (pid e) p2 res
+
 
 -}
 
