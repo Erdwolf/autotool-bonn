@@ -1,0 +1,40 @@
+Name:           autotool-test
+Version:        1.0
+-- License:        GPL
+-- License-File:   LICENSE
+Author:         Bertram Felgenhauer
+Maintainer:     Bertram Felgenhauer
+Homepage:       http://dfa.imn.htwk-leipzig.de/auto/
+Category:       E-Testing
+Synopsis:       E-Testing
+Description:    Testsuite and related utilities for autotool.
+Stability:      Experimental
+Cabal-Version:  >=1.2
+Build-Type:     Simple
+
+Executable extract
+    GHC-Options: -Wall
+    Hs-source-dirs: src
+    Main-Is: Extract.hs
+    Extensions:
+        DeriveDataTypeable,
+        ScopedTypeVariables
+    Build-Depends:
+        directory >= 1.0 && < 1.1,
+        base >= 3.0 && < 3.1,
+        xhtml >= 3000.2 && < 3000.3,
+        containers >= 0.2 && < 0.3,
+        random >= 1.0 && < 1.1,
+        hsql-mysql >= 1.7 && < 1.8,
+        cgi >= 3001.1 && < 3001.2,
+        mtl >= 1.1 && < 1.2,
+        parsec >= 2.1 && < 2.2,
+        unix >= 2.3 && < 2.4,
+        old-time >= 1.0 && < 1.1,
+        autotool-collection,
+        autolib-util,
+        autolib-data,
+        autolib-output,
+        autolib-reader,
+        autolib-reporter,
+        autolib-todoc
