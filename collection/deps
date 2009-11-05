@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# find modules depending on Inter.Collector:
+# find modules required by Inter.Collector:
 # 1) use ghc to find all dependencies
 ghc -i -isrc -isrc/control -icommon -odir dist/build -hidir dist/build -stubdir dist/build -XDeriveDataTypeable -XMultiParamTypeClasses -XTypeSynonymInstances -XFlexibleInstances -XFlexibleContexts -XUndecidableInstances -XScopedTypeVariables -XFunctionalDependencies Inter.Collector -M
 # 2) select direct dependencies and extract module names

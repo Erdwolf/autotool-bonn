@@ -74,6 +74,7 @@ Library
         Control.Time
         Control.Time.Typ
         Control.Types
+        Gateway.Help
     Other-Modules:
         Algebraic.Central
         Algebraic.Class
@@ -253,7 +254,6 @@ Library
         Fun.Step
         Fun.Table
         Fun.Type
-        Gateway.Help
         Grammatik.Ableitung
         Grammatik.Ableitung.Config
         Grammatik.Akzeptor
