@@ -12,7 +12,21 @@ Stability:      Experimental
 Cabal-Version:  >=1.2
 Build-Type:     Simple
 
+Flag extract
+    Description: Build test extractor
+    Default: False
+
+Flag run
+    Description: Build test runner
+    Default: False
+
+Flag all
+    Description: Build everything
+    Default: True
+
 Executable extract
+    If !flag(extract) && !flag(all)
+        Buildable: False
     GHC-Options: -Wall
     Hs-source-dirs: src
     Main-Is: Extract.hs
@@ -38,3 +52,16 @@ Executable extract
         autolib-reader,
         autolib-reporter,
         autolib-todoc
+
+Executable run
+    If !flag(run) && !flag(all)
+        Buildable: False
+    GHC-Options: -Wall -threaded
+    Hs-source-dirs: src
+    Main-Is: Run.hs
+    Extensions:
+        DeriveDataTypeable
+    Build-Depends:
+        base >= 3.0 && < 3.1,
+        filepath >= 1.1 && < 1.2,
+        autotool-collection
