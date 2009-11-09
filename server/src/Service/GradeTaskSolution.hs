@@ -36,8 +36,12 @@ grade_task_solution (TT sTaskInst) (TT (SString solution))
             () = assertTypes maker0 (p, inst')
         let res = evaluate p inst' solution
         score <- case result res of
-            Nothing -> throwError $ fromOutput $ kommentar res
+            Nothing -> throwReport res
             Just score -> return score
-        when (not (is_okay score)) $ throwError $ fromOutput $ kommentar res
+        when (not (is_okay score)) $ throwReport res
+        doc <- liftIO $ fromReport res
         return $ Documented { D.contents = fromIntegral $ size score,
-                              D.documentation = fromOutput $ kommentar res }
+                              D.documentation = doc }
+
+throwReport :: Reporter b -> ErrorT Description IO a
+throwReport rep = liftIO (fromReport rep) >>= throwError

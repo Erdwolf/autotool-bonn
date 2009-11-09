@@ -34,10 +34,12 @@ get_task_instance  (TT sconf) (TT seed) = fmap TT $ do
     ri <- gen maker (VNr 0) Nothing seed
     i <- maybe (fail "internal error generating instance") return (result ri)
     let b = CP.initial (problem maker) i
+    doc <- help b
+    descr <- fromReport $ report (problem maker) i
     return ( sign (task,
                    Instance { I.tag = IT.tag maker,
                               I.contents = AT.showDoc . AT.toDoc $ i})
-           , fromOutput $ kommentar $ report (problem maker) i
+           , descr
            , Documented { D.contents = SString . AT.render . AT.toDoc $ b,
-                          D.documentation = help b }
+                          D.documentation = doc }
            )

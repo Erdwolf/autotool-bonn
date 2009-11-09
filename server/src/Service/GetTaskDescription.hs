@@ -17,6 +17,7 @@ import qualified Autolib.ToDoc as AT
 get_task_description :: TT Task -> IO (TT (Documented Config))
 get_task_description (TT name) = TT `fmap` do
     Make _ _ _ _ conf <- lookupTaskM name
+    doc <- help conf
     return $ Documented
             (CString (AT.render . AT.toDoc $ conf))
-            (help conf)
+            doc

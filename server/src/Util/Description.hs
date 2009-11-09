@@ -2,6 +2,7 @@ module Util.Description (
     fromDoc,
     fromToDoc,
     fromOutput,
+    fromReport,
     help
 ) where
 
@@ -12,16 +13,21 @@ import qualified Autolib.Output as AO
 import qualified Autolib.ToDoc as AT
 import qualified Gateway.Help as GH
 
+import Autolib.Reporter
+
 import Data.Typeable
 
-fromToDoc :: AT.ToDoc a => a -> Description
+fromToDoc :: AT.ToDoc a => a -> IO Description
 fromToDoc = fromDoc . AT.toDoc
 
-fromDoc :: AT.Doc -> Description
+fromDoc :: AT.Doc -> IO Description
 fromDoc = fromOutput . AO.Doc
 
-fromOutput :: AO.Output -> Description
-fromOutput = DString . outputToXmlString
+fromOutput :: AO.Output -> IO Description
+fromOutput = fmap DString . outputToXmlString
 
-help :: (Data.Typeable.Typeable a) => a -> Description
+fromReport :: Reporter a -> IO Description
+fromReport rep = action rep >> fromOutput (kommentar rep)
+
+help :: (Data.Typeable.Typeable a) => a -> IO Description
 help = fromOutput . GH.help

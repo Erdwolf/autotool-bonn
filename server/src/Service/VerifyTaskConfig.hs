@@ -26,6 +26,6 @@ verify_task_config (TT task) (TT (CString config)) = fmap TT . runErrorT $ do
     config' <- either (fail . show) return $ parse reader "<config>" config
     let report = verifyConf config'
     case result report of
-        Nothing -> throwError (fromOutput (kommentar report))
+        Nothing -> liftIO (fromReport report) >>= throwError
         _       -> return ()
     return (sign (task, CString config))

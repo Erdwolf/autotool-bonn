@@ -151,7 +151,7 @@ instance XmlContent Output where
     toElem (OSpace a) = toElem a
 instance XmlContent Beside where
     fromElem (CElem (Elem "Beside" [] c0):rest) =
-        (\(a,ca)->
+        (\(a,_ca)->
            (Just (Beside a), rest))
         (many fromElem c0)
     fromElem (CMisc _:rest) = fromElem rest
@@ -161,7 +161,7 @@ instance XmlContent Beside where
         [CElem (Elem "Beside" [] (concatMap toElem a))]
 instance XmlContent Itemize where
     fromElem (CElem (Elem "Itemize" [] c0):rest) =
-        (\(a,ca)->
+        (\(a,_ca)->
            (Just (Itemize a), rest))
         (many fromElem c0)
     fromElem (CMisc _:rest) = fromElem rest
