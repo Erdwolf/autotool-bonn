@@ -25,9 +25,9 @@ outputToXOutput o = case o of
         return $ X.OText $ X.Text txt
     O.Pre txt ->
         return $ X.OPre $ X.Pre (show txt)
-    O.Image file -> do
+    O.Image file contents -> do
         let ext = drop 1 $ snd $ splitExtension file
-        img <- (C.encode . B.unpack) `fmap` B.readFile file
+        img <- (C.encode . B.unpack) `fmap` contents
         return $ X.OImage $
             X.Image (X.Image_Attrs { X.imageType = ext,
                                      X.imageAlt = "<image>" })

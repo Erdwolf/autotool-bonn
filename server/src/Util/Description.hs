@@ -27,7 +27,7 @@ fromOutput :: AO.Output -> IO Description
 fromOutput = fmap DString . outputToXmlString
 
 fromReport :: Reporter a -> IO Description
-fromReport rep = action rep >> fromOutput (kommentar rep)
+fromReport rep = fromOutput (kommentar rep)
 
 help :: (Data.Typeable.Typeable a) => a -> IO Description
 help = fromOutput . GH.help
