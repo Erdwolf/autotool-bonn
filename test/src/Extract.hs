@@ -18,22 +18,23 @@ import qualified Control.Student as S
 import Inter.Collector
 import Control.Types
 
-import Autolib.ToDoc
+import Autolib.ToDoc (toDoc)
 import Inter.Types
 import Inter.Common
 
 import Control.Exception
-import Control.Monad
 import Data.List
 import Data.Function
 import System.IO
 import System.Directory
 import System.Environment
+import System.FilePath
 
 import Control.Monad.Reader
 import Control.Monad.Trans
 
-data Ctx = Ctx { write :: Bool, path :: [String], verbose :: Bool }
+data Ctx = Ctx { write :: Bool, directory :: FilePath,
+                 path :: [String], verbose :: Bool }
 
 newtype MIO a = MIO { runMIO :: ReaderT Ctx IO a }
     deriving (Monad, MonadIO, MonadReader Ctx)
@@ -42,14 +43,14 @@ main :: IO ()
 main = do
     args <- getArgs
     let wr = not (null args || last args /= "*")
-    mrun forRoot (Ctx { write = wr, path = args, verbose = True })
+    mrun forRoot (Ctx { write = wr, directory = ".",
+                        path = args, verbose = True })
 
 -- for all makers (task types) ...
 forRoot :: MIO ()
 forRoot = do
     let m = map head . groupBy ((==) `on` show) . sortBy (compare `on` show) $ makers
     forM_ m $ \mk -> do
---        hPrint stderr mk >> hFlush stderr
         nested (show mk) (forMaker mk)
 
 -- ... and all tasks of that type ...
@@ -104,14 +105,11 @@ nested dir action = do
             io $ putStrLn dir
         Ctx { path = ps }
             | null ps || head ps == dir || head ps == "*" -> do
-                 let r' = r { path = drop 1 ps }
-                 if write r then io $ bracket
-                     (createDirectoryIfMissing False dir
-                      >> setCurrentDirectory dir)
-                     (\_ -> setCurrentDirectory "..")
-                     (\_ -> io $ mrun (subdir dir $ action) r')
-                   else
-                     local (const r') action
+                 let r' = r { path = drop 1 ps,
+                              directory = directory r </> dir }
+                     action' | write r   = subdir dir $ action
+                             | otherwise = action
+                 local (const r') action'
         Ctx { } ->
             return ()
 
@@ -149,5 +147,7 @@ subdir dir a = do
 
 mWriteFile :: String -> String -> MIO ()
 mWriteFile file cts = do
-    Ctx { write = w } <- ask
-    when w $ io $ writeFile file cts
+    Ctx { write = w, directory = d } <- ask
+    when w $ io $ do
+        createDirectoryIfMissing True d
+        writeFile (d </> file) cts
