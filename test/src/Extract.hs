@@ -156,4 +156,4 @@ mWriteFile file cts = do
         writeFile (d </> file) cts
 
 readM :: P.Reader a => String -> a
-readM x = either (error . show) id $ P.runParser P.reader () "" x
+readM x = either (error . show) id $ P.runParser (P.parse_complete P.reader) () "" x
