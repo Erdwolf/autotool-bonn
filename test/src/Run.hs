@@ -21,6 +21,7 @@ import qualified Autolib.Reporter as R
 
 import Control.Exception as E
 import System.Directory
+import System.Environment
 import System.FilePath
 import System.IO
 import Control.Monad
@@ -35,24 +36,27 @@ timeout = 15000000 -- 15 seconds
 
 main :: IO ()
 main = do
+    args <- getArgs
+    let prefix | null args = ""
+               | otherwise = head args
     hSetBuffering stdout LineBuffering
     let m = map head . groupBy ((==) `on` show) . sortBy (compare `on` show) $ makers
-    forM_ m $ forMaker
+    forM_ m $ forMaker prefix
 
-forMaker :: Make -> IO ()
-forMaker mk = do
+forMaker :: FilePath -> Make -> IO ()
+forMaker prefix mk = do
     let dir = show mk
     e <- doesDirectoryExist dir
-    when e $ do
+    when (e && and (zipWith (==) prefix dir)) $ do
         aufs <- getDirectoryContents dir
-        forM_ aufs $ forAufgabe mk
+        forM_ aufs $ forAufgabe prefix mk
 
-forAufgabe :: Make -> String -> IO ()
-forAufgabe _ auf | auf == "." || auf == ".." = return ()
-forAufgabe mk@(Make p tg fun vrfy _) auf = do
+forAufgabe :: FilePath -> Make -> String -> IO ()
+forAufgabe _ _ auf | auf == "." || auf == ".." = return ()
+forAufgabe prefix mk@(Make p tg fun vrfy _) auf = do
     let dir = show mk </> auf
     e <- doesDirectoryExist dir
-    when (e && dir /= "." && dir /= "..") $ do
+    when (e && dir /= "." && dir /= ".." && and (zipWith (==) prefix dir)) $ do
         raw <- readFile $ dir </> "raw"
         let aufg = read raw
         when (T.toString (A.typ aufg) /= show mk) $ do
@@ -62,27 +66,27 @@ forAufgabe mk@(Make p tg fun vrfy _) auf = do
                 "skipping " ++ dir ++ " (error parsing config)"
             Just conf' -> do
                 studs <- getDirectoryContents dir
-                forM_ studs $ forStudent (Make p tg fun vrfy conf') auf
+                forM_ studs $ forStudent prefix (Make p tg fun vrfy conf') auf
                 -- note that the parsed config was stored in the maker
   `E.catch` \e ->
     putStrLn $
       "skipping " ++ (show mk </> auf) ++ " (caught " ++ show e ++ ")"
 
-forStudent :: Make -> String -> String -> IO ()
-forStudent _ _ stud | stud == "." || stud == ".." = return ()
-forStudent mk auf stud = do
+forStudent :: FilePath -> Make -> String -> String -> IO ()
+forStudent _ _ _ stud | stud == "." || stud == ".." = return ()
+forStudent prefix mk auf stud = do
     let dir = show mk </> auf </> stud
     e <- doesDirectoryExist $ dir
-    when (e && stud /= "." && stud /= "..") $ do
+    when (e && stud /= "." && stud /= ".." && and (zipWith (==) prefix dir)) $ do
         e' <- doesFileExist $ dir </> "error"
         if e' then putStrLn $ "skipping " ++ dir
-             else limited dir $ forTest mk auf stud
+             else limited dir $ forTest prefix mk auf stud
   `E.catch` \e ->
     putStrLn $
       "skipping " ++ (show mk </> auf </> stud) ++ " (caught " ++ show e ++ ")"
 
-forTest :: Make -> String -> String -> IO String
-forTest mk@(Make _ _ fun _ conf') auf stud = do
+forTest :: FilePath -> Make -> String -> String -> IO String
+forTest _prefix mk@(Make _ _ fun _ conf') auf stud = do
     let dir = show mk </> auf </> stud
     instant <- readFile $ dir </> "instant"
     input <- readFile $ dir </> "input"
