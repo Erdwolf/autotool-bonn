@@ -29,7 +29,7 @@ grade_task_solution (TT sTaskInst) (TT (SString solution))
     = fmap TT . runErrorT $ do
         (task, inst) <- verifyM sTaskInst
         Make p _ maker0 _ _ <- lookupTaskM task
-        inst' <- either (fail . show) return $ parse reader "<instance>"
+        inst' <- either (fail . show) return $ parse (parse_complete reader) "<instance>"
                  (I.contents inst)
         let assertTypes :: (conf -> Var p i b) -> (p, i) -> ()
             assertTypes _ _ = ()

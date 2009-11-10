@@ -29,7 +29,7 @@ get_task_instance
 get_task_instance  (TT sconf) (TT seed) = fmap TT $ do
     (task, CString config) <- verifyM sconf
     Make _ _ maker0 _ _ <- lookupTaskM task
-    let Right config' = parse reader "<config>" config
+    let Right config' = parse (parse_complete reader) "<config>" config
         maker = maker0 config'
     ri <- gen maker (VNr 0) Nothing seed
     i <- maybe (fail "internal error generating instance") return (result ri)

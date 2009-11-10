@@ -23,7 +23,7 @@ verify_task_config
     -> IO (TT (Either Description (Signed (Task, Config))))
 verify_task_config (TT task) (TT (CString config)) = fmap TT . runErrorT $ do
     Make _ _ _ verifyConf _ <- lookupTaskM task
-    config' <- either (fail . show) return $ parse reader "<config>" config
+    config' <- either (fail . show) return $ parse (parse_complete reader) "<config>" config
     let report = verifyConf config'
     case result report of
         Nothing -> liftIO (fromReport report) >>= throwError
