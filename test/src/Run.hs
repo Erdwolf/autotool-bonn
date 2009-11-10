@@ -19,6 +19,9 @@ import Inter.Types
 import Challenger.Partial
 import qualified Autolib.Reporter as R
 
+import qualified Autolib.Reader as P
+import qualified Text.ParserCombinators.Parsec as P
+
 import Control.Exception as E
 import System.Directory
 import System.Environment
@@ -62,9 +65,9 @@ forAufgabe prefix mk@(Make p tg fun vrfy _) auf = do
         when (T.toString (A.typ aufg) /= show mk) $ do
             error $ show mk ++ " /= " ++ T.toString (A.typ aufg) ++ " in " ++ dir
         case readM (T.toString (A.config aufg)) of
-            Nothing -> putStrLn $
-                "skipping " ++ dir ++ " (error parsing config)"
-            Just conf' -> do
+            Left err -> putStrLn $
+                "skipping " ++ dir ++ " (error parsing config: " ++ err ++ ")"
+            Right conf' -> do
                 studs <- getDirectoryContents dir
                 forM_ studs $ forStudent prefix (Make p tg fun vrfy conf') auf
                 -- note that the parsed config was stored in the maker
@@ -95,18 +98,18 @@ forTest _prefix mk@(Make _ _ fun _ conf') auf stud = do
     let var = fun conf'
         un :: IO (R.Reporter i) -> i
         un = undefined
-        i' = readM instant `asTypeOf` Just (un (generate var 42))
+        i' = readM instant `asTypeOf` Right (un (generate var 42))
         b' = readM input
         w' = readM result
     case (i', b', w') of
-        (Just i, Just b, Just w) -> do
+        (Right i, Right b, Right w) -> do
              let r = total_neu (problem var) i b
                  msg = compareMsg w (R.result r)
              E.evaluate msg
              return msg
-        (Nothing, _, _) -> error "error parsing instance"
-        (_, Nothing, _) -> error "error parsing input"
-        (_, _, Nothing) -> error "error parsing result"
+        (Left err, _, _) -> error $ "error parsing instance: " ++ err
+        (_, Left err, _) -> error $ "error parsing input: " ++ err
+        (_, _, Left err) -> error $ "error parsing result: " ++ err
 
 compareMsg :: Maybe Wert -> Maybe Wert -> String
 compareMsg a b = case (a, b) of
@@ -136,10 +139,8 @@ limited dir act = do
     killThread t2
     putStrLn $ "-> " ++ dir ++ ": " ++ r
 
-readM :: Read a => String -> Maybe a
-readM x = case reads x of
-    [(a, s)] | all isSpace s -> Just a
-    _ -> Nothing
+readM :: P.Reader a => String -> Either String a
+readM x = either (Left . show) Right $ P.runParser P.reader () "" x
 
 showX :: Show a => a -> String
 showX = unwords . words . show

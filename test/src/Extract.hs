@@ -22,6 +22,9 @@ import Autolib.ToDoc (toDoc)
 import Inter.Types
 import Inter.Common
 
+import qualified Autolib.Reader as P
+import qualified Text.ParserCombinators.Parsec as P
+
 import Control.Exception
 import Data.List
 import Data.Function
@@ -88,7 +91,7 @@ forEinsendung1 (Make _p _tag fun _verify _conf) auf eins stud = do
     -- find instance
     (_, instant, _) <- io $
         make_instant_common (A.vnr auf) (Just $ A.anr auf) stud
-                            (fun . read . toString $ A.config auf)
+                            (fun . readM . toString $ A.config auf)
     input <- io $ read_from_file (SA.input eins)
     mWriteFile "instant" (show $ toDoc instant)
     mWriteFile "input" input
@@ -151,3 +154,6 @@ mWriteFile file cts = do
     when w $ io $ do
         createDirectoryIfMissing True d
         writeFile (d </> file) cts
+
+readM :: P.Reader a => String -> a
+readM x = either (error . show) id $ P.runParser P.reader () "" x
