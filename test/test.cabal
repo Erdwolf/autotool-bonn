@@ -20,6 +20,10 @@ Flag run
     Description: Build test runner
     Default: False
 
+Flag report
+    Description: Build test reporter
+    Default: False
+
 Flag all
     Description: Build everything
     Default: True
@@ -65,3 +69,14 @@ Executable run
         base >= 3.0 && < 3.1,
         filepath >= 1.1 && < 1.2,
         autotool-collection
+
+Executable report
+    If !flag(report) && !flag(all)
+        Buildable: False
+    GHC-Options: -Wall
+    Hs-source-dirs: src
+    Main-Is: Report.hs
+    Build-Depends:
+        base >= 3.0 && < 3.1,
+        filepath >= 1.1 && < 1.2,
+        xhtml >= 3000.2 && < 3000.3
