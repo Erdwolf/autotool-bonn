@@ -108,6 +108,7 @@ forTest _prefix mk@(Make _ _ fun _ conf') auf stud = do
              E.evaluate msg
              return msg
         (Left err, _, _) -> error $ "error parsing instance: " ++ err
+        (_, Left err, Right w) -> return $ compareMsg w (Just No) ++ " " ++ err
         (_, Left err, _) -> error $ "error parsing input: " ++ err
         (_, _, Left err) -> error $ "error parsing result: " ++ err
 
@@ -140,7 +141,7 @@ limited dir act = do
     putStrLn $ "-> " ++ dir ++ ": " ++ r
 
 readM :: P.Reader a => String -> Either String a
-readM x = either (Left . show) Right $ P.runParser (P.parse_complete P.reader) () "" x
+readM x = either (Left . showX) Right $ P.runParser (P.parse_complete P.reader) () "" x
 
 showX :: Show a => a -> String
 showX = unwords . words . show
