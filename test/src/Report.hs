@@ -1,3 +1,5 @@
+import Paths_autotool_test
+
 import Data.List
 import qualified Text.ParserCombinators.Parsec as P
 import Data.Monoid
@@ -70,10 +72,11 @@ score t = collect $ (fmap scoreNode t) where
                           in  Nest (mconcat $ map result $ M.elems as') as'
     collect (Node n) = Node n
     scoreNode str
-        | "Ok" == str                = (mempty { rpass = 1 }, str)
-        | "(Ok) "   `isPrefixOf` str = (mempty { rgood = 1 }, str)
-        | "Skipped "`isPrefixOf` str = (mempty { rskip = 1 }, str)
-        | otherwise                  = (mempty { rfail = 1 }, str)
+        | "Ok "     `isPrefixOf` str' = (mempty { rpass = 1 }, str)
+        | "(Ok) "   `isPrefixOf` str' = (mempty { rgood = 1 }, str)
+        | "Skipped "`isPrefixOf` str' = (mempty { rskip = 1 }, str)
+        | otherwise                   = (mempty { rfail = 1 }, str)
+       where str' = str ++ " "
 
 labelt :: Ord l => l -> Tree a b -> Tree (M.Map l a) (M.Map l b)
 labelt l = fmap2 (M.singleton l) (M.singleton l)
@@ -83,59 +86,87 @@ main = do
     (dir:args) <- getArgs
     files <- forM args $ \fn -> do
         (labelt fn . score . parseFile) `fmap` readFile fn
+    createDirectoryIfMissing True dir
+    setCurrentDirectory dir
+    datadir <- getDataDir
+    copyFile (datadir </> "test.css") "test.css"
     let scores = foldr merge (Nest mempty M.empty) files
-    dump args dir scores
+    dump args "" scores
     return ()
 
 dump :: [String]
      -> FilePath
      -> Tree (M.Map String TestResult) (M.Map String (TestResult, String))
-     -> IO (M.Map String TestResult)
+     -> IO (M.Map String (TestResult, String))
 dump args dir (Node m) = do
     createDirectoryIfMissing True dir
     writeFile (dir </> "index.html") $
-        prettyHtml (leafAsHtml args m)
-    return (fmap fst m)
+        showHtml (leafAsHtml dir args m)
+    return m
 dump args dir (Nest result ms) = do
     tests <- forM (M.assocs ms) $ \(name, tree) -> do
         ((,) name) `fmap` dump args (dir </> name) tree
     createDirectoryIfMissing True dir
+    let result' = fmap (\r -> (r, showResult r)) result
     writeFile (dir </> "index.html") $
-        prettyHtml (indexAsHtml args result tests) -- showHtml
-    return result
+        showHtml (indexAsHtml dir args result' tests)
+    return result'
 
-leafAsHtml :: [String] -> M.Map String (TestResult, String) -> Html
-leafAsHtml args result = body $ table $ toHtml $ aboves $ map besides $ [
-        [cell (td (toHtml arg)),
-         cell (td (toHtml text)
-             ! [thestyle  ("background-color: " ++ colorResult res)])]
-    | arg <- args,
-      let (res, text) = maybe (mempty, "") id (M.lookup arg result)
-    ]
+leafAsHtml
+    :: FilePath
+    -> [String]
+    -> M.Map String (TestResult, String)
+    -> Html
+leafAsHtml dir args result
+    = myHeader dir +++
+      (body $ table $ toHtml $ aboves $ map besides $ [
+          [cell (td (toHtml arg)),
+           cell (td (toHtml text)
+               ! [thestyle  ("background-color: " ++ colorResult res)])]
+      | arg <- args,
+        let (res, text) = maybe (mempty, "") id (M.lookup arg result)
+      ])
 
 indexAsHtml
-    :: [String]
-    -> (M.Map String TestResult)
-    -> [(String, M.Map String TestResult)]
+    :: FilePath
+    -> [String]
+    -> M.Map String (TestResult, String)
+    -> [(String, M.Map String (TestResult, String))]
     -> Html
-indexAsHtml args result tests
-    = body $ table $ toHtml $ headline `above` summary `above` contents
+indexAsHtml dir args result tests
+    = myHeader dir +++
+      (body $ (! [theclass "index"]) $ table $ toHtml
+            $ headline `above` summary `above` contents)
   where
     headline = besides (cell (th (toHtml "name"))
         : map (cell . th . toHtml) args)
-    summary  = besides (cell (td (toHtml "total")) :
-        : map (cell . htmlResult . maybe mempty id . flip M.lookup result) args)
-    contents = cell . td . toHtml $ aboves $ map besides $ [
+    summary  = besides (cell (td (toHtml "total") ! [theclass "summary"])
+        : map (cell . (! [theclass "summary"]) . htmlResult
+                    . maybe (mempty, "") id . flip M.lookup result) args)
+    contents = aboves $ map besides $ [
             cell (td (anchor (toHtml test) ! [href (test </> "index.html")])) :
-            [ cell . htmlResult . maybe mempty id . flip M.lookup row $ name
+            [ cell . htmlResult
+                   . maybe (mempty, "skipped") id . flip M.lookup row $ name
             | name <- args]
         | (test, row) <- tests]
 
-htmlResult :: TestResult -> Html
-htmlResult (TestResult 0 0 0 _) = td (toHtml "")
+myHeader :: FilePath -> Html
+myHeader dir = header $
+    (thelink noHtml ! [href css, rel "stylesheet"]) +++
+    (thetitle (toHtml $ "tests: " ++ dir)) +++
+    (meta ! [httpequiv "Content-Type", content "text/html;charset=utf-8"])
+  where
+    css = (joinPath $ map (const "..") $ splitDirectories dir) </> "test.css"
+
+htmlResult :: (TestResult, String) -> Html
+htmlResult (r@(TestResult 0 0 0 s), ann) = td (annotation ann +++ noHtml)
     ! [thestyle "background-color: grey"]
-htmlResult r@(TestResult p g f s) = td (toHtml (pcnt (p+g) (p+g+f)))
-    ! [thestyle ("background-color: " ++ colorResult r)]
+htmlResult (r@(TestResult p g f s), ann) = td (annotation ann +++ toHtml (pcnt (p+g) (p+g+f)))
+    ! [thestyle ("text-align: right; background-color: " ++ colorResult r)]
+
+showResult :: TestResult -> String
+showResult (TestResult p g f s) = printf
+    "%d pass / %d good / %d fail; %d total, %d skipped" p g f (p + g + f) s
 
 colorResult :: TestResult -> String
 colorResult (TestResult p g f s) = let
@@ -155,3 +186,7 @@ colorResult (TestResult p g f s) = let
 
 pcnt :: Int -> Int -> String
 pcnt a b = printf "%3.2f%%" ((100 :: Double) * fromIntegral a / fromIntegral b)
+
+annotation :: String -> Html
+annotation = (! [theclass "annn"]) . thediv . (! [theclass "ann"]) . thediv
+    . (! [theclass "an"]) . table . tr . td . toHtml

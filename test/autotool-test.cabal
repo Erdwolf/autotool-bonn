@@ -11,6 +11,8 @@ Description:    Testsuite and related utilities for autotool.
 Stability:      Experimental
 Cabal-Version:  >=1.2
 Build-Type:     Simple
+Data-Dir:       data
+Data-Files:     test.css
 
 Flag extract
     Description: Build test extractor
@@ -28,7 +30,7 @@ Flag all
     Description: Build everything
     Default: True
 
-Executable extract
+Executable autotool-test-extract
     If !flag(extract) && !flag(all)
         Buildable: False
     GHC-Options: -Wall
@@ -57,7 +59,7 @@ Executable extract
         autolib-reporter,
         autolib-todoc
 
-Executable run
+Executable autotool-test-run
     If !flag(run) && !flag(all)
         Buildable: False
     GHC-Options: -Wall -threaded
@@ -70,7 +72,7 @@ Executable run
         filepath >= 1.1 && < 1.2,
         autotool-collection
 
-Executable report
+Executable autotool-test-report
     If !flag(report) && !flag(all)
         Buildable: False
     GHC-Options: -Wall
@@ -79,4 +81,5 @@ Executable report
     Build-Depends:
         base >= 3.0 && < 3.1,
         filepath >= 1.1 && < 1.2,
-        xhtml >= 3000.2 && < 3000.3
+        xhtml >= 3000.2 && < 3000.3,
+        autotool-collection
