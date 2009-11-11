@@ -74,7 +74,7 @@ zeige_woerter cut g = do
 rundown :: Int -> [( String, Baum )] -> Doc    
 rundown cut wbs = nest 4 $ besides $ do
      (w, b) <- pick cut wbs
-     return $ toDoc (yield b, toDoc b)
+     return $ toDoc (yield b, b)
 
 pick :: Int -> [a] -> [a]
 pick n xs = 

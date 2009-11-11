@@ -33,9 +33,6 @@ class ( Reader [dat], ToDoc [dat], Reader [prop], ToDoc [prop]  )
 instance ( Reader [dat], ToDoc [dat], Reader [prop] , ToDoc [prop]   ) 
       => Class dat prop 
 
-instance Reader Doc where 
-    reader = do cs <- reader ; return $ text cs
-
 data Class dat prop => Type m dat prop = 
      Make { machine_desc :: Doc
 	  , data_desc :: Doc
