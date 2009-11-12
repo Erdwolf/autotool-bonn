@@ -51,7 +51,7 @@ instance Partial D.Primrec_2D D.Config  Fun where
 	  let (dl,ur) = bounds $ unTafel2 mytafel
 	  let t :: Tafel2
 	      t = tabulate2 b ur
-	  inform $ nest 4 $ toDoc t
+	  inform $ nest 4 $ prettyTafel2 t
           -- Unterschiede berechnen
           let diffs = do
                   xy <- indices $ unTafel2 mytafel

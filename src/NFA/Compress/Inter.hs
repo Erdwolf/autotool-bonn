@@ -24,7 +24,7 @@ instance C.Partial DFA_Compress Instance Compressed where
     
     describe p i = vcat
         [ text "Gesucht ist eine komprimierte Darstellung der Automatentabelle"
-	, nest 4 $ toDoc $ tafel $ original i
+	, nest 4 $ F.prettyTafel2 $ tafel $ original i
 	, text "Das next/check-Array soll höchstens"
 	, text "die Länge" <+> toDoc ( max_size i ) <+> text "haben."
 	]

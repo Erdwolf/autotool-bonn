@@ -247,6 +247,7 @@ Library
         Fun.Examples
         Fun.Machine
         Fun.Make
+        Fun.Matrix
         Fun.Quiz
         Fun.Quiz.Type
         Fun.Quiz.Type2
@@ -678,3 +679,4 @@ Library
         Upload.Config
         Util.Cache
         Util.Datei.Base
+        Util.FailDoc

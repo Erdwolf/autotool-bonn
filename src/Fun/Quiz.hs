@@ -62,7 +62,7 @@ instance Partial Fun_Quiz2 Tafel2 Fun where
           inform $ text "Die Wertetabelle Ihrer Funktion ist:"
 	  let (dl,ur) = bounds $ unTafel2 i
 	  let t = tabulate2 b ur
-	  inform $ nest 4 $ toDoc t
+	  inform $ nest 4 $ prettyTafel2 t
           -- Unterschiede berechnen
           let diffs = do
                   xy <- indices $ unTafel2 i
@@ -86,7 +86,7 @@ instance Partial Fun_Quiz2 Tafel2 Fun where
     describe p i = 
             vcat [ text "Konstruieren Sie eine zweistellige primitiv rekursive Funktion"
                  , text "mit dieser Wertetabelle:"
-                 , nest 4 $ toDoc i
+                 , nest 4 $ prettyTafel2 i
                  ]
 
 

@@ -12,7 +12,7 @@
 
 module Fun.Table where
 
-
+import Fun.Matrix
 import Fun.Type
 import Fun.Check
 import Fun.Machine
@@ -20,14 +20,16 @@ import Fun.Examples
 import Machine.Class
 import Fun.Step
 import Fun.State
+import Util.FailDoc
 
-import Fun.Examples -- for testing
+-- import Fun.Examples -- for testing
 
 import Autolib.Reporter
 import Autolib.ToDoc
 import Autolib.Reader hiding ( newline )
 import Data.Array
 import Data.Typeable
+import Data.List
 
 
 anzeig :: Doc -> Reporter ()
@@ -64,11 +66,19 @@ data Tafel1 = Tafel1
            { unTafel1 :: Array Integer Integer }
     deriving ( Show, Read, Typeable )
 
-instance ToDoc Tafel1 where toDoc = rollout . frame1 . unTafel1
+instance ToDoc Tafel2 where
+    toDocPrec p t = toDocPrec p (mkmatrix t)
 
-instance ToDoc Tafel2 where toDoc = rollout . frame2 . unTafel2
+instance Reader Tafel2 where
+    atomic_readerPrec p = do
+        t <- atomic_readerPrec p
+        mktafel2 t
 
-instance Reader Tafel2 -- dummy, dangerous?
+prettyTafel1 :: Tafel1 -> Doc
+prettyTafel1 = rollout . frame1 . unTafel1
+
+prettyTafel2 :: Tafel2 -> Doc
+prettyTafel2 = rollout . frame2 . unTafel2
 
 tabulate2 :: Fun 
 	 -> (Integer, Integer) 
@@ -130,3 +140,26 @@ trim w cs =
     in  filler ++ cs
 
 
+-- | convert Tafel2 to equivalent Matrix
+mkmatrix :: Tafel2 -> Matrix Integer
+mkmatrix t = 
+    let ( (0,0), (h,w)) = bounds $ unTafel2 t
+    in  Matrix { width = w + 1
+	       , height = h + 1
+	       , contents = [ [ unTafel2 t ! (x,y) | y <- [ 0 .. w ] ]
+			    | x <- [ 0 .. h ]
+			    ]
+	       }
+
+mktafel2 :: FailDoc m => Matrix Integer -> m Tafel2
+mktafel2 m = do
+    when ( genericLength ( contents m ) /= height m ) $ failDoc
+	 $ text "Der Inhalt der Matrix hat nicht die Höhe"
+         <+> toDoc ( height m )
+    sequence $ do
+        ( k, xs) <- zip [ 0 :: Int .. ] $ contents m
+        return $ when ( genericLength xs /= width m ) $ failDoc
+	     $ text "Die Zeile" <+> toDoc k
+	     <+> text "hat nicht die Breite" <+> toDoc ( width m )
+    return $ Tafel2 $ listArray ((0,0), (height m - 1, width m - 1 ))
+		    $ concat $ contents m
