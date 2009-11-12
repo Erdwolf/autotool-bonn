@@ -1,13 +1,9 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-overlapping-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Machine.Numerical.Config where
 
---   $Id$
-
 import Arithmetic.Op
 
-import Autolib.Informed
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Reporter

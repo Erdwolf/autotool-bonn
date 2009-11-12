@@ -1,8 +1,4 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 module Machine.Fun
-
---   $Id$
 
 ( fun_test
 , inner_fun_test
@@ -13,22 +9,19 @@ module Machine.Fun
 where
 
 import Machine.Class
-import Machine.Vorrechnen
 import Machine.Akzeptieren
 import Machine.History
 
 import qualified Machine.Numerical.Type as N
 
-import Control.Monad (guard)
 import Autolib.Reporter hiding ( output )
 import Autolib.ToDoc
-import Autolib.Reader
 import Autolib.FiniteMap
 import Autolib.Set
 import Autolib.Size
 
 numerical_test' ::  ( Numerical dat, Machine m dat conf, Out m dat conf )
-	        => N.Type m
+	        => N.Type c m
 		-> m
 		-> Reporter Int
 numerical_test' i m = numerical_test ( N.cut i ) ( N.args i ) ( N.fun i ) m

@@ -1,23 +1,16 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 module Machine.Numerical.Make where
-
---  $Id$
 
 import Inter.Types
 
 import Machine.Class
 import qualified Machine.Var as M
-import qualified Arithmetic.Op as A
 import qualified Machine.Numerical.Type as N
 import qualified Machine.Numerical.Config as Con
-import qualified Autolib.Reporter.Checker as Checker
 
 import Challenger.Partial
 
 import Autolib.ToDoc
 import Autolib.Reporter
-import Data.List ( intersperse )
 import System.Random
 import Data.Typeable
 
@@ -29,7 +22,7 @@ testliste len ari hei = sequence $ replicate len $ do
 
 make :: forall c m dat conf b
      . ( Show c, Con.Check c m , Con.ConfigC c m , Machine m dat conf 
-       , Partial N.Computer ( N.Type m ) b, Typeable b
+       , Partial N.Computer ( N.Type c m ) b, Typeable b
        )
      => Con.Config c m
       ->  Make
@@ -40,23 +33,23 @@ make ( defcon :: Con.Config c m ) =
 	          { problem = N.Computer
 		  , tag = t
 		  , key = \ matrikel -> return matrikel
-		  , gen = \ vnr manr key -> fnum conf key 
+		  , gen = \ _vnr _manr key -> fnum conf key 
 		  }
 	    )
-	    ( \ con -> return () ) -- verify
+	    ( \ _con -> return () ) -- verify
 	    defcon
 
 
 fnum ::  ( Show c , Con.Check c m , Con.ConfigC c m , Machine m dat conf )
      => Con.Config c m 
      -> String
-     -> IO ( Reporter ( N.Type m ))
+     -> IO ( Reporter ( N.Type c m ))
 fnum conf key = do
     xss <- testliste 
         ( Con.num_args conf ) ( Con.arity conf ) ( Con.max_arg conf )
     let xs = map M.Var [ 1 .. fromIntegral $ Con.arity conf ]
-    return $ return $ N.Make { N.fun = \ xs -> 
-                      A.eval ( mkargs xs key ) ( Con.op conf ) 
+    return $ return $ N.Make { N.op = Con.op conf
+              , N.key = read key
 	      , N.fun_info = fsep 
 		     [ text "\\" , toDoc xs , text "->", toDoc $ Con.op conf ]
 	      , N.extra_info = vcat $
@@ -67,20 +60,6 @@ fnum conf key = do
 		)
 	      , N.args = xss
 	    , N.cut = Con.cut conf
-	    , N.check = check_all $ Con.checks conf
+	    , N.checks = Con.checks conf
 	    , N.start = Con.start conf
 	      }
-
-mkargs xs key = A.bind $ ( "mat", read key ) : do
-         (i, x) <- zip [ 1 .. ]  xs
-         return ( "x" ++ show i , x )
-
-check_all :: Con.Check c m 
-	  => [c] -> m -> Reporter ()
-check_all cs = \ m -> sequence_ $ do c <- cs ; return $ Con.check c m
-
-
-
-
-
-
