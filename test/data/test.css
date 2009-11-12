@@ -1,0 +1,59 @@
+body {
+    background-color: white;
+    text-color: black;
+}
+
+table {
+    border-collapse: collapse;
+    border: 2px solid #997050;
+    padding: 2px;
+}
+
+th {
+    background: #EEE0C0 !important;
+    border: 1px solid #997050;
+    padding: 2px;
+}
+
+.index > * > tr:hover {
+    background-color: #D0E0FF;
+}
+
+td.summary {
+    background: #FFF4E0;
+    border: 1px solid #997050;
+}
+
+td.summary {
+    border: 1px solid #997050;
+}
+
+td {
+    border-left: 1px solid #997050;
+    border-right: 1px solid #997050;
+    padding: 2px;
+}
+
+.annn {
+    float: left;
+    position: relative;
+}
+
+.ann {
+    text-align: left;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 50em;
+    height: 0px;
+    display: none;
+}
+
+.an {
+    background-color: white;
+    border: 1px solid black;
+}
+
+td:hover * .ann {
+    display: inline;
+}
