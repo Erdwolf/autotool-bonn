@@ -3,6 +3,10 @@ Version:        0.9
 Author:         Bertram Felgenhauer
 Maintainer:     Bertram Felgenhauer
 Stability:      Experimental
+Synopsis:       autotool Xml-RPC server
+Description:
+  This package provides a binary, autotool.cgi, that makes autotool tasks
+  available as an Xml-RPC service.
 Cabal-Version:  >= 1.2
 Build-Type:     Simple
 

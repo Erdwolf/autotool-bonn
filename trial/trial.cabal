@@ -6,8 +6,11 @@ Author:         Johannes Waldmann
 Maintainer:     Johannes Waldmann
 Homepage:       http://dfa.imn.htwk-leipzig.de/auto/
 Category:       E-Testing
-Synopsis:       E-Testing
-Description:    E-Testing
+Synopsis:       autotool trial CGI
+Description:
+  This package provides Trial.cgi, a frontend to the autotool problem
+  collection. Users can choose and configure available problems, and
+  submit solutions.
 Stability:      Experimental
 Cabal-Version:  >=1.2
 Build-Type:     Simple

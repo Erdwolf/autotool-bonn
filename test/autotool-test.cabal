@@ -6,8 +6,14 @@ Author:         Bertram Felgenhauer
 Maintainer:     Bertram Felgenhauer
 Homepage:       http://dfa.imn.htwk-leipzig.de/auto/
 Category:       E-Testing
-Synopsis:       E-Testing
-Description:    Testsuite and related utilities for autotool.
+Synopsis:       autotool testsuite
+Description:
+  Testsuite and related utilities for autotool.
+  .
+  There are three executables, one for extracting test cases from an
+  autotool database (autotool-test-extract), one for running a test
+  suite (autotool-test-run), and one for rendering test results in a
+  pretty HTML summary (autotool-test-report).
 Stability:      Experimental
 Cabal-Version:  >=1.2
 Build-Type:     Simple

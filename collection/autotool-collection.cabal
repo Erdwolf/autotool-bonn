@@ -6,8 +6,10 @@ Author:         Johannes Waldmann
 Maintainer:     Johannes Waldmann
 Homepage:       http://dfa.imn.htwk-leipzig.de/auto/
 Category:       E-Testing
-Synopsis:       E-Testing
-Description:    E-Testing
+Synopsis:       collection of E-testing tasks
+Description:
+  autotool-collection defines the core of autotool: its task types and 
+  their semantics.
 Stability:      Experimental
 Cabal-Version:  >= 1.2
 Build-Type:     Simple
