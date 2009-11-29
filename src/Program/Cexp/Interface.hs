@@ -37,8 +37,8 @@ instance Partial Cexp ( Integer, T.Exp ) A.Annotated where
     partial _ ( v, x ) a = A.same_skeleton (x, a)
 
     total _ ( v, x ) a = do
-        stores <- A.execute a
-        A.check stores a 
+        A.execute a
+        A.check a 
         when ( A.rvalue a /= Just v ) 
              $ reject $ text "Wert stimmt nicht mit Ziel überein."
 
