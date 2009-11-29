@@ -153,6 +153,8 @@ import qualified Program.General.Central
 import qualified Program.Array.Instance
 import qualified Program.List.Instance
 
+import qualified Program.Cexp.Interface
+
 import qualified Code.Huffman.Boiler
 import qualified Code.Quiz
 import qualified Code.Class
@@ -320,6 +322,7 @@ tmakers =
          , heading "Berechnungsmodelle"
                 [ item JVM.Make.make
                 , item Turing.Make.computer
+                , item Program.Cexp.Interface.make_fixed
 		, heading "Programme mit Arrays"
 		    [ item $ Program.General.Central.make_fixed 
                              Program.Array.Instance.Program_Array
