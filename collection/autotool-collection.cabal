@@ -506,6 +506,9 @@ Library
         Program.Array.Semantics
         Program.Array.Statement
         Program.Array.Value
+        Program.Cexp.Annotated
+        Program.Cexp.Interface
+        Program.Cexp.Type
         Program.General.Central
         Program.General.Class
         Program.General.Environment
