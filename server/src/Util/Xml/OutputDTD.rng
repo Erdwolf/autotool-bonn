@@ -7,6 +7,11 @@ grammar
         | element Text    { text }
         | element Image   { attribute type { string "png" | string "jpg" },
                             attribute alt  { string },
+                            # new in 0.0.2
+                            attribute width  { xsd:double },
+                            attribute height { xsd:double },
+                            attribute unit   { string "px" | string "em" },
+                            # end new
                             xsd:base64Binary }
         | element Link    { attribute href { xsd:anyURI },
                             text }

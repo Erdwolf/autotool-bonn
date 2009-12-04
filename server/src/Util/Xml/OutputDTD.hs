@@ -28,6 +28,9 @@ data Image = Image Image_Attrs String
 data Image_Attrs = Image_Attrs
     { imageType :: String
     , imageAlt :: String
+    , imageWidth :: String
+    , imageHeight :: String
+    , imageUnit :: String
     } deriving (Eq,Show)
 data Link = Link Link_Attrs String
           deriving (Eq,Show)
@@ -89,10 +92,16 @@ instance XmlAttributes Image_Attrs where
         Image_Attrs
           { imageType = definiteA fromAttrToStr "Image" "type" as
           , imageAlt = definiteA fromAttrToStr "Image" "alt" as
+          , imageWidth = definiteA fromAttrToStr "Image" "width" as
+          , imageHeight = definiteA fromAttrToStr "Image" "height" as
+          , imageUnit = definiteA fromAttrToStr "Image" "unit" as
           }
     toAttrs v = catMaybes 
         [ toAttrFrStr "type" (imageType v)
         , toAttrFrStr "alt" (imageAlt v)
+        , toAttrFrStr "width" (imageWidth v)
+        , toAttrFrStr "height" (imageHeight v)
+        , toAttrFrStr "unit" (imageUnit v)
         ]
 instance XmlContent Link where
     fromElem (CElem (Elem "Link" as c0):rest) =

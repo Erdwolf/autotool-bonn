@@ -9,7 +9,10 @@
 <!ELEMENT Image (#PCDATA)>
 <!ATTLIST Image
   type CDATA #REQUIRED
-  alt CDATA #REQUIRED>
+  alt CDATA #REQUIRED
+  width CDATA #REQUIRED
+  height CDATA #REQUIRED
+  unit CDATA #REQUIRED>
 
 <!ELEMENT Link (#PCDATA)>
 <!ATTLIST Link

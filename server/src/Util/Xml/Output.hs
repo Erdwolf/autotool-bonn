@@ -15,6 +15,8 @@ import qualified Data.ByteString as B
 import System.FilePath
 import Control.Applicative
 
+import Util.Png
+
 outputToXOutput :: O.Output -> IO X.Output
 outputToXOutput o = case o of
     O.Empty ->
@@ -27,10 +29,17 @@ outputToXOutput o = case o of
         return $ X.OPre $ X.Pre (show txt)
     O.Image file contents -> do
         let ext = drop 1 $ snd $ splitExtension file
-        img <- (C.encode . B.unpack) `fmap` contents
+        contents' <- contents
+        let (w, h) = case ext of
+                "png" -> (pngSize contents')
+                _     -> (0, 0)
+            img = C.encode (B.unpack contents')
         return $ X.OImage $
             X.Image (X.Image_Attrs { X.imageType = ext,
-                                     X.imageAlt = "<image>" })
+                                     X.imageAlt = "<image>",
+                                     X.imageUnit = "px",
+                                     X.imageWidth = show w,
+                                     X.imageHeight = show h })
                     img
     O.Link uri ->
         outputToXOutput (O.Named_Link uri uri)
