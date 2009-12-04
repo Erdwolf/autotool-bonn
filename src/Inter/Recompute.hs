@@ -33,7 +33,6 @@ main = wrap "main" $ do
              $ Inter.Collector.makers
     return ()
 
-
 wrap msg action = do
     if verbose 
        then hPutStrLn stderr $ "start: " ++ msg

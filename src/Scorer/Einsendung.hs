@@ -1,6 +1,6 @@
 module Scorer.Einsendung 
 
-( Einsendung (..)
+( Einsendung (..), size, Scorer.Einsendung.okay
 , Obfuscated (..)
 , SE (..)
 , slurp -- datei-inhalt verarbeiten

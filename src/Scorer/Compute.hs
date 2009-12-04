@@ -36,7 +36,8 @@ compute u ( vor, aufs ) = do
 				   )
 
     contents <- mapM readFile fileargs
-    let einsendungen = slurp $ concat contents
+    let einsendungen = 
+            filter Scorer.Einsendung.okay $ slurp $ concat contents
 
     let total = foldl ( update aufs ) emptyFM einsendungen
     -- pforsicht: hier sind auch die admins (< 1024) drin
