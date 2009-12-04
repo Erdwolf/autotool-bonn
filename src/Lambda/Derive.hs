@@ -28,7 +28,7 @@ instance Partial Lambda_Derive I.Type [ Int ] where
                Nothing -> empty
                Just s  -> text "der Länge" <+> toDoc s
         inform $ vcat
-            [ fsep [ text "gesucht eine Ableitung"
+            [ fsep [ text "Gesucht ist eine Ableitung"
                    , step_info, text ", die"
                    ]
             , nest 4 $ toDoc $ from inst

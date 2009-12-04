@@ -31,7 +31,7 @@ single_derivation :: Lambda -> Int -> Reporter Lambda
 single_derivation t x = do
     inform $ vcat 
         [ text "*****************************************************"
-        , text "aktueller Term ist" 
+        , text "Aktueller Term ist" 
         , nest 4 $ toDoc t 
         ]
     peng t
@@ -70,7 +70,7 @@ derivation :: Lambda -> [ Int ] -> Reporter [ Lambda ]
 derivation t xxs = do
     inform $ vcat 
         [ text "*****************************************************"
-        , text "aktueller Term ist" 
+        , text "Aktueller Term ist" 
         , nest 4 $ toDoc t 
         ]
     peng t
