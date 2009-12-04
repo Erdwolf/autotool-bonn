@@ -1,4 +1,4 @@
-Name:           autotool-trial
+Name:           autotool-super
 Version:        1.0
 -- License:        GPL
 -- License-File:   LICENSE
@@ -6,11 +6,11 @@ Author:         Johannes Waldmann
 Maintainer:     Johannes Waldmann
 Homepage:       http://dfa.imn.htwk-leipzig.de/auto/
 Category:       E-Testing
-Synopsis:       autotool trial CGI
+Synopsis:       autotool CGI
 Description:
-  This package provides Trial.cgi, a frontend to the autotool problem
-  collection. Users can choose and configure available problems, and
-  submit solutions.
+  This package provides Super.cgi, a frontend to the autotool problem
+  collection. It manages schools, courses, users, submissions. See
+  autolib-trial for a simpler frontend to the problems.
 Stability:      Experimental
 Cabal-Version:  >=1.2
 Build-Type:     Simple
