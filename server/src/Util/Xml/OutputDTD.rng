@@ -21,4 +21,8 @@ grammar
         | element Space   { attribute width  { xsd:double },
                             attribute height { xsd:double },
                             attribute unit   { string "px" | string "em" } }
+        # new in 0.0.3
+        | element Figure  { Output,
+                            Output }
+        # end new
 }

@@ -53,6 +53,8 @@ outputToXOutput o = case o of
         X.OItemize . X.Itemize <$> mapM outputToXOutput os
     O.Nest o' ->
         X.OBeside . X.Beside <$> sequence [return nestSpacing, outputToXOutput o']
+    O.Figure a b ->
+        X.OFigure <$> (X.Figure <$> outputToXOutput a <*> outputToXOutput b)
 
 wrapXOutput :: X.Output -> Document
 wrapXOutput o = let [CElem e] = toElem o in

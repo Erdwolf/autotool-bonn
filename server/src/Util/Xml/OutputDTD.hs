@@ -19,6 +19,7 @@ data Output
     | OBeside Beside
     | OItemize Itemize
     | OSpace Space
+    | OFigure Figure
     deriving (Eq,Show)
 
 newtype Pre = Pre String                deriving (Eq,Show)
@@ -45,6 +46,9 @@ data Space = Space
     , spaceHeight :: String
     , spaceUnit :: String
     } deriving (Eq,Show)
+data Figure = Figure Output
+                     Output
+            deriving (Eq,Show)
 
 
 fromTextEscaped :: [Content] -> (Maybe String, [Content])
@@ -159,7 +163,10 @@ instance XmlContent Output where
                                                                 case (fromElem c0) of
                                                                 (Just a,rest) -> (Just (OSpace a), rest)
                                                                 (_,_) ->
-                                                                    (Nothing, c0)
+                                                                        case (fromElem c0) of
+                                                                        (Just a,rest) -> (Just (OFigure a), rest)
+                                                                        (_,_) ->
+                                                                                (Nothing, c0)
     toElem (OPre a) = toElem a
     toElem (OText a) = toElem a
     toElem (OImage a) = toElem a
@@ -168,6 +175,7 @@ instance XmlContent Output where
     toElem (OBeside a) = toElem a
     toElem (OItemize a) = toElem a
     toElem (OSpace a) = toElem a
+    toElem (OFigure a) = toElem a
 instance XmlContent Beside where
     fromElem (CElem (Elem "Beside" [] c0):rest) =
         (\(a,_ca)->
@@ -208,6 +216,18 @@ instance XmlAttributes Space where
         , toAttrFrStr "height" (spaceHeight v)
         , toAttrFrStr "unit" (spaceUnit v)
         ]
+instance XmlContent Figure where
+    fromElem (CElem (Elem "Figure" [] c0):rest) =
+        (\(a,ca)->
+           (\(b,cb)->
+              (Just (Figure a b), rest))
+           (definite fromElem "Output" "Figure" ca))
+        (definite fromElem "Output" "Figure" c0)
+    fromElem (CMisc _:rest) = fromElem rest
+    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
+    fromElem rest = (Nothing, rest)
+    toElem (Figure a b) =
+        [CElem (Elem "Figure" [] (toElem a ++ toElem b))]
 
 
 {-Done-}

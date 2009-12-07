@@ -1,6 +1,9 @@
 <?xml encoding="UTF-8"?>
 
-<!ENTITY % Output "Pre|Text|Image|Link|Above|Beside|Itemize|Space">
+<!ENTITY % Output "Pre|Text|Image|Link|Above|Beside|Itemize|Space
+                   |Figure">
+
+<!-- end new -->
 
 <!ELEMENT Pre (#PCDATA)>
 
@@ -29,3 +32,7 @@
   width CDATA #REQUIRED
   height CDATA #REQUIRED
   unit CDATA #REQUIRED>
+
+<!-- new in 0.0.3 -->
+
+<!ELEMENT Figure ((%Output;),(%Output;))>
