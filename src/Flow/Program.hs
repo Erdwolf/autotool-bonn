@@ -3,6 +3,7 @@
 module Flow.Program where
 
 import Flow.Expression
+import Flow.Conditions
 
 import Autolib.TES.Identifier
 
@@ -11,6 +12,9 @@ import Autolib.Reader
 import Autolib.Size
 
 import Data.Typeable
+
+import Data.Set ( Set )
+import qualified Data.Set as S
 
 data Program s = Program [ s ]
     deriving ( Eq, Ord, Typeable )
@@ -25,3 +29,7 @@ instance Reader s => Reader ( Program s ) where
 
 instance Size s => Size ( Program s ) where
     size ( Program sts ) = sum $ map size sts
+
+instance Conditions s => Conditions ( Program s ) where
+    conditions ( Program ss ) = conditions ss
+

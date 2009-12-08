@@ -24,7 +24,7 @@ instance Hash Action where
 
 instance ToDoc Action where
     toDoc ( Execute this ) = 
-        text "E" <> toDoc this
+        text "Execute" <+> toDoc this
     toDoc ( Condition flag this ) =  
         text ( take 1 $ show flag ) <> toDoc this
 
