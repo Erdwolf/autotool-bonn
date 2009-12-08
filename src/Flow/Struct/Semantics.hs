@@ -34,7 +34,8 @@ transit this = do
     st <- get
     put $ st { transitions = this : transitions st }
 
-semantics :: Program Statement -> Reporter ( N.NFA Action Int )
+semantics :: Program Statement 
+          -> Reporter ( N.NFA Action Int )
 semantics p = 
     evalStateT ( program p ) $ ST { transitions = [], top = 0 }
 

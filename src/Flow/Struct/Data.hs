@@ -4,6 +4,7 @@ module Flow.Struct.Data where
 
 import Flow.Program
 import Flow.Expression
+import Flow.Conditions
 
 import Autolib.TES.Identifier
 
@@ -12,6 +13,9 @@ import Autolib.Reader
 import Autolib.Size
 
 import Data.Typeable
+
+import Data.Set ( Set )
+import qualified Data.Set as S
 
 data Statement
     = Atomic Identifier
@@ -22,6 +26,21 @@ data Statement
 
 example :: Program Statement
 example = read "while (f) { o; o; }"
+
+instance Conditions Statement where
+    conditions s = case s of
+        Atomic {} -> S.empty
+        Block ss -> conditions ss
+        Branch t s1 ms2 -> 
+            S.unions [ conditions t
+                     , conditions s1
+                     , case ms2 of 
+                         Nothing -> S.empty
+                         Just s2 -> conditions s2
+                     ]
+        While t s -> S.union ( conditions t ) 
+                           ( conditions s )
+
 
 instance Size Statement where
     size st = case st of

@@ -3,6 +3,7 @@
 module Flow.Goto.Data where
 
 import Flow.Expression
+import Flow.Conditions
 import Flow.Program
 
 import Autolib.TES.Identifier
@@ -12,6 +13,9 @@ import Autolib.Reader
 
 import Autolib.Size
 
+import Data.Set ( Set )
+import qualified Data.Set as S
+
 import Text.ParserCombinators.Parsec.Char
 
 import Data.Typeable
@@ -19,11 +23,14 @@ import Data.Typeable
 example :: Program Statement
 example = read "foo : if (a) goto foo;"
 
----------------------------------------------------------------------------
+--------------------------------------------------
 
 data Statement 
     = Statement ( Maybe Identifier ) Atomic
     deriving ( Eq, Ord, Typeable )
+
+instance Conditions Statement where
+    conditions ( Statement _ a ) = conditions a
 
 instance Size Statement where size _ = 1
 
@@ -42,13 +49,18 @@ instance Reader Statement where
         act <- reader
 	return $ Statement mlabel act
 
----------------------------------------------------------------------------
+----------------------------------------------------
 
 data Atomic 
     = Action Identifier
     | Goto Identifier
     | If_Goto Expression Identifier
     deriving ( Eq, Ord, Typeable )
+
+instance Conditions Atomic where
+    conditions a = case a of
+        If_Goto test goal -> conditions test
+        _ -> S.empty
 
 instance ToDoc Atomic where
     toDoc a = case a of
