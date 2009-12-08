@@ -36,8 +36,12 @@ instance Partial
     total p i b = do
         explain_notation
         comparison 
-            ( "laut Aufgabenstellung", \ l -> S.traces l i ) 
-            ( "laut Ihrer Lösung", \ l -> G.traces l b )
+            ( "laut Aufgabenstellung"
+            , \ l -> map contents $ S.traces l i 
+            ) 
+            ( "laut Ihrer Lösung"
+            , \ l -> map contents $ G.traces l b 
+            )
 
 
 struct_to_goto_fixed :: Make
@@ -45,9 +49,11 @@ struct_to_goto_fixed = direct Struct_To_Goto S.example
 
 -------------------------------------------------------
 
+{-
 comparison :: ( String, Int -> [ Trace ] )
            -> ( String, Int -> [ Trace ] )
            -> Reporter ()
+-}
 comparison (s1,f1) (s2,f2) = sequence_ $ take 20 $ do
     l <- [ 0 .. ]
     let t1 = Data.Set.fromList $ f1 l

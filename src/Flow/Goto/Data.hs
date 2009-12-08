@@ -52,7 +52,8 @@ instance Reader Statement where
 ----------------------------------------------------
 
 data Atomic 
-    = Action Identifier
+    = Skip
+    | Action Identifier
     | Goto Identifier
     | If_Goto Expression Identifier
     deriving ( Eq, Ord, Typeable )
@@ -64,6 +65,7 @@ instance Conditions Atomic where
 
 instance ToDoc Atomic where
     toDoc a = case a of
+        Skip -> text "skip" <> semi
         Action act  -> toDoc act <> semi
     	Goto label -> text "goto" <+> toDoc label <> semi
 	If_Goto c label -> 
@@ -71,7 +73,9 @@ instance ToDoc Atomic where
 
 instance Reader Atomic where
     reader 
-        =   do my_reserved "goto" ; t <- reader ; my_semi 
+        =   do my_reserved "skip" ; my_semi ; return Skip
+
+        <|> do my_reserved "goto" ; t <- reader ; my_semi 
 	       return $ Goto t
 	<|> do my_reserved "if" ; c <- my_parens reader 
 	       my_reserved "goto" ; t <- reader ; my_semi 

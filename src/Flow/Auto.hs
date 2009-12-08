@@ -6,15 +6,15 @@ import qualified Autolib.Relation
 
 import Autolib.ToDoc
 
-eps_builder :: NFAC c s => s -> s -> [ (s, Maybe c, s) ] -> ENFA c s
-eps_builder i f ts = 
-    let ss = mkSet $ i : f : do ( p, mc, q ) <- ts ; [ p, q ]
+eps_builder :: NFAC c s => [s] -> [s] -> [ (s, Maybe c, s) ] -> ENFA c s
+eps_builder is fs ts = 
+    let ss = mkSet $ is ++ fs ++ do ( p, mc, q ) <- ts ; [ p, q ]
     in  ENFA
         { enfa_info = text "eps_builder"
         , alphabet = mkSet $ do ( p, Just c, q ) <- ts ; return c
         , states = ss
-        , starts = mkSet [ i ]
-        , finals = mkSet [ f ]
+        , starts = mkSet is
+        , finals = mkSet fs
         , trans = tcollect 
              $ do ( p, Just c, q ) <- ts ; return ( p, c, q )
         , mirror_trans = tcollect 

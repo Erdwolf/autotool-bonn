@@ -36,6 +36,8 @@ statements all jumps t steps [] = do
 statements all jumps t steps (Statement _ a :xs) = do
     guard $ complete t
     case a of
+        Skip -> do
+            statements all jumps t steps xs
         Action action -> t { complete = False } : do
             n <- all
             guard $ size t < steps
