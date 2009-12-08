@@ -4,6 +4,7 @@ module Flow.Central where
 
 import Flow.Program
 import Flow.Trace
+import Flow.Conditions
 import qualified Flow.Goto as G
 import qualified Flow.Struct as S
 
@@ -14,6 +15,7 @@ import Autolib.NFA.Subseteq
 import Autolib.ToDoc
 import Autolib.Reporter
 import Autolib.Informed
+import Autolib.Reporter.Set (subeq, eq)
 
 import Data.Typeable
 
@@ -32,45 +34,36 @@ instance Partial
 	, nest 4 $ toDoc i
 	]
     initial p i = G.example
+   
+    partial p i b = 
+        partializer i b
 
     total p i b = do
-        explain_notation
-        comparison 
-            ( "laut Aufgabenstellung"
-            , \ l -> map contents $ S.traces l i 
-            ) 
-            ( "laut Ihrer Lösung"
-            , \ l -> map contents $ G.traces l b 
-            )
-
+        totalizer ( S.semantics i ) ( G.semantics b )
 
 struct_to_goto_fixed :: Make
 struct_to_goto_fixed = direct Struct_To_Goto S.example
 
 -------------------------------------------------------
 
-{-
-comparison :: ( String, Int -> [ Trace ] )
-           -> ( String, Int -> [ Trace ] )
-           -> Reporter ()
--}
-comparison (s1,f1) (s2,f2) = sequence_ $ take 20 $ do
-    l <- [ 0 .. ]
-    let t1 = Data.Set.fromList $ f1 l
-        t2 = Data.Set.fromList $ f2 l
-    return $ do
-        must_be_subset (s1, t1) (s2, t2)
-        must_be_subset (s2, t2) (s1, t1) 
+partializer i b = do
+    let pi = conditions i
+        pb = conditions b
+    inform $ vcat 
+           [ text "vorkommende Boolesche Prädikate:"
+           , nest 4 $ text "in Aufgabenstellung" </> toDoc pi
+           , nest 4 $ text "in Einsendung" </> toDoc pb
+           ]
+    when ( pi /= pb ) $ reject $ text "stimmen nicht überein"
 
-must_be_subset (s1, t1) (s2,t2) = do
-    let missing = Data.Set.toList 
-                $ Data.Set.difference t1 t2
-    when ( not $ null missing ) $ reject $ vcat
-         [ text "diese (evtl. partielle) Berechnung"
-         , text "ist" <+> text s1 <+> text "möglich,"
-         , text s2 <+> text "aber nicht:"
-         , nest 4 $ toDoc $ head missing
-         ]
+totalizer orig0 this0 = do 
+    orig <- orig0
+    let o = informed ( text "Spursprache des Programms aus Aufgabenstellung" ) orig
+    this <- this0
+    let t = informed ( text "Spursprache des Programms aus Ihrer Einsendung" ) this
+    ok1 <- subsetequ o t
+    ok2 <- subsetequ t o
+    assert ( ok1 && ok2 ) $ text "OK"
 
 -------------------------------------------------------
 
@@ -85,12 +78,10 @@ instance Partial
 	]
     initial p i = S.example
 
-    total p i b = do
-        explain_notation
-        comparison 
-            ( "laut Aufgabenstellung", \ l -> G.traces l i ) 
-            ( "laut Ihrer Lösung", \ l -> S.traces l b )
+    partial p i b = partializer i b
 
+    total p i b = 
+        totalizer ( G.semantics i ) ( S.semantics b )
 
 goto_to_struct_fixed :: Make
 goto_to_struct_fixed = direct Goto_To_Struct G.example
@@ -98,11 +89,7 @@ goto_to_struct_fixed = direct Goto_To_Struct G.example
 -------------------------------------------------------
 
 explain_notation = inform $ vcat
-   [ text "Ich vergleiche die Menge Folgen von Ereignissen,"
+   [ text "Ich vergleiche die Menge der Spuren,"
    , text "die bei Ausführung der Programme auftreten können."
-   , text "In diesen Folgen (Wörtern) bedeutet:"
-   , nest 4 $ vcat [ text "Ex = Ausführen von x,"
-		   , text "Ty = Auswerten von y mit Resultat True,"
-		   , text "Fy = Auswerten von y mit Resultat False."
-		   ]
+   , text "Eine Spur ist eine Folge von Zuständen und Aktionen."
    ]

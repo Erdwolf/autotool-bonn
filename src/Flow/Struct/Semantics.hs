@@ -9,6 +9,7 @@ import Flow.Struct.Data hiding ( branch )
 import Flow.Action
 import Flow.Auto
 import Flow.State 
+import Flow.Transit
 
 import Autolib.FiniteMap
 import Autolib.ENFA
@@ -28,29 +29,6 @@ import Control.Monad.State hiding ( State )
 import Data.List ( partition )
 
 
-type Vertex = ( Int, State )
-type Label = ( State, Action )
-type Transition = ( Vertex, Maybe Label, Vertex )
-
-instance Symbol Label -- 
-
-data ST = ST 
-     { transitions :: [ Transition ]
-     , top :: Int
-     }
-
-next :: StateT ST Reporter Int
-next = do
-    st <- get
-    let t = top st
-    put $ st { top = succ t }
-    return t
-
-transit :: Transition -> StateT ST Reporter ()
-transit this = do
-    st <- get
-    put $ st { transitions = this : transitions st }
-
 semantics :: Program Statement 
           -> Reporter ( N.NFA Label Vertex )
 semantics p = 
@@ -62,15 +40,14 @@ program p @ ( Program sts ) = do
     goal  :: Int <- next
     let all :: [ State ] = all_states $ conditions p
     handles all ( start, sts, goal )
-    final <- next;
+    final <- next
     forM all $ \ st -> 
         transit ((goal,st),Just (st,Halt),(final,st))
     st <- get
     let times :: [a] -> [b] -> [(a,b)]
         times xs ys = xs >>= \ x -> ys >>= \ y -> [(x,y)]
-    let enfa = eps_builder 
+    let enfa = eps_builder_all_final
                    (times [start] all :: [Vertex])
-                   (times [final] all :: [Vertex])
              $ transitions st
     return $ uneps enfa
 

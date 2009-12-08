@@ -21,7 +21,7 @@ import Text.ParserCombinators.Parsec.Char
 import Data.Typeable
 
 example :: Program Statement
-example = read "foo : if (a) goto foo;"
+example = read "foo : a; if (b) goto foo; goto end; c;  end : skip;"
 
 --------------------------------------------------
 
