@@ -233,14 +233,20 @@ Library
         Flow.Action
         Flow.Auto
         Flow.Central
+        Flow.Conditions
         Flow.Expression
         Flow.Goto
         Flow.Goto.Data
         Flow.Goto.Semantics
+        Flow.Goto.Trace
         Flow.Program
+        Flow.State
         Flow.Struct
         Flow.Struct.Data
         Flow.Struct.Semantics
+        Flow.Struct.Trace
+        Flow.Trace
+        Flow.Transit
         Fun.Cache
         Fun.Check
         Fun.Create
