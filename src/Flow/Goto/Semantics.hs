@@ -2,54 +2,96 @@ module Flow.Goto.Semantics where
 
 import Flow.Program
 import Flow.Expression
+import Flow.Conditions
+import Flow.State
 import Flow.Goto.Data
 import Flow.Action
 import Flow.Auto
+
+import Flow.Transit
 
 import Autolib.FiniteMap
 import Autolib.ENFA
 import Autolib.ENFA.Uneps
 import qualified Autolib.NFA as N
-
+import Autolib.NFA.Shortest
 
 import Autolib.ToDoc
 import Autolib.Reporter
 
-semantics :: Program Statement -> Reporter ( N.NFA Action Int )
-semantics p @ ( Program stmts ) = do
-    let nstmts = zip [ 0 .. ] stmts
-    table <- collect_table nstmts
-    transitions <- fmap concat
-        $ mapM ( collect_transitions table ) nstmts
-    let enfa = eps_builder 0 ( length stmts ) transitions
+import Data.Map ( Map )
+import qualified Data.Map as M
+import Control.Monad.State hiding ( State )
+import Data.List ( partition )
+
+semantics :: Program Statement 
+          -> Reporter ( N.NFA Label Vertex )
+semantics p @ ( Program stmts ) = 
+    evalStateT ( program p ) 
+        $ ST { transitions = [], top = length stmts }
+
+
+program p @ ( Program sts ) = do
+    let start = 0
+        nsts = zip [ start .. ] sts
+    labels <- lift $ collect_labels nsts
+    let all = all_states $ conditions p
+    final <- next -- risky coding: top has been
+             -- initialized to (length stmts) above,
+             -- then the last of the (n+1) targets below
+             -- leads to this final destination
+
+    let with_label lab f = case M.lookup lab labels of
+            Nothing -> lift $ reject $ hsep 
+                 [ text "label", toDoc lab, text "nicht gefunden" ]
+            Just n -> f n
+
+    forM nsts $ \ ( n, Statement _ a ) -> case a of
+        Skip -> forM_ all $ \ s -> 
+            transit ((n, s), Nothing, (n+1, s))
+        Action a -> forM_ all $ \ s -> forM all $ \ s'->
+            transit ((n,s), Just(s, Execute a),(n+1,s'))
+        Goto lab -> forM_ all $ \ s -> 
+            with_label lab $ \ n' -> 
+            transit ((n,s),Nothing,(n',s))
+        If_Goto test lab -> with_label lab $ \ n' -> do
+            let (yeah,noh) = 
+                    partition 
+                        ( \ st -> evaluate st test ) 
+                        all
+            forM_ yeah $ \ s -> 
+                transit ((n,s),Nothing,(n',s))
+            forM_ noh $ \ s -> 
+                transit ((n,s),Nothing,(n+1,s))
+    halt <- next
+    forM all $ \ s -> 
+        transit ((final,s),Just(s,Halt),(halt,s))
+
+    let times :: [a] -> [b] -> [(a,b)]
+        times xs ys = xs >>= \ x -> ys >>= \ y -> [(x,y)]
+    st <- get
+    let enfa = eps_builder_all_final
+                   (times [start] all)
+                   ( transitions st )
     return $ uneps enfa
 
-collect_transitions table ns @ ( n, Statement _ body ) = case body of
-    Action act -> do
-        return [ ( n, Just $ Execute act, n+1 ) ]
-    Goto target -> case lookupFM table target of
-	Nothing -> reject $ text "undefined label in" <+> toDoc ns
-	Just line -> return [ ( n, Nothing , line ) ]
-    If_Goto (Expression noflip c) target -> case lookupFM table target of
-	Nothing -> reject $ text "undefined label in" <+> toDoc ns
-	Just line -> return 
-	    [ ( n, Just $ Condition noflip  c , line )
-	    , ( n, Just $ Condition (not noflip) c , n+1  ) 
-	    ]
 
-collect_table nstmts = foldM 
-    ( \ fm ( n, st @ ( Statement ml body ) ) -> do
-        case ml of
+------------------------------------------------
+
+collect_labels nsts = foldM
+    ( \ fm ( n, st @ (Statement mlab _ )) -> case mlab of
 	    Nothing -> return fm
 	    Just l  -> case lookupFM fm l of
 	        Nothing -> return $ addToFM fm l n
 		Just m  -> reject $ vcat
-		    [ text "label" <+> toDoc l
-		    , text "in statement" <+> toDoc st
-		    , text "at position" <+> toDoc n
-		    , text "already defined at position" <+> toDoc m
+		    [ text "Label" <+> toDoc l
+		    , text "in Anweisung" <+> toDoc st
+		    , text "an Position" <+> toDoc n
+		    , text "bereits definiert an Position" <+> toDoc m
 		    ]
-    ) emptyFM nstmts
+    ) emptyFM nsts
+
+
     
 
 
