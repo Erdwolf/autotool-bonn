@@ -31,10 +31,10 @@ instance ToDoc Expression where
         text "!" <+> toDocPrec 8 x
     toDocPrec p ( And x y ) 
         = ( if p > 6 then parens else id )
-        $ toDocPrec 6 x <+> text "&&" <+> toDocPrec 7 x
+        $ toDocPrec 6 x <+> text "&&" <+> toDocPrec 7 y
     toDocPrec p ( Or x y ) 
         = ( if p > 4 then parens else id )
-        $ toDocPrec 4 x <+> text "||" <+> toDocPrec 5 x
+        $ toDocPrec 4 x <+> text "||" <+> toDocPrec 5 y
 
 instance Reader Expression where
     reader = buildExpressionParser
