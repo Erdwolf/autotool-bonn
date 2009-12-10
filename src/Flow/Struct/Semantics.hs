@@ -71,6 +71,9 @@ handle all  (start, stmt, goal) = case stmt of
             ((start,st)
             ,Just(st,Execute this) -- a real transition
             ,(goal,st'))
+
+    Skip -> 
+        handles all ( start,  [], goal )
     Block xs -> 
         handles all  ( start,xs, goal)
 
