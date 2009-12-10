@@ -19,6 +19,7 @@ import qualified Data.Set as S
 
 data Statement
     = Atomic Identifier
+    | Skip
     | Block [ Statement ]
     | Branch Expression Statement ( Maybe Statement )
     | While Expression Statement 
@@ -29,7 +30,6 @@ example = read "while (f) { o; o; }"
 
 instance Conditions Statement where
     conditions s = case s of
-        Atomic {} -> S.empty
         Block ss -> conditions ss
         Branch t s1 ms2 -> 
             S.unions [ conditions t
@@ -40,19 +40,20 @@ instance Conditions Statement where
                      ]
         While t s -> S.union ( conditions t ) 
                            ( conditions s )
-
+        _ -> S.empty
 
 instance Size Statement where
     size st = case st of
-        Atomic _ -> 1
 	Block sts -> sum $ map size sts
 	Branch _ yes Nothing -> 1 + size yes
 	Branch _ yes ( Just no) -> 1 + size yes + size no
 	While _ st -> 1 + size st
+        _ -> 1
 
 instance ToDoc Statement where
     toDoc s = case s of
         Atomic action -> toDoc action <> semi
+        Skip -> text "skip" <> semi
 	Block  stmts  -> braces $ vcat $ map toDoc stmts
 	Branch c yes mno -> 
             vcat [ text "if" <+> parens ( toDoc c )
@@ -71,14 +72,16 @@ instance ToDoc Statement where
 		 ]
 
 instance Reader Statement where
-    reader = block
- 	<|> branch
-	<|> while
-	<|> atomic
+    reader = skip <|> block <|> branch <|> while <|> atomic
 
 block = my_braces $ do 
     xs <- many reader
     return $ Block xs 
+
+skip = do
+    my_reserved "skip"
+    my_semi
+    return Skip
 
 atomic = do
     at <- reader
