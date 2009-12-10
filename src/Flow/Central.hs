@@ -63,7 +63,7 @@ totalizer orig0 this0 = do
     let t = informed ( text "Spursprache des Programms aus Ihrer Einsendung" ) this
     ok1 <- subsetequ o t
     ok2 <- subsetequ t o
-    assert ( ok1 && ok2 ) $ text "OK"
+    assert ( ok1 && ok2 ) $ text "Spursprachen stimmen überein?"
 
 -------------------------------------------------------
 
