@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 module Inter.Collector where
 
 import Inter.Types

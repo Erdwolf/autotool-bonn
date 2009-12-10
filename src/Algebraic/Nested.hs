@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Algebraic.Nested 
 
 ( Type , unit, empty

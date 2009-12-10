@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-incoherent-instances -fallow-overlapping-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Rewriting.TRS.Raw where

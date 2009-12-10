@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 --  $Id$

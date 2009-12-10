@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Turing.Type 

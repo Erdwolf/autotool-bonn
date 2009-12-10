@@ -1,4 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module PL.Interpretation where

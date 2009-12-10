@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 -- | Korrekturfunktion für Faktorisierung
 
 -- joe@informatik.uni-leipzig.de

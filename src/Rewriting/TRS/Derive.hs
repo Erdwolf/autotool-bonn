@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
-
 module Rewriting.TRS.Derive where
 
 import Rewriting.TRS

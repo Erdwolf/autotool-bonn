@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Flow.Expression where
 
 import Flow.Conditions

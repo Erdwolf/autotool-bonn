@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Algebraic.Instance where

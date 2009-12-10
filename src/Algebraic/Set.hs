@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Algebraic.Set where
 
 

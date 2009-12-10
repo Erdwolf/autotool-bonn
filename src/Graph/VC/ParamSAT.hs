@@ -1,4 +1,3 @@
-{-# OPTIONS -Onot #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Graph.VC.ParamSAT where

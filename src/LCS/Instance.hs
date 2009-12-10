@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-undecidable-instances #-}
-
 module LCS.Instance 
 
 ( make_fixed

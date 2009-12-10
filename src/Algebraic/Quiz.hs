@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Algebraic.Quiz where
 
 import Algebraic.Central

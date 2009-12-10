@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Fun.Quiz.Type2 where

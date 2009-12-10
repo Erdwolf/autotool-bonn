@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module RAM.Check where
 
 --   $Id$

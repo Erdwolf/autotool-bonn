@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fallow-incoherent-instances #-}
-
 -- convert to NFA for displaying
 --   $Id$
 

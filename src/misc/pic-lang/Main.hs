@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 import Autolib.Exp
 import Autolib.Exp.Inter
 import Autolib.NFA

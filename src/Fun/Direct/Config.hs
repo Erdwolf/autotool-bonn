@@ -1,5 +1,5 @@
-{-# OPTIONS -fglasgow-exts -fno-monomorphism-restriction #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
 module Fun.Direct.Config (
     module Fun.Direct.Config,

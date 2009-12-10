@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Number.Base.Param where

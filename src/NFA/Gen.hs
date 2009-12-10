@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
-
 module NFA.Gen where
 
 --  $Id$

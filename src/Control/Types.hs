@@ -1,4 +1,3 @@
-{-# OPTIONS -cpp -fglasgow-exts -fallow-overlapping-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Control.Types 

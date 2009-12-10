@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Specify.Eval where
 
 

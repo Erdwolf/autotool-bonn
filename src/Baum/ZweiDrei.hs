@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Baum.ZweiDrei 
 
 ( make_quiz

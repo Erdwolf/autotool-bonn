@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 -- main module
 
 import Network.XmlRpc.Client

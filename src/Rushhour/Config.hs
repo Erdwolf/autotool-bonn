@@ -1,4 +1,3 @@
-{-# OPTIONS -XMultiParamTypeClasses #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Rushhour.Config where

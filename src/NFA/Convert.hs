@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module NFA.Convert where
 
 import Convert.Type

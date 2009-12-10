@@ -1,5 +1,4 @@
-{-# language GADTs #-}
-{-# OPTIONS -fglasgow-exts -XFlexibleInstances -fno-monomorphism-restriction #-}
+{-# LANGUAGE GADTs, NoMonomorphismRestriction #-}
 
 module Specify.Expression where
 

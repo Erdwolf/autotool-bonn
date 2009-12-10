@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-overlapping-instances #-}
-
 module Code.Huffman.Boiler where
 
 

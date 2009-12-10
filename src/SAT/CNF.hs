@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 -- | Bemerkungen: 
 -- 1. Aussagenlogische Formel in konjunktiver Normalform (KNF):
 -- Literal = Variable oder nonVariableVariable

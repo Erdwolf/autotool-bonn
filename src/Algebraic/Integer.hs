@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 -- | demonstration module: how to use the Algebraic.Class
 
 module Algebraic.Integer where

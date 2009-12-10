@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 --  $Id$
 
 module Inter.Login where

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Program.Array.Program where
 
 import Program.Array.Statement

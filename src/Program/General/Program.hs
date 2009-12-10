@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Program.General.Program where
 
 import Autolib.Reader

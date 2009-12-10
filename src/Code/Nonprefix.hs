@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Code.Nonprefix where
 
 import Code.Formal

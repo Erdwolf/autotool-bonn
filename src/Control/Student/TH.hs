@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fth #-}
-
 module Control.Student.TH where
 
 import Control.Student.Type

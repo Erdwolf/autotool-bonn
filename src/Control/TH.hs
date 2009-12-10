@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fth #-}
-
 module Control.TH where
 
 -- import Inter.TH

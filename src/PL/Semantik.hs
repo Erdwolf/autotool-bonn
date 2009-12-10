@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-incoherent-instances #-}
-
 module PL.Semantik where
 
 import PL.Type

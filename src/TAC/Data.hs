@@ -1,5 +1,5 @@
-{-# OPTIONS -fno-monomorphism-restriction #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
 module TAC.Data where
 

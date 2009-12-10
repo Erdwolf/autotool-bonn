@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
-
 module Code.LZ.Book where
 
 import Code.LZ.Data

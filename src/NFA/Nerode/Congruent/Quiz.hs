@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module NFA.Nerode.Congruent.Quiz where
 
 import qualified NFA.Nerode.Congruent.Config as C

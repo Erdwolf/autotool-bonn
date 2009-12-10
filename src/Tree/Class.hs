@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances -fallow-incoherent-instances #-}
-
 module Tree.Class where
 
 import Tree.Dot

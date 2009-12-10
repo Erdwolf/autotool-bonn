@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Language.ABCdiff (abcdiff) where
 
 -- -- $Id$

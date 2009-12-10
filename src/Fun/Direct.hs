@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Fun.Direct where
 
 import qualified Fun.Direct.Config as D

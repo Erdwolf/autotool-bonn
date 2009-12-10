@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Lambda.Quiz (generator) where
 
 import Lambda.Type

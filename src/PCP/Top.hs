@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 --  $Id$
 
 module PCP.Top where

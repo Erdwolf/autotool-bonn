@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-incoherent-instances #-}
-
 module Baum.Type 
 
 ( module Baum.Type

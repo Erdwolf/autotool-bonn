@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-incoherent-instances #-}
-
 module NFA.Equiv.Core where
 
 --  $Id$

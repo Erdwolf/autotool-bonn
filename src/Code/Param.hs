@@ -1,4 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts -fallow-undecidable-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Code.Param where

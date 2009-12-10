@@ -1,4 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Modular.Task where

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Flow.Goto.Data where
 
 import Flow.Expression

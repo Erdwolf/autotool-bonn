@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Resolution.Central ( make_fixed, make_quiz ) where
 
 import Resolution.Data

@@ -1,4 +1,4 @@
-{-# language PatternSignatures, ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module LCS.Code 
 

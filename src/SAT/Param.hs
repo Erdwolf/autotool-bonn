@@ -1,4 +1,3 @@
-{-# OPTIONS -Onot -fglasgow-exts #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module SAT.Param where

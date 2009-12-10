@@ -1,4 +1,4 @@
-{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts -fno-monomorphism-restriction -fallow-incoherent-instances #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
 module Graph.Op 
 

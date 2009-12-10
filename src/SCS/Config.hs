@@ -1,4 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
 {-# LANGUAGE FlexibleContexts, UndecidableInstances, TemplateHaskell #-}
 {-# language DeriveDataTypeable #-}
 

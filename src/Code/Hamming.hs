@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 -- | ein Code ist beschrieben durch 
 -- * length: anzahl der bits pro code-wort
 -- * size: anzahl der code-wörter

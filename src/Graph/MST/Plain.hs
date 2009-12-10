@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-incoherent-instances -fglasgow-exts #-}
-
 module Graph.MST.Plain where
 
 --  $Id$

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 -- | standalone aufgabenconfig,
 -- damit jeder mal tutor spielen kann
 

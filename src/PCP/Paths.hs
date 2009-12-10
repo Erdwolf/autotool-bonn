@@ -1,6 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts #-}
-{-# OPTIONS -fallow-undecidable-instances #-}
-
 -- | compute the cyclic tetris graph 
 -- corresponding to a (partial) PCP solution
 module PCP.Paths where

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Algebraic.Nested.Op where
 
 import Algebraic.Nested.Type

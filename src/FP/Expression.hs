@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts -fno-monomorphism-restriction #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
 module FP.Expression 
 

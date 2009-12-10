@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-incoherent-instances #-}
-
 module Graph.Bisekt.Plain where
 
 --  $Id$

@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 module LCS.Quiz where
 
 --  $Id$

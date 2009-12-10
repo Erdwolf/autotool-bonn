@@ -1,4 +1,4 @@
-{-# language TypeSynonymInstances, PatternSignatures #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Flow.Transit where
 

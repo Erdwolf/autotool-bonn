@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Rewriting.TRS.Machine where
 
 --   $Id$

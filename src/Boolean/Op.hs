@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 module Boolean.Op 
 
 ( module Expression.Op

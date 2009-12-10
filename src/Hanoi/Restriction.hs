@@ -1,4 +1,3 @@
-{-# OPTIONS -cpp #-}
 {-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Hanoi.Restriction where

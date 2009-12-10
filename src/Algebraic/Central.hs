@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances  -fallow-incoherent-instances -fallow-undecidable-instances #-}
-
 module Algebraic.Central where
 
 import Algebraic.Instance

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 module Robots2.Generator where
 
 import Robots2.Config

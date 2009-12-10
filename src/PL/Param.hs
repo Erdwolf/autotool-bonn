@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module PL.Param where

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 module PL.Find_Model (
       make_fixed 
 ) where

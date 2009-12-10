@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Program.General.Central where
 
 import Program.General.Environment

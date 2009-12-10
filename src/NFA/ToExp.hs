@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module NFA.ToExp where
 
 import Autolib.NFA.Type

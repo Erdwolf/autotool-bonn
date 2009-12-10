@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Flow.Struct.Data where
 
 import Flow.Program

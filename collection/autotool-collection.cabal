@@ -58,6 +58,7 @@ Library
         UndecidableInstances
         ScopedTypeVariables
         FunctionalDependencies
+        OverlappingInstances
     Hs-source-dirs:
         src
         src/control

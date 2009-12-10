@@ -1,4 +1,4 @@
-{-# language PatternSignatures #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Pentomino.Find where
 

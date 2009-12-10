@@ -1,6 +1,4 @@
-{-# OPTIONS -cpp #-}
-{-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, TemplateHaskell #-}
-
+{-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, TemplateHaskell, CPP #-}
 
 module Hanoi.Type where
 

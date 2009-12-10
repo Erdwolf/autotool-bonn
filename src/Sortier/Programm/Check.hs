@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 module Sortier.Programm.Check where
 
 import Sortier.Common.Util

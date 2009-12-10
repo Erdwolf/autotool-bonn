@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 module Arithmetic.Op 
 
 ( Exp, eval, bind

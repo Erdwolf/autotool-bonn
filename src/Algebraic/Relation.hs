@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Algebraic.Relation where
 
 import Algebraic.Relation.Restriction

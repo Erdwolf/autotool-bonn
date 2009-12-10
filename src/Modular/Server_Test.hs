@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 -- | test module: call some server methods
 
 module Main where

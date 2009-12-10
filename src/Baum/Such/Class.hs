@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-incoherent-instances -fglasgow-exts #-}
-
 module Baum.Such.Class where
 
 import Baum.Such.Op

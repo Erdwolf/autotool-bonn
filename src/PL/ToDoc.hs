@@ -1,6 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
-
 module PL.ToDoc where
 
 import PL.Data

@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances -fallow-undecidable-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Code.Type 

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Program.Array.Value where
 
 import qualified Program.General.Environment as E

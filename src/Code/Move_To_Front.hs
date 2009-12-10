@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fallow-undecidable-instances #-}
-
 module Code.Move_To_Front ( Move_To_Front (..) ) where
 
 --  $Id$

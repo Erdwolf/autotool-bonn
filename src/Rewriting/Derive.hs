@@ -1,7 +1,4 @@
 {-# language UndecidableInstances #-}
-{-# OPTIONS -fglasgow-exts #-}
-
-
 -- | this is the general module (top module after refactoring)
 
 module Rewriting.Derive where

@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 -- | standalone solver
 -- command line arguments:
 -- depth, width, instance

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 module Sortier.Netz.Check where
 
 import Sortier.Netz.Common

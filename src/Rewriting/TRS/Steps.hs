@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fallow-incoherent-instances #-}
-
 module Rewriting.TRS.Steps where
 
 import Rewriting.TRS.Step

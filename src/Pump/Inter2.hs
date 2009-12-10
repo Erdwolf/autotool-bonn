@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fallow-incoherent-instances #-}
-
 module Pump.Inter2 where
 
 import Pump.Type

@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fallow-incoherent-instances #-}
-
 module RAM.Make where
 
 import Inter.Types

@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-incoherent-instances -XMultiParamTypeClasses #-}
-
 module Brainfuck.Make 
 
 -- ( computer

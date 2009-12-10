@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 module PCP.Solve where
 
 import Autolib.Schichten

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Algebraic.Graph where
 
 import qualified Autolib.TES.Binu as B

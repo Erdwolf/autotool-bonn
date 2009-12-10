@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 module SCS.Quiz where
 
 --  $Id$

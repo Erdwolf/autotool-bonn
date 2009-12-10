@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Lambda.Derive where
 
 import Lambda.Type

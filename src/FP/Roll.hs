@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 -- | generate randomly some type expressions
 
 module FP.Roll where

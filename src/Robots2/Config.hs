@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Robots2.Config 
 
 ( Config -- abstract

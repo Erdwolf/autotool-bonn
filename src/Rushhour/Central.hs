@@ -1,5 +1,3 @@
-{-# OPTIONS -XFlexibleInstances -XMultiParamTypeClasses #-}
-
 module Rushhour.Central where
 
 --  $Id$

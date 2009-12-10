@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module FP.Check where
 
 import FP.Env

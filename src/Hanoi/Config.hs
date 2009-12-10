@@ -1,5 +1,4 @@
-{-# OPTIONS -fglasgow-exts -cpp #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, CPP #-}
 
 module Hanoi.Config where
 

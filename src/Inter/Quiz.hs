@@ -1,5 +1,3 @@
-{-# OPTIONS -cpp -fglasgow-exts -fallow-undecidable-instances -fallow-overlapping-instances #-}
-
 module Inter.Quiz where
 
 

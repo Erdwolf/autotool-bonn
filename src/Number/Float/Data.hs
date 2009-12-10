@@ -1,4 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts -fallow-undecidable-instances #-} 
 {-# LANGUAGE TemplateHaskell #-}
 
 module Number.Float.Data where

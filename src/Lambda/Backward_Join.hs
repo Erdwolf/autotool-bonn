@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Lambda.Backward_Join where
 
 import Lambda.Type

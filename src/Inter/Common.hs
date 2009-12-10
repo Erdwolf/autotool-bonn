@@ -1,4 +1,4 @@
-{-# language PatternSignatures #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Inter.Common where
 

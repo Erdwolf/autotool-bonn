@@ -1,4 +1,4 @@
-{-# OPTIONS -fno-monomorphism-restriction -fglasgow-exts #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
 module FP.Arrow 
 

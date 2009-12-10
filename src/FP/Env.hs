@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module FP.Env where
 
 import FP.Type

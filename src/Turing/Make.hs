@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-incoherent-instances #-}
-
 module Turing.Make 
 
 ( computer

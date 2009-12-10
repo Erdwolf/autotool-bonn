@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 module NFA.Nerode.Separation.Check where
 
 import NFA.Nerode.Separation.Solution

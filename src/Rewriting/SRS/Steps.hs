@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fallow-incoherent-instances #-}
-
 module Rewriting.SRS.Steps where
 
 import Rewriting.SRS.Step

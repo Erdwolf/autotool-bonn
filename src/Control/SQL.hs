@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Control.SQL 
 
 ( squery, query, logged, reed

@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fglasgow-exts -fallow-incoherent-instances #-}
-
 module Genetic.Central 
 ( evolve 
 , Pool, popul

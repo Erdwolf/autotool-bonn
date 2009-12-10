@@ -1,4 +1,4 @@
-{-# language PatternSignatures #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 import Robots3.Config
 import Robots3.Quiz

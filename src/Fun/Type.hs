@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances -fallow-incoherent-instances #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Fun.Type 

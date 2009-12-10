@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Hilbert.Central ( make_fixed ) where
 
 import Hilbert.Param

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-undecidable-instances #-}
-
 module NFA.Nerode.Incongruent.Check where
 
 import NFA.Nerode.Incongruent.Instance

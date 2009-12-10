@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-undecidable-instances -fglasgow-exts -fallow-overlapping-instances #-}
-
 module Code.Huffman.Partial where
 
 --  $Id$

@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -XFlexibleInstances #-}
-
 module Specify.Constraint where
 
 import Specify.Expression

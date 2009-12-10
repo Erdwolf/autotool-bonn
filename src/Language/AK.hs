@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 -- | formeln des aussagenkalküls
 --  $Id$
 

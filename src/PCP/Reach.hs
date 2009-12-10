@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances #-}
-
 -- | TODO: move to SRS
 
 module PCP.Reach where

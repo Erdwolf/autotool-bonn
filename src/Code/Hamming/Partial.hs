@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts -fallow-overlapping-instances #-}
-
 module Code.Hamming.Partial where
 
 import Inter.Types ()

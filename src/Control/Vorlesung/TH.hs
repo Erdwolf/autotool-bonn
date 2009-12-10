@@ -1,5 +1,3 @@
-{-# OPTIONS -fallow-overlapping-instances -fth #-}
-
 module Control.Vorlesung.TH where
 
 import Control.Vorlesung.Type

@@ -1,5 +1,3 @@
-{-# OPTIONS -Onot #-}
-
 module Graph.Nachbar where
 
 --  $Id$

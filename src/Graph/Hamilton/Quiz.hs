@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module Graph.Hamilton.Quiz where
 
 import Autolib.Graph.Type

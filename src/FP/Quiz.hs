@@ -1,5 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
-
 module FP.Quiz where
 
 import FP.Check
