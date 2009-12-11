@@ -5,6 +5,7 @@ module Flow.Central where
 import Flow.Program
 import Flow.Trace
 import Flow.Conditions
+import Flow.Actions
 import qualified Flow.Goto as G
 import qualified Flow.Struct as S
 
@@ -47,10 +48,12 @@ struct_to_goto_fixed = direct Struct_To_Goto S.example
 -------------------------------------------------------
 
 partializer i b = do
-    let pi = conditions i
-        pb = conditions b
+    comparing "Zustands-Prädikate" (conditions i) (conditions b)
+    comparing "elementare Anweisungen" (actions i) (actions b)
+
+comparing tag pi pb = do
     inform $ vcat 
-           [ text "vorkommende Boolesche Prädikate:"
+           [ text "vorkommende" <+> text tag
            , nest 4 $ text "in Aufgabenstellung" </> toDoc pi
            , nest 4 $ text "in Einsendung" </> toDoc pb
            ]

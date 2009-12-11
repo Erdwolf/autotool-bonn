@@ -42,7 +42,7 @@ instance Reader Expression where
         , [ Infix  ( do my_symbol "&&" ; return And ) AssocLeft ]
         , [ Infix  ( do my_symbol "||" ; return Or ) AssocLeft ]
         ]
-        ( do i <- my_identifier ; return $ Var $ mkunary i )
+        ( my_parens reader <|> do i <- my_identifier ; return $ Var $ mkunary i )
 
 
 instance Conditions Expression where

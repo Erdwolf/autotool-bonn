@@ -4,6 +4,7 @@ module Flow.Goto.Data where
 
 import Flow.Expression
 import Flow.Conditions
+import Flow.Actions
 import Flow.Program
 
 import Autolib.TES.Identifier
@@ -31,6 +32,9 @@ data Statement
 
 instance Conditions Statement where
     conditions ( Statement _ a ) = conditions a
+
+instance Actions Statement where
+    actions ( Statement _ a ) = actions a
 
 instance Size Statement where size _ = 1
 
@@ -61,6 +65,11 @@ data Atomic
 instance Conditions Atomic where
     conditions a = case a of
         If_Goto test goal -> conditions test
+        _ -> S.empty
+
+instance Actions Atomic where
+    actions a = case a of
+        Action a -> S.fromList [ a ]
         _ -> S.empty
 
 instance ToDoc Atomic where
