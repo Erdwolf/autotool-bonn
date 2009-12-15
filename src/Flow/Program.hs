@@ -2,6 +2,7 @@ module Flow.Program where
 
 import Flow.Expression
 import Flow.Conditions
+import Flow.Actions
 
 import Autolib.TES.Identifier
 
@@ -30,4 +31,7 @@ instance Size s => Size ( Program s ) where
 
 instance Conditions s => Conditions ( Program s ) where
     conditions ( Program ss ) = conditions ss
+
+instance Actions s => Actions ( Program s ) where
+    actions ( Program ss ) = actions ss
 

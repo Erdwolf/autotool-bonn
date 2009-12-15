@@ -3,6 +3,7 @@ module Flow.Struct.Data where
 import Flow.Program
 import Flow.Expression
 import Flow.Conditions
+import Flow.Actions
 
 import Autolib.TES.Identifier
 
@@ -39,6 +40,20 @@ instance Conditions Statement where
         While t s -> S.union ( conditions t ) 
                            ( conditions s )
         _ -> S.empty
+
+instance Actions Statement where
+    actions s = case s of
+        Atomic a -> S.fromList [ a ]
+        Block ss -> actions ss
+        Branch t s1 ms2 -> 
+            S.unions [ actions s1
+                     , case ms2 of 
+                         Nothing -> S.empty
+                         Just s2 -> actions s2
+                     ]
+        While t s -> actions s 
+        _ -> S.empty
+
 
 instance Size Statement where
     size st = case st of

@@ -29,16 +29,16 @@ import Control.Monad.State hiding ( State )
 import Data.List ( partition )
 
 
-semantics :: Program Statement 
+semantics :: Set State
+          -> Program Statement 
           -> Reporter ( N.NFA Label Vertex )
-semantics p = 
-    evalStateT ( program p ) 
+semantics all p = 
+    evalStateT ( program ( S.toList all ) p ) 
         $ ST { transitions = [], top = 0 }
 
-program p @ ( Program sts ) = do
+program all p @ ( Program sts ) = do
     start :: Int <- next
     goal  :: Int <- next
-    let all :: [ State ] = all_states $ conditions p
     handles all ( start, sts, goal )
     final <- next
     forM all $ \ st -> 
