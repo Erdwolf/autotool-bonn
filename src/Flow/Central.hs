@@ -6,6 +6,7 @@ import Flow.Program
 import Flow.Trace
 import Flow.Conditions
 import Flow.Actions
+import Flow.State
 import qualified Flow.Goto as G
 import qualified Flow.Struct as S
 
@@ -40,7 +41,11 @@ instance Partial
         partializer i b
 
     total p i b = do
-        totalizer ( S.semantics i ) ( G.semantics b )
+        let s = all_states
+              $ Data.Set.union (conditions i) 
+                               (conditions b)
+        totalizer ( S.semantics s i ) 
+                  ( G.semantics s b )
 
 struct_to_goto_fixed :: Make
 struct_to_goto_fixed = direct Struct_To_Goto S.example
@@ -52,12 +57,13 @@ partializer i b = do
     comparing "elementare Anweisungen" (actions i) (actions b)
 
 comparing tag pi pb = do
-    inform $ vcat 
-           [ text "vorkommende" <+> text tag
+    when ( pi /= pb ) $ inform $ vcat 
+           [ text "Hinweis: vorkommende" <+> text tag
            , nest 4 $ text "in Aufgabenstellung" </> toDoc pi
            , nest 4 $ text "in Einsendung" </> toDoc pb
+           , text "stimmen nicht überein."
            ]
-    when ( pi /= pb ) $ reject $ text "stimmen nicht überein"
+
 
 totalizer orig0 this0 = do 
     orig <- orig0
@@ -83,16 +89,13 @@ instance Partial
 
     partial p i b = partializer i b
 
-    total p i b = 
-        totalizer ( G.semantics i ) ( S.semantics b )
+    total p i b = do
+        let s = all_states
+              $ Data.Set.union (conditions i) 
+                               (conditions b)
+        totalizer ( G.semantics s i ) 
+                  ( S.semantics s b )
 
 goto_to_struct_fixed :: Make
 goto_to_struct_fixed = direct Goto_To_Struct G.example
 
--------------------------------------------------------
-
-explain_notation = inform $ vcat
-   [ text "Ich vergleiche die Menge der Spuren,"
-   , text "die bei Ausführung der Programme auftreten können."
-   , text "Eine Spur ist eine Folge von Zuständen und Aktionen."
-   ]

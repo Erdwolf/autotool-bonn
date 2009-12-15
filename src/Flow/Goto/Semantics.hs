@@ -21,21 +21,23 @@ import Autolib.Reporter
 
 import Data.Map ( Map )
 import qualified Data.Map as M
+import Data.Set ( Set )
+import qualified Data.Set as S
 import Control.Monad.State hiding ( State )
 import Data.List ( partition )
 
-semantics :: Program Statement 
+semantics :: Set Flow.State.State
+          -> Program Statement 
           -> Reporter ( N.NFA Label Vertex )
-semantics p @ ( Program stmts ) = 
-    evalStateT ( program p ) 
+semantics all p @ ( Program stmts ) = 
+    evalStateT ( program (S.toList all) p ) 
         $ ST { transitions = [], top = length stmts }
 
 
-program p @ ( Program sts ) = do
+program all p @ ( Program sts ) = do
     let start = 0
         nsts = zip [ start .. ] sts
     labels <- lift $ collect_labels nsts
-    let all = all_states $ conditions p
     final <- next -- risky coding: top has been
              -- initialized to (length stmts) above,
              -- then the last of the (n+1) targets below
