@@ -80,8 +80,7 @@ instance C.Partial Combinatory_Logic_Find Instance Solution where
     initial clf i = Solution
         { substitution = M.fromList 
                   $ zip ( S.toList $ domain i ) 
-                  $ concat $ repeat 
-                  $ map Sym $ map name $ base i
+                  $ repeat $ some_term $ base i
         , derivation_signposts = [ ]
         }
 
@@ -102,7 +101,6 @@ instance C.Partial Combinatory_Logic_Find Instance Solution where
                          ]
                 case s of
                     App {} -> return ()
-                    CL.Term.Var {} -> whine
                     Sym y  -> when ( not $ elem y $ map name $ base i ) $ whine
         
         return ()
@@ -123,14 +121,19 @@ check_derivation coms depth points = do
                ]
         case paths_from_to ( step coms ) depth p q of
             w : _ -> do
-                inform $ text "gefunden:" </> ( vcat $ map toDoc w )
+                inform $ text "gefunden:" </> toDoc w
             [] -> do
                  inform $ text "nicht gefunden."
                  let ps = paths_from ( step coms ) depth p 
-                 inform $ text "einige lange erreichbare Ableitungen sind:"
-                       </> vcat ( map toDoc $ take 10 $ reverse ps )
+                 inform $ text "einige erreichbare Ableitungen sind:"
+                       </> ( toDoc $ take 10 $ reverse ps )
                  reject $ empty
 
+some_term base = 
+    let xs = map Sym $ map name $ take 6 $ concat $ repeat base
+        build (x:y:zs) = build $ zs ++ [ App x y ]
+        build [x] = x
+    in  build xs
 
 make_fixed :: Make
 make_fixed = direct Combinatory_Logic_Find example_instance

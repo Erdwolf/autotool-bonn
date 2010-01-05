@@ -4,28 +4,50 @@ module CL.Combinator where
 
 import CL.Term
 
-import Autolib.Reader
-import Autolib.ToDoc
+import qualified Autolib.Reader as R
+import qualified Autolib.ToDoc  as T
+
+import Control.Monad ( when )
+import Data.List ( nub )
 
 data Combinator = 
      Combinator { name :: Identifier
-                , arity :: Int
+                , arguments :: [ Identifier ]
                 , result :: Term
                 }
 
-$(derives [makeToDoc,makeReader] [''Combinator])
+arity c = length $ arguments c
+
+instance T.ToDoc Combinator where
+    toDoc c = T.hsep 
+          [ T.toDoc ( unspine $ map Sym $ name c : arguments c )
+          , T.text "->"
+          , T.toDoc $ result c
+          ]
+           
+instance R.Reader Combinator where
+    reader = do
+        lhs <- R.reader
+        when ( not $ all isSym $ spine lhs ) 
+             $ fail "all combinator arguments must be symbols"
+        let xs = map unSym $ spine lhs
+        when ( xs /= nub xs ) 
+             $ fail "all combinator arguments must be distinct"
+        R.my_symbol "->"
+        rhs <- R.reader
+        return $ Combinator { name = head xs , arguments = tail xs, result = rhs }
 
 standard_base_for_cl :: [ Combinator ]
 standard_base_for_cl =
-    [ Combinator { name = read "S", arity = 3, result = read "(1 3 (2 3))" }
-    , Combinator { name = read "K", arity = 2, result = read "1" }
-    , Combinator { name = read "I", arity = 1, result = read "1" }
+    [ read "S x y z -> x z (y z)" 
+    , read "K x y -> x"
+    , read "I x -> x"
     ]
 
 standard_base_for_cli :: [ Combinator ]
 standard_base_for_cli = 
-    [ Combinator { name = read "S", arity = 3, result = read "(1 3 (2 3))" }
-    , Combinator { name = read "B", arity = 3, result = read "(1 3 2)" }
-    , Combinator { name = read "C", arity = 3, result = read "(1 (2 3))" }
-    , Combinator { name = read "I", arity = 1, result = read "1" }
+    [ read "S x y z -> x z (y z)" 
+    , read "B x y z -> x z y"
+    , read "C x y z -> x (y z)"
+    , read "I x -> x"
     ]

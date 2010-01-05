@@ -2,6 +2,8 @@ module CL.Derivation where
 
 import Autolib.Schichten
 
+import Autolib.ToDoc
+
 import Data.Set ( Set )
 import qualified Data.Set as S
 import Control.Monad ( guard )
@@ -10,6 +12,15 @@ import Control.Monad ( guard )
 -- this element actually is in the head
 -- (that is, order ist reversed, for easier access)
 data Derivation a = Derivation { contents :: [a] }
+
+instance ToDoc a => ToDoc ( Derivation a ) where
+    toDoc d = 
+        let x : xs = reverse $ contents d
+        in  case xs of
+              [] -> toDoc x
+              _ ->  toDoc x <+> text "->" 
+                <+> fsep ( punctuate (text "->") $ map toDoc xs ) 
+
 instance Eq a => Eq (Derivation a) where
     d1 == d2 = top d1 == top d2
 instance Ord a => Ord (Derivation a) where
@@ -28,18 +39,18 @@ paths_from_to :: Ord a
       -> Int -- ^ max path length
       -> a -- ^ start
       -> a -- ^ end
-      -> [ [a] ]
+      -> [ Derivation a ]
 paths_from_to next depth start end = do
     let f d = S.fromList $ do x <- next $ top d ; return $ extend x d
     ds <- take depth $ schichten f $ unit start
     d <- S.toList ds
     guard $ top d == end
-    return $ reverse $ contents d
+    return d
 
 paths_from next depth start = do
     let f d = S.fromList $ do x <- next $ top d ; return $ extend x d
     ds <- take depth $ schichten f $ unit start
     d <- S.toList ds
-    return $ reverse $ contents d
+    return d
 
 

@@ -13,5 +13,4 @@ instance ToDoc Term where
             let x : xs = spine t 
             in  parens $ toDoc x 
                          <+> fsep ( map toDoc xs )
-        Var i -> toDoc i
         Sym s -> toDoc s

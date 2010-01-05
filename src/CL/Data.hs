@@ -11,14 +11,11 @@ data Identifier = Identifier String
 
 
 data Term = App Term Term
-          | Var Integer
-          | Sym Identifier
+          | Sym { unSym :: Identifier }
     deriving ( Eq, Ord, Typeable )
 
-atomic :: Term -> Bool
-atomic t = case t of
-    App {} -> False
-    _ -> True
+isSym ( Sym {} ) = True
+isSym _ = False
 
 instance Size Term where
     size t = case t of

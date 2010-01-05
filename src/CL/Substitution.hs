@@ -22,4 +22,3 @@ apply s t = case t of
     Sym y -> case M.lookup y s of
         Nothing -> t
         Just t' -> t'
-    Var {} -> t

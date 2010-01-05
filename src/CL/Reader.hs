@@ -8,8 +8,8 @@ instance Reader Identifier where
     reader = do s <- my_identifier ; return $ Identifier s
 
 instance Reader Term where
-    reader = do n <- my_integer ; return $ Var n
-        <|>  do s <- reader ; return $ Sym s
-        <|>  my_parens ( do
-                xs <- many reader
-                return $ unspine xs )
+    reader = do xs <- many1 atomic ; return $ unspine xs
+
+atomic = fmap Sym reader 
+    <|>  my_parens reader
+
