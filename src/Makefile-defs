@@ -34,7 +34,7 @@ FLAGS = -fallow-overlapping-instances \
 # PACKS = -package text -package data -package posix -package network 
 # PACKS = -hide-package network
 
-OPT = -O2 -fvia-C -funbox-strict-fields # -fnumbers-strict # -fdicts-strict
+OPT = -O2 -funbox-strict-fields # -fvia-C -fnumbers-strict # -fdicts-strict
 
 # PROF = -prof -auto-all -auto-dicts
 

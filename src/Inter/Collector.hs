@@ -178,6 +178,8 @@ import qualified Lambda.Apply
 import qualified Lambda.Derive
 import qualified Lambda.Backward_Join
 
+import qualified CL.Find
+
 import qualified Unify.Main
 
 import qualified PL.Find_Model
@@ -357,6 +359,9 @@ tmakers =
                 , heading "Lambda-Kalkül"
                         [ item $ Rewriting.Derive.make_fixed Lambda.Apply.For_Lambda
                         ]
+                , heading "Kombinatorische Logik"
+                        [ item $ CL.Find.make_fixed
+                        ]
                 , heading "Unifikation"
                         [ item $ Unify.Main.make_fixed 
                         , item $ Unify.Main.make_quiz 
@@ -367,6 +372,9 @@ tmakers =
                 , item Lambda.Derive.make_quiz
                 , item Lambda.Backward_Join.make_fixed
                 ]
+         , heading "Kombinatorische Logik"
+                        [ item $ CL.Find.make_fixed
+                        ]
          , heading "Graphen"
                 [ item Graph.Selfcom.make
 --                , item Graph.Nachbar.make
