@@ -148,6 +148,15 @@ Library
         Brainfuck.Syntax.Data
         Brainfuck.Syntax.Parse
         Brainfuck.Syntax.Print
+        CL.Combinator
+        CL.Data
+        CL.Derivation
+        CL.Find
+        CL.Reader
+        CL.Reduce
+        CL.Substitution
+        CL.Term
+        CL.ToDoc
         CNF.Eval
         CNF.Example
         CNF.Form
