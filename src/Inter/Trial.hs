@@ -158,7 +158,7 @@ fixed_problem problem = do
 
 fixed_topic topic = do
     let mks =  do Right mk <- flatten Inter.Collector.tmakers ; return mk
-    [ mk ] <- return $ do 
+    mk : _ <- return $ do 
 	 mk @ ( Make _ doc _ _ _ ) <- mks
 	 guard $ doc == topic
 	 return mk
