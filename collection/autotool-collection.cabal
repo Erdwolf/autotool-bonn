@@ -319,6 +319,7 @@ Library
         Graph.Col.Config
         Graph.Col.Gadget.Central
         Graph.Col.Gadget.Config
+        Graph.Col.Greedy.Central
         Graph.Col.Plain
         Graph.Col.Quiz
         Graph.Color
