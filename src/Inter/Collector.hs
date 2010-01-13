@@ -39,6 +39,7 @@ import qualified Graph.Cross
 import qualified Graph.MinSep
 import qualified Graph.Ramsey
 import qualified Graph.Van_der_Waerden
+import qualified Graph.Col.Greedy.Central
 
 import qualified Robots.Interface
 import qualified Robots.Inverse
@@ -383,6 +384,7 @@ tmakers =
 	        , item Graph.MinSep.make
 	        , item Graph.Col.Plain.make
 	        , item Graph.Col.Quiz.make
+                , item Graph.Col.Greedy.Central.make
 --	        , item Graph.Cage.Central.make
 	        , item Graph.Col.Gadget.Central.make
 	        , item Graph.Graceful.Central.make
