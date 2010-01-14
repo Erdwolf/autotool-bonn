@@ -25,7 +25,7 @@ instance R.Reader Identifier where
 
 data Term = Variable Identifier
           | Apply Identifier [ Term ]
-    deriving ( Eq )
+    deriving ( Eq, Typeable )
 
 instance Size Term where 
     size t = case t of

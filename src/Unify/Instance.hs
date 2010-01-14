@@ -3,6 +3,7 @@
 module Unify.Instance
 
 ( Instance (..)
+, example
 , describe
 )
 
@@ -25,6 +26,18 @@ data Instance = Instance
     deriving ( Typeable )
 
 $(derives [makeToDoc,makeReader] [''Instance])
+
+
+example :: Instance
+example = Instance
+    { wildcard = read "undefined"
+    , left = read "f (undefined, f (undefined, f (a, Y)))"
+    , right = read "f (f (f (a, f (a, a)), undefined), undefined)"
+    , unifier = listToFM
+                    [ read "( X , f (Z, f (a, f (f (a, f (a, a)), Z))) )"
+                    , read "( Y , f (f (a, f (a, a)), Z) )"
+                    ]
+    }
 
 
 describe :: Instance -> Doc

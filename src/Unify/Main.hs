@@ -3,6 +3,9 @@
 
 module Unify.Main where
 
+import Prolog.Data
+import Prolog.Unify
+import Prolog.Substitution ( apply )
 import Unify.Instance ( Instance )
 import qualified Unify.Instance as I
 import Unify.Config ( Config )
@@ -15,16 +18,6 @@ import Autolib.Reporter
 import Challenger.Partial
 import Inter.Types
 import Inter.Quiz
-
-{-
-import Autolib.TES.Identifier
-import Autolib.Symbol
-import Autolib.TES.Term
-import Autolib.TES.Unify
-import Autolib.TES.Type
-import Autolib.TES.Position
-import Autolib.TES.Apply
--}
 
 import Autolib.Size
 import Autolib.FiniteMap
@@ -44,15 +37,13 @@ instance Partial Unify Instance ( Term, Term ) where
 
     initial p i = ( I.left i, I.right i )
 
-    partial p i ( vt1, vt2 ) = do
-        let [ t1, t2 ] = map I.patch_variables [ vt1, vt2 ]
+    partial p i ( t1, t2 ) = do
         conforms ( I.wildcard i ) ( I.left i ) t1
         conforms ( I.wildcard i ) ( I.right i ) t2
 
-    total p i ( vt1, vt2 ) = do
-        let [ t1, t2 ] = map I.patch_variables [ vt1, vt2 ]
-        let t1s = flip apply_partial t1 $ I.unifier i
-            t2s = flip apply_partial t2 $ I.unifier i
+    total p i ( t1, t2 ) = do
+        let t1s = flip apply t1 $ I.unifier i
+            t2s = flip apply t2 $ I.unifier i
         inform $ vcat
             [ text "die Substitution erzeugt"
             , nest 4 $ toDoc ( t1s, t2s )
@@ -79,8 +70,8 @@ conforms w p t = do
            , hsep [ text "?" ]
            ]
     let check p t = case ( p, t ) of
-            ( Node f _ , _ ) | f == w -> return ()
-            ( Node f xs , Node g ys ) | f == g -> 
+            ( Apply f _ , _ ) | f == w -> return ()
+            ( Apply f xs , Apply g ys ) | f == g -> 
                 mapM_ ( uncurry check ) $ zip xs ys
             ( _ , _ ) -> when ( p /= t ) $ reject 
                     $ hsep [ text "Nein:", toDoc p, text "/=", toDoc t ]
@@ -92,10 +83,10 @@ make_fixed :: Make
 make_fixed = direct Unify I.example
 
 
-instance Generator Unify ( Config v c ) ( Instance ) where
+instance Generator Unify  Config  Instance  where
     generator p conf key = roll conf
 
-instance Project  Unify ( Instance ) ( Instance ) where
+instance Project  Unify Instance  Instance  where
     project p i = i
 
 
