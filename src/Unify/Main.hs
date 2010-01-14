@@ -63,14 +63,18 @@ instance Partial Unify Instance ( Term, Term ) where
                        ]
 
 
-conforms w p t = do
+conforms wild p t = do
     inform $ vcat 
            [ hsep [ text "paßt der Term" <+> toDoc t ]
            , hsep [ text "zum Muster" <+> toDoc p ]
            , hsep [ text "?" ]
            ]
+    when ( wild `elem` function_symbols t ) $ reject $ vcat
+         [ text "der Term" <+> toDoc t 
+         , text "enthält noch das wildcard-Symbol" <+> toDoc wild
+         ]
     let check p t = case ( p, t ) of
-            ( Apply f _ , _ ) | f == w -> return ()
+            ( Apply f _ , _ ) | f == wild -> return ()
             ( Apply f xs , Apply g ys ) | f == g -> 
                 mapM_ ( uncurry check ) $ zip xs ys
             ( _ , _ ) -> when ( p /= t ) $ reject 

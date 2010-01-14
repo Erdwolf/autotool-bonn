@@ -32,7 +32,9 @@ instance Size Term where
         Apply f xs -> succ $ sum $ map size xs
         _ -> 1
 
-leaf_positions :: Term -> [[Int]]
+type Position = [Int]
+
+leaf_positions :: Term -> [ Position ]
 leaf_positions t = case t of
     Apply f xs | not ( null xs ) -> do
         ( k, x ) <- zip [ 0.. ] xs
@@ -41,7 +43,7 @@ leaf_positions t = case t of
     _ -> [ [] ]
 
 
-positions :: Term -> [[Int]]
+positions :: Term -> [ Position ]
 positions t = [] : case t of
     Apply f xs -> do
         ( k, x ) <- zip [ 0.. ] xs
@@ -49,7 +51,19 @@ positions t = [] : case t of
         return $ k : p
     _ -> []
 
-poke  :: Term -> [Int] -> Term -> Term
+subterms :: Term -> [Term]
+subterms t = do p <- positions  t ; return $ peek t p
+
+function_symbols :: Term -> [ Identifier ]
+function_symbols t = do
+    Apply f _ <- subterms t
+    return f
+
+peek :: Term -> Position -> Term
+peek t [] = t
+peek (Apply f xs) (p:ps) = peek ( xs !! p) ps
+
+poke  :: Term -> Position -> Term -> Term
 poke t [] s = s
 poke (Apply f xs) (p:ps) s = 
     let ( pre, x: post) = splitAt p xs
