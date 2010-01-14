@@ -25,6 +25,20 @@ data Term = Variable Identifier
           | Apply Identifier [ Term ]
     deriving ( Eq )
 
+positions :: Term -> [[Int]]
+positions t = [] : case t of
+    Apply f xs -> do
+        ( k, x ) <- zip [ 0.. ] xs
+        p <- positions x
+        return $ k : p
+    _ -> []
+
+poke  :: Term -> [Int] -> Term -> Term
+poke t [] s = s
+poke (Apply f xs) (p:ps) s = 
+    poke ( xs !! p ) ps s
+
+
 type Terms = [ Term ]
 
 variables :: Term -> Set Identifier
