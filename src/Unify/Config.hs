@@ -34,7 +34,7 @@ example = Config
           $ read "[ (f,2),(a,0) ]"
     , variables = mkSet $ read "[X,Y,Z]"
     , wildcard  = read "undefined"
-    , term_size = 10
+    , term_size = 5
     , num_wildcards = 3
     , num_candidates = 3000 
     }

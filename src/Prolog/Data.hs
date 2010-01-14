@@ -5,6 +5,8 @@ module Prolog.Data where
 import qualified Autolib.Reader as R
 import qualified Autolib.ToDoc as T
 
+import Autolib.Util.Size
+
 import Data.Char
 
 import Data.Set (Set)
@@ -25,6 +27,20 @@ data Term = Variable Identifier
           | Apply Identifier [ Term ]
     deriving ( Eq )
 
+instance Size Term where 
+    size t = case t of
+        Apply f xs -> succ $ sum $ map size xs
+        _ -> 1
+
+leaf_positions :: Term -> [[Int]]
+leaf_positions t = case t of
+    Apply f xs | not ( null xs ) -> do
+        ( k, x ) <- zip [ 0.. ] xs
+        p <- leaf_positions x
+        return $ k : p
+    _ -> [ [] ]
+
+
 positions :: Term -> [[Int]]
 positions t = [] : case t of
     Apply f xs -> do
@@ -36,7 +52,8 @@ positions t = [] : case t of
 poke  :: Term -> [Int] -> Term -> Term
 poke t [] s = s
 poke (Apply f xs) (p:ps) s = 
-    poke ( xs !! p ) ps s
+    let ( pre, x: post) = splitAt p xs
+    in  Apply f $ pre ++ poke ( xs !! p ) ps s : post
 
 
 type Terms = [ Term ]
