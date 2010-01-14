@@ -1,4 +1,4 @@
-{-# language DisambiguateRecordFields, TupleSections #-}
+{-# language DisambiguateRecordFields #-}
 
 module Unify.Roll where
 
@@ -91,7 +91,7 @@ term' (sig0, sig1) s = do
 distribute :: Int -> Int -> IO [Int]
 distribute t n = do
     ys <- forM [ 1 .. t ] $ \ i -> randomRIO (1,n)
-    let fm = M.fromListWith (+) $ map (,0) [1..n] ++ do
+    let fm = M.fromListWith (+) $ zip [1..n] ( repeat 0 ) ++ do
             y <- ys
             return ( y, 1 )
     return $ M.elems fm
