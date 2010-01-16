@@ -28,7 +28,7 @@ import Data.Char
 
 
 -- | druckt Auswertung für alle Aufgaben einer Vorlesung
-emit :: Bool -> U.Schule -> V.Vorlesung -> DataFM -> IO Output
+emit :: Bool -> U.Schule -> V.Vorlesung -> DataFM -> IO ( Maybe Output )
 emit deco u vor fm0 = do
 
     studs <- V.steilnehmer $ V.vnr vor
@@ -49,8 +49,8 @@ emit deco u vor fm0 = do
 	          ]
           out <- forM ( fmToList fm ) $ single deco (V.unr vor)
           to <- totalize deco (V.unr vor) fm
-          return $ foldr1 O.Above [ header, O.Itemize out, to, inform ]
-       else return $ O.Empty
+          return $ Just $ O.lead header $ foldr1 O.Above [ O.Itemize out, to, inform ]
+       else return Nothing
 
 
 inform :: Output
@@ -77,7 +77,7 @@ isadmin m =
 single :: Bool -> UNr -> ( ANr, [ Einsendung ] ) -> IO Output
 single deco u arg @( anr, es ) = do
     [ auf ] <- A.get_this anr
-    let header = O.Doc $ text $ unwords 
+    let header = O.Text $ unwords 
 	       [ "Aufgabe" , toString $ A.name auf
 	       , unwords $ if null es then [] else
 	         [ "( beste bekannte Lösung", show (size $ head es), ")" ]
@@ -90,10 +90,10 @@ single deco u arg @( anr, es ) = do
     let scored = O.Itemize $ map O.Text decorated
 
 
-    let problem = O.Named_Link  "Aufgabe ausprobieren (ohne Wertung)"
+    let try = O.Named_Link  "Aufgabe ausprobieren (ohne Wertung)"
                 $ "/cgi-bin/Trial.cgi?problem=" ++ Control.Types.toString ( A.anr auf )
 
-    return $ foldr1 O.Above [ header, scored, problem ] 
+    return $ O.lead (O.lead header try ) scored 
 
 
 decorate :: UNr -> Einsendung -> IO SE
@@ -110,11 +110,9 @@ totalize deco u fm = do
 
     infos <- collect deco u fm
 
-    return $ O.Text $ unlines
-	     $ [ "Top Ten"
-	       , "-----------------------------------"
-	       ] ++ do (i,(p,ps)) <- infos
-		       return $ unwords [ stretch 10 $ show p
+    return $ O.lead (O.Text "Top Ten") $ O.Doc $ vcat $ do 
+                       (i,(p,ps)) <- infos
+		       return $ text $ unwords [ stretch 10 $ show p
 					, ":"
 					, stretch 10 $ toString i
 					, ":" 

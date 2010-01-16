@@ -24,7 +24,7 @@ import System ( getArgs )
 
 
 -- | in fm steht abbildung von aufgabe(name) auf inhalt (z. b. direction)
-compute :: U.Schule -> ( V.Vorlesung, ScoreDefFM ) -> IO Output
+compute :: U.Schule -> ( V.Vorlesung, ScoreDefFM ) -> IO ( Maybe Output )
 compute u ( vor, aufs ) = do
 
     -- wir lesen die logfiles für jede vorlesung komplett neu ein,

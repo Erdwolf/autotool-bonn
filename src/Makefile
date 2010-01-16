@@ -1,6 +1,6 @@
 include ../config.mk
 
-EXTRA_PACKS=-package base-3.0.3.2 -package parsec-2.1.0.1
+EXTRA_PACKS=-package base-3.0.3.1 -package parsec-2.1.0.1
 # GHC_COMMAND=ghc-6.8.3
 
 include Makefile-defs

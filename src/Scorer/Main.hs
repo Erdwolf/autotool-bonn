@@ -25,15 +25,14 @@ main = do
     let header = O.Text $ "autotool -- Top Ten Scores, Stand von: " ++ t
     vls <- Scorer.Aufgabe.get
     schulen <- U.get
-    outs <- forM schulen $ \ schule -> do
+    outss <- forM schulen $ \ schule -> do
             vors <- V.get_at_school $ U.unr schule 
             let table = do
                 vor <- vors
                 info <- maybeToList $ lookupFM vls ( V.vnr vor )
                 return ( vor, info )
-            outs <- forM table $ compute schule
-            return $ O.Itemize outs
-    let out = O.Itemize outs
+            forM table $ compute schule
+    let out = O.Itemize $ concat outss >>= maybeToList
     print $ Autolib.Multilingual.specialize Autolib.Multilingual.DE
           $ ( O.render out :: Autolib.Multilingual.Type Text.XHtml.Html )
     
