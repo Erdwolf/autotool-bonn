@@ -18,13 +18,17 @@ import Autolib.FiniteMap hiding ( collect )
 import Autolib.Set
 import Autolib.Util.Sort
 
-import Control.Monad ( guard , liftM, when )
+import Autolib.ToDoc
+import Autolib.Output ( Output )
+import qualified Autolib.Output as O
+
+import Control.Monad ( guard , liftM, when, forM )
 import System.IO ( hFlush, stdout )
 import Data.Char
 
 
 -- | druckt Auswertung für alle Aufgaben einer Vorlesung
-emit :: Bool -> U.Schule -> V.Vorlesung -> DataFM -> IO ()
+emit :: Bool -> U.Schule -> V.Vorlesung -> DataFM -> IO Output
 emit deco u vor fm0 = do
 
     studs <- V.steilnehmer $ V.vnr vor
@@ -35,27 +39,26 @@ emit deco u vor fm0 = do
 		  return e
 	      ) fm0
                                   
-    when ( 0 < sizeFM fm ) $ do
-        putStrLn $ unlines
-	     [ "", ""
-             , unwords [ toString $ U.name u ]
-	     ,  unwords [ "Auswertung für Lehrveranstaltung"
-                        , toString $ V.name vor, ":" ] 
-	     ]
-        mapM_ (single deco (V.unr vor)) $ fmToList fm
-        totalize deco (V.unr vor) fm
-        inform
+    if ( 0 < sizeFM fm )
+       then do
+          let header = O.Doc $ vcat
+                  [ text $ unwords [ toString $ U.name u ]
+	          , text $ unwords [ "Auswertung für Lehrveranstaltung"
+                               , toString $ V.name vor, ":" 
+                               ] 
+	          ]
+          out <- forM ( fmToList fm ) $ single deco (V.unr vor)
+          to <- totalize deco (V.unr vor) fm
+          return $ foldr1 O.Above [ header, O.Itemize out, to, inform ]
+       else return $ O.Empty
 
 
-inform :: IO ()
-inform = do
-    putStrLn $ unlines 
-	     [ unwords
+inform :: Output
+inform = O.Doc $ text $ unwords
 	       [ "Dabei gibt es pro Score" , show scorePoints, "Punkte"
 	       , "für die Plätze [1 ..", show scoreItems, "]" 
 	       ]
-	     , ""
-	     ]
+
 
 realize :: [ Einsendung ] -> [ Einsendung ]
 realize es = take scoreItems -- genau 10 stück
@@ -71,22 +74,26 @@ isadmin m =
         else False
 
 -- | druckt Auswertung einer Aufgabe
-single :: Bool -> UNr -> ( ANr, [ Einsendung ] ) -> IO ()
+single :: Bool -> UNr -> ( ANr, [ Einsendung ] ) -> IO Output
 single deco u arg @( anr, es ) = do
     [ auf ] <- A.get_this anr
-    let header = unwords 
+    let header = O.Doc $ text $ unwords 
 	       [ "Aufgabe" , toString $ A.name auf
 	       , unwords $ if null es then [] else
 	         [ "( beste bekannte Lösung", show (size $ head es), ")" ]
 	       ]
-	strich = replicate (length header) '-'
 
     let realized = realize es
 
     decorated <- if deco then mapM (liftM show . decorate u) realized 
 		         else return $ map show realized
+    let scored = O.Itemize $ map O.Text decorated
 
-    putStrLn $ unlines $ [ header , strich ] ++ decorated
+
+    let problem = O.Named_Link  "Aufgabe ausprobieren (ohne Wertung)"
+                $ "Trial.cgi?problem=" ++ Control.Types.toString ( A.anr auf )
+
+    return $ foldr1 O.Above [ header, scored, problem ] 
 
 
 decorate :: UNr -> Einsendung -> IO SE
@@ -98,12 +105,12 @@ decorate u e = do
        []    -> return $ SE ( read "SNr 0" ) e 
        (s:_) -> return $ SE ( S.snr s      ) e 
 
-totalize :: Bool -> UNr -> DataFM -> IO ()
+totalize :: Bool -> UNr -> DataFM -> IO Output
 totalize deco u fm = do
 
     infos <- collect deco u fm
 
-    putStrLn $ unlines
+    return $ O.Text $ unlines
 	     $ [ "Top Ten"
 	       , "-----------------------------------"
 	       ] ++ do (i,(p,ps)) <- infos

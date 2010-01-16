@@ -13,6 +13,10 @@ import Control.Aufgabe.Typ
 import qualified Control.Vorlesung as V
 import qualified Control.Schule as U
 
+import Autolib.ToDoc
+import Autolib.Output ( Output )
+import qualified Autolib.Output as O
+
 import Autolib.Util.Sort
 import Autolib.FiniteMap
 import Control.Monad ( guard )
@@ -20,7 +24,7 @@ import System ( getArgs )
 
 
 -- | in fm steht abbildung von aufgabe(name) auf inhalt (z. b. direction)
-compute :: U.Schule -> ( V.Vorlesung, ScoreDefFM ) -> IO ()
+compute :: U.Schule -> ( V.Vorlesung, ScoreDefFM ) -> IO Output
 compute u ( vor, aufs ) = do
 
     -- wir lesen die logfiles für jede vorlesung komplett neu ein,
