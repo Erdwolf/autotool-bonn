@@ -91,7 +91,7 @@ single deco u arg @( anr, es ) = do
 
 
     let problem = O.Named_Link  "Aufgabe ausprobieren (ohne Wertung)"
-                $ "Trial.cgi?problem=" ++ Control.Types.toString ( A.anr auf )
+                $ "/cgi-bin/Trial.cgi?problem=" ++ Control.Types.toString ( A.anr auf )
 
     return $ foldr1 O.Above [ header, scored, problem ] 
 
