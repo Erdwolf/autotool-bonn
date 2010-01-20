@@ -4,9 +4,16 @@
 
 module Util.Xml.OutputDTD where
 
-import Text.XML.HaXml.Xml2Haskell
+import Text.XML.HaXml.XmlContent
+
 import Text.XML.HaXml.Escape
 import Data.Char (isSpace)
+
+-- FIXME: what about decoding?
+
+toTextEscaped :: String -> [Content ()]
+toTextEscaped s = cs where
+    Elem _ _ cs = xmlEscape stdXmlEscaper (Elem "" [] (toText s))
 
 {-Type decls-}
 
@@ -46,51 +53,42 @@ data Space = Space
     , spaceHeight :: String
     , spaceUnit :: String
     } deriving (Eq,Show)
-data Figure = Figure Output
-                     Output
+data Figure = Figure Output Output
             deriving (Eq,Show)
 
 
-fromTextEscaped :: [Content] -> (Maybe String, [Content])
-fromTextEscaped cs = fromText cs' where
-    Elem _ _ cs' = xmlUnEscape stdXmlEscaper (Elem "" [] cs)
-
-toTextEscaped :: String -> [Content]
-toTextEscaped s = cs where
-    Elem _ _ cs = xmlEscape stdXmlEscaper (Elem "" [] (toText s))
-
 {-Instance decls-}
 
+instance HTypeable Pre where
+    toHType x = Defined "Pre" [] []
 instance XmlContent Pre where
-    fromElem (CElem (Elem "Pre" [] c0):rest) =
-        (\(a,_ca)->
-           (Just (Pre a), rest))
-        (definite fromTextEscaped "text" "Pre" c0)
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem rest = (Nothing, rest)
-    toElem (Pre a) =
-        [CElem (Elem "Pre" [] (toTextEscaped a))]
+    toContents (Pre a) =
+        [CElem (Elem "Pre" [] (toTextEscaped a)) ()]
+    parseContents = do
+        { e@(Elem _ [] _) <- element ["Pre"]
+        ; interior e $ return (Pre) `apply` (text `onFail` return "")
+        } `adjustErr` ("in <Pre>, "++)
+
+instance HTypeable Text where
+    toHType x = Defined "Text" [] []
 instance XmlContent Text where
-    fromElem (CElem (Elem "Text" [] c0):rest) =
-        (\(a,_ca)->
-           (Just (Text a), rest))
-        (definite fromTextEscaped "text" "Text" c0)
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem rest = (Nothing, rest)
-    toElem (Text a) =
-        [CElem (Elem "Text" [] (toTextEscaped a))]
+    toContents (Text a) =
+        [CElem (Elem "Text" [] (toTextEscaped a)) ()]
+    parseContents = do
+        { e@(Elem _ [] _) <- element ["Text"]
+        ; interior e $ return (Text) `apply` (text `onFail` return "")
+        } `adjustErr` ("in <Text>, "++)
+
+instance HTypeable Image where
+    toHType x = Defined "Image" [] []
 instance XmlContent Image where
-    fromElem (CElem (Elem "Image" as c0):rest) =
-        (\(a,_ca)->
-           (Just (Image (fromAttrs as) a), rest))
-        (definite fromText "text" "Image" c0)
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem rest = (Nothing, rest)
-    toElem (Image as a) =
-        [CElem (Elem "Image" (toAttrs as) (toText a))]
+    toContents (Image as a) =
+        [CElem (Elem "Image" (toAttrs as) (toText a)) ()]
+    parseContents = do
+        { e@(Elem _ as _) <- element ["Image"]
+        ; interior e $ return (Image (fromAttrs as))
+                       `apply` (text `onFail` return "")
+        } `adjustErr` ("in <Image>, "++)
 instance XmlAttributes Image_Attrs where
     fromAttrs as =
         Image_Attrs
@@ -107,16 +105,17 @@ instance XmlAttributes Image_Attrs where
         , toAttrFrStr "height" (imageHeight v)
         , toAttrFrStr "unit" (imageUnit v)
         ]
+
+instance HTypeable Link where
+    toHType x = Defined "Link" [] []
 instance XmlContent Link where
-    fromElem (CElem (Elem "Link" as c0):rest) =
-        (\(a,_ca)->
-           (Just (Link (fromAttrs as) a), rest))
-        (definite fromTextEscaped "text" "Link" c0)
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem rest = (Nothing, rest)
-    toElem (Link as a) =
-        [CElem (Elem "Link" (toAttrs as) (toTextEscaped a))]
+    toContents (Link as a) =
+        [CElem (Elem "Link" (toAttrs as) (toTextEscaped a)) ()]
+    parseContents = do
+        { e@(Elem _ as _) <- element ["Link"]
+        ; interior e $ return (Link (fromAttrs as))
+                       `apply` (text `onFail` return "")
+        } `adjustErr` ("in <Link>, "++)
 instance XmlAttributes Link_Attrs where
     fromAttrs as =
         Link_Attrs
@@ -125,85 +124,70 @@ instance XmlAttributes Link_Attrs where
     toAttrs v = catMaybes 
         [ toAttrFrStr "href" (linkHref v)
         ]
+
+instance HTypeable Above where
+    toHType x = Defined "Above" [] []
 instance XmlContent Above where
-    fromElem (CElem (Elem "Above" [] c0):rest) =
-        (\(a,_ca)->
-           (Just (Above a), rest))
-        (many fromElem c0)
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem rest = (Nothing, rest)
-    toElem (Above a) =
-        [CElem (Elem "Above" [] (concatMap toElem a))]
+    toContents (Above a) =
+        [CElem (Elem "Above" [] (concatMap toContents a)) ()]
+    parseContents = do
+        { e@(Elem _ [] _) <- element ["Above"]
+        ; interior e $ return (Above) `apply` many parseContents
+        } `adjustErr` ("in <Above>, "++)
+
+instance HTypeable Output where
+    toHType x = Defined "Output" [] []
 instance XmlContent Output where
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem c0 =
-        case (fromElem c0) of
-        (Just a,rest) -> (Just (OPre a), rest)
-        (_,_) ->
-                case (fromElem c0) of
-                (Just a,rest) -> (Just (OText a), rest)
-                (_,_) ->
-                        case (fromElem c0) of
-                        (Just a,rest) -> (Just (OImage a), rest)
-                        (_,_) ->
-                                case (fromElem c0) of
-                                (Just a,rest) -> (Just (OLink a), rest)
-                                (_,_) ->
-                                        case (fromElem c0) of
-                                        (Just a,rest) -> (Just (OAbove a), rest)
-                                        (_,_) ->
-                                                case (fromElem c0) of
-                                                (Just a,rest) -> (Just (OBeside a), rest)
-                                                (_,_) ->
-                                                        case (fromElem c0) of
-                                                        (Just a,rest) -> (Just (OItemize a), rest)
-                                                        (_,_) ->
-                                                                case (fromElem c0) of
-                                                                (Just a,rest) -> (Just (OSpace a), rest)
-                                                                (_,_) ->
-                                                                        case (fromElem c0) of
-                                                                        (Just a,rest) -> (Just (OFigure a), rest)
-                                                                        (_,_) ->
-                                                                                (Nothing, c0)
-    toElem (OPre a) = toElem a
-    toElem (OText a) = toElem a
-    toElem (OImage a) = toElem a
-    toElem (OLink a) = toElem a
-    toElem (OAbove a) = toElem a
-    toElem (OBeside a) = toElem a
-    toElem (OItemize a) = toElem a
-    toElem (OSpace a) = toElem a
-    toElem (OFigure a) = toElem a
+    toContents (OPre a) = toContents a
+    toContents (OText a) = toContents a
+    toContents (OImage a) = toContents a
+    toContents (OLink a) = toContents a
+    toContents (OAbove a) = toContents a
+    toContents (OBeside a) = toContents a
+    toContents (OItemize a) = toContents a
+    toContents (OSpace a) = toContents a
+    toContents (OFigure a) = toContents a
+    parseContents = oneOf
+        [ return (OPre) `apply` parseContents
+        , return (OText) `apply` parseContents
+        , return (OImage) `apply` parseContents
+        , return (OLink) `apply` parseContents
+        , return (OAbove) `apply` parseContents
+        , return (OBeside) `apply` parseContents
+        , return (OItemize) `apply` parseContents
+        , return (OSpace) `apply` parseContents
+        , return (OFigure) `apply` parseContents
+        ] `adjustErr` ("in <Above>, "++)
+
+instance HTypeable Beside where
+    toHType x = Defined "Beside" [] []
 instance XmlContent Beside where
-    fromElem (CElem (Elem "Beside" [] c0):rest) =
-        (\(a,_ca)->
-           (Just (Beside a), rest))
-        (many fromElem c0)
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem rest = (Nothing, rest)
-    toElem (Beside a) =
-        [CElem (Elem "Beside" [] (concatMap toElem a))]
+    toContents (Beside a) =
+        [CElem (Elem "Beside" [] (concatMap toContents a)) ()]
+    parseContents = do
+        { e@(Elem _ [] _) <- element ["Beside"]
+        ; interior e $ return (Beside) `apply` many parseContents
+        } `adjustErr` ("in <Beside>, "++)
+
+instance HTypeable Itemize where
+    toHType x = Defined "Itemize" [] []
 instance XmlContent Itemize where
-    fromElem (CElem (Elem "Itemize" [] c0):rest) =
-        (\(a,_ca)->
-           (Just (Itemize a), rest))
-        (many fromElem c0)
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem rest = (Nothing, rest)
-    toElem (Itemize a) =
-        [CElem (Elem "Itemize" [] (concatMap toElem a))]
+    toContents (Itemize a) =
+        [CElem (Elem "Itemize" [] (concatMap toContents a)) ()]
+    parseContents = do
+        { e@(Elem _ [] _) <- element ["Itemize"]
+        ; interior e $ return (Itemize) `apply` many parseContents
+        } `adjustErr` ("in <Itemize>, "++)
+
+instance HTypeable Space where
+    toHType x = Defined "Space" [] []
 instance XmlContent Space where
-    fromElem (CElem (Elem "Space" as []):rest) =
-        (Just (fromAttrs as), rest)
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem rest = (Nothing, rest)
-    toElem as =
-        [CElem (Elem "Space" (toAttrs as) [])]
+    toContents as =
+        [CElem (Elem "Space" (toAttrs as) []) ()]
+    parseContents = do
+        { (Elem _ as []) <- element ["Space"]
+        ; return (fromAttrs as)
+        } `adjustErr` ("in <Space>, "++)
 instance XmlAttributes Space where
     fromAttrs as =
         Space
@@ -216,18 +200,18 @@ instance XmlAttributes Space where
         , toAttrFrStr "height" (spaceHeight v)
         , toAttrFrStr "unit" (spaceUnit v)
         ]
+
+instance HTypeable Figure where
+    toHType x = Defined "Figure" [] []
 instance XmlContent Figure where
-    fromElem (CElem (Elem "Figure" [] c0):rest) =
-        (\(a,ca)->
-           (\(b,cb)->
-              (Just (Figure a b), rest))
-           (definite fromElem "Output" "Figure" ca))
-        (definite fromElem "Output" "Figure" c0)
-    fromElem (CMisc _:rest) = fromElem rest
-    fromElem (CString _ s:rest) | all isSpace s = fromElem rest
-    fromElem rest = (Nothing, rest)
-    toElem (Figure a b) =
-        [CElem (Elem "Figure" [] (toElem a ++ toElem b))]
+    toContents (Figure a b) =
+        [CElem (Elem "Figure" [] (toContents a ++ toContents b)) ()]
+    parseContents = do
+        { e@(Elem _ [] _) <- element ["Figure"]
+        ; interior e $ return (Figure) `apply` parseContents
+                       `apply` parseContents
+        } `adjustErr` ("in <Figure>, "++)
+
 
 
 {-Done-}

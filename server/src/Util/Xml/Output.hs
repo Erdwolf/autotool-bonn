@@ -7,7 +7,7 @@ import qualified Util.Xml.OutputDTD as X
 import qualified Autolib.Output as O
 import Text.XML.HaXml hiding (o, txt)
 import Text.XML.HaXml.Pretty
-import Text.XML.HaXml.Xml2Haskell
+import Text.XML.HaXml.XmlContent
 import Text.PrettyPrint.HughesPJ hiding (style)
 
 import qualified Codec.Binary.Base64 as C
@@ -56,12 +56,12 @@ outputToXOutput o = case o of
     O.Figure a b ->
         X.OFigure <$> (X.Figure <$> outputToXOutput a <*> outputToXOutput b)
 
-wrapXOutput :: X.Output -> Document
-wrapXOutput o = let [CElem e] = toElem o in
+wrapXOutput :: X.Output -> Document ()
+wrapXOutput o = let [CElem e _] = toContents o in
     Document (Prolog (Just (XMLDecl "1.0" Nothing Nothing)) [] Nothing [])
              emptyST e []
 
-xmlToString :: Document -> String
+xmlToString :: Document () -> String
 xmlToString = renderStyle style . document where
     style = Style OneLineMode 0 0
 
