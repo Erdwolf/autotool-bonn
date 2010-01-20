@@ -36,7 +36,7 @@ Library
         hsql-mysql >= 1.7.1 && < 1.8,
         random >= 1 && < 1.1,
         parsec >= 2.1 && < 2.2,
-        containers >= 0.2 && < 0.3,
+        containers >= 0.2 && < 0.4,
         xhtml >= 3000.2 && < 3000.3,
         cgi >= 3001.1.7 && < 3001.2,
         mtl >= 1.1 && < 1.2,
@@ -44,9 +44,9 @@ Library
         old-time >= 1 && < 1.1,
         process >= 1 && < 1.1,
         directory >= 1 && < 1.1,
-        unix >= 2.3 && < 2.4,
+        unix >= 2.3 && < 2.5,
         obdd >= 0.2 && < 0.3,
-        array >= 0.2 && < 0.3,
+        array >= 0.2 && < 0.4,
         pretty >= 1 && < 1.1
     GHC-Options:    -Wall
     Extensions:
@@ -59,6 +59,7 @@ Library
         ScopedTypeVariables
         FunctionalDependencies
         OverlappingInstances
+        GADTs
     Hs-source-dirs:
         src
         src/control
