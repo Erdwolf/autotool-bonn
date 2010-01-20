@@ -11,8 +11,13 @@ import Service.VerifyTaskConfig
 import Service.GetTaskInstance
 import Service.GradeTaskSolution
 
+import System.IO
+
 main :: IO ()
-main = cgiXmlRpcServer proto
+main = do
+    hSetBinaryMode stdout True
+    hSetBinaryMode stdin True
+    cgiXmlRpcServer proto
 
 proto :: [(String, XmlRpcMethod)]
 proto = [
