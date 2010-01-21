@@ -6,7 +6,7 @@ import Control.SQL
 import Control.Types hiding ( ok )
 import Control.Stud_Aufg.Typ
 
-import qualified Control.Exception as E ( try )
+import qualified Control.Exception as CE
 
 import Prelude hiding ( all )
 
@@ -18,12 +18,15 @@ put_blank snr anr = do
 		 , ( reed "OK", toEx $ Oks 0 )
 		 , ( reed "NO", toEx $ Nos 0 )
 		 ]
-    E.try $ squery conn $ Query
+    try $ squery conn $ Query
 	                  ( Insert (reed "stud_aufg") common ) 
 			  [ ]
     disconnect conn
     [ sauf ] <- get_snr_anr snr anr
     return sauf
+
+try :: IO a -> IO (Either CE.SomeException a)
+try = CE.try
 
 -- | alle einsendungen zu dieser aufgabe
 get_anr :: ANr -> IO [ Stud_Aufg ]

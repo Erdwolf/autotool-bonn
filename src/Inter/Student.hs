@@ -27,7 +27,7 @@ import Autolib.Reporter hiding ( wrap, initial )
 import Autolib.ToDoc
 import Autolib.Reader
 import qualified Autolib.Output
-import qualified Control.Exception
+import qualified Control.Exception as CE
 
 import Data.Typeable
 import Data.Maybe
@@ -78,7 +78,7 @@ solution vnr manr stud
             let b0 = render $ toDoc ini 
 	    def <- io $ if prev 
 	      then Inter.Store.latest Inter.Store.Input past
-                      `Control.Exception.catch` \ _ -> return b0
+                      `CE.catch` \ (CE.SomeException _) -> return b0
 	      else return b0
 	    open table
 	    open row

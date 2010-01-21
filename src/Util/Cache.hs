@@ -9,13 +9,13 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Control.Monad ( when )
-import qualified Control.Exception 
+import qualified Control.Exception as CE
 
 -- | falls schon vorhanden, dann lesen
 -- sonst erzeugen und schreiben
 cache :: ( ToDoc a, Reader a ) 
       => Datei -> IO a -> IO a
-cache d action = Control.Exception.catch
+cache d action = CE.catch
           ( do debug $ "lies cache-file " ++ show d ++ " ... "
 	       input <- lesen d
 	       debug $ "OK"
@@ -28,7 +28,7 @@ cache d action = Control.Exception.catch
 		       debug msg
 		       error msg
 	  ) 
-	  ( \ ex -> do 
+	  ( \ (CE.SomeException ex) -> do 
 		debug $ "Exception " ++ show ex ++ ", schreibe cache neu ... "
 	        x <- action
 		schreiben d $ show $ toDoc x

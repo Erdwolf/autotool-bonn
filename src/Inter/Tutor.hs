@@ -28,7 +28,7 @@ import Data.Maybe
 import Data.Tree ( flatten )
 
 
-import Control.Exception
+import qualified Control.Exception as CE
 
 -- | ändere aufgaben-konfiguration (nur für tutor)
 edit_aufgabe mks mk mauf vnr manr type_click = do
@@ -38,7 +38,7 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
             let t = fromCGI $ show mk
 
             others <- io $ A.get_typed t
-               `Control.Exception.catch` \ any -> return []
+               `CE.catch` \ (CE.SomeException any) -> return []
 
             ( name :: Name ) <- fmap fromCGI 
 		     $ defaulted_textfield "Name" 

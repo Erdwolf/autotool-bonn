@@ -71,7 +71,7 @@ forAufgabe prefix mk@(Make p tg fun vrfy _) auf = do
                 studs <- getDirectoryContents dir
                 forM_ studs $ forStudent prefix (Make p tg fun vrfy conf') auf
                 -- note that the parsed config was stored in the maker
-  `E.catch` \e ->
+  `E.catch` \(E.SomeException e) ->
     putStrLn $
       "skipping " ++ (show mk </> auf) ++ " (caught " ++ show e ++ ")"
 
@@ -84,7 +84,7 @@ forStudent prefix mk auf stud = do
         e' <- doesFileExist $ dir </> "error"
         if e' then putStrLn $ "skipping " ++ dir
              else limited dir $ forTest prefix mk auf stud
-  `E.catch` \e ->
+  `E.catch` \(E.SomeException e) ->
     putStrLn $
       "skipping " ++ (show mk </> auf </> stud) ++ " (caught " ++ show e ++ ")"
 
@@ -131,7 +131,7 @@ compareMsg a b = case (a, b) of
 
 limited :: String -> IO String-> IO ()
 limited dir act = do
-    let act' = act `E.catch` (\e -> return ("Exception: " ++ showX e))
+    let act' = act `E.catch` (\(E.SomeException e) -> return ("Exception: " ++ showX e))
     res <- newEmptyMVar
     t1 <- forkIO $ act' >>= putMVar res
     t2 <- forkIO $ threadDelay timeout >> putMVar res "Timeout"

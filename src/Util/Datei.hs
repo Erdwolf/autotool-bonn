@@ -30,7 +30,7 @@ import System.Environment ( getEnv )
 import Data.Char (isAlphaNum)
 import qualified System.Posix
 import qualified System.Directory
-import qualified Control.Exception
+import qualified Control.Exception as CE
 
 import Util.Datei.Base
 
@@ -152,7 +152,7 @@ lesen d  = do
             f <- openFile h ReadMode
             cs <- hGetContents f
             -- hGetContents is lazy - force its result before closing the file
-            Control.Exception.evaluate (last cs)
+            CE.evaluate (last cs)
             hClose f
             return cs
         else error $ "file: " ++ h ++ " does not exist"
@@ -189,7 +189,7 @@ createDir d = do
 		ok <- doesDirectoryExist path
 	    	when ( not ok ) $ do 
 		       createDirectory path
-		           `Control.Exception.catch` \ any ->
+		           `CE.catch` \ (CE.SomeException any) ->
 			       error $ unlines [ show any, show path ]
 		       perm "go+rx" path 
 		       return ()

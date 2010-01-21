@@ -73,7 +73,7 @@ import Data.Maybe
 import Data.Tree
 import Data.List ( partition )
 import Control.Monad
-import qualified Control.Exception
+import qualified Control.Exception as CE
 
 import qualified Text.XHtml
 
@@ -390,7 +390,7 @@ find_previous edit vnr mks stud auf = do
 
     -- kann sein, daß S.anr  error  ergibt (für tutor)
     sas <- io $ SA.get_snr_anr (S.snr stud) (A.anr auf) 
-                   `Control.Exception.catch` \ any -> return []
+                   `CE.catch` \ (CE.SomeException any) -> return []
     case sas of
         [ sa ] -> do
 	    show_previous edit vnr mks stud auf sa 

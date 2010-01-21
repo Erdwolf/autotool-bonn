@@ -133,7 +133,7 @@ io = liftIO
 mrun :: MIO a -> Ctx -> IO a
 mrun a r = runReaderT (runMIO a) r
 
-mcatch :: MIO a -> (Exception -> MIO a) -> MIO a
+mcatch :: MIO a -> (SomeException -> MIO a) -> MIO a
 mcatch a h = do
     r <- ask
     io $ Control.Exception.catch (mrun a r) (\e -> mrun (h e) r)

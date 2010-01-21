@@ -6,7 +6,7 @@ import Control.SQL
 import Control.Types hiding ( ok )
 import Control.Stud_Grp.Typ
 
-import qualified Control.Exception as E ( try )
+import qualified Control.Exception as CE
 
 import Prelude hiding ( all )
 
@@ -14,7 +14,7 @@ import Prelude hiding ( all )
 insert :: SNr -> GNr -> IO ( )
 insert snr gnr = do
     conn <- myconnect 
-    E.try $ squery conn $ Query
+    try $ squery conn $ Query
 	                  ( Insert (reed "stud_grp") 
 			        [ ( reed "SNr", toEx $ snr )
 				, ( reed "GNr", toEx $ gnr )
@@ -22,6 +22,9 @@ insert snr gnr = do
 			  )
 			  [ ]
     disconnect conn
+
+try :: IO a -> IO (Either CE.SomeException a)
+try = CE.try
 
 -- | anzahl der eingeschriebenen leute
 attendance :: GNr -> IO Integer
@@ -41,7 +44,7 @@ attendance gnr = do
 delete :: SNr -> GNr -> IO ()
 delete snr gnr =  do
     conn <- myconnect 
-    E.try $ squery conn $ Query
+    try $ squery conn $ Query
 	                  ( Delete (reed "stud_grp") )
 			  [ common snr gnr ]
     disconnect conn

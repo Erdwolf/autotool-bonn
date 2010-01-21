@@ -30,7 +30,6 @@ import Database.HSQL.MySQL hiding ( query, collectRows )
 import qualified Database.HSQL.MySQL
 
 import Control.Monad ( when )
-import Control.Exception ( catch, catchDyn )
 
 -------------------------------------------------------------------------------
 

@@ -47,7 +47,7 @@ Executable autotool-test-extract
         ScopedTypeVariables
     Build-Depends:
         directory >= 1.0 && < 1.1,
-        base >= 3.0 && < 3.1,
+        base >= 4.0 && < 4.3,
         xhtml >= 3000.2 && < 3000.3,
         containers >= 0.2 && < 0.3,
         random >= 1.0 && < 1.1,
@@ -74,7 +74,7 @@ Executable autotool-test-run
     Extensions:
         DeriveDataTypeable
     Build-Depends:
-        base >= 3.0 && < 3.1,
+        base >= 4.0 && < 4.3,
         filepath >= 1.1 && < 1.2,
         autotool-collection
 
@@ -85,7 +85,7 @@ Executable autotool-test-report
     Hs-source-dirs: src
     Main-Is: Report.hs
     Build-Depends:
-        base >= 3.0 && < 3.1,
+        base >= 4.0 && < 4.3,
         filepath >= 1.1 && < 1.2,
         xhtml >= 3000.2 && < 3000.3,
         autotool-collection

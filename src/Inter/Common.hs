@@ -18,7 +18,7 @@ import Autolib.ToDoc ( text )
 import qualified Autolib.Multilingual.Html as Html
 
 import System.Directory
-import qualified Control.Exception
+import qualified Control.Exception as CE
 
 mkpar stud auf = P.empty 
             { P.mmatrikel = Just $ S.mnr stud
@@ -104,4 +104,4 @@ slink = do
     return scores
 
 
-scores_link = io $ slink `Control.Exception.catch` \ e -> return ( show e )
+scores_link = io $ slink `CE.catch` \ (CE.SomeException e) -> return ( show e )
