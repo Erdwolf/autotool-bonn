@@ -54,7 +54,7 @@ Executable autotool-test-extract
         hsql-mysql >= 1.7 && < 1.8,
         cgi >= 3001.1 && < 3001.2,
         mtl >= 1.1 && < 1.2,
-        parsec >= 2.1 && < 2.2,
+        parsec >= 3 && < 3.1,
         unix >= 2.3 && < 2.4,
         old-time >= 1.0 && < 1.1,
         autotool-collection,

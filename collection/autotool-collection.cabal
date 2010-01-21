@@ -35,7 +35,7 @@ Library
         hsql >= 1.7.1 && < 1.8,
         hsql-mysql >= 1.7.1 && < 1.8,
         random >= 1 && < 1.1,
-        parsec >= 2.1 && < 2.2,
+        parsec >= 3 && < 3.1,
         containers >= 0.2 && < 0.4,
         xhtml >= 3000.2 && < 3000.3,
         cgi >= 3001.1.7 && < 3001.2,
