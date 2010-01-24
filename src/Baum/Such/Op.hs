@@ -1,5 +1,4 @@
--- -*- mode: haskell -*-
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, FlexibleInstances, UndecidableInstances, DeriveDataTypeable #-}
 
 module Baum.Such.Op where
 

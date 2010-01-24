@@ -1,5 +1,4 @@
--- -*- mode: haskell -*-
-{-# LANGUAGE TemplateHaskell #-}
+{-# language DeriveDataTypeable, TemplateHaskell #-}
 
 module Baum.Such.Config where
 
