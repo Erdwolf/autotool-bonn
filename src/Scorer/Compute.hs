@@ -13,6 +13,10 @@ import Control.Aufgabe.Typ
 import qualified Control.Vorlesung as V
 import qualified Control.Schule as U
 
+import Autolib.ToDoc
+import Autolib.Output ( Output )
+import qualified Autolib.Output as O
+
 import Autolib.Util.Sort
 import Autolib.FiniteMap
 import Control.Monad ( guard )
@@ -20,7 +24,7 @@ import System ( getArgs )
 
 
 -- | in fm steht abbildung von aufgabe(name) auf inhalt (z. b. direction)
-compute :: U.Schule -> ( V.Vorlesung, ScoreDefFM ) -> IO ()
+compute :: U.Schule -> ( V.Vorlesung, ScoreDefFM ) -> IO ( Maybe Output )
 compute u ( vor, aufs ) = do
 
     -- wir lesen die logfiles für jede vorlesung komplett neu ein,
@@ -30,14 +34,16 @@ compute u ( vor, aufs ) = do
     args <- getArgs
 
     let (decorate,fileargs) = if null args then (False,[])
-			      else ( if head args == "DECORATE"
-			             then (True,tail args)
-			             else (False,args)
+			      else ( case head args of
+                                        "DECORATE" -> (True,tail args)
+                                        "--cleartext" -> (False,tail args)
+			                _ -> (True,args)
 				   )
 
     contents <- mapM readFile fileargs
     let einsendungen = 
-            filter Scorer.Einsendung.okay $ slurp $ concat contents
+            filter Scorer.Einsendung.okay $ slurp_deco decorate 
+                   $ concat contents
 
     let total = foldl ( update aufs ) emptyFM einsendungen
     -- pforsicht: hier sind auch die admins (< 1024) drin

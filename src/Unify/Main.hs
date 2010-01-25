@@ -3,7 +3,10 @@
 
 module Unify.Main where
 
-import Unify.Instance ( Instance, InstanceC )
+import Prolog.Data
+import Prolog.Unify
+import Prolog.Substitution ( apply )
+import Unify.Instance ( Instance )
 import qualified Unify.Instance as I
 import Unify.Config ( Config )
 import qualified Unify.Config as C
@@ -16,13 +19,6 @@ import Challenger.Partial
 import Inter.Types
 import Inter.Quiz
 
-import Autolib.TES.Identifier
-import Autolib.Symbol
-import Autolib.TES.Term
-import Autolib.TES.Unify
-import Autolib.TES.Type
-import Autolib.TES.Position
-import Autolib.TES.Apply
 import Autolib.Size
 import Autolib.FiniteMap
 
@@ -32,28 +28,22 @@ import Data.Typeable
 data Unify = Unify deriving ( Eq, Ord, Show, Read, Typeable )
 
 
-type CII = Config Identifier Identifier
-type III = Instance Identifier Identifier
-
-
-instance Measure Unify ( Instance v c ) ( Term v c, Term v c ) where
+instance Measure Unify ( Instance ) ( Term , Term  ) where
     measure p i ( t1, t2 ) = fromIntegral $ size t1 + size t2
 
--- instance InstanceC v c => Partial Unify ( Instance v c ) ( Term v c, Term v c ) where
-instance Partial Unify III ( I.TII, I.TII ) where
+
+instance Partial Unify Instance ( Term, Term ) where
     describe p i = I.describe i
 
     initial p i = ( I.left i, I.right i )
 
-    partial p i ( vt1, vt2 ) = do
-        let [ t1, t2 ] = map I.patch_variables [ vt1, vt2 ]
+    partial p i ( t1, t2 ) = do
         conforms ( I.wildcard i ) ( I.left i ) t1
         conforms ( I.wildcard i ) ( I.right i ) t2
 
-    total p i ( vt1, vt2 ) = do
-        let [ t1, t2 ] = map I.patch_variables [ vt1, vt2 ]
-        let t1s = flip apply_partial t1 $ I.unifier i
-            t2s = flip apply_partial t2 $ I.unifier i
+    total p i ( t1, t2 ) = do
+        let t1s = flip apply t1 $ I.unifier i
+            t2s = flip apply t2 $ I.unifier i
         inform $ vcat
             [ text "die Substitution erzeugt"
             , nest 4 $ toDoc ( t1s, t2s )
@@ -73,15 +63,19 @@ instance Partial Unify III ( I.TII, I.TII ) where
                        ]
 
 
-conforms w p t = do
+conforms wild p t = do
     inform $ vcat 
            [ hsep [ text "paßt der Term" <+> toDoc t ]
            , hsep [ text "zum Muster" <+> toDoc p ]
            , hsep [ text "?" ]
            ]
+    when ( wild `elem` function_symbols t ) $ reject $ vcat
+         [ text "der Term" <+> toDoc t 
+         , text "enthält noch das wildcard-Symbol" <+> toDoc wild
+         ]
     let check p t = case ( p, t ) of
-            ( Node f _ , _ ) | f == w -> return ()
-            ( Node f xs , Node g ys ) | f == g -> 
+            ( Apply f _ , _ ) | f == wild -> return ()
+            ( Apply f xs , Apply g ys ) | f == g -> 
                 mapM_ ( uncurry check ) $ zip xs ys
             ( _ , _ ) -> when ( p /= t ) $ reject 
                     $ hsep [ text "Nein:", toDoc p, text "/=", toDoc t ]
@@ -93,10 +87,10 @@ make_fixed :: Make
 make_fixed = direct Unify I.example
 
 
-instance InstanceC v c => Generator Unify ( Config v c ) ( Instance v c ) where
+instance Generator Unify  Config  Instance  where
     generator p conf key = roll conf
 
-instance InstanceC v c => Project  Unify ( Instance v c ) ( Instance v c ) where
+instance Project  Unify Instance  Instance  where
     project p i = i
 
 

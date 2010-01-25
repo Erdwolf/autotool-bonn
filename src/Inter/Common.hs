@@ -100,7 +100,7 @@ slink = do
     scores <- 
         if e
         then readFile "link.scores" >>= return . head . lines
-        else return "https://autotool.imn.htwk-leipzig.de/high/score.text"
+        else return "https://autotool.imn.htwk-leipzig.de/high/score.html"
     return scores
 
 

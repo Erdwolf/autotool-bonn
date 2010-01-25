@@ -18,13 +18,19 @@ import Autolib.FiniteMap hiding ( collect )
 import Autolib.Set
 import Autolib.Util.Sort
 
-import Control.Monad ( guard , liftM, when )
+import Autolib.ToDoc
+import Autolib.Output ( Output )
+import qualified Autolib.Output as O
+
+import Control.Monad ( guard , liftM, when, forM )
 import System.IO ( hFlush, stdout )
 import Data.Char
 
 
 -- | druckt Auswertung für alle Aufgaben einer Vorlesung
-emit :: Bool -> U.Schule -> V.Vorlesung -> DataFM -> IO ()
+emit :: Bool -- ^ obfuscate Matrikelnummers?
+     -> U.Schule 
+     -> V.Vorlesung -> DataFM -> IO ( Maybe Output )
 emit deco u vor fm0 = do
 
     studs <- V.steilnehmer $ V.vnr vor
@@ -35,27 +41,26 @@ emit deco u vor fm0 = do
 		  return e
 	      ) fm0
                                   
-    when ( 0 < sizeFM fm ) $ do
-        putStrLn $ unlines
-	     [ "", ""
-             , unwords [ toString $ U.name u ]
-	     ,  unwords [ "Auswertung für Lehrveranstaltung"
-                        , toString $ V.name vor, ":" ] 
-	     ]
-        mapM_ (single deco (V.unr vor)) $ fmToList fm
-        totalize deco (V.unr vor) fm
-        inform
+    if ( 0 < sizeFM fm )
+       then do
+          let header = O.Doc $ vcat
+                  [ text $ unwords [ toString $ U.name u ]
+	          , text $ unwords [ "Auswertung für Lehrveranstaltung"
+                               , toString $ V.name vor, ":" 
+                               ] 
+	          ]
+          out <- forM ( fmToList fm ) $ single deco (V.unr vor)
+          to <- totalize deco (V.unr vor) fm
+          return $ Just $ O.lead header $ foldr1 O.Above [ O.Itemize out, to, inform ]
+       else return Nothing
 
 
-inform :: IO ()
-inform = do
-    putStrLn $ unlines 
-	     [ unwords
+inform :: Output
+inform = O.Doc $ text $ unwords
 	       [ "Dabei gibt es pro Score" , show scorePoints, "Punkte"
 	       , "für die Plätze [1 ..", show scoreItems, "]" 
 	       ]
-	     , ""
-	     ]
+
 
 realize :: [ Einsendung ] -> [ Einsendung ]
 realize es = take scoreItems -- genau 10 stück
@@ -71,22 +76,28 @@ isadmin m =
         else False
 
 -- | druckt Auswertung einer Aufgabe
-single :: Bool -> UNr -> ( ANr, [ Einsendung ] ) -> IO ()
+single :: Bool -> UNr -> ( ANr, [ Einsendung ] ) -> IO Output
 single deco u arg @( anr, es ) = do
     [ auf ] <- A.get_this anr
-    let header = unwords 
+    let header = O.Text $ unwords 
 	       [ "Aufgabe" , toString $ A.name auf
 	       , unwords $ if null es then [] else
 	         [ "( beste bekannte Lösung", show (size $ head es), ")" ]
 	       ]
-	strich = replicate (length header) '-'
 
     let realized = realize es
 
-    decorated <- if deco then mapM (liftM show . decorate u) realized 
-		         else return $ map show realized
+    decorated <- 
+        if False -- deco 
+        then mapM (liftM show . decorate u) realized 
+        else return $ map show realized
+    let scored = O.Itemize $ map O.Text decorated
 
-    putStrLn $ unlines $ [ header , strich ] ++ decorated
+
+    let try = O.Named_Link  "Aufgabe ausprobieren (ohne Wertung)"
+                $ "/cgi-bin/Trial.cgi?problem=" ++ Control.Types.toString ( A.anr auf )
+
+    return $ O.lead (O.lead header try ) scored 
 
 
 decorate :: UNr -> Einsendung -> IO SE
@@ -98,16 +109,14 @@ decorate u e = do
        []    -> return $ SE ( read "SNr 0" ) e 
        (s:_) -> return $ SE ( S.snr s      ) e 
 
-totalize :: Bool -> UNr -> DataFM -> IO ()
+totalize :: Bool -> UNr -> DataFM -> IO Output
 totalize deco u fm = do
 
     infos <- collect deco u fm
 
-    putStrLn $ unlines
-	     $ [ "Top Ten"
-	       , "-----------------------------------"
-	       ] ++ do (i,(p,ps)) <- infos
-		       return $ unwords [ stretch 10 $ show p
+    return $ O.lead (O.Text "Top Ten") $ O.Doc $ vcat $ do 
+                       (i,(p,ps)) <- infos
+		       return $ text $ unwords [ stretch 10 $ show p
 					, ":"
 					, stretch 10 $ toString i
 					, ":" 
@@ -135,9 +144,11 @@ collect :: Bool
 	->  IO [ ( Obfuscated MNr , (Int , [Int] ) ) ] -- ^ ( Matrikel, Punkt, Plätze )
 collect deco u fm = do
 
-    let nice (e,p) = if deco then do SE s _ <- decorate u e
-				     return ( error "Scorer.Emit.collect") -- ( show s , p )
-			     else return ( matrikel e , p )
+    let nice (e,p) = 
+            if False -- deco 
+            then do SE s _ <- decorate u e
+		    return ( error "Scorer.Emit.collect") -- ( show s , p )
+            else return ( matrikel e , p )
 
     infos <- mapM nice $ do
 	     (auf,es) <- fmToList fm

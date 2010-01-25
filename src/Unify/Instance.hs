@@ -2,17 +2,45 @@
 
 module Unify.Instance
 
-( module Unify.Instance.Data 
+( Instance (..)
+, example
 , describe
 )
 
 where
 
-import Unify.Instance.Data
+import Prolog.Data
+import Prolog.Substitution
 
 import Autolib.ToDoc
+import Autolib.Reader
+import Autolib.FiniteMap
+import Data.Typeable
 
-describe :: InstanceC v c => Instance v c -> Doc
+data Instance = Instance
+              { wildcard :: Identifier
+              , left :: Term 
+              , right :: Term
+              , unifier :: Substitution
+              }
+    deriving ( Typeable )
+
+$(derives [makeToDoc,makeReader] [''Instance])
+
+
+example :: Instance
+example = Instance
+    { wildcard = read "undefined"
+    , left = read "f (undefined, f (undefined, f (a, Y)))"
+    , right = read "f (f (f (a, f (a, a)), undefined), undefined)"
+    , unifier = listToFM
+                    [ read "( X , f (Z, f (a, f (f (a, f (a, a)), Z))) )"
+                    , read "( Y , f (f (a, f (a, a)), Z) )"
+                    ]
+    }
+
+
+describe :: Instance -> Doc
 describe i = vcat
     [ text "Ersetzen Sie in dem Paar von Termen"
     , nest 4 $ hsep [ text "(t1, t2)", equals, toDoc ( left  i, right i ) ]

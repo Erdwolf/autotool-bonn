@@ -2,14 +2,11 @@
 
 module Unify.Roll where
 
+import Prolog.Data
+import Prolog.Unify
+
 import Unify.Instance
 import Unify.Config
-
-import Autolib.TES.Term
-import Autolib.TES.Position
-import Autolib.TES.Binu
-import Autolib.TES.Unify
-import Autolib.TES.Identifier
 
 import Autolib.Util.Zufall
 import Autolib.Util.Sort
@@ -17,13 +14,15 @@ import Autolib.Size
 import Autolib.FiniteMap
 import Autolib.Set
 
-import Control.Monad ( foldM, guard )
-import Data.Maybe ( maybeToList )
-import Data.List ( minimum )
+import qualified Data.Map as M
+import qualified Data.Set as S
 
-roll :: InstanceC v c 
-     => Config v c
-     -> IO ( Instance v c )
+import Control.Monad ( forM, foldM, guard )
+import Data.Maybe ( maybeToList )
+import Data.List ( minimum, partition )
+
+roll :: Config 
+     -> IO ( Instance  )
 roll conf = do
     insts <- mapM inst $ replicate ( num_candidates conf ) conf
     let value i = ( sum $ do ( v, t ) <- fmToList $ unifier i ; return $ size t )
@@ -32,12 +31,12 @@ roll conf = do
         [] -> error "konnte keine Aufgabeninstanz generieren"
         i : _ -> return i
 
-inst :: InstanceC v c 
-     => Config v c -> IO ( Maybe ( Instance v c ))
+inst :: Config -> IO ( Maybe ( Instance ))
 inst conf = do
-    let s = mkSet $ variables conf
-    l <- term ( variables conf ) ( signature conf ) ( term_size conf )
-    r <- term ( variables conf ) ( signature conf ) ( term_size conf ) 
+    let s = Unify.Config.variables conf
+        vs = concat $ replicate 2 $ S.toList s
+    l <- with_vars vs $ term ( signature conf ) ( term_size conf )
+    r <- with_vars vs $ term ( signature conf ) ( term_size conf ) 
     let w = Unify.Config.wildcard conf
     wl <- many_wild ( num_wildcards conf ) w l
     wr <- many_wild ( num_wildcards conf ) w r
@@ -49,28 +48,51 @@ inst conf = do
             return $ size t > 1 
         guard $ or $ do
             ( v, t ) <- fmToList u
-            return $ cardinality ( vars t ) > 0
+            return $ cardinality ( Prolog.Data.variables t ) > 0
         return $ Instance { wildcard = w , left = wl, right = wr, unifier = u }
 
+with_vars vs a = a >>= insert_vars vs
+
+insert_vars vs t = do
+    foldM ( \ t v -> do
+        p <- eins $ leaf_positions t
+        return $ poke t p $ Variable v
+      ) t vs
+
 -- | introduce one wildcard
-wild :: c -> Term v c -> IO ( Term v c )
+wild :: Identifier -> Term -> IO ( Term )
 wild w t = do
-    ( p, s ) <- eins $ drop 1 $ positions t
-    return $ poke t ( p, Node w [] )
+    p <- eins $ drop 1 $ positions t
+    return $ poke t p $ Apply w [] 
 
 -- | a number of wildcards
-many_wild :: Int -> c -> Term v c -> IO ( Term v c )
+many_wild :: Int -> Identifier 
+          -> Term -> IO ( Term  )
 many_wild n w t = foldM ( \ t _ -> wild w t ) t $ replicate n ()
 
-term :: InstanceC v c 
-          => [v] -> Binu c -> Int -> IO ( Term v c )
-term vars sig s = 
-   if s <= 1 then do
-       eins $ map Var vars ++ map ( \ f -> Node f [] ) ( nullary sig )
-   else do
-       sl <- randomRIO ( 1, s - 2 )
-       l <- term vars sig $ sl
-       r <- term vars sig $ s - 1 - sl
-       f <- eins $ binary sig
-       return $ Node f [ l, r ]
+
+term :: Signature -> Int -> IO ( Term  )
+term sig s = 
+    let ( sig0, sig1 ) = partition ( \ (f,a) -> a == 0 ) $ M.toList sig
+    in  term' ( sig0, sig1 ) s
+
+term' (sig0, sig1) s = do
+   (f, a) <- eins $ if s <= 1 then sig0 else sig1
+   if 0 == a 
+      then return $ Apply f []
+      else do
+          ss <- distribute ( s - 1 ) a
+          xs <- forM ss $ \ s -> term' (sig0, sig1) s
+          return $ Apply f xs
+
+-- | xs <- distribute t n  implies
+--  sum xs == t  and  length xs == n  
+-- watch it: runtime is Theta(t)
+distribute :: Int -> Int -> IO [Int]
+distribute t n = do
+    ys <- forM [ 1 .. t ] $ \ i -> randomRIO (1,n)
+    let fm = M.fromListWith (+) $ zip [1..n] ( repeat 0 ) ++ do
+            y <- ys
+            return ( y, 1 )
+    return $ M.elems fm
 

@@ -3,41 +3,41 @@
 module Unify.Config where
 
 import Unify.Instance
-import Autolib.TES.Identifier
+import Prolog.Data
 
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.FiniteMap
+import Autolib.Set
 
 import qualified Autolib.TES.Binu as B
 import Data.Typeable
 
-data InstanceC v c => Config v c = Config
-       { signature :: B.Binu c
-       , variables :: [ v ]
+-- | maps Identifier to its arity
+type Signature = FiniteMap Identifier Int
+
+data  Config = Config
+       { signature :: Signature
+       , variables :: Set Identifier 
        , term_size :: Int
-       , wildcard  :: c
+       , wildcard  :: Identifier
        , num_wildcards :: Int
        , num_candidates :: Int -- ^ will use best instance of these
        }
-    deriving ( Typeable )
+    deriving ( Typeable, Eq )
 
 $(derives [makeReader, makeToDoc] [''Config])
 
-example :: Config Identifier Identifier
+example :: Config 
 example = Config
-    { signature =  B.Binu
-          { binary = read "[f]" -- TODO: ghc-6.8.3 bug (?) when using B.binary = 
-          , unary  = read "[]"
-          , nullary = read "[a]"
-          }
-    , variables = read "[ X,Y,Z ]"
+    { signature = listToFM
+          $ read "[ (f,2),(a,0) ]"
+    , variables = mkSet $ read "[X,Y,Z]"
     , wildcard  = read "undefined"
-    , term_size = 10
+    , term_size = 5
     , num_wildcards = 3
     , num_candidates = 3000 
     }
 
 
--- local variables:
--- mode: haskell
--- end:
+
