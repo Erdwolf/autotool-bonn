@@ -100,6 +100,10 @@ Library
         Algebraic2.Instance
         Algebraic2.Quiz
         Arithmetic.Op
+        Baum.AVL
+        Baum.AVL.Ops
+        Baum.AVL.Show
+        Baum.AVL.Type
         Baum.Bin
         Baum.Binary
         Baum.Binary.Ops
@@ -537,6 +541,11 @@ Library
         Program.List.Semantics
         Program.List.Store
         Program.List.Value
+        Prolog.Data
+--        Prolog.Eval
+--        Prolog.Program
+        Prolog.Substitution
+        Prolog.Unify
         Pump.CF
         Pump.CF.Type
         Pump.Conf
