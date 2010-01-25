@@ -144,9 +144,11 @@ collect :: Bool
 	->  IO [ ( Obfuscated MNr , (Int , [Int] ) ) ] -- ^ ( Matrikel, Punkt, Plätze )
 collect deco u fm = do
 
-    let nice (e,p) = if deco then do SE s _ <- decorate u e
-				     return ( error "Scorer.Emit.collect") -- ( show s , p )
-			     else return ( matrikel e , p )
+    let nice (e,p) = 
+            if False -- deco 
+            then do SE s _ <- decorate u e
+		    return ( error "Scorer.Emit.collect") -- ( show s , p )
+            else return ( matrikel e , p )
 
     infos <- mapM nice $ do
 	     (auf,es) <- fmToList fm
