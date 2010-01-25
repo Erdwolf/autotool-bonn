@@ -34,9 +34,10 @@ compute u ( vor, aufs ) = do
     args <- getArgs
 
     let (decorate,fileargs) = if null args then (False,[])
-			      else ( if head args == "DECORATE"
-			             then (True,tail args)
-			             else (False,args)
+			      else ( case head args of
+                                        "DECORATE" -> (True,tail args)
+                                        "--cleartext" -> (False,tail args)
+			                _ -> (True,args)
 				   )
 
     contents <- mapM readFile fileargs

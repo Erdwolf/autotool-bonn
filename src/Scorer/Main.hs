@@ -17,7 +17,9 @@ import Autolib.FiniteMap
 import Control.Monad ( guard, when, forM )
 import Data.Maybe
 
--- | usage: ScorerDB file1 file2 ...
+import System.Environment
+
+-- | usage: ScorerDB [--cleartext] file1 file2 ...
 
 main :: IO ()
 main = do
@@ -32,7 +34,7 @@ main = do
                 info <- maybeToList $ lookupFM vls ( V.vnr vor )
                 return ( vor, info )
             forM table $ compute schule
-    let out = O.Itemize $ concat outss >>= maybeToList
+    let out = O.lead header $ O.Itemize $ concat outss >>= maybeToList
     print $ Autolib.Multilingual.specialize Autolib.Multilingual.DE
           $ ( O.render out :: Autolib.Multilingual.Type Text.XHtml.Html )
     

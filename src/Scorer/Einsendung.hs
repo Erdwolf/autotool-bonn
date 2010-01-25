@@ -44,6 +44,9 @@ data Obfuscated a = Obfuscated
         , external :: String
         } deriving ( Eq, Ord, Show )
 
+nobfuscate :: MNr -> Obfuscated MNr
+nobfuscate mnr = Obfuscated { internal = mnr, external = toString mnr }
+
 obfuscate :: MNr -> Obfuscated MNr
 obfuscate mnr = Obfuscated 
               { internal = mnr
@@ -91,14 +94,17 @@ nulli :: Show a => Int -> a -> String
 nulli n = stretchWith '0' n . show
 
 -- | alle lesbaren Zeilen
-slurp :: String -> [ Einsendung ]
-slurp cs = do
+slurp = slurp_deco True
+
+slurp_deco :: Bool -> String -> [ Einsendung ]
+slurp_deco deco cs = do
     z <- lines cs
-    ( e, _ ) <- readsPrec 0 z
+    ( e, _ ) <- read_deco deco z
     return e
 
-instance Read Einsendung where 
-    readsPrec p cs = do
+-- instance Read Einsendung where 
+--    readsPrec p cs = do
+read_deco deco cs = do
         let ( line, rest ) = span (/= '\n') cs
 
 	let
@@ -125,7 +131,8 @@ instance Read Einsendung where
 	      , msize     = if ok == "OK"
                             then Just $ read $ field 11 line'
                             else Nothing
-	      , matrikel = obfuscate $ fromCGI $ field  4 line'
+	      , matrikel = ( if deco then obfuscate else nobfuscate ) 
+                         $ fromCGI $ field  4 line'
 	      , auf	 = fromCGI a
 	      , vor      = fromCGI v
 	      , pid      = field 8 wl			-- process id

@@ -28,7 +28,9 @@ import Data.Char
 
 
 -- | druckt Auswertung für alle Aufgaben einer Vorlesung
-emit :: Bool -> U.Schule -> V.Vorlesung -> DataFM -> IO ( Maybe Output )
+emit :: Bool -- ^ obfuscate Matrikelnummers?
+     -> U.Schule 
+     -> V.Vorlesung -> DataFM -> IO ( Maybe Output )
 emit deco u vor fm0 = do
 
     studs <- V.steilnehmer $ V.vnr vor
@@ -85,8 +87,10 @@ single deco u arg @( anr, es ) = do
 
     let realized = realize es
 
-    decorated <- if deco then mapM (liftM show . decorate u) realized 
-		         else return $ map show realized
+    decorated <- 
+        if False -- deco 
+        then mapM (liftM show . decorate u) realized 
+        else return $ map show realized
     let scored = O.Itemize $ map O.Text decorated
 
 
