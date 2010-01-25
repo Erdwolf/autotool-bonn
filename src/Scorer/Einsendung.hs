@@ -3,7 +3,7 @@ module Scorer.Einsendung
 ( Einsendung (..), size, Scorer.Einsendung.okay
 , Obfuscated (..)
 , SE (..)
-, slurp -- datei-inhalt verarbeiten
+, slurp, slurp_deco -- datei-inhalt verarbeiten
 )
 
 where
