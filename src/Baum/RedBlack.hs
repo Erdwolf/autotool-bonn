@@ -30,7 +30,8 @@ instance C.Such RedBlackTree where
   contents = contents
 
 instance Show a => T.ToTree ( RedBlackTree a ) where
-  toTree = toTree . fmap show
+  toTree     = toTree     . fmap show
+  toTreeNode = toTreeNode . fmap show
 
 data SuchbaumRedBlack = SuchbaumRedBlack
   deriving ( Eq, Ord, Show, Read, Typeable )
