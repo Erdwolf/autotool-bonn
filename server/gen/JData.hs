@@ -139,6 +139,7 @@ contents ty@(AType nm ts) con = let
         "public" <+> "int" <+> "hashCode" <> "()",
         block $ [
             "return",
+            if null (consArgs con) then nest 4 $ text "0;" else
             nest 4 $ (vcat $ punctuate " +" $ [
                 boxFunc ty' (ident [nm']) <> "." <> "hashCode" <> "()"
                     <+> "*" <+> text (show i)
