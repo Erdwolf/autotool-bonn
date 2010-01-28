@@ -20,6 +20,7 @@ import Autolib.Reporter
 import Autolib.Reader
 import qualified Autolib.ToDoc as AT
 import Challenger.Partial as CP
+import Autolib.Hash
 
 import Text.ParserCombinators.Parsec
 
@@ -31,7 +32,8 @@ get_task_instance  (TT sconf) (TT seed) = fmap TT $ do
     Make _ _ maker0 _ _ <- lookupTaskM task
     let Right config' = parse (parse_complete reader) "<config>" config
         maker = maker0 config'
-    ri <- gen maker (VNr 0) Nothing seed
+    let vnr = fromIntegral (hash config) -- FIXME: Get rid of the cache instead
+    ri <- gen maker (VNr vnr) Nothing seed
     i <- maybe (fail "internal error generating instance") return (result ri)
     let b = CP.initial (problem maker) i
     doc <- help b
