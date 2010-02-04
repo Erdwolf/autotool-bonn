@@ -53,7 +53,6 @@ jData (AData ty@(AType nm tv) cons) = do
             block $ contents ty con ++ concat [
                 -- getters
                 [
-                    "@Override",
                     "public" <+> text cn' <+> text ("get" ++ cn') <> "()",
                     block [
                          "return" <+> res <> ";"
@@ -64,7 +63,6 @@ jData (AData ty@(AType nm tv) cons) = do
             ] ++ concat [
                 -- distinguishers
                 [
-                    "@Override",
                     "public" <+> "boolean" <+> text ("is" ++ cn') <> "()",
                     block [
                          "return" <+> res <> ";"
