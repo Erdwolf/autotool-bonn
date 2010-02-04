@@ -13,6 +13,7 @@ import Types.Config as C
 import Types.Instance as I
 
 import Util.Hash
+import Data.Bits
 
 class Sign a where
     sign_ :: a -> Signature
@@ -29,10 +30,18 @@ verifyM :: (Monad m, Sign a) => Signed a -> m a
 verifyM = maybe (fail "invalid signature") return . verify
 
 instance Hash a => Sign a where
-    sign_ a = hash (secret, a)
+    sign_ a = hmac secret (hash a)
 
-secret :: String
-secret = "secret"
+secret :: Digest
+secret = hash "secret"
+
+-- cf. http://en.wikipedia.org/wiki/HMAC
+hmac :: Digest -> String -> Digest
+hmac secret = let
+    key1 = map (toEnum . (xor 0x5c) . fromEnum) secret
+    key2 = map (toEnum . (xor 0x36) . fromEnum) secret
+  in
+    \a -> hash (key1 ++ hash (key2 ++ a))
 
 instance Hash Config where
     hash (CString s) = hash ("CString", s)
