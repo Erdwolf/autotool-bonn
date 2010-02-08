@@ -21,15 +21,25 @@ import Inter.Types
 import Inter.Quiz
 import Data.Typeable
 
+newtype T t = T t deriving (Typeable)
+
+instance Show t => Show (T t) where
+    show (T t) = show t
+
+instance Read t => Read (T t) where
+    readsPrec d s = [(T t, s') | (t, s') <- readsPrec d s]
+
+instance OrderScore (T t) where
+    scoringOrder _ = None
 
 instance ( Tag t baum a ) => 
-    Measure t ( Instanz baum a ) [ Op a ] where
+    Measure (T t) ( Instanz baum a ) [ Op a ] where
     measure t inst ops = fromIntegral $ length ops
 
 instance ( Tag t baum a ) => 
-    Partial t ( Instanz baum a ) [ Op a ] where
+    Partial (T t) ( Instanz baum a ) [ Op a ] where
 
-    report t ( start, plan, end ) = do
+    report _ ( start, plan, end ) = do
        inform $ text "Auf den Baum:"
        peng start
        inform $ vcat 
@@ -40,10 +50,10 @@ instance ( Tag t baum a ) =>
               ]
        peng end
 
-    initial t ( start, plan, end ) =
+    initial _ ( start, plan, end ) =
         plan
 
-    total   t ( start, plan, end ) ops = do
+    total   _ ( start, plan, end ) ops = do
         inform $ text "Beginne mit"
 	peng start
         c <- steps start plan ops
@@ -53,14 +63,14 @@ instance ( Tag t baum a ) =>
 
 
 instance Tag t baum a
-      => Generator t ( Config a ) ( Instanz baum a ) where
+      => Generator (T t) ( Config a ) ( Instanz baum a ) where
     generator t conf key = Baum.Such.Generate.generate conf
 
-instance Project t  ( Instanz baum a ) ( Instanz baum a ) where
+instance Project (T t) ( Instanz baum a ) ( Instanz baum a ) where
     project t i = i
 
 make_quiz :: ( Tag t baum Int ) => t -> Make
-make_quiz t = quiz t Baum.Such.Config.example  
+make_quiz t = quiz (T t) Baum.Such.Config.example  
 
 
 

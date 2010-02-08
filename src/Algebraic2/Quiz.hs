@@ -69,8 +69,8 @@ internal_roller tag context ops beleg size rests rounds = do
 	return ( t, x )
 
 instance ( Condition c a,  Algebraic tag context a )
-    => Generator tag ( C.Type context c a ) ( I.Type context a , Exp a ) where
-    generator tag conf key = do
+    => Generator (T tag) ( C.Type context c a ) ( I.Type context a , Exp a ) where
+    generator (T tag) conf key = do
         pre <- fmap listToFM $ sequence $ do
 	    ( b, mv ) <- fmToList $ C.predefined conf
 	    return $ case mv of
@@ -105,12 +105,12 @@ instance ( Condition c a,  Algebraic tag context a )
 
 
 instance Algebraic tag context a 
-      =>  Project tag ( I.Type context a, Exp a ) ( I.Type context a ) where
-    project tag (i, f) = i
+      =>  Project (T tag) ( I.Type context a, Exp a ) ( I.Type context a ) where
+    project (T tag) (i, f) = i
 
 make :: ( Condition c a, Algebraic tag context a )
      => tag -> Make
-make tag = quiz tag $ C.Make
+make tag = quiz (T tag) $ C.Make
      { C.context = default_context tag
      , C.max_formula_size_for_instance = 6
 	 , C.operators_in_instance = default_operators tag

@@ -40,8 +40,8 @@ poke_unaries t (u : us) = do
 ------------------------------------------------------------------------
 
 instance ( Condition c a,  Algebraic tag a )
-    => Generator tag ( C.Type c a ) ( I.Type a , Exp a ) where
-    generator tag conf key = do
+    => Generator (T tag) ( C.Type c a ) ( I.Type a , Exp a ) where
+    generator (T tag) conf key = do
         counter <- newIORef 10000
         ( t, Just x, c )  <- do
 	      t <- roll   ( C.operators_in_instance conf ) 
@@ -73,12 +73,12 @@ instance ( Condition c a,  Algebraic tag a )
 		       )
 
 
-instance Algebraic tag a =>  Project tag ( I.Type a, Exp a ) ( I.Type a ) where
-    project tag (i, f) = i
+instance Algebraic tag a =>  Project (T tag) ( I.Type a, Exp a ) ( I.Type a ) where
+    project (T tag) (i, f) = i
 
 make :: ( Condition c a, Algebraic tag a )
      => tag -> Make
-make tag = quiz tag $ C.Make
+make tag = quiz (T tag) $ C.Make
      { C.max_formula_size_for_instance = 6
 	 , C.operators_in_instance = default_operators tag
 	 , C.operators_in_solution = default_operators tag

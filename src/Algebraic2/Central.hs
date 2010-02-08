@@ -16,11 +16,23 @@ import Autolib.Size
 import Autolib.Set
 import Autolib.FiniteMap
 
+import Data.Typeable
+
+newtype T t = T t deriving (Typeable)
+
+instance OrderScore (T t) where
+    scoringOrder _ = Increasing
+
+instance Show t => Show (T t) where
+    show (T t) = show t
+
+instance Read t => Read (T t) where
+    readsPrec d s = [(T t, s') | (t, s') <- readsPrec d s]
 
 instance Algebraic tag context a 
-    => Partial tag ( Algebraic2.Instance.Type context a ) ( Exp a ) where
+    => Partial (T tag) ( Algebraic2.Instance.Type context a ) ( Exp a ) where
 
-    report p i = do
+    report (T p) i = do
         introduce p $ context i
 
         inform $ vcat
@@ -41,9 +53,9 @@ instance Algebraic tag context a
     	    ]
 	present p $ target i
 
-    initial p i = some_formula p i
+    initial (T p) i = some_formula p i
 
-    partial p i b = do
+    partial (T p) i b = do
         inform $ vcat
 	       [ text "Die Baumstruktur Ihrer Einsendung ist:"
 	       , nest 4 $ draw b
@@ -65,14 +77,14 @@ instance Algebraic tag context a
         inform $ text "Die Größe Ihres Ausdrucks ist" <+> toDoc s
         when ( s > max_size i ) $ reject $ text "Das ist zuviel."
 
-    total p i b = do
+    total (T p) i b = do
         v <- evaluateC p ( context i ) ( predefined i ) b
         eq <- equivalent p ( target i ) v
         when ( not eq ) $ reject $ text "nicht äquivalent"
 
 make :: Algebraic tag context m
      => tag -> Make
-make tag = direct tag $ default_instance tag
+make tag = direct (T tag) $ default_instance tag
 
 
 instance ( Reader c, ToDoc c ) => Nice ( B.Binu c ) where
