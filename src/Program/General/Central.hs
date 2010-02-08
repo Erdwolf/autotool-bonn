@@ -19,8 +19,6 @@ import Autolib.Util.Zufall ( repeat_until )
 import Data.Typeable
 import Data.Maybe ( isNothing, isJust )
 
-data Program_General = Program_General deriving ( Eq, Ord, Show, Read, Typeable )
-
 instance ( Value val
          , Program.General.Class.Class p st val 
          , Reader ( Environment val )
