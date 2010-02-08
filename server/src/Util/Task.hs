@@ -1,10 +1,12 @@
 module Util.Task (
     ttmakers,
     lookupTask,
-    lookupTaskM
+    lookupTaskM,
+    taskScoringOrder
 ) where
 
 import Types.TaskTree
+import Types.ScoringOrder
 
 import Inter.Collector
 import Inter.Types
@@ -25,3 +27,6 @@ lookupTask name = listToMaybe
 
 lookupTaskM :: Monad m => String -> m Make
 lookupTaskM = maybe (fail "invalid task type") return . lookupTask
+
+taskScoringOrder :: Make -> ScoringOrder
+taskScoringOrder _ = None
