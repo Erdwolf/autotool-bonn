@@ -24,6 +24,9 @@ import Data.Typeable
 data Derive = Derive 
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Derive where
+    scoringOrder _ = Increasing
+
 instance (  Symbol c, Typeable c )
     => Partial Derive ( Instance c c ) [ Step c c ] where
 

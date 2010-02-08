@@ -29,6 +29,9 @@ import Number.Float.Roll
 
 data From_Float = From_Float deriving ( Show, Read, Typeable )
 
+instance OrderScore From_Float where
+    scoringOrder _ = None
+
 instance Partial From_Float Zahl Rational where
 
     describe From_Float z = vcat
@@ -49,7 +52,7 @@ instance Partial From_Float Zahl Rational where
 
 
 -- das ist nicht sehr sinnvoll,
--- mir fÃ¤llt keine aufgabe ein, bei der man das braucht
+-- mir fällt keine aufgabe ein, bei der man das braucht
 instance Size Rational where
     size r = fromIntegral $ length $ show r
 

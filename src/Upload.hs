@@ -15,6 +15,9 @@ import Data.Typeable
 
 data Upload = Upload deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Upload where
+    scoringOrder _ = None -- ?
+
 data Contents = Contents String deriving Typeable
 instance Container Contents String where
     label _ = "Contents"

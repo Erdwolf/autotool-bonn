@@ -23,6 +23,9 @@ import Inter.Quiz
 import Data.Maybe ( isJust )
 import Data.List ( partition, inits )
 
+instance OrderScore Robots3_Inverse where
+    scoringOrder _ = None -- ?
+
 instance Partial Robots3_Inverse 
 		 [ Zug ]
 		 Config

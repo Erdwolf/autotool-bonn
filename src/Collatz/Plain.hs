@@ -18,6 +18,9 @@ import Autolib.Reporter
 
 data Collatz_Plain = Collatz_Plain deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Collatz_Plain where
+    scoringOrder _ = None
+
 instance C.Partial Collatz_Plain Integer P.Parameter where
 
     report Collatz_Plain x = do

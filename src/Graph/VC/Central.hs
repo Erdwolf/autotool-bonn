@@ -21,7 +21,7 @@ import Autolib.Util.Zufall ( eins , genau )
 import Autolib.FiniteMap ( isEmptyFM )
 
 import Inter.Quiz ( Generator , generator , Project , project , quiz )
-import Inter.Types ( Make , direct )
+import Inter.Types ( Make , direct , ScoringOrder (..) , OrderScore (..) )
 import Data.Typeable ( Typeable )
 
 import qualified Challenger as C
@@ -31,6 +31,9 @@ import Data.List ( (\\) )
 -------------------------------------------------------------------------------
 
 data VC = VC deriving ( Eq , Ord , Show , Read , Typeable )
+
+instance OrderScore VC where
+    scoringOrder _ = Increasing
 
 instance C.Partial VC (Graph Int,Int) (Set Int) where
 

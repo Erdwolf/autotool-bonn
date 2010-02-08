@@ -20,6 +20,9 @@ import Autolib.Size
 import Data.Typeable
 import Data.Array (array)
 
+instance OrderScore DFA_Compress where
+    scoringOrder _ = Increasing
+
 instance C.Partial DFA_Compress Instance Compressed where
     
     describe p i = vcat

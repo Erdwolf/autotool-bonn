@@ -16,6 +16,9 @@ import Data.Typeable
 
 data Resolution = Resolution deriving ( Show, Read, Typeable )
 
+instance OrderScore Resolution where
+    scoringOrder _ = Increasing
+
 instance Partial Resolution ( [Clause], Clause ) [ Action ] where
 
     describe _  ( cs, target ) = vcat

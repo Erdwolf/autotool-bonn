@@ -26,6 +26,9 @@ import Autolib.Size
 
 data Merge_Netz = Merge_Netz deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Merge_Netz where
+    scoringOrder _ = Increasing
+
 instance C.Verify Merge_Netz Param where
 
     verify p i = sequence_ $ do

@@ -19,6 +19,9 @@ import Inter.Quiz
 import Data.Maybe ( isJust )
 import Data.List ( partition )
 
+instance OrderScore Rushhour where
+    scoringOrder _ = Increasing
+
 instance Partial Rushhour 
 		 Instance
 		 [ Zug ]

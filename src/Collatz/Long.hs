@@ -19,7 +19,8 @@ import Autolib.Reporter
 
 data Collatz_Long = Collatz_Long deriving ( Eq, Ord, Show, Read, Typeable )
 
-
+instance OrderScore Collatz_Long where
+    scoringOrder _ = Decreasing
 
 instance C.Partial Collatz_Long Int (Integer, P.Parameter) where
 

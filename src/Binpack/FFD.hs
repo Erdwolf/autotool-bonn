@@ -30,6 +30,9 @@ import Data.Typeable
 data Binpack_FFD = Binpack_FFD 
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Binpack_FFD where
+    scoringOrder _ = Increasing
+
 instance Partial Binpack_FFD P.Param ( Instance, Assignment ) where
 
     describe _ p = vcat

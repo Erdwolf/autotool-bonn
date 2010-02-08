@@ -21,6 +21,9 @@ import Data.Typeable
 
 data Bisect = Bisect deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Bisect where
+    scoringOrder _ = Increasing
+
 instance ( GraphC a, Show a)
     => C.Partial Bisect (Int, Graph a) (Solution a) where
 

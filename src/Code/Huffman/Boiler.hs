@@ -27,4 +27,6 @@ instance ( Show a, ToDoc a, Reader a, Reader [a], ToDoc [a], Ord a )
 instance Project Huffman ( Frequency a ) ( Frequency a ) where
     project _ f = f
 
+instance OrderScore Huffman where
+    scoringOrder _ = None
 

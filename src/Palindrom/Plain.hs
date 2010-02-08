@@ -14,6 +14,9 @@ import Autolib.Reporter
 
 data Palindrom = Palindrom deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Palindrom where
+    scoringOrder _ = Decreasing
+
 instance C.Partial Palindrom Int Integer where
 
     report Palindrom e = do

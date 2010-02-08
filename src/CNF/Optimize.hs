@@ -25,6 +25,9 @@ import Data.Typeable
 
 data CNF_Optimize = CNF_Optimize deriving ( Read, Show, Typeable )
 
+instance OrderScore CNF_Optimize where
+    scoringOrder _ = Increasing
+
 instance Partial CNF_Optimize CNF CNF where
 
     describe _ i = vcat

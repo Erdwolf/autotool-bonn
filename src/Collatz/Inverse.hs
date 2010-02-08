@@ -18,6 +18,9 @@ import Autolib.Reporter
 
 data Collatz_Inverse = Collatz_Inverse deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Collatz_Inverse where
+    scoringOrder _ = None -- ?
+
 instance C.Partial Collatz_Inverse P.Parameter Integer where
 
     report Collatz_Inverse p = do

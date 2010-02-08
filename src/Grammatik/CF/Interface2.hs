@@ -42,6 +42,9 @@ instance Verify CFG2 I2.Config where
                  else reject $ text "property 'Kontextfrei' ist zwingend notwendig"
 
 
+instance OrderScore CFG2 where
+    scoringOrder _ = Increasing
+
 instance Partial CFG2 I2.Config Grammatik where
 
     describe p i = vcat

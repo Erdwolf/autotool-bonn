@@ -18,6 +18,9 @@ import Data.Typeable
 
 data Hanoi = Hanoi deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Hanoi where
+    scoringOrder _ = Increasing
+
 instance C.Partial Hanoi HI [ Zug ] where
 
     describe p i = 

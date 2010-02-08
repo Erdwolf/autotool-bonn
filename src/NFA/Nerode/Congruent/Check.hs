@@ -29,6 +29,9 @@ import Data.Ix
 data Nerode_Congruent = Nerode_Congruent
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Nerode_Congruent where
+    scoringOrder _ = None
+
 instance C.Verify Nerode_Congruent ( Instance Char ) where
     verify Nerode_Congruent i = do
         Convert.Language.verify $ language i

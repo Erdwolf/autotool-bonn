@@ -17,6 +17,9 @@ import Data.Typeable
 
 data Euklid = Euklid deriving ( Show, Read, Typeable )
 
+instance OrderScore Euklid where
+    scoringOrder _ = Increasing
+
 instance Partial Euklid ( Integer, Integer ) ( Integer, Integer ) where
     describe Euklid (a, b) = vcat
         [ text "Gegeben ist das Zahlenpaar (a, b)" <+> equals <+> toDoc (a, b)

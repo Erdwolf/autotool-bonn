@@ -13,6 +13,9 @@ import Data.Typeable
 
 data Nonprefix = Nonprefix deriving ( Read, Show, Typeable )
 
+instance OrderScore Nonprefix where
+    scoringOrder _ = Increasing
+
 instance Partial Nonprefix () ( Set String ) where
     describe Nonprefix () = vcat
         [ text "Gesucht ist ein (kleiner) Code,"

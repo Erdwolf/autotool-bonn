@@ -18,6 +18,9 @@ import Data.List
 
 data Nocode = Nocode deriving ( Read, Show, Typeable )
 
+instance OrderScore Nocode where
+    scoringOrder _ = None -- ?
+
 instance 
     Partial Nocode [( Char, String)] ( String,String )  where
     describe Nocode f = vcat

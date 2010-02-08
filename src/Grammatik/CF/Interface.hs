@@ -33,6 +33,9 @@ import Data.Typeable
 
 data CFG = CFG deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore CFG where
+    scoringOrder _ = Increasing
+
 instance Partial CFG I.Config Grammatik where
 
     describe p i = vcat

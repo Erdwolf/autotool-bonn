@@ -50,6 +50,9 @@ import SAT.Beispiel
 
 ---------------------------------------------------------------------------
 
+instance OrderScore CNF_SAT where
+    scoringOrder _ = None -- ?
+
 instance Partial CNF_SAT Formel Belegung where
 
     describe p f = vcat

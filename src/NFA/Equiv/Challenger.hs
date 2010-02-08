@@ -26,6 +26,9 @@ import Inter.Quiz
 
 data Equiv = Equiv deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Equiv where
+    scoringOrder _ = None
+
 instance Size (Trenner c s) where size _ = 1
        
 instance C.Partial Equiv ( NFA Char Int ) [[ Trenner Char Int ]] where

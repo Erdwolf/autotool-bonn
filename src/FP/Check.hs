@@ -20,6 +20,9 @@ import qualified Challenger as C
 
 data FPTypeCheck = FPTypeCheck deriving  ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore FPTypeCheck where
+    scoringOrder _ = Increasing -- ?
+
 instance C.Partial FPTypeCheck TI ( Expression Identifier ) where
 
     describe p i = vcat

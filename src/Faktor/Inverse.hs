@@ -17,6 +17,9 @@ import Data.Typeable
 
 data Inverse = Inverse deriving ( Show, Read, Typeable )
 
+instance OrderScore Inverse where
+    scoringOrder _ = None
+
 instance Partial Inverse ( Integer, Integer ) ( Maybe Integer ) where
     describe Inverse (a, b) = vcat
         [ text "Berechnen Sie das multiplikative Inverse von"

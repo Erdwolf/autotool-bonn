@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, OverlappingInstances, IncoherentInstances #-}
+{-# LANGUAGE GADTs #-}
 
 module Inter.Types where
 
@@ -170,7 +170,3 @@ class OrderScore p where
 
 instance OrderScore Make where
     scoringOrder (Make p _ _ _ _) = scoringOrder p
-
--- default
-instance OrderScore a where
-    scoringOrder _ = None

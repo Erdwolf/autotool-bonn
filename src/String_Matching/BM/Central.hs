@@ -22,6 +22,9 @@ import Data.Typeable
 data String_Matching_BM = String_Matching_BM 
     deriving ( Read, Show, Typeable )
 
+instance OrderScore String_Matching_BM where
+    scoringOrder _ = None -- ?
+
 instance Measure String_Matching_BM ( Instance a ) [a] where
     measure p i b = fromIntegral $ length b
 

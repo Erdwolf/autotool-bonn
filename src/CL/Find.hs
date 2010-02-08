@@ -32,6 +32,9 @@ import qualified Data.Set as S
 data Combinatory_Logic_Find = Combinatory_Logic_Find 
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Combinatory_Logic_Find where
+    scoringOrder _ = Increasing
+
 data Instance = 
      Instance { base :: [ Combinator ]
               , start :: Term

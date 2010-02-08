@@ -28,6 +28,9 @@ import Data.Maybe ( maybeToList )
 data Greedy_Col = Greedy_Col 
      deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Greedy_Col where
+    scoringOrder _ = Increasing
+
 data GraphC a => Instance a = Instance
         { max_nodes :: Int
         , min_difference :: Int

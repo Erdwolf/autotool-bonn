@@ -21,6 +21,9 @@ import Data.Typeable
 data Reconstruct = Reconstruct
      deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Reconstruct where
+    scoringOrder _ = None
+
 type Traversals c = [ ( Order, [ c ]  ) ]
 
 

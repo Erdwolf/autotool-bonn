@@ -15,6 +15,9 @@ import Data.Typeable
 
 data Bi = Bi deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Bi where
+    scoringOrder _ = None
+
 instance ( GraphC a, Show a )
     => C.Partial Bi (Graph a) (Set a) where
 

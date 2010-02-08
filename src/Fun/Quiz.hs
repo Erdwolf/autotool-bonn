@@ -49,6 +49,8 @@ import Data.Array
 import Autolib.Reporter
 import Autolib.ToDoc
 
+instance OrderScore Fun_Quiz2 where
+    scoringOrder _ = Increasing
 
 instance Partial Fun_Quiz2 Tafel2 Fun where
     --  Anfangsbeispiel

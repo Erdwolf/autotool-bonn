@@ -14,11 +14,13 @@ import Autolib.Reporter
 import System.Random
 import Data.Typeable
 
+instance OrderScore N.Computer where
+    scoringOrder _ = Increasing
+
 testliste :: Int -> Int -> Integer -> IO [[Integer]]
 testliste len ari hei = sequence $ replicate len $ do
     xs <- sequence $ replicate ari $ randomRIO (0, hei)
     return xs
-
 
 make :: forall c m dat conf b
      . ( Show c, Con.Check c m , Con.ConfigC c m , Machine m dat conf 

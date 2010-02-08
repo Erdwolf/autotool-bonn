@@ -36,6 +36,9 @@ fm_fun fm = lookupWithDefaultFM fm (error "data incomplete!?")
 count :: (Objekt -> Integer) -> FiniteMap Objekt Rational -> Rational
 count f = foldFM ( \ x r v -> v + r * (f x % 1) ) 0
 
+instance OrderScore KnapsackFraction where
+    scoringOrder _ = None
+
 instance Size Pack where size = const 1
 
 instance Partial KnapsackFraction Inp Pack where

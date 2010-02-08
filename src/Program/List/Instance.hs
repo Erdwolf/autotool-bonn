@@ -29,6 +29,8 @@ import Data.Maybe ( isNothing, isJust )
 
 data Program_List = Program_List deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Program_List where
+    scoringOrder _ = None -- ?
 
 instance Class Program_List Statement V.Value where
     execute p = S.execute

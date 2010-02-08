@@ -20,6 +20,9 @@ import qualified Challenger as C
 
 data TypeCheck = TypeCheck deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore TypeCheck where
+    scoringOrder _ = Increasing
+
 instance C.Partial TypeCheck TI Exp where
 
     describe p i = vcat

@@ -1,6 +1,6 @@
 module Code.Hamming.Partial where
 
-import Inter.Types ()
+import Inter.Types ( ScoringOrder (..), OrderScore (..) )
 
 import Code.Hamming.Data
 import Code.Hamming.Check
@@ -56,3 +56,5 @@ instance Measure Hamming Config Code where
 		Size     -> s
 		Distance -> d
 
+instance OrderScore Hamming where
+    scoringOrder _ = None -- ? - should depend on config

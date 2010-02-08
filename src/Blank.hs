@@ -13,6 +13,9 @@ import Data.Typeable
 
 data Blank = Blank deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Blank where
+    scoringOrder _ = None
+
 instance C.Partial Blank () () where
     report Blank () = inform $ vcat
 	 [ text "Das ist eine schriftliche oder mündliche Aufgabe."

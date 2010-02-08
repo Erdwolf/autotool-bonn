@@ -23,6 +23,9 @@ import Data.Typeable
 
 data Graceful = Graceful deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Graceful where
+    scoringOrder _ = None
+
 instance ( GraphC a , Show a )
     => C.Partial Graceful ( Graph a ) ( FiniteMap a Int ) where
 

@@ -18,6 +18,9 @@ import Autolib.ToDoc
 import Autolib.Informed
 
 
+instance OrderScore PCProblem where
+    scoringOrder _ = Increasing
+
 instance Partial PCProblem PCP Folge where
 
     describe p i = 

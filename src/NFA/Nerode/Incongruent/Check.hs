@@ -34,6 +34,9 @@ import Prelude hiding ( words )
 data Nerode_Incongruent = Nerode_Incongruent
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Nerode_Incongruent where
+    scoringOrder _ = Decreasing
+
 instance C.Verify Nerode_Incongruent ( Instance Char ) where
     verify Nerode_Incongruent i = do
         assert ( wanted i > 1 )

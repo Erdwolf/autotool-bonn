@@ -25,6 +25,9 @@ import Inter.Types hiding ( Var )
 
 data Boolean2 = Boolean2 deriving ( Eq, Ord, Typeable )
 
+instance OrderScore Boolean2 where
+    scoringOrder _ = Increasing
+
 $(derives [makeReader, makeToDoc] [''Boolean2])
 
 data Constraint 

@@ -35,6 +35,9 @@ import Data.Typeable
 data PUMP = PUMP String
     deriving ( Eq, Ord, Typeable )
 
+instance OrderScore PUMP where
+    scoringOrder _ = None -- ?
+
 instance ToDoc PUMP where
     toDoc ( PUMP kind ) = text $ "PUMP-" ++ kind
 

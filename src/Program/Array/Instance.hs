@@ -31,6 +31,9 @@ import Data.Maybe ( isNothing, isJust )
 
 data Program_Array = Program_Array deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Program_Array where
+    scoringOrder _ = None -- ?
+
 instance Class Program_Array Statement Program.Array.Value.Value where
     execute p = Program.Array.Semantics.execute
     example p = ( Program [ Program.Array.Statement.s0 ]

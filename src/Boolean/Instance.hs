@@ -24,6 +24,9 @@ import Inter.Types
 
 data Boolean = Boolean deriving ( Eq, Ord, Typeable )
 
+instance OrderScore Boolean where
+    scoringOrder _ = Increasing
+
 $(derives [makeReader, makeToDoc] [''Boolean])
 
 data BI =

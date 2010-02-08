@@ -18,6 +18,9 @@ import Data.Typeable
 
 data Circle = Circle deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Circle where
+    scoringOrder _ = Decreasing
+
 instance ( GraphC a, Show a )
     => C.Partial Circle (Int,Graph a) (Set a) where
 

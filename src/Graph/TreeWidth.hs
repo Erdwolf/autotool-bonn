@@ -20,6 +20,9 @@ import Data.List ( inits, tails )
 
 data TreeWidth = TreeWidth deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore TreeWidth where
+    scoringOrder _ = Increasing
+
 instance C.Measure TreeWidth ( Graph Int, Int ) 
     ( FiniteMap Int (Set Int)    , Graph Int ) where
     measure p ( g, w ) ( fm, t ) = fromIntegral $

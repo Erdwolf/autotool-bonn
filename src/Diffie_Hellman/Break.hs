@@ -16,6 +16,9 @@ import Inter.Types
 
 data Diffie_Hellman_Code_Break = Diffie_Hellman_Code_Break deriving ( Read, Show, Typeable )
 
+instance OrderScore Diffie_Hellman_Code_Break where
+    scoringOrder _ = None -- ?
+
 instance Verify Diffie_Hellman_Code_Break Config where
     verify Diffie_Hellman_Code_Break conf =  do
         let peh = p $ public conf 

@@ -20,6 +20,9 @@ import Data.Maybe
 
 data Van_der_Waerden = Van_der_Waerden deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Van_der_Waerden where
+    scoringOrder _ = Decreasing
+
 instance C.Verify Van_der_Waerden (Int,Int) where
     verify p (r,k) = do
         when ( r <= 0 ) 

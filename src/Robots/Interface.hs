@@ -21,6 +21,9 @@ import Inter.Quiz
 import Data.Maybe ( isJust )
 import Data.List ( partition )
 
+instance OrderScore Robots where
+    scoringOrder _ = Increasing
+
 instance Partial Robots 
 		 Config
 		 [ Zug ]

@@ -22,6 +22,9 @@ import Data.Typeable
 data String_Matching_KMP = String_Matching_KMP 
     deriving ( Read, Show, Typeable )
 
+instance OrderScore String_Matching_KMP where
+    scoringOrder _ = None
+
 instance Measure String_Matching_KMP ( Instance a ) [a] where
     measure p i b = fromIntegral $ length b
 

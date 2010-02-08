@@ -37,6 +37,9 @@ instance ( ToDoc c, Reader c, ToDoc a, Reader a, Coder c a b, Read b
 instance BitSize b => Measure ( Encode c ) [ a ] b  where
     measure ( Encode c ) xs b = bitSize b
 
+instance OrderScore ( Encode c ) where
+    scoringOrder _ = None
+
 enc :: ( Reader c, Reader b, ToDoc c, Coder c Char b, Read b ) => c -> Make
 enc c = direct (Encode c) "abracadabra"
 
@@ -68,3 +71,5 @@ dec c b = direct (Decode c) b
 instance Measure ( Decode c ) b [ a ]  where
     measure ( Decode c ) b xs = fromIntegral $ length xs
 
+instance OrderScore ( Decode c ) where
+    scoringOrder _ = None

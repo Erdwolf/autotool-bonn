@@ -35,6 +35,9 @@ import Convert.Input
 data Convert_To_NFA = Convert_To_NFA 
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Convert_To_NFA where
+    scoringOrder _ = Increasing
+
 instance C.Verify Convert_To_NFA ( Convert , [ Property Char ] ) where
     verify p ( from, props ) = do
         inform $ text "verifiziere die Quelle der Konversion:"

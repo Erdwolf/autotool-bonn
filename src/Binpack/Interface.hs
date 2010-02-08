@@ -23,6 +23,9 @@ import Inter.Quiz
 import Data.List ( sort )
 import LCS.Code ( is_embedded_in )
 
+instance OrderScore Binpack where
+    scoringOrder _ = Increasing
+
 instance Partial Binpack Instance Assignment where
 
     describe _ i = toDoc i

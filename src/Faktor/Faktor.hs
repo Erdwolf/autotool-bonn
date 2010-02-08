@@ -25,6 +25,9 @@ import qualified Faktor.Param
 
 -------------------------------------------------------------------------------
 
+instance OrderScore Faktor where
+    scoringOrder _ = None
+
 instance Partial Faktor (Int,Integer) [Integer] where
 
     describe Faktor (n,x) = vcat

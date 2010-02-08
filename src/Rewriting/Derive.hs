@@ -29,6 +29,9 @@ import Data.Typeable
 data Derive tag = Derive tag 
     deriving ( Eq, Ord, Typeable )
 
+instance OrderScore ( Derive tag ) where
+    scoringOrder _ = Increasing
+
 instance ToDoc tag => ToDoc ( Derive tag ) where
     toDoc ( Derive t ) = text "Derive-" <> toDoc t
 

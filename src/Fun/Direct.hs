@@ -24,6 +24,9 @@ import Autolib.ToDoc
 
 import Condition
 
+instance OrderScore D.Primrec_2D where
+    scoringOrder _ = Increasing
+
 instance Partial D.Primrec_2D D.Config  Fun where
     --  Aufgabe beschreiben
     describe p i = 

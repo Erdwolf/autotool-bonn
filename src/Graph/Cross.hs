@@ -39,6 +39,9 @@ extension f =
 
 data Cross = Cross deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Cross where
+    scoringOrder _ = Increasing
+
 instance ( Show a, GraphC a, Typeable a )
        => C.Partial Cross ( Int, Graph a ) ( Karte a ) where
 

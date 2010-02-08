@@ -27,6 +27,9 @@ import Data.Typeable
 data Partition = Partition
     deriving ( Eq, Typeable, Show, Read )
 
+instance OrderScore Partition where
+    scoringOrder _ = None
+
 instance Partial Partition Conf ( Set Integer, Set Integer ) where
 
     describe Partition (Conf s) = vcat

@@ -16,6 +16,9 @@ import Data.Typeable
 
 data Hilbert = Hilbert deriving ( Show, Read, Typeable )
 
+instance OrderScore Hilbert where
+    scoringOrder _ = Increasing
+
 instance Partial Hilbert Param Derivation where
 
     describe _ param = vcat

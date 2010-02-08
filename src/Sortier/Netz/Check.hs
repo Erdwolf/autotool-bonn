@@ -67,6 +67,9 @@ instance C.Verify Sortier Int where
 	assert ( i > 0)
 	       $ text "die Breite soll eine positive Zahl sein"
 
+instance OrderScore Sortier where
+    scoringOrder _ = Increasing
+
 instance C.Partial Sortier Int Netz where
 
     describe p i = vcat 

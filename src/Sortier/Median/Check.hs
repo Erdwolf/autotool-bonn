@@ -28,6 +28,9 @@ import Control.Monad ( guard )
 
 data Median_Netz = Median_Netz deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Median_Netz where
+    scoringOrder _ = Increasing
+
 instance C.Verify Median_Netz Param where
     verify p i = do
         assert ( breite i > 0)

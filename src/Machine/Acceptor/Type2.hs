@@ -13,11 +13,15 @@ import qualified Autolib.Reporter.Checker as C
 import Autolib.Reporter hiding ( output )
 
 import Machine.Class
+import Inter.Types ( ScoringOrder (..) , OrderScore (..) )
 
 import Data.Typeable
 
 data Acceptor = Acceptor String -- include machine type ??
     deriving Typeable
+
+instance OrderScore Acceptor where
+    scoringOrder _ = Increasing
 
 instance ToDoc Acceptor where
     toDoc ( Acceptor kind ) = text $ "Acceptor-" ++ kind

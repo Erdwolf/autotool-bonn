@@ -23,6 +23,9 @@ import Data.Maybe
 
 data PartialKTree = PartialKTree deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore PartialKTree where
+    scoringOrder _ = Increasing
+
 instance CC a
     => C.Measure PartialKTree ( Graph a, Int ) [ a ] where
     measure p ( g, k ) xs = fromIntegral 

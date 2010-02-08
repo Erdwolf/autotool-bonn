@@ -25,6 +25,8 @@ import Data.Typeable
 
 data Find_Model = Find_Model deriving ( Show, Read, Typeable )
 
+instance OrderScore Find_Model where
+    scoringOrder _ = Increasing
 
 instance Partial Find_Model Param ( Interpretation Int ) where
 

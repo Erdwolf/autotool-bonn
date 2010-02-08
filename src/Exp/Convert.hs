@@ -33,6 +33,9 @@ import Autolib.Informed
 data Convert_To_Exp = Convert_To_Exp 
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Convert_To_Exp where
+    scoringOrder _ = Increasing
+
 instance C.Verify Convert_To_Exp ( Convert , [ Property Char ] ) where
     verify p ( from, props ) = do
         inform $ text "verifiziere die Quelle der Konversion:"

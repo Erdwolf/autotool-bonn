@@ -20,6 +20,9 @@ import Data.Maybe
 
 data Ramsey = Ramsey deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Ramsey where
+    scoringOrder _ = Decreasing
+
 instance C.Verify Ramsey [Int] where
     verify p i = do
         when (  null i ) 

@@ -37,6 +37,9 @@ check breit p = do
 data Sortier_Programm = Sortier_Programm 
      deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Sortier_Programm where
+    scoringOrder _ = Increasing
+
 instance C.Verify Sortier_Programm Config where
 
     verify p i = do

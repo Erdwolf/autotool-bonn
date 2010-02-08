@@ -16,6 +16,9 @@ import Inter.Types
 
 data RSA_Code_Break = RSA_Code_Break deriving ( Read, Show, Typeable )
 
+instance OrderScore RSA_Code_Break where
+    scoringOrder _ = None
+
 instance Partial RSA_Code_Break Config Integer where
 
     describe RSA_Code_Break conf = vcat

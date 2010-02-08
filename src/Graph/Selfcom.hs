@@ -18,6 +18,9 @@ import Data.Typeable
 
 data Selfcom = Selfcom deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Selfcom where
+    scoringOrder _ = Increasing
+
 instance C.Partial Selfcom Int ( Graph Int, FiniteMap Int Int ) where
 
     describe p i = vcat

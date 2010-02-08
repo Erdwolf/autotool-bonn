@@ -23,6 +23,9 @@ import Data.Typeable
 data Hamilton = Hamilton 
    deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Hamilton where
+    scoringOrder _ = None -- ?
+
 instance ( GraphC a, Show a )
     => C.Partial Hamilton (Graph a) [a] where
 

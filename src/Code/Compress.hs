@@ -32,8 +32,8 @@ instance ( ToDoc c, Reader c, Reader a, ToDoc a, Coder c a b, BitSize b
         , let me  = bitSize ( encode c i ) :: Integer
               bound = ( fromIntegral me :: Double ) * 1.1 -- FIXME: arbitrary
           in nest 4 $ vcat
-                    [ text "Es gibt eine Lösung der Bit-GröÂße" <+> toDoc me
-                    , text "Ihre Nachricht darf höchstens Bit-GröÂße"
+                    [ text "Es gibt eine Lösung der Bit-Größe" <+> toDoc me
+                    , text "Ihre Nachricht darf höchstens Bit-Größe"
                                <+> toDoc bound <+> text "haben."
                     ]
 	]
@@ -48,11 +48,14 @@ instance ( ToDoc c, Reader c, Reader a, ToDoc a, Coder c a b, BitSize b
         let me  = bitSize $ encode c i 
             bound = fromIntegral me * 1.1 -- FIXME: arbitrary
             you = bitSize b
-        inform $ text "Ihre Nachricht hat die GröÂße" <+> toDoc you
+        inform $ text "Ihre Nachricht hat die Größe" <+> toDoc you
         when ( fromIntegral you > bound ) $ reject $ text "Das ist zuviel."
 
 instance BitSize b => Measure ( Compress c ) [ a ] b  where
     measure ( Compress c ) xs b = bitSize b
+
+instance OrderScore ( Compress c ) where
+    scoringOrder _ = Increasing
 
 make_fixed :: ( ToDoc c,  Reader c, Reader b, Coder c Char b ) => c -> Make
 make_fixed c = direct ( Compress c ) "01001010010010100101001001010010"

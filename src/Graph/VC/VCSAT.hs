@@ -20,7 +20,7 @@ import Graph.Util
 import Autolib.Graph.Ops ( normalize )
 
 import Inter.Quiz ( Generator , generator , Project , project , quiz )
-import Inter.Types ( Make , direct )
+import Inter.Types ( Make , direct , ScoringOrder (..) , OrderScore (..) )
 import Data.Typeable ( Typeable )
 
 import qualified Challenger as C
@@ -28,6 +28,9 @@ import qualified Challenger as C
 -------------------------------------------------------------------------------
 
 data VCSAT = VCSAT deriving ( Eq , Ord , Show , Read , Typeable )
+
+instance OrderScore VCSAT where
+    scoringOrder _ = Increasing -- ?
 
 get :: I.Input -> (Graph Int, Int)
 get i = let (g,c) = vc (fromIntegral $ I.anzeige_groesse i) (I.formel i) 

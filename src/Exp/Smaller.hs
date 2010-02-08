@@ -32,6 +32,9 @@ import Autolib.Informed
 data Exp_Smaller = Exp_Smaller
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Exp_Smaller where
+    scoringOrder _ = Increasing
+
 instance C.Partial Exp_Smaller 
                    ( RX Char , [ Property Char ] ) 
 		   ( RX Char ) 

@@ -17,6 +17,9 @@ import Data.Typeable
 data Lambda_Backward_Join = Lambda_Backward_Join 
     deriving ( Read, Show, Typeable )
 
+instance OrderScore Lambda_Backward_Join where
+    scoringOrder _ = Increasing
+
 instance Measure Lambda_Backward_Join  I.Type S.Type where
     measure p inst sol = fromIntegral $ size $ S.start sol
 

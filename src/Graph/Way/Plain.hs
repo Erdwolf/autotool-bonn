@@ -11,7 +11,7 @@ import Graph.Way.Input ( Input , matrix , solvability , ex
 import Autolib.Dot ( peng, Layout_Program (..) )
 import Autolib.Graph.Adj ( schoen , warshall )
 
-import Inter.Types ( Make , direct )
+import Inter.Types ( Make , direct , ScoringOrder (..) , OrderScore (..) )
 import Data.Typeable ( Typeable )
 import Data.Array ( listArray , elems )
 import qualified Challenger as C
@@ -19,6 +19,9 @@ import qualified Challenger as C
 -------------------------------------------------------------------------------
 
 data Way = Way deriving ( Eq, Ord, Show, Read, Typeable )
+
+instance OrderScore Way where
+    scoringOrder _ = Increasing
 
 instance C.Partial Way Input (Maybe (Graph Int))  where
 

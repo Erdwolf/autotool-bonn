@@ -28,6 +28,9 @@ import Data.Typeable
 data Unify = Unify deriving ( Eq, Ord, Show, Read, Typeable )
 
 
+instance OrderScore Unify where
+    scoringOrder _ = Increasing
+
 instance Measure Unify ( Instance ) ( Term , Term  ) where
     measure p i ( t1, t2 ) = fromIntegral $ size t1 + size t2
 

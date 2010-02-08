@@ -20,6 +20,9 @@ import Data.Typeable
 data Col_Gadget = Col_Gadget 
      deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Col_Gadget where
+    scoringOrder _ = Increasing
+
 instance ( GraphC a, Show a ) => 
     C.Partial Col_Gadget ( Config a ) ( Graph a ) where
 

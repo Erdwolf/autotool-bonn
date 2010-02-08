@@ -24,6 +24,9 @@ import Data.Typeable
 
 data Col = Col deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Col where
+    scoringOrder _ = Increasing
+
 instance ( GraphC a, Show a )
     => C.Partial Col ( Integer, Graph a ) ( FiniteMap a Color ) where
 

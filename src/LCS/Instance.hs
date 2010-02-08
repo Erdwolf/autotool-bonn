@@ -25,6 +25,9 @@ import Autolib.Reporter
 
 data LCS = LCS deriving ( Show, Read, Typeable )
 
+instance OrderScore LCS where
+    scoringOrder _ = Decreasing
+
 instance 
      ( InstanceC a ) => Partial LCS ( Instance a ) [ a ] 
     --    Partial LCS ( Instance Char ) String

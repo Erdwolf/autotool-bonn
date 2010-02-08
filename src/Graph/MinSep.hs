@@ -22,6 +22,9 @@ import Data.List ( partition )
 
 data MinSep = MinSep deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore MinSep where
+    scoringOrder _ = Increasing
+
 instance C.Measure MinSep ( Graph Int ) ( (Int, Int), Set Int ) where
     measure MinSep g ( (a, b), s ) = fromIntegral $ cardinality s
 

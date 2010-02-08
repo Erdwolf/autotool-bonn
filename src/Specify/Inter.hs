@@ -15,6 +15,9 @@ import Data.Maybe ( isJust )
 
 data Specify = Specify deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Specify where
+    scoringOrder _ = Increasing
+
 instance C.Partial Specify Config Program where
     describe s c = vcat
         [ text "Deklarieren Sie Funktionen mit den folgenden Eigenschaften."

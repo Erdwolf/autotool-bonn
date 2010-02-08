@@ -29,6 +29,9 @@ import Data.Typeable
 
 data Times = Times deriving ( Eq, Show, Read, Typeable )
 
+instance OrderScore Times where
+    scoringOrder _ = None
+
 instance Size Integer where size _ = 1
 
 instance Partial Times [ Integer ] Integer where

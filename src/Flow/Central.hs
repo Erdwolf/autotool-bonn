@@ -25,6 +25,9 @@ import qualified Data.Set
 data Struct_To_Goto = Struct_To_Goto 
     deriving ( Read, Show, Typeable )
 
+instance OrderScore Struct_To_Goto where
+    scoringOrder _ = Increasing
+
 instance Partial 
         Struct_To_Goto ( Program S.Statement) 
                        ( Program G.Statement) where
@@ -75,6 +78,9 @@ totalizer orig0 this0 = do
 -------------------------------------------------------
 
 data Goto_To_Struct = Goto_To_Struct deriving ( Read, Show, Typeable )
+
+instance OrderScore Goto_To_Struct where
+    scoringOrder _ = Increasing
 
 instance Partial 
         Goto_To_Struct ( Program G.Statement) ( Program S.Statement) where

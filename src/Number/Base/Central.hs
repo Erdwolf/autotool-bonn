@@ -24,6 +24,9 @@ import Number.Base.Param
 
 data Convert = Convert deriving ( Show, Read, Typeable )
 
+instance OrderScore Convert where
+    scoringOrder _ = None
+
 instance Partial Convert (Zahl, Int) Zahl where
 
     describe Convert (z, b) = vcat
@@ -42,7 +45,7 @@ instance Partial Convert (Zahl, Int) Zahl where
          silent $ sequence_ $ do
              Ziffer i <- ziffern x
              return $ assert ( 0 <= i && i < b )
-                    $ text "richtig fÃ¼r:" <+> toDoc (Ziffer i)
+                    $ text "richtig für:" <+> toDoc (Ziffer i)
 
     total Convert (z, b) x = do
          assert ( (wert z :: Integer) == (wert x :: Integer) )
@@ -62,7 +65,7 @@ express b z =
 
 
 -- das ist nicht sehr sinnvoll,
--- mir fÃ¤llt keine aufgabe ein, bei der man das braucht
+-- mir fällt keine aufgabe ein, bei der man das braucht
 instance Size Zahl where
     size z = fromIntegral $ basis z *  (length ( ziffern z ))
 

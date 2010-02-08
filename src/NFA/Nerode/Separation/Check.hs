@@ -39,6 +39,9 @@ import Prelude hiding ( words )
 data Nerode_Separation = Nerode_Separation
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Nerode_Separation where
+    scoringOrder _ = Increasing
+
 instance C.Partial Nerode_Separation
                    [ String ]
 		   ( Solution Char )

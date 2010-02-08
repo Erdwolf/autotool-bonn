@@ -16,6 +16,9 @@ import Data.Typeable
 
 data Cexp = Cexp deriving Typeable
 
+instance OrderScore Cexp where
+    scoringOrder _ = None -- ?
+
 $(derives [makeToDoc,makeReader] [''Cexp])
 
 -- Note: Order of components (first Integer, then T.Exp)

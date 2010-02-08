@@ -20,6 +20,9 @@ data Lambda_Derive = Lambda_Derive
 instance Measure Lambda_Derive I.Type [ Int ] where
     measure p inst xs = fromIntegral $ length xs
 
+instance OrderScore Lambda_Derive where
+    scoringOrder _ = Increasing
+
 instance Partial Lambda_Derive I.Type [ Int ] where
     report p inst = do
         let step_info = case steps inst of

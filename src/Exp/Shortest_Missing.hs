@@ -30,6 +30,9 @@ import Autolib.Informed
 data Exp_Shortest_Missing = Exp_Shortest_Missing
     deriving ( Eq, Ord, Show, Read, Typeable )
 
+instance OrderScore Exp_Shortest_Missing where
+    scoringOrder _ = Decreasing
+
 data Config =
      Config { properties :: [ Property Char ]
             , minimal_length_of_missing_word :: Int

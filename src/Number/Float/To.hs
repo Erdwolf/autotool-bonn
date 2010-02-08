@@ -29,6 +29,9 @@ import qualified Number.Float.From () -- only Rational Container
 
 data To_Float = To_Float deriving ( Show, Read, Typeable )
 
+instance OrderScore To_Float where
+    scoringOrder _ = None
+
 instance Partial To_Float (Config, Rational) Zahl where
 
     describe To_Float (c, x) = vcat

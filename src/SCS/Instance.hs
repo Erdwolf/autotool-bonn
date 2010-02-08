@@ -25,6 +25,9 @@ import Autolib.Reporter
 
 data SCS = SCS deriving ( Show, Read, Typeable )
 
+instance OrderScore SCS where
+    scoringOrder _ = Increasing
+
 instance 
      ( InstanceC a ) => Partial SCS ( Instance a ) [ a ] 
     where
