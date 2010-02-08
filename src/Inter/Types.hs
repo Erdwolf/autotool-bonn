@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE GADTs, OverlappingInstances, IncoherentInstances #-}
 
 module Inter.Types where
 
@@ -139,6 +139,7 @@ class ( Show p, Typeable p , Read p
       , Typeable b
       , ToDoc b, Reader b 
       , Partial p i b
+      , OrderScore p
       ) => V p i b -- ohne methoden
 instance ( Show p, Typeable p, Read p
       -- , Roller i i
@@ -147,6 +148,7 @@ instance ( Show p, Typeable p, Read p
       , Typeable b
       , ToDoc b, Reader b 
       , Partial p i b
+      , OrderScore p
       ) => V p i b -- ohne methoden
 
 
@@ -158,7 +160,17 @@ instance ToDoc Variant where
     toDoc ( Variant v ) = -- text "Variant" -- <+> parens ( toDoc v )
         text $ tag v
 
+------------------------------------------------------------------------------
+-- sorting order for toplists
 
+data ScoringOrder = None | Increasing | Decreasing
 
+class OrderScore p where
+    scoringOrder :: p -> ScoringOrder
 
+instance OrderScore Make where
+    scoringOrder (Make p _ _ _ _) = scoringOrder p
 
+-- default
+instance OrderScore a where
+    scoringOrder _ = None

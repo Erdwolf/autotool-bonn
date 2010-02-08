@@ -29,4 +29,4 @@ lookupTaskM :: Monad m => String -> m Make
 lookupTaskM = maybe (fail "invalid task type") return . lookupTask
 
 taskScoringOrder :: Make -> ScoringOrder
-taskScoringOrder _ = None
+taskScoringOrder = scoringOrder

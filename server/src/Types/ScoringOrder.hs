@@ -5,7 +5,6 @@ module Types.ScoringOrder (
 ) where
 
 import Data.Autolib.Transport
-
-data ScoringOrder = Increasing | None | Decreasing
+import Inter.Types
 
 $(derives [makeToTransport] [''ScoringOrder])
