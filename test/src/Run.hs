@@ -98,7 +98,7 @@ forTest _prefix mk@(Make _ _ fun _ conf') auf stud = do
     let var = fun conf'
         un :: IO (R.Reporter i) -> i
         un = undefined
-        i' = readM instant `asTypeOf` Right (un (generate var 42))
+        i' = readM instant `asTypeOf` Right (un (generate var 42 undefined))
         b' = readM input
         w' = readM result
     case (i', b', w') of
