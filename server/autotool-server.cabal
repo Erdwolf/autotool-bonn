@@ -21,7 +21,6 @@ Executable autotool.cgi
         autolib-output,
         autolib-reader,
         autolib-reporter,
-        autolib-util,
         SHA >= 1.4 && < 1.5,
         base >= 4 && < 4.3,
         bytestring >= 0.9 && < 0.10,
