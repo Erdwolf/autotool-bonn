@@ -11,6 +11,7 @@ import qualified Control.Student as S
 import qualified Autolib.Output as O
 import Control.Types (toString)
 import Challenger.Partial
+import Util.Cache (cache)
 import Autolib.Reporter
 import Autolib.ToDoc ( text )
 
@@ -37,7 +38,7 @@ make_instant_common_with vnr manr stud var seed = do
     let p = problem var
     let mat = S.mnr stud
     k <- key var seed
-    g <- gen var vnr manr k 
+    g <- gen var vnr manr k cache
     let ( Just i  , _ :: Html.Html ) = export g
     ( _, icom :: Html.Html) <- run $ report p i
     return ( p, i, icom )
