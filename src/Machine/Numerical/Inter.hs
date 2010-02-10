@@ -29,7 +29,7 @@ computer_mat auf ver fnum =
 	, tag = auf ++ "-" ++ ver
 	, key = \ matrikel -> do
 	      return matrikel
-	, gen = \ _vnr _manr key -> return $ do
+	, gen = \ _vnr _manr key _cache -> return $ do
 	      return $ fnum key
 	}
 

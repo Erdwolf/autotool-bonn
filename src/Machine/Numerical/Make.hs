@@ -35,7 +35,7 @@ make ( defcon :: Con.Config c m ) =
 	          { problem = N.Computer
 		  , tag = t
 		  , key = \ matrikel -> return matrikel
-		  , gen = \ _vnr _manr key -> fnum conf key 
+		  , gen = \ _vnr _manr key _cache -> fnum conf key 
 		  }
 	    )
 	    ( \ _con -> return () ) -- verify

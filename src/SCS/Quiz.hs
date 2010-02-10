@@ -13,7 +13,6 @@ import Autolib.Reader
 import Autolib.ToDoc
 
 import Util.Datei
-import Util.Cache
 import Autolib.Util.Seed
 import Autolib.Util.Zufall
 

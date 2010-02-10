@@ -20,7 +20,6 @@ import Autolib.Util.Zufall
 import Autolib.Util.Seed
 
 import Util.Datei
-import Util.Cache
 
 import Inter.Types
 import Inter.Quiz hiding ( make )

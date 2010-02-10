@@ -1,3 +1,5 @@
+{-# LANGUAGE OverlappingInstances #-}
+
 module Tree.Class where
 
 import Tree.Dot

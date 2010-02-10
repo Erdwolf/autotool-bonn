@@ -6,7 +6,6 @@ import Inter.Types
 import Control.Types
 
 import Util.Datei
-import Util.Cache
 import Autolib.Util.Seed
 import Autolib.ToDoc
 import Autolib.Reader
@@ -42,7 +41,7 @@ make ( p :: p ) ( conf :: conf ) = this
 	     , key = \ mat -> return $ mat
 	     -- holt tatsächliche instanz
 	     -- gen :: Key -> IO ( Reporter i )
-	     , gen = \ vnr manr key -> do
+	     , gen = \ vnr manr key cache -> do
 
              --  generate this $ fromIntegral $ hash ( vnr, manr, key )
 
@@ -58,7 +57,7 @@ make ( p :: p ) ( conf :: conf ) = this
        	                ) ( generator p conf key )
 	           return $ return $ project p k
 
-             , generate = \ salt -> do
+             , generate = \ salt cache -> do
                    seed $ salt 
                    k <- cache 
 	               (  Datei { pfad = [ "autotool", "new-cache" ]

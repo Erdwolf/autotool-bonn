@@ -21,7 +21,6 @@ import Autolib.ToDoc
 import Autolib.Reader
 
 import Util.Datei
-import Util.Cache
 
 import Inter.Types
 import Inter.Quiz

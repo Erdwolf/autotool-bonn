@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE GADTs, RankNTypes #-}
 
 module Inter.Types where
 
@@ -9,8 +9,9 @@ import Gateway.Help
 -- import Challenger.Problem
 import Challenger.Partial
 
--- sollte man nicht importieren, enthält aber VNr und MNr
+-- sollte man nicht importieren, enthÃ¤lt aber VNr und MNr
 import Control.Types 
+import Util.Datei
 
 import  Autolib.ToDoc
 import  Autolib.Reader
@@ -91,12 +92,14 @@ direct p i = Make p
 	     ( \ i -> Var { problem = p
 		   , tag = dashed p ++ "-Direct"
 		   , key = \ mat -> return mat
-		   , gen = \ vnr manr key -> return $ return i
-                   , generate = \ salt -> return $ return i
+		   , gen = \ _vnr _manr _key _cache -> return $ return i
+                   , generate = \ _salt _cache -> return $ return i
 		   }
 	     )
 	     ( verify p )
              i
+
+type CacheFun = forall a . ( ToDoc a, Reader a ) => Datei -> IO a -> IO a
 
 data Var p i b = 
          Var { problem :: p 
@@ -115,13 +118,13 @@ data Var p i b =
 
 	     -- FIXME: hier werden VNr und ANr benutzt,
 	     -- das darf aber nicht sein (man soll hier gar nicht wissen,
-	     -- daß es so etwas gibt)
+	     -- dass es so etwas gibt)
 	     , gen :: VNr -> Maybe ANr -> Key 
-                   -> IO ( Reporter i )
+                   -> CacheFun -> IO ( Reporter i )
 
-             -- so soll es sein: eingabe ist seed für Zufall
+             -- so soll es sein: Eingabe ist seed fÃ¼r Zufall
              , generate :: Int
-                        -> IO ( Reporter i )
+                        -> CacheFun -> IO ( Reporter i )
 
 	     }
       deriving Typeable
