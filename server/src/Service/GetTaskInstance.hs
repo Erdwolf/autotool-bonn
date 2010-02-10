@@ -24,6 +24,9 @@ import Autolib.Hash
 
 import Text.ParserCombinators.Parsec
 
+nocache :: CacheFun
+nocache _ = id
+
 get_task_instance
     :: TT (Signed (Task, Config)) -> TT Seed
     -> IO (TT (Signed (Task, Instance), Description, Documented Solution))
@@ -33,7 +36,7 @@ get_task_instance  (TT sconf) (TT seed) = fmap TT $ do
     let Right config' = parse (parse_complete reader) "<config>" config
         maker = maker0 config'
     let vnr = fromIntegral (hash config) -- FIXME: Get rid of the cache instead
-    ri <- gen maker (VNr vnr) Nothing seed
+    ri <- gen maker (VNr vnr) Nothing seed nocache
     i <- maybe (fail "internal error generating instance") return (result ri)
     let b = CP.initial (problem maker) i
     doc <- help b
