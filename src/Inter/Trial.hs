@@ -175,7 +175,10 @@ aufgaben tmk pack = do
 common_aufgaben tmk svt @ ( stud, vnr, tutor ) mauf conf = do
     let mks = do Right mk <- flatten tmk ; return mk
     ( mk, type_click ) <- find_mk tmk True mauf
-    common_aufgaben_trailer svt mauf conf mks mk type_click
+    -- if the user chose a new type, ignore any predetermined configuration
+    let conf' = conf || type_click
+        mauf' = if type_click then Nothing else mauf
+    common_aufgaben_trailer svt mauf' conf' mks mk type_click
 
 common_aufgaben_trailer ( stud, vnr, tutor ) mauf conf mks mk type_click = do
     auf' <- case ( mauf, conf ) of
