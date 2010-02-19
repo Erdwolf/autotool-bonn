@@ -115,6 +115,10 @@ Library
         Baum.Order
         Baum.Reconstruct
         Baum.Roll
+        Baum.RedBlack
+        Baum.RedBlack.Ops
+        Baum.RedBlack.Show
+        Baum.RedBlack.Type
         Baum.Such.Central
         Baum.Such.Class
         Baum.Such.Config
