@@ -46,15 +46,17 @@ subtrees t @ ( Node f args ) = t : concat ( map subtrees args )
 
 -------------------------------------------------------------------------
 
-nodes :: Tree ( Int, String ) 
+nodes :: Tree ( Int,  Autolib.Dot.Node.Type ) 
       -> [ Autolib.Dot.Node.Type ]
 nodes t = do
-    ( i, cs ) <- flatten t
-    return $ Autolib.Dot.Node.blank
-           { Autolib.Dot.Node.ident = show i
-           , Autolib.Dot.Node.label = return cs
+    ( i, n ) <- flatten t
+    return $ n { Autolib.Dot.Node.ident = show i }
+
+default_node :: String -> Autolib.Dot.Node.Type
+default_node cs = Autolib.Dot.Node.blank
+           { Autolib.Dot.Node.label = return cs
            , Autolib.Dot.Node.shape = return "plaintext"
-           }  
+           } 
 
 edges :: Tree ( Int, a ) 
       -> [ Autolib.Dot.Edge.Type ]
