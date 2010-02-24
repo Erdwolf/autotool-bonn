@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage{german}
+\usepackage{array}
+\usepackage{alltt}
+\usepackage[latin1]{inputenc}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\titlepage
+\title{Das \emph{autOlat}-Protokoll\\
+  Version 0.1.0}
+\author{Bertram Felgenhauer}
+\date{\today}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Begriffe}
+Server, Client, Aufgabentyp, Aufgabenkonfiguration, Aufgabeninstanz, Aufgabenlösung, Größe
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Datentypen}
+\input{typen.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Protokoll}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{RPC-Aufrufe}
+\input{rpc.tex}
+
+\end{document}

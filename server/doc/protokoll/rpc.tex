@@ -1,0 +1,66 @@
+Die Aufrufe sind an Haskell angelehnt in der Form
+\begin{alltt}
+function_name :: ParameterTyp1 -> ParameterTyp2 -> ResultatTyp
+\end{alltt}
+dargestellt.
+
+\subsection{\texttt{get\_server\_info}}
+\begin{alltt}
+get_server_info :: ServerInfo
+\end{alltt}
+
+\subsubsection*{Zweck}
+Abfrage von grundlegenden Serverinformationen. Dazu gehört insbesondere auch die unterstützte Protokollversion, so dass Inkompatibilitäten erkannt werden können.
+
+\subsubsection*{Parameter}
+keine
+\subsubsection*{Rückgabewert}
+Der Aufruf liefert Name und Version des Servers sowie die implementierte Version des Protokolls zurück. Siehe \texttt{ServerInfo} (\ref{ServerInfo}).
+
+\subsection{\texttt{get\_task\_types}}
+\begin{alltt}
+get_task_types :: [TaskTree]
+\end{alltt}
+\subsubsection*{Zweck}
+\subsubsection*{Parameter}
+keine
+\subsubsection*{Rückgabewert}
+Eine Liste von kategorisierten Aufgabentypen. Siehe \texttt{TaskTree} (\ref{TaskTree})
+
+\subsection{\texttt{get\_task\_description}}
+\begin{alltt}
+get_task_description :: Task -> TaskDescription
+\end{alltt}
+\subsubsection*{Zweck}
+Mit diesem Aufruf wird nach Auswahl des Ausgabentyps nähere Information zu diesem abgefragt.
+\subsubsection*{Parameter}
+\subsubsection*{Rückgabewert}
+
+\subsection{\texttt{verify\_task\_config}}
+\begin{alltt}
+verify_task_config :: Task -> Config
+    -> Either Description (Signed (Task, Config))
+\end{alltt}
+\subsubsection*{Zweck}
+\subsubsection*{Parameter}
+\subsubsection*{Rückgabewert}
+
+\subsection{\texttt{get\_task\_instance}}
+\begin{alltt}
+get_task_instance :: Signed (Task, Config) -> Seed
+    -> ((Signed (Task, Instance), Description, Documented Solution)
+\end{alltt}
+\subsubsection*{Zweck}
+\subsubsection*{Parameter}
+\subsubsection*{Rückgabewert}
+
+\subsection{\texttt{grade\_task\_solution}}
+\begin{alltt}
+grade_task_solution :: Signed (Task, Instance) -> Solution
+    -> Either Description (Documented Double)
+\end{alltt}
+\subsubsection*{Zweck}
+\subsubsection*{Parameter}
+\subsubsection*{Rückgabewert}
+
+\endinput

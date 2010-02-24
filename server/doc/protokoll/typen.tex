@@ -1,0 +1,141 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Basistypen}
+\begin{tabular}{>{\tt}l|l}
+String     & UTF-8-kodierte Zeichenkette\\
+Int        & vorzeichenbehafteter 32-bit Ganzzahlwert\\
+Double     & 64-bit Gleitkommazahl\\
+\relax[$\alpha$] & Liste von Elementen vom Typ $\alpha$\\
+($\alpha$, $\beta$) & Paar von Typ $\alpha$ und $\beta$\\
+($\alpha$, $\beta$, $\gamma$) & Tripel\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Aliase}
+\begin{tabular}{>{\tt}l@{ = }>{\tt}l|l}
+Name        & String & uninterpretierter Name\\
+Task        & String & Name eines Aufgabentyps\\
+Seed        & String & vom Nutzer abhängiger String zur Generierung von Aufgaben\\
+Signature   & String & vom Server erzeugte Signatur\\
+Config      & String & Aufgabenkonfiguration\\
+Description & String & XML-Dokument mit textueller Beschreibung\\
+Solution    & String & Aufgabenlösung\\
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{Documented $\alpha$}}\label{Documented}
+\begin{alltt}
+data Documented \(\alpha\) = Documented \{
+    contents :: \(\alpha\),
+    documentation :: Description
+\}
+\end{alltt}
+
+\subsubsection*{Beschreibung}
+Dieser Typ dient der Annotation eines Wertes mit einer textuellen Beschreibung für den Nutzer.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{Signed $\alpha$}}\label{Signed}
+\begin{alltt}
+data Signed \(\alpha\) = Signed \{
+    contents :: \(\alpha\),
+    signature :: Signature
+\}
+\end{alltt}
+
+\subsubsection*{Beschreibung}
+Dieser Typ dient der Annotation eines Wertes mit einer Signatur. Die Signatur wird vom Server geprüft, wenn ein vom Server gelieferter Wert vom Client an den Server zurückgegeben wird. Für den Client ist die Signatur ohne Bedeutung; er muss sie allerdings aufbewahren.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{Instance}}\label{Instance}
+\begin{alltt}
+data Instance = Instance \{
+    tag :: String,
+    contents :: String
+\}
+\end{alltt}
+
+\subsubsection*{Beschreibung}
+Dieser Typ beschreibt zusammen mit einem Aufgabentyp eine Aufgabeninstanz. Wie die Datenfelder genau verwendet werden, obliegt dem Server.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{ServerInfo}}\label{ServerInfo}
+\begin{alltt}
+data ServerInfo = ServerInfo \{
+    protocol_version :: Version,
+    server_name :: Name,
+    server_version :: Version
+\}
+\end{alltt}
+\subsubsection*{Beschreibung}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{TaskTree}}\label{TaskTree}
+\begin{alltt}
+data TaskTree = Task \{
+    task_name :: Task
+\}
+| Category \{
+    category_name :: Name,
+    sub_trees :: [TaskTree]
+\}
+\end{alltt}
+
+\subsubsection*{Beschreibung}
+Ein Wert dieses Typs enthält entweder den Namen eines Aufgabentyps, oder beschreibt eine ganze Unterkategorie von Aufgaben. In diesem Fall enthält er den Namen der Kategorie sowie eine Liste von Teilaufgaben und weiteren Unterkategorien.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{Version}}\label{Version}
+\begin{alltt}
+data Version = Version \{
+    major :: Int,
+    minor :: Int,
+    micro :: Int
+\}
+\end{alltt}
+\subsubsection*{Beschreibung}
+Dieser Typ beschreibt eine Versionsnummer. Versionsnummern bestehen aus drei Komponenten. Dabei gilt folgende Konvention:
+
+\begin{itemize}
+\item Bei inkompatiblen Änderungen soll die major-Version erhöht werden.
+\item Bei abwärtskompatiblen Änderungen soll die minor-Version erhöht werden.
+\item Bei kompatiblen Änderungen soll die micro-Version erhöht werden.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{TaskDescription}}\label{TaskDescription}
+\begin{alltt}
+data TaskDescription = TaskDescription {
+    task_sample_config :: Documented Config,
+    task_scoring_order :: ScoringOrder
+}
+\end{alltt}
+\subsubsection*{Beschreibung}
+Werte dieses Typs beschreiben einen Aufgabentyp näher. Dabei wird eine Beispielkonfiguration zurückgeliefert, die mindestens syntaktisch korrekt sein soll, dabei nach Möglichkeit auch eine sinnvolle Aufgabenstellung ergibt.
+
+Daneben wird angegeben, in welcher Reihenfolge Punkte für Toplisten ausgewertet werden sollen. Siehe \texttt{ScoringOrder} (\ref{ScoringOrder}).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{ScoringOrder}}\label{ScoringOrder}
+\begin{alltt}
+data ScoringOrder = Increasing
+                  | None
+                  | Decreasing
+\end{alltt}
+\subsubsection*{Beschreibung}
+Sortierreihenfolge für Bestenlisten.
+\begin{itemize}
+\item \texttt{Decreasing} -- absteigende Sortierung. Das heißt, eine größere Größe ist besser als eine kleinere.
+\item \texttt{Increasing} -- aufsteigende Sortierung. Kleinere Größen sind besser.
+\item \texttt{None} -- keine Angabe, z.B. weil die Sortierreihenfolge von der Aufgabenstellung abhängt, oder weil die berechnete Größe nicht variiert.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\texttt{Either $\alpha$ $\beta$}}\label{Either}
+\begin{alltt}
+data Either \(\alpha\) \(\beta\) = Left \(\alpha\)
+                | Right \(\beta\)
+\end{alltt}
+\subsubsection*{Beschreibung}
+\texttt{Either $\alpha$ $\beta$} stellt eine Alternative zwischen einem Wert vom Typ $\alpha$ oder einem Wert vom Typ $\beta$ dar.
+
+\endinput
