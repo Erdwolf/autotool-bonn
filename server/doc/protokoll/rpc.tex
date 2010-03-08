@@ -4,7 +4,7 @@ function_name :: ParameterTyp1 -> ParameterTyp2 -> ResultatTyp
 \end{alltt}
 dargestellt.
 
-\subsection{\texttt{get\_server\_info}}
+\subsection{\texttt{get\_server\_info}}\label{get_server_info}
 \begin{alltt}
 get_server_info :: ServerInfo
 \end{alltt}
@@ -17,50 +17,88 @@ keine
 \subsubsection*{Rückgabewert}
 Der Aufruf liefert Name und Version des Servers sowie die implementierte Version des Protokolls zurück. Siehe \texttt{ServerInfo} (\ref{ServerInfo}).
 
-\subsection{\texttt{get\_task\_types}}
+\subsection{\texttt{get\_task\_types}}\label{get_task_types}
 \begin{alltt}
 get_task_types :: [TaskTree]
 \end{alltt}
 \subsubsection*{Zweck}
+Dieser Aufruf liefert die vom Server unterstützten Aufgabentypen. Diese sind thematisch in einem Baum strukturiert, um die Auswahl auf Seite des Anwenders zu unterstützen.
+
 \subsubsection*{Parameter}
 keine
 \subsubsection*{Rückgabewert}
-Eine Liste von kategorisierten Aufgabentypen. Siehe \texttt{TaskTree} (\ref{TaskTree})
+Ein Baum (bzw. Wald) von kategorisierten Aufgabentypen. Siehe \texttt{TaskTree} (\ref{TaskTree})
 
-\subsection{\texttt{get\_task\_description}}
+\subsection{\texttt{get\_task\_description}}\label{get_task_description}
 \begin{alltt}
 get_task_description :: Task -> TaskDescription
 \end{alltt}
 \subsubsection*{Zweck}
-Mit diesem Aufruf wird nach Auswahl des Ausgabentyps nähere Information zu diesem abgefragt.
+Mit diesem Aufruf können nähere Informationen zu einem Aufgabentyp erfragt werden. Dazu gehört unter anderem eine Beispielkonfiguration für die Aufgabe.
 \subsubsection*{Parameter}
+\begin{itemize}
+\item Der Aufgabentyp, dessen Information abgefragt werden soll.
+\end{itemize}
 \subsubsection*{Rückgabewert}
+Die Aufgabenbeschreibung. Siehe \texttt{TaskDescription} (\ref{TaskDescription}).
 
-\subsection{\texttt{verify\_task\_config}}
+\subsection{\texttt{verify\_task\_config}}\label{verify_task_config}
 \begin{alltt}
 verify_task_config :: Task -> Config
     -> Either Description (Signed (Task, Config))
 \end{alltt}
 \subsubsection*{Zweck}
-\subsubsection*{Parameter}
-\subsubsection*{Rückgabewert}
+Der Aufruf gibt dem Server die Möglichkeit, eine Aufgabenkonfiguration zu einem Aufgabentyp auf Korrektheit bzw. Plausibilität zu prüfen. Wenn Fehler gefunden werden, werden diese in Textform zurückgeliefert. Anderenfalls wird die Aufgabenkonfiguration signiert und zur weiteren Verwendung in \texttt{get\_task\_instance} (\ref{get_task_instance}) zurückgegeben.
 
-\subsection{\texttt{get\_task\_instance}}
+\subsubsection*{Parameter}
+\begin{itemize}
+\item der Aufgabentyp
+\item die zu prüfende Aufgabenkonfiguration
+\end{itemize}
+\subsubsection*{Rückgabewert}
+Je nach Resultat der Prüfung wird zurückgegeben:
+\begin{itemize}
+\item\texttt{Left error}, wobei \texttt{error} eine Beschreibung des Fehlers ist.
+\item\texttt{Right signed}, wobei \texttt{signed} die signierte Aufgabenkonfiguration inklusive Aufgabentyp ist.
+\end{itemize}
+
+\subsection{\texttt{get\_task\_instance}}\label{get_task_instance}
 \begin{alltt}
 get_task_instance :: Signed (Task, Config) -> Seed
-    -> ((Signed (Task, Instance), Description, Documented Solution)
+    -> (Signed (Task, Instance), Description, Documented Solution)
 \end{alltt}
 \subsubsection*{Zweck}
+Mit diesem Aufruf wird zu einer gegebenen geprüften Aufgabenkonfiguration (die Signatur dient als Zertifikat für die Prüfung) eine Aufgabeninstanz erzeugt.
 \subsubsection*{Parameter}
+\begin{itemize}
+\item Eine signierte Aufgabenkonfiguration. Siehe \texttt{verify\_task\_config} (\ref{verify_task_config})
+\item Eine nutzerabhängige Zeichenkette zur Initialisierung eines Zufallszahlengenerator. Damit ist es möglich, individuelle Aufgaben zu erzeugen.
+\end{itemize}
 \subsubsection*{Rückgabewert}
+Es wird ein Tripel zurückgegeben. Darin sind folgende Werte enthalten:
+\begin{itemize}
+\item Eine signierte Aufgabeninstanz. Die darin enthaltenen Daten sollen dem Anwender nicht angezeigt werden.
+\item Eine textuelle Aufgabenstellung für den Nutzer.
+\item Eine Lösungsvorlage mit Dokumentation.
+\end{itemize}
 
-\subsection{\texttt{grade\_task\_solution}}
+\subsection{\texttt{grade\_task\_solution}}\label{grade_task_solution}
 \begin{alltt}
 grade_task_solution :: Signed (Task, Instance) -> Solution
     -> Either Description (Documented Double)
 \end{alltt}
 \subsubsection*{Zweck}
+Hiermit können Aufgabenlösungen überprüft werden. Ähnlich wie bei \texttt{verify\_task\_config} (\ref{verify_task_config}) wird entweder ein Fehler mit Erläuterung zurückgegeben, oder die Größe der Lösung zusammen mit einem Kommentar.
 \subsubsection*{Parameter}
+\begin{itemize}
+\item Eine signierte Aufgabeninstanz, wie von \texttt{get\_task\_instance} (\ref{get_task_instance}) zurückgegeben.
+\item Eine Aufgabenlösung.
+\end{itemize}
 \subsubsection*{Rückgabewert}
+Je nach Resultat der Bewertung wird zurückgegeben:
+\begin{itemize}
+\item\texttt{Left hint} bei erfolgloser Lösung, wobei \texttt{hint} eine Begründung dafür angibt, warum die Lösung falsch war.
+\item\texttt{Right size} bei erfolgreicher Lösung, wobei \texttt{size} die Größe der Lösung mit einem Kommentar enthält.
+\end{itemize}
 
 \endinput
