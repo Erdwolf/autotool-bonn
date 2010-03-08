@@ -45,6 +45,12 @@ instance ( GraphC a, Show a )
     total _ g xs = do
         cycle_is_total g xs
 
+instance ( GraphC a, Show a )
+    => C.Verify Hamilton (Graph a) where
+    verify _ g = do
+        validate g
+        inform $ text "Warnung: Existenz eines Hamiltonkreises wurde nicht überprüft!"
+
 shuffle xs = do
     let ( pre, post ) = splitAt ( length xs `div` 2 ) xs
     (x,y) <- zip pre ( reverse post )
