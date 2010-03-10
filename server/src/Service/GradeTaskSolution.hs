@@ -40,7 +40,9 @@ grade_task_solution (TT sTaskInst) (TT (SString solution))
             Just score -> return score
         when (not (is_okay score)) $ throwReport res
         doc <- liftIO $ fromReport res
-        return $ Documented { D.contents = fromIntegral $ size score,
+        let sz = size score
+            sz' = if sz == 0 then 1 else sz
+        return $ Documented { D.contents = fromIntegral sz',
                               D.documentation = doc }
 
 throwReport :: Reporter b -> ErrorT Description IO a
