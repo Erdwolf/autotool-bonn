@@ -41,6 +41,9 @@ import qualified Graph.Ramsey
 import qualified Graph.Van_der_Waerden
 import qualified Graph.Col.Greedy.Central
 
+import qualified Graph.MST.Plain
+import qualified Graph.MST.Quiz
+
 import qualified Robots.Interface
 import qualified Robots.Inverse
 
@@ -401,8 +404,8 @@ tmakers =
 	        , item Graph.Bisekt.Quiz.make
                 , item Graph.Way.Plain.make
 	        , item Graph.Way.Quiz.make
---	        , item Graph.MST.Plain.make
---	        , item Graph.MST.Quiz.make
+	        , item Graph.MST.Plain.make
+	        , item Graph.MST.Quiz.make
                 , item Graph.Hamilton.Plain.make
                 , item Graph.Hamilton.Quiz.make
 		, heading "Graphoperationen"

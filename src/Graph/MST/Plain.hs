@@ -1,8 +1,6 @@
-{-# OPTIONS -fallow-incoherent-instances -fglasgow-exts #-}
+{-# language OverlappingInstances, IncoherentInstances #-}
 
 module Graph.MST.Plain where
-
---  $Id$
 
 import Graph.Util
 
@@ -28,8 +26,8 @@ data MST = MST deriving ( Eq, Ord, Show, Read, Typeable )
 finite :: (Graph Int,Kante Int -> Int) -> (Graph Int,FiniteMap (Kante Int) Int)
 finite (g,w) = (g,listToFM $ do k <- setToList (kanten g); return (k,w k))
 
-instance Eq (Graph Int,Kante Int -> Int) where x == y = finite x == finite y
-instance Hash (Graph Int,Kante Int -> Int) where hash = hash . finite
+-- instance Eq (Graph Int,Kante Int -> Int) where x == y = finite x == finite y
+-- instance Hash (Graph Int,Kante Int -> Int) where hash = hash . finite
 
 instance C.Partial MST (Int,Graph Int,Weight) (Int,Graph Int)  where
 

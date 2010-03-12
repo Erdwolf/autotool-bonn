@@ -1,7 +1,4 @@
--- -*- mode: haskell -*-
 {-# LANGUAGE TemplateHaskell #-}
-
---  $Id$
 
 module Graph.MST.Config where
 
