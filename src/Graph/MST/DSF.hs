@@ -1,6 +1,9 @@
 -- | disjoint set forest implementation of union-find structure
 
-module Graph.MST.DSF where
+module Graph.MST.DSF 
+( Store, Graph.MST.DSF.join, run 
+) 
+where
 
 import qualified Data.Map as M
 import Data.Map ( Map )
