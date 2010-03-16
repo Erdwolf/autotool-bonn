@@ -1,7 +1,5 @@
 module Graph.MST.Quiz where
 
---  $Id$
-
 import Graph.MST.Plain ( MST ( MST ) )
 import Graph.MST.Weight ( Weight , wfun , direct )
 import Graph.MST.Config ( Config , nodes , edges , weight_type , rc )

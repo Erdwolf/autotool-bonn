@@ -5,6 +5,7 @@ module Graph.MST.Plain where
 
 import qualified Graph.Weighted as W
 import qualified Graph.MST.Kruskal
+import Graph.Kreisfrei
 
 import Graph.Util
 
@@ -77,7 +78,6 @@ instance C.Partial MST ( W.Graph Int Int ) (Int, Graph Int)  where
         inform $ text "Ja."
     
     total MST wg (wt,t) = do
-
         inform $ text "Ihr Graph hat die Gestalt:"
 
 	peng $ t { layout_program = Dot
@@ -85,7 +85,9 @@ instance C.Partial MST ( W.Graph Int Int ) (Int, Graph Int)  where
 		   }
 
         inform $ text "Ist dieser Graph kreisfrei?"
-        inform $ text "(Test nicht implementiert)"
+        case kreisfrei t of
+            Nothing -> inform $ text "ja"
+            Just k  -> reject $ text "nein, diese Kante liegt auf einem Kreis:" </> toDoc k
 
         inform $ text "Ist das Gewicht minimal?"
         let wmin = Graph.MST.Kruskal.weight $ W.extract wg
