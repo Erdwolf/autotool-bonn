@@ -27,10 +27,10 @@ join x y = do
     if s == t 
        then return False
        else do
-           s <- get
-           if ( M.lookup x $ rank s ) < ( M.lookup y $ rank s ) 
-               then link x y 
-               else link y x
+           st <- get
+           if ( M.lookup s $ rank st ) < ( M.lookup t $ rank st ) 
+               then link s t 
+               else link t s
            return True
 
 -- | these must be roots. let x point to y.

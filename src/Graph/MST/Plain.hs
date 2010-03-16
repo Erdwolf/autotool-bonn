@@ -6,6 +6,7 @@ module Graph.MST.Plain where
 import qualified Graph.Weighted as W
 import qualified Graph.MST.Kruskal
 import Graph.Kreisfrei
+import Graph.Connected
 
 import Graph.Util
 
@@ -36,12 +37,7 @@ instance C.Partial MST ( W.Graph Int Int ) (Int, Graph Int)  where
 	 [ text "Gesucht ist ein Minimalgerüst des gewichteten Graphen"
 	 , nest 4 $ toDoc wg
 	 ]
-        let ( g, w ) = W.extract wg
-        -- FIXME: at ToDot instance for weighted graphs
-        peng $   g { layout_program = Dot
-		   , layout_hints = [ "-Nshape=ellipse" , "-Gsize=\"5,5\"" ]
-		   } 
-
+        peng $  wg 
         inform $ text "Sie sollen auch das Gewicht des Gerüstes angeben."
 
     initial MST wg = 
@@ -78,18 +74,25 @@ instance C.Partial MST ( W.Graph Int Int ) (Int, Graph Int)  where
         inform $ text "Ja."
     
     total MST wg (wt,t) = do
-        inform $ text "Ihr Graph hat die Gestalt:"
+        inform $ text "Ihr Graph  T  hat die Gestalt:"
 
 	peng $ t { layout_program = Dot
 		   , layout_hints = [ "-Nshape=ellipse" , "-Gsize=\"5,5\"" ]
 		   }
 
-        inform $ text "Ist dieser Graph kreisfrei?"
+        inform $ text "Ist  T  kreisfrei?"
         case kreisfrei t of
             Nothing -> inform $ text "ja"
             Just k  -> reject $ text "nein, diese Kante liegt auf einem Kreis:" </> toDoc k
 
-        inform $ text "Ist das Gewicht minimal?"
+        inform $ text "Wird der Graph  G  durch T  aufgespannt?"
+        let ( g, w) = W.extract wg
+        case spanning t g of
+            Nothing -> inform $ text "Ja."
+            Just (x,y) -> reject 
+                $ text "Nein, diese Kante in G verbindet verschiedene Komponenten von T:" </> toDoc (x,y)
+
+        inform $ text "Ist das Gewicht  von  T  minimal?"
         let wmin = Graph.MST.Kruskal.weight $ W.extract wg
         when ( wt > wmin ) $ reject 
 	      $ text "Nein. Es gibt ein Gerüst geringeren Gewichts!"
