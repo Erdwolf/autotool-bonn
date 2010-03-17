@@ -332,13 +332,21 @@ Library
         Graph.Col.Plain
         Graph.Col.Quiz
         Graph.Color
+        Graph.Connected
         Graph.Cross
         Graph.Graceful.Central
         Graph.Hamilton.Config
         Graph.Hamilton.Plain
         Graph.Hamilton.Quiz
         Graph.Iso
+        Graph.Kreisfrei
         Graph.MinSep
+        Graph.MST.Config
+        Graph.MST.DSF
+        Graph.MST.Kruskal
+        Graph.MST.Plain
+        Graph.MST.Quiz
+        Graph.MST.Weight
         Graph.Nachbar
         Graph.Op
         Graph.PartialKTree
@@ -352,6 +360,11 @@ Library
         Graph.Series_Parallel.Op
         Graph.Series_Parallel.Type
         Graph.TreeWidth
+        Graph.TSP.Config
+        Graph.TSP.Plain
+        Graph.TSP.Quiz
+        Graph.TSP.Search
+        Graph.TSP.Tropic
         Graph.Util
         Graph.VC.Central
         Graph.VC.Input
@@ -364,6 +377,9 @@ Library
         Graph.Way.Input
         Graph.Way.Plain
         Graph.Way.Quiz
+        Graph.Weighted
+        Graph.Weighted.Data
+        Graph.Weighted.Dot
         Hanoi.Config
         Hanoi.Move
         Hanoi.Quiz

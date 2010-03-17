@@ -14,7 +14,7 @@ import Graph.TSP.Search ( search )
 
 import qualified Autolib.Reporter.Set ( eq , subeq )
 
-import Inter.Types ( Make , direct )
+import Inter.Types
 import Data.Typeable ( Typeable )
 import qualified Challenger as C
 
@@ -29,6 +29,9 @@ import Autolib.ToDoc
 -------------------------------------------------------------------------------
 
 data TSP = TSP deriving ( Eq, Ord, Show, Read, Typeable )
+
+instance OrderScore TSP where
+    scoringOrder _ = None
 
 matrix :: W.Graph Int Int -> [[Tropic Int]]
 matrix wg = do

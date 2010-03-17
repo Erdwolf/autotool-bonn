@@ -15,7 +15,7 @@ import qualified Autolib.Reporter.Set ( eq , subeq )
 import Autolib.Hash ( Hash , hash )
 import Autolib.FiniteMap ( FiniteMap , listToFM )
 
-import Inter.Types ( Make , direct )
+import Inter.Types
 import Data.Typeable ( Typeable )
 import qualified Challenger as C
 
@@ -23,6 +23,9 @@ import Data.Maybe ( fromMaybe )
 import qualified Data.Map as M
 
 -------------------------------------------------------------------------------
+
+instance OrderScore MST where
+    scoringOrder _ = None
 
 data MST = MST deriving ( Eq, Ord, Show, Read, Typeable )
 
