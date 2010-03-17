@@ -50,13 +50,13 @@ instance C.Partial TSP ( Tropic Int , W.Graph Int Int ) [ Int ]  where
 	     [ text "Gesucht ist eine Rundreise mit Gewicht <=" <+> toDoc b
              , text "im Graphen mit der Distanz-Matrix"
              , nest 4 $ besides $ map ( vcat . map toDoc ) $ transpose $ matrix wg
-             , text "Gewicht '+' bedeutet 'plus unendlich'."
+             , text "Gewicht '+' bedeutet 'plus unendlich' (keine Kante)."
 	     ]
         peng wg
 
 
     initial TSP (b, wg) = 
-        [ 3, 1, 2 ]
+        S.toList $ W.knoten wg
 
     partial TSP (b, wg) p = do
         let duplicates = M.keys
@@ -72,9 +72,17 @@ instance C.Partial TSP ( Tropic Int , W.Graph Int Int ) [ Int ]  where
  
     
     total TSP (b, wg) p = do
-        let m = matrix wg
-            c = sum $ do (x,y) <- zip p $ rotate 1 p ; return $ m !! x !! y
-        inform $ text "Die Kosten Ihrer Rundreise sind:" </> toDoc c
+        let (g,w) = W.extract wg
+            f x y = case M.lookup (G.kante x y) w of 
+                 Nothing -> Infinite 
+                 Just v  -> Finite v
+        inform $ text "Die Kosten Ihrer Rundreise sind:" 
+        cs <- nested 4 $ forM ( zip p $ rotate 1 p ) $ \ (x,y) -> do
+              let c = f x y
+              inform $ toDoc ( G.kante x y, c )
+              return c
+        let c = sum cs
+        inform $ text "Summe:" </> toDoc c
         when ( c > b ) $ reject $ text "Das übersteigt die Schranke."
 
 
