@@ -44,6 +44,9 @@ import qualified Graph.Col.Greedy.Central
 import qualified Graph.MST.Plain
 import qualified Graph.MST.Quiz
 
+import qualified Graph.TSP.Plain
+import qualified Graph.TSP.Quiz
+
 import qualified Robots.Interface
 import qualified Robots.Inverse
 
@@ -402,6 +405,8 @@ tmakers =
 	        , item Graph.Way.Quiz.make
 	        , item Graph.MST.Plain.make
 	        , item Graph.MST.Quiz.make
+	        , item Graph.TSP.Plain.make
+	        , item Graph.TSP.Quiz.make
                 , item Graph.Hamilton.Plain.make
                 , item Graph.Hamilton.Quiz.make
 		, heading "Graphoperationen"

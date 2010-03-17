@@ -1,0 +1,11 @@
+{-# langue DeriveDataTypeable #-}
+
+-- | numbers, extended with  Plus Infinity
+
+module Graph.TSP.Tropic where
+
+import Data.Typeable
+import Autolib.Reader
+import Autolib.ToDoc
+
+data Tropic a = Finite a | PlusInfinite
