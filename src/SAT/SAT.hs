@@ -53,7 +53,7 @@ import SAT.Beispiel
 instance Partial CNF_SAT Formel Belegung where
 
     describe p f = vcat
-        [ text "finden Sie eine erfuellende Belegung fuer die Formel"
+        [ text "Finden Sie eine erfüllende Belegung für die Formel"
 	, nest 4 $ toDoc f
 	]
 
@@ -67,7 +67,7 @@ instance Partial CNF_SAT Formel Belegung where
 	    out = minusSet domain ( variablen f )
         when ( not $ isEmptySet out ) $ reject $ vcat
 	     [ text "Diese Variablen der Belegung"
-	     , text "gehoeren gar nicht zur Formel:"
+	     , text "gehören gar nicht zur Formel:"
 	     , nest 4 $ toDoc out
 	     ]
 
@@ -76,17 +76,17 @@ instance Partial CNF_SAT Formel Belegung where
 		False <- maybeToList $ wert klaus b
 		return klaus
 	when ( not $ null wrong ) $ reject $ vcat
-	     [ text "Diese vollstaendig belegten Klauseln sind nicht erfuellt:"
+	     [ text "Diese vollständig belegten Klauseln sind nicht erfüllt:"
 	     , nest 4 $ toDoc wrong
 	     ]
-	inform $ text "Alle vollstaendig belegten Klauseln sind erfuellt."
+	inform $ text "Alle vollständig belegten Klauseln sind erfüllt."
 
         let open = do
 		 klaus <- klauseln f
 		 Nothing <- return $ wert klaus b
 		 return klaus
 	inform $ vcat
-	       [ text "Diese Klauseln noch nicht erfuellt:"
+	       [ text "Diese Klauseln noch nicht erfüllt:"
 	       , nest 4 $ toDoc open
 	       ]
 
