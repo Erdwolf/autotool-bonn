@@ -1,7 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
 
---  $Id$
-
 module Graph.MST.Weight where
 
 import Autolib.ToDoc

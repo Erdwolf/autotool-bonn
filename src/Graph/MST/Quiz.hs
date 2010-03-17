@@ -1,49 +1,33 @@
+{-# language MultiParamTypeClasses, FlexibleInstances #-}
+
 module Graph.MST.Quiz where
 
---  $Id$
-
 import Graph.MST.Plain ( MST ( MST ) )
-import Graph.MST.Weight ( Weight , wfun , direct )
-import Graph.MST.Config ( Config , nodes , edges , weight_type , rc )
 
-import Autolib.Util.Zufall ( eins , permutation )
+import Graph.MST.Config 
 
-import Autolib.Graph.Type ( Graph , mkGraph , kante )
-import Autolib.Graph.SpanTree ( mst , weight )
-import Autolib.Set ( mkSet )
+import Autolib.Util.Zufall ( selektion, randomRIO )
+import Graph.Weighted
 
 import Inter.Quiz ( Generator , generator , Project , project , quiz )
 import Inter.Types ( Make )
 
-instance Generator MST Config ( (Int,Graph Int,Weight) , (Int,Graph Int) ) where
-    generator _ conf _ = do
+import Control.Monad ( forM )
+import Data.List ( tails )
+import qualified Data.Set as S
 
-       let ns = [ 1 .. nodes conf ]
+instance Generator MST Config ( Graph Int Int ) where
+    generator MST conf key = do
+       let v = [ 1 .. nodes conf ]
+       xys <- selektion ( edges conf )
+          $ do (x : ys) <- tails v ; y <- ys ; return (x, y)
+       e <- forM xys $ \ (x,y) -> do
+           w <- randomRIO $ weight_bounds conf
+           return $ Kante { von = x, nach = y, gewicht = w }
+       return $ Graph { knoten = S.fromList v, kanten = S.fromList e }
 
-       perm <- permutation ns
-
-       --  ks0 sichert den zusammenhang des graphen
-       let ks0 = map (uncurry kante) $ zip perm (tail perm)
-
-       ks <- sequence $ replicate (edges conf) $ do
-	     x <- eins ns
-	     y <- eins ns
-	     return $ kante x y
-
-       let g = mkGraph (mkSet ns) (mkSet $ ks ++ ks0)
-
-       let w_direct = direct (weight_type conf) $ ks ++ ks0
-
-       let st = mst g (wfun w_direct)
-   
-       let wmin = weight st (wfun w_direct)
-
-       return ( ( wmin , g , w_direct )
-	      , ( wmin , st )
-	      )
-
-instance Project MST ((Int,Graph Int,Weight),(Int,Graph Int)) (Int,Graph Int,Weight) where 
-    project _ = fst
+instance Project MST ( Graph v w ) ( Graph v w )  where 
+    project MST g = g
 
 make :: Make
 make = quiz MST rc

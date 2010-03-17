@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
 
-module Graph.MST.Config where
+module Graph.TSP.Config where
 
 import Autolib.ToDoc
 import Autolib.Reader

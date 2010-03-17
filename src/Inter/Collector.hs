@@ -39,6 +39,12 @@ import qualified Graph.Ramsey
 import qualified Graph.Van_der_Waerden
 import qualified Graph.Col.Greedy.Central
 
+import qualified Graph.MST.Plain
+import qualified Graph.MST.Quiz
+
+import qualified Graph.TSP.Plain
+import qualified Graph.TSP.Quiz
+
 import qualified Robots.Interface
 import qualified Robots.Inverse
 
@@ -127,10 +133,6 @@ import qualified Graph.Way.Quiz
 
 import qualified Graph.Hamilton.Plain
 import qualified Graph.Hamilton.Quiz
-
--- broken with 6.6
--- import qualified Graph.MST.Plain
--- import qualified Graph.MST.Quiz
 
 import qualified Number.Base.Central
 import qualified Number.Float.From
@@ -399,8 +401,10 @@ tmakers =
 	        , item Graph.Bisekt.Quiz.make
                 , item Graph.Way.Plain.make
 	        , item Graph.Way.Quiz.make
---	        , item Graph.MST.Plain.make
---	        , item Graph.MST.Quiz.make
+	        , item Graph.MST.Plain.make
+	        , item Graph.MST.Quiz.make
+	        , item Graph.TSP.Plain.make
+	        , item Graph.TSP.Quiz.make
                 , item Graph.Hamilton.Plain.make
                 , item Graph.Hamilton.Quiz.make
 		, heading "Graphoperationen"
