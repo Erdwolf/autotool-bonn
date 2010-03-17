@@ -16,10 +16,11 @@ import Data.Maybe
 
 ttmakers :: [TaskTree]
 ttmakers = mkTaskForest (T.subForest tmakers) where
-    mkTaskForest = map mkTaskTree
-    mkTaskTree (T.Node (Left label) sub) = Category label (mkTaskForest sub)
-    mkTaskTree (T.Node (Right task) [])  = Task (show task)
+    mkTaskForest = concat . map mkTaskTree
+    mkTaskTree (T.Node (Left label) sub) = [Category label (mkTaskForest sub)]
+    mkTaskTree (T.Node (Right task) [])  = [Task (show task) | validTask (show task)]
     mkTaskTree _ = error "malformed task tree in Inter.Collector"
+    validTask x = not $ x `elem` ["Blank-Direct", "Upload-Direct"]
 
 lookupTask :: String -> Maybe Make
 lookupTask name = listToMaybe
