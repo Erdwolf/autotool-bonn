@@ -1,9 +1,0 @@
-{-# language TemplateHaskell #-}
-
-module Graph.Weighted.Data where
-
-import Autolib.ToDoc
-import Autolib.Reader
-
-data Kante v w = 
-     Kante { von :: v, nach :: v, gewicht :: w }
