@@ -25,7 +25,7 @@ import qualified Data.Map as M
 -------------------------------------------------------------------------------
 
 instance OrderScore MST where
-    scoringOrder _ = None
+    scoringOrder _ = Increasing
 
 data MST = MST deriving ( Eq, Ord, Show, Read, Typeable )
 

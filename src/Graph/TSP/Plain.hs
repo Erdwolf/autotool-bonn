@@ -31,7 +31,7 @@ import Autolib.ToDoc
 data TSP = TSP deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance OrderScore TSP where
-    scoringOrder _ = None
+    scoringOrder _ = Increasing
 
 matrix :: W.Graph Int Int -> [[Tropic Int]]
 matrix wg = do
