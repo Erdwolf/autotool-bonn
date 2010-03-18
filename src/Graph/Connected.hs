@@ -33,10 +33,10 @@ spanning t g = DSF.run $ do
     -- compute Komponenten von t  (Gerüst)
     forM ( S.toList $ kanten t ) $ \ k -> DSF.join ( von k ) ( nach k )
     -- check Kanten von  g  (Original)
-    let handle (x : y : zs) = do
-            was_different <- DSF.join x y
+    let handle (k : ks) = do
+            was_different <- DSF.join (von k) (nach k)
             if was_different
-               then return $ Just (x,y)
-               else handle (y : zs)
+               then return $ Just (von k, nach k)
+               else handle ks
         handle _ = return Nothing
-    handle $ S.toList $ knoten g
+    handle $ S.toList $ kanten g
