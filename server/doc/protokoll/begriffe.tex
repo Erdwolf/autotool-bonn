@@ -1,0 +1,12 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{description}
+\item[Server] Programm, das als Anbieter von Aufgabensemantik für verschiedene Aufgabentypen fungiert. Es nimmt Anfragen vom \emph{Client} entgegen, und beantwortet diese.
+\item[Client] Nutzer des \emph{Servers}. Dies kann z.B. eine Lernplattform sein, über die Lernenden Zugang zu den vom Server implementierten Aufgaben bekommt.
+\item[Aufgabentyp] Ein \emph{Server} kann Semantik für verschiedene Aufgabentypen anbieten. Beispiele wären das Lösen linearer Gleichungssysteme oder das Faktorisieren einer Zahl. Im Allgemeinen umfasst jeder Aufgabentyp viele konkrete Aufgabenstellungen.
+\item[Aufgabenkonfiguration] Zusammen mit dem \emph{Aufgabentyp} definiert die Aufgabenkonfiguration die Rahmenparameter für die zugehörigen \emph{Aufgabeninstanzen}. Dies könnte z.B. die Anzahl der Gleichungen in einem linearen Gleichungssystem sein.
+\item[Aufgabeninstanz] Die Aufgabeninstanz ist eine konkrete Aufgabenstellung, also beispielsweise ein lineares Gleichungssystem. Der \emph{Server} kann diese Anhand einer \emph{Aufgabenkonfiguration} und zugehörigem \emph{Aufgabentyp} erzeugen. Die Aufgabeninstanz kann dem Endnutzer präsentiert und von diesem gelöst werden.
+\item[Aufgabenlösung] Eine Aufgabenlösung stellt einen Lösungsversuch für eine \emph{Aufgabeninstanz} dar. Diese kann vom \emph{Server} auf Korrektheit geprüft werden.
+\item[Bewertung] Der \emph{Server} stellt fest, ob die Lösung korrekt war oder nicht.
+\item[Größe] Neben der eigentlichen \emph{Bewertung} gibt es die Möglichkeit, Aufgabenlösungen eine zusätzliche Zahl, die \emph{Größe} zuzuordnen, beispielsweise die Anzahl der Lösungsschritte einer Lösung. Diese ist von sekundärer Bedeutung - eine korrekte Lösung mit 100 Schritten ist genauso richtig wie eine mit 20 Schritten. Man kann die Zahl aber für Bestenlisten für die jeweilige Aufgabe verwenden.
+\end{description}
+\endinput

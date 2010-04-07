@@ -1,6 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Basistypen}
 \begin{tabular}{>{\tt}l|l}
+Typ        & Bedeutung\\
+\hline
 String     & UTF-8-kodierte Zeichenkette\\
 Int        & vorzeichenbehafteter 32-bit Ganzzahlwert\\
 Double     & 64-bit Gleitkommazahl\\
@@ -12,6 +14,8 @@ Double     & 64-bit Gleitkommazahl\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Aliase}
 \begin{tabular}{>{\tt}l@{ = }>{\tt}l|l}
+Alias       & Typ    & Bedeutung\\
+\hline
 Name        & String & uninterpretierter Name\\
 Task        & String & Name eines Aufgabentyps\\
 Seed        & String & vom Nutzer abhängiger String zur Generierung von Aufgaben\\
@@ -67,6 +71,7 @@ data ServerInfo = ServerInfo \{
 \}
 \end{alltt}
 \subsubsection*{Beschreibung}
+Werte dieses Typs enthalten den Servernamen und dessen Version, sowie die Protokollversion, die der Server unterstützt. Siehe \texttt{Version} (\ref{Version}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\texttt{TaskTree}}\label{TaskTree}

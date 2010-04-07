@@ -1,0 +1,92 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{XML-RPC}
+Die RPC-Aufrufe werden per XML-RPC-Protokoll übertragen. XML-RPC basiert auf HTTP. Ein RPC-Aufruf ist ein POST-Request an die URL des \emph{autOlat}-Service, bei dem die Parameter und Rückgabewerte XML-kodiert übertragen werden. Details zur Kodierung gibt es unter \url{http://www.xmlrpc.com/}.
+
+\subsubsection{Basistypen}
+Die folgenden XML-RPC-Basistypen werden verwendet:
+\begin{itemize}
+\item \texttt{string} -- Zeichenketten -- für \texttt{String} und \texttt{Int}
+\item \texttt{double} -- Gleitkommazahlen -- für \texttt{Double}
+\item \texttt{boolean} -- Wahrheitswerte -- für \texttt{Bool}
+\end{itemize}
+
+\subsubsection{Strukturtypen}
+\begin{itemize}
+\item \texttt{array} -- Felder -- für Listen (\texttt{[$\alpha$]}) und komplexe Datentypen.
+
+Verkürzte Notation: \texttt{[ $a$, $b$, \ldots\ ]}
+\item \texttt{struct} -- records -- für komplexe Datentypen
+
+Verkürzte Notation: \texttt{\{ $k_1$: $v_1$, $k_2$: $v_2$, \ldots\ \}}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Abbildung der Datentypen in XML-RPC}
+\subsubsection{Basistypen}
+%
+\begin{tabular}{>{\tt}l>{\tt}l|>{\tt}l>{\tt}l}
+Typ    & Beispiel   & XML-RPC-Typ & Beispiel \\
+\hline
+String & \dq abc\dq & string      & \dq abc\dq \\
+Int    & 123        & string      & \dq 123\dq \\
+Double & 123.0      & double      & 123.0 \\
+Bool   & True       & boolean     & true \\
+\relax[$\alpha$] & \relax[\dq a\dq, 42] & array & \relax[\dq a\dq, 42] \\
+\end{tabular}\\[1ex]
+%
+Werte von Typaliasen werden wie die entsprechenden Basistypen kodiert.
+
+\subsubsection{komplexe Datentypen}
+Komplexe (algebraische) Datentypen haben einen Namen, Typparameter, falls sie generisch sind, und eine oder mehrere Ausprägungen. Jede Ausprägung ist ein Record oder ein Tupel. Die jeweils verwendete Ausprägung bestimmt die Kodierung der Werte.
+\begin{alltt}
+data Name \(\alpha\) = Alternative1
+            | Alternative2
+            \ldots
+\end{alltt}
+
+\subsubsection{Records}
+Records haben einen Namen und benannte Datenfelder. Beispiel:
+\begin{alltt}
+data \ldots = Record \{
+    field1 :: \(\alpha\),
+    fiedl2 :: \(\beta\)
+\}
+\end{alltt}
+Sie werden als \texttt{struct} kodiert, die eine weitere \texttt{struct} enthält:
+\begin{alltt}
+\{
+    "Record": \{
+         "field1": \ldots,
+         "field2": \ldots
+    \}
+\}
+\end{alltt}
+
+\subsubsection{Tupel}
+Tupel haben einen Namen und \emph{unbenannte} Datenfelder. Beispiel:
+\begin{alltt}
+data \ldots = Record \(\alpha\) \(\beta\)
+\end{alltt}
+Sie werden als \texttt{struct} kodiert, die ein \texttt{array} enthält:
+\begin{alltt}
+\{
+    "Record": [
+         \ldots,
+         \ldots
+    ]
+\}
+\end{alltt}
+
+\subsubsection{Either}
+\begin{alltt}
+data Either \(\alpha\) \(\beta\) = Left \(\alpha\) | Right \(\beta\)
+\end{alltt}
+Abweichend von der normalen Kodierung für Tupel werden die Werte von \texttt{Either} nicht extra in array verpackt. So wird \texttt{Left \ldots} als
+\begin{alltt}
+\{
+     "Left": \ldots
+\}
+\end{alltt}
+kodiert. Die Kodierung von \texttt{Right \ldots} ist analog.
+
+\endinput
