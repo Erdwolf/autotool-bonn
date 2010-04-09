@@ -9,7 +9,7 @@ Description:
 Cabal-Version:  >= 1.2
 Build-Type:     Simple
 
-Executable autotool.cgi
+Executable autolat-client
     Main-Is:        Main.hs
     Hs-Source-Dirs: src
     GHC-Options:    -Wall

@@ -3,9 +3,17 @@ import Service.Interface
 import Types.Config
 import Types.Solution
 
+import System.Environment
+import System.Exit
+
 main :: IO ()
 main = do
-    let server = "http://localhost/cgi-bin/autotool-0.2.1.cgi"
+    args <- getArgs
+    server <- case args of
+        [server] -> return server
+        _ -> do
+            putStrLn "usage: autolat-client <URL>"
+            exitWith (ExitFailure 1)
 
     putStrLn "\n=== Find server info ===\n"
     print =<< get_server_info server
