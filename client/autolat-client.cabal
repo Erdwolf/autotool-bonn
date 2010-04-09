@@ -1,0 +1,33 @@
+Name:           autolat-client
+Version:        0.0.0
+Author:         Bertram Felgenhauer
+Maintainer:     Bertram Felgenhauer
+Stability:      Experimental
+Synopsis:       autolat Xml-RPC client
+Description:
+  This package is an example client for the autOlat XML-RPC protocol.
+Cabal-Version:  >= 1.2
+Build-Type:     Simple
+
+Executable autotool.cgi
+    Main-Is:        Main.hs
+    Hs-Source-Dirs: src
+    GHC-Options:    -Wall
+    Build-Depends:
+        autotool-collection,
+        autolib-transport,
+        autolib-output,
+        SHA >= 1.4 && < 1.5,
+        base >= 4 && < 4.3,
+        bytestring >= 0.9 && < 0.10,
+        haxr >= 3000.5 && < 3000.6,
+        mtl >= 1.1 && < 1.2,
+        dataenc >= 0.11 && < 0.14,
+        pretty >= 1.0 && < 1.1,
+        HaXml >= 1.20 && < 1.21,
+        filepath >= 1.1 && < 1.2,
+        binary >= 0.5 && < 0.6
+    Extensions:
+        FlexibleInstances
+        UndecidableInstances
+        GeneralizedNewtypeDeriving
