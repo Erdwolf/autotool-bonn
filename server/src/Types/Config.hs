@@ -6,6 +6,7 @@ module Types.Config (
 
 import Data.Autolib.Transport
 
-newtype Config = CString String deriving ToTransport
+newtype Config = CString String
+    deriving (ToTransport, Eq, Read, Show)
 
 -- $(derives [makeToTransport] [''Config])

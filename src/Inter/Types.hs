@@ -167,6 +167,7 @@ instance ToDoc Variant where
 -- sorting order for toplists
 
 data ScoringOrder = None | Increasing | Decreasing
+    deriving (Eq, Read, Show)
 
 class OrderScore p where
     scoringOrder :: p -> ScoringOrder

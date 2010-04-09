@@ -9,7 +9,8 @@ import Util.Xml.Output
 
 import qualified Control.Monad.Error as E
 
-newtype Description = DString String deriving ToTransport
+newtype Description = DString String
+    deriving (ToTransport, Eq, Read, Show)
 
 -- $(derives [makeToTransport] [''Description])
 

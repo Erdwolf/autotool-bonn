@@ -16,6 +16,6 @@ import Data.Autolib.Transport
 data TaskDescription = TaskDescription {
     task_sample_config :: Documented Config,
     task_scoring_order :: ScoringOrder
-}
+} deriving (Read, Show)
 
 $(derives [makeToTransport] [''TaskDescription])
