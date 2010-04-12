@@ -1,6 +1,7 @@
 module Util.Xml.Output (
     outputToXmlString,
-    stringToXmlString
+    stringToXmlString,
+    xmlStringToOutput
 ) where
 
 import qualified Util.Xml.OutputDTD as X
@@ -9,11 +10,13 @@ import Text.XML.HaXml hiding (o, txt)
 import Text.XML.HaXml.Pretty
 import Text.XML.HaXml.XmlContent
 import Text.PrettyPrint.HughesPJ hiding (style)
+import qualified Autolib.Multilingual.Doc as D
 
 import qualified Codec.Binary.Base64 as C
 import qualified Data.ByteString as B
 import System.FilePath
 import Control.Applicative
+import Data.Maybe
 
 import Util.Png
 
@@ -56,6 +59,23 @@ outputToXOutput o = case o of
     O.Figure a b ->
         X.OFigure <$> (X.Figure <$> outputToXOutput a <*> outputToXOutput b)
 
+xoutputToOutput :: X.Output -> O.Output
+xoutputToOutput o = case o of
+   X.OPre  (X.Pre  txt) -> O.Pre (D.text txt)
+   X.OText (X.Text txt) -> O.Text txt
+   X.OImage (X.Image _ img) ->
+       O.Image "?" (return $ B.pack $ fromJust $ C.decode img)
+   X.OLink (X.Link (X.Link_Attrs { X.linkHref = uri }) txt) ->
+       O.Named_Link txt uri
+   X.OAbove (X.Above []) -> O.Empty
+   X.OAbove (X.Above xs) -> foldl1 O.Above $ map xoutputToOutput xs
+   X.OBeside (X.Beside []) -> O.Empty
+   X.OBeside (X.Beside xs) -> foldl1 O.Beside $ map xoutputToOutput xs
+   X.OItemize (X.Itemize xs) -> O.Itemize $ map xoutputToOutput xs
+   X.OSpace _ -> O.Empty -- FIXME
+   X.OFigure (X.Figure a b) -> O.Figure (xoutputToOutput a) (xoutputToOutput b)
+
+
 wrapXOutput :: X.Output -> Document ()
 wrapXOutput o = let [CElem e _] = toContents o in
     Document (Prolog (Just (XMLDecl "1.0" Nothing Nothing)) [] Nothing [])
@@ -67,6 +87,9 @@ xmlToString = renderStyle style . document where
 
 outputToXmlString ::  O.Output -> IO String
 outputToXmlString = fmap (xmlToString . wrapXOutput) . outputToXOutput
+
+xmlStringToOutput :: String -> O.Output
+xmlStringToOutput = xoutputToOutput . either error id . readXml
 
 stringToXmlString :: String -> String
 stringToXmlString = xmlToString . wrapXOutput . X.OText . X.Text
