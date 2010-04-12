@@ -2,6 +2,8 @@ import Service.Interface
 
 import Types.Config
 import Types.Solution
+import Types.TaskDescription
+import Util.Xml.Output
 
 import System.Environment
 import System.Exit
@@ -34,19 +36,21 @@ main = do
     case res of
         Right signedTaskConfig -> do
             putStrLn "\n=== Get a task instance ===\n"
-	    let seed = "test"
-	    res2@(signedTaskInstance, _, _) <-
+            let seed = "test"
+            res2@(signedTaskInstance, DString desc, _) <-
                 get_task_instance server signedTaskConfig seed
-	    print res2
+            print res2
+
+            print (xmlStringToOutput desc)
 
             do  putStrLn "\n=== Send an invalid solution ===\n"
-     	        let solution = ""
-	        print =<< grade_task_solution server signedTaskInstance
+                let solution = ""
+                print =<< grade_task_solution server signedTaskInstance
                                               (SString solution)
 
             do  putStrLn "\n=== Send another solution - at time of testing, it was valid. ===\n"
                 let solution = "((a+bb)(a+b))^*b(ab+b)^*"
-	        print =<< grade_task_solution server signedTaskInstance
+                print =<< grade_task_solution server signedTaskInstance
                                               (SString solution)
 
         _ -> return ()
