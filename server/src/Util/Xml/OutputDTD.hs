@@ -7,13 +7,16 @@ module Util.Xml.OutputDTD where
 import Text.XML.HaXml.XmlContent
 
 import Text.XML.HaXml.Escape
+import Text.XML.HaXml.Posn
 import Data.Char (isSpace)
 
--- FIXME: what about decoding?
-
 toTextEscaped :: String -> [Content ()]
-toTextEscaped s = cs where
-    Elem _ _ cs = xmlEscape stdXmlEscaper (Elem "" [] (toText s))
+toTextEscaped s = xmlEscapeContent stdXmlEscaper (toText s)
+
+elementEscaped :: [String] -> XMLParser (Element Posn)
+elementEscaped nm = do
+    Elem nm as cs <- element nm
+    return $ Elem nm as (xmlUnEscapeContent stdXmlEscaper cs)
 
 {-Type decls-}
 
@@ -65,7 +68,7 @@ instance XmlContent Pre where
     toContents (Pre a) =
         [CElem (Elem "Pre" [] (toTextEscaped a)) ()]
     parseContents = do
-        { e@(Elem _ [] _) <- element ["Pre"]
+        { e@(Elem _ [] _) <- elementEscaped ["Pre"]
         ; interior e $ return (Pre) `apply` (text `onFail` return "")
         } `adjustErr` ("in <Pre>, "++)
 
@@ -75,7 +78,7 @@ instance XmlContent Text where
     toContents (Text a) =
         [CElem (Elem "Text" [] (toTextEscaped a)) ()]
     parseContents = do
-        { e@(Elem _ [] _) <- element ["Text"]
+        { e@(Elem _ [] _) <- elementEscaped ["Text"]
         ; interior e $ return (Text) `apply` (text `onFail` return "")
         } `adjustErr` ("in <Text>, "++)
 
@@ -112,7 +115,7 @@ instance XmlContent Link where
     toContents (Link as a) =
         [CElem (Elem "Link" (toAttrs as) (toTextEscaped a)) ()]
     parseContents = do
-        { e@(Elem _ as _) <- element ["Link"]
+        { e@(Elem _ as _) <- elementEscaped ["Link"]
         ; interior e $ return (Link (fromAttrs as))
                        `apply` (text `onFail` return "")
         } `adjustErr` ("in <Link>, "++)
