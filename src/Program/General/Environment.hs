@@ -1,3 +1,5 @@
+{-# language DeriveDataTypeable #-}
+
 module Program.General.Environment 
 
 ( Environment, Value(..)

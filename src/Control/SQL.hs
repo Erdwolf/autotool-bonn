@@ -1,3 +1,5 @@
+{-# language RankNTypes, DeriveDataTypeable #-}
+
 module Control.SQL 
 
 ( squery, query, logged, reed
@@ -11,8 +13,6 @@ module Control.SQL
 )
 
 where
-
---  $Id$
 
 import Autolib.Reader as R
 import Autolib.ToDoc  as T

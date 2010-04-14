@@ -1,3 +1,5 @@
+{-# language DeriveDataTypeable #-}
+
 module Program.General.Program where
 
 import Autolib.Reader

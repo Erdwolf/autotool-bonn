@@ -1,7 +1,6 @@
-{-# language FlexibleContexts #-}
-module Challenger.Einsendung where
+{-# language FlexibleContexts, UndecidableInstances #-}
 
---   $Id$
+module Challenger.Einsendung where
 
 import Challenger.Ident
 

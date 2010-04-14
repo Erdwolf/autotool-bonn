@@ -1,3 +1,5 @@
+{-# language TypeSynonymInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
+
 -- | SQL formatted time (not duration)
 
 module Control.Time.Typ where

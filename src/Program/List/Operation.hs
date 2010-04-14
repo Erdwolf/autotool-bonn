@@ -17,7 +17,7 @@ data Type = Void
 instance ToDoc Type where toDoc = text . show
 
 data Operation =
-     Operation { object :: V.Name
+     Operation { object :: V.Name -- ^ the type of "this"
                , method :: String
                , args :: [ Type ]
                , result :: Type 

@@ -5,7 +5,8 @@ module Program.List.Instance where
 import Program.List.Expression as X
 import Program.List.Value as V
 import Program.List.Semantics as S
-
+import qualified Program.List.Config as F
+import qualified Program.List.Roll as R
 
 import Program.General.Class
 import Program.General.Central
@@ -35,14 +36,11 @@ instance OrderScore Program_List where
 instance Class Program_List Statement V.Value where
     execute p = S.execute
     example p = ( read "x.add(1,y.get(2));"
-                , read "List<int> x = { 1,2,3 } ; List<int> y = { 4,5,6};"
+                , read "List<int> x = { 1,2,3 } ; List<int> y = { 4,5,6 } ;"
                 )
-
-{-
 
 make_quiz :: Make
 make_quiz = quiz Program_List F.example
-
 
 instance Generator 
 	     Program_List 
@@ -75,5 +73,5 @@ instance Project
              ) where
     project _ ( start, p, final ) = ( p, final )
 
--}
+
 
