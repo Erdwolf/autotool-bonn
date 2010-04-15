@@ -1,3 +1,5 @@
+{-# language FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
+
 module Program.General.Central where
 
 import Program.General.Environment

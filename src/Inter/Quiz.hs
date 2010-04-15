@@ -1,3 +1,5 @@
+{-# language PatternSignatures, MultiParamTypeClasses, FunctionalDependencies #-}
+
 module Inter.Quiz where
 
 

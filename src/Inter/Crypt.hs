@@ -1,3 +1,5 @@
+{-# language TypeSynonymInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
+
 module Inter.Crypt 
 
 ( Crypt (..)

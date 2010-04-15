@@ -1,10 +1,11 @@
-{-# language MultiParamTypeClasses, DeriveDataTypeable #-}
+{-# language MultiParamTypeClasses, DeriveDataTypeable, FlexibleInstances #-}
 
 module Program.List.Instance where
 
 import Program.List.Expression as X
 import Program.List.Value as V
 import Program.List.Semantics as S
+import qualified Program.List.Operation as O
 import qualified Program.List.Config as F
 import qualified Program.List.Roll as R
 
@@ -45,12 +46,18 @@ make_quiz = quiz Program_List F.example
 instance Generator 
 	     Program_List 
 	     F.Config 
-	     ( Environment Program.Array.Value.Value
+	     ( Environment V.Value
              , Program Statement 
-             , Environment Program.Array.Value.Value 
+             , Maybe ( Environment V.Value )
              ) where
-    generator p conf key = 
-        R.roll conf `repeat_until` nontrivial conf
+    generator p conf key = do
+            e <- R.environment conf
+            p <- R.program O.ops e conf 
+            let mf = result $ Program.General.Class.execute Program_List e p
+            return ( e, p, mf )
+        `repeat_until` \ (e,p,mf) -> isJust mf 
+
+{-
 
 nontrivial conf (_, Program sts , final) = not $ or $ do
     let bnd = ( 0 , fromIntegral $ F.max_data_size conf )
@@ -60,18 +67,18 @@ nontrivial conf (_, Program sts , final) = not $ or $ do
 matches ( start, prog, final ) = 
     isJust $ result $ C.total Program_List ( prog, final ) start
 
-
+-}
 
 instance Project
 	     Program_List  
-	     ( Environment Program.Array.Value.Value
+	     ( Environment V.Value
              , Program Statement 
-             , Environment Program.Array.Value.Value 
+             , Maybe ( Environment V.Value  )
              )
 	     ( Program Statement
-             , Environment Program.Array.Value.Value 
+             , Environment V.Value 
              ) where
-    project _ ( start, p, final ) = ( p, final )
+    project _ ( start, p, Just final ) = ( p, final )
 
 
 

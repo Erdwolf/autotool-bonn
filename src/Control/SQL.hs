@@ -1,4 +1,4 @@
-{-# language RankNTypes, DeriveDataTypeable #-}
+{-# language DeriveDataTypeable, OverlappingInstances #-}
 
 module Control.SQL 
 
@@ -62,13 +62,13 @@ logged cs = when ( Local.debug ) $ do
 
 strich = "\n--------------------------------\n"
 
-reed :: forall a . ( Read a, Show a, Typeable a ) => String -> a
-reed cs = case readsPrec 0 cs of
+-- reed :: ( Read a, Show a, Typeable a ) => String -> a
+reed cs = case ( readsPrec 0 cs )  of
     [(x, "")] -> x
-    ( sonst ) -> 
+    sonst  -> 
 	error $ unlines [ "kein parse."
 			, "für eingabe:", cs 
-			, "für typ:" , show (typeOf (undefined::a)) 
+			, "für typ:" , show (typeOf (fst $ head sonst ) ) 
 			, "readsPrec:" , show sonst
 			]
 

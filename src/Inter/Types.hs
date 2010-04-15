@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, RankNTypes #-}
+{-# LANGUAGE GADTs, RankNTypes, MultiParamTypeClasses, FlexibleInstances, UndecidableInstances, DeriveDataTypeable #-}
 
 module Inter.Types where
 
