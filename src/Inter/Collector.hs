@@ -334,9 +334,11 @@ tmakers =
 		    , item Program.Array.Instance.make_quiz
 		    ]
 		, heading "Programme mit Listen, Stacks, Queues"
-		    [ item $ Program.General.Central.make_fixed 
-                             Program.List.Instance.Program_List
-		    -- , item Program.List.Instance.make_quiz
+		    [ heading "Programme mit Listen"
+                          [ item $ Program.General.Central.make_fixed 
+                                   Program.List.Instance.Program_List
+		          , item Program.List.Instance.make_quiz
+                          ]
 		    ]
 		, heading "Primitiv rekursive Funktionen (neu)"
 		    [ item Fun.Direct.make_fixed
@@ -440,12 +442,24 @@ tmakers =
                   ]
                 ]
          , heading "Datenstrukturen"
-                [ item Baum.Reconstruct.make_fixed
-                , item Baum.Reconstruct.make_quiz
-                , item Baum.Binary.make_quiz
-                , item Baum.AVL.make_quiz
-                , item Baum.RedBlack.make_quiz
-                , item Baum.ZweiDrei.make_quiz
+                [ heading "Bäume" 
+                    [ item Baum.Reconstruct.make_fixed
+                    , item Baum.Reconstruct.make_quiz
+                    , item Baum.Binary.make_quiz
+                    , item Baum.AVL.make_quiz
+                    , item Baum.RedBlack.make_quiz
+                    , item Baum.ZweiDrei.make_quiz
+                    ]
+		, heading "Programme mit Arrays"
+		    [ item $ Program.General.Central.make_fixed 
+                             Program.Array.Instance.Program_Array
+		    , item Program.Array.Instance.make_quiz
+		    ]
+		, heading "Programme mit Listen"
+                    [ item $ Program.General.Central.make_fixed 
+                                  Program.List.Instance.Program_List
+		    , item Program.List.Instance.make_quiz
+		    ]
                 ]
          , heading "Zahlensysteme"
                 [ item Number.Base.Central.make_fixed

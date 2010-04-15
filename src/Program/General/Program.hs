@@ -12,6 +12,8 @@ import Data.Typeable
 data Program st = Program [ st ]
     deriving ( Typeable )
 
+plength ( Program sts ) = length sts
+
 instance ToDoc st => ToDoc ( Program st ) where
     toDoc ( Program ss ) = vcat $ map toDoc ss
 

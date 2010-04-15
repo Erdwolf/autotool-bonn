@@ -40,8 +40,7 @@ program ::  [ O.Operation ]
            -> IO ( P.Program S.Statement )
 program ops env conf = do
     let handle e k | k > 0 = do
-            d <- randomRIO $ C.expression_depth_bounds conf
-            (x, f) <- statement ops e d
+            (x, f) <- statement ops e conf 
             xs <- handle f (k-1)
             return $ x : xs
         handle e 0 = return []
@@ -51,27 +50,68 @@ program ops env conf = do
 
 statement ::  [ O.Operation ]
            -> E.Environment V.Value
-           -> Int -- ^ max. nesting depth
+           -> C.Config
            -> IO (S.Statement, E.Environment V.Value)
-statement ops env d = do
-    (s, Just f) <- do   x <- expression True ops env O.Void d
-                        return ( S.Statement x, result $ S.execute env $ P.Program [ S.Statement x ] ) 
-          `repeat_until` \ (x, mf) -> isJust mf
+statement ops env conf = do
+    (s, Just f) <- do   
+        x <- top_expression ops env conf
+        return ( S.Statement x, result $ S.execute env $ P.Program [ S.Statement x ] ) 
+      `repeat_until` \ (x, mf) -> isJust mf
     return (s, f )
 
-expression :: Bool -- ^ must be toplevel (statement)?
-           -> [ O.Operation ]
+top_expression :: [ O.Operation ]
            -> E.Environment V.Value
-           -> O.Type -- ^ result type
-           -> Int  -- ^ max. nesting depth of expression
+           -> C.Config
            -> IO X.Expression
-expression top ops env ty d | d > 0 = do
-    ( name, val ) <- eins 
+top_expression ops env conf = do
+    ( name, val ) <- eins
           $ filter ( \ (name, val ) -> case val of
                           V.Collect {} -> True
                           _ -> False
                    )
           $ E.contents env
+    let l = length $ V.contents val
+    action <- eins $
+        [ do i <- some_expression ops env conf ( 0, l )
+             e <- some_expression ops env conf ( 0, l )
+             return $ X.Methodcall ( X.Reference name ) ( mkunary "add" ) [ i, e ]
+        ] ++ 
+        [ do i <- some_expression ops env conf ( 0, l - 1 )
+             return $ X.Methodcall ( X.Reference name ) ( mkunary "remove" ) [ i ]
+        | l > 0
+        ] 
+    action
+
+-- | construct some expression with some value from the given range
+some_expression ops env conf bnd = do
+    v <- randomRIO bnd
+    d <- randomRIO $ C.expression_depth_bounds conf
+    expression ops env v d
+
+expression ops env v d | d > 0 = do
+    ( name, val ) <- eins
+          $ filter ( \ (name, val ) -> case val of
+                          V.Collect {} -> True
+                          _ -> False
+                   )
+          $ E.contents env
+    action <- eins $
+        [ do return $ X.Methodcall ( X.Reference name ) ( mkunary "size" ) []
+        | v == length ( V.contents val  )
+        ] ++ 
+        [ do e <- expression ops env i ( d - 1 )
+             return $ X.Methodcall ( X.Reference name ) ( mkunary "get" ) [ e ]
+        | (i,c) <- zip [ 0 .. ] $ V.contents val
+        , V.Scalar ( fromIntegral v ) == c
+        ] ++ 
+        [ return $ X.Scalar $ fromIntegral v
+        ]
+    action
+
+expression ops env v d  = 
+    return $ X.Scalar $ fromIntegral d
+
+{-
     case    filter ( \ op -> O.object op == V.name ( V.typeof val ) )
           -- $ filter ( \ op -> O.result op `conform` ty )
           $ filter ( \ op -> O.toplevel op == top )
@@ -96,3 +136,4 @@ t1 `conform` t2 = case (t1, t2) of
     (O.Void, _) -> False
     (_, _) -> True -- what?
 
+-}

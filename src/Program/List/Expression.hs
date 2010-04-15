@@ -4,6 +4,7 @@ module Program.List.Expression where
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Size
 
 import Autolib.TES.Identifier
 import Data.Char ( isAlphaNum )
@@ -13,6 +14,12 @@ data Expression = Scalar Integer
                 | Reference Identifier
                 | Methodcall Expression Identifier [ Expression ]
     deriving Typeable
+
+instance Size Expression where
+    size x = case x of
+        Scalar {} -> 1
+        Reference {} -> 1
+        Methodcall x i xs -> sum $ map size $ x : xs 
 
 example :: Expression
 example = read "x.add(3,y.get(2))"

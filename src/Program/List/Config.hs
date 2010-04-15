@@ -33,9 +33,9 @@ data Config =
 example :: Config
 example = Config
 	{ variables = read "[ List<int> x, List<int> y ]"
-	, data_size_bounds = ( 4, 6)
-	, expression_depth_bounds = (4,6)
-	, program_length_bounds = (10,12)
+	, data_size_bounds = (5,5)
+	, expression_depth_bounds = (5,7)
+	, program_length_bounds = (5,5)
 	}
 
 $(derives [makeReader, makeToDoc] [''Config])

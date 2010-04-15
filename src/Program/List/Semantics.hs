@@ -12,6 +12,7 @@ import Program.List.Store as S
 import Autolib.Reporter
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Size
 
 import Control.Monad ( forM )
 import Control.Monad.State
@@ -29,6 +30,8 @@ instance ToDoc Statement where
     toDoc ( Statement x ) = toDoc x <> semi
 instance Reader Statement where
     reader = do x <- reader ; my_semi ; return $ Statement x
+instance Size Statement where
+    size ( Statement x ) = size x
 
 executeST :: Environment V.Value
         -> Program Statement 
