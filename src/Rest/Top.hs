@@ -38,7 +38,7 @@ main = simpleHTTP
         return $ toResponse "I am your server."
     , dir "GetTaskTypes" $ do
         return $ toResponse "list of tasks"
-    , dir "GetTaskCoonfig" 
+    , dir "GetTaskConfig" 
       $ withData $ \ ( task :: Task ) ->
         return $ toResponse "example config"
     , dir "VerifyTaskConfig" 
