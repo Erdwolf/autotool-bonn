@@ -8,6 +8,7 @@ module JData (
 import Types
 import Basic
 import Java
+import Package
 
 import System.FilePath
 import Control.Monad
@@ -15,7 +16,7 @@ import Text.PrettyPrint.HughesPJ
 import Data.Int
 
 package :: String
-package = "de.htwk.leipzig.autolat.connector.types"
+package = base ++ ".types"
 
 dir :: FilePath
 dir = "out" </> "types"

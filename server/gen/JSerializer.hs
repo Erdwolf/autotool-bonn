@@ -8,6 +8,7 @@ module JSerializer (
 import Types
 import Java
 import Basic
+import Package
 
 import Data.String
 import System.FilePath
@@ -15,10 +16,10 @@ import Control.Monad
 import Text.PrettyPrint.HughesPJ
 
 package :: String
-package = "de.htwk.leipzig.autolat.connector.xmlrpc.serialize"
+package = base ++ ".xmlrpc.serialize"
 
 tpackage :: String
-tpackage = "de.htwk.leipzig.autolat.connector.types"
+tpackage = base ++ ".types"
 
 dir :: FilePath
 dir = "out" </> "serialize"
