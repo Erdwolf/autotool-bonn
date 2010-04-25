@@ -1,6 +1,6 @@
 {-# language PatternSignatures #-}
 
-module Rest.Top where
+module Main ( main ) where
 
 import Happstack.Server.SimpleHTTP
 import Control.Monad ( msum, liftM )

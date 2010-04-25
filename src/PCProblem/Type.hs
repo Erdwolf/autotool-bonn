@@ -1,3 +1,5 @@
+{-# language TypeSynonymInstances, DeriveDataTypeable #-}
+
 -- | Korrekturfunktion für PCP-Aufgaben
 
 -- autor Markus Kreuz

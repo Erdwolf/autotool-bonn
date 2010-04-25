@@ -1,0 +1,33 @@
+Name:           autotool-rest
+Version:        0.0.1
+Author:         Bertram Felgenhauer
+Maintainer:     Bertram Felgenhauer
+Stability:      Experimental
+Synopsis:       autotool restful server
+Description:
+  This package provides a restful server
+  available as an Xml-RPC service.
+Cabal-Version:  >= 1.2
+Build-Type:     Simple
+
+Executable autotool.rest
+    Main-Is:        Rest/Top.hs
+    Hs-Source-Dirs: src
+    GHC-Options:    -Wall
+    Build-Depends: 
+        autolib-todoc,autolib-data,autolib-reader,
+        autolib-output,autolib-reporter,
+        autolib-util,
+        autotool-collection,
+        base >= 4 && < 4.3,
+        containers >= 0.2 && < 0.4,
+        mtl >= 1.1 && < 1.2,
+        parsec >= 2.1 && < 2.2,
+        pretty >= 1.0 && < 1.1,
+        directory, unix, process, old-time, random,
+        hsql, hsql-mysql,
+        happstack-server
+    Extensions:
+        FlexibleInstances
+        UndecidableInstances
+        GeneralizedNewtypeDeriving
