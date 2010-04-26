@@ -43,7 +43,8 @@ main = simpleHTTP
             m <- IC.makers
             return $ show m
     , dir "GetTaskCoonfig" 
-      $ withData $ \ ( task :: Task ) ->
+      $ withData $ \ ( task :: Task ) -> do
+        
         return $ toResponse "example config"
     , dir "VerifyTaskConfig" 
       $ withData $ \ ( task :: Task ) ->

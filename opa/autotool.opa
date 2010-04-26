@@ -45,7 +45,9 @@ main_page() =
     rest =
       <>
         <textarea id="config"></textarea>
-        <select id="select" onchange={ _ -> jlog(jQuery.getVal(#select))}>{ List.map((n -> <option value={n}>{n*n}</option>),[1,2,3,42]) }</select>
+        <select id="select" onchange={ _ -> 
+	    jlog(jQuery.getVal(#select))
+	}>{ List.map((n -> <option value={n}>{n*n}</option>),[1,2,3,42]) }</select>
         <div class="button" onclick={ _ -> check_config()}>check cache</div>
         <div id="cache"></div>
         <div class="button" onclick={ _ -> submit_config(client_session, "config")}>Submit config</div>
