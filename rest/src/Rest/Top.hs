@@ -1,6 +1,6 @@
 {-# language PatternSignatures #-}
 
-module Rest.Top where
+module Main ( main ) where
 
 import Happstack.Server.SimpleHTTP
 import Control.Monad ( msum, liftM )
@@ -9,19 +9,19 @@ import qualified Inter.Collector as IC
 
 ----------------------------------------------------
 
-data Task = Task String deriving Show
+data Task = Task String
 instance FromData Task where
     fromData = liftM Task $ look "task" 
 
-data Config = Config String deriving Show
+data Config = Config String
 instance FromData Config where
     fromData = liftM Config $ look "config" 
 
-data Instance = Instance String deriving Show
+data Instance = Instance String
 instance FromData Instance where
     fromData = liftM Instance $ look "instance" 
 
-data Solution = Solution String deriving Show
+data Solution = Solution String
 instance FromData Solution where
     fromData = liftM Solution $ look "solution" 
 
@@ -43,16 +43,13 @@ main = simpleHTTP
             m <- IC.makers
             return $ show m
     , dir "GetTaskCoonfig" 
-      $ withData $ \ ( task :: Task ) ->
+      $ withData $ \ ( task :: Task ) -> do
+        
         return $ toResponse "example config"
     , dir "VerifyTaskConfig" 
       $ withData $ \ ( task :: Task ) ->
         withData $ \ ( conf :: Config ) ->
-        return $ toResponse $ unlines
-               [ "verification result"
-               , show task
-               , show conf
-               ]
+        return $ toResponse "verification result"
     , dir "GetTaskInstance" 
       $ withData $ \ ( task :: Task ) ->
         withData $ \ ( conf :: Config ) ->
