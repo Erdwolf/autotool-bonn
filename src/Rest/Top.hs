@@ -7,19 +7,19 @@ import Control.Monad ( msum, liftM )
 
 ----------------------------------------------------
 
-data Task = Task String
+data Task = Task String deriving Show
 instance FromData Task where
     fromData = liftM Task $ look "task" 
 
-data Config = Config String
+data Config = Config String deriving Show
 instance FromData Config where
     fromData = liftM Config $ look "config" 
 
-data Instance = Instance String
+data Instance = Instance String deriving Show
 instance FromData Instance where
     fromData = liftM Instance $ look "instance" 
 
-data Solution = Solution String
+data Solution = Solution String deriving Show
 instance FromData Solution where
     fromData = liftM Solution $ look "solution" 
 
@@ -44,7 +44,11 @@ main = simpleHTTP
     , dir "VerifyTaskConfig" 
       $ withData $ \ ( task :: Task ) ->
         withData $ \ ( conf :: Config ) ->
-        return $ toResponse "verification result"
+        return $ toResponse $ unlines
+               [ "verification result"
+               , show task
+               , show conf
+               ]
     , dir "GetTaskInstance" 
       $ withData $ \ ( task :: Task ) ->
         withData $ \ ( conf :: Config ) ->
