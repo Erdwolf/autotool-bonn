@@ -1,12 +1,11 @@
 module Main (main) where
 
-import Read
+import Hilbert.Read
 
---import Search
-import Look
+-- import Search
+import Hilbert.Look
 
-import IO
-import System
+import System.IO
 
 ---------------------------------------------------------------
 
