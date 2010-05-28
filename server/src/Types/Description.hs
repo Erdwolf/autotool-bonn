@@ -9,6 +9,7 @@ import Util.Xml.Output
 
 import qualified Control.Monad.Error as E
 
+-- a description string
 newtype Description = DString String
     deriving (ToTransport, Eq, Read, Show)
 

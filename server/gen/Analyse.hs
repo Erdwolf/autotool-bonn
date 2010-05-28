@@ -1,3 +1,8 @@
+-- Analysys:
+-- Extract simplified data type information from a parsed Haskell module.
+--
+-- This is a tedious traversal of the haskell-src-exts ADT
+
 module Analyse (
     analyseModule
 ) where

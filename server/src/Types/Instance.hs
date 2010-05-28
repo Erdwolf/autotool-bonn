@@ -6,6 +6,7 @@ module Types.Instance (
 
 import Data.Autolib.Transport
 
+-- a task instance
 data Instance = Instance { tag :: String, contents :: String }
     deriving (Eq, Read, Show)
 

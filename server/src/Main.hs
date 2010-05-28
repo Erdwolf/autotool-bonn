@@ -1,5 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, UndecidableInstances #-}
 
+-- The main RPC service.
+
 module Main where
 
 import Network.XmlRpc.Server
@@ -19,6 +21,7 @@ main = do
     hSetBinaryMode stdin True
     cgiXmlRpcServer proto
 
+-- supported RPC calls
 proto :: [(String, XmlRpcMethod)]
 proto = [
     ("get_server_info", fun get_server_info),
@@ -30,5 +33,6 @@ proto = [
     ("ping", fun ping)
     ]
 
+-- ping is not part of the official protocol, but does no harm
 ping :: IO ()
 ping = return ()

@@ -39,5 +39,6 @@ processModule mod = do
     mapM_ jParser decls
     mapM_ jSerializer decls
 
+-- don't generate java code for these types
 blacklist :: [String]
 blacklist = ["TT", "Config", "Solution", "Description"]

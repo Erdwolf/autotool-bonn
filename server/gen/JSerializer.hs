@@ -1,5 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- Generate Serializers for a data type.
+--
+-- Serializers are built from hand-written basic parsers, namely
+--  StringSerializer, ...    (basic types)
+--  EitherSerializer<A, B>   (Either a b)
+--  ListSerializer<A>        ([a])
+-- and the XmlRpc* data types from the Redstone XML-RPC library
+--
+-- See the corresponding Java code for details.
+
 module JSerializer (
     dir,
     jSerializer
@@ -27,6 +37,7 @@ dir = "out" </> "serialize"
 clasz :: IsString s => s
 clasz = "Serializer"
 
+-- file header
 header = [
     "package" <+> text package <> ";",
     "import" <+> text (tpackage ++ ".*") <> ";",
@@ -37,7 +48,9 @@ header = [
         <+> string "unchecked" <> "}" <> ")"
  ]
 
+-- generate serializer
 jSerializer :: AData -> IO ()
+-- no type arguments: provide singleton
 jSerializer (AData ty@(AType nm tv) cons) | null tv =
     vWriteFile (dir </> (nm ++ clasz) <.> "java") $ show $ vcat $ header ++ [
         "public" <+> "class" <+> text (nm ++ clasz),
@@ -78,6 +91,7 @@ jSerializer (AData ty@(AType nm tv) cons) =
         ]
     ]
 
+-- make serializers for all alternatives, then pick the right one
 mkSerializer :: AType -> [ACons] -> Doc
 mkSerializer ty@(AType nm tv) [con] | consName con == nm
     = mkSingleSerializer ty con
@@ -106,6 +120,7 @@ mkSerializer ty@(AType nm tv) cons = vcat [
     ]
  ]
 
+-- make a serializer for the given type constructor
 mkSingleSerializer :: AType -> ACons -> Doc
 mkSingleSerializer ty@(AType nm tv) con = vcat [
     "new" <+> clasz <> vars [ty] <> "()",
@@ -124,6 +139,7 @@ mkSingleSerializer ty@(AType nm tv) con = vcat [
               ]
               | (nm', ty') <- consArgs con
          ] ++ case con of
+         -- named fields: use XmlRpcStruct
          ARec {} -> [
              "",
              "XmlRpcStruct" <+> "inner" <+> "="
@@ -135,6 +151,7 @@ mkSingleSerializer ty@(AType nm tv) con = vcat [
                  <> ")" <> ")" <> ";"
              | (nm', ty') <- consArgs con
           ]
+         -- anonymous fields: use XmlRpcArray
          ACons {} -> [
              "",
              "XmlRpcArray" <+> "inner" <+> "=" <+> "new"
@@ -155,6 +172,7 @@ mkSingleSerializer ty@(AType nm tv) con = vcat [
     ]
  ]
 
+-- construct a serializer for the given type
 makeTypeSerializer :: AType -> Doc
 makeTypeSerializer (AType nm tys) | null tys =
     text (upcase $ nm ++ clasz) <> "." <> "getInstance" <> "()"

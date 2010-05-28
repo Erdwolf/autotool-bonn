@@ -1,5 +1,53 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- Turn data types into equivalent Java classes.
+--
+-- easy case:
+--     data Foo a b = Foo { frotz :: a, xyzzy :: b }
+--
+-- becomes
+-- class Foo<A, B> {
+--     private A frotz;
+--     private B xyzzy;
+--     Baz(A frotz, B xyzzy) { this.frotz = frotz; this.xyzzy = xyzzy; }
+--     A getFrotz() { return frotz; }
+--     B getFrotz() { return xyzzy; }
+--     // equals, hashCode
+-- }
+
+--
+-- complex case:
+--     data Foo a b = Bar | Baz { frotz :: a, xyzzy :: b }
+--
+-- is turned into
+--
+-- interface Foo<A, B> {
+--     Bar<A, B> getBar();
+--     Baz<A, B> getBaz();
+--     boolean isBar();
+--     boolean isBaz();
+-- }
+--
+-- class Bar<A, B> implements Foo<A, B> {
+--     Bar() { }
+--     Bar<A, B> getBar() { return this; }
+--     Baz<A, B> getBaz() { return null; }
+--     boolean isBar() { return true; }
+--     boolean isBaz() { return false; }
+-- }
+--
+-- class Baz<A, B> implements Foo<A, B> {
+--     private A frotz;
+--     private B xyzzy;
+--     Baz(A frotz, B xyzzy) { this.frotz = frotz; this.xyzzy = xyzzy; }
+--     A getFrotz() { return frotz; }
+--     B getFrotz() { return xyzzy; }
+--     ...
+-- }
+--
+-- Anonymous fields (as in data Foo = Foo Int Int) will be called
+-- fiedl1, field2 etc.
+
 module JData (
     dir,
     jData
@@ -21,6 +69,7 @@ package = base ++ ".types"
 dir :: FilePath
 dir = "out" </> "types"
 
+-- file header
 header = [
     "package" <+> text package <> ";",
     "import" <+> "java.util.List" <> ";",
@@ -28,12 +77,15 @@ header = [
     "@SuppressWarnings" <> "(" <> string "unused" <> ")"
  ]
 
+-- actual worker
 jData :: AData -> IO ()
+-- simple case: one alternative
 jData (AData ty@(AType nm _) [con]) | nm == consName con = do
     vWriteFile (dir </> nm <.> "java") $ show $ vcat $ header ++ [
         "public" <+> "class" <+> tipe ty,
         block $ contents ty con
      ]
+-- complex case: several alternatives
 jData (AData ty@(AType nm tv) cons) = do
     vWriteFile (dir </> nm <.> "java") $ show $ vcat $ header ++ [
         "public" <+> "interface" <+> tipe ty,
@@ -75,6 +127,7 @@ jData (AData ty@(AType nm tv) cons) = do
          ]
     return ()
 
+-- actual class contents
 contents ty@(AType nm ts) con = let
     cn = consName con
     ty' = AType cn (map (const (AVar "?")) ts)

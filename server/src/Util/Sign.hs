@@ -1,6 +1,8 @@
 {-# LANGUAGE UndecidableInstances, FlexibleInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
+-- signing of data
+
 module Util.Sign (
     sign,
     verify,
@@ -32,6 +34,7 @@ verifyM = maybe (fail "invalid signature") return . verify
 instance Hash a => Sign a where
     sign_ a = hmac secret (hash a)
 
+-- XXX: this does not belong here.
 secret :: Digest
 secret = hash "secret"
 

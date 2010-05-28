@@ -13,6 +13,7 @@ import Types.ScoringOrder
 
 import Data.Autolib.Transport
 
+-- a task (type) description
 data TaskDescription = TaskDescription {
     task_sample_config :: Documented Config,
     task_scoring_order :: ScoringOrder
