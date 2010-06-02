@@ -1,0 +1,12 @@
+module Config (
+    timeLimit,
+    secret
+) where
+
+-- microseconds
+timeLimit :: Int
+timeLimit = 15 * 10^6
+
+-- secret key for signing task configurations
+secret :: String
+secret = "secret"

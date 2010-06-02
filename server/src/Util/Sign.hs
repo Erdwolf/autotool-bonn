@@ -15,6 +15,8 @@ import Types.Config as C
 import Types.Instance as I
 
 import Util.Hash
+import qualified Config
+
 import Data.Bits
 
 class Sign a where
@@ -34,9 +36,8 @@ verifyM = maybe (fail "invalid signature") return . verify
 instance Hash a => Sign a where
     sign_ a = hmac secret (hash a)
 
--- XXX: this does not belong here.
 secret :: Digest
-secret = hash "secret"
+secret = hash Config.secret
 
 -- cf. http://en.wikipedia.org/wiki/HMAC
 hmac :: Digest -> String -> Digest
