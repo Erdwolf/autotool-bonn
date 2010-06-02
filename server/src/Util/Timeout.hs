@@ -1,4 +1,4 @@
-module Timeout (
+module Util.Timeout (
     withTimeout
 ) where
 
