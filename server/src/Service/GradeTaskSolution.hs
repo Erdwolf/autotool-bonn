@@ -6,6 +6,7 @@ import Util.Sign
 import Util.Task
 import Util.Parse
 import Util.Description
+import Util.Timeout
 
 import Types.Basic
 import Types.Signed
@@ -25,7 +26,7 @@ grade_task_solution
     :: TT (Signed (Task, Instance)) -> TT Solution
     -> IO (TT (Either Description (Documented Double)))
 grade_task_solution (TT sTaskInst) (TT (SString solution))
-    = fmap TT . runErrorT $ do
+    = withTimeout . fmap TT . runErrorT $ do
         (task, inst) <- verifyM sTaskInst
         Make p _ maker0 _ _ <- lookupTaskM task
         inst' <- parseHelper "<instance>" (I.contents inst)

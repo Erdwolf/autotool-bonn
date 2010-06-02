@@ -12,14 +12,20 @@ import Service.GetTaskDescription
 import Service.VerifyTaskConfig
 import Service.GetTaskInstance
 import Service.GradeTaskSolution
+import Config
 
 import System.IO
+import System.Timeout
 
 main :: IO ()
 main = do
     hSetBinaryMode stdout True
     hSetBinaryMode stdin True
-    cgiXmlRpcServer proto
+    -- note: timeouts are supposed to be handled by the individual services.
+    -- this limit is a fallback.
+    timeout (timeLimit * 3 `div` 2) $
+        cgiXmlRpcServer proto
+    return ()
 
 -- supported RPC calls
 proto :: [(String, XmlRpcMethod)]
