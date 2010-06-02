@@ -23,7 +23,7 @@ import Data.Typeable
 
 
 instance C.Such AVLTree where
-    empty = Leaf
+    empty = leaf
     isEmpty = isLeaf
 
     contains = contains
@@ -31,7 +31,7 @@ instance C.Such AVLTree where
     delete = error "AVL.delete nicht implementiert"
 
     equal = (==)
-    contents = contents
+    contents =  inorder
 
 instance Show a => T.ToTree ( AVLTree a ) where
     toTree = toTree . fmap show

@@ -1,4 +1,5 @@
-{-# LANGUAGE OverlappingInstances #-}
+{-# LANGUAGE OverlappingInstances, FlexibleInstances #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module Tree.Class where
 
