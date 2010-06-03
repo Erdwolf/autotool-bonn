@@ -7,4 +7,5 @@ module Types.ScoringOrder (
 import Data.Autolib.Transport
 import Inter.Types
 
+-- type defined in Inter.Types now
 $(derives [makeToTransport] [''ScoringOrder])

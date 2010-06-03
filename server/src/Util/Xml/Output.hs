@@ -1,3 +1,5 @@
+-- Utility functions for dealing with the conversion of Output to Xml
+
 module Util.Xml.Output (
     outputToXmlString,
     stringToXmlString,
@@ -94,6 +96,7 @@ xmlStringToOutput = xoutputToOutput . either error id . readXml
 stringToXmlString :: String -> String
 stringToXmlString = xmlToString . wrapXOutput . X.OText . X.Text
 
+-- helpers for outputToXOutput
 nestSpacing :: X.Output
 nestSpacing = X.OSpace $ X.Space {
     X.spaceWidth = "4",

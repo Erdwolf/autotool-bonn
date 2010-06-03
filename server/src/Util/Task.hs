@@ -1,3 +1,5 @@
+-- task type related utility functions
+
 module Util.Task (
     ttmakers,
     lookupTask,

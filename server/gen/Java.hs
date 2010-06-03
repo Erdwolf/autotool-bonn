@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- Some combinators for performing layout of Java code.
+
 module Java (
     block,
     vars,
@@ -20,38 +22,48 @@ import Data.Char
 import Basic
 import Types
 
+-- indented block of statements, enclosed in braces.
 block :: [Doc] -> Doc
 block xs = vcat [text "{", nest 4 (vcat xs), "}", ""]
 
+-- turn list of types into generic arguments (<A,B,...>)
+-- ('vars' is a misnomer)
 vars :: [AType] -> Doc
 vars [] = empty
 vars xs = "<" <> sep (punctuate "," (map tipe xs)) <> ">"
 
+-- pretty print a type, possibly involving generic arguments
 tipe :: AType -> Doc
 tipe (AVar s) = text (map toUpper s)
 tipe (AType s xs) = text s <> vars xs
 
+-- constructor prototype
 consProto :: ACons -> Doc
 consProto con = text (consName con)
     <> "(" <> sep (punctuate "," (args (consArgs con))) <> ")"
 
+-- get constructor arguments
 consArgs :: ACons -> [(String, AType)]
 consArgs (ACons _ tys) = zip ["field" ++ show i | i <- [1..]] tys
 consArgs (ARec _ tys) = tys
 
+-- format function arguments
 args :: [(String, AType)] -> [Doc]
 args = map (\(nm, ty) -> tipe (unbox ty) <+> ident [nm])
 
+-- turn list of under_scored identifiers into singleStringCamelCase
 ident :: [String] -> Doc
 ident = text . locase . concat . map upcase . concatMap split_ where
     split_ [] = []
     split_ xs = let (a, b) = span (/= '_') xs
                 in  a : split_ (drop 1 b)
 
+-- turn first character of string to upper case
 upcase :: String -> String
 upcase [] = []
 upcase (x:xs) = toUpper x : xs
 
+-- same for lower case
 locase :: String -> String
 locase [] = []
 locase (x:xs) = toLower x : xs
@@ -68,6 +80,7 @@ vWriteFile fn text = do
         ""
      ] ++ text
 
+-- pretty print Java-quoted strings
 string :: String -> Doc
 string s = text (concat ["\"", concatMap quote s, "\""])
 

@@ -1,3 +1,5 @@
+-- utility function related to dealing with descriptions
+
 module Util.Description (
     fromDoc,
     fromToDoc,

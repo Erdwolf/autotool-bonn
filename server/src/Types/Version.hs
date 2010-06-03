@@ -6,6 +6,7 @@ module Types.Version (
 
 import Data.Autolib.Transport
 
+-- version record
 data Version = Version {
     major :: Int,
     minor :: Int,

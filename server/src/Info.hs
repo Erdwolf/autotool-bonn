@@ -1,3 +1,5 @@
+-- meta information about autotool server
+
 module Info (
     protocolVersion,
     serverName,

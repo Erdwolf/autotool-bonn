@@ -9,6 +9,7 @@ import Types.Version
 
 import Data.Autolib.Transport
 
+-- the server information record
 data ServerInfo = ServerInfo {
     protocol_version :: Version,
     server_name      :: String,

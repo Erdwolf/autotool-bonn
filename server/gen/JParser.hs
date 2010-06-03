@@ -1,5 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- Generate Parsers for a data type.
+--
+-- Parsers are built from hand-written basic parsers, namely
+--  StringParser, ...    (basic types)
+--  EitherParser<A, B>   (Either a b)
+--  ListParser<A>        ([a])
+--  ArrayElemParser<A>   (data ... = ... a ...)
+--  StructFieldParser<A> (data ... = ... { ... foo :: a ... } ...)
+--  AlternativeParser<A> (data ... = a0 | a1 ...)
+--
+-- See the corresponding Java code for details.
+
 module JParser (
     dir,
     jParser
@@ -27,6 +39,7 @@ dir = "out" </> "parse"
 clasz :: IsString s => s
 clasz = "Parser"
 
+-- file header
 header = [
     "package" <+> text package <> ";",
     "import" <+> text (tpackage ++ ".*") <> ";",
@@ -35,7 +48,9 @@ header = [
     "@SuppressWarnings" <> "(" <> string "unused" <> ")"
  ]
 
+-- generate the parser
 jParser :: AData -> IO ()
+-- simple case: no type arguments: provide a singleton for the parser.
 jParser (AData ty@(AType nm tv) cons) | null tv =
     vWriteFile (dir </> (nm ++ clasz) <.> "java") $ show $ vcat $ header ++ [
         "public" <+> "class" <+> text (nm ++ clasz),
@@ -52,6 +67,7 @@ jParser (AData ty@(AType nm tv) cons) | null tv =
             ]
         ]
     ]
+-- hard case
 jParser (AData ty@(AType nm tv) cons) =
     vWriteFile (dir </> (nm ++ clasz) <.> "java") $ show $ vcat $ header ++ [
         "public" <+> "class" <+> tipe (AType (nm ++ clasz) tv),
@@ -79,6 +95,7 @@ jParser (AData ty@(AType nm tv) cons) =
          ]
      ]
 
+-- handle alternatives using AlternativeParser
 foldAlternatives :: String -> [AType] -> [Doc] -> Doc
 foldAlternatives nm tv [x] = x
 foldAlternatives nm tv (x:xs) = vcat [
@@ -87,6 +104,7 @@ foldAlternatives nm tv (x:xs) = vcat [
     ")"
  ]
 
+-- handle a single alternative.
 makeAlternative :: String -> [AType] -> ACons -> Doc
 makeAlternative nm tv con = let
     cn = consName con
@@ -98,6 +116,9 @@ makeAlternative nm tv con = let
             vars [ty] <> "(" $$ nest 4 (string nm <> ","
                 $$ f <> ")")
   in
+    -- now provide a parser for each data field of the constructor
+    -- note the lazy initialisation - we need that because our parsers
+    -- can be recursive, e.g. for  data List = Nil | Cons Int List
     vcat [
         "new" <+> "StructFieldParser" <> vars [AType nm tv]
             <> "(",
@@ -136,6 +157,7 @@ makeAlternative nm tv con = let
         ")"
     ]
 
+-- create a new parser given a type
 makeTypeParser :: AType -> Doc
 makeTypeParser (AType nm tys) | null tys =
     text (upcase $ nm ++ clasz) <> "." <> "getInstance" <> "()"

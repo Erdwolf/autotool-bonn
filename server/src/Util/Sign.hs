@@ -1,6 +1,8 @@
 {-# LANGUAGE UndecidableInstances, FlexibleInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
+-- signing of data
+
 module Util.Sign (
     sign,
     verify,
@@ -13,6 +15,8 @@ import Types.Config as C
 import Types.Instance as I
 
 import Util.Hash
+import qualified Config
+
 import Data.Bits
 
 class Sign a where
@@ -33,7 +37,7 @@ instance Hash a => Sign a where
     sign_ a = hmac secret (hash a)
 
 secret :: Digest
-secret = hash "secret"
+secret = hash Config.secret
 
 -- cf. http://en.wikipedia.org/wiki/HMAC
 hmac :: Digest -> String -> Digest
