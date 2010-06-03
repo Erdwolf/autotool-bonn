@@ -49,19 +49,12 @@ rotate_right_then_left t =
            
 rebalance b = 
     case (weight $ left b, weight b, weight $ right b) of
-        t @ ( l,_,r ) | abs l >= 2 || abs r >= 2 -> whine t b
         ( _, w, _ ) | abs w < 2 -> b
         ( -1, -2, _)  -> rotate_right b
         ( 1, -2, _) -> rotate_left_then_right b
         ( _, 2, 1) -> rotate_left b
         ( _, 2, -1) -> rotate_right_then_left b
-        t -> whine t b
 
-whine t b = error $ unlines 
-                   [ "rebalance"
-                   , show t
-                   , show b
-                   ]
 
 insert t k = 
     if isLeaf t 
