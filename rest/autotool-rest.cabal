@@ -22,7 +22,7 @@ Executable autotool.rest
         base >= 4 && < 4.4,
         containers >= 0.2 && < 0.4,
         mtl >= 1.1 && < 1.2,
-        parsec >= 3 && < 4,
+        parsec >= 2 && < 4,
         pretty >= 1.0 && < 1.1,
         directory, unix, process, old-time, random,
         hsql, hsql-mysql,

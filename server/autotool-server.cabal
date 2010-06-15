@@ -27,7 +27,7 @@ Executable autotool.cgi
         containers >= 0.2 && < 0.4,
         haxr >= 3000.5 && < 3000.6,
         mtl >= 1.1 && < 1.2,
-        parsec >= 3 && < 4,
+        parsec >= 2 && < 4,
         dataenc >= 0.11 && < 0.14,
         pretty >= 1.0 && < 1.1,
         HaXml >= 1.20 && < 1.21,
