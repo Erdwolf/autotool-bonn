@@ -11,6 +11,6 @@ data Version = Version {
     major :: Int,
     minor :: Int,
     micro :: Int
-} deriving (Eq, Read, Show)
+} deriving (Ord, Eq, Read, Show)
 
 $(derives [makeToTransport] [''Version])
