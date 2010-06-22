@@ -66,7 +66,7 @@ xoutputToOutput o = case o of
    X.OPre  (X.Pre  txt) -> O.Pre (D.text txt)
    X.OText (X.Text txt) -> O.Text txt
    X.OImage (X.Image _ img) ->
-       O.Image "?" (return $ B.pack $ fromJust $ C.decode img)
+       O.Image (mkData img) (return $ B.pack $ fromJust $ C.decode img)
    X.OLink (X.Link (X.Link_Attrs { X.linkHref = uri }) txt) ->
        O.Named_Link txt uri
    X.OAbove (X.Above []) -> O.Empty
@@ -77,6 +77,8 @@ xoutputToOutput o = case o of
    X.OSpace _ -> O.Empty -- FIXME
    X.OFigure (X.Figure a b) -> O.Figure (xoutputToOutput a) (xoutputToOutput b)
 
+
+mkData = ("data:image/png;base64," ++)
 
 wrapXOutput :: X.Output -> Document ()
 wrapXOutput o = let [CElem e _] = toContents o in
