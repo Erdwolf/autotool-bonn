@@ -23,14 +23,13 @@ import qualified Autolib.Multilingual as M
 import Service.Interface
 import Data.List
 import Data.Word
-import qualified Data.String.UTF8 as U
 import qualified Text.XHtml as X
 
+import qualified Data.String.UTF8 as U
 import qualified Data.ByteString.Char8 as B
 
 server :: Server
-server = "http://localhost/~bf3/cgi-bin/autotool-0.3.0.cgi"
-    -- "https://autolat.imn.htwk-leipzig.de/cgi-bin/autotool-0.2.0.cgi"
+server = "http://autolat.imn.htwk-leipzig.de/cgi-bin/autotool-0.2.0.cgi"
 
 min_version, max_version :: Version
 min_version = Version 0 1 0
@@ -66,7 +65,6 @@ s1 = dir "tool" $ fmap toResponse $ fmap complete $ render $ do
     doc dconf
     configuration <- du `fmap` textarea conf
     p $ menu "" [("Submit", ())]
-    liftIO $ print configuration
     hr -----------------------------------------------------------------
     h2 $ "Verify task configuration"
     vrfy <- liftIO $ verify_task_config server task (CString configuration)
@@ -126,7 +124,6 @@ doc = descr . D.documentation
 
 descr desc = do
     let DString d = desc
-    liftIO $ print d
     p $ xhtml $ M.specialize M.DE $ O.render $ xmlStringToOutput $ du d
 
 hconcat = foldr (X.+++) X.noHtml
