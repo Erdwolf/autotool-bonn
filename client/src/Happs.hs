@@ -41,8 +41,9 @@ main = simpleHTTP nullConf { port = 8000 } $ msum [s1, s2]
 s2 = dir "style" $ return $ toResponse $ style
 
 s1 = dir "tool" $ fmap toResponse $ fmap complete $ render $ do
+    h1 $ "autOlat test frontend."
     hr -----------------------------------------------------------------
-    h2 $ "Server information"
+    h2 $ "Server information (get_server_info)"
     info <- liftIO $ get_server_info server
     p $ text $ "Server name: " ++ server_name info
     p $ text $ "Server version: " ++ pp_version (server_version info)
@@ -52,11 +53,11 @@ s1 = dir "tool" $ fmap toResponse $ fmap complete $ render $ do
         p $ text $ "Unsupported Server version."
         mzero
     hr -----------------------------------------------------------------
-    h2 $ "Select task type"
+    h2 $ "Select task type (get_task_types)"
     tasks <- liftIO $ get_task_types server
     task <- table $ select_task_types "Category" tasks
     hr -----------------------------------------------------------------
-    h2 $ "Configure task type " ++ task
+    h2 $ "Configure task type " ++ task ++ " (get_task_description)"
     taskdescr <- liftIO $ get_task_description server task
     p $ text $ "(Scoring order = " ++ show (task_scoring_order taskdescr) ++ ")"
     let dconf = task_sample_config taskdescr
@@ -66,7 +67,7 @@ s1 = dir "tool" $ fmap toResponse $ fmap complete $ render $ do
     configuration <- du `fmap` textarea conf
     p $ menu "" [("Submit", ())]
     hr -----------------------------------------------------------------
-    h2 $ "Verify task configuration"
+    h2 $ "Verify task configuration (verify_task_config)"
     vrfy <- liftIO $ verify_task_config server task (CString configuration)
     config <- case vrfy of
         Left d -> do
@@ -76,7 +77,7 @@ s1 = dir "tool" $ fmap toResponse $ fmap complete $ render $ do
         Right config -> return config
     p $ text $ "Ok."
     hr -----------------------------------------------------------------
-    h2 $ "Get a task instance"
+    h2 $ "Get a task instance (get_task_instance)"
     p $ text $ "Enter seed:"
     seed <- textfield "123"
     p $ submit "Submit"
@@ -87,7 +88,7 @@ s1 = dir "tool" $ fmap toResponse $ fmap complete $ render $ do
     sol <- du `fmap` textarea sample
     p $ menu "" [("Submit solution", ())]
     hr -----------------------------------------------------------------
-    h2 $ "Verify task solution"
+    h2 $ "Verify task solution (grade_task_solution)"
     vrfy <- liftIO $ grade_task_solution server inst (SString sol)
     dscore <- case vrfy of
         Left d -> do
