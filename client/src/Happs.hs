@@ -138,7 +138,8 @@ complete doc = hconcat [
 
 style = CSSString $ unlines [
     "table { border: 2px solid #2f62c4; border-collapse: collapse; }",
-    "td {  border: 2px solid #2f62c4; }"
+    "td {  border: 2px solid #2f62c4; }",
+    "textarea { background-color: #ddeeff; }"
     ]
 
 newtype CSSString = CSSString String
