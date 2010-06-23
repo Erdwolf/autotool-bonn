@@ -43,6 +43,9 @@ s2 = dir "style" $ return $ toResponse $ style
 s1 = dir "tool" $ fmap toResponse $ fmap complete $ render $ do
     h1 $ "autOlat test frontend."
     hr -----------------------------------------------------------------
+    h2 $ "Service provider"
+    p $ text $ "Using server at " ++ server ++ " ."
+    hr -----------------------------------------------------------------
     h2 $ "Server information (get_server_info)"
     info <- liftIO $ get_server_info server
     p $ text $ "Server name: " ++ server_name info
