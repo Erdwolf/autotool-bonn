@@ -14,7 +14,6 @@ Executable autolat-happs
     Hs-Source-Dirs: src
     GHC-Options:    -Wall
     Build-Depends:
-        autotool-collection,
         autolib-transport,
         autolib-output,
         autolib-todoc,
@@ -42,7 +41,6 @@ Executable autolat-happs
 --     Hs-Source-Dirs: src
 --     GHC-Options:    -Wall
 --     Build-Depends:
---         autotool-collection,
 --         autolib-transport,
 --         autolib-output,
 --         autolib-todoc,

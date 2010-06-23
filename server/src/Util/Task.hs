@@ -8,7 +8,7 @@ module Util.Task (
 ) where
 
 import Types.TaskTree
-import Types.ScoringOrder
+import qualified Types.ScoringOrder as SO
 
 import Inter.Collector
 import Inter.Types
@@ -31,5 +31,8 @@ lookupTask name = listToMaybe
 lookupTaskM :: Monad m => String -> m Make
 lookupTaskM = maybe (fail "invalid task type") return . lookupTask
 
-taskScoringOrder :: Make -> ScoringOrder
-taskScoringOrder = scoringOrder
+taskScoringOrder :: Make -> SO.ScoringOrder
+taskScoringOrder = convertSO . scoringOrder where
+    convertSO Increasing = SO.Increasing
+    convertSO Decreasing = SO.Decreasing
+    convertSO None = SO.None
