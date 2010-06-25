@@ -1,3 +1,5 @@
+-- parsing related utility functions
+
 module Util.Parse (
     parseHelper
 ) where

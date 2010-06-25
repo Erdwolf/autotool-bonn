@@ -6,6 +6,7 @@ module Types.Solution (
 
 import Data.Autolib.Transport
 
+-- a solution string
 newtype Solution = SString String
     deriving (ToTransport, Eq, Read, Show)
 

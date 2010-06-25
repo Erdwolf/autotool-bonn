@@ -23,7 +23,7 @@ Executable Trial.cgi
     autolib-graph,autolib-relation,autolib-exp,
     autolib-rewriting,autolib-dot,autolib-algorithm,
     autotool-collection,
-    base == 4.*,parsec==2.*, old-locale,old-time,
+    base == 4.*,parsec >=2 && < 4, old-locale,old-time,
     xhtml==3000.*,cgi,
     hsql==1.7.1,hsql-mysql==1.7.1,
     containers,directory,random,mtl,

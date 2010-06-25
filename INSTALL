@@ -9,6 +9,11 @@ Prerequisites:
  * autolib       ( git://autolat.imn.htwk-leipzig.de/git/autolib )
  * autotool sources ( git://autolat.imn.htwk-leipzig.de/git/tool )
 
+ * a web server that can execute CGIs
+ * a data directory for storing task instances (for Trial.cgi and Super.cgi)
+ * ../pics (relative to the cgi bin directory) should also be writable
+   and will be used for creating images.
+
 ------------------------------------------------------------------------------
 Installation:
 
@@ -20,30 +25,38 @@ Fetch common/
 
 Create some configuration files:
 - src/Local.hs
-   (FIXME)
+  # cp src/Local.hs.in src/Local.hs
+  - edit  src/Local.hs  to change debug flag
 - src/Util/Datei/Base.hs
-   (FIXME)
+  # cp src/Util/Datei/Base.hs.in src/Util/Datei/Base.hs
+  - edit  src/Util/Datei/Base.hs.in  to reflect base path.
 - src/control/Mysqlconnect.hs
  # cp src/control/Mysqlconnect.hs.example src/control/Mysqlconnect.hs
  edit src/control/Mysqlconnect.hs
 
-Collection (needed for both Trial.cgi and Super.cgi):
+Collection (also known as autotool-collection; required for all front ends):
  # cd collection; cabal install; cd ..
 
-Trial:
+Trial.cgi front end:
  # cd trial
  # cabal configure && cabal build
 Copy the built cgi, for example,
  # cp dist/build/Trial.cgi/Trial.cgi ~/public_html/cgi-bin
  # cd ..
 
-Super:
+Super.cgi front end:
  # cd super
  # cabal configure && cabal build
-
 Copy the built cgi, for example,
  # cp dist/build/Super.cgi/Super.cgi ~/public_html/cgi-bin
  # cd ..
+
+autotool-server service (also requires autotool-collection):
+ # cd server
+ - copy src/Config.hs.sample to src/Config.hs and modify the secret
+ # cabal configure && cabal build
+Copy the built cgi, for example,
+ # cp dist/build/autotool.cgi ~/public_html/cgi-bin
 
 Database:
 
@@ -59,7 +72,7 @@ Additional notes:
 Add a school:
   insert into schule (name, mail_suffix) values ('testing', '');
 
-(Adding users can be done with the web front end)
+(Adding users is possible with the Super.cgi front end)
 
 Grant administration privileges for a school:
   insert into direktor values (2,0); # make user 2 head of university 0

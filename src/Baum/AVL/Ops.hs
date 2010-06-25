@@ -1,84 +1,65 @@
 module Baum.AVL.Ops where
 
---  $Id$
-
 import Baum.AVL.Type 
+import Autolib.Size
+
 
 contains :: Ord a => AVLTree a -> a -> Bool
-contains Leaf _ = False
-contains t k
-  | k == key t = True
-  | k < key t = contains (left t) k
-  | otherwise = contains (right t) k
+contains t k = foldt 
+    ( \ l j r -> case compare k j of
+           LT -> l ; EQ -> True ; GT -> r ) 
+    False
+    t
 
-insert :: Ord a => AVLTree a -> a -> AVLTree a
-insert t v = (\(new_t, g) -> new_t) $ insert_avl t v
+-----------------------------------------------------
 
--- delete :: Ord a => AVLTree a -> a -> AVLTree a
+repeated_insert_ok :: [ Int ] -> Bool
+repeated_insert_ok xs = 
+    proper $ foldl insert leaf xs 
+    -- size ( foldl insert leaf xs ) == length xs
+    
 
---equal :: Eq a => AVLTree a -> AVLTree a -> Bool
---equal = (==)
+-----------------------------------------------------
 
-contents :: Ord a => AVLTree a -> [a]
-contents = foldt (\l k w r -> l ++ [k] ++ r) [] 
+rotate_right t = 
+    branch ( left $ left t ) 
+           ( key $ left t )
+           ( branch ( right $ left t )
+                    ( key t )
+                    ( right t ) )
 
+rotate_left t = 
+    branch ( branch ( left t )
+                    ( key t )
+                    ( left $ right t ) )
+           ( key $ right t )
+           ( right $ right t ) 
 
---------------------------------------------------------------------------
+rotate_left_then_right t = 
+    rotate_right $ branch 
+                 ( rotate_left $ left t )
+                 ( key t )
+                 ( right t )
 
-insert_avl :: (Ord a) => AVLTree a -> a -> (AVLTree a, Bool)
-insert_avl Leaf v = (Branch Leaf v 0 Leaf, True)
-insert_avl (Branch l k w r) v 
-  | v <= k = let (t, g) = insert_avl l v
-             in  if (g) 
-                 then grown_left $ Branch t k w r 
-                 else (Branch t k w r, g)
-                           
-  | v >  k = let (t, g) = insert_avl r v
-             in   if (g) 
-                  then grown_right $ Branch l k w t 
-                  else (Branch l k w t, g)
-
-rotation_right :: AVLTree a -> AVLTree a   
-rotation_right (Branch l k w r) = Branch (left l)
-                                         (key l)
-                                         w
-                                         (Branch (right l) k w r)
-                                       
-rotation_left :: AVLTree a -> AVLTree a                                 
-rotation_left (Branch l k w r) = Branch (Branch l k w (left r))
-                                        (key r)
-                                        w
-                                        (right r)
-
-grown_left :: AVLTree a -> (AVLTree a, Bool)
-grown_left t@(Branch l k w r)
-        | w == (-1) = if (weight l == -1)
-                      then ((\(Branch l k w r) -> Branch l k w (modBalance r 0)) ( rotation_right (modBalance t 0) ), False)
-                      else (new_Balance_left (rotation_right (Branch (rotation_left l) k 0 r)), False)
-        | w == 0  = (Branch l k (-1) r , True)
-        | w == 1  = (Branch l k 0 r , False)
-
-grown_right :: AVLTree a -> (AVLTree a, Bool)
-grown_right t@(Branch l k w r)
-        | w == 1 = if (weight r == 1)
-                   then ((\(Branch l k w r) -> Branch (modBalance l 0) k w r) ( rotation_left (modBalance t 0) ), False)
-                   else (new_Balance_right (rotation_left (Branch l k 0 (rotation_right r))), False)
-        | w == 0  = (Branch l k 1 r , True)
-        | w == (-1)  = (Branch l k 0 r , False)
+rotate_right_then_left t =
+    rotate_left $ branch
+                ( left t )
+                ( key t )
+                ( rotate_right $ right t )
+           
+rebalance b = 
+    case (weight $ left b, weight b, weight $ right b) of
+        ( _, w, _ ) | abs w < 2 -> b
+        ( -1, -2, _)  -> rotate_right b
+        ( 1, -2, _) -> rotate_left_then_right b
+        ( _, 2, 1) -> rotate_left b
+        ( _, 2, -1) -> rotate_right_then_left b
 
 
-new_Balance_left :: AVLTree a -> AVLTree a 
-new_Balance_left (Branch l k w r) 
-        | w == 1    = Branch (modBalance l (-1)) k w (modBalance r 0)
-        | w == (-1) = Branch (modBalance l 1) k w (modBalance r 0)
-        | w == 0    = Branch (modBalance l 0) k w (modBalance r 0)
+insert t k = 
+    if isLeaf t 
+    then branch leaf k leaf
+    else rebalance $ if k < key t 
+         then branch ( insert ( left t ) k ) (key t)(right t)
+         else branch (left t)( key t)(insert (right t) k)
 
--- | Balance Kontrollieren
-new_Balance_right :: AVLTree a -> AVLTree a 
-new_Balance_right (Branch l k w r) 
-        | w == (-1) = Branch (modBalance l 0) k w (modBalance r 1)
-        | w == 1    = Branch (modBalance l (-1)) k w (modBalance r 0)
-        | w == 0    = Branch (modBalance l 0) k w (modBalance r 0)     
-
-modBalance :: AVLTree a -> Int -> AVLTree a
-modBalance (Branch l k _ r) w = Branch l k w r

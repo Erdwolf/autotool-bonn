@@ -4,6 +4,7 @@ module Types.Basic (
 
 import Util.Hash
 
+-- basic types
 type Name = String
 type Task = String
 type Seed = String

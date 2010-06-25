@@ -1,21 +1,21 @@
-module Read 
+module Hilbert.Read 
 
 ( parsed
 )
 
 where
 
-import Ids
-import Syntax
+import Hilbert.Ids
+import Hilbert.Syntax
 
 
-import Ops (ops)
+import Hilbert.Ops (ops)
 
-import Defaults
-import Semantik
-import ExpParse
+-- import Hilbert.Defaults
+-- import Hilbert.Semantik
+-- import Hilbert.ExpParse
 
-import FiniteMap
+import Autolib.FiniteMap
 
 -------------------------------------------------------------
 

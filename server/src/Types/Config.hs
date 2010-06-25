@@ -6,6 +6,7 @@ module Types.Config (
 
 import Data.Autolib.Transport
 
+-- a task configuration string
 newtype Config = CString String
     deriving (ToTransport, Eq, Read, Show)
 
