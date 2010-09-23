@@ -29,7 +29,7 @@ edit title mt = do
 		     ] 
 		     [ 1.. ]
     [ y, m, d, h, i, s ]  <- selectors title
-        [ def ( year t   ) $ numbers ( 2000, 2010 )
+        [ def ( year t   ) $ numbers ( 2000, 2020 )
 	, def ( month t  ) $ months 
 	, def ( day t    ) $ numbers ( 1, 31 )
 	, def ( hour t   ) $ numbers ( 0, 23 )
