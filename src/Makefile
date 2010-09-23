@@ -11,7 +11,9 @@ include Makefile-defs
 MAIN = Inter/Super.cgi
 TRIAL = Inter/Trial.cgi
 
-all : drift $(CGIS)
+CGIS = $(MAIN) $(TRIAL)
+
+all : $(CGIS)
 
 control : 
 	( cd control && make autoan.cgi )
