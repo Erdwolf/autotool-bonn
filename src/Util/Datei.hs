@@ -25,7 +25,10 @@ import System.Directory
 import System.Time
 import Control.Monad (guard, when)
 import System.Cmd ( system)
-import System.IO
+
+import qualified System.IO.UTF8 as SIU
+import System.IO 
+
 import System.Environment ( getEnv )
 import Data.Char (isAlphaNum)
 import qualified System.Posix
@@ -103,7 +106,7 @@ anhaengen :: Datei -> String -> IO ()
 anhaengen d inhalt = do
     createDir d
     h <- home d
-    appendFile h inhalt
+    SIU.appendFile h inhalt
 
 loeschen :: Datei -> IO ()
 loeschen d  = do
@@ -118,7 +121,7 @@ schreiben d inhalt = do
 --    when ( length inhalt >= 0 ) -- force evaluation? 
 --	 $ writeFile h inhalt
     f <- openFile h WriteMode 
-    hPutStr f inhalt
+    SIU.hPutStr f inhalt
     hClose f
 
     debug "... after writeFile"
@@ -150,7 +153,7 @@ lesen d  = do
     ex <- System.Directory.doesFileExist h
     if ex then do
             f <- openFile h ReadMode
-            cs <- hGetContents f
+            cs <- SIU.hGetContents f
             -- hGetContents is lazy - force its result before closing the file
             CE.evaluate (last cs)
             hClose f
