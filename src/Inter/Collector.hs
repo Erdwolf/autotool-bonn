@@ -19,6 +19,7 @@ import qualified Sortier.Programm.Check
 import qualified JVM.Make
 import qualified Turing.Make
 import qualified Brainfuck.Make
+import qualified Peano.Make
 
 import qualified Fun.Quiz
 import qualified Fun.Make
@@ -351,6 +352,9 @@ tmakers =
                 , item RAM.Make.make
                 , item RM.Make.make
                 , item Brainfuck.Make.computer
+                , heading "Peano-Zahlen und Folds"
+                    [ item Peano.Make.make
+                    ]
                 ]
          , heading "Terme, Ersetzungssysteme"
                 [ heading "Wortersetzung"

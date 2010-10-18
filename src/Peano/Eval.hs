@@ -8,8 +8,13 @@ import Autolib.ToDoc
 
 -- | the type in ValFun is just the argument type 
 -- (not the result type)
-data Val = ValNat Int
+data Val = ValNat Integer
          | ValFun ( Val -> Reporter Val )
+
+instance ToDoc Val where
+    toDoc v = case v of
+        ValNat n -> toDoc n
+        ValFun _ -> text "<<<function>>>"
 
 type Env = String -> Maybe Val
 
@@ -21,6 +26,7 @@ std _ = Nothing
 
 value :: Env -> D.Exp -> Reporter Val
 value env x = case x of
+    D.Const i -> return $ ValNat i
     D.Ref n -> case env n of
         Just v -> return v
         Nothing -> reject $ hsep [ text "Name", text n, text "nicht gebunden" ]
@@ -38,7 +44,7 @@ value env x = case x of
             with_nat ( return v ) $ \ n -> fold z s n
 
 fold :: Monad m
-     => a -> ( a -> m a ) -> Int -> m a
+     => a -> ( a -> m a ) -> Integer -> m a
 fold z s n = 
     if n > 0 
     then fold z s ( pred n ) >>= s
@@ -55,7 +61,7 @@ with_val v k = do
     k x
 
 with_nat :: Reporter Val
-         -> ( Int -> Reporter Val )
+         -> ( Integer -> Reporter Val )
          -> Reporter Val
 with_nat v k = do
     x <- v

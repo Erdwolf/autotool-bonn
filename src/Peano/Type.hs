@@ -1,14 +1,17 @@
+{-# language DeriveDataTypeable #-}
+
 module Peano.Type where
 
 import Autolib.ToDoc
 import Autolib.Reader
+import Data.Typeable
 
 import qualified Text.Parsec as TP
 
 import Data.List ( intersperse )
 
 data Type = Nat | App Type Type
-    deriving ( Eq )
+    deriving ( Eq, Ord, Typeable )
 
 spine :: Type -> [ Type ]
 spine t = case t of

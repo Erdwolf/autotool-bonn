@@ -1,3 +1,5 @@
+{-# language DeriveDataTypeable #-}
+
 module Peano.Data where
 
 import qualified Peano.Type
@@ -5,11 +7,28 @@ import qualified Peano.Type
 import Autolib.ToDoc
 import Autolib.Reader
 
-data Exp = Ref String
+import Autolib.Size
+
+import Data.Typeable
+
+
+data Exp = Const Integer
+         | Ref String
          | Abs String Peano.Type.Type Exp
          | App Exp Exp
          | Fold Exp Exp
-    deriving ( Eq )
+    deriving ( Eq, Ord, Typeable )
+
+instance Size Exp where
+    size x = case x of
+        Const _ -> 1
+        Ref _ -> 1
+        Abs n t x -> succ $ size x
+        App f a -> succ $ size f + size a
+        Fold z s -> succ $ size z + size s
+
+example :: Exp
+example = read "fold ( \\ ( y :: N ) -> y ) ( \\ (f :: N -> N) -> \\ (y :: N) -> s (f y)) "
 
 instance Reader Exp where
     reader = do 
@@ -36,6 +55,7 @@ atomic = my_parens reader
 
 instance ToDoc Exp where
     toDocPrec p x = case x of
+        Const i -> toDoc i
         Ref s -> text s
         Abs n t x -> parenthesized p $ hsep 
             [ text "\\" 
