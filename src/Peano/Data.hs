@@ -8,6 +8,7 @@ import Autolib.Reader
 data Exp = Ref String
          | Abs String Peano.Type.Type Exp
          | App Exp Exp
+         | Fold Exp Exp
     deriving ( Eq )
 
 instance Reader Exp where
@@ -26,6 +27,11 @@ atomic = my_parens reader
         my_reserved "->"
         x <- reader
         return $ Abs n t x
+    <|> do 
+        my_reserved "fold"
+        z <- atomic
+        s <- atomic
+        return $ Fold z s
     <|> do i <- my_identifier ; return $ Ref i
 
 instance ToDoc Exp where
@@ -39,6 +45,8 @@ instance ToDoc Exp where
             ]
         App f a -> parenthesized p 
             $ hsep [ toDoc f , toDocPrec 9 a ]
+        Fold z s -> parenthesized p 
+            $ hsep [ text "fold", toDocPrec 9 z, toDocPrec 9 s ]
 
 parenthesized p =
     if p > 0 then parens else id
