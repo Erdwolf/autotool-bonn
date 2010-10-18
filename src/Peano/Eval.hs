@@ -14,7 +14,7 @@ data Val = ValNat Integer
 instance ToDoc Val where
     toDoc v = case v of
         ValNat n -> toDoc n
-        ValFun _ -> text "<<<function>>>"
+        ValFun _ -> text "((function))"
 
 type Env = String -> Maybe Val
 
@@ -25,7 +25,13 @@ std "z" = Just $ ValNat 0
 std _ = Nothing
 
 value :: Env -> D.Exp -> Reporter Val
-value env x = case x of
+value env x = do
+    inform $ toDoc x <+> text "=" <+> text "?"
+    v <- nested 4 $ value_ env x
+    inform $ toDoc x <+> text "=" <+> toDoc v
+    return v
+
+value_ env x = case x of
     D.Const i -> return $ ValNat i
     D.Ref n -> case env n of
         Just v -> return v
