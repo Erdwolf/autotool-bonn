@@ -103,6 +103,7 @@ home d = do
 
 anhaengen :: Datei -> String -> IO ()
 anhaengen d inhalt = do
+    debug "anhaengen"
     createDir d
     h <- home d
     System.IO.UTF8.appendFile h inhalt
@@ -114,6 +115,7 @@ loeschen d  = do
 
 schreiben :: Datei -> String -> IO FilePath
 schreiben d inhalt = do
+    debug "schreiben"
     createDir d
     h <- home d
     debug "before writeFile ..."
@@ -151,6 +153,7 @@ perm flags f = do
 
 lesen :: Datei -> IO(String)
 lesen d  = do
+    debug "lesen"
     h <- home d
     ex <- System.Directory.doesFileExist h
     if ex then do
