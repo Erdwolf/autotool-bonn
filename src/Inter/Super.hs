@@ -5,6 +5,9 @@
 
 module Main where
 
+import Prelude hiding ( readFile, writeFile, appendFile )
+import System.IO.UTF8 ( readFile, writeFile, appendFile )
+
 import Gateway.CGI
 
 import Inter.Evaluate
