@@ -1,6 +1,6 @@
 module Debug where
 
-import System.IO
+import System.IO.UTF8
 import System.Time
 import qualified Local
 import Control.Monad ( when )
@@ -14,7 +14,7 @@ jetzt = do
 
 debug msg = when Local.debug $ do
     now <- jetzt
-    appendFile "/tmp/tool.log" $ unlines [ now, msg ]
+    System.IO.UTF8.appendFile "/tmp/tool.log" $ unlines [ now, msg ]
     -- hPutStrLn stderr cs
     -- hFlush stderr
 
