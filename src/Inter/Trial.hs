@@ -171,14 +171,17 @@ aufgaben tmk pack = do
     common_aufgaben tmk pack Nothing True
 
 common_aufgaben tmk svt @ ( stud, vnr, tutor ) mauf conf = do
+    -- plain $ "common_aufgaben.conf: " ++ show conf
     let mks = do Right mk <- flatten tmk ; return mk
-    ( mk, type_click ) <- find_mk tmk True mauf
+    ( mk, type_click ) <- find_mk tmk conf mauf
     -- if the user chose a new type, ignore any predetermined configuration
     let conf' = conf || type_click
         mauf' = if type_click then Nothing else mauf
     common_aufgaben_trailer svt mauf' conf' mks mk type_click
 
 common_aufgaben_trailer ( stud, vnr, tutor ) mauf conf mks mk type_click = do
+    -- plain $ "common_aufgaben_trailer.conf: " ++ show conf
+    -- plain $ "common_aufgaben_trailer.type_click: " ++ show type_click
     auf' <- case ( mauf, conf ) of
 	 ( Just auf, False ) -> return auf
 	 _ -> edit_aufgabe mks mk Nothing vnr Nothing type_click
