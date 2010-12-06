@@ -521,6 +521,12 @@ Library
         PCProblem.Quiz
         PCProblem.Solver
         PCProblem.Type
+        Peano.Make
+        Peano.Data   
+        Peano.Machine  
+        Peano.Type
+        Peano.Eval   
+        Peano.Infer  
         PL.Data
         PL.Find_Model
         PL.Interpretation
