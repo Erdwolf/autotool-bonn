@@ -6,7 +6,8 @@ import Autolib.ToDoc
 import Autolib.Reader
 import Data.Typeable
 
-import qualified Text.Parsec as TP
+-- import qualified Text.Parsec as TP
+import qualified Text.ParserCombinators.Parsec as TP
 
 import Data.List ( intersperse )
 
