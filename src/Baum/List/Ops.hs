@@ -1,65 +1,33 @@
 module Baum.List.Ops where
 
 import Baum.List.Type 
+import Baum.Heap.Class
 import Autolib.Size
 
 
-contains :: Ord a => ListTree a -> a -> Bool
-contains t k = foldt 
-    ( \ l j r -> case compare k j of
-           LT -> l ; EQ -> True ; GT -> r ) 
-    False
-    t
+instance Heap ListTree where
 
------------------------------------------------------
-
-repeated_insert_ok :: [ Int ] -> Bool
-repeated_insert_ok xs = 
-    proper $ foldl insert leaf xs 
-    -- size ( foldl insert leaf xs ) == length xs
+    -- empty :: baum a
+    empty = Nil
     
+    -- isEmpty :: baum a -> Bool 
+    isEmpty t = case t of Nil -> True ; _ -> False
 
------------------------------------------------------
+    -- insert :: Ord a => baum a -> a -> baum a
+    insert t x = Cons x t
 
-rotate_right t = 
-    branch ( left $ left t ) 
-           ( key $ left t )
-           ( branch ( right $ left t )
-                    ( key t )
-                    ( right t ) )
+    -- deleteMin :: Ord a => baum a -> baum a
+    deleteMin ( Cons x xs) = xs
 
-rotate_left t = 
-    branch ( branch ( left t )
-                    ( key t )
-                    ( left $ right t ) )
-           ( key $ right t )
-           ( right $ right t ) 
+    -- decreaseTo :: Ord a => baum a -> Position -> a -> baum a
+    decreaseTo (Cons x xs) p y = case p of
+        [] -> Cons y xs
+        c : q -> Cons x ( decreaseTo xs q y )
 
-rotate_left_then_right t = 
-    rotate_right $ branch 
-                 ( rotate_left $ left t )
-                 ( key t )
-                 ( right t )
-
-rotate_right_then_left t =
-    rotate_left $ branch
-                ( left t )
-                ( key t )
-                ( rotate_right $ right t )
-           
-rebalance b = 
-    case (weight $ left b, weight b, weight $ right b) of
-        ( _, w, _ ) | abs w < 2 -> b
-        ( -1, -2, _)  -> rotate_right b
-        ( 1, -2, _) -> rotate_left_then_right b
-        ( _, 2, 1) -> rotate_left b
-        ( _, 2, -1) -> rotate_right_then_left b
-
-
-insert t k = 
-    if isLeaf t 
-    then branch leaf k leaf
-    else rebalance $ if k < key t 
-         then branch ( insert ( left t ) k ) (key t)(right t)
-         else branch (left t)( key t)(insert (right t) k)
-
+    -- equal :: Eq a => baum a -> baum a -> Bool
+    equal x y = True
+    
+    -- contents :: Ord a => baum a -> [a]
+    contents t = case t of
+        Nil -> []
+        Cons x xs -> x : contents xs

@@ -118,6 +118,9 @@ import qualified Baum.Binary
 import qualified Baum.ZweiDrei
 import qualified Baum.AVL
 import qualified Baum.RedBlack
+
+import qualified Baum.List
+
 import qualified Graph.TreeWidth
 import qualified Graph.PartialKTree
 
@@ -453,6 +456,7 @@ tmakers =
                     , item Baum.AVL.make_quiz
                     , item Baum.RedBlack.make_quiz
                     , item Baum.ZweiDrei.make_quiz
+                    , item Baum.List.make_quiz  
                     ]
 		, heading "Programme mit Arrays"
 		    [ item $ Program.General.Central.make_fixed 
