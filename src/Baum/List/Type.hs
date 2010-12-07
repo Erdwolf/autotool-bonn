@@ -23,6 +23,11 @@ data ListTree a = Nil
 instance Size ( ListTree a ) where
     size x = 23 
 
+instance Functor ListTree where
+    fmap f t = case t of
+        Nil -> Nil
+        Cons x xs -> Cons (f x) $ fmap f xs
+
 $(derives [makeReader, makeToDoc] [''ListTree])
 
 

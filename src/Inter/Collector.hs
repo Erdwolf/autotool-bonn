@@ -461,7 +461,8 @@ tmakers =
                       , item Baum.ZweiDrei.make_quiz
                       ]  
                     , heading "Heap-geordnete Bäume"  
-                      [ item Baum.List.make_quiz  
+                      [ item Baum.List.make_fixed
+                      , item Baum.List.make_quiz  
                       ]  
                     ]
 		, heading "Programme mit Arrays"

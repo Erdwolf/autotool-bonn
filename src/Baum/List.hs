@@ -2,7 +2,7 @@
 
 module Baum.List
 
-( make_quiz
+( make_fixed, make_quiz
 )
 
 where
@@ -22,17 +22,6 @@ import Inter.Types
 import Data.Typeable
 
 
-instance C.Heap ListTree where
-    empty = leaf
-    isEmpty = isLeaf
-
-    contains = contains
-    insert = insert
-    delete = error "List.delete nicht implementiert"
-
-    equal = (==)
-    contents =  inorder
-
 instance Show a => T.ToTree ( ListTree a ) where
     toTree = toTree . fmap show
 
@@ -41,6 +30,9 @@ data HeapbaumList = HeapbaumList
 
 instance C.Tag HeapbaumList ListTree Int where
     tag = HeapbaumList
+
+make_fixed :: Make
+make_fixed = Baum.Heap.Central.make_fixed HeapbaumList
 
 make_quiz :: Make
 make_quiz = Baum.Heap.Central.make_quiz HeapbaumList

@@ -76,8 +76,24 @@ instance Tag t baum a
 instance Project (T t) ( Instanz baum a ) ( Instanz baum a ) where
     project t i = i
 
+baum_type :: Tag t baum Int => t -> baum Int
+baum_type = undefined
+
+make_fixed :: ( Tag t baum Int ) => t -> Make
+make_fixed t = 
+  let start = baum_type t `asTypeOf` 
+            (  flip insert 4 $ flip insert 3 
+            $ Baum.Heap.Class.empty )
+      end = deleteMin $ flip insert 2
+          $ start
+  in  direct ( T t ) ( start 
+                     , [ Any, Any ] :: [ Op Int ] 
+                     , end 
+                     )
+
 make_quiz :: ( Tag t baum Int ) => t -> Make
-make_quiz t = quiz (T t) Baum.Heap.Config.example  
+make_quiz t = 
+  quiz (T t) Baum.Heap.Config.example  
 
 
 
