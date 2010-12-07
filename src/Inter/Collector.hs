@@ -19,6 +19,7 @@ import qualified Sortier.Programm.Check
 import qualified JVM.Make
 import qualified Turing.Make
 import qualified Brainfuck.Make
+import qualified Peano.Make
 
 import qualified Fun.Quiz
 import qualified Fun.Make
@@ -117,6 +118,9 @@ import qualified Baum.Binary
 import qualified Baum.ZweiDrei
 import qualified Baum.AVL
 import qualified Baum.RedBlack
+
+import qualified Baum.List
+
 import qualified Graph.TreeWidth
 import qualified Graph.PartialKTree
 
@@ -351,6 +355,9 @@ tmakers =
                 , item RAM.Make.make
                 , item RM.Make.make
                 , item Brainfuck.Make.computer
+                , heading "Peano-Zahlen und Folds"
+                    [ item Peano.Make.make
+                    ]
                 ]
          , heading "Terme, Ersetzungssysteme"
                 [ heading "Wortersetzung"
@@ -445,11 +452,15 @@ tmakers =
                 [ heading "Bäume" 
                     [ item Baum.Reconstruct.make_fixed
                     , item Baum.Reconstruct.make_quiz
-                    , item Baum.Binary.make_quiz
-                    , item Baum.AVL.make_quiz
-                    , item Baum.RedBlack.make_quiz
-                    , item Baum.ZweiDrei.make_quiz
-                    ]
+                    , heading "Suchbäume"
+                      [ item Baum.Binary.make_quiz
+                      , item Baum.AVL.make_quiz
+                      , item Baum.RedBlack.make_quiz
+                      , item Baum.ZweiDrei.make_quiz
+                      ]
+                    , heading "Heap-geordnete Bäume"
+                      [ item Baum.List.make_quiz
+                      ]
 		, heading "Programme mit Arrays"
 		    [ item $ Program.General.Central.make_fixed 
                              Program.Array.Instance.Program_Array

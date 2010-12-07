@@ -11,12 +11,13 @@ import Autolib.Set
 
 
 data ( Ord c, ToDoc [c], Reader [c] ) 
-     => Property c = Min_Size Int
-	      | Max_Size Int
+     => Property c = 
+	        Max_Size Int
 	      | Alphabet ( Set c )
-	      | Simple
-	      | Extended
-	      | AllowedKeys (Set String)
+	      | Simple -- ^ einfacher regulärer Ausdruck (plus, mal, stern)
+	      | Extended -- ^ erweiterter regulärer Ausdruck (plus, minus, durch, mal, stern)
+              | Max_Star_Height Int
+	      | AllowedKeys (Set String) -- ^ z. B. Empty (leeres Wort), Sigma (Alphabet), All (Sigma hoch stern)
      deriving ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''Property])
@@ -27,6 +28,4 @@ example = [ Simple
 	  , AllowedKeys $ mkSet [ "Empty" ]
 	  ]
 
--- local variables;
--- mode: haskell;
--- end;
+

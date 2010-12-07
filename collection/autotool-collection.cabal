@@ -39,7 +39,7 @@ Library
         containers >= 0.2 && < 0.4,
         xhtml >= 3000.2 && < 3000.3,
         cgi >= 3001.1.7 && < 3001.2,
-        mtl >= 1.1 && < 1.2,
+        mtl,
         old-locale >= 1 && < 1.1,
         old-time >= 1 && < 1.1,
         process >= 1 && < 1.1,
@@ -47,7 +47,8 @@ Library
         unix >= 2.3 && < 2.5,
         obdd >= 0.2 && < 0.3,
         array >= 0.2 && < 0.4,
-        pretty >= 1 && < 1.1
+        pretty >= 1 && < 1.1,
+        utf8-string
     GHC-Options:    -Wall
     Extensions:
         DeriveDataTypeable
@@ -520,6 +521,12 @@ Library
         PCProblem.Quiz
         PCProblem.Solver
         PCProblem.Type
+        Peano.Make
+        Peano.Data   
+        Peano.Machine  
+        Peano.Type
+        Peano.Eval   
+        Peano.Infer  
         PL.Data
         PL.Find_Model
         PL.Interpretation

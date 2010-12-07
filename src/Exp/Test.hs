@@ -22,14 +22,10 @@ test :: ( Symbol c, Reader [c], ToDoc [c] )
      -> RX c
      -> Reporter ()
 
-test (Min_Size s) exp = do
-    let g = size exp
-    assert ( g >= s ) 
-	   $ text "Größe des Ausdruck" <+> parens ( toDoc g ) <+> text "ist wenigstens" <+> toDoc s <+> text "?"
 test (Max_Size s) exp = do
     let g = size exp
     assert ( g <= s ) 
-	   $ text "Größe des Ausdruck" <+> parens ( toDoc g ) <+> text "ist höchstens" <+> toDoc s <+> text "?"
+	   $ text "Größe des Ausdrucks" <+> parens ( toDoc g ) <+> text "ist höchstens" <+> toDoc s <+> text "?"
 
 test (Alphabet a) exp = do
     sanity_alpha a exp
@@ -42,6 +38,16 @@ test (Extended) exp = do
 
 test (AllowedKeys ks) exp = do
     sanity_keys ks exp
+
+test (Max_Star_Height h) exp = do
+    let sh = star_height exp
+    inform $ vcat 
+           [ text "Ausdruck" <+> parens ( toDoc exp )
+             </> text "hat Sternhöhe" <+> toDoc sh
+           , text "höchste zulässige Höhe ist"
+             </> toDoc h
+           ]
+    when  ( sh > h ) $ reject $ text "Das ist zu hoch."
 
 test prop exp = do
     reject $ fsep [ text "test für", toDoc prop

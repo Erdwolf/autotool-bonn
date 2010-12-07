@@ -4,7 +4,7 @@ module Brainfuck.Syntax.Parse
 
 import Brainfuck.Syntax.Data
 
-import Autolib.Reader
+import qualified Autolib.Reader
 
 import Text.ParserCombinators.Parsec
 import Text.ParserCombinators.Parsec.Language
@@ -19,7 +19,7 @@ brainfuck = emptyDef
                 , caseSensitive  = False
                 }
 
-bf :: TokenParser ()
+-- bf :: TokenParser ()
 bf = makeTokenParser brainfuck
 
 
@@ -32,9 +32,9 @@ statement :: Parser Statement
 statement = loop
         <|> single
 
-instance Reader Statement where
-    reader = program
 
+instance Autolib.Reader.Reader Statement where
+    reader = program
    
 single = do
     c <- noneOf "[]()"

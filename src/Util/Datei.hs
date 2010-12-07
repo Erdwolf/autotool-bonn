@@ -1,7 +1,5 @@
 module Util.Datei 
 
---  $Id$
-
 (  schreiben, mschreiben
 , anhaengen
 , lesen
@@ -19,13 +17,17 @@ module Util.Datei
 
 where
 
+import Prelude hiding ( writeFile, readFile, appendFile )
+import System.IO.UTF8 ( writeFile, readFile, appendFile )
+
 import Debug
 import Data.List (inits, intersperse)
 import System.Directory
 import System.Time
 import Control.Monad (guard, when)
 import System.Cmd ( system)
-import System.IO
+
+
 import System.Environment ( getEnv )
 import Data.Char (isAlphaNum)
 import qualified System.Posix
@@ -101,9 +103,10 @@ home d = do
 
 anhaengen :: Datei -> String -> IO ()
 anhaengen d inhalt = do
+    debug "anhaengen"
     createDir d
     h <- home d
-    appendFile h inhalt
+    System.IO.UTF8.appendFile h inhalt
 
 loeschen :: Datei -> IO ()
 loeschen d  = do
@@ -112,14 +115,18 @@ loeschen d  = do
 
 schreiben :: Datei -> String -> IO FilePath
 schreiben d inhalt = do
+    debug "schreiben"
     createDir d
     h <- home d
     debug "before writeFile ..."
 --    when ( length inhalt >= 0 ) -- force evaluation? 
 --	 $ writeFile h inhalt
-    f <- openFile h WriteMode 
-    hPutStr f inhalt
-    hClose f
+--    f <- openFile h WriteMode 
+--    hSetEncoding f utf8
+--    hPutStr f inhalt
+--    hClose f
+    CE.evaluate (last inhalt)
+    System.IO.UTF8.writeFile h inhalt
 
     debug "... after writeFile"
     perm "go+r" h
@@ -146,14 +153,19 @@ perm flags f = do
 
 lesen :: Datei -> IO(String)
 lesen d  = do
+    debug "lesen"
     h <- home d
     ex <- System.Directory.doesFileExist h
     if ex then do
-            f <- openFile h ReadMode
-            cs <- hGetContents f
+            debug "before lesen ..."
+            -- f <- openFile h ReadMode
+            -- hSetEncoding f utf8
+            -- cs <- hGetContents f
             -- hGetContents is lazy - force its result before closing the file
+            cs <- System.IO.UTF8.readFile h
             CE.evaluate (last cs)
-            hClose f
+            -- hClose f
+            debug "after lesen ..."
             return cs
         else error $ "file: " ++ h ++ " does not exist"
 

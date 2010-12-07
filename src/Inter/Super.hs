@@ -5,6 +5,9 @@
 
 module Main where
 
+import Prelude hiding ( readFile, writeFile, appendFile )
+import System.IO.UTF8 ( readFile, writeFile, appendFile )
+
 import Gateway.CGI
 
 import Inter.Evaluate
@@ -81,11 +84,15 @@ import Inter.DateTime ( defaults )
 import Inter.Tutor
 import Inter.Student
 
+import qualified Debug 
+
 main :: IO ()
-main = Gateway.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
-   wrap $ iface $ Inter.Collector.tmakers
-   scores <- scores_link
-   footer scores
+main = do
+   Debug.debug "Super_Debug:main"
+   Gateway.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
+       wrap $ iface $ Inter.Collector.tmakers
+       scores <- scores_link
+       footer scores
 
 
 iface :: Tree ( Either String Make ) -> Form IO ()
