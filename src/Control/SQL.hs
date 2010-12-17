@@ -1,4 +1,5 @@
 {-# language DeriveDataTypeable, OverlappingInstances #-}
+{-# language NoMonomorphismRestriction #-}
 
 module Control.SQL 
 
@@ -231,6 +232,7 @@ instance T.ToDoc Expression where
 instance R.Reader Expression where
     atomic_reader = buildExpressionParser operators atomic
 
+atomic :: Parser Expression 
 atomic =   R.my_parens reader
      R.<|> do { R.my_reserved "NULL" ; return $ ENull }
      R.<|> id_or_fun
