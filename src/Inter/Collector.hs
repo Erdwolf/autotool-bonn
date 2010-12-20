@@ -449,7 +449,6 @@ tmakers =
                 ]
          , heading "Datenstrukturen"
                 [ heading "Bäume" 
-<<<<<<< HEAD
                     [ heading "Pre/In/Post/Level-Order"
                       [ item Baum.Reconstruct.make_fixed
                       , item Baum.Reconstruct.make_quiz
@@ -467,22 +466,6 @@ tmakers =
                     ]
 		, heading "Programme mit Arrays"
 		    [ item $ Program.General.Central.make_fixed 
-=======
-                    [ item Baum.Reconstruct.make_fixed
-                    , item Baum.Reconstruct.make_quiz
-                    , heading "Suchbäume"
-                      [ item Baum.Binary.make_quiz
-                      , item Baum.AVL.make_quiz
-                      , item Baum.RedBlack.make_quiz
-                      , item Baum.ZweiDrei.make_quiz
-                      ]
-                    , heading "Heap-geordnete Bäume"
-                      [ -- item Baum.List.make_quiz
-                      ]
-                    ]  
-		, heading "Programme mit Arrays"     
-                    [ item $ Program.General.Central.make_fixed 
->>>>>>> 0774fb4e8c4a7e938b23fdb5ca461f0caf64615a
                              Program.Array.Instance.Program_Array
 		    , item Program.Array.Instance.make_quiz
 		    ]
