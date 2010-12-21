@@ -1,3 +1,5 @@
+-- |  (c) F. Pilz, M. Siegburg, J. Waldmann, 2010, License: GPL
+
 module Baum.Heap.Generate where
 
 --  $Id$

@@ -1,3 +1,5 @@
+-- |  (c) F. Pilz, M. Siegburg, J. Waldmann, 2010, License: GPL
+
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FunctionalDependencies #-}
 
