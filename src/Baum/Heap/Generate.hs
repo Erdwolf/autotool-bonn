@@ -17,6 +17,8 @@ import Data.List ( (\\) )
 import Data.Maybe ( isJust )
 
 type Instanz baum a = ( baum a, [ Op a ], baum a )
+data OperationType = InsertOp | DecreaseToOp | DeleteMinOp
+data FixedOrGuessed = Fixed | Guessed
 
 generated_instances = 100
 
@@ -48,22 +50,34 @@ generate_once conf = do
     keys <- sequence $ replicate ( start_size conf ) key
     let start = foldl insert Baum.Heap.Class.empty keys
     
-    let inserts = replicate (fixed_insert_ops conf) (  True,  True )
-	       ++ replicate (guessed_insert_ops conf) (  True, False )
-        deletes = replicate (fixed_deleteMin_ops conf) ( False,  True )
-	       ++ replicate (guessed_deleteMin_ops conf) ( False, False )
-    codes <- permutation $ inserts ++ deletes
+    let inserts = replicate (fixed_insert_ops conf) (InsertOp, Fixed)
+	       ++ replicate (guessed_insert_ops conf) (InsertOp, Guessed)
+        decreases = replicate (fixed_decreaseTo_ops conf) (DecreaseToOp, Fixed)
+         ++ replicate (guessed_decreaseTo_ops conf) (DecreaseToOp, Guessed)
+        deletes = replicate (fixed_deleteMin_ops conf) (DeleteMinOp, Fixed)
+	       ++ replicate (guessed_deleteMin_ops conf) (DeleteMinOp, Guessed)
+    codes <- permutation $ inserts ++ decreases ++ deletes
 
     let gen b [] = return ([], b)
-        gen b ( (t, v) : tvs) = do
-	    a <- if t then key else eins $ contents b
-	    let op = if v then ( if t then Insert a else DeleteMin )
-		          else Any
-                c = if t then insert b a else deleteMin b 
-	    (ops, d) <- gen c tvs
-            return ( op : ops, d )
+        gen b ((op_type, fix_or_guess) : tvs) = do
+          a <- key
+          (p, x) <- eins $ toList b
+          y <- randomDecreaseToKey x key
+            
+          let op = case fix_or_guess of
+                     Guessed -> Any
+                     Fixed -> case op_type of
+                       InsertOp     -> Insert a
+                       DecreaseToOp -> DecreaseTo p y
+                       DeleteMinOp  -> DeleteMin
+          let c = case op_type of
+                    InsertOp     -> insert b a
+                    DecreaseToOp -> decreaseTo b p y
+                    DeleteMinOp  -> deleteMin b
+          (ops, d) <- gen c tvs
+          return ( op : ops, d )
+      
     ( ops, end ) <- gen start codes
-
     return ( start, ops, end )
 
 
@@ -96,7 +110,7 @@ check ( start, plan, end ) mops  =
             let end' = foldl ( \ t op -> case op of
                      Insert x -> insert t x
                      DeleteMin -> deleteMin t
-                     _        -> t -- should not happen
+                     _        -> t -- should not happen, but does if #Any > #Insert
                   ) start ( merge plan mops ) 
             in  equal end end'
 
@@ -105,9 +119,13 @@ candidate_ops ( start, end ) =
     let must_be_inserted = contents end \\ contents start
         must_be_deleted  = contents start \\ contents end
     in    map Insert must_be_inserted
+       -- FIXME: should be uncomment - and decreseTo should be implemented as well
        -- ++ map DeleteMin must_be_deleted
 
 merge (Any : rest) (m : ops ) = m : merge rest ops
 merge (o : ps) mops = o : merge ps mops
 merge _ mops = mops
 
+randomDecreaseToKey key keyGenerator = do
+  x <- keyGenerator
+  if (x <= key) then return x else randomDecreaseToKey key keyGenerator
