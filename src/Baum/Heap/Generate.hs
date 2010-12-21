@@ -22,6 +22,11 @@ data FixedOrGuessed = Fixed | Guessed
 
 generated_instances = 100
 
+-- | returns most interesting instance of /generated_instances/ instances
+-- * crates /generated_instances/ instances
+-- * sorts them by preferring intereseting instances,
+-- i.e. 'try_solve_ordered' = 'False' and small values of 'try_solve_randomly'
+-- * returns the first (most interesting) instance
 generate :: ( Random a, Heap baum, OpC a )
 	 => Config a
 	 -> IO ( Instanz baum a )
@@ -33,6 +38,7 @@ generate conf = do
 
 attempts_per_instance = 100
 
+-- | creates an instance and evaluates it with 'try_solve_ordered' and 'try_solve_randomly'
 generate_weighted  :: ( Random a, Heap baum, OpC a )
 	 => Config a
 	 -> IO ( (Bool,Int), Instanz baum a )
@@ -42,6 +48,7 @@ generate_weighted conf = do
     r <- try_solve_randomly inst attempts_per_instance
     return ( (o,r), inst )
 
+-- | creates an instance with operations depending on 'Config'
 generate_once :: ( Random a, Heap baum, OpC a )
 	 => Config a
 	 -> IO ( Instanz baum a )
@@ -106,6 +113,8 @@ try_solve_randomly ( start, plan, end ) num = do
     attempts <- sequence $ replicate num attempt
     return $ length $ filter id attempts
 
+-- | checks whether /start/ can be transformed into /end/ by applying operations /plan/ and /mops/
+check :: (Heap baum, OpC a) => Instanz baum a -> [Op a] -> Bool
 check ( start, plan, end ) mops  = 
             let end' = foldl ( \ t op -> case op of
                      Insert x -> insert t x
@@ -114,7 +123,9 @@ check ( start, plan, end ) mops  =
                   ) start ( merge plan mops ) 
             in  equal end end'
 
-
+-- | creates a list of required operations to transform /start/ into /end/
+-- WARNING: only 'Insert' operations are created
+candidate_ops :: (Heap baum, OpC a) => (baum a, baum a) -> [Op a]
 candidate_ops ( start, end ) = 
     let must_be_inserted = contents end \\ contents start
         must_be_deleted  = contents start \\ contents end
@@ -122,10 +133,15 @@ candidate_ops ( start, end ) =
        -- FIXME: should be uncomment - and decreseTo should be implemented as well
        -- ++ map DeleteMin must_be_deleted
 
+-- | replaces all 'Any' operations from the first list
+-- with 'Insert', 'DeleteMin' or 'DecreaseTo' operations from the second list
+merge :: [Op a] -> [Op a] -> [Op a]
 merge (Any : rest) (m : ops ) = m : merge rest ops
 merge (o : ps) mops = o : merge ps mops
 merge _ mops = mops
 
+-- | generate a random value which is smaller than /key/
+randomDecreaseToKey :: Ord a => a -> IO a -> IO a
 randomDecreaseToKey key keyGenerator = do
   x <- keyGenerator
   if (x <= key) then return x else randomDecreaseToKey key keyGenerator

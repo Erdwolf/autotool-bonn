@@ -3,11 +3,16 @@ module Baum.List.Ops where
 import Baum.List.Type 
 import Baum.Heap.Class
 import Autolib.Size
+import Baum.Heap.Op
 
+-- | helper for 'toList'
+toListHelper :: ListTree a -> [Int] -> [(Position, a)]
 toListHelper t a = case t of
   Nil -> []
   (Cons x xs) -> (a, x) : toListHelper xs (0 : a)
   
+-- | returns tree without element specified by 'Position'
+deleteAtPosition :: ListTree a -> Position -> ListTree a
 deleteAtPosition (Cons x xs) p = case p of
   [] -> xs
   c : q -> Cons x $ deleteAtPosition xs q
@@ -44,6 +49,7 @@ instance Heap ListTree where
                        then equal xs ys
                        else False
 
+    -- toList :: baum a -> [(Position, a)]
     toList t = case t of
       Nil -> []
       (Cons x xs) -> toListHelper t []
