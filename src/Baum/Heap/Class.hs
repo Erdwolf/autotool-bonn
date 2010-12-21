@@ -26,6 +26,7 @@ class Heap baum where
     decreaseTo :: Ord a => baum a -> Position -> a -> baum a
 
     equal :: Eq a => baum a -> baum a -> Bool
+    toList :: baum a -> [(Position, a)]
     contents :: Ord a => baum a -> [a]
 
 class ( Show t, Typeable t, Read t
