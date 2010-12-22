@@ -1,8 +1,6 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, TypeSynonymInstances #-}
 
 module Robots.Data where
-
---   $Id$
 
 import Autolib.Reader
 import Autolib.ToDoc

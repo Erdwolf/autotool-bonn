@@ -1,5 +1,4 @@
--- -*- mode: haskell -*-
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
 
 module Faktor.Inverse.Param where
 

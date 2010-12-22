@@ -1,3 +1,5 @@
+{-# language FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
+
 module Robots.Config 
 
 ( Config -- abstract

@@ -5,9 +5,9 @@ import qualified Autolib.Util.Wort
 import Data.List ( tails ) 
 
 -- | es gilt ja der satz: 
--- alle 0-1-folgen sortiert <=> überhaupt alle folgen sortiert.
+-- alle 0-1-folgen sortiert <=> Ã¼berhaupt alle folgen sortiert.
 -- also generiere ich 0-1-folgen (weil das weniger sind)
--- aber um die studenten nicht unnötig aufzuregen,
+-- aber um die studenten nicht unnÃ¶tig aufzuregen,
 -- rechne ich es in folgen aus lauter verschiedenen elementen um
 testing :: Int -> [ [Int] ]
 testing soll = do
