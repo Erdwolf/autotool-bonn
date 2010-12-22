@@ -28,8 +28,11 @@ class Heap baum where
     decreaseTo :: Ord a => baum a -> Position -> a -> baum a
 
     equal :: Eq a => baum a -> baum a -> Bool
-    toList :: baum a -> [(Position, a)]
-    contents :: Ord a => baum a -> [a]
+    -- neu (nicht in Baum.Such.Class):
+    toList :: baum a -> [(Position,a)]
+
+    -- wird vom Aufgaben Generator genutzt und muss implementiert werden
+    contents :: baum a -> [a]
 
 class ( Show t, Typeable t, Read t
       , Heap baum, OpC a

@@ -463,9 +463,9 @@ tmakers =
                       [ item Baum.List.make_fixed
                       , item Baum.List.make_quiz  
                       ]  
-                    ]
-		, heading "Programme mit Arrays"
-		    [ item $ Program.General.Central.make_fixed 
+                    ]  
+		, heading "Programme mit Arrays"     
+                    [ item $ Program.General.Central.make_fixed 
                              Program.Array.Instance.Program_Array
 		    , item Program.Array.Instance.make_quiz
 		    ]

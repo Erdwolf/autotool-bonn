@@ -1,3 +1,5 @@
+{-# language DeriveDataTypeable #-}
+
 -- | Bemerkungen: 
 -- 1. Aussagenlogische Formel in konjunktiver Normalform (KNF):
 -- Literal = Variable oder nonVariableVariable

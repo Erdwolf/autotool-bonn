@@ -1,3 +1,5 @@
+{-# language PatternSignatures #-}
+
 module Robots.Solver where
 
 --  $Id$

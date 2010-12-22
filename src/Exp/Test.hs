@@ -17,11 +17,12 @@ import Autolib.Symbol
 
 tests ps exp = sequence_ $ do p <- ps ; return $ test p exp
 
+{-
 test :: ( Symbol c, Reader [c], ToDoc [c] )
      => Property c 
      -> RX c
      -> Reporter ()
-
+-}
 test (Max_Size s) exp = do
     let g = size exp
     assert ( g <= s ) 
