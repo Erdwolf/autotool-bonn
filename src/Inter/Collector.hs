@@ -466,6 +466,8 @@ tmakers =
                       , item Baum.List.make_quiz  
                       , item Baum.BinHeap.make_fixed
                       , item Baum.BinHeap.make_quiz  
+                      , item Baum.Leftist.make_fixed
+                      , item Baum.Leftist.make_quiz  
                       ]  
                     ]  
 		, heading "Programme mit Arrays"     
