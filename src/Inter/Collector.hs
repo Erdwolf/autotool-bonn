@@ -121,6 +121,7 @@ import qualified Baum.RedBlack
 
 import qualified Baum.List
 import qualified Baum.BinHeap
+import qualified Baum.Leftist
 import qualified Graph.TreeWidth
 import qualified Graph.PartialKTree
 
