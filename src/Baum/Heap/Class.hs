@@ -27,12 +27,15 @@ class Heap baum where
     -- new element is smaller or equal to element at position in tree
     decreaseTo :: Ord a => baum a -> Position -> a -> baum a
 
+    -- true if structure of both trees is equal, false otherwise
     equal :: Eq a => baum a -> baum a -> Bool
     -- neu (nicht in Baum.Such.Class):
     toList :: baum a -> [(Position,a)]
 
     -- wird vom Aufgaben Generator genutzt und muss implementiert werden
     contents :: baum a -> [a]
+    contents b = map snd $ toList b
+
 
 class ( Show t, Typeable t, Read t
       , Heap baum, OpC a

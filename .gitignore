@@ -2,3 +2,9 @@
 *.o
 *~
 /src/dist/
+/src/Inter/Trial
+/src/Local.hs
+/src/Util/Datei/Base.hs
+/src/Control/Mysqlconnect.hs
+/common
+/collection/dist/*

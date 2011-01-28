@@ -120,6 +120,8 @@ import qualified Baum.AVL
 import qualified Baum.RedBlack
 
 import qualified Baum.List
+import qualified Baum.BinHeap
+import qualified Baum.Leftist
 import qualified Graph.TreeWidth
 import qualified Graph.PartialKTree
 
@@ -462,6 +464,10 @@ tmakers =
                     , heading "Heap-geordnete Bäume"  
                       [ item Baum.List.make_fixed
                       , item Baum.List.make_quiz  
+                      , item Baum.BinHeap.make_fixed
+                      , item Baum.BinHeap.make_quiz  
+                      , item Baum.Leftist.make_fixed
+                      , item Baum.Leftist.make_quiz  
                       ]  
                     ]  
 		, heading "Programme mit Arrays"     
