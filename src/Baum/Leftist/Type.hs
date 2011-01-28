@@ -19,6 +19,8 @@ $(derives [makeReader, makeToDoc] [''LeftistTree])
 
 
 instance Functor LeftistTree where
-     fmap f t = error "missing instance Functor LeftistTree"
+     fmap f t = case t of
+	Leaf -> Leaf
+	Branch l k r -> Branch (fmap f l) (f k) (fmap f r)
 
 
