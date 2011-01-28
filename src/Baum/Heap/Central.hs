@@ -81,9 +81,9 @@ baum_type = undefined
 
 make_fixed :: ( Tag t baum Int ) => t -> Make
 make_fixed t = 
-  let start = baum_type t `asTypeOf` 
-            (  flip insert 4 $ flip insert 3 
+  let start = (  flip insert 4 $ flip insert 3 
             $ Baum.Heap.Class.empty )
+            `asTypeOf`  baum_type t 
       end = deleteMin $ flip insert 2
           $ start
   in  direct ( T t ) ( start 
