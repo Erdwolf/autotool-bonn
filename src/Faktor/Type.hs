@@ -1,4 +1,4 @@
-
+{-# language DeriveDataTypeable #-}
 
 module Faktor.Type where
 

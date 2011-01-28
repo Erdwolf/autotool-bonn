@@ -1,4 +1,5 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, FlexibleContexts, FlexibleInstances #-}
+{-# language UndecidableInstances, DeriveDataTypeable #-}
 
 module SCS.Data where
 

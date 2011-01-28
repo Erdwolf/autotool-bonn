@@ -1,3 +1,5 @@
+-- |  (c) F. Pilz, M. Siegburg, J. Waldmann, 2010, License: GPL
+
 module Baum.Heap.Inter where
 
 --  $Id$
@@ -19,6 +21,7 @@ step b op = do
     c <- case op of
 	 Insert a -> return $ insert b a
 	 DeleteMin -> return $ deleteMin b
+	 DecreaseTo p a -> return $ decreaseTo b p a
 	 _        -> reject $ text "ist unbekannt"
     inform $ text "Resultat:"
     peng c

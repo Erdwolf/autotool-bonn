@@ -1,9 +1,12 @@
-module Control.HTMLshortcuts where
+module HTMLshortcuts where
 
 --   $Id$
 
 import Prelude hiding ( span, head, div, map )
 import qualified Prelude
+
+import qualified Passwort
+
 
 import Wash.HTMLMonad 
 import Wash.CGI
@@ -58,7 +61,7 @@ mytable body = table $ do
 showAsTable :: ( [ String ] , [ [ StrOrInt ] ]) -> WithHTML CGI ()
 showAsTable inh = 
 	table $ do 
-		attr "border" "1"
+--		attr "border" "1"
  		attr "cellspacing" "2" 
 		attr "cellpadding" "5"
 		tr $ mapM_ ( \ x -> ( th ( text x  ## attr "align" "left") ) ) ( fst inh )  
