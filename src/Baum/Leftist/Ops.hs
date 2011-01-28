@@ -22,7 +22,7 @@ instance C.Heap LeftistTree where
 	deleteMin t = meld (left t) (right t)
 
     -- decreaseTo :: Ord a => baum a -> Position -> a -> baum a
-	decreaseTo t p a = t
+	decreaseTo = decreaseTo
 
     -- equal :: Eq a => baum a -> baum a -> Bool
 	equal t1 t2 = t1 == t2
