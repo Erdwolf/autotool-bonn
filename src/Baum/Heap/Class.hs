@@ -34,6 +34,8 @@ class Heap baum where
 
     -- wird vom Aufgaben Generator genutzt und muss implementiert werden
     contents :: baum a -> [a]
+    contents b = map snd $ toList b
+
 
 class ( Show t, Typeable t, Read t
       , Heap baum, OpC a

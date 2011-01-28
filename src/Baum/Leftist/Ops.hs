@@ -27,6 +27,8 @@ instance C.Heap LeftistTree where
     -- equal :: Eq a => baum a -> baum a -> Bool
 	equal t1 t2 = t1 == t2
 
+        toList = toList
+
 -- | fuegt zwei Baeume zusammen
 meld :: Ord a => LeftistTree a -> LeftistTree a -> LeftistTree a
 meld t Leaf = t
