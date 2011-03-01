@@ -3,7 +3,7 @@ module Program.List.Store
 ( Key -- abstract
 , Contents (..)
 , StoreT, ReporterST, empty
-, row, scalar, void
+, row, scalar, Program.List.Store.void
 , build, update, access
 , make, unmake
 )
@@ -14,7 +14,7 @@ import qualified Program.List.Value as V
 
 import Autolib.FiniteMap
 import Autolib.Reporter
-import Control.Monad.State
+import Control.Monad.State 
 
 data Key = Key Int deriving ( Eq, Ord )
 data Contents = Scalar { typeof :: V.Type , scontents :: Integer } 

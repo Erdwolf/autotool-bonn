@@ -16,7 +16,7 @@ executable Trial.cgi
         hs-source-dirs: . control ../common
         build-depends: base==4.*, containers, mtl, directory, random,
             old-locale, old-time, xhtml, process, utf8-string, unix,
-            hsql, hsql-mysql, parsec==2.*, cgi, obdd, array, pretty,
+            hsql, hsql-mysql, parsec, cgi, obdd, array, pretty,
             autolib-todoc, autolib-reader, autolib-data, autolib-util,
             autolib-output, autolib-reporter, autolib-fa, autolib-relation,
             autolib-rewriting, autolib-graph, autolib-dot, autolib-algorithm,

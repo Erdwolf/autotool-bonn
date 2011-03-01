@@ -1,3 +1,5 @@
+{-# language GADTs #-}
+
 module Specify.Eval where
 
 
