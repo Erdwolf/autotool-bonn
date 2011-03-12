@@ -1,7 +1,5 @@
 module Code.Hamming.Check where
 
---  $Id$
-
 
 import Code.Hamming.Data 
 

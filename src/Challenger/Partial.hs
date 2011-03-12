@@ -94,6 +94,12 @@ class ( Show p, Read p
 	      Okay {} -> return ()
               _    -> reject $ toDoc res
 
+      -- | hm. do we really need this? possible reasons:
+      -- 1. we want to use System.Random (for test cases)
+      -- 2. we want to use the GHC API (for smallcheck questions)
+      totalIO :: p -> i -> b -> IO ( Reporter () )
+      totalIO p i b = return $ total p i b
+
       -- | liefert (in jedem Fall) einen Wert
       total_neu :: p -> i -> b -> Reporter Wert
       total_neu p i b = do

@@ -2,10 +2,11 @@
 
 module Code.Huffman.LR where
 
---  $Id$
-
 import Autolib.ToDoc
 import Autolib.Reader
+import Autolib.Symbol
+import Autolib.Hash
+import Autolib.Size
 
 import Code.Type
 
@@ -16,6 +17,10 @@ data LR = L | R
 
 $(derives [makeReader, makeToDoc] [''LR])
 
+instance Symbol LR 
+instance Size LR where size _ = 1
+instance Hash LR where hash = hash . fromEnum
+
 data Ord a => Letter a = Letter 
 	      { weight :: Int
 	      , codes  :: Code a LR
@@ -23,9 +28,6 @@ data Ord a => Letter a = Letter
      
 $(derives [makeReader, makeToDoc] [''Letter])
 
--- local variables:
--- mode: haskell
--- end;
 
 
 
