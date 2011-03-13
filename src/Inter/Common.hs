@@ -12,8 +12,9 @@ import qualified Autolib.Output as O
 import Control.Types (toString)
 import Challenger.Partial
 import Util.Cache (cache)
-import Autolib.Reporter
+import Autolib.Reporter.IO.Type
 import Autolib.ToDoc ( text )
+import Control.Monad ( when )
 
 -- import qualified Text.XHtml
 import qualified Autolib.Multilingual.Html as Html
@@ -39,9 +40,9 @@ make_instant_common_with vnr manr stud var seed = do
     let mat = S.mnr stud
     k <- key var seed
     g <- gen var vnr manr k cache
-    let ( Just i  , _ :: Html.Html ) = export g
-    ( _, icom :: Html.Html) <- run $ report p i
-    return ( p, i, icom )
+    Just i <- result $ lift g
+    o <- kommentar $ lift $ report p i
+    return ( p, i, O.render o :: Html.Html )
 
 
 -- | erreichte punkte in datenbank schreiben 

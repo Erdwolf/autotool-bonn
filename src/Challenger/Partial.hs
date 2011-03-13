@@ -8,17 +8,22 @@ module Challenger.Partial
 , Verify (..)
 , Partial (..)
 , Roller (..)
+, total_neu
 )
 
 where
 
 
-import Autolib.Reporter
+import qualified Autolib.Reporter.IO.Type as IO
+import Autolib.Reporter.Classic.Type
+
+
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
 
 import Control.Types ( Wert (..), ok )
+import Control.Monad ( when )
 
 class Measure p i b where
       measure :: p -> i -> b -> Integer
@@ -33,6 +38,11 @@ instance Size b => Measure p i b where
 -- | Instanz verifizieren 
 -- das sieht der Tutor, wenn er die Aufgabe konfiguriert
 class ( Show  i ) => Verify p i where
+
+      verifyIO :: p -> i -> IO.Reporter ()
+      verifyIO p i = IO.lift $ verify p i
+
+      {-# deprecate verify "use verifyIO instead" #-}
       verify :: p -> i -> Reporter ()
 
 instance ( Show i ) => Verify p i where
@@ -88,25 +98,31 @@ class ( Show p, Read p
       -- vorher wird immer erst partial angewendet
       -- eine der beiden total, total_neu muß implementiert werden
       total   :: p -> i -> b -> Reporter ()
+{-
       total p i b = do
           res <- total_neu p i b
           case res of
 	      Okay {} -> return ()
               _    -> reject $ toDoc res
+-}
 
       -- | hm. do we really need this? possible reasons:
       -- 1. we want to use System.Random (for test cases)
       -- 2. we want to use the GHC API (for smallcheck questions)
-      totalIO :: p -> i -> b -> IO ( Reporter () )
-      totalIO p i b = return $ total p i b
+      totalIO :: p -> i -> b -> IO.Reporter ()
+      totalIO p i b = IO.lift $ total p i b
 
-      -- | liefert (in jedem Fall) einen Wert
-      total_neu :: p -> i -> b -> Reporter Wert
-      total_neu p i b = do
-          mres <- wrap $ total p i b
+
+-- | liefert (in jedem Fall) einen Wert
+total_neu :: Partial p i b 
+          => p -> i -> b -> IO.Reporter Wert
+total_neu p i b = do
+          mres <- IO.wrap $ totalIO p i b
 	  return $ case mres of
 	       Nothing -> No
 	       Just () -> ok $ measure p i b
+
+
 
 ---------------------------------------------------------------------
 

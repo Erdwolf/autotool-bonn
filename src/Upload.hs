@@ -42,9 +42,14 @@ instance C.Partial Upload Config Contents where
 	 ]
     initial Upload conf = Contents "(Ihr Text hier.)"
 
+{-
     total_neu Upload conf _ = do
         inform $ text "Lösung wird off-line bewertet."
         return $ C.Pending
+-}
+    total Upload conf _ = do
+        reject $ text "Lösung wird off-line bewertet."
+    
 
 
 instance C.Measure Upload Config Contents where

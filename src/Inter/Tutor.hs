@@ -18,7 +18,7 @@ import Control.Time
 import Control.Time.CGI
 import qualified Control.Time.CGI as Control.Time
 
-import Autolib.Reporter
+import Autolib.Reporter.IO.Type
 import Autolib.ToDoc
 import Autolib.Reader
 
@@ -107,7 +107,7 @@ edit_aufgabe mks mk mauf vnr manr type_click = do
 	    
 	    Just _ <- embed $ do
 		 inform $ text "verifiziere die Konfiguration:"
-	         verify conf
+	         verifyIO p conf
 		 inform $ text "OK"
             br
             return $ A.Aufgabe 

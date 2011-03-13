@@ -23,7 +23,7 @@ import Autolib.Multilingual hiding ( Make )
 import qualified Autolib.Multilingual as M
 import qualified Autolib.Multilingual.Html as H
 
-import Autolib.Reporter hiding ( wrap, initial )
+import Autolib.Reporter.IO.Type hiding ( wrap )
 import Autolib.ToDoc
 import Autolib.Reader
 import qualified Autolib.Output
@@ -31,6 +31,7 @@ import qualified Control.Exception as CE
 
 import Data.Typeable
 import Data.Maybe
+import Control.Monad ( when, mzero )
 
 data Method = Textarea | Upload
     deriving ( Eq, Show, Typeable )
@@ -109,7 +110,8 @@ solution vnr manr stud
 
     Just cs <- return mcs
     hr ; h3 "Neue Bewertung"
-    (res, com ) <- io $ run $ evaluate p i cs
+    (res, o ) <- io $ run $ evaluate p i cs
+    let com = Autolib.Output.render o :: H.Html
     html $ specialize lang com
     return ( Just icom, Just cs, fromMaybe No res, Just com )
 

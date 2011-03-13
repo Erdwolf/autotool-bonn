@@ -8,7 +8,7 @@ import qualified Language.Haskell.Interpreter as I
 
 import Challenger.Partial
 import Autolib.ToDoc
-import Autolib.Reporter
+import Autolib.Reporter.IO.Type
 import Inter.Types
 import Inter.Quiz
 
@@ -22,5 +22,6 @@ instance Partial Haskell Instance Code where
         , nest 4 $ toDoc $ specification i
         ]
     initial p i = code_example
-    total p i b = do
+    totalIO p i b = do
+        
         
