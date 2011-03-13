@@ -46,7 +46,7 @@ instance Partial Haskell Instance Code where
             -- writeFile "/tmp/autotool-mueval.hs" glob
             I.runInterpreter $ Mueval.Interpreter.interpreter $ M.Options
                     { M.timeLimit = 1
-                    , M.modules = Just Mueval.Context.defaultModules
+                    , M.modules = Just [ "Prelude", "Haskell.SmallCheck", "Haskell.Data" ]
                     , M.expression = show $ hsep
                           [ text "Haskell.SmallCheck.run" 
                           , parens ( toDoc i )
@@ -70,8 +70,17 @@ instance Partial Haskell Instance Code where
                        , text "type" </> text et
                        , text "value" </> text val
                        ]       
-                -- assert ( et == "[[String]]" ) $ text "richtiger Typ?"
-                -- assert ( val == "True" ) $ text "richtiger Wert?"
+                assert ( et == "[[String]]" ) $ text "richtiger Typ?"
+                let argvs = read val :: [[String]]
+                if null argvs 
+                    then  inform $ text "alle Tests erfolgreich"
+                    else reject $ vcat
+                            [ text "Fehler für diese Argumente:"
+                            , nest 4 $ vcat $ do
+                                 argv <- argvs
+                                 return $ hsep $ map text argv
+                            ]
+                
 
 
 make_fixed = direct Haskell instance_example
