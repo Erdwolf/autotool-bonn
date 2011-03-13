@@ -27,6 +27,8 @@ import qualified Fun.Make
 
 import qualified Fun.Direct
 
+import qualified Haskell.Central
+
 import qualified Specify.Inter
 
 import qualified String_Matching.KMP.Central
@@ -449,6 +451,11 @@ tmakers =
                   , item String_Matching.BM.Central.make_quiz
                   ]
                 ]
+         , heading "Programmierung"
+            [ heading "Haskell" 
+               [ item Haskell.Central.make_fixed
+               ]
+            ]
          , heading "Datenstrukturen"
                 [ heading "Bäume" 
                     [ heading "Pre/In/Post/Level-Order"

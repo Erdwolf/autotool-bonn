@@ -1,0 +1,22 @@
+Name:           autotool-haskell-smallcheck
+Version:        0.0.0
+License:        GPL
+License-File:   LICENSE
+Author:         Johannes Waldmann, Mirko Rahn, Alf Richter, Betram Felgenhauer 
+                and others
+Homepage:       http://www.imn.htwk-leipzig.de/~waldmann/autotool/
+Category:       Education
+Synopsis:       Online Grading of Exercises in Discrete Mathematics 
+                and Computer Science
+Cabal-Version:  >= 1.2
+Build-type:	Simple
+
+library
+        hs-source-dirs: ../
+        build-depends: 
+              base==4.*, smallcheck, QuickCheck, random,
+              autolib-reader, autolib-todoc, autolib-derive, autolib-util
+        ghc-options: 
+                 -fglasgow-exts -fallow-undecidable-instances
+        exposed-modules: 
+                 Haskell.SmallCheck, Haskell.Data
