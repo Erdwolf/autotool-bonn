@@ -7,8 +7,6 @@ module Baum.BinHeap
 
 where
 
---  $Id$
-
 import Baum.BinHeap.Type
 import Baum.BinHeap.Ops
 import Baum.BinHeap.Show
@@ -20,9 +18,6 @@ import qualified Tree as T
 import Autolib.ToDoc
 import Inter.Types
 import Data.Typeable
-
-instance C.Heap BinHeap where
-     
 
 instance Show a => T.ToTree ( BinHeap a ) where
     toTree = toTree . fmap show
