@@ -37,6 +37,13 @@ instance Heap ListTree where
     -- deleteMin :: Ord a => baum a -> baum a
     deleteMin ( Cons x xs) = xs
 
+    get l ps = case l of
+        Nil -> Nothing
+        Cons x xs -> case ps of
+            [] -> return x
+            0 : ps -> get xs ps
+            _ -> Nothing
+
     -- decreaseTo :: Ord a => baum a -> Position -> a -> baum a
     decreaseTo (Cons x xs) p y = insert (deleteAtPosition (Cons x xs) p) y
 

@@ -21,6 +21,14 @@ instance C.Heap LeftistTree where
     -- deleteMin :: Ord a => baum a -> baum a
 	deleteMin t = meld (left t) (right t)
 
+        get t ps = case t of
+            Leaf -> Nothing
+            Branch {} -> case ps of
+                [] -> return $ key t
+                0 : ps -> C.get ( left  t ) ps
+                1 : ps -> C.get ( right t ) ps
+                _ -> Nothing
+
     -- decreaseTo :: Ord a => baum a -> Position -> a -> baum a
 	decreaseTo = decreaseTo
 

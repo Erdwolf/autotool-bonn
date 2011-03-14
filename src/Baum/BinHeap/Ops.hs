@@ -18,6 +18,7 @@ instance C.Heap BinHeap where
         guard $ isMin this h
         return $ BinHeap 
                $ merge ( pre ++ post ) ( children this )
+    get h p = gets ( roots h ) p
     decreaseTo h p x = 
         BinHeap $ decreaseTo ( roots h ) p x
     equal = (==)
@@ -43,7 +44,7 @@ glue x y | order x == order y =
       
 toll :: [ BinTree a ] -> [(Position, a )] 
 toll ts = do 
-    (k,t) <- zip [ 1 .. ] ts
+    (k,t) <- zip [ index_starts_at .. ] ts
     ( [k], key t ) : do 
         (p,x) <- toll $ children t
         return ( k : p, x )
@@ -51,10 +52,21 @@ toll ts = do
 isMin :: Ord a => BinTree a -> BinHeap a -> Bool
 isMin t h = and $ map ( \ u -> key t <= key u ) $ roots h
 
+index_starts_at = 0
+
+gets :: [ BinTree a ] -> Position -> Maybe a
+gets ts ps = case ps of 
+    [] -> Nothing
+    p : ps -> do
+        let q = p - index_starts_at 
+        guard $ 0 <= q && q < length ts
+        let t = ts !! p
+        if null ps then return $ key t else gets ( children t ) ps
+
 decreaseTo :: Ord a  
            => [ BinTree a ] -> Position -> a -> [ BinTree a ]
 decreaseTo ts (p : ps) x = 
-    let ( pre, t : post ) = splitAt (p-1) ts
+    let ( pre, t : post ) = splitAt (p - index_starts_at) ts
         t' = if null ps 
              then Node { key = x , children = children t }
              else  if x < key t 

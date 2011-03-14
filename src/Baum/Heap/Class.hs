@@ -13,6 +13,7 @@ import Autolib.Hash
 
 import Tree
 import Data.Typeable
+import Data.Maybe ( isJust )
 
 
 class Heap baum where
@@ -28,18 +29,20 @@ class Heap baum where
     decreaseTo :: Ord a => baum a -> Position -> a -> baum a
 
     -- | is this a position in the tree?
-    contains :: baum a -> Position -> Bool
-    contains b p = elem p $ map fst $ toList b
+    get :: baum a -> Position -> Maybe a
 
-    -- true if structure of both trees is equal, false otherwise
+    -- | true if structure of both trees is equal, false otherwise
     equal :: Eq a => baum a -> baum a -> Bool
-    -- neu (nicht in Baum.Such.Class):
+
+    -- | neu (nicht in Baum.Such.Class):
     toList :: baum a -> [(Position,a)]
 
-    -- wird vom Aufgaben Generator genutzt und muss implementiert werden
+    -- | wird vom Aufgaben-Generator genutzt und muss implementiert werden
     contents :: baum a -> [a]
     contents b = map snd $ toList b
 
+contains :: Heap baum => baum a -> Position -> Bool
+contains b p = isJust $ get b p
 
 class ( Show t, Typeable t, Read t
       , Heap baum, OpC a
