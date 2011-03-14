@@ -31,7 +31,7 @@ merge xs [] = xs
 merge (x:xs) (y:ys) = case compare ( order x ) ( order y ) of
     LT -> x : merge xs (y:ys)
     GT -> y : merge (x:xs) ys
-    EQ -> glue x y : merge xs ys
+    EQ -> merge [ glue x y ] $ merge xs ys
       
 -- | make one tree from two trees of equal order          
 glue :: Ord a 
