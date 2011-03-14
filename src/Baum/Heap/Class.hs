@@ -27,6 +27,10 @@ class Heap baum where
     -- new element is smaller or equal to element at position in tree
     decreaseTo :: Ord a => baum a -> Position -> a -> baum a
 
+    -- | is this a position in the tree?
+    contains :: baum a -> Position -> Bool
+    contains b p = elem p $ map fst $ toList b
+
     -- true if structure of both trees is equal, false otherwise
     equal :: Eq a => baum a -> baum a -> Bool
     -- neu (nicht in Baum.Such.Class):

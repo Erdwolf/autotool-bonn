@@ -43,8 +43,8 @@ glue x y | order x == order y =
       
 toll :: [ BinTree a ] -> [(Position, a )] 
 toll ts = do 
-    (k,t) <- zip [ 0 .. ] ts
-    ( [], key t ) : do 
+    (k,t) <- zip [ 1 .. ] ts
+    ( [k], key t ) : do 
         (p,x) <- toll $ children t
         return ( k : p, x )
     
@@ -54,7 +54,7 @@ isMin t h = and $ map ( \ u -> key t <= key u ) $ roots h
 decreaseTo :: Ord a  
            => [ BinTree a ] -> Position -> a -> [ BinTree a ]
 decreaseTo ts (p : ps) x = 
-    let ( pre, t : post ) = splitAt p ts
+    let ( pre, t : post ) = splitAt (p-1) ts
         t' = if null ps 
              then Node { key = x , children = children t }
              else  if x < key t 

@@ -20,9 +20,16 @@ step b op = do
     inform $ text "Operation:" <+> toDoc op
     c <- case op of
 	 Insert a -> return $ insert b a
-	 DeleteMin -> return $ deleteMin b
-	 DecreaseTo p a -> return $ decreaseTo b p a
-	 _        -> reject $ text "ist unbekannt"
+	 DeleteMin -> 
+             if isEmpty b
+             then reject $ text "der Baum ist leer"
+             else return $ deleteMin b
+	 DecreaseTo p a -> 
+             if ( contains b p ) 
+             then return $ decreaseTo b p a
+             else reject $ text "diese Position ist nicht im Baum"
+	 _        -> 
+             reject $ text "diese Operation ist unbekannt"
     inform $ text "Resultat:"
     peng c
     return c
