@@ -21,77 +21,80 @@ import Autolib.Size
 import Data.Typeable
 import Data.List hiding (insert)
 
-data BinTree a = Null {}
-			   | Node {ord :: Int, key :: a, pos :: Position, children :: [BinTree a]}
+data BinTree a = 
+     Node { key :: a, children :: [BinTree a]}
      deriving ( Eq, Ord, Typeable )
 
 instance Functor BinTree where
-     fmap = error "missing instance Functor BinTree"
+  fmap f = tfold ( \ k cs -> Node ( f k ) cs )
 
-data BinHeap a = Empty {}
-			   | Trees {roots :: [BinTree a]}
+order :: BinTree a -> Int
+order t = length $ children t
+
+tfold :: ( a -> [b] -> b ) -> BinTree a -> b
+tfold node t = node ( key t ) 
+    $ map ( tfold node ) $ children t
+
+subtrees :: BinTree a -> [ BinTree a ]
+subtrees t = t : ( children t >>= subtrees )
+
+treeIsOrdered :: Ord  a => BinTree a -> Bool
+treeIsOrdered t = and $ do
+      u <- subtrees t
+      v <- subtrees u
+      return $ key u <= key v
+
+treeIsBinomial :: BinTree a -> Bool
+treeIsBinomial t = 
+      let check (k, t) = 
+              and $ ( k == order t ) : do
+                  map check $ zip [0 .. ] $ children t
+      in  check ( order t , t )
+          
+treeIsCorrect :: Ord a => BinTree a -> Bool
+treeIsCorrect t = treeIsOrdered t && treeIsBinomial t
+
+
+-------------------------------------------------------- 
+
+data BinHeap a = Trees {roots :: [BinTree a]}
 	 deriving ( Eq , Typeable )
 	 
 instance Functor BinHeap where
-     fmap = error "missing instance Functor BinHeap"
+     fmap f h = Trees { roots = map ( fmap f ) $ roots h }
 
-data Position = Pos {posi :: Int}
-	deriving ( Eq, Ord )
 
-isCorrect :: BinHeap a -> Bool
-isCorrect t = case t of
-				Empty -> True
-				_	  -> foldl1 (&&) (map (\n -> check n) (roots t))
+increasingOrders :: BinHeap a -> Bool          
+increasingOrders h = 
+    and $ zipWith ( \(u,v) -> order u < order v ) 
+                  (roots h ) ( tail $ roots h)
 
-check :: BinTree a -> Bool
-check t = if(length (children t) > 0) then
-			(ord t == length (children t)) && (foldl1 (&&) (map (\n -> check n) (children t)))
-		  else
-		  	(ord t == length (children t))
+heapIsCorrect :: Ord a => BinHeap a -> Bool
+heapIsCorrect h = and 
+    $ increasingOrders h : map treeIsCorrect ( roots h )
 
--- | y und z werden aus der Liste entfernt, der Knoten mit größerem Schlüssel wird an den anderen Knoten angehängt
--- | und dieser wieder in die Liste eingefügt. Die Liste der Kinder wird hierbei nach der Ordnung absteigend
--- | sortiert.
-merge :: Ord a => [BinTree a] -> BinTree a -> BinTree a -> [BinTree a]
-merge xs y z = if (key y >= key z) then
-				(remove (remove xs y) z)++[Node {ord = (ord z)+1, key = key z, pos=pos z, children = reverse (sortBy sortByOrd(y:(children z)))}]
-			   else
-			   	(remove (remove xs z) y)++[Node {ord = (ord y)+1, key = key y, pos=pos y, children = reverse (sortBy sortByOrd(z:(children y)))}]
 
--- | Der gesuchte Knoten wird in der Übergebenen Liste gesucht und, wenn vorhanden, entfernt
-remove :: Ord a => [BinTree a] -> BinTree a -> [BinTree a]
-remove xs t = case xs of 
-				x:xs' -> if (x == t) then
-						 	xs'
-						 else
-							x:(remove xs' t)
-				_	  -> xs
+-------------------------------------------------------- 
 
--- | Sortierung nach Ordnung
-sortByOrd :: Ord a => BinTree a -> BinTree a -> Ordering
-sortByOrd a b = if ((ord a) < (ord b)) then LT
-		  		else GT
+-- | merge order-increasing lists of trees
+merge :: Ord a 
+      => [BinTree a] -> [ BinTree a ] -> [BinTree a]
+merge [] ys = ys      
+merge xs [] = xs
+merge (x:xs) (y:ys) = case compare ( order x ) ( order y ) of
+    LT -> x : merge xs (y:ys)
+    GT -> y : merge (x:xs) ys
+    EQ -> glue x y : merge xs ys
+      
+-- | make one tree from two trees of equal order          
+glue :: Ord a 
+      => BinTree a -> BinTree a -> BinTree a
+glue x y | order x == order y =       
+    if ( key x < key y ) 
+    then x { children = children x ++ [y] }   
+    else y { children = children y ++ [x] }         
+      
 
--- | Sortierung nach Schlüssel
-sortByKey :: Ord a => BinTree a -> BinTree a -> Ordering
-sortByKey a b = if ((key a) <= (key b)) then LT
-				else GT
-				
-getMax :: BinTree a -> Int
-getMax t = case t of
-			Null -> 0
-			_	  -> foldl1 (max) ((posi (pos t)):(map (\n -> getMax n) (children t)))
-
--- | Automatisches Mergen der Bäume in einem Heap, soweit möglich.
-automerge :: Ord a => [BinTree a] -> [BinTree a]
-automerge xs = case xs of
-				x:xs' -> case xs' of
-							x':xs'' ->	if (ord x == ord (head xs')) then
-											automerge (sortBy sortByOrd (merge xs x (head xs')))
-						 				else
-						 					sortBy sortByOrd (x:(automerge xs'))
-						 	[]		->	xs
-				[]	  -> xs
 
 decrease :: Ord a => BinTree a -> Int -> a -> BinTree a
 decrease n a b = if ((posi (pos n)) == a) then
@@ -136,5 +139,5 @@ contentsTree t = if(length (children t) > 0) then
 
 $(derives [makeReader, makeToDoc] [''BinTree])
 $(derives [makeReader, makeToDoc] [''BinHeap])
-$(derives [makeReader, makeToDoc] [''Position])
+
 
