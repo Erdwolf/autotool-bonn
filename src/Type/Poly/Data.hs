@@ -39,6 +39,16 @@ angles p = Autolib.ToDoc.char '<'
 anglist :: [ Doc ] -> Doc
 anglist ps = angles ( hsep $ punctuate comma  ps )
 
+protect :: Doc -> Doc
+protect d = vcat 
+        $ map text $ lines 
+        $ concat 
+        $ map ( \ c -> case c of
+                    '<' -> "&lt;"
+                    '>' -> "&gt;"
+                    _ -> [c] )
+        $ render d
+
 instance ToDoc Type where 
     toDoc t = case t of
         TyVar v -> toDoc v
@@ -66,7 +76,7 @@ instance Reader Variable where
         return $ Variable { vname = n, vtype = t }
 
 
-data Expression = Apply [ Type ] Identifier [ Expression ]
+data Expression = Apply [ Type ] Identifier  [ Expression ]
     deriving ( Eq, Ord, Typeable )
 
 instance Size Expression where
@@ -90,7 +100,6 @@ instance Reader Expression where
         f <- reader
         args <- my_parens $ my_commaSep reader
         return $ Apply vs f args
-
 
 data Function = 
      Function { fname :: Identifier
@@ -144,30 +153,21 @@ instance Reader Function where
 
 data Signature =
      Signature { functions :: [ Function ]
-	       , variables :: [ Variable ]
 	       }
   deriving ( Typeable )
 
 instance Size Signature where
-     size s = length (functions s) + length (variables s)
+     size s = length (functions s) 
 
 instance ToDoc Signature where
     toDoc sig = vcat 
-       $  do v <- variables sig ; return $ toDoc v <> semi
-       ++ do f <- functions sig ; return $ toDoc f <> semi
+       $ do f <- functions sig ; return $ toDoc f <> semi
 
 instance Reader Signature where
     reader = do
-        let vf =  
-                 do f <- try reader ; return $ Right f -- function
-             <|> do v <-     reader ; return $ Left  v -- variable
-        vfs <- many $ do x <- vf ; my_semi ; return x
-        return $ sammel vfs
+        vfs <- many $ do x <- reader ; my_semi ; return x
+        return $ Signature { functions = vfs }
 
-sammel vfs = Signature
-	       { functions = do Right f <- vfs ; return f
-	       , variables = do Left  v <- vfs ; return v
-	       }
 
 
 data TI = TI { target :: Type

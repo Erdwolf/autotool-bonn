@@ -1,9 +1,7 @@
-module Type.Quiz where
+module Type.Poly.Quiz where
 
---  $Id$
-
-import Type.Data
-import Type.Check
+import Type.Poly.Data
+import Type.Poly.Check
 
 import Autolib.NFTA
 import Autolib.NFTA.Shortest ( shortest, shortest0 )

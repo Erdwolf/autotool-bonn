@@ -27,18 +27,19 @@ instance OrderScore TypePolyCheck where
 instance C.Partial TypePolyCheck TI Expression where
 
     describe p i = vcat
-        [ text "Gesucht ist ein Ausdruck vom Typ" <+> toDoc (target i)
+        [ text "Gesucht ist ein Ausdruck vom Typ" 
+               <+> protect (toDoc (target i))
 	, text "in der Signatur"
-	, nest 4 $ toDoc (signature i)
+	, nest 4 $ protect $ toDoc (signature i)
 	]
 
     initial p i = read "f(a(),M.<Foo>g(b()))"
 
     total p i b = do
-        inform $ vcat 
-	       [ text "Die Baumstruktur dieses Ausdrucks ist"
-	       , nest 4 $ T.form b
-	       ]
+        inform $ vcat [ text "Die Baumstruktur des Ausdrucks"
+                      , nest 4 $ protect $ toDoc b
+                      , text "ist"
+                      ]
 	peng b
         t <- infer (signature i) b
         assert ( t == target i )
