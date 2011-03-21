@@ -61,8 +61,3 @@ atom  = foldr1 (<|>) $ do my_reserved "int" ; return TScalar
                        t <- my_angles reader
                        return $ TCollect n t
 
-my_angles p = do 
-    my_symbol "<"
-    t <- p
-    my_symbol ">"
-    return t
