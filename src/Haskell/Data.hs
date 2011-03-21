@@ -11,6 +11,9 @@ import Data.Typeable
 import Test.QuickCheck ( Args (..))
 import System.Random ( StdGen )
 
+import qualified Language.Haskell.Exts.Parser as Pa
+import qualified Language.Haskell.Exts.Pretty as Pr
+
 -- TODO: the ToDoc method should 
 -- definitely not print the String quotes
 -- and maybe do prettyprinting
@@ -20,6 +23,9 @@ import System.Random ( StdGen )
 data Code = Code String deriving ( Eq, Ord, Typeable )
 
 $(derives [makeReader, makeToDoc] [''Code])
+
+data Display = Display 
+
 
 instance Size Code where
    -- FIXME: should use the size of the syntax tree

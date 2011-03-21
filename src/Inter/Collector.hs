@@ -70,6 +70,7 @@ import qualified Hanoi.Semantik
 import qualified Hanoi.Quiz
 import qualified Type.Check
 import qualified Type.Quiz
+import qualified Type.Poly.Check
 import qualified FP.Check
 import qualified FP.Quiz
 
@@ -429,6 +430,7 @@ tmakers =
          , heading "Programmierung"
                 [ item Type.Check.make
 	        , item Type.Quiz.make
+                , item Type.Poly.Check.make
 		, item FP.Check.make
 		, item FP.Quiz.make
 		, item Flow.Central.goto_to_struct_fixed

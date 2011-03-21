@@ -1,5 +1,4 @@
 -- | Layout routine for Data.Tree
---  $Id$
 
 module Tree 
 
