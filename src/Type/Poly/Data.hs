@@ -32,7 +32,9 @@ instance Hash Type where
         TyCon f args -> hash (1 :: Int, (f, args))
 
 angles :: Doc -> Doc
-angles p = Autolib.ToDoc.char '<' <> p <> Autolib.ToDoc.char '>'
+angles p = Autolib.ToDoc.text "&lt;"
+     <> p 
+     <> Autolib.ToDoc.text "&gt;"
 
 anglist :: [ Doc ] -> Doc
 anglist ps = angles ( hsep $ punctuate comma  ps )
