@@ -436,6 +436,7 @@ tmakers =
 		, item Flow.Central.goto_to_struct_fixed
 		, item Flow.Central.struct_to_goto_fixed
 		, item Specify.Inter.make
+                , item Haskell.Central.make_fixed
                 ]
          , heading "Algorithmen"
                 [ heading "Sortiernetze"
@@ -453,11 +454,6 @@ tmakers =
                   , item String_Matching.BM.Central.make_quiz
                   ]
                 ]
-         , heading "Programmierung"
-            [ heading "Haskell" 
-               [ item Haskell.Central.make_fixed
-               ]
-            ]
          , heading "Datenstrukturen"
                 [ heading "Bäume" 
                     [ heading "Pre/In/Post/Level-Order"
