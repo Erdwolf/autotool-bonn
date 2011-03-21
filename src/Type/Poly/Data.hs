@@ -31,6 +31,11 @@ instance Hash Type where
         TyVar v -> hash (0 :: Int, v)
         TyCon f args -> hash (1 :: Int, (f, args))
 
+-- | subexpressions
+subtypes t = t : case t of
+    TyCon f args -> args >>= subtypes
+    _ -> []
+
 angles :: Doc -> Doc
 angles p = Autolib.ToDoc.char '<'
      <> p 
@@ -177,22 +182,23 @@ data TI = TI { target :: Type
 
 $(derives [makeReader, makeToDoc] [''TI])
 
-data Conf = Conf { max_arity :: Int
-		 , types :: [ Type ]
-		 , min_symbols :: Int
-		 , max_symbols :: Int
-		 , min_size :: Int
-		 , max_size :: Int
+data Conf = Conf { types_with_arities :: [ (Identifier, Int) ]
+                 , type_variables :: [ Identifier ]
+                 , function_names :: [ Identifier ]
+                 , type_expression_size_range :: (Int,Int)  
+                 , arity_range :: (Int, Int) -- ^ min arity should be zero
+                 , solution_size_range :: (Int,Int)  
 		 }
     deriving ( Typeable )
 
 conf :: Conf
-conf = Conf { max_arity = 3
-	    , types = read "[ int, boolean, char, String, Foo, Bar ]"
-	    , min_symbols = 4
-	    , max_symbols = 10
-	    , min_size = 5
-	    , max_size = 10
+conf = Conf { types_with_arities = 
+                 read "[ (int, 0), (boolean,0), (List, 1), (Map, 2) ]"
+                 , type_variables = read "[ hund, maus, elefant ]"
+                 , function_names = read "[goethe, schiller, herder]" 
+                 , type_expression_size_range = (1, 5)
+                 , arity_range = (0, 2)
+                 , solution_size_range = (5, 10 )
 	    }
 
 $(derives [makeReader, makeToDoc] [''Conf])
