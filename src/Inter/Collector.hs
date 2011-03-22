@@ -71,6 +71,7 @@ import qualified Hanoi.Quiz
 import qualified Type.Check
 import qualified Type.Quiz
 import qualified Type.Poly.Check
+import qualified Type.Poly.Quiz
 import qualified FP.Check
 import qualified FP.Quiz
 

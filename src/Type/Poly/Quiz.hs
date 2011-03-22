@@ -2,6 +2,7 @@ module Type.Poly.Quiz where
 
 import Type.Poly.Data
 import Type.Poly.Roll
+import Type.Poly.Check ( TypePolyCheck (..) )
 
 import Inter.Quiz
 import Inter.Types
