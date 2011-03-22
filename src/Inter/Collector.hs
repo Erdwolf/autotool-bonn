@@ -431,6 +431,7 @@ tmakers =
                 [ item Type.Check.make
 	        , item Type.Quiz.make
                 , item Type.Poly.Check.make
+                , item Type.Poly.Quiz.make
 		, item FP.Check.make
 		, item FP.Quiz.make
 		, item Flow.Central.goto_to_struct_fixed

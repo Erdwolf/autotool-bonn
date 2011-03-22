@@ -26,6 +26,10 @@ data Type = TyCon Identifier [ Type ]
           | TyVar Identifier
      deriving ( Eq, Ord, Typeable )
 
+instance Size Type where
+    size ( TyCon f xs ) = succ $ sum $ map size xs
+    size _  = 1
+
 instance Hash Type where 
     hash t = case t of
         TyVar v -> hash (0 :: Int, v)
@@ -195,7 +199,7 @@ conf :: Conf
 conf = Conf { types_with_arities = 
                  read "[ (int, 0), (boolean,0), (List, 1), (Map, 2) ]"
                  , type_variables = read "[ hund, maus, elefant ]"
-                 , function_names = read "[goethe, schiller, herder]" 
+                 , function_names = read "[goethe, schiller, herder, kant, fichte]" 
                  , type_expression_size_range = (1, 5)
                  , arity_range = (0, 2)
                  , solution_size_range = (5, 10 )
