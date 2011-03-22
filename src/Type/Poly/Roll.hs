@@ -7,46 +7,43 @@ import Autolib.TES.Identifier
 import Autolib.Util.Size
 
 import qualified Data.Map as M
+import qualified Data.Set as S
 import Control.Monad ( forM, guard ) 
 import Data.List ( nub , minimumBy)
 import Data.Maybe (isJust)
 import Data.Ord ( comparing )
 import Data.Ix ( inRange )
 
-{-
-data Conf = Conf { types_with_arities :: [ (Identifier, Int) ]
-                 , type_variables :: [ Identifier ]
-                 , function_names :: [ Identifier ]
-                 , type_expression_size_range :: (Int,Int)  
-                 , arity_range :: (Int, Int) -- ^ min arity should be zero
-                 , solution_size_range :: (Int,Int)  
-		 }
--}
+roller conf = do
+    let handle k = 
+            if k <= 0 
+            then error "Type.Poly.Roll: cannot generate problem instance"
+            else do
+                txss <- roll conf
+                case concat txss of
+                     [] -> handle (k-1)
+                     txs  -> return $ minimumBy 
+                                 ( comparing $ size . target . fst ) 
+                                 txs
+    handle $ generator_retries conf 
 
-
-roll conf = do
+roll conf = forM [ 1 .. generator_iterations conf ] $ \ i -> do
     sig <- Type.Poly.Roll.signature conf
     let (lo, hi) = solution_size_range conf
         candidates = concat $ take hi $ typed_terms sig
         census = M.fromListWith min $ do
             (t,x) <- candidates 
-            return ( t, ( size x, (t, x)))
-        interesting = do     
-            (k, (t,x)) <- M.elems census
-            guard $ inRange ( lo,hi) k
-            guard $ size t < size x
-            return (t,x)
-    return $ if length interesting < 1
-        then Nothing 
-        else let (t,x) = minimumBy 
-                          ( comparing $ size . fst ) 
-                          interesting
-             in  Just 
-                       ( TI { target = t
-                            , Type.Poly.Data.signature = sig } 
-                       , x   
-                       )  
-    `repeat_until` \ out -> isJust out                   
+            return ( t
+                   , ( size x
+                     , ( TI { target = t , Type.Poly.Data.signature = sig } , x )
+                     )
+                   )  
+    let allfun = S.fromList $ function_names conf
+    return $ do     
+            (s, out) <- M.elems census
+            guard $ inRange ( lo,hi ) s
+            guard $ S.isSubsetOf allfun $ expression_signature ( snd out ) 
+            return out
                     
 -- | lazy infinite list,
 -- on index k: terms of size k (with their type)

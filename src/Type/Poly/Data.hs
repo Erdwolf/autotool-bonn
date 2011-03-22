@@ -17,6 +17,8 @@ import Data.Typeable
 import Control.Monad ( when, forM )
 import Data.List ( nub )
 
+import qualified Data.Set as S
+
 instance Container Identifier String where
      label _ = "Identifier"
      pack = show 
@@ -92,6 +94,13 @@ instance Size Expression where
     size x = case x of
         Apply vs f args -> succ $ sum $ map size args
 
+subexpressions x = x : case x of
+    Apply _ _ args -> args >>= subexpressions
+
+expression_signature x = S.fromList $ do
+    Apply _ f _ <- subexpressions x
+    return f
+
 instance ToDoc Expression where
     toDoc x = case x of
         Apply vs f args -> hsep
@@ -163,7 +172,7 @@ instance Reader Function where
 data Signature =
      Signature { functions :: [ Function ]
 	       }
-  deriving ( Typeable )
+  deriving ( Typeable, Eq, Ord )
 
 instance Size Signature where
      size s = length (functions s) 
@@ -182,7 +191,7 @@ instance Reader Signature where
 data TI = TI { target :: Type
 	     , signature :: Signature
 	     }
-    deriving  ( Typeable )
+    deriving  ( Typeable, Eq, Ord )
 
 $(derives [makeReader, makeToDoc] [''TI])
 
@@ -192,17 +201,21 @@ data Conf = Conf { types_with_arities :: [ (Identifier, Int) ]
                  , type_expression_size_range :: (Int,Int)  
                  , arity_range :: (Int, Int) -- ^ min arity should be zero
                  , solution_size_range :: (Int,Int)  
+                 , generator_iterations :: Int
+                 , generator_retries :: Int
 		 }
     deriving ( Typeable )
 
 conf :: Conf
 conf = Conf { types_with_arities = 
-                 read "[ (int, 0), (boolean,0), (List, 1), (Map, 2) ]"
-                 , type_variables = read "[ hund, maus, elefant ]"
-                 , function_names = read "[goethe, schiller, herder, kant, fichte]" 
-                 , type_expression_size_range = (1, 5)
+                 read "[ (Foo, 0), (List, 1), (Map, 2) ]"
+                 , type_variables = read "[ R, S, T ]"
+                 , function_names = read "[ f, g, h ]" 
+                 , type_expression_size_range = (1, 4)
                  , arity_range = (0, 2)
-                 , solution_size_range = (5, 10 )
+                 , solution_size_range = (7, 10 )
+                 , generator_iterations = 500
+                 , generator_retries = 10
 	    }
 
 $(derives [makeReader, makeToDoc] [''Conf])
