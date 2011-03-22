@@ -8,9 +8,7 @@ import Inter.Quiz
 import Inter.Types
 
 instance Generator TypePolyCheck Conf ( TI, Expression ) where
-    generator p conf key = do
-        Just ( ti, x ) <- roller conf
-        return ( ti, x )
+    generator p conf key = roller conf
 
 instance Project TypePolyCheck ( TI, Expression ) TI where
     project p ( ti, x ) = ti
