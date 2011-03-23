@@ -163,10 +163,11 @@ instance Reader Function where
                          return $ TyCon f args
         ps <- my_parens $ my_commaSep reader 
         args <- forM ( map vtype ps )  repair
+        res <- repair r
         return $ Function { fname = n
                           , tyvars = vs
 			  , arguments = args
-			  , result = r 
+			  , result = res
 			  }
 
 data Signature =

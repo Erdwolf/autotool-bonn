@@ -51,5 +51,5 @@ instance C.Measure TypePolyCheck TI Expression where
 make :: Make
 make = direct TypePolyCheck $
     TI { target = read "boolean"
-       , signature = read "int a; static boolean eq (int a, int b);"
+       , signature = read "static int a(); static <T>boolean eq (T a, T b);"
        }

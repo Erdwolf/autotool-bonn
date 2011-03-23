@@ -26,6 +26,11 @@ infer sig exp = do
                         $ text "Anzahl der Typ-Argumente stimmt mit Deklaration überein?"
                     
                     let sub = M.fromList $ zip ( tyvars f ) targs 
+                        
+                    when ( not $ null targs ) $ inform    
+                        $ text "die Substitution für die Typ-Parameter ist"
+                        </> protect ( toDoc sub )
+                        
                     argtypes <- forM ( arguments f ) $ apply sub
                     rtype <- apply sub $ result f
                     let finst = Function { fname = fname f
