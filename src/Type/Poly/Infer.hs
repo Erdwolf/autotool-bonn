@@ -61,7 +61,8 @@ apply :: M.Map Identifier Type
       -> Reporter Type
 apply sub t = case t of
     TyVar v -> case M.lookup v sub of
-          Nothing -> reject $ vcat 
+        Just w -> return w  
+        Nothing -> reject $ vcat 
               [ text "Variable" <+> toDoc v
               , text "nicht gebunden in" <+> protect ( toDoc sub )
               ]
