@@ -71,6 +71,14 @@ instance Partial CFG2 I2.Config Grammatik where
           C.run ( Grammatik.Property.check ( Typ 0 ) ) b
           mapM_ ( \ p -> C.run ( Grammatik.Property.check p ) b ) ( I2.properties i )
 
+          let sigma = alphabet $ inter $ language $ I2.source i
+          when ( sigma /= terminale b ) $ reject $ vcat
+               [ text "Das Terminal-Alphabet Ihrer Grammatik"
+                  </> toDoc ( terminale b )
+               , text "stimmt nicht mit dem Alphabet der Sprache der Aufgabenstellung überein:"   
+                 </> toDoc sigma
+               ]
+                 
     total p i0 b = do
           let i = add_test_cases p i0 b
           cf_yeah_noh i b
