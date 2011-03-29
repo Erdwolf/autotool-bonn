@@ -20,3 +20,8 @@ instance ToTree Formel where
         f -> Node ( show $ toDoc f )
                  []
 
+instance ToTree Term where
+    toTree t = case t of
+        Variable v -> Node ( show v ) []
+        Apply f args -> Node ( show f ) ( map toTree args )
+        

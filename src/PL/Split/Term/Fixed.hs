@@ -7,6 +7,7 @@ module PL.Split.Term.Fixed where
 
 import PL.Data
 import PL.Reader
+import PL.Tree
 import PL.Signatur hiding ( signatur )
 import qualified PL.Signatur
 import PL.Struktur
@@ -70,9 +71,12 @@ instance Partial PL_Split_Term ( Instance Int ) Term where
                  $ takeWhile ( \ t -> size t < 10 )    
                  $ concat ts
                  
-    partial _ i t = silent $ do                 
-        inform $ text "paßt der Term zur Signatur?"
-        PL.Signatur.check ( signatur i ) t
+    partial _ i t = do                 
+        inform $ text "Die Baumstruktur des Terms ist"
+        peng t
+        silent $ do
+            inform $ text "paßt der Term zur Signatur?"
+            PL.Signatur.check ( signatur i ) t
         
     total _ i t = do    
         let int s = I.Interpretation 
