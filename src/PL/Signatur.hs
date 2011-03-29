@@ -7,6 +7,7 @@ import PL.Util
 import PL.ToDoc
 
 import Autolib.FiniteMap
+import qualified Data.Map as M
 import Autolib.TES.Identifier
 import Autolib.Set
 import Autolib.Reporter
@@ -21,6 +22,11 @@ data Signatur =
 
 $(derives [makeReader, makeToDoc] [''Signatur])
 
+
+has_nullary_functions :: Signatur -> Bool
+has_nullary_functions s = not $ null $ do
+    ( f, a ) <- M.toList $ funktionen s
+    guard $ 0 == a
 
 class Signed s where 
       signatur :: s -> Signatur
@@ -44,9 +50,9 @@ instance Signed Formel where
 check_exp sig fm p xs = do
     n <- find_or_complain "symbol" fm p
     when ( n /= length xs ) $ reject $ vcat 
-        [ text "number of arguments" <+> toDoc ( length xs)
-        , text "does not match definition" <+> toDoc n
-        , text "for relation/function symbol" <+> toDoc p
+        [ text "for relation/function symbol" <+> toDoc p
+        , text "declared arity" <+> toDoc n
+        , text "does not match actual number of arguments" <+> toDoc ( length xs)
 	, text "arguments are" <+> toDoc xs
         ]
     mapM_ ( check sig ) xs
@@ -91,7 +97,3 @@ remove_variable v sig =
 add_variable v sig = 
     sig { freie_variablen = union ( freie_variablen sig ) ( unitSet v ) }
 
-
--- local variables:
--- mode: haskell
--- end:

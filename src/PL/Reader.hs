@@ -1,3 +1,5 @@
+{-# language PatternSignatures #-}
+
 module PL.Reader where
 
 import PL.Data

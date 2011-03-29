@@ -1,14 +1,21 @@
+{-# language DeriveDataTypeable #-}
+
 module PL.Data where
 
 
 import Autolib.TES.Identifier
-
+import Autolib.Size
 
 import Data.Typeable
 
 data Term = Variable Identifier
 	  | Apply Identifier [ Term ]
      deriving ( Eq, Ord, Typeable )
+
+instance Size Term where
+     size t = case t of
+         Variable _ -> 1
+         Apply _ args -> succ $ sum $ map size args
 
 data Quantor = Forall | Exists 
 	     | Count Compare Integer

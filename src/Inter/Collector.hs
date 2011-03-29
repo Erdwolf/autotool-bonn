@@ -195,6 +195,8 @@ import qualified CL.Find
 import qualified Unify.Main
 
 import qualified PL.Find_Model
+import qualified PL.Split.Term.Fixed
+import qualified PL.Split.Term.Quiz
 import qualified Hilbert.Central
 import qualified Resolution.Central
 
@@ -293,6 +295,8 @@ tmakers =
 		    ]
 		, heading "Prädikatenlogik"
 		    [ item PL.Find_Model.make_fixed
+                    , item PL.Split.Term.Fixed.make
+                    , item PL.Split.Term.Quiz.make
 		    ]
 		]
          , heading "Mengen und Relationen"
