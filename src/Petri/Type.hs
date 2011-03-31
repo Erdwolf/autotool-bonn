@@ -13,6 +13,7 @@ import Autolib.Reader
 import Autolib.ToDoc
 import Data.Typeable  
 import Autolib.Size  
+import Autolib.Hash
   
 type Connection s t = 
     ( [s], t, [s] )
@@ -29,7 +30,7 @@ data Ord s => Capacity s
     = Unbounded
     | All_Bounded Int
     | Bounded ( FiniteMap s Int )
-      deriving ( Typeable )
+      deriving ( Eq, Ord, Typeable )
                
 
 data ( Ord s, Ord t ) => Net s t = Net
@@ -38,13 +39,17 @@ data ( Ord s, Ord t ) => Net s t = Net
     , connections :: [ Connection s t ] 
     , capacity :: Capacity s 
     , start :: State s
-    }  deriving Typeable
+    }  deriving ( Typeable, Eq, Ord )
     
 $(derives [makeReader, makeToDoc] [''Capacity])    
 $(derives [makeReader, makeToDoc] [''Net])    
 
+instance ( Ord s, Ord t, Hash s, Hash t ) => Hash ( Net s t ) where
+    hash n = hash ( places n, transitions n, connections n )
+                  
+
 newtype Place = Place Int 
-           deriving ( Eq, Ord, Typeable, Enum )
+           deriving ( Eq, Ord, Typeable, Enum, Hash )
 
 instance Reader Place where
     reader = do 
@@ -54,7 +59,7 @@ instance ToDoc Place where
     toDoc ( Place n ) = text "S" <> toDoc n
 
 newtype Transition = Transition Int 
-                deriving ( Eq, Ord, Typeable, Enum )
+                deriving ( Eq, Ord, Typeable, Enum, Hash )
 
 instance Reader Transition where
     reader = do 

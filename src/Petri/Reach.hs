@@ -7,9 +7,11 @@ module Petri.Reach where
 import Petri.Type
 import Petri.Step
 import Petri.Roll
+import Petri.Dot
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Dot.Dotty ( peng )
 import Data.Typeable
 import Data.List ( minimumBy )
 import Data.Ord ( comparing )
@@ -33,13 +35,17 @@ $(derives [makeReader, makeToDoc] [''Petri_Reach])
 instance Partial Petri_Reach 
          ( Net Place Transition, State Place ) 
          [ Transition ] where
-    describe _ ( n, goal ) = vcat
-         [ text "Gesucht ist für das Petri-Netz"
-         , nest 4 $ toDoc n  
-         , text "eine Transitionsfolge," 
-         , text "durch die der folgende Zustand erreicht wird:"
-         , nest 4 $ toDoc goal  
-         ]  
+    report _ ( n, goal ) = do
+         inform $ vcat
+             [ text "Gesucht ist für das Petri-Netz"
+             , nest 4 $ toDoc n  
+             ]
+         peng n
+         inform $ vcat
+             [ text "eine Transitionsfolge," 
+             , text "durch die der folgende Zustand erreicht wird:"
+             , nest 4 $ toDoc goal  
+             ]  
     initial _ ( n, goal ) = 
         reverse $ S.toList $ transitions n     
     total _ ( n, goal ) ts = do
