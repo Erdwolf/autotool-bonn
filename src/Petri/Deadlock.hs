@@ -7,9 +7,11 @@ module Petri.Deadlock where
 import Petri.Type
 import Petri.Step
 import Petri.Roll
+import Petri.Dot
 
 import Autolib.Reader
 import Autolib.ToDoc
+import Autolib.Dot.Dotty ( peng )
 import Data.Typeable
 import Data.List ( minimumBy, maximumBy )
 import Data.Ord ( comparing )
@@ -33,12 +35,16 @@ $(derives [makeReader, makeToDoc] [''Petri_Deadlock])
 instance Partial Petri_Deadlock 
          ( Net Place Transition )
          [ Transition ] where
-    describe _ n = vcat
-         [ text "Gesucht ist für das Petri-Netz"
-         , nest 4 $ toDoc n  
-         , text "eine Transitionsfolge," 
-         , text "die zu einem Zustand ohne Nachfolger (Deadlock) führt."
-         ]  
+    report _ n = do
+         inform $ vcat
+             [ text "Gesucht ist für das Petri-Netz"
+             , nest 4 $ toDoc n  
+             ]
+         peng n
+         inform $ vcat
+             [ text "eine Transitionsfolge," 
+             , text "die zu einem Zustand ohne Nachfolger (Deadlock) führt."
+             ]  
     initial _ n = 
         reverse $ S.toList $ transitions n     
     total _ n ts = do
