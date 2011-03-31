@@ -17,7 +17,7 @@ net ps ts cap = do
         , transitions = S.fromList ts                    
         , connections = cs                
         , capacity = cap
-        , start = M.fromListWith (+) $ zip ms $ repeat 1
+        , start = State $ M.fromListWith (+) $ zip ms $ repeat 1
         }
     
 conn :: ( Ord s , Ord t )

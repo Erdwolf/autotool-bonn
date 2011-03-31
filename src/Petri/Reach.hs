@@ -23,6 +23,10 @@ import Inter.Types
 import Inter.Quiz
 
 data Petri_Reach = Petri_Reach 
+    deriving ( Typeable )
+
+instance OrderScore Petri_Reach where
+    scoringOrder _ = Increasing
 
 $(derives [makeReader, makeToDoc] [''Petri_Reach]) 
                                         
@@ -39,12 +43,16 @@ instance Partial Petri_Reach
     initial _ ( n, goal ) = 
         reverse $ S.toList $ transitions n     
     total _ ( n, goal ) ts = do
+        inform $ text "Startzustand" </> toDoc ( start n )
         out <- foldM ( \ z (k, t) -> do
                           inform $ text "Schritt" <+> toDoc k
                           Petri.Step.execute n t z ) 
                      ( start n ) ( zip [ 1 :: Int .. ] ts )
         assert ( out == goal ) 
                $ text "Zielzustand erreicht?"
+
+make_fixed :: Make
+make_fixed = direct Petri_Reach Petri.Type.example
 
 data Config = Config 
                  { num_places :: Int
@@ -63,10 +71,20 @@ example = Config
     }
                           
 $(derives [makeReader, makeToDoc] [''Config]) 
+
+
+make_quiz :: Make
+make_quiz = quiz Petri_Reach Petri.Reach.example
             
+instance Project 
+    Petri_Reach 
+      ( ( Net Place Transition, State Place ) )
+      ( ( Net Place Transition, State Place ) )  where
+    project _ nz = nz
+
 instance Generator 
     Petri_Reach Config 
-      (Int, ( Net Place Transition, State Place) ) where
+      ( ( Net Place Transition, State Place ) ) where
       generator _ conf key = do
           tries <- forM [ 1 .. 1000 ] $ \ k -> do
               let ps = [ Place 1 
@@ -80,9 +98,10 @@ instance Generator
                       z' <- zs
                       let d = sum $ do
                             p <- ps
-                            return $ abs ( M.findWithDefault 0 p ( start n ) - M.findWithDefault 0 p z' )
+                            return $ abs ( mark ( start n ) p - mark z' p )
                       return ( d, ( n, z' ) ) 
-          return $  minimumBy ( comparing fst ) 
+          return $ snd
+                 $  minimumBy ( comparing fst ) 
                  $ concat tries
   
   

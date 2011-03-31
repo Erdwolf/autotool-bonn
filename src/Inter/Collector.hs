@@ -215,6 +215,9 @@ import Algebraic.Relation
 
 import qualified Flow.Central
 
+import qualified Petri.Reach
+import qualified Petri.Deadlock
+
 makers :: [ Make ]
 makers = do Right make <- flatten tmakers ; return make
 
@@ -559,9 +562,6 @@ tmakers =
                 , item Graph.VC.VCSAT.make_quiz               
                 ]
 
-         , heading "noch nicht eingeordnet"
-                [ item Palindrom.Plain.make
-                ]
 	  , heading "experimentell"
 	        [ item $ Algebraic2.Central.make Algebraic_Integer
 	        , item $ Algebraic2.Quiz.make Algebraic_Integer
@@ -569,7 +569,17 @@ tmakers =
 	        , item $ Algebraic.Quiz.make Algebraic_Graph
 	        , item $ Algebraic.Central.make Algebraic_STGraph
 	        , item $ Algebraic.Quiz.make Algebraic_STGraph
+                , heading "Petri-Netze"
+                   [ item $ Petri.Reach.make_fixed
+                   , item $ Petri.Reach.make_quiz
+                   -- , item $ Petri.Deadlock.make_fixed
+                   -- , item $ Petri.Deadlock.make_quiz
+                   ]
 		]
+
+         , heading "noch nicht eingeordnet"
+                [ item Palindrom.Plain.make
+                ]
           ]
 
 

@@ -60,18 +60,18 @@ successors n z0 = do
     guard $ all_non_negative z1    
     let z2 = change succ nach z1
     guard $ conforms ( capacity n ) z2
-    return ( t, M.filter ( > 0 ) z2 )
+    return ( t, remove_zeroes z2 )
     
-change :: Ord k 
-       => ( Int -> Int ) -> [k] -> Map k Int -> Map k Int    
-change f ps z = foldl 
+change :: Ord s
+       => ( Int -> Int ) -> [s] -> State s -> State s
+change f ps (State z) = State $ foldl 
    ( \ z p -> M.insert p ( f $ M.findWithDefault 0 p z ) z )
    z ps
     
-all_non_negative z = 
+all_non_negative (State z) = 
     and $ map ( \(k,v) -> v >= 0) $ M.toList z
 
-conforms cap z = case cap of
+conforms cap (State z) = case cap of
     Unbounded -> True
     All_Bounded b -> 
         and $ map ( \(k,v) -> v <= b) $ M.toList z

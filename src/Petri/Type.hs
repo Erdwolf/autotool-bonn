@@ -17,7 +17,13 @@ import Autolib.Size
 type Connection s t = 
     ( [s], t, [s] )
 
-type State s = FiniteMap s Int
+newtype State s = State ( FiniteMap s Int )
+    deriving ( Reader, ToDoc, Eq, Ord, Typeable )
+
+remove_zeroes ( State f ) = State ( M.filter ( > 0 ) f )
+
+mark :: Ord s => State s -> s -> Int
+mark ( State f ) s = M.findWithDefault 0 s f
 
 data Ord s => Capacity s 
     = Unbounded
@@ -25,7 +31,6 @@ data Ord s => Capacity s
     | Bounded ( FiniteMap s Int )
       deriving ( Typeable )
                
-$(derives [makeReader, makeToDoc] [''Capacity])    
 
 data ( Ord s, Ord t ) => Net s t = Net
     { places :: Set s
@@ -35,6 +40,7 @@ data ( Ord s, Ord t ) => Net s t = Net
     , start :: State s
     }  deriving Typeable
     
+$(derives [makeReader, makeToDoc] [''Capacity])    
 $(derives [makeReader, makeToDoc] [''Net])    
 
 newtype Place = Place Int 
@@ -58,3 +64,22 @@ instance ToDoc Transition where
     toDoc ( Transition n ) = text "T" <> toDoc n
 
 instance Size Transition where size _ = 1
+
+
+example :: (Net Place Transition, State Place )
+example = ( Net
+    { places = mkSet [ Place 1 , Place 2 , Place 3 , Place 4 ]
+    , transitions = mkSet [ Transition 1 , Transition 2 , Transition 3 , Transition 4 ]
+    , connections = [ ( [ Place 3 ] , Transition 1 , [ Place 2 , Place 3 ] )
+                    , ( [ Place 4 ] , Transition 2 , [ Place 3 ] )
+                    , ( [ Place 1 ] , Transition 3 , [ Place 4 ] )
+                    , ( [ Place 2 ] , Transition 4 , [ Place 1 ] )
+                    ]
+    , capacity = All_Bounded
+                     1
+    , start = State $ listToFM
+                  [ ( Place 1 , 1 ) ]
+    }
+    , State $ listToFM [(Place 1,1),(Place 2,1),(Place 3,1),(Place 4,1)]
+    )
+    
