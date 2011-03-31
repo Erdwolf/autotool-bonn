@@ -1,6 +1,8 @@
 module Petri.Step where
 
 import Petri.Type
+import Petri.Dot
+import Autolib.Dot.Dotty ( peng )
 
 import Autolib.FiniteMap  
 import Data.Map ( Map )  
@@ -49,6 +51,7 @@ execute n t z0 = do
                 </> toDoc z2
             when ( not $ conforms ( capacity n ) z2 ) $ reject $ text    
                 "enthält Markierungen, die die Kapazität überschreiten"
+            peng $ n { start = z2 }
             return z2       
 
 successors :: ( Ord s, Ord t )
