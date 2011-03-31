@@ -23,6 +23,10 @@ import Inter.Types
 import Inter.Quiz
 
 data Petri_Deadlock = Petri_Deadlock 
+    deriving ( Typeable )
+
+instance OrderScore Petri_Deadlock where
+    scoringOrder _ = Increasing
 
 $(derives [makeReader, makeToDoc] [''Petri_Deadlock]) 
                                         
@@ -45,6 +49,10 @@ instance Partial Petri_Deadlock
         assert ( null $ successors n out )
                $ text "Zielzustand hat keine Nachfolger?"
 
+make_fixed :: Make
+make_fixed = direct Petri_Deadlock $ fst Petri.Type.example
+
+
 data Config = Config 
                  { num_places :: Int
                  , num_transitions :: Int  
@@ -62,10 +70,20 @@ example = Config
     }
                           
 $(derives [makeReader, makeToDoc] [''Config]) 
+
+
+make_quiz :: Make
+make_quiz = quiz Petri_Deadlock Petri.Deadlock.example
+            
+instance Project 
+    Petri_Deadlock
+      ( Net Place Transition )
+      ( Net Place Transition )  where
+    project _ n = n
             
 instance Generator 
     Petri_Deadlock Config 
-      ( Int, Net Place Transition ) where
+      ( Net Place Transition ) where
       generator _ conf key = do
           tries <- forM [ 1 .. 1000 ] $ \ k -> do
               let ps = [ Place 1 
@@ -81,7 +99,8 @@ instance Generator
                                      $  deadlocks n
                     guard $ not $ null yeah
                     return ( length no, n )
-          return $ maximumBy ( comparing fst ) 
+          return $ snd
+                 $ maximumBy ( comparing fst ) 
                  $ concat tries
   
   

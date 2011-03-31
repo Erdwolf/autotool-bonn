@@ -572,8 +572,8 @@ tmakers =
                 , heading "Petri-Netze"
                    [ item $ Petri.Reach.make_fixed
                    , item $ Petri.Reach.make_quiz
-                   -- , item $ Petri.Deadlock.make_fixed
-                   -- , item $ Petri.Deadlock.make_quiz
+                   , item $ Petri.Deadlock.make_fixed
+                   , item $ Petri.Deadlock.make_quiz
                    ]
 		]
 
