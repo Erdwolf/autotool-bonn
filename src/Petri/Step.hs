@@ -63,11 +63,11 @@ successors n z0 = do
     guard $ all_non_negative z1    
     let z2 = change succ nach z1
     guard $ conforms ( capacity n ) z2
-    return ( t, remove_zeroes z2 )
+    return ( t, z2 )
     
 change :: Ord s
        => ( Int -> Int ) -> [s] -> State s -> State s
-change f ps (State z) = remove_zeroes $ State $ foldl 
+change f ps (State z) = State $ foldl 
    ( \ z p -> M.insert p ( f $ M.findWithDefault 0 p z ) z )
    z ps
     

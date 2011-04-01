@@ -10,16 +10,22 @@ net ::  ( Ord s , Ord t )
     => [s] -> [t] -> Capacity s
     -> IO ( Net s t )
 net ps ts cap = do        
-    ms <- selection ps
+    s <- state ps
     cs <- conn ps ts
     return $ Net
         { places = S.fromList ps
         , transitions = S.fromList ts                    
         , connections = cs                
         , capacity = cap
-        , start = State $ M.fromListWith (+) $ zip ms $ repeat 1
+        , start = s
         }
     
+state ps = do
+    qs <- selection ps
+    return $ State $ M.fromList $ do
+        p <- ps
+        return ( p, if p `elem` qs then 1 else 0 )
+
 conn :: ( Ord s , Ord t )
     => [s] -> [t]
     -> IO [ Connection s t ]
