@@ -19,9 +19,16 @@ type Connection s t =
     ( [s], t, [s] )
 
 newtype State s = State ( FiniteMap s Int )
-    deriving ( Reader, ToDoc, Eq, Ord, Typeable )
+    deriving ( Reader, ToDoc, Typeable )
 
 remove_zeroes ( State f ) = State ( M.filter ( > 0 ) f )
+
+instance Ord s => Eq ( State s ) where
+    State f == State g = M.filter (> 0) f == M.filter (> 0) g
+
+instance Ord s => Ord ( State s ) where
+    compare (State f) (State g) = 
+      compare (M.filter (> 0) f ) ( M.filter (> 0) g)
 
 mark :: Ord s => State s -> s -> Int
 mark ( State f ) s = M.findWithDefault 0 s f
