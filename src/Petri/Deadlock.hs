@@ -104,7 +104,13 @@ instance Generator
     Petri_Deadlock Config 
       ( Net Place Transition ) where
       generator _ conf key = do
-          tries <- forM [ 1 .. 1000 ] $ \ k -> do
+          fmap snd $ tries 1000 conf
+  
+tries n conf = do
+    out <- forM [ 1 .. 1000 ] $ \ k -> Petri.Deadlock.try conf
+    return $ maximumBy ( comparing fst ) $ concat out
+ 
+try conf = do
               let ps = [ Place 1 
                          .. Place ( num_places conf ) ]
                   ts = [ Transition 1 
@@ -118,8 +124,4 @@ instance Generator
                                      $  deadlocks n
                     guard $ not $ null yeah
                     return ( length no, n )
-          return $ snd
-                 $ maximumBy ( comparing fst ) 
-                 $ concat tries
-  
   
