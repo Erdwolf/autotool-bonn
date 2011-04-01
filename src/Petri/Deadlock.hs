@@ -8,6 +8,7 @@ import Petri.Type
 import Petri.Step
 import Petri.Roll
 import Petri.Dot
+import Petri.Property
 
 import Petri.Dining ( diner )
 
@@ -34,6 +35,11 @@ instance OrderScore Petri_Deadlock where
     scoringOrder _ = Increasing
 
 $(derives [makeReader, makeToDoc] [''Petri_Deadlock]) 
+
+instance Verify Petri_Deadlock
+         ( Net Place Transition ) where
+    verify Petri_Deadlock n = do
+        validate Default $ n
                                         
 instance ( Ord s, Ord t, Hash s, Hash t, Size t
          , ToDoc s, ToDoc t , Reader s, Reader t

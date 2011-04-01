@@ -71,15 +71,4 @@ change f ps (State z) = State $ foldl
    ( \ z p -> M.insert p ( f $ M.findWithDefault 0 p z ) z )
    z ps
     
-all_non_negative (State z) = 
-    and $ map ( \(k,v) -> v >= 0) $ M.toList z
-
-conforms cap (State z) = case cap of
-    Unbounded -> True
-    All_Bounded b -> 
-        and $ map ( \(k,v) -> v <= b) $ M.toList z
-    Bounded f ->
-        and $ map ( \ (k,v) -> case M.lookup k f of
-                       Nothing -> True ; Just b -> v <= b )
-            $ M.toList z
         

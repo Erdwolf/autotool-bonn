@@ -8,6 +8,7 @@ import Petri.Type
 import Petri.Step
 import Petri.Roll
 import Petri.Dot
+import Petri.Property
 
 import Autolib.Reader
 import Autolib.ToDoc
@@ -31,6 +32,12 @@ instance OrderScore Petri_Reach where
     scoringOrder _ = Increasing
 
 $(derives [makeReader, makeToDoc] [''Petri_Reach]) 
+
+instance Verify Petri_Reach 
+         ( Net Place Transition, State Place ) where
+    verify Petri_Reach ( n, s ) = do
+        validate Default $ n
+        validate Default $ n { start =s }
                                         
 instance Partial Petri_Reach 
          ( Net Place Transition, State Place ) 

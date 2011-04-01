@@ -18,7 +18,7 @@ import Autolib.Hash
 type Connection s t = 
     ( [s], t, [s] )
 
-newtype State s = State ( FiniteMap s Int )
+newtype State s = State { unState :: FiniteMap s Int }
     deriving ( Reader, ToDoc, Typeable, Hash )
 
 instance Ord s => Eq ( State s ) where
@@ -55,6 +55,18 @@ instance ( Ord s, Ord t, Hash s, Hash t ) => Hash ( Net s t ) where
                   )
                   
 
+all_non_negative (State z) = 
+    and $ map ( \(k,v) -> v >= 0) $ M.toList z
+
+conforms cap (State z) = case cap of
+    Unbounded -> True
+    All_Bounded b -> 
+        and $ map ( \(k,v) -> v <= b) $ M.toList z
+    Bounded f ->
+        and $ map ( \ (k,v) -> case M.lookup k f of
+                       Nothing -> True ; Just b -> v <= b )
+            $ M.toList z
+
 newtype Place = Place Int 
            deriving ( Eq, Ord, Typeable, Enum, Hash )
 
@@ -90,7 +102,7 @@ example = ( Net
     , capacity = All_Bounded
                      1
     , start = State $ listToFM
-                  [ ( Place 1 , 1 ) ]
+                  [ ( Place 1 , 1 ) ,(Place 2,0),(Place 3,0),(Place 4,0)]
     }
     , State $ listToFM [(Place 1,1),(Place 2,1),(Place 3,1),(Place 4,1)]
     )
