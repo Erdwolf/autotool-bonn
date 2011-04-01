@@ -28,7 +28,8 @@ helper n =
             ( p, q ) <- M.toList placemap       
             return $ N.blank
                    { N.ident = q
-                   , N.label = Just $ show p
+                   , N.label = Just 
+                          $ show p ++ ":" ++ show ( mark (start n) p )
                    , N.shape = Just "circle"
                    }
         transnodes = do

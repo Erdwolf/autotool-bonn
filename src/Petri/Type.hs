@@ -19,7 +19,7 @@ type Connection s t =
     ( [s], t, [s] )
 
 newtype State s = State ( FiniteMap s Int )
-    deriving ( Reader, ToDoc, Typeable )
+    deriving ( Reader, ToDoc, Typeable, Hash )
 
 remove_zeroes ( State f ) = State ( M.filter ( > 0 ) f )
 
@@ -52,7 +52,9 @@ $(derives [makeReader, makeToDoc] [''Capacity])
 $(derives [makeReader, makeToDoc] [''Net])    
 
 instance ( Ord s, Ord t, Hash s, Hash t ) => Hash ( Net s t ) where
-    hash n = hash ( places n, transitions n, connections n )
+    hash n = hash ( ( places n, transitions n )
+                  , (connections n , start n )
+                  )
                   
 
 newtype Place = Place Int 
