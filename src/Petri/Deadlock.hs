@@ -9,6 +9,8 @@ import Petri.Step
 import Petri.Roll
 import Petri.Dot
 
+import Petri.Dining ( diner )
+
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Dot.Dotty ( peng )
@@ -21,6 +23,7 @@ import qualified Data.Map as M
 import Challenger.Partial
 import Autolib.Reporter 
 import Autolib.Size
+import Autolib.Hash
 import Inter.Types
 import Inter.Quiz
 
@@ -32,9 +35,10 @@ instance OrderScore Petri_Deadlock where
 
 $(derives [makeReader, makeToDoc] [''Petri_Deadlock]) 
                                         
-instance Partial Petri_Deadlock 
-         ( Net Place Transition )
-         [ Transition ] where
+instance ( Ord s, Ord t, Hash s, Hash t, Size t
+         , ToDoc s, ToDoc t , Reader s, Reader t
+         ) =>
+       Partial Petri_Deadlock ( Net s t ) [ t ] where
     report _ n = do
          inform $ vcat
              [ text "Gesucht ist für das Petri-Netz"
@@ -57,6 +61,9 @@ instance Partial Petri_Deadlock
 
 make_fixed :: Make
 make_fixed = direct Petri_Deadlock $ fst Petri.Type.example
+
+make_diner :: Int -> Make
+make_diner n = direct Petri_Deadlock $ Petri.Dining.diner n
 
 
 data Config = Config 

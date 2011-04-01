@@ -24,19 +24,20 @@ helper n =
             $ zip ( S.toList $ places n ) $ map show [ Place 0 .. ]
         transmap = M.fromList 
             $ zip ( S.toList $ transitions n ) $ map show [ Transition 0 .. ]
+        oneline = unwords . words
         placenodes = do
             ( p, q ) <- M.toList placemap       
             return $ N.blank
                    { N.ident = q
                    , N.label = Just 
-                          $ show p ++ ":" ++ show ( mark (start n) p )
-                   , N.shape = Just "circle"
+                          $ unlines [ oneline $ show p , show ( mark (start n) p ) ]
+                   , N.shape = Just "ellipse"
                    }
         transnodes = do
             ( p, q ) <- M.toList transmap
             return $ N.blank
                    { N.ident = q
-                   , N.label = Just $ show p
+                   , N.label = Just $ oneline $ show p
                    , N.shape = Just "box"
                    }
         inputs = do

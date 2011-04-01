@@ -371,6 +371,15 @@ tmakers =
                     [ item Peano.Make.make
                     ]
                 ]
+         , heading "Petri-Netze"
+                   [ item $ Petri.Reach.make_fixed
+                   , item $ Petri.Reach.make_quiz
+                   , item $ Petri.Deadlock.make_fixed
+                   , item $ Petri.Deadlock.make_quiz
+                   , heading "Philosophen"  
+                      [ item $ Petri.Deadlock.make_diner 4
+                      ]  
+                   ]
          , heading "Terme, Ersetzungssysteme"
                 [ heading "Wortersetzung"
                         [ item $ Rewriting.Derive.make_fixed Rewriting.SRS.Apply.For_SRS
@@ -569,12 +578,6 @@ tmakers =
 	        , item $ Algebraic.Quiz.make Algebraic_Graph
 	        , item $ Algebraic.Central.make Algebraic_STGraph
 	        , item $ Algebraic.Quiz.make Algebraic_STGraph
-                , heading "Petri-Netze"
-                   [ item $ Petri.Reach.make_fixed
-                   , item $ Petri.Reach.make_quiz
-                   , item $ Petri.Deadlock.make_fixed
-                   , item $ Petri.Deadlock.make_quiz
-                   ]
 		]
 
          , heading "noch nicht eingeordnet"

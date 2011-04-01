@@ -47,7 +47,7 @@ execute n t z0 = do
             when ( not $ all_non_negative z1 ) $ reject $ text
                 "enthält negative Markierungen (Transition war nicht aktiviert)"
             let z2 = change succ nach z1    
-            inform $ text "Enzustand (nach Austeilen der Marken im Nachbereich)"    
+            inform $ text "Endzustand (nach Austeilen der Marken im Nachbereich)"    
                 </> toDoc z2
             when ( not $ conforms ( capacity n ) z2 ) $ reject $ text    
                 "enthält Markierungen, die die Kapazität überschreiten"
