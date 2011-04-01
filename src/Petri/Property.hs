@@ -1,14 +1,20 @@
+{-# language DeriveDataTypeable, TemplateHaskell #-}
+{-# language MultiParamTypeClasses #-}
+{-# language FlexibleInstances #-}
+
 module Petri.Property where
 
 import Petri.Type
 
 import Autolib.Reporter
 import Autolib.ToDoc
+import Autolib.Reader
 
 import qualified Data.Map as M
 import qualified Data.Set as S
 
 import Control.Monad ( forM, void )
+import Data.Typeable
 
 data Property = Default
               | Max_Num_Places Int
@@ -16,7 +22,12 @@ data Property = Default
               | Max_Edge_Multiplicity Int
               | Max_Initial_Tokens Int
               | Capacity ( Capacity () )
+     deriving ( Typeable )
+
+$(derives [makeReader, makeToDoc] [''Property])
               
+validates props n = void $ forM props $ \ prop -> validate prop n
+
 validate :: ( Ord s, Ord t, ToDoc s, ToDoc t )
          => Property 
          -> Net s t 

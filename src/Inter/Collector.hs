@@ -217,6 +217,7 @@ import qualified Flow.Central
 
 import qualified Petri.Reach
 import qualified Petri.Deadlock
+import qualified Petri.Remote
 
 makers :: [ Make ]
 makers = do Right make <- flatten tmakers ; return make
@@ -378,7 +379,8 @@ tmakers =
                    , item $ Petri.Deadlock.make_quiz
                    , heading "Philosophen"  
                       [ item $ Petri.Deadlock.make_diner 4
-                      ]  
+                      ] 
+                   , item $ Petri.Remote.make_fixed
                    ]
          , heading "Terme, Ersetzungssysteme"
                 [ heading "Wortersetzung"

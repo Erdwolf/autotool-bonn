@@ -32,6 +32,12 @@ levels n =
                      ( S.toList $ S.difference next done' ) 
     in  f S.empty [ start n ]
 
+
+executes n ts = foldM ( \ z (k, t) -> do
+                          inform $ text "Schritt" <+> toDoc k
+                          Petri.Step.execute n t z ) 
+                     ( start n ) ( zip [ 1 :: Int .. ] ts )
+
 execute n t z0 = do
     inform $ text "Transition" <+> toDoc t
     let cs = do 
