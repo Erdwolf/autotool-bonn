@@ -31,14 +31,17 @@ import Data.Tree ( flatten )
 import qualified Control.Exception as CE
 
 -- | ändere aufgaben-konfiguration (nur für tutor)
-edit_aufgabe mks mk mauf vnr manr type_click = do
-    case mk of 
+edit_aufgabe mks mk mauf vnr manr type_click = 
+    edit_aufgabe_extra mks mk mauf vnr manr type_click ( \ a -> True )
+
+edit_aufgabe_extra mks mk mauf vnr manr type_click prop = case mk of 
         Make p doc ( fun :: conf -> Var p i b ) verify ex -> do
 
             let t = fromCGI $ show mk
 
-            others <- io $ A.get_typed t
+            candidates <- io $ A.get_typed t
                `CE.catch` \ (CE.SomeException any) -> return []
+            let others = filter prop candidates
 
             ( name :: Name ) <- fmap fromCGI 
 		     $ defaulted_textfield "Name" 

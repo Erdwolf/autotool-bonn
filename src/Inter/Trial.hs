@@ -143,7 +143,7 @@ vor tmk pack = do
     ( conf, auf ) <- mutexed $ btabled $ do
 	rowed $ do plain "Aufgabe" ; plain "Typ"
 	sequence_ $ do
-	    auf <- aufgaben
+	    auf <- filter ( \ a -> Early /= A.timeStatus a ) aufgaben
 	    return $ rowed $ do
 	        plain $ toString $ A.name auf
 		plain $ toString $ A.typ  auf
@@ -184,7 +184,8 @@ common_aufgaben_trailer ( stud, vnr, tutor ) mauf conf mks mk type_click = do
     -- plain $ "common_aufgaben_trailer.type_click: " ++ show type_click
     auf' <- case ( mauf, conf ) of
 	 ( Just auf, False ) -> return auf
-	 _ -> edit_aufgabe mks mk Nothing vnr Nothing type_click
+	 _ -> edit_aufgabe_extra mks mk Nothing vnr Nothing type_click
+                                 ( \ a -> Early /= A.timeStatus a )
     stud' <- get_stud tutor stud
     hr
     h2 "(Student) Aufgabe lösen"

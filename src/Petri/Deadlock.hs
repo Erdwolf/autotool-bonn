@@ -107,7 +107,7 @@ instance Generator
           fmap snd $ tries 1000 conf
   
 tries n conf = do
-    out <- forM [ 1 .. 1000 ] $ \ k -> Petri.Deadlock.try conf
+    out <- forM [ 1 .. n ] $ \ k -> Petri.Deadlock.try conf
     return $ maximumBy ( comparing fst ) $ concat out
  
 try conf = do
@@ -125,3 +125,18 @@ try conf = do
                     guard $ not $ null yeah
                     return ( length no, n )
   
+expl :: Net Int Int
+expl = Net { places = S.fromList [ 1 , 2 , 3 , 4 , 5 ]
+    , transitions = S.fromList [ 1 , 2 , 3 , 4 , 5 ]
+    , connections = [ ( [ 1 ] , 1 , [2,  3 ] )
+                    , ( [ 3], 2 , [2] )
+                    , ( [2], 3, [3,4] )
+                    , ( [4], 4, [3] )
+                    , ( [3], 5, [4,5] )
+                    , ( [5], 6, [4] )
+                    , ( [4], 7, [] )
+                    ]
+    , Petri.Type.capacity = Unbounded
+    , start = State $ M.fromList
+                  [ ( 1 , 1 ) , ( 2 , 0 ) , ( 3 , 0 ) , ( 4 , 0 ) , ( 5 , 0 ) ]
+    }

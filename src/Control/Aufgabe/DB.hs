@@ -14,12 +14,17 @@ import Prelude hiding ( all )
 get_this :: ANr -> IO [ Aufgabe ]
 get_this anr = select_where [ equals ( reed "aufgabe.ANr" ) ( toEx anr ) ]
 
+
+-- |  wenn Vorlesungsnr. angegeben, 
+-- dann nur Aufgaben dieser Vorlesung,
+-- sonst alle Aufgaben
 get :: Maybe VNr 
     -> IO [ Aufgabe ]
 get mvnr = select_where $
 	        [ equals ( reed "aufgabe.VNr" ) ( toEx vnr ) 
 		| vnr <- maybeToList mvnr
 		] 
+
 
 get_typed :: Typ -> IO [ Aufgabe ]
 get_typed ty = select_where 
