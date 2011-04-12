@@ -76,6 +76,7 @@ instance Partial Haskell_Blueprint Code Code where
                     , M.printType = True -- printed to where?
                     , M.extensions = False
                     , M.namedExtensions = []
+                    , M.installedModulesInScope = False
                     , M.noImports = False
                     , M.rLimits = True
                     } ) `Control.Exception.catch` \ ( e :: Control.Exception.SomeException ) -> return $ Left $ I.UnknownError ( show e )
@@ -102,7 +103,7 @@ parse m =
         P.ParseFailed loc msg -> reject_parse m loc msg
 
 reject_parse m loc msg =
-    let ( lpre, lpost ) = splitAt ( S.srcLine loc - 1 ) $ lines m
+    let ( lpre, lpost ) = splitAt ( S.srcLine loc  ) $ lines m
         lpre' = reverse $ take 3 $ reverse lpre
-        tag = replicate ( S.srcColumn loc - 1 ) '.' ++ "^"
+        tag = replicate ( S.srcColumn loc ) '.' ++ "^"
     in  R.reject $ vcat ( map text lpre' ++ [ text tag, text msg ] )
