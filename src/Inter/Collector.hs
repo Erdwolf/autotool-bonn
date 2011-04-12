@@ -28,6 +28,7 @@ import qualified Fun.Make
 import qualified Fun.Direct
 
 import qualified Haskell.Central
+import qualified Haskell.Blueprint.Central
 
 import qualified Specify.Inter
 
@@ -456,7 +457,10 @@ tmakers =
 		, item Flow.Central.goto_to_struct_fixed
 		, item Flow.Central.struct_to_goto_fixed
 		, item Specify.Inter.make
-                , item Haskell.Central.make_fixed
+                , heading "Haskell-Programmierung"
+                  [ item Haskell.Blueprint.Central.make_fixed
+                  , item Haskell.Central.make_fixed
+                  ]
                 ]
          , heading "Algorithmen"
                 [ heading "Sortiernetze"

@@ -15,8 +15,9 @@ import Petri.Dining ( diner )
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Dot.Dotty ( peng )
+
 import Data.Typeable
-import Data.List ( minimumBy, maximumBy )
+import Data.List ( minimumBy, maximumBy, nub )
 import Data.Ord ( comparing )
 import qualified Data.Set as S
 import qualified Data.Map as M
@@ -27,6 +28,7 @@ import Autolib.Size
 import Autolib.Hash
 import Inter.Types
 import Inter.Quiz
+import System.IO ( hFlush, stdout )
 
 data Petri_Deadlock = Petri_Deadlock 
     deriving ( Typeable )
@@ -128,15 +130,16 @@ try conf = do
 expl :: Net Int Int
 expl = Net { places = S.fromList [ 1 , 2 , 3 , 4 , 5 ]
     , transitions = S.fromList [ 1 , 2 , 3 , 4 , 5 ]
-    , connections = [ ( [ 1 ] , 1 , [2,  3 ] )
-                    , ( [ 3], 2 , [2] )
-                    , ( [2], 3, [3,4] )
-                    , ( [4], 4, [3] )
-                    , ( [3], 5, [4,5] )
-                    , ( [5], 6, [4] )
-                    , ( [4], 7, [] )
+    , connections = [ ( [ 1 ] , 1 , [1,2,3 ] )
+                    , ( [ 2], 2 , [3,4] )
+                    , ( [3], 3, [4,5] )
+                    , ( [4], 4, [5,1] )
+                    , ( [5], 5, [1,2] )
+                    , ( [1,2,3,4,5], 7, [] )
                     ]
     , Petri.Type.capacity = Unbounded
     , start = State $ M.fromList
                   [ ( 1 , 1 ) , ( 2 , 0 ) , ( 3 , 0 ) , ( 4 , 0 ) , ( 5 , 0 ) ]
     }
+
+

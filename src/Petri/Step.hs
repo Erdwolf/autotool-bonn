@@ -14,9 +14,16 @@ import Control.Monad ( guard )
 import Autolib.Reporter hiding ( initial )
 import Autolib.ToDoc
 
+import Data.List ( nubBy )
+
+
 deadlocks n = do
     zs <- levels n
     return $ filter ( null . successors n ) zs
+
+deadlocks' n = do
+    zs <- levels' n
+    return $ filter ( \ (s,p) -> null $ successors n s ) zs
 
 levels :: ( Ord s, Ord t )
            => Net s t 
@@ -32,6 +39,24 @@ levels n =
                      ( S.toList $ S.difference next done' ) 
     in  f S.empty [ start n ]
 
+levels' :: ( Ord s, Ord t )
+           => Net s t 
+           -> [ [ ( State s, [t] ) ] ]   
+levels' n = 
+    let f done [] = []
+        f done xs = 
+            let done' = S.union done $ S.fromList $ map fst xs
+                next = nubBy ( equalling fst ) $ do 
+                   (x, p) <- xs
+                   ( t, y ) <- successors n x
+                   guard $ not $ S.member y done'
+                   return (y, t : p)
+            in  xs : f done' next
+    in  f S.empty [ (start n, [] ) ]
+
+equalling f x y = f x == f y
+
+executes_plain n ts = result $ executes n ts
 
 executes n ts = foldM ( \ z (k, t) -> do
                           inform $ text "Schritt" <+> toDoc k
