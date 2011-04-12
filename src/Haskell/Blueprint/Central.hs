@@ -76,7 +76,6 @@ instance Partial Haskell_Blueprint Code Code where
                     , M.printType = True -- printed to where?
                     , M.extensions = False
                     , M.namedExtensions = []
-                    , M.installedModulesInScope = False
                     , M.noImports = False
                     , M.rLimits = True
                     } ) `Control.Exception.catch` \ ( e :: Control.Exception.SomeException ) -> return $ Left $ I.UnknownError ( show e )
