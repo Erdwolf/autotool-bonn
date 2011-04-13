@@ -37,7 +37,7 @@ instance Size b => Measure p i b where
 
 -- | Instanz verifizieren 
 -- das sieht der Tutor, wenn er die Aufgabe konfiguriert
-class ( Show  i ) => Verify p i where
+class Verify p i where
 
       verifyIO :: p -> i -> IO.Reporter ()
       verifyIO p i = IO.lift $ verify p i
@@ -45,14 +45,12 @@ class ( Show  i ) => Verify p i where
       {-# deprecate verify "use verifyIO instead" #-}
       verify :: p -> i -> Reporter ()
 
-instance ( Show i ) => Verify p i where
+instance Verify p i where
       verify p i = do
           inform $ vcat
                  [ text "Vorsicht: Methode Challenger.Partial.verify nicht implementiert"
                  ]
-          when ( 0 > length ( show i ) )
-               $ reject $ text "Syntaxfehler (?)"
-          return ()
+
 
 -- | Klasse: Partial
 class ( Show p, Read p

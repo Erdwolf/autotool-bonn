@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
+{-# language OverlappingInstances #-}
 
 module Haskell.Blueprint.Data where
 
@@ -11,7 +12,9 @@ import Data.Typeable
 import Test.QuickCheck ( Args (..))
 import System.Random ( StdGen )
 
-data Code = Code String deriving ( Eq, Ord, Typeable )
+-- | use self-delimiting read/show
+-- but nicely formatted reader/todoc
+data Code = Code String deriving ( Eq, Ord, Typeable, Read, Show )
 
 instance Reader Code where 
     reader = do cs <- getInput ; setInput "" ; return $ Code cs
@@ -25,7 +28,8 @@ instance Size Code where
 
 code_example :: Code
 code_example = Code $ unlines 
-    [ "import Test.SmallCheck"
+    [ "module Blueprint where"
+    , ""  
     , "foo :: Int"
     , "foo = undefined"
     , ""

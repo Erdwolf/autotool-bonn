@@ -1,8 +1,11 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
 {-# language MultiParamTypeClasses #-}
 {-# language PatternSignatures #-}
+{-# language OverlappingInstances #-}
 
 module Haskell.Blueprint.Central where
+
+import Debug ( debug )
 
 import Haskell.Blueprint.Data
 import Haskell.Blueprint.Match 
@@ -29,10 +32,12 @@ import qualified Control.Exception
 import Control.Monad.IO.Class
 import Test.SmallCheck
 import System.IO.Temp
+import System.IO.UTF8
 import System.Random ( randomRIO )
 import qualified System.IO.Strict
 import qualified System.IO
 import qualified System.Directory
+import qualified System.Posix.Directory as SPD
 
 data Haskell_Blueprint = Haskell_Blueprint deriving Typeable
 
@@ -65,33 +70,47 @@ instance Partial Haskell_Blueprint Code Code where
 
     totalIO p (Code i) (Code b) = do
         r <- liftIO $ withTempDirectory "/tmp" "Blue" $ \ d -> do
-            let f = d ++ "/Blueprint.hs"
-            System.IO.writeFile f b
-            r <- ( I.runInterpreter $ Mueval.Interpreter.interpreter $ M.Options
+            let f = d ++ "/" ++ "Blueprint.hs"
+            System.IO.UTF8.writeFile f b
+            ( I.runInterpreter $ Mueval.Interpreter.interpreter $ M.Options
                     { M.timeLimit = 1
                     , M.modules = Just [ "Prelude" ]
                     , M.expression = "test"
                     , M.loadFile =  f
                     , M.user = "" -- WHAT?
-                    , M.printType = True -- printed to where?
+                    , M.printType = False -- printed to where?
                     , M.extensions = False
                     , M.namedExtensions = []
                     , M.noImports = False
                     , M.rLimits = True
-                    } ) `Control.Exception.catch` \ ( e :: Control.Exception.SomeException ) -> return $ Left $ I.UnknownError ( show e )
-            -- length ( show r ) `seq` return r
-            System.Directory.removeFile f
-            return r
+                    } ) 
+{-              
+              `Control.Exception.catch` \ ( e :: Control.Exception.SomeException ) -> do
+                        debug $ "interpreter got exception " -- ++ show e
+                        return $ Left $ I.UnknownError ( show e )
+-}
+            -- debug $ "after runInterpreter"
+            -- length ( show r ) `seq` 
+            -- return r
+            -- System.Directory.removeFile f
+            -- return r
+        -- liftIO $ debug "outside runInterpreter"
         case r of
             Left err -> reject $ text $ show err
             Right ( e, et, val ) -> do
                 inform $ vcat
                        [ text "expression" </> text e
                        , text "type" </> text et
-                       , text "value" </> text val
-                       ]       
+                       ]  
                 assert ( et == "Bool" ) $ text "richtiger Typ?"
-                assert ( val == "True" ) $ text "richtiger Wert?"
+              
+                v <- liftIO  ( ( do Control.Exception.evaluate val ; return ( Right val ) )
+                  `Control.Exception.catch` \ ( e :: Control.Exception.SomeException ) -> do
+                        return $ Left ( show e ) )
+                
+                case v of
+                     Right val -> assert ( val == "True" ) $ text "richtiger Wert?"
+                     Left ex -> reject $ text "Exception" </> text ex
 
 
 make_fixed = direct Haskell_Blueprint code_example

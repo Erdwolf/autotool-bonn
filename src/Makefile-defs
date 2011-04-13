@@ -19,7 +19,7 @@ endif
 # erlaube überschreibung, s.o
 ifndef DIRS
 # DIRS = util:wash:control:bridge:challenger:ws03/aus:
-DIRS = control
+DIRS = control:../../common
 endif
 
 #################################################################
