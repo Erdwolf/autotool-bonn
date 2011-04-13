@@ -76,6 +76,7 @@ import Data.Maybe
 import Data.Tree
 import Data.List ( partition )
 import Control.Monad
+
 import qualified Control.Exception as CE
 
 import qualified Text.XHtml
@@ -89,10 +90,12 @@ import qualified Debug
 main :: IO ()
 main = do
    Debug.debug "Super_Debug:main"
-   Gateway.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
+   ( Gateway.CGI.execute ( Local.cgi_name ++ "#hotspot" ) $ do
        wrap $ iface $ Inter.Collector.tmakers
        scores <- scores_link
-       footer scores
+       footer scores ) `CE.catch` \ ( e :: CE.SomeException ) -> do
+         debug $ "caught: " ++ show e
+         print e
 
 
 iface :: Tree ( Either String Make ) -> Form IO ()
@@ -322,7 +325,7 @@ aufgaben tmk ( stud, vnr, tutor ) = do
 			  , D.name = toString $ S.mnr stud 
 			  , D.extension = "cache"
 			  } 
-		  io $ D.loeschen d `catch` \ any -> return ()
+		  io $ D.loeschen d `CE.catch` \ ( any :: CE.SomeException ) -> return ()
 		  plain $ "geloescht: " ++ show d
 
              _ -> do

@@ -82,13 +82,15 @@ instance Partial Haskell_Blueprint Code Code where
                     , M.extensions = False
                     , M.namedExtensions = []
                     , M.noImports = False
-                    , M.rLimits = True
+-- http://httpd.apache.org/docs/1.3/misc/FAQ-F.html#premature-script-headers 
+-- Another cause for the "premature end of script headers" message 
+-- are the RLimitCPU and RLimitMEM directives. 
+-- You may get the message if the CGI script was killed due to a resource limit.
+                    , M.rLimits = False
                     } ) 
-{-              
               `Control.Exception.catch` \ ( e :: Control.Exception.SomeException ) -> do
-                        debug $ "interpreter got exception " -- ++ show e
+                        debug $ "interpreter got exception " ++ show e
                         return $ Left $ I.UnknownError ( show e )
--}
             -- debug $ "after runInterpreter"
             -- length ( show r ) `seq` 
             -- return r
