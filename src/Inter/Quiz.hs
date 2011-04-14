@@ -1,4 +1,4 @@
-{-# language PatternSignatures, MultiParamTypeClasses, FunctionalDependencies #-}
+{-# LANGUAGE ScopedTypeVariables, MultiParamTypeClasses, FunctionalDependencies #-}
 
 module Inter.Quiz where
 

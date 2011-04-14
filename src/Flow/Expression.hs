@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Flow.Expression where
 
 import Flow.Conditions
@@ -69,3 +70,4 @@ evaluate s x = case x of
     Not y -> not $ evaluate s y
     And l r -> and $ map (evaluate s) [ l,r ]
     Or l r -> or $ map (evaluate s) [ l,r ]
+

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Type.Check where
 
 --  $Id$
@@ -51,3 +52,4 @@ make = direct TypeCheck $
     TI { target = read "boolean"
        , signature = read "int a; static boolean eq (int a, int b);"
        }
+

@@ -1,4 +1,4 @@
-{-# language FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
 
 module Program.General.Central where
 

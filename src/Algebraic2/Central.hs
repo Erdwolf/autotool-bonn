@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Algebraic2.Central where
 
 import Algebraic2.Instance
@@ -93,4 +94,5 @@ instance ( Reader c, ToDoc c ) => Nice ( B.Binu c ) where
 	, text "einstellige  :" <+> toDoc ( B.unary  b )
 	, text "nullstellige :" <+> toDoc ( B.nullary b )
 	]
+
 

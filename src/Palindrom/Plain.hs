@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Palindrom.Plain where
 
 --  $Id$
@@ -52,4 +53,5 @@ ispali x = let cs = show x
 
 make :: Make
 make = direct Palindrom ( 2 :: Int )
+
 

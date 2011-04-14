@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
 module Code.Burrows_Wheeler.Data where
 

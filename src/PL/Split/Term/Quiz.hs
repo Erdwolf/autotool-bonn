@@ -1,7 +1,7 @@
-{-# language TemplateHaskell #-}
-{-# language DeriveDataTypeable #-}
-{-# language FlexibleInstances #-}
-{-# language MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE FlexibleInstances, DeriveDataTypeable #-} 
+{-# LANGUAGE MultiParamTypeClasses, DeriveDataTypeable #-} 
 
 module PL.Split.Term.Quiz where
 

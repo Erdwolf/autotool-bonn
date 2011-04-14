@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Hanoi.Semantik where
 
 --   $Id$
@@ -51,5 +52,6 @@ make = direct Hanoi $
 	   , ziel  = addToFM leer B ss
            , restriction = Neighbours
 	   }
+
 
 

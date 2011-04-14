@@ -1,4 +1,4 @@
-{-# language TypeSynonymInstances, DeriveDataTypeable #-}
+{-# LANGUAGE TypeSynonymInstances, DeriveDataTypeable #-}
 
 -- | Korrekturfunktion für PCP-Aufgaben
 

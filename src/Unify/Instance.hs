@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable, GADTs, MultiParamTypeClasses, FlexibleInstances, TemplateHaskell #-}
+{-# LANGUAGE DeriveDataTypeable, GADTs, MultiParamTypeClasses, FlexibleInstances, TemplateHaskell #-}
 
 module Unify.Instance
 

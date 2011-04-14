@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable, TemplateHaskell, FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell, FlexibleInstances, MultiParamTypeClasses #-}
 
 module Program.Cexp.Interface where
 

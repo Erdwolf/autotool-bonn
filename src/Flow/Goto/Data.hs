@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Flow.Goto.Data where
 
 import Flow.Expression
@@ -89,6 +90,7 @@ instance Reader Atomic where
 	       return $ If_Goto c t
 	<|> do act <- reader ; my_semi
 	       return $ Action act
+
 
 
 

@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
 module Baum.ZweiDrei.Type where
 

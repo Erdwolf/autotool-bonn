@@ -1,4 +1,4 @@
-{-# language TemplateHaskell, DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses #-}
 
 module Graph.Col.Greedy.Central where
 

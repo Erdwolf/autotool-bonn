@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module NFA.Convert where
 
 import Convert.Type
@@ -125,3 +126,4 @@ instance Project  Convert_To_NFA
 
 qmake :: Make
 qmake = quiz Convert_To_NFA NFA.Quiz.example
+

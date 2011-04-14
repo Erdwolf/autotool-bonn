@@ -1,3 +1,4 @@
+{-# LANGUAGE FunctionalDependencies #-}
 module Algebraic.Class 
 
 ( Algebraic (..)
@@ -36,3 +37,4 @@ class (      Typeable tag
     some_formula     :: tag -> Algebraic.Instance.Type a -> Exp a
     default_operators :: tag -> B.Binu ( Op a )
     default_instance  :: tag -> Algebraic.Instance.Type a
+

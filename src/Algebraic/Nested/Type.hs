@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Algebraic.Nested.Type 
 
 
@@ -71,4 +72,5 @@ flatten_item i = case i of
 instance Depth ( Item a ) where
     depth ( Unit a ) = 0
     depth ( Packed t ) = depth t
+
 

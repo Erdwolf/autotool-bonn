@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
 module KnapsackFraction.Param where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Sortier.Netz.Bild where
 
 

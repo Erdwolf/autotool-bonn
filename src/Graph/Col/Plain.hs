@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.Col.Plain where
 
 --  $Id$
@@ -108,6 +109,7 @@ instance ( GraphC a, Show a )
 
 make :: Make
 make = direct Col ( 3 :: Integer, petersen )
+
 
 
 

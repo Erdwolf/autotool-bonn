@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Code.Huffman.Partial where
 
 --  $Id$
@@ -40,3 +41,4 @@ instance -- ( ToDoc a, ToDoc [a], Ord a, ToDoc [ (a, [ LR ] )] )
     total p i b  = do
         isoptimalprefix i b
         
+

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.Graceful.Central where
 
 --  $Id$
@@ -86,4 +87,5 @@ bintree n = mkGraph
 
     
    
+
 

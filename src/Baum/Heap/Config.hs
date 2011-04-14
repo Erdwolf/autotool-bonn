@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable, TemplateHaskell #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
 
 module Baum.Heap.Config where
 

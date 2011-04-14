@@ -1,4 +1,4 @@
-{-# language MultiParamTypeClasses, FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances #-}
 
 module Brainfuck.Machine where
 

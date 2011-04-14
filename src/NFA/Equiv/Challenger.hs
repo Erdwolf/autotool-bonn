@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module NFA.Equiv.Challenger where
 
 --  $Id$
@@ -91,3 +92,4 @@ instance Project Equiv  ( NFA Char Int , [ Klassen Int ] )
 qmake :: Make
 qmake = quiz Equiv $ NFA.Equiv.Conf.example
       
+

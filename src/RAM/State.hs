@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module RAM.State where
 
 --   $Id$
@@ -28,4 +29,5 @@ instance ToDoc State where
 
 instance History State where
     history = past
+
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Number.Float.From
 
 ( make_fixed
@@ -74,6 +75,7 @@ instance Generator From_Float Config Zahl where
 
 instance Project From_Float Zahl Zahl where
     project From_Float z = z
+
 
 
 

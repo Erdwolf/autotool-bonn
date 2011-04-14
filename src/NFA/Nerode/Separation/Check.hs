@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module NFA.Nerode.Separation.Check where
 
 import NFA.Nerode.Separation.Solution
@@ -90,3 +91,4 @@ make :: Make
 make = direct Nerode_Separation [ "abb", "baba" ]
 
                                    
+

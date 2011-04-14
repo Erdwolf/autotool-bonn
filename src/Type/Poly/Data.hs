@@ -1,5 +1,5 @@
-{-# LANGUAGE TemplateHaskell, TypeSynonymInstances, MultiParamTypeClasses #-}
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE TemplateHaskell, TypeSynonymInstances, MultiParamTypeClasses, DeriveDataTypeable #-} 
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Type.Poly.Data where
 

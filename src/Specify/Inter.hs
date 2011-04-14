@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Specify.Inter where
 
 import Specify.Config
@@ -45,4 +46,5 @@ instance C.Partial Specify Config Program where
 
 make :: Make
 make = direct Specify Specify.Config.example
+
 

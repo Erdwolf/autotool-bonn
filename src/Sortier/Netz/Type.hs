@@ -1,4 +1,5 @@
-module Sortier.Netz.Type 
+{-# LANGUAGE DeriveDataTypeable #-}
+module Sortier.Netz.Type
 
 ( Netz
 , mkNetz, comps, low, high

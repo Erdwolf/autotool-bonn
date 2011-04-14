@@ -1,4 +1,4 @@
-{-# language FlexibleContexts, UndecidableInstances #-}
+{-# LANGUAGE FlexibleContexts, UndecidableInstances #-}
 
 module Challenger.Einsendung where
 

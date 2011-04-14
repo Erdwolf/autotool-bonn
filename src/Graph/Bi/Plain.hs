@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.Bi.Plain where
 
 --  $Id$
@@ -79,3 +80,4 @@ make :: Make
 make = direct Bi $ mkGraph (mkSet ns) (mkSet es)
     where ns = [ 1..9 ] :: [Int]
 	  es = do i <- [1..8] ; return $ kante i 9 :: [Kante Int]
+

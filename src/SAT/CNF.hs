@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 -- | Bemerkungen: 
 -- 1. Aussagenlogische Formel in konjunktiver Normalform (KNF):

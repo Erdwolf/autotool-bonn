@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Code.Nonprefix where
 
 import Code.Formal
@@ -55,3 +56,4 @@ instance Measure Nonprefix () ( Set String ) where
         fromIntegral $ sum $ map length $ setToList ws
 
 make_fixed = direct Nonprefix ()
+

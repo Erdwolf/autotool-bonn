@@ -1,4 +1,4 @@
-{-# language NoMonomorphismRestriction #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
 -- module Hanoi.Fast where
 

@@ -1,6 +1,6 @@
-{-# language FlexibleInstances #-}
-{-# language MultiParamTypeClasses #-}
-{-# language TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 -- | 3SAT
 -- 

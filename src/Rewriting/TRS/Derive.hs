@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Rewriting.TRS.Derive where
 
 import Rewriting.TRS
@@ -78,3 +79,4 @@ firstvar trs = take 1 $ do
     r <- regeln trs
     t <- [ lhs r, rhs r ]
     lvars t
+

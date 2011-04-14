@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.MinSep where
 
 --  $Id$
@@ -91,3 +92,4 @@ separates :: ( ToDoc [a], GraphC a )
 separates g ( (a, b), s ) =
     let h = restrict ( knoten g `minusSet` s ) g
     in  not $ b `elementOf` reachables h a
+

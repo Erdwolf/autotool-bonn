@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module LCS.Instance 
 
 ( make_fixed
@@ -92,4 +93,5 @@ instance Project LCS  ( [a], Instance a ) ( Instance a ) where
 
 make_quiz :: Make
 make_quiz = quiz LCS LCS.Config.example
+
 

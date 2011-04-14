@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Control.Admin.CGI 
 
 ( main )
@@ -102,5 +103,6 @@ pick_student studs = do
         return (s, stud)
     close 
     return s
+
 
 

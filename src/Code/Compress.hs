@@ -1,3 +1,4 @@
+{-# LANGUAGE UndecidableInstances #-}
 module Code.Compress where
 
 import Code.Type
@@ -89,6 +90,7 @@ instance Project (Compress c) [a] [a] where
 
 make_quiz :: ( ToDoc c, Reader c, Reader b, Coder c Char b ) => c -> Make
 make_quiz c = quiz (Compress c) Code.Param.example
+
 
 
 

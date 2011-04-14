@@ -1,4 +1,4 @@
-{-# language TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module CL.Combinator where
 

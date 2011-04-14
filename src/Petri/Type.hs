@@ -1,5 +1,5 @@
-{-# language DeriveDataTypeable, TemplateHaskell #-}
-{-# language GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveDataTypeable #-} 
 
 module Petri.Type where
   

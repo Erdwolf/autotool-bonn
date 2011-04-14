@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.Selfcom where
 
 --  $Id$
@@ -52,5 +53,6 @@ make :: Make
 make = direct Selfcom ( 6 :: Int )
 
 --------------------------------------------------------------------------
+
 
 

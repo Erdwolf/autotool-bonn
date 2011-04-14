@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module FP.Env where
 
 import FP.Type

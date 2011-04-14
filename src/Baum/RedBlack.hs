@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Baum.RedBlack
 
@@ -41,3 +41,4 @@ instance C.Tag SuchbaumRedBlack RedBlackTree Int where
 
 make_quiz :: Make
 make_quiz = Baum.Such.Central.make_quiz SuchbaumRedBlack
+

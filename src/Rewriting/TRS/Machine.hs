@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Rewriting.TRS.Machine where
 
 --   $Id$

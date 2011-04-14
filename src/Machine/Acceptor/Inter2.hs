@@ -1,3 +1,4 @@
+{-# LANGUAGE UndecidableInstances #-}
 module Machine.Acceptor.Inter2 where
 
 import qualified Machine.Acceptor.Type2 as A
@@ -42,4 +43,5 @@ instance ( Condition prop m , Reader m, Hash m
         positiv_liste (A.cut i) b $ yeahs
         negativ_liste (A.cut i) b $ nohs
         return () 
+
 

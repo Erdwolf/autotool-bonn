@@ -1,5 +1,5 @@
 -- -*- mode: haskell -*-
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
 -- | Eingebaute Standard Funktionen
 module RAM.Builtin 

@@ -1,4 +1,4 @@
-{-# language TypeSynonymInstances #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 module SAT.Wert where
 

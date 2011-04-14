@@ -1,4 +1,4 @@
-{-# language DisambiguateRecordFields #-}
+{-# LANGUAGE DisambiguateRecordFields #-}
 
 module Unify.Roll where
 

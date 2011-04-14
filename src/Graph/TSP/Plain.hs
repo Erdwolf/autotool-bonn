@@ -1,5 +1,5 @@
-{-# language OverlappingInstances, IncoherentInstances, FlexibleInstances #-}
-{-# language MultiParamTypeClasses, DeriveDataTypeable #-}
+{-# LANGUAGE OverlappingInstances, IncoherentInstances, FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses, DeriveDataTypeable #-}
 
 module Graph.TSP.Plain where
 

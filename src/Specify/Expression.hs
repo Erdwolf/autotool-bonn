@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, NoMonomorphismRestriction #-}
+{-# LANGUAGE GADTs, NoMonomorphismRestriction, FlexibleInstances, DeriveDataTypeable #-} 
 
 module Specify.Expression where
 

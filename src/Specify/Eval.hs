@@ -1,4 +1,4 @@
-{-# language GADTs #-}
+{-# LANGUAGE GADTs #-}
 
 module Specify.Eval where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Rewriting.Check where
 
 import Rewriting.TRS
@@ -147,3 +148,4 @@ instance ToDoc Check where
               (text "Max_Symbols" </> fsep [toDocPrec 10 aa])
     toDocPrec d (Max_Variables aa) = docParen (d >= 10)
               (text "Max_Variables" </> fsep [toDocPrec 10 aa])
+

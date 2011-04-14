@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Pump.Inter where
 
 import Pump.Type
@@ -107,3 +108,4 @@ instance Project ( PUMP ) ( Conf z ) ( Conf z ) where
 
 reg = quiz ( PUMP "REG" ) ( Pump.Quiz.example :: Pump.Quiz.Conf REG.Zerlegung )
 cf  = quiz ( PUMP "CF"  ) ( Pump.Quiz.example :: Pump.Quiz.Conf CF.Zerlegung )
+

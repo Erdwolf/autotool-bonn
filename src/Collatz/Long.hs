@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- | möglichst lange Collatz-Folge
 
 module Collatz.Long where
@@ -50,6 +51,7 @@ make = direct Collatz_Long ( 1000 :: Int )
 
 log2 :: Integer -> Integer
 log2 n = if n <= 1 then 0 else succ $ log2 ( n `div` 2 )
+
 
 
 

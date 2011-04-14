@@ -1,4 +1,4 @@
-{-# language TypeSynonymInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE TypeSynonymInstances, MultiParamTypeClasses #-}
 
 module Grammatik.Akzeptor where
 

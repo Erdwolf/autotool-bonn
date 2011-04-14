@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Sortier.Netz.Check where
 
 
@@ -95,3 +96,4 @@ instance C.Partial Sortier Int Netz where
 
 make :: Make
 make = direct Sortier (5 :: Int)
+

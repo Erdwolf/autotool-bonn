@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, UndecidableInstances #-} 
 
 module Code.LZ.Data where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module RSA.Break where
 
 import RSA.Break.Data
@@ -59,3 +60,4 @@ break conf x =
 
 make :: Make
 make = direct RSA_Code_Break RSA.Break.Data.example
+

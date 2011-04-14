@@ -1,4 +1,4 @@
-{-# language FlexibleInstances, MultiParamTypeClasses, FlexibleContexts, UndecidableInstances #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts, UndecidableInstances #-}
 
 module Machine.Acceptor.Inter where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE UndecidableInstances #-}
 module Machine.Numerical.Inter where
 
 import qualified Machine.Numerical.Type as N
@@ -47,3 +48,4 @@ instance ( N.TypeC c m, Machine m dat conf, Numerical dat, Reader m )
     total   p i b = do
         numerical_test' i b
         return () -- größe der maschine (hier) ignorieren
+

@@ -1,3 +1,4 @@
+{-# LANGUAGE FunctionalDependencies #-}
 module Algebraic2.Class 
 
 ( Algebraic (..)
@@ -49,3 +50,4 @@ class (      Typeable tag
     default_operators :: tag -> B.Binu ( Op a )
     default_predefined :: tag -> Belegung a
     default_instance  :: tag -> AI.Type context a
+

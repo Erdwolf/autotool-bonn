@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, FlexibleContexts, UndecidableInstances #-}
 -- convert to NFA for displaying
 --   $Id$
 

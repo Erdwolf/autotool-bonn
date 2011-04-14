@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Faktor.Inverse (
        make_fixed
      , make_quiz
@@ -92,3 +93,4 @@ ext_eu a b s t u v = let (q,r) = divMod a b
 inverse :: Integer -> Integer -> Maybe Integer
 inverse a b = let (g,s,t) = ext_eu a b 1 0 0 1
 	      in if g == 1 then Just s else Nothing
+

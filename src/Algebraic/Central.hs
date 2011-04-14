@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Algebraic.Central where
 
 import Algebraic.Instance
@@ -67,5 +68,6 @@ instance Algebraic tag a
 make :: Algebraic tag m
      => tag -> Make
 make tag = direct (T tag) $ default_instance tag
+
 
 

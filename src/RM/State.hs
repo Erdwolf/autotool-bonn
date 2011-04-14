@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module RM.State where
 
 import RM.Type 
@@ -25,3 +26,4 @@ instance ToDoc State where
 
 instance History State where
     history = past
+

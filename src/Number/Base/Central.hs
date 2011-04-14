@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- | Umwandlung von Zahldarstellungen zu verschiedenen Basen
 
 module Number.Base.Central (
@@ -91,4 +92,5 @@ make_fixed = direct Convert ( Zahl { basis = 5
                                    }
                             , 7 :: Int
                             )
+
 

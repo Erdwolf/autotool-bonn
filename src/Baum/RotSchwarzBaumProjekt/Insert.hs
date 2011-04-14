@@ -1,4 +1,3 @@
-{-# OPTIONS -fglasgow-exts #-}
 
 module RedBlackTree.Insert ( make_fixed, make_quiz ) where
 

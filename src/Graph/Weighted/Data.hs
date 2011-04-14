@@ -1,4 +1,4 @@
-{-# language TemplateHaskell, DeriveDataTypeable #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
 
 module Graph.Weighted.Data where
 

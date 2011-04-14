@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Specify.Constraint where
 
 import Specify.Expression

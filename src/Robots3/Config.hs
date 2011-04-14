@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Robots3.Config 
 
 ( Config -- abstract

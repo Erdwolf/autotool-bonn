@@ -1,4 +1,4 @@
-{-# language UndecidableInstances, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
+{-# LANGUAGE UndecidableInstances, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
 
 module Graph.Van_der_Waerden where
 

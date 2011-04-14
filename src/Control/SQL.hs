@@ -1,5 +1,5 @@
-{-# language DeriveDataTypeable, OverlappingInstances #-}
-{-# language NoMonomorphismRestriction #-}
+{-# LANGUAGE DeriveDataTypeable, OverlappingInstances #-}
+{-# LANGUAGE NoMonomorphismRestriction, DeriveDataTypeable #-} 
 
 module Control.SQL 
 

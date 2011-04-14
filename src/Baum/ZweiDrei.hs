@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Baum.ZweiDrei 
 
 ( make_quiz
@@ -42,4 +43,5 @@ instance C.Tag SuchbaumZweiDrei Baum Int where
 
 make_quiz :: Make
 make_quiz = Baum.Such.Central.make_quiz SuchbaumZweiDrei
+
 

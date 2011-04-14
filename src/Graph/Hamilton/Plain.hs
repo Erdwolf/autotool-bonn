@@ -1,4 +1,4 @@
--- {-# language OverlappingInstances,IncoherentInstances #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Graph.Hamilton.Plain where
 

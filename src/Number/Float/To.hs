@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Number.Float.To
 
 ( make_fixed
@@ -66,6 +67,7 @@ instance Generator To_Float Config ( Config, Rational ) where
 
 instance Project To_Float (Config, Rational) (Config, Rational) where
     project To_Float (c, x) = (c, x)
+
 
 
 

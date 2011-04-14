@@ -1,3 +1,4 @@
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
 module Sortier.Programm.Type where
 
 import Autolib.ToDoc

@@ -1,5 +1,5 @@
 -- -*- mode: haskell -*-
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
 module Collatz.Config where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Hilbert.Central ( make_fixed ) where
 
 import Hilbert.Param
@@ -49,3 +50,4 @@ instance Partial Hilbert Param Derivation where
 
 make_fixed :: Make
 make_fixed = direct Hilbert Hilbert.Param.example
+

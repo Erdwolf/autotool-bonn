@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module SCS.Instance 
 
 ( make_fixed
@@ -64,4 +65,5 @@ instance Project SCS  ( [a], Instance a ) ( Instance a ) where
 
 make_quiz :: Make
 make_quiz = quiz SCS SCS.Config.example
+
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module KnapsackFraction.Central 
 
 ( KnapsackFraction
@@ -138,3 +139,4 @@ instance Project KnapsackFraction (Inp,Pack) Inp where project _ = fst
 
 make_quiz :: Make
 make_quiz = quiz KnapsackFraction p0
+

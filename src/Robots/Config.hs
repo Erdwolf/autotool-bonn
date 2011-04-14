@@ -1,4 +1,4 @@
-{-# language FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
 
 module Robots.Config 
 

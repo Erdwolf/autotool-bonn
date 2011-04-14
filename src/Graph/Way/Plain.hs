@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.Way.Plain where
 
 --  $Id$
@@ -92,3 +93,4 @@ instance C.Measure Way Input (Maybe (Graph Int)) where
 
 make :: Make
 make = direct Way ex
+

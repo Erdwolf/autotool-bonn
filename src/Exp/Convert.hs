@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Exp.Convert where
 
 
@@ -122,3 +123,4 @@ instance Project  Convert_To_Exp
 
 qmake :: Make
 qmake = quiz Convert_To_Exp Exp.Quiz.example
+

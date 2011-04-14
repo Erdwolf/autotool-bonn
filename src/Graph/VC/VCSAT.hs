@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 --  $Id$
 
 module Graph.VC.VCSAT
@@ -60,3 +61,4 @@ instance Project VCSAT I.Input I.Input where
 
 make_quiz :: Make
 make_quiz = quiz VCSAT P.p0
+

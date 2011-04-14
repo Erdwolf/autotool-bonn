@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
+{-# LANGUAGE DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
 
 module Graph.Cage.Central where
 

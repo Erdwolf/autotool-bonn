@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses, FunctionalDependencies, TypeSynonymInstances #-}
+{-# LANGUAGE DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses, FunctionalDependencies, TypeSynonymInstances #-}
 
 
 module Unify.Main where

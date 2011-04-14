@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, FlexibleContexts, MultiParamTypeClasses, FlexibleInstances, UndecidableInstances, TypeSynonymInstances, ScopedTypeVariables #-}
 
 module Turing.Type 
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Flow.Struct.Data where
 
 import Flow.Program
@@ -114,5 +115,6 @@ while = do
     c <- my_parens reader
     body <- reader
     return $ While c body
+
 
 

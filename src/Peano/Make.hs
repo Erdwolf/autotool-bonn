@@ -1,4 +1,4 @@
-{-# language MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Peano.Make ( make ) where
 

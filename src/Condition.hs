@@ -1,4 +1,4 @@
-{-# language UndecidableInstances, OverlappingInstances #-}
+{-# LANGUAGE UndecidableInstances, OverlappingInstances, FunctionalDependencies #-}
 
 module Condition 
 

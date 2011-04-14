@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module PL.Find_Model (
       make_fixed 
 ) where
@@ -57,3 +58,4 @@ make_fixed :: Make
 make_fixed = direct Find_Model PL.Param.example
 
 	   
+

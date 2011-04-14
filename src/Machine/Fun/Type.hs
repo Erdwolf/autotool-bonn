@@ -1,5 +1,5 @@
 -- -*- mode: haskell -*-
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
 module Machine.Fun.Type where
 

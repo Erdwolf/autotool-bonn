@@ -1,6 +1,6 @@
--- {-# LANGUAGE OverlappingInstances #-}
-{-# LANGUAGE TemplateHaskell #-}
--- {-# LANGUAGE IncoherentInstances #-}
+-- {-# LANGUAGE OverlappingInstances, DeriveDataTypeable, UndecidableInstances #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, UndecidableInstances #-} 
+-- {-# LANGUAGE IncoherentInstances, DeriveDataTypeable, UndecidableInstances #-} 
 
 -- -*- mode: haskell -*-
 

@@ -1,6 +1,6 @@
-{-# language GeneralizedNewtypeDeriving #-}
-{-# language TemplateHaskell #-}
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveDataTypeable #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Petri.Dining where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Lambda.Derive where
 
 import Lambda.Type
@@ -80,4 +81,5 @@ instance Project Lambda_Derive I.Type I.Type where
 
 make_quiz :: Make
 make_quiz = quiz Lambda_Derive C.example
+
 

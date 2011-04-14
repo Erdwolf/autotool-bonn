@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Inter.Student where
 
 import Inter.Types
@@ -132,5 +133,6 @@ make_instant vnr manr stud fun auf = do
 		  pre $ show $ A.config auf
 		  mzero
     io $ make_instant_common vnr manr stud $ fun conf
+
 
 

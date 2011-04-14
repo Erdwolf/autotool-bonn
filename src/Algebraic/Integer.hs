@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- | demonstration module: how to use the Algebraic.Class
 
 module Algebraic.Integer where
@@ -73,3 +74,4 @@ instance Algebraic Algebraic_Integer () Integer where
     default_operators tag = bops
 
     default_predefined tag = emptyFM
+

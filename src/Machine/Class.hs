@@ -1,3 +1,4 @@
+{-# LANGUAGE FunctionalDependencies, UndecidableInstances #-}
 module Machine.Class where
 
 import Autolib.Set
@@ -106,5 +107,6 @@ class Decode dat where
 class ( Encode dat, Decode dat ) => Numerical dat 
 
 instance ( Encode dat, Decode dat ) => Numerical dat 
+
 
 

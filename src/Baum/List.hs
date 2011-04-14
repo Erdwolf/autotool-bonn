@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Baum.List
 
@@ -36,4 +36,5 @@ make_fixed = Baum.Heap.Central.make_fixed HeapbaumList
 
 make_quiz :: Make
 make_quiz = Baum.Heap.Central.make_quiz HeapbaumList
+
 

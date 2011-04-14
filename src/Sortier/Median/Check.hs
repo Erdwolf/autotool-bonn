@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Sortier.Median.Check where
 
 --   $Id$
@@ -112,3 +113,4 @@ selections n 0 = return $ replicate n 0
 selections n e = 
        do xs <- selections (n-1) (e-1) ; return $ 1 : xs 
     ++ do guard $ n > e ; xs <- selections (n-1) e     ; return $ 0 : xs 
+

@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, UndecidableInstances #-} 
 
 module NFA.Nerode.Separation.Solution where
 

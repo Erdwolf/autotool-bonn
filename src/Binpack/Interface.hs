@@ -1,4 +1,4 @@
-{-# language TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses #-}
 
 module Binpack.Interface where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Baum.Binary 
 
 ( make_quiz
@@ -40,3 +41,4 @@ instance C.Tag SuchbaumBinary Baum Int where
 
 make_quiz :: Make
 make_quiz = Baum.Such.Central.make_quiz SuchbaumBinary
+

@@ -1,5 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
 module Baum.Leftist.Type 
 

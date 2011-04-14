@@ -1,4 +1,4 @@
-{-# language FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Graph.Util 
 

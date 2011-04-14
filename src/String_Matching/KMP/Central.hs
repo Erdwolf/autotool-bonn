@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module String_Matching.KMP.Central where
 
 import String_Matching.Option
@@ -72,4 +73,5 @@ instance ( Ord a, Reader a, ToDoc a )
 instance ( Ord a, Reader a, ToDoc a )
     => Project String_Matching_KMP ( Instance a ) ( Instance a ) where
     project p = id
+
 

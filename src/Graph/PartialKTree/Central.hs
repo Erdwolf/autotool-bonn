@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.PartialKTree.Central where
 
 --  $Id$
@@ -94,3 +95,4 @@ qmake :: Make
 qmake = quiz PartialKTree example
 
     
+

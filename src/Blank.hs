@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- | Eine Aufgabe, bei der gar keine Studenten-Lösung akzeptiert wird
 -- Tutor soll "von Hand" die Oks eintragen
 -- und damit (schriftliche \/ mündliche) Seminar-Aufgaben bewerten 
@@ -32,3 +33,4 @@ instance C.Measure Blank () () where
 
 make :: Make
 make = direct Blank ()
+

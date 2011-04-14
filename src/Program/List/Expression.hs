@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Program.List.Expression where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Robots2.Config 
 
 ( Config -- abstract

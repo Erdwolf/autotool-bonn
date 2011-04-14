@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 --  $Id$
 
 module Graph.VC.Central 
@@ -121,3 +122,4 @@ instance Project VC (Graph Int,Int,Set Int) (Graph Int,Int) where
 
 make_quiz :: Make
 make_quiz = quiz VC P.p0
+

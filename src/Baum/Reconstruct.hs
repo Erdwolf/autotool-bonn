@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Baum.Reconstruct where
 
 import Baum.Type
@@ -100,3 +101,4 @@ instance Generator Reconstruct Config ( Traversals Identifier ) where
 instance Project Reconstruct  
                  ( Traversals Identifier )  ( Traversals Identifier ) where
     project Reconstruct t = t
+

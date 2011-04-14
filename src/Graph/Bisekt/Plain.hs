@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.Bisekt.Plain where
 
 --  $Id$
@@ -127,3 +128,4 @@ make = direct Bisect ( 5 :: Int, mkGraph (mkSet ns) (mkSet es) )
 	       ,(5,1),(5,2),(5,3),(5,4)      ,(5,6)
 	             ,(6,2),(6,3)      ,(6,5)
 	       ]:: [ Kante Int ]
+

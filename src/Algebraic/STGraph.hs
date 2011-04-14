@@ -1,3 +1,4 @@
+{-# LANGUAGE UndecidableInstances, DeriveDataTypeable #-}
 module Algebraic.STGraph where
 
 import qualified Autolib.TES.Binu as B
@@ -107,3 +108,4 @@ ping g = peng $ ( no_fixed_layout g )
                               ]
 	     , show_labels = False
              } 
+

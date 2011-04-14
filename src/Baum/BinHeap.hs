@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Baum.BinHeap
 
@@ -33,4 +33,5 @@ make_fixed = Baum.Heap.Central.make_fixed HeapbaumBinomial
 
 make_quiz :: Make
 make_quiz = Baum.Heap.Central.make_quiz HeapbaumBinomial
+
 

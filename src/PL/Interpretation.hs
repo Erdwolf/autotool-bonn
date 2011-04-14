@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 {-# LANGUAGE DeriveDataTypeable #-}
 
 module PL.Interpretation where

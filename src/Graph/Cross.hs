@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.Cross where
 
 
@@ -222,3 +223,4 @@ disjunct (alr,atr) (blr,btr) = max alr blr >= min atr btr
 -- | bounding box durch linke untere Ecke und rechte obere Ecke
 bbox :: Strecke -> (Punkt,Punkt)
 bbox ((x1,y1),(x2,y2)) = ((min x1 x2,min y1 y2),(max x1 x2,max y1 y2))
+

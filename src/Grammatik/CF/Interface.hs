@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Grammatik.CF.Interface where
 
 -- -- $Id$
@@ -101,6 +102,7 @@ instance Generator CFG P.Config I.Config where
 
 make :: Make
 make = quiz CFG P.example
+
 
 
 

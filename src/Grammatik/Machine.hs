@@ -1,4 +1,4 @@
-{-# language TypeSynonymInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE TypeSynonymInstances, MultiParamTypeClasses #-}
 
 -- | Grammatik als Akzeptor, d. h. aus dem Wort wird das Startsymbol abgeleitet
 -- mit umgekehrten Pfeilen.

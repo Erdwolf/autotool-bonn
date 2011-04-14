@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
-{-# language MultiParamTypeClasses #-}
-{-# language PatternSignatures #-}
-{-# language OverlappingInstances #-}
+{-# LANGUAGE MultiParamTypeClasses, DeriveDataTypeable #-} 
+{-# LANGUAGE ScopedTypeVariables, DeriveDataTypeable #-} 
+{-# LANGUAGE OverlappingInstances, DeriveDataTypeable #-} 
 
 module Haskell.Blueprint.Central where
 

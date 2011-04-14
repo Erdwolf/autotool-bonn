@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Code.Hamming.Partial where
 
 import Inter.Types ( ScoringOrder (..), OrderScore (..) )
@@ -58,3 +59,4 @@ instance Measure Hamming Config Code where
 
 instance OrderScore Hamming where
     scoringOrder _ = None -- ? - should depend on config
+

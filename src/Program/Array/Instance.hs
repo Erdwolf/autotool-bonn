@@ -1,4 +1,4 @@
-{-# language MultiParamTypeClasses, DeriveDataTypeable #-}
+{-# LANGUAGE MultiParamTypeClasses, DeriveDataTypeable #-}
 
 module Program.Array.Instance where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Sortier.Merge.Check where
 
 --   $Id$
@@ -117,3 +118,4 @@ stairs :: Int -> [ State ]
 stairs b = do
     c <- [ 0 .. b ]
     return $ replicate c 0 ++ replicate ( b - c ) 1
+

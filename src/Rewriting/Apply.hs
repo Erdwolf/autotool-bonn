@@ -1,4 +1,4 @@
-{-# language MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
 
 module Rewriting.Apply where
 

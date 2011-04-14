@@ -1,4 +1,4 @@
-{-# language TemplateHaskell, DeriveDataTypeable, GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, GeneralizedNewtypeDeriving #-}
 
 module Program.Cexp.Annotated where
 

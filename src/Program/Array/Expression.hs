@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Program.Array.Expression where
 
 import Program.Array.Operator

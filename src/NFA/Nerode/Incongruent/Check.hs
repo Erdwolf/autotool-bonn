@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module NFA.Nerode.Incongruent.Check where
 
 import NFA.Nerode.Incongruent.Instance
@@ -120,3 +121,4 @@ instance NFAC c Int => C.Measure Nerode_Incongruent
 make :: Make
 make = direct Nerode_Incongruent 
               NFA.Nerode.Incongruent.Instance.example
+

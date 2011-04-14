@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses #-}
 
 module CNF.Optimize where
 

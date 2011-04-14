@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Turing.Konfiguration where
 
 --   $Id$

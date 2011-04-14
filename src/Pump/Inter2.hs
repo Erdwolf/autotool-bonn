@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Pump.Inter2 where
 
 import Pump.Type
@@ -95,3 +96,4 @@ reg = direct
    ( PUMP "REG" ) ( Pump.Conf2.example :: Conf REG.Zerlegung )
 cf  = direct 
    ( PUMP "CF"  ) ( Pump.Conf2.example :: Conf CF.Zerlegung )
+

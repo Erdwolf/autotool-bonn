@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Sortier.Programm.Check where
 
 import Sortier.Common.Util
@@ -75,4 +76,5 @@ instance C.Partial Sortier_Programm Config Program where
 
 make :: Make
 make = direct Sortier_Programm Sortier.Common.Config.example
+
 

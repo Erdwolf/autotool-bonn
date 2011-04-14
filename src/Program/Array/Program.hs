@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Program.Array.Program where
 
 import Program.Array.Statement

@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Baum.AVL 
 
@@ -44,4 +44,5 @@ instance C.Tag SuchbaumAVL AVLTree Int where
 
 make_quiz :: Make
 make_quiz = Baum.Such.Central.make_quiz SuchbaumAVL
+
 

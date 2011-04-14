@@ -1,4 +1,4 @@
-{-# language MultiParamTypeClasses, DeriveDataTypeable, FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses, DeriveDataTypeable, FlexibleInstances #-}
 
 module Program.List.Instance where
 

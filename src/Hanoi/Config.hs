@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, CPP #-}
+{-# LANGUAGE TemplateHaskell, CPP, DeriveDataTypeable #-} 
 
 module Hanoi.Config where
 

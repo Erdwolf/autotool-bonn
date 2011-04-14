@@ -1,4 +1,4 @@
-{-# language MultiParamTypeClasses, DeriveDataTypeable #-}
+{-# LANGUAGE MultiParamTypeClasses, DeriveDataTypeable #-}
 
 module Diffie_Hellman.Break where
 

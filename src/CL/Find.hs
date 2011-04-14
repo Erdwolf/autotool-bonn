@@ -1,4 +1,4 @@
-{-# language TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable, TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable, TypeSynonymInstances #-}
 
 module CL.Find where
 

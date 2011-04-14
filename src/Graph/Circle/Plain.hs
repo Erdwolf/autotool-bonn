@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.Circle.Plain where
 
 --  $Id$
@@ -112,3 +113,4 @@ make = direct Circle
 	      ] :: [Kante Int]
 	     )
      )
+

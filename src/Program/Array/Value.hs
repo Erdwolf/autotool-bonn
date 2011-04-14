@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Program.Array.Value where
 
 import qualified Program.General.Environment as E
@@ -117,5 +118,23 @@ row = my_braces $ do
     x <- reader
     xs <- many ( do my_comma ; value ( depth x ) )
     return $ Row $ x : xs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

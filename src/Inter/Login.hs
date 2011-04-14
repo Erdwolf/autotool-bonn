@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 --  $Id$
 
 module Inter.Login where
@@ -85,4 +86,5 @@ continue stud sems = do
     when ( status < Tutor ) close -- risky
 
     return ( stud, vor, status, attends )
+
 

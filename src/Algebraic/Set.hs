@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Algebraic.Set where
 
 
@@ -63,4 +64,5 @@ instance Algebraic Algebraic_Set () ( Nested.Type Integer ) where
 	}
 
     default_operators tag = bops
+
 

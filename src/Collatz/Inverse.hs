@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Collatz.Inverse where
 
 --  $Id$
@@ -58,5 +59,6 @@ instance Project Collatz_Inverse ( Integer, P.Parameter ) P.Parameter where
 
 qmake :: Make
 qmake = quiz Collatz_Inverse rc
+
 
 

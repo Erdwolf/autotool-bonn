@@ -1,4 +1,4 @@
-{-# language DeriveDataTypeable, MultiParamTypeClasses #-}
+{-# LANGUAGE DeriveDataTypeable, MultiParamTypeClasses #-}
 
 module Graph.Col.Gadget.Central where
 

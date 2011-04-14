@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Algebraic.Graph where
 
 import qualified Autolib.TES.Binu as B
@@ -70,3 +71,4 @@ ping g = peng $ ( no_fixed_layout g )
                               ]
 	     , show_labels = False
              } 
+

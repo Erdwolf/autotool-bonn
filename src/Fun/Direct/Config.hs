@@ -1,5 +1,5 @@
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
+{-# LANGUAGE NoMonomorphismRestriction, DeriveDataTypeable #-} 
 
 module Fun.Direct.Config (
     module Fun.Direct.Config,

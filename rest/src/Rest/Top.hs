@@ -1,4 +1,4 @@
-{-# language PatternSignatures #-}
+{-# language ScopedTypeVariables #-}
 
 module Main ( main ) where
 

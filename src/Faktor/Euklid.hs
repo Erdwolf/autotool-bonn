@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Faktor.Euklid (
        make_fixed
      , make_quiz
@@ -91,3 +92,4 @@ ggt :: ( Integer, Integer ) -> Integer
 ggt (a, b) = 
     let (c, d) = euklid (a, b) 
     in  a * c + b * d         
+

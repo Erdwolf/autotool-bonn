@@ -1,4 +1,4 @@
-{-# language TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
 module Flow.Action where
 

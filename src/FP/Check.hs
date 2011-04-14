@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module FP.Check where
 
 import FP.Env
@@ -45,4 +46,5 @@ instance C.Measure FPTypeCheck TI ( Expression Identifier ) where
 
 make :: Make
 make = direct FPTypeCheck $ FP.Instance.example
+
 

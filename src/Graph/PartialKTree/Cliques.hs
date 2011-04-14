@@ -1,3 +1,4 @@
+{-# LANGUAGE UndecidableInstances #-}
 module Graph.PartialKTree.Cliques where
 
 --  $Id$
@@ -49,5 +50,6 @@ cliques (g, k) ( x : xs ) = do
     r <- cliques ( h, k ) xs
     return $ max r ( cardinality n ) 
     
+
 
 

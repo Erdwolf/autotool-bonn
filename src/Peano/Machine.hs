@@ -1,5 +1,5 @@
-{-# language MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
-{-# language DeriveDataTypeable #-}
+{-# LANGUAGE MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Peano.Machine where
 

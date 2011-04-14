@@ -1,3 +1,4 @@
+{-# LANGUAGE UndecidableInstances #-}
 module Arithmetic.Op 
 
 ( Exp, eval, bind
@@ -129,3 +130,4 @@ eval fm =
 
 bind :: [ (String, Integer) ] -> FiniteMap Identifier Integer
 bind xvs = listToFM $ do (x, v) <- xvs ; return ( mknullary x, v )
+

@@ -1,4 +1,4 @@
-{-# language FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
 module Robots2.Interface where
 

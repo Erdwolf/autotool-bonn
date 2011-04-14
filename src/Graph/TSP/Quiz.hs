@@ -1,4 +1,4 @@
-{-# language MultiParamTypeClasses, FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances #-}
 
 module Graph.TSP.Quiz where
 

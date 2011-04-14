@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Collatz.Plain where
 
 --  $Id$
@@ -51,6 +52,7 @@ instance Project Collatz_Plain ( Integer, P.Parameter ) Integer where
 
 qmake :: Make
 qmake = quiz Collatz_Plain rc
+
 
 
 

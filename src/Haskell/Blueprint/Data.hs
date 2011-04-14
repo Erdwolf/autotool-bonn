@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
-{-# language OverlappingInstances #-}
+{-# LANGUAGE OverlappingInstances, DeriveDataTypeable #-} 
 
 module Haskell.Blueprint.Data where
 

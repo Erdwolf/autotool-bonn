@@ -1,3 +1,4 @@
+{-# LANGUAGE UndecidableInstances #-}
 module Code.Quiz where
 
 import Code.Type
@@ -62,4 +63,5 @@ instance Project (Decode c) b b where
 dec :: ( ToDoc c, Reader c, Read b, Coder c Char b ) 
       => c -> Make
 dec c = quiz (Decode c) Code.Param.example
+
 

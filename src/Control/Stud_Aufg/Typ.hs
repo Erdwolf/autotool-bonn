@@ -1,5 +1,5 @@
 -- -*- mode: haskell -*-
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
 module Control.Stud_Aufg.Typ where
 

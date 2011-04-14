@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Algebraic.Relation where
 
 import Algebraic.Relation.Restriction

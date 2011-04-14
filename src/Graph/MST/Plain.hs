@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.MST.Plain where
 
 import qualified Graph.Weighted as W
@@ -107,3 +108,4 @@ instance C.Measure MST (W.Graph Int Int) (Int,Graph Int) where
 
 make :: Make
 make = direct MST $ W.example 10
+

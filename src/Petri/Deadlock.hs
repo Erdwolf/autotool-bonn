@@ -1,6 +1,6 @@
-{-# language DeriveDataTypeable, TemplateHaskell #-}
-{-# language MultiParamTypeClasses #-}
-{-# language FlexibleInstances #-}
+{-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
+{-# LANGUAGE MultiParamTypeClasses, DeriveDataTypeable #-} 
+{-# LANGUAGE FlexibleInstances, DeriveDataTypeable #-} 
 
 module Petri.Deadlock where
 

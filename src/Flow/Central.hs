@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Flow.Central where
 
 import Flow.Program
@@ -102,4 +103,5 @@ instance Partial
 
 goto_to_struct_fixed :: Make
 goto_to_struct_fixed = direct Goto_To_Struct G.example
+
 

@@ -1,4 +1,4 @@
-{-# language TypeSynonymInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
+{-# LANGUAGE TypeSynonymInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
 
 module Expression.Op 
 

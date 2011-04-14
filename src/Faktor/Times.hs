@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- | Korrekturfunktion für Faktorisierung
 
 -- joe@informatik.uni-leipzig.de
@@ -73,5 +74,6 @@ instance Generator Times Param [ Integer ] where
 
 instance Project Times [ Integer ][ Integer ] where
     project _ = id
+
 
 

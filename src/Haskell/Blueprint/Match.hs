@@ -11,6 +11,7 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.State
 
+
 data Result a = Continue | Fail SrcLoc | Ok a
     deriving (Eq, Ord, Show)
 

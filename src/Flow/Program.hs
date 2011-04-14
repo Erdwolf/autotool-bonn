@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Flow.Program where
 
 import Flow.Expression
@@ -34,4 +35,5 @@ instance Conditions s => Conditions ( Program s ) where
 
 instance Actions s => Actions ( Program s ) where
     actions ( Program ss ) = actions ss
+
 

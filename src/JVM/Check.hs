@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- -*- mode: haskell -*-
 
 module JVM.Check where

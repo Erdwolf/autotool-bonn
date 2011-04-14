@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Code.Nocode where
 
 
@@ -87,3 +88,4 @@ instance Generator Nocode ()  ([ String ], [String]) where
 instance Project Nocode  ([ String ], [String]) [(Char,String)]  where
     project _ ( ws, ce ) = 
         zip [ 'A' .. ] ws
+

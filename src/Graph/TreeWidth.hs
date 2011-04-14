@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.TreeWidth where
 
 --  $Id$
@@ -125,3 +126,4 @@ make :: Make
 make = 
     let p = Autolib.Graph.Basic.path [ 1 .. 4 :: Int ]
     in  direct TreeWidth ( normalize $ grid p p, 3 :: Int )
+

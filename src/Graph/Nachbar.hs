@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Graph.Nachbar where
 
 --  $Id$
@@ -120,3 +121,4 @@ nicht r = do
 	 Nothing -> return ()
          Just _  -> reject $ text "(nicht)"
     
+

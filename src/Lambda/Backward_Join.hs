@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Lambda.Backward_Join where
 
 import Lambda.Type
@@ -52,6 +53,7 @@ verify_derivation tag start steps goal = do
 
 make_fixed :: Make
 make_fixed = direct Lambda_Backward_Join I.example                    
+
 
 
 

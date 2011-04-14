@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Grammatik.CF.Interface2 where
 
 -- -- $Id$
@@ -100,6 +101,7 @@ add_test_cases p i b
 
 make :: Make
 make = direct CFG2 I2.example
+
 
 
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Exp.Smaller where
 
 --  $Id$
@@ -88,4 +89,5 @@ make = direct Exp_Smaller
      ( read "(a+b+ab+ba)^*" :: RX Char
      , [ Exp.Property.Simple , Exp.Property.Alphabet (mkSet "ab") ] :: [ Property Char ]
      )
+
 

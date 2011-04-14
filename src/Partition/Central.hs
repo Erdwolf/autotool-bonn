@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Partition.Central 
 
 ( Partition
@@ -106,3 +107,4 @@ instance Project Partition Conf Conf where project Partition = id
 
 make_quiz :: Make
 make_quiz = quiz Partition $ Partition.Param.p 
+

@@ -1,4 +1,4 @@
-{-# language MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Diffie_Hellman.Quiz 
 

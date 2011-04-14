@@ -1,4 +1,4 @@
-{-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE NoMonomorphismRestriction, DeriveDataTypeable #-}
 
 module FP.Expression 
 

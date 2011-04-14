@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Resolution.Central ( make_fixed, make_quiz ) where
 
 import Resolution.Data
@@ -55,3 +56,4 @@ instance Project Resolution ( [Clause], Clause ) ( [Clause], Clause ) where
 
 make_quiz :: Make
 make_quiz = quiz Resolution Resolution.Config.example
+

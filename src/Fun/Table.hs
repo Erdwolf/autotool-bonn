@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- | berechnen von vielen funktionswerten
 -- optimiert: mit durchgehender cache-benutzung
 
@@ -161,3 +162,4 @@ mktafel2 m = do
 	     <+> text "hat nicht die Breite" <+> toDoc ( width m )
     return $ Tafel2 $ listArray ((0,0), (height m - 1, width m - 1 ))
 		    $ concat $ contents m
+

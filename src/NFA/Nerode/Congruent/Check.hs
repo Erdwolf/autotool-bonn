@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module NFA.Nerode.Congruent.Check where
 
 import NFA.Nerode.Congruent.Instance
@@ -106,3 +107,4 @@ instance C.Measure Nerode_Congruent
 make :: Make
 make = direct Nerode_Congruent 
               NFA.Nerode.Congruent.Instance.example
+
