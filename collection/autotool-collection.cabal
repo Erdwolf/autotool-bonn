@@ -32,23 +32,29 @@ Library
         autolib-util,
         autolib-transport,
         base >= 4 && < 4.4,
-        hsql >= 1.7.1 && < 1.8,
-        hsql-mysql >= 1.7.1 && < 1.8,
+        hsql >= 1.7.1 && < 1.8.2,
+        hsql-mysql >= 1.7.1 && < 1.8.2,
         random >= 1 && < 1.1,
         parsec >= 2 && < 4,
-        containers >= 0.2 && < 0.4,
+        containers >= 0.2 && < 0.5,
         xhtml >= 3000.2 && < 3000.3,
         cgi >= 3001.1.7 && < 3001.2,
         mtl,
         old-locale >= 1 && < 1.1,
         old-time >= 1 && < 1.1,
         process >= 1 && < 1.1,
-        directory >= 1 && < 1.1,
+        directory >= 1 && < 1.2,
         unix >= 2.3 && < 2.5,
         obdd >= 0.2 && < 0.3,
         array >= 0.2 && < 0.4,
         pretty >= 1 && < 1.1,
-        utf8-string
+        utf8-string,
+        smallcheck,
+        transformers,
+        mueval,
+        hint,
+        haskell-src-exts,
+        QuickCheck
     GHC-Options:    -Wall
     Extensions:
         DeriveDataTypeable
@@ -110,9 +116,27 @@ Library
         Baum.Binary.Ops
         Baum.Binary.Show
         Baum.Binary.Type
+        Baum.BinHeap
+        Baum.BinHeap.Ops
+        Baum.BinHeap.Show
+        Baum.BinHeap.Type
         Baum.Config
         Baum.Draw
+        Baum.Heap.Central
+        Baum.Heap.Class
+        Baum.Heap.Config
+        Baum.Heap.Generate
+        Baum.Heap.Inter
+        Baum.Heap.Op
         Baum.Label
+        Baum.Leftist
+        Baum.Leftist.Ops
+        Baum.Leftist.Show
+        Baum.Leftist.Type
+        Baum.List
+        Baum.List.Ops
+        Baum.List.Show
+        Baum.List.Type
         Baum.Order
         Baum.Reconstruct
         Baum.Roll
@@ -387,6 +411,9 @@ Library
         Hanoi.Restriction
         Hanoi.Semantik
         Hanoi.Type
+        Haskell.Central
+        Haskell.Data
+        Haskell.SmallCheck
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central
@@ -532,8 +559,12 @@ Library
         PL.Interpretation
         PL.Param
         PL.Reader
+        PL.Roll.Struktur
+        PL.Roll.Syntax
         PL.Semantik
         PL.Signatur
+        PL.Split.Term.Fixed
+        PL.Split.Term.Quiz
         PL.Struktur
         PL.ToDoc
         PL.Tree
@@ -730,6 +761,12 @@ Library
         Type.Infer
         Type.Quiz
         Type.Tree
+        Type.Poly.Check
+        Type.Poly.Data
+        Type.Poly.Infer
+        Type.Poly.Quiz
+        Type.Poly.Roll
+        Type.Poly.Tree
         Unify.Config
         Unify.Instance
         Unify.Instance.Data
