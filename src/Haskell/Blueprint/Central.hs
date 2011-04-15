@@ -82,9 +82,9 @@ instance Partial Haskell_Blueprint Code Code where
                     , M.extensions = False
                     , M.namedExtensions = []
                     , M.noImports = False
--- http://httpd.apache.org/docs/1.3/misc/FAQ-F.html#premature-script-headers 
--- Another cause for the "premature end of script headers" message 
--- are the RLimitCPU and RLimitMEM directives. 
+-- http://httpd.apache.org/docs/1.3/misc/FAQ-F.html#premature-script-headers
+-- Another cause for the "premature end of script headers" message
+-- are the RLimitCPU and RLimitMEM directives.
 -- You may get the message if the CGI script was killed due to a resource limit.
                     , M.rLimits = False
                     } ) 
@@ -92,24 +92,25 @@ instance Partial Haskell_Blueprint Code Code where
                         debug $ "interpreter got exception " ++ show e
                         return $ Left $ I.UnknownError ( show e )
             -- debug $ "after runInterpreter"
-            -- length ( show r ) `seq` 
+            -- length ( show r ) `seq`
             -- return r
             -- System.Directory.removeFile f
             -- return r
         -- liftIO $ debug "outside runInterpreter"
         case r of
+            Left (I.WontCompile err) -> reject $ vcat $ map (text . I.errMsg) err
             Left err -> reject $ text $ show err
             Right ( e, et, val ) -> do
                 inform $ vcat
                        [ text "expression" </> text e
                        , text "type" </> text et
-                       ]  
+                       ]
                 assert ( et == "Bool" ) $ text "richtiger Typ?"
-              
+
                 v <- liftIO  ( ( do Control.Exception.evaluate val ; return ( Right val ) )
                   `Control.Exception.catch` \ ( e :: Control.Exception.SomeException ) -> do
                         return $ Left ( show e ) )
-                
+
                 case v of
                      Right val -> assert ( val == "True" ) $ text "richtiger Wert?"
                      Left ex -> reject $ text "Exception" </> text ex
