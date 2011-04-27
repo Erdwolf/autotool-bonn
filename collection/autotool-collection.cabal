@@ -53,6 +53,9 @@ Library
         transformers,
         mueval,
         hint,
+        strict,
+        temporary,
+        syb,
         haskell-src-exts,
         QuickCheck
     GHC-Options:    -Wall
@@ -414,6 +417,9 @@ Library
         Haskell.Central
         Haskell.Data
         Haskell.SmallCheck
+        Haskell.Blueprint.Central
+        Haskell.Blueprint.Data
+        Haskell.Blueprint.Match
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central
@@ -554,6 +560,15 @@ Library
         Peano.Type
         Peano.Eval   
         Peano.Infer  
+        Petri.Deadlock
+        Petri.Dining
+        Petri.Dot
+        Petri.Property
+        Petri.Reach
+        Petri.Remote
+        Petri.Roll
+        Petri.Step
+        Petri.Type
         PL.Data
         PL.Find_Model
         PL.Interpretation

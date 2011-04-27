@@ -1,3 +1,4 @@
+{-# LANGUAGE NoMonoLocalBinds #-}
 --  $Id$
 
 -- | Bruchteilrucksack-Problem: Packe in einen Rucksack der Kapazität

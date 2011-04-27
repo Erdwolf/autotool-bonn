@@ -15,7 +15,7 @@ check_not_iso :: ( GraphC a, GraphC b , ToDoc (FiniteMap a b) )
      -> Graph b 
      -> Reporter ()
 check_not_iso g h = do
-    let idoc x = nest 4 $ info x <+> equals <+> toDoc x
+    let idoc x = nest 4 $ info x <+> equals <+> toDoc x; idoc :: GraphC ab => Graph ab -> Doc
     inform $ vcat
 	   [ text "Der Graph" , idoc g, text "und der Graph", idoc h
 	   , text "sollen nicht isomorph sein."

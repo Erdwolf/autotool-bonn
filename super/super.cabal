@@ -25,7 +25,7 @@ Executable Super.cgi
     autotool-collection,
     base == 4.*,parsec >= 2 && < 4, old-locale,old-time,
     xhtml==3000.*,cgi,
-    hsql==1.7.1,hsql-mysql==1.7.1,
+    hsql>=1.7.1,hsql-mysql>=1.7.1,
     containers,directory,random,mtl,
     process,unix,
     autolib-transport,
