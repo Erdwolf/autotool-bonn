@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances #-}
 -- | like Maybe, but Nothing is shown as question mark
 
 module String_Matching.Option where
@@ -47,6 +48,7 @@ instance Sub a b => Sub [a] [b] where
 instance (Ord a, Ord b, Sub a b) => Sub (Set a) (Set b) where
     sub xs ys = sub ( setToList xs ) ( setToList ys )
     inject = smap inject
+
 
 
 

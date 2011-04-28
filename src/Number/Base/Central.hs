@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses #-}
 -- | Umwandlung von Zahldarstellungen zu verschiedenen Basen
 
 module Number.Base.Central (

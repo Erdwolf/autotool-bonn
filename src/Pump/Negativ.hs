@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 -- -- $Id$
 
 module Pump.Negativ
@@ -116,3 +117,4 @@ expos l n z = do
 	   
 
        
+

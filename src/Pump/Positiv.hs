@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 -- -- $Id$
 
 module Pump.Positiv
@@ -75,4 +76,5 @@ report l p w = do
     newline
 
 	   
+
 

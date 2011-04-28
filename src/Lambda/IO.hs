@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Lambda.IO where
 
 
@@ -42,4 +43,5 @@ application :: Parser Lambda
 application = do
     f : args <- many1 ( atomic :: Parser Lambda )
     return $ apply ( f , args )
+
 

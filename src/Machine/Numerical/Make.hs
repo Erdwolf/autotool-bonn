@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes, ScopedTypeVariables, FlexibleContexts #-}
 module Machine.Numerical.Make where
 
 import Inter.Types
@@ -65,3 +66,4 @@ fnum conf key = do
 	    , N.checks = Con.checks conf
 	    , N.start = Con.start conf
 	      }
+

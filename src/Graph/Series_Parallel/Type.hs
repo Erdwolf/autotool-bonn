@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, FlexibleContexts #-} 
 
 module Graph.Series_Parallel.Type where
 

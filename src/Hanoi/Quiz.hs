@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Hanoi.Quiz where
 
 --  $Id$
@@ -41,3 +42,4 @@ instance Project Hanoi HI HI where
 
 make :: Make
 make = quiz Hanoi $ C.example 
+

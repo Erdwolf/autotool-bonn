@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module NPDA.Check where
 
 import NPDA.Type
@@ -20,3 +21,4 @@ check p = case p of
 	 Sane -> NPDA.Sane.sanity
          Det -> NPDA.Det.check 
          Accept_by m -> NPDA.Accept_by.check m
+

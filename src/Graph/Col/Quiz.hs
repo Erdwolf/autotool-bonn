@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Graph.Col.Quiz where
 
 --  $Id$
@@ -47,6 +48,7 @@ instance Project Col  ( (Integer, Graph Int), FiniteMap Int Color )
 
 make :: Make
 make = quiz Col Graph.Col.Config.rc
+
 
 
 

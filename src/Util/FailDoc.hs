@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances #-}
 module Util.FailDoc where
 
 import Autolib.Reporter
@@ -13,4 +14,5 @@ instance FailDoc (GenParser tok st) where
 
 instance FailDoc Reporter where
     failDoc = reject
+
 

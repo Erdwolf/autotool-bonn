@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module PCProblem.Generator
 
 ( generator 
@@ -94,6 +95,7 @@ instance Generator PCProblem Param ( PCP, Folge ) where
 
 instance Project PCProblem ( PCP, Folge ) PCP where
    project p ( i, f ) = i
+
 
 
 

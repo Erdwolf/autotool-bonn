@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Rewriting.Derive.Quiz where
 
 import Rewriting.TRS
@@ -62,3 +63,4 @@ roll conf = do
            , from =  l
            , to   =  r
            }
+

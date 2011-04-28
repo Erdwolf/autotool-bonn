@@ -1,5 +1,5 @@
 -- -*- mode: haskell -*-
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, FlexibleContexts #-} 
 
 module Pump.Type where
 

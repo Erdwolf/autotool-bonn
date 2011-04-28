@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module NFA.Compress.Inter where
 
 import NFA.Compress.Compressed
@@ -71,3 +72,4 @@ instance Project DFA_Compress Instance Instance where
 
 make_quiz :: Make
 make_quiz = quiz DFA_Compress NFA.Compress.Config.example
+

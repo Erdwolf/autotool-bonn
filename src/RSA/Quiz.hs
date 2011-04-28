@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module RSA.Quiz 
 
 ( make
@@ -61,4 +62,5 @@ instance Project RSA_Code_Break Config Config where
 
 make :: Make
 make = quiz RSA_Code_Break RSA.Param.example
+
 

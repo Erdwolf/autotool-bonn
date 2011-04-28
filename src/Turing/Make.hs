@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, MultiParamTypeClasses #-}
 module Turing.Make 
 
 ( computer
@@ -73,3 +74,4 @@ instance Generator A.Acceptor TC.Config Accept where
            , A.properties = Sane : TC.properties config
            , A.start = TC.start config
            }
+

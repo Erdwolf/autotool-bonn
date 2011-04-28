@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Robots3.Generator where
 
 import Robots3.Config
@@ -66,5 +67,6 @@ instance Generator Robots3_Inverse RC ( [Zug], Config ) where
 
 instance Project Robots3_Inverse ( [Zug], Config ) [Zug] where
    project p ( zs, c ) = zs
+
 
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Machine.Akzeptieren 
 
 where
@@ -85,6 +86,7 @@ negativ_liste cut m xss = do
 	   , nest 4 $ toDoc xss
 	   ]
     check_liste False cut m xss
+
 
 
 

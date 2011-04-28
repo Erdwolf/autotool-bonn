@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Robots.Interface where
 
 --  $Id$
@@ -54,4 +55,5 @@ make = direct Robots Robots.Examples.fourty
 
 qmake :: Make
 qmake = quiz Robots Robots.Quiz.rc
+
 

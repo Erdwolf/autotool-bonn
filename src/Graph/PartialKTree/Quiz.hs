@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Graph.PartialKTree.Quiz where
 
 --  $Id$
@@ -59,6 +60,7 @@ cliquen g =
 	-- Fall 2: x ist doch in der Clique
 	++ do  c <- cliquen $ restrict (nachbarn g x) g
 	       return $ unitSet x `Autolib.Set.union` c
+
 
 
 

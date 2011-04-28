@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, MultiParamTypeClasses #-} 
 
 module Algebraic.Nested.Restriction where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Rushhour.Central where
 
 --  $Id$
@@ -52,4 +53,5 @@ make = direct Rushhour Rushhour.Data.example
 
 -- qmake :: Make
 -- qmake = quiz Rushhour Rushhour.Quiz.rc
+
 

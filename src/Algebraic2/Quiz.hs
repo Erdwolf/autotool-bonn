@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Algebraic2.Quiz where
 
 import Algebraic2.Central
@@ -122,4 +123,5 @@ make tag = quiz (T tag) $ C.Make
          , C.information = C.Value
 	 , C.max_formula_size_for_solution = 10
 	 }
+
 

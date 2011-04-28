@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, FlexibleContexts #-}
 --   $Id$
 
 module NPDA.Dot
@@ -77,5 +78,6 @@ instance NPDAC Char Char z
 	    , G.edges = es ++ ss
 	    , G.attributes = []
 	    }
+
 
 

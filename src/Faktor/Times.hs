@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses #-}
 -- | Korrekturfunktion für Faktorisierung
 
 -- joe@informatik.uni-leipzig.de

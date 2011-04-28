@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables, DeriveDataTypeable #-}
 -- | edit the problem configuration
 -- and check a sample solution
 

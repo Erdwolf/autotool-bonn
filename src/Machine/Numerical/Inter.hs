@@ -1,4 +1,4 @@
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE UndecidableInstances, FlexibleInstances, MultiParamTypeClasses #-}
 module Machine.Numerical.Inter where
 
 import qualified Machine.Numerical.Type as N

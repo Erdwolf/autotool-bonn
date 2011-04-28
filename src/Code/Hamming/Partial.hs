@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-}
 module Code.Hamming.Partial where
 
 import Inter.Types ( ScoringOrder (..), OrderScore (..) )

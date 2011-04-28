@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Graph.Bisekt.Quiz where
 
 --  $Id$
@@ -52,3 +53,4 @@ instance Project Bisect ( (Int,Graph Int), (Set (Kante Int),Set Int,Set Int) )
 
 make :: Make
 make = quiz Bisect rc
+

@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Code.LZ.Book where
 
 import Code.LZ.Data
@@ -28,3 +29,4 @@ insert b w   = b { long  = addToFM (long b) w (sizeFM $ long b) }
 -- Local variables:
 -- mode: haskell
 -- End:
+

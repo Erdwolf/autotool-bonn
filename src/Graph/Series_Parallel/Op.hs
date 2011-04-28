@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Graph.Series_Parallel.Op where
 
 import Graph.Series_Parallel.Type
@@ -83,4 +84,5 @@ union0 g h s t =
             }
 
     
+
 

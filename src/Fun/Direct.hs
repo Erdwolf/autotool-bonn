@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances #-}
 module Fun.Direct where
 
 import qualified Fun.Direct.Config as D
@@ -94,4 +95,5 @@ instance Project D.Primrec_2D ( Fun, D.Config ) D.Config where
 
 make_quiz :: Make
 make_quiz = quiz D.Primrec_2D T2.example
+
 

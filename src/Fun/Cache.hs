@@ -1,5 +1,5 @@
 -- -*- mode: haskell -*-
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, UndecidableInstances #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, UndecidableInstances, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances #-}
 
 module Fun.Cache 
 

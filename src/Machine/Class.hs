@@ -1,4 +1,4 @@
-{-# LANGUAGE FunctionalDependencies, UndecidableInstances #-}
+{-# LANGUAGE FunctionalDependencies, UndecidableInstances, MultiParamTypeClasses, FlexibleInstances #-}
 module Machine.Class where
 
 import Autolib.Set

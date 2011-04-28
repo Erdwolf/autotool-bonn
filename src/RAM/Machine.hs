@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, MultiParamTypeClasses #-}
 module RAM.Machine where
 
 --   $Id$
@@ -31,5 +32,6 @@ instance Encode Memory where
 	return ( mkunary $ "x" ++ show k , x )
 instance Decode Memory where
     decode m = get m $ mkunary "x0"
+
 
 

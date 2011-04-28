@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, MultiParamTypeClasses #-}
 module PCProblem.Quiz where
 
 -- -- $Id$
@@ -81,3 +82,4 @@ make_quiz = quiz PCProblem
 make_fixed :: Make
 make_fixed = direct PCProblem 
     ( PCP [ ("bba","b"),("a","b"),("b","ab") ] )
+

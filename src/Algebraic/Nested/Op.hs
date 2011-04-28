@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Algebraic.Nested.Op where
 
 import Algebraic.Nested.Type
@@ -55,3 +56,4 @@ intersection ( Make xs ) ( Make ys ) = Make $ S.intersect xs ys
 
 power :: Ord a => Type a -> Type a
 power ( Make xs ) = Make $ S.mkSet $ map ( Packed . Make ) $ S.subsets xs
+

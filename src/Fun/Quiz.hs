@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances #-}
 {- Quiz: zweistellige primitiv rekursive Funktion raten
 
   Zum Beispiel:
@@ -100,5 +101,6 @@ instance Project Fun_Quiz2 ( Fun, Tafel2 ) Tafel2 where
 
 make :: Make
 make = quiz Fun_Quiz2 Fun.Quiz.Type.example
+
 
 

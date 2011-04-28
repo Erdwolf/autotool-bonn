@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-} 
 
 module RAM.Type where
 

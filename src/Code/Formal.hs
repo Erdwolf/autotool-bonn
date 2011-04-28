@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Code.Formal where
 
 import Autolib.Set
@@ -71,3 +72,4 @@ loops ws =
 	    , finals   = mkSet [ (0,0) ]
 	    , trans    = collect ts
 	    }
+

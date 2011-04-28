@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Code.Huffman.Throw where
 
 --  $Id$
@@ -21,4 +22,5 @@ throw conf = do
 	    i <- randomRIO $ range conf
 	    return (x, i)
     return $ Frequency $ listToFM xis
+
 

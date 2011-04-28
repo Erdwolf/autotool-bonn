@@ -1,4 +1,4 @@
-{-# LANGUAGE UndecidableInstances, DeriveDataTypeable #-}
+{-# LANGUAGE UndecidableInstances, DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses #-}
 
 module Graph.Ramsey where
 

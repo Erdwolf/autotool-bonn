@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Boolean2.Quiz where
 
 --  $Id$
@@ -59,5 +60,6 @@ instance Generator Boolean2 BIC BI where
 
 instance Project Boolean2 BI BI where
    project p bi = bi
+
 
 

@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses #-}
 module NFA.Equiv.Challenger where
 
 --  $Id$

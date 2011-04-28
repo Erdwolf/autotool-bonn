@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Faktor.Quiz where
 
 
@@ -73,3 +74,4 @@ fixed auf ver x = return $ Variant
                    return $ return x
 	     }
 -}
+

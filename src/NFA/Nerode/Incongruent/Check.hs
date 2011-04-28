@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
 module NFA.Nerode.Incongruent.Check where
 
 import NFA.Nerode.Incongruent.Instance

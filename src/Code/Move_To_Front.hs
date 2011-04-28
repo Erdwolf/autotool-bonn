@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
 module Code.Move_To_Front ( Move_To_Front (..) ) where
 
 --  $Id$
@@ -22,5 +23,6 @@ instance ( Typeable a, Ord a, ToDoc [a], Reader [a], Read a )
       decode c it = Just $ W.decode it
       decode_hint c it = take 2 $ queue it
       
+
 
 

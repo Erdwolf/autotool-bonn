@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, MultiParamTypeClasses #-}
 -- | demonstration module: how to use the Algebraic.Class
 
 module Algebraic.Integer where

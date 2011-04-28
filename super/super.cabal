@@ -32,15 +32,5 @@ Executable Super.cgi
     obdd,array,pretty,
     utf8-string
   GHC-Options:    -Wall
-  Extensions:
-     DeriveDataTypeable
-     MultiParamTypeClasses
-     TypeSynonymInstances
-     FlexibleInstances
-     FlexibleContexts
-     UndecidableInstances
-     ScopedTypeVariables
-     FunctionalDependencies
-     TemplateHaskell
   Hs-source-dirs: src, src/control, common
   Main-Is: Inter/Super.hs

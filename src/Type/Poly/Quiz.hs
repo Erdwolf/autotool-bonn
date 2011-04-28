@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Type.Poly.Quiz where
 
 import Type.Poly.Data
@@ -15,5 +16,6 @@ instance Project TypePolyCheck ( TI, Expression ) TI where
 
 make :: Make
 make = quiz TypePolyCheck conf
+
 
 

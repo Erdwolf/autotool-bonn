@@ -1,4 +1,4 @@
-{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE FunctionalDependencies, MultiParamTypeClasses #-}
 module Algebraic2.Class 
 
 ( Algebraic (..)

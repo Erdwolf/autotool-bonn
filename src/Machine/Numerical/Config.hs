@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, UndecidableInstances #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, UndecidableInstances, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances #-} 
 
 module Machine.Numerical.Config where
 

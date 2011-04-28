@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, ScopedTypeVariables, MultiParamTypeClasses, FlexibleContexts #-}
 module Pump.Inter2 where
 
 import Pump.Type

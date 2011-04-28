@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
 module Code.LZ 
 
 ( Lempel_Ziv_Welch (..) 
@@ -164,4 +165,5 @@ inverse :: ( Ord a, Ord b ) => FiniteMap a b -> FiniteMap b a
 inverse fm = listToFM $ do 
    (x, y) <- fmToList fm
    return ( y, x )
+
 

@@ -1,4 +1,4 @@
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE UndecidableInstances, FlexibleInstances #-}
 module Arithmetic.Op 
 
 ( Exp, eval, bind

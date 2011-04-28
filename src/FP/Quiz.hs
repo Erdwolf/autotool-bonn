@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module FP.Quiz where
 
 import FP.Check
@@ -29,5 +30,6 @@ instance Project  FPTypeCheck ( Expression Identifier, TI ) TI where
 
 make :: Make
 make = quiz FPTypeCheck FP.Conf.example
+
 
 

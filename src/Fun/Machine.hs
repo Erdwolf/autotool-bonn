@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances #-}
 module Fun.Machine where
 
 --   $Id$
@@ -38,6 +39,7 @@ instance Encode [ Integer ] where
 
 instance Decode [ Integer ] where
     decode [x] = x
+
 
 
 

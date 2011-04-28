@@ -1,4 +1,4 @@
-{-# LANGUAGE UndecidableInstances, DeriveDataTypeable #-}
+{-# LANGUAGE UndecidableInstances, DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses #-}
 -- | this is the general module (top module after refactoring)
 
 module Rewriting.Derive where

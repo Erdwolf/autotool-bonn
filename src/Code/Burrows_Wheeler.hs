@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
 module Code.Burrows_Wheeler ( Burrows_Wheeler (..) ) where
 
 --  $Id$
@@ -30,3 +31,4 @@ instance ( Typeable a, Ord a, ToDoc [a] , Reader [a], Size a, Read a)
 
 instance Size a => T.BitSize ( [a], Int ) where
     bitSize ( xs, i ) = fromIntegral $ size xs
+

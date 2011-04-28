@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, FunctionalDependencies #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, FunctionalDependencies, MultiParamTypeClasses, FlexibleContexts #-} 
 
 module Code.Type 
 

@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, MultiParamTypeClasses #-}
 -- | Eine Aufgabe, bei der gar keine Studenten-Lösung akzeptiert wird
 -- Tutor soll "von Hand" die Oks eintragen
 -- und damit (schriftliche \/ mündliche) Seminar-Aufgaben bewerten 

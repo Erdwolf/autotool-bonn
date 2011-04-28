@@ -1,4 +1,4 @@
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE UndecidableInstances, MultiParamTypeClasses, FlexibleInstances, FlexibleContexts #-}
 module Code.Quiz where
 
 import Code.Type

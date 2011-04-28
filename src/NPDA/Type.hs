@@ -1,6 +1,6 @@
--- {-# LANGUAGE OverlappingInstances, DeriveDataTypeable, UndecidableInstances #-} 
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, UndecidableInstances #-} 
--- {-# LANGUAGE IncoherentInstances, DeriveDataTypeable, UndecidableInstances #-} 
+-- {-# LANGUAGE OverlappingInstances, DeriveDataTypeable, UndecidableInstances, FlexibleContexts, FlexibleInstances, MultiParamTypeClasses, TypeSynonymInstances #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, UndecidableInstances, FlexibleContexts, FlexibleInstances, MultiParamTypeClasses, TypeSynonymInstances #-} 
+-- {-# LANGUAGE IncoherentInstances, DeriveDataTypeable, UndecidableInstances, FlexibleContexts, FlexibleInstances, MultiParamTypeClasses, TypeSynonymInstances #-} 
 
 -- -*- mode: haskell -*-
 

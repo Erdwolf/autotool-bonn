@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses, TypeSynonymInstances #-}
 module Turing.Machine where
 
 --   $Id$
@@ -69,4 +70,5 @@ instance TuringC y z =>
         return () -- größe der maschine (hier) ignorieren
 
 -}
+
 

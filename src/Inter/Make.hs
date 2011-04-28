@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Inter.Make where
 
 --  $Id$
@@ -46,3 +47,4 @@ cpresent makers configs = hcat $ do
 		   
     
     
+

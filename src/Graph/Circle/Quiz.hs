@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Graph.Circle.Quiz where
 
 --  $Id$
@@ -41,3 +42,4 @@ instance Project Circle ( (Int,Graph Int), Set Int ) (Int,Graph Int) where
 
 make :: Make
 make = quiz Circle rc
+

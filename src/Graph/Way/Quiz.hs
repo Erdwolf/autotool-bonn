@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Graph.Way.Quiz where
 
 --  $Id$
@@ -36,3 +37,4 @@ instance Project Way (Input,Maybe (Graph Int)) Input where
 
 make :: Make
 make = quiz Way rc
+

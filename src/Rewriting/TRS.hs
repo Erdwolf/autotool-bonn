@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, FlexibleInstances #-}
 
 module Rewriting.TRS 
 ( module Rewriting.TRS

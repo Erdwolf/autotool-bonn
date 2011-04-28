@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-}
 -- | Eine Aufgabe, bei der Studenten Lösung im Klartext eintragen können.
 -- Tutor soll dann "von Hand" die Oks eintragen
 

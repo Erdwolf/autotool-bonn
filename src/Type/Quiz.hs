@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
 module Type.Quiz where
 
 --  $Id$
@@ -91,5 +92,6 @@ instance Project TypeCheck ( NFTA Int Type, TI ) TI where
 
 make :: Make
 make = quiz TypeCheck conf
+
 
 

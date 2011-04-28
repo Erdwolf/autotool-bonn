@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, MultiParamTypeClasses #-}
 module RAM.Check where
 
 --   $Id$
@@ -65,3 +66,4 @@ no_loop p = do
 	 $ text "Sie dürfen kein Loop benutzen."
 
     
+

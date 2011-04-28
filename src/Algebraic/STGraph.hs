@@ -1,4 +1,4 @@
-{-# LANGUAGE UndecidableInstances, DeriveDataTypeable #-}
+{-# LANGUAGE UndecidableInstances, DeriveDataTypeable, FlexibleInstances, MultiParamTypeClasses #-}
 module Algebraic.STGraph where
 
 import qualified Autolib.TES.Binu as B

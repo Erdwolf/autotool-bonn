@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, MultiParamTypeClasses #-}
 module NPDA.Inter where
 
 --   $Id$
@@ -52,4 +53,5 @@ instance Generator ( A.Acceptor ) Config Accept where
 
 make :: Make
 make = quiz ( A.Acceptor "NPDA" ) NPDA.Config.example
+
 

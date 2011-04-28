@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 --  $Id$
 
 module Graph.Iso where
@@ -117,3 +118,4 @@ fromto ( doc, f ) g h = do
     if not $ null wrong 
        then reject $ text "nein:" <+> vcat wrong
        else return ()
+

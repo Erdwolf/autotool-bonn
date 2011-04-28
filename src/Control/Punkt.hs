@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 -- | werden von Face.cgi benutzt: login zum aufgabenlösen und scoring
 
 module Control.Punkt where
@@ -141,5 +142,6 @@ bepunkteStudentDB snr anr minstant mbewert highlow minput mreport = do
                    ++ " ,Now(), Scoretime )"
                    ++ ", Size = LEAST( Size," ++ show s ++ ")" 
 -}
+
 
 

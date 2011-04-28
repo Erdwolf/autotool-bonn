@@ -1,4 +1,4 @@
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE UndecidableInstances, FlexibleContexts, FlexibleInstances #-}
 module Graph.PartialKTree.Cliques where
 
 --  $Id$

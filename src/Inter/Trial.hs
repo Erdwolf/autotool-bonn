@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 -- | standalone aufgabenconfig,
 -- damit jeder mal tutor spielen kann
 
@@ -213,6 +214,7 @@ common_aufgaben_trailer ( stud, vnr, tutor ) mauf conf mks mk type_click = do
 	     $ ( O.render $ O.Link $ problem :: H.Html )
 
     footer scores
+
 
 
 

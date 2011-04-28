@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Robots.Inverse where
 
 --  $Id$
@@ -66,4 +67,5 @@ make = direct Robots_Inverse
 
 qmake :: Make
 qmake = quiz Robots_Inverse Robots.Quiz.rc
+
 

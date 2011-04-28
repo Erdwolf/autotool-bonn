@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Graph.Bi.Quiz where
 
 --  $Id$
@@ -34,3 +35,4 @@ instance Project Bi ( Graph Int, Set Int ) ( Graph Int ) where project _ = fst
 
 make :: Make
 make = quiz Bi rc
+

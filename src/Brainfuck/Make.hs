@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Brainfuck.Make 
 
 -- ( computer
@@ -92,3 +93,4 @@ instance Generator A.Acceptor TC.Config Accept where
            
            
            -}
+

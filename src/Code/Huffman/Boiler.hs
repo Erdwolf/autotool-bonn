@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses, FlexibleContexts #-}
 module Code.Huffman.Boiler where
 
 
@@ -29,4 +30,5 @@ instance Project Huffman ( Frequency a ) ( Frequency a ) where
 
 instance OrderScore Huffman where
     scoringOrder _ = None
+
 

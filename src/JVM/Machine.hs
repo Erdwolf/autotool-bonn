@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, MultiParamTypeClasses #-}
 module JVM.Machine where
 
 --   $Id$
@@ -39,5 +40,6 @@ instance Encode Memory where
 instance Decode Memory where
     -- get result from x0
     decode m = get m (Var 0)
+
 
 

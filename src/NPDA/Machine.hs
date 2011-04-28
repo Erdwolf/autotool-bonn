@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module NPDA.Machine where
 
 -- -- $Id$
@@ -44,4 +45,5 @@ instance NPDAC x y z
 	&& case akzeptiert m of
 	        Leerer_Keller -> null $ keller k
 	        Zustand qs    -> zustand k `elementOf` qs
+
 

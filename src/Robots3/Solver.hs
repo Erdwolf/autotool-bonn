@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Robots3.Solver where
 
 --  $Id$
@@ -94,3 +95,4 @@ ex = Robots3.Config.make
        , Robot { name = "E", position = Position {x=  -3, y = 1 } }
        ]
      [ Position {x= 0, y =0 } ]
+

@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Fun.Check where
 
 --   $Id$
@@ -135,3 +136,4 @@ diff f soll ist = when ( soll /= ist ) $ do
 
 tupel i = text $ show i ++ "-Tupel"
 komponente i = text $ show i ++ "-te Komponente"
+

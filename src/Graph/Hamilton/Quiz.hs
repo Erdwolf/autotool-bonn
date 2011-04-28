@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 module Graph.Hamilton.Quiz where
 
 import Autolib.Graph.Type
@@ -35,4 +36,5 @@ instance Project Hamilton ( Graph Int, [Int] ) (Graph Int)
 
 make :: Make
 make = quiz Hamilton Graph.Hamilton.Config.example
+
 

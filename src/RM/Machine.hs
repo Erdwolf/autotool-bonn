@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses, TypeSynonymInstances #-}
 module RM.Machine where
 
 --  $Id$
@@ -66,3 +67,4 @@ instance Encode Memory where
 
 instance Decode Memory where
     decode m = get m 0
+

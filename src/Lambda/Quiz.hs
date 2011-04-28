@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Lambda.Quiz (generator) where
 
 import Lambda.Type
@@ -56,4 +57,5 @@ next conf inst = mkSet $ do
         { I.to = result 
         , I.steps = fmap succ $ I.steps inst
         }
+
 

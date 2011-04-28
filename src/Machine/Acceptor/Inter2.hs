@@ -1,4 +1,4 @@
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE UndecidableInstances, FlexibleInstances, MultiParamTypeClasses #-}
 module Machine.Acceptor.Inter2 where
 
 import qualified Machine.Acceptor.Type2 as A

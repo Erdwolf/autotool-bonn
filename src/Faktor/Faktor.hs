@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 -- | Korrekturfunktion für Faktorisierung
 
 -- joe@informatik.uni-leipzig.de
@@ -72,3 +73,4 @@ make_quiz = quiz Faktor Faktor.Param.p
 
 make_fixed :: Make
 make_fixed = direct Faktor (3::Int,1001::Integer)
+

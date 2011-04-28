@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses, FlexibleContexts #-}
 module NFA.Nerode.Congruent.Quiz where
 
 import qualified NFA.Nerode.Congruent.Config as C
@@ -50,3 +51,4 @@ instance Project
 
 make :: Make
 make = quiz Nerode_Congruent C.example
+
