@@ -29,7 +29,8 @@ instance Size Code where
 code_example :: Code
 code_example = Code $ unlines 
     [ "module Blueprint where"
-    , ""  
+    , "import Prelude"
+    , ""
     , "foo :: Int"
     , "foo = undefined"
     , ""

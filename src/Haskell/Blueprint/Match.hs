@@ -11,7 +11,6 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.State
 
-
 data Result a = Continue | Fail SrcLoc | Ok a
     deriving (Eq, Ord, Show)
 
@@ -39,6 +38,11 @@ instance MonadPlus M where
         a' <- runM a
         case a' of
             Continue -> runM b
+            Fail _   -> do
+                b' <- runM b
+                case b' of
+                  Ok _ -> return b'
+                  _    -> return a' -- Propagate failure information
             _ -> return a'
 
 
@@ -77,15 +81,21 @@ test m1' m2' = let
 
     -- match a bunch of declarations.
     matchDecl :: Maybe [Decl] -> Maybe [Decl] -> M ()
-    matchDecl (Just ds1) (Just ds2) = go ds1 ds2 where
-        go (d1 : ds1) (d2 : ds2) = case d1 of
-            -- allow replacing  foo = undefined  by one or more
-            -- bindings of  foo.
-            PatBind _ (PVar name) _ (UnGuardedRhs u) (BDecls [])
-                | matchUndef (Just u) && matchBind name d2
-                -> go ds1 (dropWhile (matchBind name) ds2)
-            _ -> match d1 d2 >> go ds1 ds2
+    matchDecl (Just ds1) (Just ds2) = go ds1 ds2
+      where
+        go (d1 : ds1) (d2 : ds2) = matchWithThis `mplus` matchWithNext -- extra declarations are allowed
+          where
+            matchWithThis = case d1 of
+                  -- allow replacing  foo = undefined  by one or more
+                  -- bindings of  foo.
+                  PatBind _ (PVar name) _ (UnGuardedRhs u) (BDecls [])
+                     | matchUndef (Just u) && matchBind name d2
+                     -> go ds1 (dropWhile (matchBind name) ds2)
+                  _ -> match d1 d2 >> go ds1 ds2
+            matchWithNext =
+                  go (d1 : ds1) ds2
         go [] [] = return ()
+        go []  _ = return () -- extra declarations are allowed
         go _ _ = failLoc
     matchDecl _ _ = continue
 
