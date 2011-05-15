@@ -45,11 +45,12 @@ instance Verify Haskell_Blueprint Code where
         return ()
 
 instance Partial Haskell_Blueprint Code Code where
-    describe p i = vcat
+    describe p (Code i) = vcat
         [ text "Vervollständigen Sie das Haskell-Programm."
         , text "Ersetzen Sie jedes 'undefined',"
         , text "so dass die Tests erfolgreich sind."
-        , nest 4 $ toDoc i
+        , nest 4 $ toDoc $ Code $  blueprintSegment i
+
         ]
     initial p (Code i) = Code $ blueprintSegment i
 
