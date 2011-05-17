@@ -27,6 +27,8 @@ import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
+import System.IO.UTF8 as UTF8 {- needed to avoid encoding problems -}
+
 rejectIO = Autolib.Reporter.IO.Type.reject
 informIO = Autolib.Reporter.IO.Type.inform
 
@@ -71,16 +73,16 @@ instance Partial Haskell_Blueprint Code Code where
                let ParseOk namedModules = fmap (map (\(k,v) -> (k,if k == "Blueprint" then b else v))) $ withNames (splitModules i)
                files <- namedModules `forM` \(name,contents) -> do
                   let fname = dirname Path.</> (name ++ ".hs")
-                  writeFile fname contents
+                  UTF8.writeFile fname contents
                   return fname
 
-               writeFile (dirname Path.</> "Information.hs") $ "module Information where filePath = \"Blueprint.hs\""
+               UTF8.writeFile (dirname Path.</> "Information.hs") $ "module Information where filePath = \"Blueprint.hs\""
                let existingModules = map takeBaseName $ filter ((".hs"==).takeExtension) $ filter (`notElem` [".",".."]) files
                    modules = union ["Test"] existingModules
                when (notElem "Test" existingModules) $ do
-                  writeFile (dirname Path.</> "Test.hs") $ "module Test (test) where\nimport qualified Blueprint (test)\ntest = Blueprint.test"
-               writeFile (dirname Path.</> "TestHelper.hs") testHelperContents
-               writeFile (dirname Path.</> "TestHarness.hs") testHarnessContents
+                  UTF8.writeFile (dirname Path.</> "Test.hs") $ "module Test (test) where\nimport qualified Blueprint (test)\ntest = Blueprint.test"
+               UTF8.writeFile (dirname Path.</> "TestHelper.hs") testHelperContents
+               UTF8.writeFile (dirname Path.</> "TestHarness.hs") testHarnessContents
                runInterpreter $ do
                      liftIO $ setCurrentDirectory dirname -- will at least mess up relative links
                      reset -- Make sure nothing is available
