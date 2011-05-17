@@ -6,7 +6,7 @@ import Debug ( debug )
 
 import Haskell.Blueprint.Data
 import Haskell.Blueprint.Match
-import Haskell.Blueprint.TestHelperContents (testHelperContents)
+import Haskell.Blueprint.FileContents (testHelperContents, testHarnessContents)
 
 import Language.Haskell.Exts
 import Language.Haskell.Exts.SrcLoc (srcLine, srcColumn)
@@ -80,6 +80,7 @@ instance Partial Haskell_Blueprint Code Code where
                when (notElem "Test" existingModules) $ do
                   writeFile (dirname Path.</> "Test.hs") $ "module Test (test) where\nimport qualified Blueprint (test)\ntest = Blueprint.test"
                writeFile (dirname Path.</> "TestHelper.hs") testHelperContents
+               writeFile (dirname Path.</> "TestHarness.hs") testHarnessContents
                runInterpreter $ do
                      liftIO $ setCurrentDirectory dirname -- will at least mess up relative links
                      reset -- Make sure nothing is available
@@ -87,11 +88,12 @@ instance Partial Haskell_Blueprint Code Code where
                      set [languageExtensions := map read []]
                      set [installedModulesInScope := False]
 
-                     loadModules modules
+                     loadModules ("TestHarness" : modules)
                      setTopLevelModules modules
-                     setImportsQ [("Prelude",Nothing)]
 
-                     interpret "run Test.test" (as :: Maybe (Bool, String))
+                     setImports ["Prelude", "TestHarness"]
+
+                     interpret "TestHarness.run Test.test" (as :: Maybe (Bool, String))
 
         case result of
            Right Nothing -> informIO $ text "ok."                     -- success
