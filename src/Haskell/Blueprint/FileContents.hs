@@ -4,8 +4,14 @@ module Haskell.Blueprint.FileContents
    , testHarnessContents
    ) where
 
-import Language.Haskell.TH.All (lift)
-import System.IO.Unsafe (unsafePerformIO)
+import Language.Haskell.TH
+import System.FilePath
 
-testHelperContents  = $(lift $ unsafePerformIO $ readFile "Haskell/Blueprint/TestHelper.hs")
-testHarnessContents = $(lift $ unsafePerformIO $ readFile "Haskell/Blueprint/TestHarness.hs")
+-- {- Not defined as a function here because of the stage restriction -}
+-- file name = do
+--    Loc path _ _ _ _ <- location
+--    content <- runIO $ readFile $ dropFileName path </> name
+--    stringE content
+
+testHelperContents  = $(location >>= \(Loc path _ _ _ _) -> (runIO $ readFile $ dropFileName path </> "TestHelper.hs") >>= stringE)
+testHarnessContents = $(location >>= \(Loc path _ _ _ _) -> (runIO $ readFile $ dropFileName path </> "TestHarness.hs") >>= stringE)
