@@ -85,8 +85,8 @@ login0 act vorles = do
     us <- U.get
     u <- case [ u | u <- us , U.name u == fromCGI ( schule act ) ] of
         [u] -> return u
-	[]  -> error "diese Schule gibt es nicht"
-	_   -> error "mehr als eine solche Schule"
+	[]  -> error "diese Hochschule gibt es nicht"
+	_   -> error "mehr als eine solche Hochschule"
     [ stud ] <- Control.Student.DB.get_unr_mnr ( U.unr u , fromCGI $ matrikel act )
     when ( not $ Inter.Crypt.compare ( S.passwort stud ) $ passwort act )
 	 $ error "password does not match"
