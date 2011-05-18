@@ -58,8 +58,9 @@ Library
         syb,
         filepath,
         haskell-src-exts,
+        template-haskell,
+        HUnit,
         QuickCheck
-    GHC-Options:    -Wall
     Hs-source-dirs:
         src
         src/control
@@ -410,6 +411,7 @@ Library
         Haskell.Blueprint.Central
         Haskell.Blueprint.Data
         Haskell.Blueprint.Match
+        Haskell.Blueprint.FileContents
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central
