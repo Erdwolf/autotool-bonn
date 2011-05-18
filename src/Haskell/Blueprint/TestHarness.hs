@@ -7,9 +7,11 @@ import Data.Generics
 import Information (filePath)
 
 import System.IO.Unsafe (unsafePerformIO) -- We need to run the tests inside the interpreter
-import Test.HUnit.Lang (performTestCase)
+import qualified Test.HUnit as HU
 
-run action = unsafePerformIO $ performTestCase action
+run :: HU.Testable t => t -> (HU.Counts, ShowS)
+run testable =
+   unsafePerformIO $ HU.runTestText HU.putTextToShowS (HU.test testable)
 
 
 contains pred = everything (||) (mkQ False pred)

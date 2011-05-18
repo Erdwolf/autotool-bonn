@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, ScopedTypeVariables, OverlappingInstances, DeriveDataTypeable #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, ScopedTypeVariables, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving #-}
 
 module Haskell.Blueprint.Central where
 
@@ -28,10 +28,10 @@ import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
 import System.IO.UTF8 as UTF8 {- needed to avoid encoding problems -}
+import Test.HUnit (Counts(..))
 
 rejectIO = Autolib.Reporter.IO.Type.reject
 informIO = Autolib.Reporter.IO.Type.inform
-
 
 
 data Haskell_Blueprint = Haskell_Blueprint deriving Typeable
@@ -83,26 +83,29 @@ instance Partial Haskell_Blueprint Code Code where
                   UTF8.writeFile (dirname Path.</> "Test.hs") $ "module Test (test) where\nimport qualified Blueprint (test)\ntest = Blueprint.test"
                UTF8.writeFile (dirname Path.</> "TestHelper.hs") testHelperContents
                UTF8.writeFile (dirname Path.</> "TestHarness.hs") testHarnessContents
-               runInterpreter $ do
-                     liftIO $ setCurrentDirectory dirname -- will at least mess up relative links
-                     reset -- Make sure nothing is available
-
-                     set [languageExtensions := map read []]
-                     set [installedModulesInScope := False]
-
-                     loadModules ("TestHarness" : modules)
-                     setTopLevelModules modules
-
-                     setImports ["Prelude", "TestHarness"]
-
-                     interpret "TestHarness.run Test.test" (as :: Maybe (Bool, String))
+               setCurrentDirectory dirname -- will at least mess up relative links
+               runInterpreter (interpreter modules)
 
         case result of
-           Right Nothing -> informIO $ text "ok."                     -- success
-           Right (Just (True,  msg)) -> rejectIO $ text msg           -- test case failure
-           Right (Just (False, msg)) -> rejectIO $ text msg           -- test case error
-           Left (WontCompile (GhcError msg:_)) -> rejectIO $ text msg -- compilation error(s), only showing the first one
-           Left err -> rejectIO $ text $ show err                     -- unexpected error (our fault)
+           Right (Counts {errors=0, failures=0},_) -> informIO $ text "ok." -- success
+           Right (_,showS) -> rejectIO $ text $ showS ""                    -- test failure / test error
+           Left (WontCompile (GhcError msg:_)) -> rejectIO $ text msg       -- compilation error(s), only showing the first one
+           Left err -> rejectIO $ text $ show err                           -- unexpected error (our fault)
+
+
+deriving instance Typeable Counts
+interpreter modules = do
+                  set [languageExtensions := map read []]
+
+                  reset -- Make sure nothing is available
+                  set [installedModulesInScope := False]
+
+                  loadModules ("TestHarness" : modules)
+                  setTopLevelModules modules
+
+                  setImports ["Prelude", "TestHarness", "Test.HUnit.Base"]
+
+                  interpret "TestHarness.run Test.test" (as :: (Counts, ShowS))
 
 
 make_fixed = direct Haskell_Blueprint code_example
