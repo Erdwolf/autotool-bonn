@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+{-# OPTIONS -fforce-recomp #-}
 module Haskell.Blueprint.FileContents
    ( testHelperContents
    , testHarnessContents
