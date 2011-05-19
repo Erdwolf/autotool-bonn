@@ -44,7 +44,7 @@ aule stud = do
 
     if null sems
        then do
-           plain "Für diese Schule wurden noch keine Semester definiert."
+           plain "Für diese Hochschule wurden noch keine Semester definiert."
 	   mzero
        else continue stud sems
 

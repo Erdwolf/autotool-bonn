@@ -49,7 +49,7 @@ administrate :: Form IO ()
 administrate = do
     us <- io $ Control.Schule.DB.get
     open btable
-    mu <- click_choice "Schule" $ 
+    mu <- click_choice "Hochschule" $ 
             ( "neu anlegen", Nothing ) : do
 	        u <- us
 		return ( toString ( Control.Schule.name u ) 

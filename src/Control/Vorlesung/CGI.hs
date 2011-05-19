@@ -36,7 +36,7 @@ edit u mv = do
         dta0 label select =
            defaulted_textarea label $ case mv of
                 Just v -> select v ; Nothing -> ""
-    open row ; plain "Schule" ; plain $ toString $ Control.Schule.name u ; close
+    open row ; plain "Hochschule" ; plain $ toString $ Control.Schule.name u ; close
 
     n <- dtf "Vorlesung" T.name
     sem <- pick_semester u $ fmap T.enr mv

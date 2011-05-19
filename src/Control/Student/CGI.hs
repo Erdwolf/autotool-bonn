@@ -26,7 +26,7 @@ login = do
 
     open btable
     us <- io $ Control.Schule.get 
-    u <- click_choice "Schule" $ do
+    u <- click_choice "Hochschule" $ do
         u <- us
 	return ( toString $ Control.Schule.name u , u )
     mnr <- defaulted_textfield "Matrikel" ""

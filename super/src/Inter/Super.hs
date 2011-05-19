@@ -150,7 +150,7 @@ use_account tmk = do
 waisenkinder :: UNr -> Form IO ()
 waisenkinder u = do
     h3 $ "Waisenkinder"
-    plain $  "Studenten Ihrer Schule, die keine Übungsgruppe gewählt haben"
+    plain $  "Studenten Ihrer Hochschule, die keine Übungsgruppe gewählt haben"
     studs <- io $ S.orphans $ u
     open btable
     Inter.Statistik.edit_studenten studs
