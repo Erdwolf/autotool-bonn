@@ -43,7 +43,8 @@ data Method = Textarea | Upload
 solution vnr manr stud 
         ( Make p0 doc ( fun :: conf -> Var p i b ) verify ex ) auf = do
 
-    lang <- Inter.Language.choose
+    -- lang <- Inter.Language.choose -- jv:Kann man das "choose language" field wegmachen?
+    let lang = DE
 
     ( p, i, icom ) <- make_instant vnr manr stud fun auf
 
