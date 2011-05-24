@@ -30,6 +30,8 @@ import qualified Fun.Direct
 import qualified Haskell.Central
 import qualified Haskell.Blueprint.Central
 
+import qualified Prolog.Query.Central
+
 import qualified Specify.Inter
 
 import qualified String_Matching.KMP.Central
@@ -460,6 +462,9 @@ tmakers =
                 , heading "Haskell-Programmierung"
                   [ item Haskell.Blueprint.Central.make_fixed
                   , item Haskell.Central.make_fixed
+                  ]
+                , heading "Prolog-Programmierung"
+                  [ item Prolog.Query.Central.make_fixed
                   ]
                 ]
          , heading "Algorithmen"

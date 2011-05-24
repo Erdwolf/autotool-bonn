@@ -412,6 +412,9 @@ Library
         Haskell.Blueprint.Data
         Haskell.Blueprint.Match
         Haskell.Blueprint.FileContents
+        Prolog.Query.Central,
+        Prolog.Query.Data,
+        Prolog.Query.Prolog,
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central

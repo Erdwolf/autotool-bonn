@@ -746,5 +746,7 @@ executable Trial.cgi
                  Robots.Solver,
                  Robots.Final,
                  Haskell.Data,
-                 Haskell.Central
-
+                 Haskell.Central,
+                 Prolog.Query.Central,
+                 Prolog.Query.Data,
+                 Prolog.Query.Prolog
