@@ -47,20 +47,12 @@ instance Verify Haskell_Blueprint Code where
         return ()
 
 instance Partial Haskell_Blueprint Code Code where
-    describe p (Code i) = vcat
-        [ text "Vervollständigen Sie das Haskell-Programm."
-        , text "Ersetzen Sie jedes 'undefined',"
-        , text "so dass die Tests erfolgreich sind."
-        , nest 4 $ toDoc $ Code $  blueprintSegment i
-
-        ]
-    initial p (Code i) = Code $ blueprintSegment i
+    describe p (Code i) = toDoc $ Code $ blueprintSegment i
+    initial  p (Code i) =         Code $ blueprintSegment i
 
     partial p ( Code i ) ( Code b ) = do
         mi <- parseM (blueprintSegment i)
         mb <- parseM b
-        --inform $ text $ show mi
-        --inform $ text $ show mb
         inform $ text "paßt Ihr Quelltext zum Muster?"
         case Haskell.Blueprint.Match.test mi mb of
             Fail loc ->  reject_parse b loc "Nein"
