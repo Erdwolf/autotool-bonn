@@ -12,11 +12,12 @@ import Language.Haskell.Exts
 import Language.Haskell.Exts.SrcLoc (srcLine, srcColumn)
 
 import Language.Haskell.Interpreter
-import System.Directory (setCurrentDirectory, getTemporaryDirectory)
+import System.Directory -- (setCurrentDirectory, getTemporaryDirectory)
 import System.FilePath (takeBaseName, takeExtension)
 import qualified System.FilePath as Path
 import Data.List (union, isPrefixOf, groupBy)
 import Control.Monad (when, forM)
+import Control.Exception (evaluate)
 import System.IO.Temp (withTempDirectory)
 
 import Challenger.Partial (Verify(..), Partial(..))
@@ -76,13 +77,14 @@ instance Partial Haskell_Blueprint Code Code where
                UTF8.writeFile (dirname Path.</> "TestHelper.hs") testHelperContents
                UTF8.writeFile (dirname Path.</> "TestHarness.hs") testHarnessContents
                setCurrentDirectory dirname -- will at least mess up relative links
-               runInterpreter (interpreter modules)
-
-        case result of
-           Right (Counts {errors=0, failures=0},_) -> informIO $ text "ok." -- success
-           Right (_,showS) -> rejectIO $ text $ showS ""                    -- test failure / test error
-           Left (WontCompile (GhcError msg:_)) -> rejectIO $ text msg       -- compilation error(s), only showing the first one
-           Left err -> rejectIO $ text $ show err                           -- unexpected error (our fault)
+               result <- runInterpreter (interpreter modules)
+               evaluate $
+                  case result of
+                     Right (Counts {errors=0, failures=0},_) -> informIO $ text "ok." -- success
+                     Right (_,showS) -> rejectIO $ text $ showS ""                    -- test failure / test error
+                     Left (WontCompile (GhcError msg:_)) -> rejectIO $ text msg       -- compilation error(s), only showing the first one
+                     Left err -> rejectIO $ text $ show err                           -- unexpected error (our fault)
+        result
 
 
 deriving instance Typeable Counts
