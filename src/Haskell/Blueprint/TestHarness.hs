@@ -8,6 +8,7 @@ import Information (filePath)
 
 import System.IO.Unsafe (unsafePerformIO) -- We need to run the tests inside the interpreter
 import qualified Test.HUnit as HU
+import System.IO.UTF8 as UTF8 {- needed to avoid encoding problems -}
 
 run :: HU.Testable t => t -> (HU.Counts, ShowS)
 run testable =
@@ -22,7 +23,8 @@ ident _    _                                        = False
 
 
 syntaxCheck check = do
-   ParseOk mod <- parseFile filePath
+   contents <- UTF8.readFile filePath
+   let ParseOk mod = parseFileContents contents
    check mod
 
 findTopLevelDeclsOf name (Module _ _ _ _ _ _ decls) = filter matches decls
@@ -30,3 +32,14 @@ findTopLevelDeclsOf name (Module _ _ _ _ _ _ decls) = filter matches decls
      matches (PatBind _ (PVar (Ident name')) _ _ _) | name == name' = True
      matches (FunBind (Match _ (Ident name') _ _ _ _:_)) | name == name' = True
      matches _ = False
+
+
+{-
+-- Usage: let [PatBind _ _ _ rhs _] = decls
+--        leftmostIdentifier rhs @?= "foldr"
+--
+leftmostIdentifier = maybe (error "Declaration does not contain identifier!") id . something (mkQ Nothing matchIdent)
+
+matchIdent (Ident name) = Just name
+matchIdent _            = Nothing
+-}
