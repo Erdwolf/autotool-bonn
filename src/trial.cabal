@@ -747,6 +747,6 @@ executable Trial.cgi
                  Robots.Final,
                  Haskell.Data,
                  Haskell.Central,
-                 Prolog.Query.Central,
-                 Prolog.Query.Data,
-                 Prolog.Query.Prolog
+                 Prolog.Programming.Central,
+                 Prolog.Programming.Data,
+                 Prolog.Programming.Prolog

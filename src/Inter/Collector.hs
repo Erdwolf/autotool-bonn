@@ -30,7 +30,7 @@ import qualified Fun.Direct
 import qualified Haskell.Central
 import qualified Haskell.Blueprint.Central
 
-import qualified Prolog.Query.Central
+import qualified Prolog.Programming.Central
 
 import qualified Specify.Inter
 
@@ -457,7 +457,7 @@ tmakers =
          , item Haskell.Central.make_fixed
          ]
       , heading "Prolog-Programmierung"
-         [ item Prolog.Query.Central.make_fixed
+         [ item Prolog.Programming.Central.make_fixed
          ]
       ]
    , heading "Algorithmen"
