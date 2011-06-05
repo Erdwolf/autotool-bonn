@@ -8,14 +8,14 @@ import Prolog.Programming.Data
 import Debug ( debug )
 
 import Challenger.Partial (Verify(..), Partial(..))
-import Autolib.ToDoc (derives, makeToDoc, text, vcat, toDoc, nest, ToDoc(..))
+import Autolib.ToDoc (derives, makeToDoc, text, vcat, hsep, toDoc, nest, ToDoc(..))
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
-import Data.List ((\\))
+import Data.List ((\\), nub)
 import Data.Generics (everything, mkQ)
 import Text.Parsec
 import Control.Applicative ((<$>),(<*>),(<*))
@@ -48,7 +48,7 @@ instance Partial Prolog_Programming Config Facts where
 
     total p (Config cfg) (Facts input) = do
         let Right (spec,facts) = parseConfig cfg
-        case consultString (facts ++ input) of
+        case consultString (facts ++ "\n" ++ input) of
           Left err -> reject $ text $ show err
           Right p -> do
             let answerTo = answer p
@@ -56,13 +56,13 @@ instance Partial Prolog_Programming Config Facts where
             if null incorrect
                then inform $ text "Ja."
                else reject $ vcat [ text "Nein."
-                                    , text "Die Anworten auf die folgenden Anfragen sind inkorrekt:"
-                                    , nest 4 $ vcat $ map (text.show) incorrect
-                                    ]
+                                  , text "Die Anworten auf die folgenden Anfragen sind inkorrekt:"
+                                  , nest 4 $ vcat $ map (\query -> vcat [ text $ show query, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ answerTo query ] ]) incorrect
+                                  ]
 
 actual =~= expected =
-   (actual `isSublistOf` expected &&
-    expected `isSublistOf` actual)
+   (nub actual `isSublistOf` nub expected &&
+    nub expected `isSublistOf` nub actual)
 
 isSublistOf xs ys = xs \\ ys == []
 
