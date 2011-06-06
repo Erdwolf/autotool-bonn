@@ -89,7 +89,7 @@ instance Partial Haskell_Blueprint Code Code where
 
 deriving instance Typeable Counts
 interpreter modules = do
-                  set [languageExtensions := map read []]
+                  set [languageExtensions := map read ["NPlusKPatterns"]]
 
                   reset -- Make sure nothing is available
                   set [installedModulesInScope := False]
