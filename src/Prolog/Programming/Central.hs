@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, ScopedTypeVariables, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances #-}
 
 module Prolog.Programming.Central where
 
@@ -66,9 +66,9 @@ actual =~= expected =
 
 isSublistOf xs ys = xs \\ ys == []
 
-answer p q = removeUnresolvedVariables $ map (flip apply q) $ resolve p q
+answer p q = removeUnresolvedVariables $ map (flip apply q) $ resolve p [q]
 
-removeUnresolvedVariables = filter $ (not.) $ everything (||) $ mkQ False (\((i,_) :: VariableName) -> i /= 0)
+removeUnresolvedVariables = filter $ (not.) $ everything (||) $ mkQ False $ \(VariableName i _) -> i /= 0
 
 
 {- Config parser -}

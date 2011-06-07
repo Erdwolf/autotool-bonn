@@ -1,31 +1,40 @@
-{-# LANGUAGE ViewPatterns, TupleSections, DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 module Prolog.Programming.Prolog where
 import Control.Monad.Identity
 import Control.Monad
+import Control.Arrow (second)
 import Data.Generics
+import Data.Char (isSpace)
+import Data.List (intercalate)
 --
 import Text.Parsec
 import Control.Applicative ((<$>),(<*>),(<$),(<*))
-import Data.Char
-import Data.List
+--
+import GHC.Exts (IsString(..))
 
 data Term = Struct Atom [Term]
           | Var VariableName
           | Wildcard
           | Cut
       deriving (Eq, Data, Typeable)
+var = Var . VariableName 0
 
 instance Show Term where
    show (Struct a []) = a
    show (Struct a ts) = a ++ "(" ++ intercalate "," (map show ts) ++ ")"
-   show (Var (_,v))   = v
+   show (Var v)       = show v
    show Wildcard      = "_"
    show Cut           = "!"
 
 data Clause = Clause { lhs :: Term, rhs :: [Term] }
       deriving (Show, Eq, Data, Typeable)
 
-type VariableName = (Int, String)
+data VariableName = VariableName Int String deriving (Eq, Data, Typeable)
+
+instance Show VariableName where
+   show (VariableName 0 v) = v
+   show (VariableName i v) = show i ++ "#" ++ v
+-- For now, these are just type synonyms:
 type Atom         = String
 
 type Unifier = [(VariableName, Term)]
@@ -63,56 +72,67 @@ apply = flip $ foldl $ flip substitute
     substitute s     (Struct a ts)      = Struct a (map (substitute s) ts)
     substitute _     t                  = t
 
+simplify :: Unifier -> Unifier
+simplify u = map (second (apply u)) u
+
 
 builtins :: [Clause]
 builtins =
-   [ Clause (Struct "="   [Var (0,"X"), Var (0,"X")]) []
-   , Clause (Struct "\\=" [Var (0,"X"), Var (0,"X")]) [Cut, Struct "false" []]
-   , Clause (Struct "\\=" [Var (0,"X"), Var (0,"Y")]) []
-   , Clause (Struct "not" [Var (0,"A")]) [Var (0,"A"), Cut, Struct "false" []]
-   , Clause (Struct "not" [Var (0,"A")]) []
+   [ Clause (Struct "="   [var "X", var "X"]) []
+   , Clause (Struct "\\=" [var "X", var "X"]) [Cut, Struct "false" []]
+   , Clause (Struct "\\=" [var "X", var "Y"]) []
+   , Clause (Struct "not" [var "A"]) [var "A", Cut, Struct "false" []]
+   , Clause (Struct "not" [var "A"]) []
    , Clause (Struct "true" []) []
-   , Clause (Struct "," [Var (0,"A"), Var (0,"B")]) [Var (0,"A"), Var (0,"B")]
-   , Clause (Struct ";" [Var (0,"A"), Wildcard]) [Var (0,"A")]
-   , Clause (Struct ";" [Wildcard, Var (0,"B")]) [Var (0,"B")]
+   , Clause (Struct "," [var "A", var "B"]) [var "A", var "B"]
+   , Clause (Struct ";" [var "A", Wildcard]) [var "A"]
+   , Clause (Struct ";" [Wildcard, var "B"]) [var "B"]
    ]
 
 
-resolve :: Program -> Goal -> [Unifier]
+
+resolve :: Program -> [Goal] -> [Unifier]
 -- Yield all unifiers that resolve <goal> using the clauses from <program>.
-resolve program goal = runIdentity $ resolve' 1 [goal]
+resolve program goals = map cleanup $ resolve' 1 [] goals []
   where
-   resolve' _ [] = return [[]]
-   resolve' depth goals = resolve'' (branches goals)
-     where
-      branches (nextGoal:goals) = do
-         clause <- map renameVars (builtins ++ program) -- NOTE Is it a good idea to "hardcode" the builtins like this?
-         unifier <- unify nextGoal (lhs clause)
-         return (unifier, map (apply unifier) (rhs clause ++ goals))
+      cleanup = filter ((\(VariableName i _) -> i == 0) . fst)
 
-      renameVars = everywhere (mkT rename) :: Clause -> Clause
-         where rename (Var (_,v))   = Var (depth,v)
-               rename other         = other
+      resolve' depth usf [] stack =
+         (cleanup usf:) $ backtrack depth stack
+      resolve' depth usf (Cut:gs) stack =
+         resolve' depth usf gs (cut stack)
+      resolve' depth usf (nextGoal:gs) stack =
+         choose depth usf gs branches stack
+       where
+         branches = do
+            clause <- map renameVars (builtins ++ program) -- NOTE Is it a good idea to "hardcode" the builtins like this?
+            unifier <- unify (apply usf nextGoal) (lhs clause)
+            return (unifier, rhs clause)
 
-      resolve'' ((unifier, Cut:goals):_) = resolve'' ((unifier, goals):[])
-      resolve'' ((unifier, goals):alternatives) =
-         (++) <$> (map (unifier ++) <$> resolve' (succ depth) goals) <*> resolve'' alternatives
-      resolve'' [] = return []
+         renameVars = everywhere (mkT (\(VariableName _ v) -> VariableName depth v)) :: Clause -> Clause
+
+      cut ((_,_,[]):stack) = cut stack
+      cut (_:stack) = stack
+
+      choose depth _ _  []              stack = backtrack depth stack
+      choose depth u gs ((u',gs'):alts) stack =
+         resolve' (succ depth) (simplify $ u ++ u') (gs' ++ gs) ((u,gs,alts) : stack)
+
+      backtrack _     [] =
+         fail "Goal cannot be resolved!"
+      backtrack depth ((u,gs,alts):stack) =
+         choose (pred depth) u gs alts stack
 
 
 {- Parser -}
 
 consultString :: String -> Either ParseError Program
-consultString = parse (program <* eof) "(input)" . killUnparseableStuff
+consultString = parse (whitespace >> program <* eof) "(input)" . filter (not . isSpace)
 
-killUnparseableStuff = filter (not . isSpace)
-                     . unlines
-                     . filter (not . isPrefixOf "/*")
-                     . filter (not . isPrefixOf " *")
-                     . filter (not . isPrefixOf "*/")
-                     . lines
+program = many (clause <* char '.' <* whitespace)
 
-program = clause `endBy` char '.'
+whitespace = skipMany (comment)
+comment = string "/*" >> manyTill anyChar (try (string "*/")) >> return ()
 
 clause = do t <- struct
             ts <- option [] $ do string ":-"
@@ -125,14 +145,14 @@ term = try (do t1 <- term2
                return (Struct op [t1,t2]))
       <|> term2
 
-term2 = var
+term2 = variable
     <|> struct
     <|> list
     <|> Cut <$ char '!'
     <|> between (char '(') (char ')') term
 
-var = Var.(0,) <$> ((:) <$> upper <*> many alphaNum)
-  <|> Wildcard <$ char '_'
+variable = var <$> ((:) <$> upper <*> many alphaNum)
+       <|> Wildcard <$ char '_'
 
 atom = (:) <$> lower <*> many alphaNum
    <|> many1 digit
@@ -147,5 +167,5 @@ list = between (char '[') (char ']') $
          flip (foldr cons) <$> sepBy term (char ',')
                            <*> option nil (char '|' >> term)
   where
-   cons t1 t2 = Struct "|"  [t1,t2]
+   cons t1 t2 = Struct "."  [t1,t2]
    nil        = Struct "[]" []
