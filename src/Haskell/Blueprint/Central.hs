@@ -83,10 +83,12 @@ instance Partial Haskell_Blueprint Code Code where
                      Right (Counts {errors=0, failures=0},_) -> informIO $ text "ok." -- success
                      Right (_,showS) -> rejectIO $ text $ showS ""                    -- test failure / test error
                      Left (WontCompile (GhcError msg:_)) -> rejectIO $ text msg       -- compilation error(s), only showing the first one
-                     Left err -> rejectIO $ text $ show err                           -- unexpected error (our fault)
+                     Left err ->                                                      -- unexpected error (our fault)
+                        rejectIO $ vcat [ text "Es ist ein unerwarteter Fehler aufgetreten. Dies liegt im Allgemeinen nicht an Ihrer Lösung. Bitte kontaktieren Sie diesbezüglich die zuständigen Personen."
+                                        , text "Die Fehlermeldung lautet wie folgt:"
+                                        , nest 4 (text (show err))
+                                        ]
         result
-
-
 deriving instance Typeable Counts
 interpreter modules = do
                   set [languageExtensions := map read ["NPlusKPatterns"]]
