@@ -173,6 +173,7 @@ variable = var <$> ((:) <$> upper <*> many alphaNum)
 
 atom = (:) <$> lower <*> many alphaNum
    <|> many1 digit
+   <|> between (char '\'') (char '\'') (many (noneOf "'"))
 
 struct = do a <- atom
             ts <- option [] $ between (char '(') (char ')') $ sepBy1 term (char ',')
