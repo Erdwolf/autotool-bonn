@@ -132,7 +132,9 @@ consultString = parse (whitespace >> program <* eof) "(input)"
 program = many (clause <* char '.' <* whitespace)
 
 whitespace = skipMany (comment <|> (space >> return ()))
-comment = string "/*" >> manyTill anyChar (try (string "*/")) >> return ()
+comment = ((string "/*" >> manyTill anyChar (try (string "*/"))) <|>
+             (char '%' >> manyTill anyChar (try newline)))
+          >> return ()
 
 clause = do t <- struct
             ts <- option [] $ do whitespace >> string ":-"
