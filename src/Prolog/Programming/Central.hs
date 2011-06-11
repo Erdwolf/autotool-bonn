@@ -2,7 +2,7 @@
 
 module Prolog.Programming.Central where
 
-import Prolog.Programming.Prolog
+import Prolog.Programming.Prolog (term, apply, resolve, consultString, VariableName(..))
 import Prolog.Programming.Data
 
 import Debug ( debug )
@@ -80,16 +80,14 @@ configuration =
 
 specification = do
    let startMarker = string "/* "
-   let separator   = nl >> string " * "
-   let endMarker   = nl >> string " */"
+   let separator   = string "* "
+   let endMarker   = string "*/"
    let line = do
          t  <- term
          char ':' >> optional (char ' ')
          ts <- term `sepBy` string ", "
          return (t,ts)
    startMarker
-   line `sepBy` (notFollowedBy endMarker >> separator)  <* endMarker
-
-nl = optional (char '\r') >> newline
+   line `sepBy` (notFollowedBy endMarker >> separator) <* endMarker
 
 sourceText = anyChar `manyTill` eof
