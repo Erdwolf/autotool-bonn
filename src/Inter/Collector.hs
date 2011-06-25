@@ -32,6 +32,8 @@ import qualified Haskell.Blueprint.Central
 
 import qualified Prolog.Programming.Central
 
+import qualified Prolog.Unifier.Central
+
 import qualified Specify.Inter
 
 import qualified String_Matching.KMP.Central
@@ -458,6 +460,7 @@ tmakers =
          ]
       , heading "Prolog-Programmierung"
          [ item Prolog.Programming.Central.make_fixed
+         , item Prolog.Unifier.Central.make_fixed
          ]
       ]
    , heading "Algorithmen"

@@ -11,12 +11,14 @@ import Text.Parsec.Expr
 import qualified Text.Parsec.Token as P
 import Text.Parsec.Language (emptyDef)
 import Control.Applicative ((<$>),(<*>),(<$),(<*))
+--
+import GHC.Exts (IsString(..))
 
 data Term = Struct Atom [Term]
           | Var VariableName
           | Wildcard
           | Cut
-      deriving (Eq, Data, Typeable)
+      deriving (Eq, Data, Typeable, Ord)
 var = Var . VariableName 0
 
 data Clause = Clause { lhs :: Term, rhs_ :: [Goal] }
@@ -26,7 +28,7 @@ rhs (Clause   _ rhs) = const rhs
 rhs (ClauseFn _ fn ) = fn
 
 data VariableName = VariableName Int String
-      deriving (Eq, Data, Typeable)
+      deriving (Eq, Data, Typeable, Ord)
 
 type Atom    = String
 type Unifier = [(VariableName, Term)]
@@ -244,9 +246,10 @@ term = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
       , P.caseSensitive = True
       }
 
-variable = var <$> ((:) <$> upper <*> many alphaNum)
+variable = Var <$> vname
        <|> Wildcard <$ char '_'
 
+vname = VariableName 0 <$> ((:) <$> upper <*> many alphaNum)
 
 atom = (:) <$> lower <*> many (alphaNum <|> char '_')
    <|> many1 digit
@@ -267,3 +270,15 @@ stringLiteral = foldr cons nil . map (\chr -> Struct (representChar chr) []) <$>
 
 representChar = show . fromEnum -- This is the classical Prolog representation of chars as code points.
 --representChar c = [c] -- This is the more natural representation as one-character atoms.
+
+{- Allow specification through string literals by using OverloadedStrings -}
+instance IsString Clause where
+   fromString s =
+      case parse (clause <* eof) "(Clause literal)" s of
+         Left  e -> error (show e)
+         Right c -> c
+instance IsString Term where
+   fromString s =
+      case parse (term <* eof) "(Term literal)" s of
+         Left  e -> error (show e)
+         Right c -> c

@@ -412,9 +412,12 @@ Library
         Haskell.Blueprint.Data
         Haskell.Blueprint.Match
         Haskell.Blueprint.FileContents
-        Prolog.Programming.Central,
-        Prolog.Programming.Data,
-        Prolog.Programming.Prolog,
+        Haskell.Syntax.Central
+        Prolog.Programming.Central
+        Prolog.Programming.Data
+        Prolog.Programming.Prolog
+        Prolog.Unifier.Central
+        Prolog.Unifier.Data
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central
