@@ -29,6 +29,7 @@ import qualified Fun.Direct
 
 import qualified Haskell.Central
 import qualified Haskell.Blueprint.Central
+import qualified Haskell.Sytanx.Central
 
 import qualified Prolog.Programming.Central
 
@@ -456,6 +457,7 @@ tmakers =
       , item Specify.Inter.make
       , heading "Haskell-Programmierung"
          [ item Haskell.Blueprint.Central.make_fixed
+         , item Haskell.Syntax.Central.make_fixed
          , item Haskell.Central.make_fixed
          ]
       , heading "Prolog-Programmierung"
