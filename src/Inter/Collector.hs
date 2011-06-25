@@ -29,7 +29,7 @@ import qualified Fun.Direct
 
 import qualified Haskell.Central
 import qualified Haskell.Blueprint.Central
-import qualified Haskell.Sytanx.Central
+import qualified Haskell.Syntax.Central
 
 import qualified Prolog.Programming.Central
 
