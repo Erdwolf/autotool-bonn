@@ -211,8 +211,12 @@ clause = do t <- struct <* whitespace
              vars = map (var.("d_"++).(a++).show) [0..length rhs] -- We explicitly choose otherwise invalid variable names
              rhs' = zipWith3 translate' rhs vars (tail vars)
          in Clause lhs' rhs'
-      translate' t@(Struct "." _) s s0 = Struct "=" [ s, foldr_pl cons s0 t ] -- Terminal
-      translate'   (Struct a ts)  s s0 = Struct a ([ s \\ s0 ] ++ ts)         -- Non-Terminal
+      translate' t s s0 | isList t   = Struct "=" [ s, foldr_pl cons s0 t ] -- Terminal
+      translate' (Struct a ts)  s s0 = Struct a ([ s \\ s0 ] ++ ts)         -- Non-Terminal
+
+isList (Struct "." [_,_]) = True
+isList (Struct "[]" [])   = True
+isList _                  = False
 
 foldr_pl f k (Struct "." [h,t]) = f h (foldr_pl f k t)
 foldr_pl _ k (Struct "[]" [])   = k
