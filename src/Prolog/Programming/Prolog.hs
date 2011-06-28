@@ -206,11 +206,12 @@ clause = do t <- struct <* whitespace
             ts <- sepBy1 term (char ',' <* whitespace)
             return (translate (t,ts))
 
-      translate ((Struct a []), rhs) =
-         let lhs' = Struct a [ head vars \\ last vars ]
+      translate ((Struct a ts), rhs) =
+         let lhs' = Struct a ([ head vars \\ last vars ] ++ ts)
              vars = map (var.("d_"++).(a++).show) [0..length rhs] -- We explicitly choose otherwise invalid variable names
              rhs' = zipWith3 translate' rhs vars (tail vars)
          in Clause lhs' rhs'
+
       translate' t s s0 | isList t   = Struct "=" [ s, foldr_pl cons s0 t ] -- Terminal
       translate' (Struct a ts)  s s0 = Struct a ([ s \\ s0 ] ++ ts)         -- Non-Terminal
 
