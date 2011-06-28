@@ -2,7 +2,7 @@
 
 module Prolog.Programming.Central where
 
-import Prolog.Programming.Prolog (term, apply, resolve, consultString, VariableName(..))
+import Prolog.Programming.Prolog (term, apply, resolve, consultString, VariableName(..), Term)
 import Prolog.Programming.Data
 
 import Debug ( debug )
@@ -47,17 +47,23 @@ instance Partial Prolog_Programming Config Facts where
         inform $ text "Keine Überprüfung."
 
     total p (Config cfg) (Facts input) = do
-        let Right (spec,facts) = parseConfig cfg
+        let Right (specs,facts) = parseConfig cfg
         case consultString (facts ++ "\n" ++ input) of
           Left err -> reject $ text $ show err
           Right p -> do
             let answerTo = answer p
-            let incorrect = [ query | (query,result) <- spec, not (answerTo query =~= result) ]
+            let check (QueryWithAnswers query result) = answerTo query =~= result
+                check (StatementToCheck query)        = resolve p [query] /= []
+                check (Hidden spec)                   = check spec
+            let incorrect = [ spec | spec <- specs, not (check spec) ]
+            let explain (QueryWithAnswers query _) = vcat [ text $ show query, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ answerTo query ] ]
+                explain (StatementToCheck query)   =        text $ show query
+                explain (Hidden _)                 =        text "(ein versteckter Test)"
             if null incorrect
                then inform $ text "Ja."
                else reject $ vcat [ text "Nein."
                                   , text "Die Anworten auf die folgenden Anfragen sind inkorrekt:"
-                                  , nest 4 $ vcat $ map (\query -> vcat [ text $ show query, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ answerTo query ] ]) incorrect
+                                  , nest 4 $ vcat $ map explain incorrect
                                   ]
 
 actual =~= expected =
@@ -78,15 +84,18 @@ parseConfig = parse configuration "(config)"
 configuration =
    (,) <$> specification <*> sourceText
 
+data Spec = QueryWithAnswers Term [Term] | StatementToCheck Term | Hidden Spec
+
 specification = do
    let startMarker = string "/* "
    let separator   = string "* "
    let endMarker   = string "*/"
-   let line = do
-         t  <- term
-         char ':' >> optional (char ' ')
-         ts <- term `sepBy` string ", "
-         return (t,ts)
+   let line = option id (char '!' >> return Hidden) <*> do
+         t <- term
+         (do char ':' >> optional (char ' ')
+             ts <- term `sepBy` string ", "
+             return (QueryWithAnswers t ts))
+          <|> return (StatementToCheck t)
    startMarker
    line `sepBy` (notFollowedBy endMarker >> separator) <* endMarker
 
