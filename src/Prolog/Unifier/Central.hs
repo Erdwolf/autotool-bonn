@@ -15,14 +15,14 @@ import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
-import Data.List ((\\), nub, sort)
+import Data.List ((\\), nub, sort, intercalate)
 import Data.Generics (everything, mkQ)
 import Text.Parsec
 import Control.Applicative ((<$>),(<*>),(<*))
 import Control.Arrow (first)
 import Control.Monad (guard)
 
-import Prolog.Programming.Prolog (unify, Term(Var))
+import Prolog.Programming.Prolog (unify, Term(Var), VariableName(..))
 
 data Prolog_Unifier = Prolog_Unifier deriving Typeable
 
@@ -40,9 +40,24 @@ instance Verify Prolog_Unifier Config where
         return ()
 
 instance Partial Prolog_Unifier Config Unifier where
-    describe p (Config _ _) = text ""
+    describe p (Config t1 t2) = text $ intercalate "\n"
+        [ "Geben Sie den allgemeinsten Unifikator von"
+        , ""
+        , "    " ++ show t1
+        , ""
+        , " und "
+        , "    " ++ show t2
+        , ""
+        , " in der Form"
+        , ""
+        , "    X = ..."
+        , "    Y = ..."
+        , "    usw."
+        , ""
+        , "an."
+        ]
 
-    initial p _ = Unifier []
+    initial p _ = Unifier [] -- [(VariableName 0 "X", "_")]
 
     total p (Config t1 t2) (Unifier u) = do
         case (unify t1 t2 >>= guard . equivalent u) of

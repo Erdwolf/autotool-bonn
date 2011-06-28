@@ -13,6 +13,8 @@ import qualified Prolog.Programming.Prolog as Pl
 import Text.Parsec
 import Control.Applicative ((<$>),(<*>),(<*))
 
+import Data.List (intercalate)
+
 data Unifier = Unifier Pl.Unifier deriving ( Eq, Ord, Typeable, Read, Show )
 data Config = Config Pl.Term Pl.Term deriving ( Eq, Ord, Typeable, Read, Show  )
 
@@ -56,7 +58,7 @@ instance Reader Config where
                   return (Config t1 t2)
 
 instance ToDoc Unifier where
-    toDoc (Unifier u) = text (show u)
+    toDoc (Unifier u) = text (intercalate "\n" [ show v ++ " = " ++ show t  | (v,t) <- u ])
 instance ToDoc Config where
     toDoc (Config t1 t2) = text (unlines [show t1, show t2])
 
