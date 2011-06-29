@@ -22,7 +22,7 @@ import Control.Applicative ((<$>),(<*>),(<*))
 import Control.Arrow (first)
 import Control.Monad (guard)
 
-import Prolog.Programming.Prolog (unify, Term(Var), VariableName(..))
+import Prolog.Programming.Prolog (unify, Term(Var), VariableName(..), simplify)
 
 data Prolog_Unifier = Prolog_Unifier deriving Typeable
 
@@ -66,8 +66,9 @@ instance Partial Prolog_Unifier Config Unifier where
 
 equivalent u1 u2 =
    length u1 == length u2 &&
-   all id (zipWith (==) (sort (map sortPair (map (first Var) u1)))
-                        (sort (map sortPair (map (first Var) u2))))
+   all id (zipWith (==) (canonical u1)
+                        (canonical u2))
+     where canonical = sort . map sortPair . map (first Var) . simplify
 
 sortPair (x,y) | x <= y = (x,y)
 sortPair (x,y)          = (y,x)
