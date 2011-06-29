@@ -37,6 +37,13 @@ type Goal    = Term
 
 instance Show Term where
    show (Struct a []) = a
+   show t@(Struct "." [_,_]) =
+      let (ts,rest) = g [] t in
+         "[" ++ intercalate "," (map show ts) ++ (if isNil rest then "" else "|" ++ show rest) ++  "]"
+    where g ts (Struct "." [h,t]) = g (h:ts) t
+          g ts t = (reverse ts, t)
+          isNil (Struct "[]" []) = True
+          isNil _                = False
    show (Struct a ts) = a ++ "(" ++ intercalate "," (map show ts) ++ ")"
    show (Var v)       = show v
    show Wildcard      = "_"
