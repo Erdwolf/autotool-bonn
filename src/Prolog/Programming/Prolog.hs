@@ -3,7 +3,7 @@ module Prolog.Programming.Prolog where
 import Control.Monad.Identity
 import Control.Monad
 import Control.Arrow (second)
-import Data.Generics (Data(..), Typeable(..), everywhere, mkT)
+import Data.Generics (Data(..), Typeable(..), everywhere, mkT, everything, mkQ)
 import Data.List (intercalate)
 --
 import Text.Parsec
@@ -58,24 +58,34 @@ instance Show Clause where
    show (Clause   lhs rhs) = show $ show lhs ++ " :- " ++ intercalate ", " (map show rhs)
    show (ClauseFn lhs _  ) = show $ show lhs ++ " :- " ++ "<Haskell function>"
 
-unify :: MonadPlus m => Term -> Term -> m Unifier
-unify Wildcard _ = return []
-unify _ Wildcard = return []
-unify (Var v) t  = return [(v,t)]
-unify t (Var v)  = return [(v,t)]
-unify (Struct a1 ts1) (Struct a2 ts2) | a1 == a2 && same length ts1 ts2 =
-    unifyList (zip ts1 ts2)
-unify _ _ = mzero
+
+unify, unify_with_occurs_check :: MonadPlus m => Term -> Term -> m Unifier
+
+unify = fix unify'
+
+unify_with_occurs_check =
+   fix $ \self t1 t2 -> if (t1 `occursIn` t2 || t2 `occursIn` t1)
+                           then fail "occurs check"
+                           else unify' self t1 t2
+ where
+   occursIn t = everything (||) (mkQ False (==t))
+
+
+unify' _ Wildcard _ = return []
+unify' _ _ Wildcard = return []
+unify' _ (Var v) t  = return [(v,t)]
+unify' _ t (Var v)  = return [(v,t)]
+unify' self (Struct a1 ts1) (Struct a2 ts2) | a1 == a2 && same length ts1 ts2 =
+    unifyList self (zip ts1 ts2)
+unify' _ _ _ = mzero
 
 same :: Eq b => (a -> b) -> a -> a -> Bool
 same f x y = f x == f y
 
-
-unifyList :: MonadPlus m => [(Term,Term)] -> m Unifier
-unifyList [] = return []
-unifyList ((x,y):xys) = do
+unifyList _ [] = return []
+unifyList unify ((x,y):xys) = do
    u  <- unify x y
-   u' <- unifyList (map (both (apply u)) xys)
+   u' <- unifyList unify (map (both (apply u)) xys)
    return (u++u')
 
 both f (x,y) = (f x, f y)

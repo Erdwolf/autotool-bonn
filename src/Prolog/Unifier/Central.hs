@@ -22,7 +22,7 @@ import Control.Applicative ((<$>),(<*>),(<*))
 import Control.Arrow (first)
 import Control.Monad (guard)
 
-import Prolog.Programming.Prolog (unify, Term(Var), VariableName(..), simplify)
+import Prolog.Programming.Prolog (unify_with_occurs_check, Term(Var), VariableName(..), simplify)
 
 data Prolog_Unifier = Prolog_Unifier deriving Typeable
 
@@ -60,7 +60,7 @@ instance Partial Prolog_Unifier Config Unifier where
     initial p _ = Unifier [] -- [(VariableName 0 "X", "_")]
 
     total p (Config t1 t2) (Unifier u) = do
-        case (unify t1 t2 >>= guard . equivalent u) of
+        case (unify_with_occurs_check t1 t2 >>= guard . equivalent u) of
            Just () -> inform $ text "Ja."
            Nothing -> reject $ text "Nein."
 
