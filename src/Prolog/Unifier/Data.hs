@@ -39,7 +39,7 @@ instance Reader Pl.VariableName where
 instance Reader Unifier where
     reader = do
       input <- getInput
-      case parse (many ((,) <$> Pl.vname <* string " = " <*> Pl.term)) "(unifier)" input of
+      case parse (many ((,) <$> Pl.vname <* symbol "=" <*> Pl.term)) "(unifier)" input of
          Left err -> fail (show err)
          Right u -> do
                   setInput ""
@@ -56,6 +56,8 @@ instance Reader Config where
                Right t2 -> do
                   setInput ""
                   return (Config t1 t2)
+
+symbol = between spaces spaces . string
 
 instance ToDoc Unifier where
     toDoc (Unifier u) = text (intercalate "\n" [ show v ++ " = " ++ show t  | (v,t) <- u ])
