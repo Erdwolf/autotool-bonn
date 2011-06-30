@@ -127,7 +127,7 @@ builtins =
    , Clause (Struct "phrase" [var "RuleName", var "InputList"])
                [Struct "phrase" [var "RuleName", var "InputList", Struct "[]" []]]
    , Clause (Struct "phrase" [var "RuleName", var "InputList", var "Rest"])
-               [ Struct "=.." [var "Goal", foldr cons nil [var "RuleName", var "InputList" \\ var "Rest"]]
+               [ Struct "=.." [var "Goal", foldr cons nil [var "RuleName", var "InputList", var "Rest"]]
                , var "Goal"
                ]
    ]
@@ -224,13 +224,13 @@ clause = do t <- struct <* whitespace
             return (translate (t,ts))
 
       translate ((Struct a ts), rhs) =
-         let lhs' = Struct a ([ head vars \\ last vars ] ++ ts)
+         let lhs' = Struct a (ts ++ [ head vars, last vars ])
              vars = map (var.("d_"++).(a++).show) [0..length rhs] -- We explicitly choose otherwise invalid variable names
              rhs' = zipWith3 translate' rhs vars (tail vars)
          in Clause lhs' rhs'
 
       translate' t s s0 | isList t   = Struct "=" [ s, foldr_pl cons s0 t ] -- Terminal
-      translate' (Struct a ts)  s s0 = Struct a ([ s \\ s0 ] ++ ts)         -- Non-Terminal
+      translate' (Struct a ts)  s s0 = Struct a (ts ++ [ s, s0 ])         -- Non-Terminal
 
 isList (Struct "." [_,_]) = True
 isList (Struct "[]" [])   = True
