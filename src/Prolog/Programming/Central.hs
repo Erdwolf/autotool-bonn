@@ -12,6 +12,10 @@ import Autolib.ToDoc (derives, makeToDoc, text, vcat, hsep, toDoc, nest, ToDoc(.
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
+import Control.Monad (filterM)
+import Control.Monad.Trans (liftIO)
+import Control.Exception (evaluate)
+import System.Timeout (timeout)
 import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
@@ -19,6 +23,9 @@ import Data.List ((\\), nub)
 import Data.Generics (everything, mkQ)
 import Text.Parsec
 import Control.Applicative ((<$>),(<*>),(<*))
+
+rejectIO = Autolib.Reporter.IO.Type.reject
+informIO = Autolib.Reporter.IO.Type.inform
 
 data Prolog_Programming = Prolog_Programming deriving Typeable
 
@@ -43,25 +50,23 @@ instance Partial Prolog_Programming Config Facts where
 
     initial p _ = Facts ""
 
-    partial p _ _ = do
-        inform $ text "Keine Überprüfung."
-
-    total p (Config cfg) (Facts input) = do
+    totalIO p (Config cfg) (Facts input) = do
         let Right (specs,facts) = parseConfig cfg
+
         case consultString (facts ++ "\n" ++ input) of
-          Left err -> reject $ text $ show err
+          Left err -> rejectIO $ text $ show err
           Right p -> do
             let answerTo = answer p
             let check (QueryWithAnswers query result) = answerTo query =~= result
                 check (StatementToCheck query)        = resolve p [query] /= []
                 check (Hidden spec)                   = check spec
-            let incorrect = [ spec | spec <- specs, not (check spec) ]
+            incorrect <- liftIO $ filterM ((maybe True id <$>) . timeout 1000000 . evaluate . not . check) specs
             let explain (QueryWithAnswers query _) = vcat [ text $ show query, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ answerTo query ] ]
                 explain (StatementToCheck query)   =        text $ show query
                 explain (Hidden _)                 =        text "(ein versteckter Test)"
             if null incorrect
-               then inform $ text "Ja."
-               else reject $ vcat [ text "Nein."
+               then informIO $ text "Ja."
+               else rejectIO $ vcat [ text "Nein."
                                   , text "Die Anworten auf die folgenden Anfragen sind inkorrekt:"
                                   , nest 4 $ vcat $ map explain incorrect
                                   ]
