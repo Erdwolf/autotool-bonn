@@ -259,7 +259,7 @@ term = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
       }
 
 variable = Var <$> vname
-       <|> Wildcard <$ char '_'
+       <|> Wildcard <$ (char '_' >> many alphaNum)
 
 vname = VariableName 0 <$> ((:) <$> upper <*> many alphaNum)
 
