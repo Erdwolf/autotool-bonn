@@ -15,14 +15,14 @@ import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
-import Data.List ((\\), nub, sort, intercalate)
+import Data.List ((\\), nub, sort, intercalate, union)
 import Data.Generics (everything, mkQ)
 import Text.Parsec
 import Control.Applicative ((<$>),(<*>),(<*))
-import Control.Arrow (first)
+import Control.Arrow (first, second)
 import Control.Monad (guard)
 
-import Prolog.Programming.Prolog (unify_with_occurs_check, Term(Var), VariableName(..), simplify)
+import Prolog.Programming.Prolog (unify_with_occurs_check, Term(Var), VariableName(..), simplify, apply)
 
 data Prolog_Unifier = Prolog_Unifier deriving Typeable
 
@@ -57,12 +57,19 @@ instance Partial Prolog_Unifier Config Unifier where
         , "an."
         ]
 
-    initial p _ = Unifier [] -- [(VariableName 0 "X", "_")]
+    initial p _ = Unifier [] -- [("X", "_")]
 
     total p (Config t1 t2) (Unifier u) = do
-        case (unify_with_occurs_check t1 t2 >>= guard . equivalent u) of
+        case (unify_with_occurs_check t1 t2 >>= guard . equivalent u . c u) of
            Just () -> inform $ text "Ja."
            Nothing -> reject $ text "Nein."
+         where
+           c u = c' (simplify u) . simplify
+           c' u = filter g . union u . map (second $ apply $ filter f u)
+           f (_,Var _) = True
+           f _ = False
+           g (v,Var v') | v == v' = False
+           g _ = True
 
 equivalent u1 u2 =
    length u1 == length u2 &&
