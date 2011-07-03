@@ -15,7 +15,8 @@ import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
-import Data.List ((\\), nub, sort, intercalate, union)
+import Data.List ((\\), nub, sort, intercalate, unionBy)
+import Data.Function (on)
 import Data.Generics (everything, mkQ)
 import Text.Parsec
 import Control.Applicative ((<$>),(<*>),(<*))
@@ -60,12 +61,12 @@ instance Partial Prolog_Unifier Config Unifier where
     initial p _ = Unifier [] -- [("X", "_")]
 
     total p (Config t1 t2) (Unifier u) = do
-        case (unify_with_occurs_check t1 t2 >>= guard . equivalent u . c u) of
+        case unify_with_occurs_check t1 t2 >>= return . simplify >>= \u' -> guard (e u u' && e u' u) of
            Just () -> inform $ text "Ja."
            Nothing -> reject $ text "Nein."
          where
-           c u = c' (simplify u) . simplify
-           c' u = filter g . union u . map (second $ apply $ filter f u)
+           e u = equivalent u . c u
+           c u = filter g . flip (unionBy ((==) `on` fst)) u . map (second $ apply $ filter f u)
            f (_,Var _) = True
            f _ = False
            g (v,Var v') | v == v' = False
@@ -75,7 +76,7 @@ equivalent u1 u2 =
    length u1 == length u2 &&
    all id (zipWith (==) (canonical u1)
                         (canonical u2))
-     where canonical = sort . map sortPair . map (first Var) . simplify
+     where canonical = sort . map sortPair . map (first Var)
 
 sortPair (x,y) | x <= y = (x,y)
 sortPair (x,y)          = (y,x)
