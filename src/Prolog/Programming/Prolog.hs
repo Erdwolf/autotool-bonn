@@ -30,21 +30,24 @@ rhs (ClauseFn _ fn ) = fn
 data VariableName = VariableName Int String
       deriving (Eq, Data, Typeable, Ord)
 
-type Atom    = String
-type Unifier = [(VariableName, Term)]
-type Program = [Clause]
-type Goal    = Term
+type Atom         = String
+type Unifier      = [Substitution]
+type Substitution = (VariableName, Term)
+type Program      = [Clause]
+type Goal         = Term
 
 instance Show Term where
-   show (Struct a []) = a
    show t@(Struct "." [_,_]) =
       let (ts,rest) = g [] t in
+         --if all isChar ts
+         --   then "\"" ++ concat (map show ts) ++ (if isNil rest then "" else "|" ++ show rest) ++  "\""
          "[" ++ intercalate "," (map show ts) ++ (if isNil rest then "" else "|" ++ show rest) ++  "]"
     where g ts (Struct "." [h,t]) = g (h:ts) t
           g ts t = (reverse ts, t)
           isNil (Struct "[]" []) = True
           isNil _                = False
-   show (Struct a ts) = a ++ "(" ++ intercalate "," (map show ts) ++ ")"
+   show (Struct a []) = a
+   show (Struct a ts) = a ++ "(" ++ intercalate ", " (map show ts) ++ ")"
    show (Var v)       = show v
    show Wildcard      = "_"
    show Cut           = "!"
@@ -57,7 +60,6 @@ instance Show Clause where
    show (Clause   lhs [] ) = show $ show lhs
    show (Clause   lhs rhs) = show $ show lhs ++ " :- " ++ intercalate ", " (map show rhs)
    show (ClauseFn lhs _  ) = show $ show lhs ++ " :- " ++ "<Haskell function>"
-
 
 unify, unify_with_occurs_check :: MonadPlus m => Term -> Term -> m Unifier
 
@@ -127,17 +129,19 @@ builtins =
    , Clause (Struct "phrase" [var "RuleName", var "InputList"])
                [Struct "phrase" [var "RuleName", var "InputList", Struct "[]" []]]
    , Clause (Struct "phrase" [var "RuleName", var "InputList", var "Rest"])
-               [ Struct "=.." [var "Goal", foldr cons nil [var "RuleName", var "InputList", var "Rest"]]
+               [ Struct "=.." [var "Goal", foldr cons nil (var "RuleName" : arguments [{- TODO -}] (var "InputList") (var "Rest"))]
                , var "Goal"
                ]
+   , Clause (Struct "append" [Struct "[]" [], var "YS", var "YS"]) []
+   , Clause (Struct "append" [Struct "." [var "X", var "XS"], var "YS", Struct "." [var "X", var "XSYS"]]) [Struct "append" [var "XS", var "YS", var "XSYS"]]
    ]
  where
    binaryIntegerPredicate :: (Integer -> Integer -> Bool) -> ([Term] -> [Goal])
    binaryIntegerPredicate p [Struct (reads->[(n,"")]) [], Struct (reads->[(m,"")]) []] | (n :: Integer) `p` (m :: Integer) = []
    binaryIntegerPredicate p _ = [Struct "false" []]
 
-   is [Var v, eval->Just n] = [Struct "=" [Var v, Struct (show n) []]]
-   is _                     = [Struct "false" []]
+   is [t, eval->Just n] = [Struct "=" [t, Struct (show n) []]]
+   is _                 = [Struct "false" []]
 
    eval (Struct (reads->[(n,"")]) []) = return n :: Maybe Integer
    eval (Struct "+" [t1, t2])   = (+) <$> eval t1 <*> eval t2
@@ -183,12 +187,15 @@ resolve program goals = map cleanup $ resolve' 1 [] goals []
 
       choose depth _ _  []              stack = backtrack depth stack
       choose depth u gs ((u',gs'):alts) stack =
-         resolve' (succ depth) (simplify $ u ++ u') (gs' ++ gs) ((u,gs,alts) : stack)
+         let u'' = u +++ u' in
+         resolve' (succ depth) u'' (map (apply u'') $ gs' ++ gs) ((u,gs,alts) : stack)
 
       backtrack _     [] =
          fail "Goal cannot be resolved!"
       backtrack depth ((u,gs,alts):stack) =
          choose (pred depth) u gs alts stack
+
+u1 +++ u2 = simplify $ u1 ++ u2
 
 simplify :: Unifier -> Unifier
 simplify u = map (second (apply u)) u
@@ -215,22 +222,28 @@ clause = do t <- struct <* whitespace
    where
       normal t = do
             ts <- option [] $ do string ":-" <* whitespace
-                                 sepBy1 term (char ',' <* whitespace)
+                                 terms
             return (Clause t ts)
 
       dcg t = do
             string "-->" <* whitespace
-            ts <- sepBy1 term (char ',' <* whitespace)
+            ts <- terms
             return (translate (t,ts))
 
       translate ((Struct a ts), rhs) =
-         let lhs' = Struct a (ts ++ [ head vars, last vars ])
+         let lhs' = Struct a (arguments ts (head vars) (last vars))
              vars = map (var.("d_"++).(a++).show) [0..length rhs] -- We explicitly choose otherwise invalid variable names
              rhs' = zipWith3 translate' rhs vars (tail vars)
          in Clause lhs' rhs'
 
       translate' t s s0 | isList t   = Struct "=" [ s, foldr_pl cons s0 t ] -- Terminal
-      translate' (Struct a ts)  s s0 = Struct a (ts ++ [ s, s0 ])         -- Non-Terminal
+      translate' (Struct a ts)  s s0 = Struct a (arguments ts s s0)         -- Non-Terminal
+
+arguments ts xs ds = ts ++ [ xs, ds ]
+-- arguments ts xs ds = [ xs \\ ds ] ++ ts
+
+--infix 6 \\
+--x \\ y = Struct "\\" [x,y]
 
 isList (Struct "." [_,_]) = True
 isList (Struct "[]" [])   = True
@@ -239,8 +252,8 @@ isList _                  = False
 foldr_pl f k (Struct "." [h,t]) = f h (foldr_pl f k t)
 foldr_pl _ k (Struct "[]" [])   = k
 
-infix 6 \\
-x \\ y = Struct "\\" [x,y]
+
+terms = sepBy1 term (char ',' <* whitespace)
 
 term = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
  where
@@ -257,6 +270,7 @@ term = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
         <|> list
         <|> stringLiteral
         <|> Cut <$ char '!'
+        <|> Struct "{}" . (:[]) <$> between (char '{') (char '}') term
         <|> between (char '(') (char ')') term
 
    prefix name = Prefix (do{ reservedOp name; return (\t -> Struct name [t]) })
@@ -268,10 +282,11 @@ term = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
       , P.caseSensitive = True
       }
 
-variable = Var <$> vname
-       <|> Wildcard <$ (char '_' >> many alphaNum)
+variable = (Wildcard <$ char '_' <* notFollowedBy alphaNum)
+       <|> Var <$> vname
 
-vname = VariableName 0 <$> ((:) <$> upper <*> many alphaNum)
+vname = VariableName 0 <$> ((:) <$> upper    <*> many  alphaNum <|>
+                            (:) <$> char '_' <*> many1 alphaNum)
 
 atom = (:) <$> lower <*> many (alphaNum <|> char '_')
    <|> many1 digit
