@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances, TupleSections #-}
 
 module Prolog.Programming.Central where
 
@@ -60,10 +60,11 @@ instance Partial Prolog_Programming Config Facts where
             let check (QueryWithAnswers query result) = answerTo query =~= result
                 check (StatementToCheck query)        = resolve p [query] /= []
                 check (Hidden spec)                   = check spec
-            incorrect <- liftIO $ filterM ((maybe True id <$>) . timeout 1000000 . evaluate . not . check) specs
+            incorrect <- liftIO $ concatMap (\(s,mbb) -> maybe [Timeout s] (\b -> if b then [] else [s]) mbb) <$> sequence [ (s,) <$> timeout 1000000 (evaluate (check s)) | s <- specs ]
             let explain (QueryWithAnswers query _) = vcat [ text $ show query, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ answerTo query ] ]
                 explain (StatementToCheck query)   =        text $ show query
                 explain (Hidden _)                 =        text "(ein versteckter Test)"
+                explain (Timeout x)                = hsep [ explain x, text "*scheint nicht zu terminieren*" ]
             if null incorrect
                then informIO $ text "Ja."
                else rejectIO $ vcat [ text "Nein."
@@ -89,7 +90,7 @@ parseConfig = parse configuration "(config)"
 configuration =
    (,) <$> specification <*> sourceText
 
-data Spec = QueryWithAnswers Term [Term] | StatementToCheck Term | Hidden Spec
+data Spec = QueryWithAnswers Term [Term] | StatementToCheck Term | Hidden Spec | Timeout Spec
 
 specification = do
    let startMarker = string "/* "
