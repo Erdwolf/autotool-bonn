@@ -26,18 +26,6 @@ instance ToDoc Code where
 instance Size Code where
     size ( Code cs ) = length cs
 
-code_example :: Code
-code_example = Code $ unlines 
-    [ "module Blueprint where"
-    , "import Prelude"
-    , ""
-    , "foo :: Int"
-    , "foo = undefined"
-    , ""
-    , "test :: Bool"
-    , "test = foo * foo == 9"
-    ]
-
 
 -- below here: not needed?
 

@@ -34,10 +34,68 @@ import Test.HUnit (Counts(..))
 rejectIO = Autolib.Reporter.IO.Type.reject
 informIO = Autolib.Reporter.IO.Type.inform
 
-
 data Haskell_Blueprint = Haskell_Blueprint deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''Haskell_Blueprint])
+
+make_fixed = direct Haskell_Blueprint $ Code $ unlines
+    [ "module Blueprint where"
+    , "import Prelude"
+    , ""
+    , "foo :: Int"
+    , "foo = undefined"
+    , ""
+    , "{- You can add additonal modules separated by lines of three or more dashes: -}"
+    , "----------"
+    , "module Test (test) where"
+    , "import Prelude"
+    , "{-"
+    , " - If this module is present, Test.test is used to check the submission."
+    , " - Otherwise, Blueprint.test is used."
+    , " - "
+    , " - 'test' has to be Test.HUnit.Testable, so assertions build with (@?=) will work,"
+    , " - as do plain booleans."
+    , " - If your testsuite compromises more than a single assertion, you should use a list"
+    , " - of named test cases (see (~:)) to provide better feedback."
+    , " - "
+    , " - Example:"
+    , " -}"
+    , "import TestHelper (qc)"
+    , "import TestHelper (qc)"
+    , "import Test.HUnit ((~:), (@?=))"
+    , "test ="
+    , "   [ \"Test mit QuickCheck (zufällige Eingabe)\" ~:"
+    , "         qc $ \\(xs :: [Int]) ->"
+    , "         Blueprint.reverse xs == Prelude.reverse xs"
+    , "   , \"Enthält foldl?\" ~:"
+    , "         syntaxCheck $ \\mod -> do"
+    , "         contains (ident \"foldl\") (findTopLevelDeclsOf \"reverse\" mod) @?= True"
+    , "   ]"
+    , "----------"
+    , "module SomeHiddenModule where"
+    , "import Prelude"
+    , "{- This module is also not shown to the student but is available to the code -}"
+    , "{-"
+    , " - Also available are the following modules:"
+    , " - "
+    , " -     TestHelper   (Import this in Blueprint or Test)"
+    , " -        qc :: Testable prop => prop -> Assertion"
+    , " -          (Use this instead of 'quickCheck' to turn a property into an HUnit assertion.)"
+    , " - "
+    , " -     TestHarness  (Import this in Test)"
+    , " -        syntaxCheck :: (Module -> Assertion) -> Assertion"
+    , " -        findTopLevelDeclsOf :: String -> Module -> [Decl]"
+    , " -        contains"
+    , " -        ident"
+    , " -          (Used to implement syntax checks. Example usage: see above)"
+    , " - "
+    , " -        allowFailures :: Int -> [Test] -> Assertion"
+    , " -          (Detailed output of correct/incorrect Tests in case of failure,"
+    , " -          with the option to allow a fixed number of tests to fail.)"
+    , " - "
+    , " - "
+    , " -}"
+    ]
 
 instance OrderScore Haskell_Blueprint where
     scoringOrder h = Increasing
@@ -104,7 +162,6 @@ interpreter modules = do
                   interpret "TestHarness.run Test.test" (as :: (Counts, ShowS))
 
 
-make_fixed = direct Haskell_Blueprint code_example
 
 blueprintSegment :: String -> String
 blueprintSegment i =

@@ -15,7 +15,7 @@ import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
-import Data.List ((\\), nub, sort, intercalate, unionBy)
+import Data.List ((\\), nub, sort, unionBy)
 import Data.Function (on)
 import Data.Generics (everything, mkQ)
 import Text.Parsec
@@ -41,7 +41,7 @@ instance Verify Prolog_Unifier Config where
         return ()
 
 instance Partial Prolog_Unifier Config Unifier where
-    describe p (Config t1 t2) = text $ intercalate "\n"
+    describe p (Config t1 t2) = text $ unlines
         [ "Geben Sie den allgemeinsten Unifikator von"
         , ""
         , "    " ++ show t1
@@ -58,7 +58,7 @@ instance Partial Prolog_Unifier Config Unifier where
         , "an."
         ]
 
-    initial p _ = Unifier [] -- [("X", "_")]
+    initial p _ = Unifier [] -- [("X", "enter_solution_here")]
 
     total p (Config t1 t2) (Unifier u) = do
         case unify_with_occurs_check t1 t2 >>= return . simplify >>= \u' -> guard (e u u' && e u' u) of

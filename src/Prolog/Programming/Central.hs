@@ -31,8 +31,26 @@ data Prolog_Programming = Prolog_Programming deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''Prolog_Programming])
 
-make_fixed = direct Prolog_Programming $ Config ""
-
+make_fixed = direct Prolog_Programming $ Config $ unlines
+   [ "/* a_predicate(Foo,Bar): a_predicate(expected_foo1,expected_bar1), a_predicate(expected_foo2,expected_bar2)"
+   , " * a_statement_that_has_to_be_true"
+   , " * !a_predicate_whose_answers_are_hidden(Foo,Bar): a_predicate(expected_foo1,expected_bar1), a_predicate(expected_foo2,expected_bar2)"
+   , " * !a_hidden_statement_that_has_to_be_true"
+   , "*/"
+   , "/* Everything from here on will be part of the visible exercise description (In other words: Only the first comment block is special)."
+   , " * "
+   , " * You can add as many tests as you like, but keep Autotool's time limit in mind. Additionally, every test has its own time limit,"
+   , " * so if one of your tests does not terminate (soon enough) this will be reported as a failure (mentioning the timeout)."
+   , " * "
+   , " * In this visible part, you can place the explanation of the exercise and all facts & clauses you want to give to the student."
+   , " /"
+   , "a_fact."
+   , "a_clause(Foo) :- a_clause(Foo)."
+   , "a_dcg_rule --> a_dcg_rule, [terminal1, terminal2], { prolog_term }."
+   , " /*"
+   , " * The program text will be concatenated with whatever the student submits."
+   , " */"
+   ]
 
 instance OrderScore Prolog_Programming where
     scoringOrder h = Increasing
@@ -60,7 +78,7 @@ instance Partial Prolog_Programming Config Facts where
             let check (QueryWithAnswers query result) = answerTo query =~= result
                 check (StatementToCheck query)        = resolve p [query] /= []
                 check (Hidden spec)                   = check spec
-            incorrect <- liftIO $ concatMap (\(s,mbb) -> maybe [Timeout s] (\b -> if b then [] else [s]) mbb) <$> sequence [ (s,) <$> timeout 1000000 (evaluate (check s)) | s <- specs ]
+            incorrect <- liftIO $ concatMap (\(s,mbb) -> maybe [Timeout s] (\b -> if b then [] else [s]) mbb) <$> sequence [ (s,) <$> timeout 10000000 (evaluate (check s)) | s <- specs ]
             let explain (QueryWithAnswers query _) = vcat [ text $ show query, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ answerTo query ] ]
                 explain (StatementToCheck query)   =        text $ show query
                 explain (Hidden _)                 =        text "(ein versteckter Test)"

@@ -37,6 +37,17 @@ data Haskell_Syntax = Haskell_Syntax deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''Haskell_Syntax])
 
+make_fixed = direct Haskell_Syntax $ Code $ unlines
+   [ "{-"
+   , " - Put the syntactically *incorrect* Haskell code here."
+   , " -}"
+   , "-------------"
+   , "{-"
+   , " - Put a correct version of the code here."
+   , " - Its abstract syntax tree will be compared the the one of the submission."
+   , " -}"
+   ]
+
 instance OrderScore Haskell_Syntax where
     scoringOrder h = Increasing
 
@@ -81,4 +92,3 @@ instance Partial Haskell_Syntax Code Code where
                               _ -> rejectIO $ text "Sie entspricht allerdings nicht mehr der Vorgabe. Es sollen nur die mindestens nötigen Veränderungen vorgenommen werden, um den Quelltext syntaktisch korrekt zu machen."
             result
 
-make_fixed = direct Haskell_Syntax (Code "")
