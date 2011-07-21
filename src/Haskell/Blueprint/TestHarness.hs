@@ -3,6 +3,7 @@ module TestHarness
    ( run
    , syntaxCheck, findTopLevelDeclsOf, contains, ident
    , allowFailures
+   , randomChoice
    ) where
 import Prelude
 
@@ -19,6 +20,7 @@ import Control.Exception (try, SomeException)
 import Control.Applicative ((<$>))
 import Data.List (intercalate)
 import Control.Monad (when)
+import System.Random (randomRIO)
 
 
 {- Function called by the interpreter, getting the tests to run as the argument. -}
@@ -51,7 +53,10 @@ allowFailures limit testCases = do
    groupIntoTwoLists :: [(a,Maybe b)] -> ([a],[(a,b)])
    groupIntoTwoLists = foldr (\(a,mb) (ns,js) -> maybe (a:ns,js) (\b -> (ns,(a,b):js)) mb) ([],[])
 
-
+randomChoice :: [a] -> IO a
+randomChoice xs = do
+	r <- randomRIO (0, (length xs - 1))
+	return $ xs !! r
 
 {- Syntax predicates -}
 
