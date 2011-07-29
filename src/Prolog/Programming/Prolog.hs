@@ -262,6 +262,7 @@ term = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
       , [ prefix "\\+" ]
       , map binary ["<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is"]
       , map binary ["+", "-", "\\"]
+      , [ binary "*" ]
       , [ binary "mod" ]
       , [ prefix "-" ]
       ]
