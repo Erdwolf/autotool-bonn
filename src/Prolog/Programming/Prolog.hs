@@ -184,6 +184,7 @@ resolve program goals = map cleanup $ resolve' 1 [] goals []
 
       cut ((_,_,[]):stack) = cut stack
       cut (_:stack) = stack
+      cut [] = []
 
       choose depth _ _  []              stack = backtrack depth stack
       choose depth u gs ((u',gs'):alts) stack =
