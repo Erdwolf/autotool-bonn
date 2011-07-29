@@ -12,7 +12,7 @@ import Autolib.ToDoc (derives, makeToDoc, text, vcat, hsep, toDoc, nest, ToDoc(.
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
-import Control.Monad (filterM)
+import Control.Monad (filterM, forM)
 import Control.Monad.Trans (liftIO)
 import Control.Exception (evaluate)
 import System.Timeout (timeout)
@@ -56,9 +56,8 @@ instance OrderScore Prolog_Programming where
     scoringOrder h = Increasing
 
 instance Verify Prolog_Programming Config where
-    verify _ (Config _) = do
-        -- TODO Do some verification.
-        return ()
+    verify _ (Config cfg) = do
+        either (fail . show) (\_ -> return ()) $ parseConfig cfg
 
 instance Partial Prolog_Programming Config Facts where
     describe p (Config cfg) = text $
@@ -86,7 +85,7 @@ instance Partial Prolog_Programming Config Facts where
             if null incorrect
                then informIO $ text "Ja."
                else rejectIO $ vcat [ text "Nein."
-                                  , text "Die Anworten auf die folgenden Anfragen sind inkorrekt:"
+                                  , text "Die Antworten auf die folgenden Anfragen sind inkorrekt:"
                                   , nest 4 $ vcat $ map explain incorrect
                                   ]
 
@@ -111,16 +110,25 @@ configuration =
 data Spec = QueryWithAnswers Term [Term] | StatementToCheck Term | Hidden Spec | Timeout Spec
 
 specification = do
-   let startMarker = string "/* "
-   let separator   = string "* "
-   let endMarker   = string "*/"
-   let line = option id (char '!' >> return Hidden) <*> do
+   let specLine = option id (char '!' >> return Hidden) <*> do
          t <- term
          (do char ':' >> optional (char ' ')
              ts <- term `sepBy` string ", "
              return (QueryWithAnswers t ts))
           <|> return (StatementToCheck t)
-   startMarker
-   line `sepBy` (notFollowedBy endMarker >> separator) <* endMarker
+   lines <- commentBlock
+   zip [1..] lines `forM` \(i,s) -> do
+      case parse specLine ("Specification line " ++ show i) s of
+         Right spec -> return spec
+         Left err   -> fail (show err)
+
+commentBlock = do
+   let startMarker =            string "/* "
+   let separator   = newline >> string " * "
+   let endMarker   = newline >> string " */"
+   let line = many $ do notFollowedBy separator
+                        notFollowedBy endMarker
+                        anyToken
+   between startMarker endMarker $ line `sepBy` try separator
 
 sourceText = anyChar `manyTill` eof
