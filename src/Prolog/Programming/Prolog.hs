@@ -276,9 +276,9 @@ term = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
    prefix name = Prefix (do{ reservedOp name; return (\t -> Struct name [t]) })
    binary name = Infix (do{ reservedOp name; return (\t1 t2 -> Struct name [t1, t2]) }) AssocRight
    reservedOp = P.reservedOp $ P.makeTokenParser $ emptyDef
-      { P.opStart = oneOf ";,<=>\\i+m"
+      { P.opStart = oneOf ";,<=>\\i*+m"
       , P.opLetter = oneOf "=.:<sod"
-      , P.reservedOpNames = [ ";", ",", "<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is", "+", "-", "\\", "mod" ]
+      , P.reservedOpNames = [ ";", ",", "<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is", "*", "+", "-", "\\", "mod" ]
       , P.caseSensitive = True
       }
 
