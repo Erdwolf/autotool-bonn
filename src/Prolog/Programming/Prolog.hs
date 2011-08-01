@@ -145,6 +145,7 @@ builtins =
 
    eval (Struct (reads->[(n,"")]) []) = return n :: Maybe Integer
    eval (Struct "+" [t1, t2])   = (+) <$> eval t1 <*> eval t2
+   eval (Struct "*" [t1, t2])   = (*) <$> eval t1 <*> eval t2
    eval (Struct "-" [t1, t2])   = (-) <$> eval t1 <*> eval t2
    eval (Struct "mod" [t1, t2]) = mod <$> eval t1 <*> eval t2
    eval (Struct "-" [t])        = negate <$> eval t
