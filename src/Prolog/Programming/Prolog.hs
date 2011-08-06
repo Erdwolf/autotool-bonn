@@ -1,6 +1,7 @@
-{-# LANGUAGE DeriveDataTypeable, ViewPatterns #-}
+{-# LANGUAGE DeriveDataTypeable, ViewPatterns, GeneralizedNewtypeDeriving, FlexibleInstances, UndecidableInstances #-}
 module Prolog.Programming.Prolog where
 import Control.Monad.Identity
+import Control.Monad.Error
 import Control.Monad
 import Control.Arrow (second)
 import Data.Generics (Data(..), Typeable(..), everywhere, mkT, everything, mkQ)
@@ -14,11 +15,12 @@ import Control.Applicative ((<$>),(<*>),(<$),(<*))
 --
 import GHC.Exts (IsString(..))
 
+
 data Term = Struct Atom [Term]
           | Var VariableName
           | Wildcard
           | Cut
-      deriving (Eq, Data, Typeable, Ord)
+      deriving (Eq, Data, Typeable)
 var = Var . VariableName 0
 
 data Clause = Clause { lhs :: Term, rhs_ :: [Goal] }
@@ -28,7 +30,7 @@ rhs (Clause   _ rhs) = const rhs
 rhs (ClauseFn _ fn ) = fn
 
 data VariableName = VariableName Int String
-      deriving (Eq, Data, Typeable, Ord)
+      deriving (Eq, Data, Typeable)
 
 type Atom         = String
 type Unifier      = [Substitution]
@@ -39,9 +41,10 @@ type Goal         = Term
 instance Show Term where
    show t@(Struct "." [_,_]) =
       let (ts,rest) = g [] t in
-         --if all isChar ts
-         --   then "\"" ++ concat (map show ts) ++ (if isNil rest then "" else "|" ++ show rest) ++  "\""
-         "[" ++ intercalate "," (map show ts) ++ (if isNil rest then "" else "|" ++ show rest) ++  "]"
+         --case guard (isNil rest) >> sequence (map toChar ts) of
+         --   Just str -> show str
+         --   Nothing  ->
+               "[" ++ intercalate "," (map show ts) ++ (if isNil rest then "" else "|" ++ show rest) ++  "]"
     where g ts (Struct "." [h,t]) = g (h:ts) t
           g ts t = (reverse ts, t)
           isNil (Struct "[]" []) = True
@@ -84,6 +87,7 @@ unify' _ _ _ = mzero
 same :: Eq b => (a -> b) -> a -> a -> Bool
 same f x y = f x == f y
 
+unifyList :: Monad m => (Term -> Term -> m Unifier) -> [(Term, Term)] -> m Unifier
 unifyList _ [] = return []
 unifyList unify ((x,y):xys) = do
    u  <- unify x y
@@ -128,8 +132,10 @@ builtins =
    , ClauseFn (Struct "char_code" [var "Atom", var "Code"]) char_code
    , Clause (Struct "phrase" [var "RuleName", var "InputList"])
                [Struct "phrase" [var "RuleName", var "InputList", Struct "[]" []]]
-   , Clause (Struct "phrase" [var "RuleName", var "InputList", var "Rest"])
-               [ Struct "=.." [var "Goal", foldr cons nil (var "RuleName" : arguments [{- TODO -}] (var "InputList") (var "Rest"))]
+   , Clause (Struct "phrase" [var "Rule", var "InputList", var "Rest"])
+               [ Struct "=.." [var "Rule", var "L"]
+               , Struct "append" [var "L", foldr cons nil (arguments [{- already in L -}] (var "InputList") (var "Rest")), var "L1"] -- FIXME This makes assumptions about "arguments"
+               , Struct "=.." [var "Goal", var "L1"]
                , var "Goal"
                ]
    , Clause (Struct "append" [Struct "[]" [], var "YS", var "YS"]) []
@@ -137,7 +143,7 @@ builtins =
    ]
  where
    binaryIntegerPredicate :: (Integer -> Integer -> Bool) -> ([Term] -> [Goal])
-   binaryIntegerPredicate p [Struct (reads->[(n,"")]) [], Struct (reads->[(m,"")]) []] | (n :: Integer) `p` (m :: Integer) = []
+   binaryIntegerPredicate p [eval->Just n, eval->Just m] | n `p` m = []
    binaryIntegerPredicate p _ = [Struct "false" []]
 
    is [t, eval->Just n] = [Struct "=" [t, Struct (show n) []]]
@@ -163,21 +169,52 @@ builtins =
    char_code _                                = [Struct "false" []]
 
 
-resolve :: Program -> [Goal] -> [Unifier]
+class Monad m => MonadTrace m where
+   trace :: String -> m ()
+   trace _ = return ()
+instance MonadTrace (Trace IO) where
+   trace = Trace . putStrLn
+instance Monad m => MonadTrace m
+
+newtype Trace m a = Trace { withTrace :: m a }  deriving (Functor, Monad, MonadError e)
+
+trace_ label x = trace (label++":\t"++show x)
+
+resolve :: (Functor m, MonadTrace m, Error e, MonadError e m) => Program -> [Goal] -> m [Unifier]
 -- Yield all unifiers that resolve <goal> using the clauses from <program>.
-resolve program goals = map cleanup $ resolve' 1 [] goals []
+resolve program goals = map cleanup <$> resolve' 1 [] goals []
   where
       cleanup = filter ((\(VariableName i _) -> i == 0) . fst)
 
-      resolve' depth usf [] stack =
-         (cleanup usf:) $ backtrack depth stack
-      resolve' depth usf (Cut:gs) stack =
+      clauses = builtins ++ program -- NOTE Is it a good idea to "hardcode" the builtins like this?
+
+      knownSignatures = map (signature . lhs) clauses ++ [ Signature (name,0) | name <- ["false","fail"] ]
+
+      resolve' depth usf [] stack = do
+         trace "=== yield solution ==="
+         trace_ "Depth" depth
+         trace_ "Unif." usf
+         (cleanup usf:) <$> backtrack depth stack
+      resolve' depth usf (Cut:gs) stack = do
+         trace "=== resolve' (Cut) ==="
+         trace_ "Depth"   depth
+         trace_ "Unif."   usf
+         trace_ "Goals"   (Cut:gs)
+         mapM_ (trace_ "Stack") stack
          resolve' depth usf gs (cut stack)
-      resolve' depth usf (nextGoal:gs) stack =
+      resolve' depth usf (nextGoal:gs) stack = do
+         trace "=== resolve' ==="
+         trace_ "Depth"   depth
+         trace_ "Unif."   usf
+         trace_ "Goals"   (nextGoal:gs)
+         mapM_ (trace_ "Stack") stack
+         let sig = signature nextGoal
+         unless (sig `elem` knownSignatures) $ do
+            throwError $ strMsg $ "Unknown predicate: " ++ show sig
          choose depth usf gs branches stack
        where
          branches = do
-            clause <- map renameVars (builtins ++ program) -- NOTE Is it a good idea to "hardcode" the builtins like this?
+            clause <- map renameVars clauses
             unifier <- unify (apply usf nextGoal) (lhs clause)
             return (unifier, rhs clause (map snd unifier))
 
@@ -188,19 +225,35 @@ resolve program goals = map cleanup $ resolve' 1 [] goals []
       cut [] = []
 
       choose depth _ _  []              stack = backtrack depth stack
-      choose depth u gs ((u',gs'):alts) stack =
-         let u'' = u +++ u' in
+      choose depth u gs ((u',gs'):alts) stack = do
+         trace "=== choose ==="
+         trace_ "Depth"   depth
+         trace_ "Unif."   u
+         trace_ "Goals"   gs
+         trace_ "Alts."   ((u',gs'):alts)
+         mapM_ (trace_ "Stack") stack
+         let u'' = u +++ u'
          resolve' (succ depth) u'' (map (apply u'') $ gs' ++ gs) ((u,gs,alts) : stack)
 
-      backtrack _     [] =
-         fail "Goal cannot be resolved!"
-      backtrack depth ((u,gs,alts):stack) =
+      backtrack _     [] = do
+         trace "=== give up ==="
+         return (fail "Goal cannot be resolved!")
+      backtrack depth ((u,gs,alts):stack) = do
+         trace "=== backtrack ==="
          choose (pred depth) u gs alts stack
 
 u1 +++ u2 = simplify $ u1 ++ u2
 
 simplify :: Unifier -> Unifier
 simplify u = map (second (apply u)) u
+
+
+newtype Signature = Signature (Atom, Int) deriving (Eq)
+instance Show Signature where
+   show (Signature (name, arity)) = name ++ "/" ++ show arity
+
+signature :: Term -> Signature
+signature (Struct name ts) = Signature (name, length ts)
 
 
 {- Parser -}
@@ -238,8 +291,11 @@ clause = do t <- struct <* whitespace
              rhs' = zipWith3 translate' rhs vars (tail vars)
          in Clause lhs' rhs'
 
-      translate' t s s0 | isList t   = Struct "=" [ s, foldr_pl cons s0 t ] -- Terminal
-      translate' (Struct a ts)  s s0 = Struct a (arguments ts s s0)         -- Non-Terminal
+      translate' t s s0 | isList t   = Struct "=" [ s, foldr_pl cons s0 t ]     -- Terminal
+      translate' t@(Struct "{}" ts) s s0 = foldr and (Struct "=" [ s, s0 ]) ts  -- Braced terms
+      translate' (Struct a ts)  s s0 = Struct a (arguments ts s s0)             -- Non-Terminal
+
+      and x y = Struct "," [x,y]
 
 arguments ts xs ds = ts ++ [ xs, ds ]
 -- arguments ts xs ds = [ xs \\ ds ] ++ ts
@@ -255,16 +311,21 @@ foldr_pl f k (Struct "." [h,t]) = f h (foldr_pl f k t)
 foldr_pl _ k (Struct "[]" [])   = k
 
 
-terms = sepBy1 term (char ',' <* whitespace)
+terms = sepBy1 termWithoutConjunction (charWs ',')
 
-term = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
+term = term' False
+termWithoutConjunction = term' True
+
+term' ignoreConjunction = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
  where
    hierarchy =
-      [ [ binary ";" ]
-      , [ prefix "\\+" ]
+      --[ [ binary "-->", binary ":-" ]
+      [ [ binary ";" ] ] ++
+      (if ignoreConjunction then [] else [ [ binary "," ] ])  ++
+      [ [ prefix "\\+" ]
       , map binary ["<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is"]
       , map binary ["+", "-", "\\"]
-      , [ binary "*" ]
+      , [ binary "*"]
       , [ binary "mod" ]
       , [ prefix "-" ]
       ]
@@ -273,43 +334,54 @@ term = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
         <|> list
         <|> stringLiteral
         <|> Cut <$ char '!'
-        <|> Struct "{}" . (:[]) <$> between (char '{') (char '}') term
-        <|> between (char '(') (char ')') term
+        <|> Struct "{}" <$> between (charWs '{') (char '}') terms
+        <|> between (charWs '(') (char ')') term
 
    prefix name = Prefix (do{ reservedOp name; return (\t -> Struct name [t]) })
    binary name = Infix (do{ reservedOp name; return (\t1 t2 -> Struct name [t1, t2]) }) AssocRight
    reservedOp = P.reservedOp $ P.makeTokenParser $ emptyDef
       { P.opStart = oneOf ";,<=>\\i*+m"
-      , P.opLetter = oneOf "=.:<sod"
-      , P.reservedOpNames = [ ";", ",", "<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is", "*", "+", "-", "\\", "mod" ]
+      , P.opLetter = oneOf "=.:<"
+      , P.reservedOpNames = operatorNames
       , P.caseSensitive = True
       }
+
+charWs c = char c <* whitespace
+
+operatorNames = [ ";", ",", "<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is", "*", "+", "-", "\\", "mod" ]
 
 variable = (Wildcard <$ char '_' <* notFollowedBy alphaNum)
        <|> Var <$> vname
 
-vname = VariableName 0 <$> ((:) <$> upper    <*> many  alphaNum <|>
-                            (:) <$> char '_' <*> many1 alphaNum)
+vname = VariableName 0 <$> ((:) <$> upper    <*> many  (alphaNum <|> char '_') <|>
+                            (:) <$> char '_' <*> many1 (alphaNum <|> char '_'))
 
 atom = (:) <$> lower <*> many (alphaNum <|> char '_')
    <|> many1 digit
+   <|> choice (map string operatorNames)
+   <|> many1 (oneOf "#$&*+/.<=>\\^~")
    <|> between (char '\'') (char '\'') (many (noneOf "'"))
 
 struct = do a <- atom
-            ts <- option [] $ between (char '(') (char ')') $ sepBy1 term (char ',' <* whitespace)
+            ts <- option [] $ between (charWs '(') (char ')') terms
             return (Struct a ts)
 
-list = between (char '[') (char ']') $
-         flip (foldr cons) <$> sepBy term (char ',' <* whitespace)
-                           <*> option nil (char '|' >> term)
+list = between (charWs '[') (char ']') $
+         flip (foldr cons) <$> option []  terms
+                           <*> option nil (charWs '|' >> term)
 
 cons t1 t2 = Struct "."  [t1,t2]
 nil        = Struct "[]" []
 
-stringLiteral = foldr cons nil . map (\chr -> Struct (representChar chr) []) <$> between (char '"') (char '"') (try (many (noneOf "\"")))
+stringLiteral = foldr cons nil . map representChar <$> between (char '"') (char '"') (try (many (noneOf "\"")))
 
-representChar = show . fromEnum -- This is the classical Prolog representation of chars as code points.
---representChar c = [c] -- This is the more natural representation as one-character atoms.
+representChar c = Struct (show (fromEnum c)) [] -- This is the classical Prolog representation of chars as code points.
+--representChar c = Struct [c] [] -- This is the more natural representation as one-character atoms.
+--representChar c = Struct "char" [Struct (show (fromEnum c)) []] -- This is a representation as tagged code points.
+--toChar :: Term -> Maybe Char
+--toChar (Struct "char" [Struct (toEnum . read->c) []]) = Just c
+--toChar _                                              = Nothing
+
 
 {- Allow specification through string literals by using OverloadedStrings -}
 instance IsString Clause where
@@ -320,5 +392,10 @@ instance IsString Clause where
 instance IsString Term where
    fromString s =
       case parse (term <* eof) "(Term literal)" s of
+         Left  e -> error (show e)
+         Right c -> c
+instance IsString VariableName where
+   fromString s =
+      case parse (vname <* eof) "(VariableName literal)" s of
          Left  e -> error (show e)
          Right c -> c

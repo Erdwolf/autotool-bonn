@@ -21,7 +21,7 @@ import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
 import Data.List ((\\), nub)
 import Data.Generics (everything, mkQ)
-import Text.Parsec
+import Text.Parsec hiding (Ok)
 import Control.Applicative ((<$>),(<*>),(<*))
 
 rejectIO = Autolib.Reporter.IO.Type.reject
@@ -36,18 +36,18 @@ make_fixed = direct Prolog_Programming $ Config $ unlines
    , " * a_statement_that_has_to_be_true"
    , " * !a_predicate_whose_answers_are_hidden(Foo,Bar): a_predicate(expected_foo1,expected_bar1), a_predicate(expected_foo2,expected_bar2)"
    , " * !a_hidden_statement_that_has_to_be_true"
-   , "*/"
+   , " */"
    , "/* Everything from here on will be part of the visible exercise description (In other words: Only the first comment block is special)."
    , " * "
    , " * You can add as many tests as you like, but keep Autotool's time limit in mind. Additionally, every test has its own time limit,"
    , " * so if one of your tests does not terminate (soon enough) this will be reported as a failure (mentioning the timeout)."
    , " * "
    , " * In this visible part, you can place the explanation of the exercise and all facts & clauses you want to give to the student."
-   , " /"
+   , " */"
    , "a_fact."
    , "a_clause(Foo) :- a_clause(Foo)."
    , "a_dcg_rule --> a_dcg_rule, [terminal1, terminal2], { prolog_term }."
-   , " /*"
+   , "/*"
    , " * The program text will be concatenated with whatever the student submits."
    , " */"
    ]
@@ -73,21 +73,30 @@ instance Partial Prolog_Programming Config Facts where
         case consultString (facts ++ "\n" ++ input) of
           Left err -> rejectIO $ text $ show err
           Right p -> do
-            let answerTo = answer p
-            let check (QueryWithAnswers query result) = answerTo query =~= result
-                check (StatementToCheck query)        = resolve p [query] /= []
-                check (Hidden spec)                   = check spec
-            incorrect <- liftIO $ concatMap (\(s,mbb) -> maybe [Timeout s] (\b -> if b then [] else [s]) mbb) <$> sequence [ (s,) <$> timeout 10000000 (evaluate (check s)) | s <- specs ]
-            let explain (QueryWithAnswers query _) = vcat [ text $ show query, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ answerTo query ] ]
-                explain (StatementToCheck query)   =        text $ show query
-                explain (Hidden _)                 =        text "(ein versteckter Test)"
-                explain (Timeout x)                = hsep [ explain x, text "*scheint nicht zu terminieren*" ]
+            let check (QueryWithAnswers query expected) = case resolveTerm p query of { Right actual | actual =~= expected -> Ok; Right actual -> WrongResult actual; Left err -> ErrorMsg err }
+                check (StatementToCheck query)          = case resolveTerm p query of { Right [] -> Wrong; Right _ -> Ok; Left err -> ErrorMsg err }
+                check (Hidden spec)                     = check spec
+            incorrect <- liftIO $ concatMap (\(s,mbb) -> maybe [(s,Timeout)] (\r -> case r of { Ok -> []; _ -> [(s,r)] }) mbb) <$> sequence [ (s,) <$> timeout 10000000 (evaluate (check s)) | s <- specs ]
+            let explain x            Timeout              = hsep [ describe x, text "*scheint nicht zu terminieren*" ]
+                explain x@(Hidden _) _                    = describe x
+                explain x            (ErrorMsg msg)       = vcat [ describe x , nest 4 $ vcat [ text "Folgender Fehler ist aufgetreten:", text $ msg ] ]
+                explain x            (WrongResult actual) = vcat [ describe x , nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ actual ] ]
+                explain x            Wrong                = describe x
+                describe (QueryWithAnswers query _) = text $ show query
+                describe (StatementToCheck query)   = text $ show query
+                describe (Hidden _)                 = text "(ein versteckter Test)"
             if null incorrect
                then informIO $ text "Ja."
                else rejectIO $ vcat [ text "Nein."
                                   , text "Die Antworten auf die folgenden Anfragen sind inkorrekt:"
-                                  , nest 4 $ vcat $ map explain incorrect
+                                  , nest 4 $ vcat $ map (uncurry explain) incorrect
                                   ]
+
+data TestResult r e = Ok
+                    | Wrong
+                    | WrongResult r
+                    | ErrorMsg e
+                    | Timeout
 
 actual =~= expected =
    (nub actual `isSublistOf` nub expected &&
@@ -95,9 +104,11 @@ actual =~= expected =
 
 isSublistOf xs ys = xs \\ ys == []
 
-answer p q = removeUnresolvedVariables $ map (flip apply q) $ resolve p [q]
-
-removeUnresolvedVariables = filter $ (not.) $ everything (||) $ mkQ False $ \(VariableName i _) -> i /= 0
+resolveTerm p q = do
+   us <- resolve p [q]
+   return $ removeUnresolvedVariables $ map (flip apply q) us
+ where
+  removeUnresolvedVariables = filter $ (not.) $ everything (||) $ mkQ False $ \(VariableName i _) -> i /= 0
 
 
 {- Config parser -}
@@ -107,7 +118,7 @@ parseConfig = parse configuration "(config)"
 configuration =
    (,) <$> specification <*> sourceText
 
-data Spec = QueryWithAnswers Term [Term] | StatementToCheck Term | Hidden Spec | Timeout Spec
+data Spec = QueryWithAnswers Term [Term] | StatementToCheck Term | Hidden Spec
 
 specification = do
    let specLine = option id (char '!' >> return Hidden) <*> do
