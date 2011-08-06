@@ -19,10 +19,11 @@ import System.Timeout (timeout)
 import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
-import Data.List ((\\), nub)
+import Data.List ((\\), nub, isPrefixOf)
 import Data.Generics (everything, mkQ)
 import Text.Parsec hiding (Ok)
 import Control.Applicative ((<$>),(<*>),(<*))
+import Control.Arrow ((>>>),(***),(&&&),second,arr)
 
 rejectIO = Autolib.Reporter.IO.Type.reject
 informIO = Autolib.Reporter.IO.Type.inform
@@ -37,7 +38,8 @@ make_fixed = direct Prolog_Programming $ Config $ unlines
    , " * !a_predicate_whose_answers_are_hidden(Foo,Bar): a_predicate(expected_foo1,expected_bar1), a_predicate(expected_foo2,expected_bar2)"
    , " * !a_hidden_statement_that_has_to_be_true"
    , " */"
-   , "/* Everything from here on will be part of the visible exercise description (In other words: Only the first comment block is special)."
+   , "/* Everything from here on (up to an optional hidden section separated by a line of 3 or more dashes)"
+   , " * will be part of the visible exercise description (In other words: Only the first comment block is special)."
    , " * "
    , " * You can add as many tests as you like, but keep Autotool's time limit in mind. Additionally, every test has its own time limit,"
    , " * so if one of your tests does not terminate (soon enough) this will be reported as a failure (mentioning the timeout)."
@@ -49,6 +51,12 @@ make_fixed = direct Prolog_Programming $ Config $ unlines
    , "a_dcg_rule --> a_dcg_rule, [terminal1, terminal2], { prolog_term }."
    , "/*"
    , " * The program text will be concatenated with whatever the student submits."
+   , " */"
+   , "------------------------------"
+   , "/*"
+   , " * This is also part of the program, but is not presented to the student."
+   , " * "
+   , " * Be careful to avoid naming clashes to not confuse the student with error messages about code they can't see."
    , " */"
    ]
 
@@ -62,29 +70,30 @@ instance Verify Prolog_Programming Config where
 instance Partial Prolog_Programming Config Facts where
     describe p (Config cfg) = text $
       either (\_->"Fehler in Aufgaben-Konfiguration!")
-             snd
+             (\(_,(visible_facts,_)) -> visible_facts)
              (parseConfig cfg)
 
     initial p _ = Facts ""
 
     totalIO p (Config cfg) (Facts input) = do
-        let Right (specs,facts) = parseConfig cfg
+        let Right (specs,(visible_facts,hidden_facts)) = parseConfig cfg
+            facts = visible_facts ++ "\n" ++ hidden_facts
 
         case consultString (facts ++ "\n" ++ input) of
           Left err -> rejectIO $ text $ show err
           Right p -> do
             let check (QueryWithAnswers query expected) = case resolveTerm p query of { Right actual | actual =~= expected -> Ok; Right actual -> WrongResult actual; Left err -> ErrorMsg err }
                 check (StatementToCheck query)          = case resolveTerm p query of { Right [] -> Wrong; Right _ -> Ok; Left err -> ErrorMsg err }
-                check (Hidden spec)                     = check spec
+                check (Hidden _ spec)                   = check spec
             incorrect <- liftIO $ concatMap (\(s,mbb) -> maybe [(s,Timeout)] (\r -> case r of { Ok -> []; _ -> [(s,r)] }) mbb) <$> sequence [ (s,) <$> timeout 10000000 (evaluate (check s)) | s <- specs ]
-            let explain x            Timeout              = hsep [ describe x, text "*scheint nicht zu terminieren*" ]
-                explain x@(Hidden _) _                    = describe x
-                explain x            (ErrorMsg msg)       = vcat [ describe x , nest 4 $ vcat [ text "Folgender Fehler ist aufgetreten:", text $ msg ] ]
-                explain x            (WrongResult actual) = vcat [ describe x , nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ actual ] ]
-                explain x            Wrong                = describe x
+            let explain x              Timeout              = hsep [ describe x, text "*scheint nicht zu terminieren*" ]
+                explain x@(Hidden _ _) _                    = describe x
+                explain x              (ErrorMsg msg)       = vcat [ describe x, nest 4 $ vcat [ text "Folgender Fehler ist aufgetreten:", text $ msg ] ]
+                explain x              (WrongResult actual) = vcat [ describe x, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ actual ] ]
+                explain x              Wrong                = describe x
                 describe (QueryWithAnswers query _) = text $ show query
                 describe (StatementToCheck query)   = text $ show query
-                describe (Hidden _)                 = text "(ein versteckter Test)"
+                describe (Hidden str _)             = text $ "(ein versteckter Test" ++ str ++")"
             if null incorrect
                then informIO $ text "Ja."
                else rejectIO $ vcat [ text "Nein."
@@ -118,10 +127,10 @@ parseConfig = parse configuration "(config)"
 configuration =
    (,) <$> specification <*> sourceText
 
-data Spec = QueryWithAnswers Term [Term] | StatementToCheck Term | Hidden Spec
+data Spec = QueryWithAnswers Term [Term] | StatementToCheck Term | Hidden String Spec
 
 specification = do
-   let specLine = option id (char '!' >> return Hidden) <*> do
+   let specLine = option id (char '!' >> Hidden <$> option "" (string "(\"" >> anyChar `manyTill`  string "\")")) <*> do
          t <- term
          (do char ':' >> optional (char ' ')
              ts <- term `sepBy` string ", "
@@ -142,4 +151,10 @@ commentBlock = do
                         anyToken
    between startMarker endMarker $ line `sepBy` try separator
 
-sourceText = anyChar `manyTill` eof
+sourceText = do
+    ls <- lines <$> anyChar `manyTill` eof
+    let (visible, hidden) = breakWhen ("---" `isPrefixOf`) ls
+    return (unlines visible, unlines hidden)
+
+breakWhen :: (a -> Bool) -> [a] -> ([a],[a])
+breakWhen p = (takeWhile (not . p) &&& dropWhile (not . p)) >>> second tail
