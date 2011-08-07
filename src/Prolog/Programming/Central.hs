@@ -157,4 +157,4 @@ sourceText = do
     return (unlines visible, unlines hidden)
 
 breakWhen :: (a -> Bool) -> [a] -> ([a],[a])
-breakWhen p = (takeWhile (not . p) &&& dropWhile (not . p)) >>> second tail
+breakWhen p = (takeWhile (not . p) &&& dropWhile (not . p)) >>> second (drop 1)
