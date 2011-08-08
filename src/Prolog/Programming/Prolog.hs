@@ -1,11 +1,11 @@
-{-# LANGUAGE DeriveDataTypeable, ViewPatterns, GeneralizedNewtypeDeriving, FlexibleInstances, UndecidableInstances #-}
+{-# LANGUAGE DeriveDataTypeable, ViewPatterns, GeneralizedNewtypeDeriving, FlexibleInstances #-}
 module Prolog.Programming.Prolog where
-import Control.Monad.Identity
+import Control.Monad.Reader
 import Control.Monad.Error
 import Control.Monad
-import Control.Arrow (second)
+import Control.Arrow (second, (***))
 import Data.Generics (Data(..), Typeable(..), everywhere, mkT, everything, mkQ)
-import Data.List (intercalate)
+import Data.List (intercalate, nub)
 --
 import Text.Parsec
 import Text.Parsec.Expr
@@ -124,7 +124,7 @@ builtins =
    , ClauseFn (Struct ">=" [var "N", var "M"]) (binaryIntegerPredicate (>=))
    , ClauseFn (Struct "=:=" [var "N", var "M"]) (binaryIntegerPredicate (==))
    , ClauseFn (Struct "is" [var "L", var "R"]) is
-   , Clause (Struct "member" [var "X", Struct "." [var "X", var "Rest"]]) []
+   , Clause (Struct "member" [var "X", Struct "." [var "X", var "Rest"]]) [Cut]
    , Clause (Struct "member" [var "X", Struct "." [Wildcard, var "Rest"]])
                 [Struct "member" [var "X", var "Rest"]]
    , ClauseFn (Struct "=.." [var "Term", var "List"]) univ
@@ -171,10 +171,15 @@ builtins =
 
 class Monad m => MonadTrace m where
    trace :: String -> m ()
-   trace _ = return ()
 instance MonadTrace (Trace IO) where
    trace = Trace . putStrLn
-instance Monad m => MonadTrace m
+instance MonadTrace IO where
+   trace _ = return ()
+instance MonadTrace (Either err) where
+   trace _ = return ()
+instance MonadTrace m => MonadTrace (ReaderT a m) where
+   trace x = lift (trace x)
+
 
 newtype Trace m a = Trace { withTrace :: m a }  deriving (Functor, Monad, MonadError e)
 
@@ -182,13 +187,15 @@ trace_ label x = trace (label++":\t"++show x)
 
 resolve :: (Functor m, MonadTrace m, Error e, MonadError e m) => Program -> [Goal] -> m [Unifier]
 -- Yield all unifiers that resolve <goal> using the clauses from <program>.
-resolve program goals = map cleanup <$> resolve' 1 [] goals []
+resolve program goals = map cleanup <$> runReaderT (resolve' 1 [] goals []) (initialClauses, knownSignatures)
   where
       cleanup = filter ((\(VariableName i _) -> i == 0) . fst)
 
-      clauses = builtins ++ program -- NOTE Is it a good idea to "hardcode" the builtins like this?
+      initialClauses = builtins ++ program -- NOTE Is it a good idea to "hardcode" the builtins like this?
 
-      knownSignatures = map (signature . lhs) clauses ++ [ Signature (name,0) | name <- ["false","fail"] ]
+      knownSignatures = nub $ [ Signature (name,0) | name <- ["false","fail"] ] ++ map (signature . lhs) initialClauses
+
+      whenPredicateIsUnknown sig action = asks ((sig `notElem`).snd) >>= flip when action
 
       resolve' depth usf [] stack = do
          trace "=== yield solution ==="
@@ -202,6 +209,13 @@ resolve program goals = map cleanup <$> resolve' 1 [] goals []
          trace_ "Goals"   (Cut:gs)
          mapM_ (trace_ "Stack") stack
          resolve' depth usf gs (cut stack)
+      resolve' depth usf goals@(Struct "asserta" [fact]:gs) stack = do
+         trace "=== resolve' (asserta/1) ==="
+         trace_ "Depth"   depth
+         trace_ "Unif."   usf
+         trace_ "Goals"   goals
+         mapM_ (trace_ "Stack") stack
+         local ((Clause fact []:) *** (signature fact:)) $ resolve' depth usf gs stack
       resolve' depth usf (nextGoal:gs) stack = do
          trace "=== resolve' ==="
          trace_ "Depth"   depth
@@ -209,14 +223,17 @@ resolve program goals = map cleanup <$> resolve' 1 [] goals []
          trace_ "Goals"   (nextGoal:gs)
          mapM_ (trace_ "Stack") stack
          let sig = signature nextGoal
-         unless (sig `elem` knownSignatures) $ do
+         whenPredicateIsUnknown sig $ do
             throwError $ strMsg $ "Unknown predicate: " ++ show sig
+         branches <- getBranches
          choose depth usf gs branches stack
        where
-         branches = do
-            clause <- map renameVars clauses
-            unifier <- unify (apply usf nextGoal) (lhs clause)
-            return (unifier, rhs clause (map snd unifier))
+         getBranches = do
+            clauses <- asks fst
+            return $ do
+               clause <- map renameVars clauses
+               unifier <- unify (apply usf nextGoal) (lhs clause)
+               return (unifier, rhs clause (map snd unifier))
 
          renameVars = everywhere (mkT (\(VariableName _ v) -> VariableName depth v)) :: Clause -> Clause
 
@@ -230,7 +247,7 @@ resolve program goals = map cleanup <$> resolve' 1 [] goals []
          trace_ "Depth"   depth
          trace_ "Unif."   u
          trace_ "Goals"   gs
-         trace_ "Alts."   ((u',gs'):alts)
+         mapM_ (trace_ "Alt.") ((u',gs'):alts)
          mapM_ (trace_ "Stack") stack
          let u'' = u +++ u'
          resolve' (succ depth) u'' (map (apply u'') $ gs' ++ gs) ((u,gs,alts) : stack)
@@ -264,7 +281,7 @@ consultString = parse (whitespace >> program <* eof) "(input)"
 
 program = many (clause <* char '.' <* whitespace)
 
-whitespace = skipMany (comment <|> skip space)
+whitespace = skipMany (comment <|> skip space <?> "")
 comment = skip $ choice
    [ string "/*" >> (manyTill anyChar $ try $ string "*/")
    , char '%' >> (manyTill anyChar $ try $ skip newline <|> eof)
@@ -352,6 +369,7 @@ operatorNames = [ ";", ",", "<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is"
 
 variable = (Wildcard <$ char '_' <* notFollowedBy alphaNum)
        <|> Var <$> vname
+       <?> "variable"
 
 vname = VariableName 0 <$> ((:) <$> upper    <*> many  (alphaNum <|> char '_') <|>
                             (:) <$> char '_' <*> many1 (alphaNum <|> char '_'))
@@ -361,6 +379,7 @@ atom = (:) <$> lower <*> many (alphaNum <|> char '_')
    <|> choice (map string operatorNames)
    <|> many1 (oneOf "#$&*+/.<=>\\^~")
    <|> between (char '\'') (char '\'') (many (noneOf "'"))
+   <?> "atom"
 
 struct = do a <- atom
             ts <- option [] $ between (charWs '(') (char ')') terms
