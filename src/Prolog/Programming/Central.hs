@@ -87,8 +87,8 @@ instance Partial Prolog_Programming Config Facts where
                 check (Hidden _ spec)                   = check spec
             incorrect <- liftIO $ concatMap (\(s,mbb) -> maybe [(s,Timeout)] (\r -> case r of { Ok -> []; _ -> [(s,r)] }) mbb) <$> sequence [ (s,) <$> timeout 10000000 (evaluate (check s)) | s <- specs ]
             let explain x              Timeout              = hsep [ describe x, text "*scheint nicht zu terminieren*" ]
-                explain x@(Hidden _ _) _                    = describe x
                 explain x              (ErrorMsg msg)       = vcat [ describe x, nest 4 $ vcat [ text "Folgender Fehler ist aufgetreten:", text $ msg ] ]
+                explain x@(Hidden _ _) _                    = describe x
                 explain x              (WrongResult actual) = vcat [ describe x, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ actual ] ]
                 explain x              Wrong                = describe x
                 describe (QueryWithAnswers query _) = text $ show query
