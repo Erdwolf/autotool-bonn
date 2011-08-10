@@ -6,6 +6,7 @@ import Control.Monad
 import Control.Arrow (second, (***))
 import Data.Generics (Data(..), Typeable(..), everywhere, mkT, everything, mkQ)
 import Data.List (intercalate, nub)
+import Data.Char (isLetter)
 --
 import Text.Parsec
 import Text.Parsec.Expr
@@ -39,21 +40,47 @@ type Program      = [Clause]
 type Goal         = Term
 
 instance Show Term where
-   show t@(Struct "." [_,_]) =
-      let (ts,rest) = g [] t in
-         --case guard (isNil rest) >> sequence (map toChar ts) of
-         --   Just str -> show str
-         --   Nothing  ->
-               "[" ++ intercalate "," (map show ts) ++ (if isNil rest then "" else "|" ++ show rest) ++  "]"
-    where g ts (Struct "." [h,t]) = g (h:ts) t
-          g ts t = (reverse ts, t)
-          isNil (Struct "[]" []) = True
-          isNil _                = False
-   show (Struct a []) = a
-   show (Struct a ts) = a ++ "(" ++ intercalate ", " (map show ts) ++ ")"
-   show (Var v)       = show v
-   show Wildcard      = "_"
-   show Cut           = "!"
+   show = prettyPrint False 0
+
+
+prettyPrint True _ t@(Struct "," [_,_]) = "(" ++ prettyPrint False 0 t ++  ")"
+prettyPrint f n (Struct (flip lookup operatorTable->Just (p,InfixOp assoc name)) [l,r]) =
+   parensIf (n >= p) $ prettyPrint f n_l l ++ spaced name ++ prettyPrint f n_r r
+     where (n_l,n_r) = case assoc of
+                           AssocLeft  -> (p-1, p)
+                           AssocRight -> (p, p-1)
+prettyPrint _ _ t@(Struct "." [_,_]) =
+   let (ts,rest) = g [] t in
+      --case guard (isNil rest) >> sequence (map toChar ts) of
+      --   Just str -> prettyPrint str
+      --   Nothing  ->
+            "[" ++ intercalate "," (map (prettyPrint True 0) ts) ++ (if isNil rest then "" else "|" ++ (prettyPrint True 0) rest) ++  "]"
+   where g ts (Struct "." [h,t]) = g (h:ts) t
+         g ts t = (reverse ts, t)
+         isNil (Struct "[]" []) = True
+         isNil _                = False
+prettyPrint _ _ (Struct a []) = a
+prettyPrint _ _ (Struct a ts) = a ++ "(" ++ intercalate ", " (map (prettyPrint True 0) ts) ++ ")"
+prettyPrint _ _ (Var v)       = show v
+prettyPrint _ _ Wildcard      = "_"
+prettyPrint _ _ Cut           = "!"
+
+spaced s = let h = head s
+               l = last s
+           in spaceIf (isLetter h) ++ s ++ spaceIf (isLetter l || ',' == l)
+
+spaceIf True  = " "
+spaceIf False = ""
+
+parensIf :: Bool -> String -> String
+parensIf True  s = "(" ++ s ++")"
+parensIf False s = s
+
+
+operatorTable :: [(String, (Int,Op))]
+operatorTable = concat $ zipWith (map . g) [1..] $ hierarchy False
+ where g p op@(InfixOp _ name) = (name,(p,op))
+       g p op@(PrefixOp name)  = (name,(p,op))
 
 instance Show VariableName where
    show (VariableName 0 v) = v
@@ -187,15 +214,11 @@ trace_ label x = trace (label++":\t"++show x)
 
 resolve :: (Functor m, MonadTrace m, Error e, MonadError e m) => Program -> [Goal] -> m [Unifier]
 -- Yield all unifiers that resolve <goal> using the clauses from <program>.
-resolve program goals = map cleanup <$> runReaderT (resolve' 1 [] goals []) (initialClauses, knownSignatures)
+resolve program goals = map cleanup <$> runReaderT (resolve' 1 [] goals []) (createDB (builtins ++ program) ["false","fail"])   -- NOTE Is it a good idea to "hardcode" the builtins like this?
   where
       cleanup = filter ((\(VariableName i _) -> i == 0) . fst)
 
-      initialClauses = builtins ++ program -- NOTE Is it a good idea to "hardcode" the builtins like this?
-
-      knownSignatures = nub $ [ Signature (name,0) | name <- ["false","fail"] ] ++ map (signature . lhs) initialClauses
-
-      whenPredicateIsUnknown sig action = asks ((sig `notElem`).snd) >>= flip when action
+      whenPredicateIsUnknown sig action = asks (`hasPredicate` sig) >>= flip unless action
 
       resolve' depth usf [] stack = do
          trace "=== yield solution ==="
@@ -215,7 +238,7 @@ resolve program goals = map cleanup <$> runReaderT (resolve' 1 [] goals []) (ini
          trace_ "Unif."   usf
          trace_ "Goals"   goals
          mapM_ (trace_ "Stack") stack
-         local ((Clause fact []:) *** (signature fact:)) $ resolve' depth usf gs stack
+         local (asserta fact) $ resolve' depth usf gs stack
       resolve' depth usf (nextGoal:gs) stack = do
          trace "=== resolve' ==="
          trace_ "Depth"   depth
@@ -229,7 +252,7 @@ resolve program goals = map cleanup <$> runReaderT (resolve' 1 [] goals []) (ini
          choose depth usf gs branches stack
        where
          getBranches = do
-            clauses <- asks fst
+            clauses <- asks getClauses
             return $ do
                clause <- map renameVars clauses
                unifier <- unify (apply usf nextGoal) (lhs clause)
@@ -271,6 +294,17 @@ instance Show Signature where
 
 signature :: Term -> Signature
 signature (Struct name ts) = Signature (name, length ts)
+
+
+data Database = DB [Clause] [Signature]
+
+hasPredicate (DB _ signatures) sig = sig `elem` signatures
+
+createDB clauses emptyPredicates = DB clauses (nub $ map (signature . lhs) clauses ++ [ Signature (name,0) | name <- emptyPredicates ])
+
+getClauses (DB clauses _) = clauses
+
+asserta fact (DB clauses signatures) = DB (Clause fact []:clauses) (signature fact:signatures)
 
 
 {- Parser -}
@@ -333,19 +367,29 @@ terms = sepBy1 termWithoutConjunction (charWs ',')
 term = term' False
 termWithoutConjunction = term' True
 
-term' ignoreConjunction = buildExpressionParser (reverse hierarchy) (bottom <* whitespace)
+data Op = PrefixOp String
+        | InfixOp Assoc String
+
+hierarchy :: Bool -> [[Op]]
+hierarchy ignoreConjunction =
+   --[ [ InfixOp NonAssoc "-->", InfixOp NonAssoc ":-" ]
+   [ [ infixR ";" ] ] ++
+   (if ignoreConjunction then [] else [ [ infixR "," ] ])  ++
+   [ [ prefix "\\+" ]
+   , map infixL ["<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is"]
+   , map infixL ["+", "-", "\\"]
+   , [ infixL "*"]
+   , [ infixL "mod" ]
+   , [ prefix "-" ]
+   ]
  where
-   hierarchy =
-      --[ [ binary "-->", binary ":-" ]
-      [ [ binary ";" ] ] ++
-      (if ignoreConjunction then [] else [ [ binary "," ] ])  ++
-      [ [ prefix "\\+" ]
-      , map binary ["<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is"]
-      , map binary ["+", "-", "\\"]
-      , [ binary "*"]
-      , [ binary "mod" ]
-      , [ prefix "-" ]
-      ]
+   prefix = PrefixOp
+   infixL = InfixOp AssocLeft
+   infixR = InfixOp AssocRight
+
+
+term' ignoreConjunction = buildExpressionParser (reverse $ map (map toParser) $ hierarchy ignoreConjunction) (bottom <* whitespace)
+ where
    bottom = variable
         <|> struct
         <|> list
@@ -354,20 +398,20 @@ term' ignoreConjunction = buildExpressionParser (reverse hierarchy) (bottom <* w
         <|> Struct "{}" <$> between (charWs '{') (char '}') terms
         <|> between (charWs '(') (char ')') term
 
-   prefix name = Prefix (do{ reservedOp name; return (\t -> Struct name [t]) })
-   binary name = Infix (do{ reservedOp name; return (\t1 t2 -> Struct name [t1, t2]) }) AssocRight
+   toParser (PrefixOp name) = Prefix (do{ reservedOp name; return (\t -> Struct name [t]) })
+   toParser (InfixOp assoc name) = Infix (do{ reservedOp name; return (\t1 t2 -> Struct name [t1, t2]) }) assoc
    reservedOp = P.reservedOp $ P.makeTokenParser $ emptyDef
       { P.opStart = oneOf ";,<=>\\i*+m"
-      , P.opLetter = oneOf "=.:<"
+      , P.opLetter = oneOf "=.:<+"
       , P.reservedOpNames = operatorNames
       , P.caseSensitive = True
       }
 
 charWs c = char c <* whitespace
 
-operatorNames = [ ";", ",", "<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is", "*", "+", "-", "\\", "mod" ]
+operatorNames = [ ";", ",", "<", "=..", "=:=", "=<", "=", ">=", ">", "\\=", "is", "*", "+", "-", "\\", "mod", "\\+" ]
 
-variable = (Wildcard <$ char '_' <* notFollowedBy alphaNum)
+variable = (Wildcard <$ try (char '_' <* notFollowedBy (alphaNum <|> char '_')))
        <|> Var <$> vname
        <?> "variable"
 
