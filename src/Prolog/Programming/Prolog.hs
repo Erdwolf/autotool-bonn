@@ -20,8 +20,6 @@ import Text.Parsec.Language (emptyDef)
 import Control.Applicative ((<$>),(<*>),(<$),(<*), Applicative(..))
 --
 import GHC.Exts (IsString(..))
---
-import System.Console.Readline (readline, addHistory)
 
 
 data Term = Struct Atom [Term]
@@ -553,11 +551,3 @@ instance IsString VariableName where
       case parse (vname <* eof) "(VariableName literal)" s of
          Left  e -> error (show e)
          Right c -> c
-
-
--- SWI-Prolog-style interactive prompt:
-main = do putStrLn "Prolog.hs interactive prompt. (Exit with Ctrl-D)"
-          forever $ readline "?- " >>= handleExit >>= \input -> case parse (terms <* char '.' <* eof) "(input)" input of Left e -> print e; Right ts -> addHistory input >> resolve [] ts >>= printSolutions
-handleExit = maybe (fail "End of input") return
-printSolutions [] = putStrLn "false.\n"
-printSolutions (x:xs) = putStr (if null x then "true" else intercalate ",\n" [ show k ++ " = " ++ show v | (k,v) <- x ]) >> getChar >>= \c -> case c of ' ' -> putStrLn ";" >> printSolutions xs; _ -> putStrLn ""
