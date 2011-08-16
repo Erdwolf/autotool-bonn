@@ -186,10 +186,10 @@ splitModules =
    map unlines . splitBy (isPrefixOf "---")  . lines
 
 splitBy p = dropOdd . groupBy (\l r -> not (p l) && not (p r))
-
-dropOdd [] = []
-dropOdd [x] = [x]
-dropOdd (x:y:xs) = x:dropOdd xs
+  where
+   dropOdd [] = []
+   dropOdd [x] = [x]
+   dropOdd (x:y:xs) = x:dropOdd xs
 
 
 withNames mods =

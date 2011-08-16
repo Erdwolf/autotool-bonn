@@ -1,28 +1,36 @@
-{-# LANGUAGE DeriveDataTypeable, ViewPatterns, GeneralizedNewtypeDeriving, FlexibleInstances #-}
+{-# LANGUAGE DeriveDataTypeable, ViewPatterns, GeneralizedNewtypeDeriving, FlexibleInstances, FlexibleContexts, MultiParamTypeClasses, UndecidableInstances, IncoherentInstances #-}
 module Prolog.Programming.Prolog where
 import Control.Monad.Reader
+import Control.Monad.Writer
+import Control.Monad.State
 import Control.Monad.Error
 import Control.Monad
-import Control.Arrow (second, (***))
+import Control.Arrow (first, second, (***))
 import Data.Generics (Data(..), Typeable(..), everywhere, mkT, everything, mkQ)
-import Data.List (intercalate, nub)
+import Data.List (intercalate)
 import Data.Char (isLetter)
+import Data.Maybe (isJust)
+import Data.Set (Set)
+import qualified Data.Set as Set
 --
 import Text.Parsec
 import Text.Parsec.Expr
 import qualified Text.Parsec.Token as P
 import Text.Parsec.Language (emptyDef)
-import Control.Applicative ((<$>),(<*>),(<$),(<*))
+import Control.Applicative ((<$>),(<*>),(<$),(<*), Applicative(..))
 --
 import GHC.Exts (IsString(..))
+--
+import System.Console.Readline (readline, addHistory)
 
 
 data Term = Struct Atom [Term]
           | Var VariableName
           | Wildcard
-          | Cut
+          | Cut Int
       deriving (Eq, Data, Typeable)
 var = Var . VariableName 0
+cut = Cut 0
 
 data Clause = Clause { lhs :: Term, rhs_ :: [Goal] }
             | ClauseFn { lhs :: Term, fn :: [Term] -> [Goal] }
@@ -43,12 +51,18 @@ instance Show Term where
    show = prettyPrint False 0
 
 
-prettyPrint True _ t@(Struct "," [_,_]) = "(" ++ prettyPrint False 0 t ++  ")"
+prettyPrint True _ t@(Struct "," [_,_]) =
+   "(" ++ prettyPrint False 0 t ++  ")"
+
 prettyPrint f n (Struct (flip lookup operatorTable->Just (p,InfixOp assoc name)) [l,r]) =
    parensIf (n >= p) $ prettyPrint f n_l l ++ spaced name ++ prettyPrint f n_r r
      where (n_l,n_r) = case assoc of
                            AssocLeft  -> (p-1, p)
                            AssocRight -> (p, p-1)
+
+prettyPrint f n (Struct (flip lookup operatorTable->Just (p,PrefixOp name)) [r]) =
+   parensIf (n >= p) $ name ++ prettyPrint f (p {- Non-associative -}) r
+
 prettyPrint _ _ t@(Struct "." [_,_]) =
    let (ts,rest) = g [] t in
       --case guard (isNil rest) >> sequence (map toChar ts) of
@@ -59,11 +73,14 @@ prettyPrint _ _ t@(Struct "." [_,_]) =
          g ts t = (reverse ts, t)
          isNil (Struct "[]" []) = True
          isNil _                = False
-prettyPrint _ _ (Struct a []) = a
-prettyPrint _ _ (Struct a ts) = a ++ "(" ++ intercalate ", " (map (prettyPrint True 0) ts) ++ ")"
-prettyPrint _ _ (Var v)       = show v
-prettyPrint _ _ Wildcard      = "_"
-prettyPrint _ _ Cut           = "!"
+
+prettyPrint _ _ (Struct a [])   = a
+prettyPrint _ _ (Struct a ts)   = a ++ "(" ++ intercalate ", " (map (prettyPrint True 0) ts) ++ ")"
+prettyPrint _ _ (Var v)         = show v
+prettyPrint _ _ Wildcard        = "_"
+prettyPrint _ _ ((==cut)->True) = "!"
+prettyPrint _ _ (Cut n)         = "!^" ++ show n
+
 
 spaced s = let h = head s
                l = last s
@@ -135,11 +152,11 @@ apply = flip $ foldl $ flip substitute
 builtins :: [Clause]
 builtins =
    [ Clause (Struct "="   [var "X", var "X"]) []
-   , Clause (Struct "\\=" [var "X", var "X"]) [Cut, Struct "false" []]
+   , Clause (Struct "\\=" [var "X", var "X"]) [cut, Struct "false" []]
    , Clause (Struct "\\=" [var "X", var "Y"]) []
-   , Clause (Struct "not" [var "A"]) [var "A", Cut, Struct "false" []]
+   , Clause (Struct "not" [var "A"]) [var "A", cut, Struct "false" []]
    , Clause (Struct "not" [var "A"]) []
-   , Clause (Struct "\\+" [var "A"]) [var "A", Cut, Struct "false" []]
+   , Clause (Struct "\\+" [var "A"]) [var "A", cut, Struct "false" []]
    , Clause (Struct "\\+" [var "A"]) []
    , Clause (Struct "true" []) []
    , Clause (Struct "," [var "A", var "B"]) [var "A", var "B"]
@@ -151,9 +168,9 @@ builtins =
    , ClauseFn (Struct ">=" [var "N", var "M"]) (binaryIntegerPredicate (>=))
    , ClauseFn (Struct "=:=" [var "N", var "M"]) (binaryIntegerPredicate (==))
    , ClauseFn (Struct "is" [var "L", var "R"]) is
-   , Clause (Struct "member" [var "X", Struct "." [var "X", var "Rest"]]) [Cut]
-   , Clause (Struct "member" [var "X", Struct "." [Wildcard, var "Rest"]])
-                [Struct "member" [var "X", var "Rest"]]
+   , Clause (Struct "member" [var "X", Struct "." [var "X", Wildcard]]) []
+   , Clause (Struct "member" [var "X", Struct "." [Wildcard, var "Xs"]])
+                [Struct "member" [var "X", var "Xs"]]
    , ClauseFn (Struct "=.." [var "Term", var "List"]) univ
    , ClauseFn (Struct "atom" [var "T"]) atom
    , ClauseFn (Struct "char_code" [var "Atom", var "Code"]) char_code
@@ -204,7 +221,7 @@ instance MonadTrace IO where
    trace _ = return ()
 instance MonadTrace (Either err) where
    trace _ = return ()
-instance MonadTrace m => MonadTrace (ReaderT a m) where
+instance (MonadTrace m, MonadTrans t, Monad (t m)) => MonadTrace (t m) where
    trace x = lift (trace x)
 
 
@@ -212,33 +229,96 @@ newtype Trace m a = Trace { withTrace :: m a }  deriving (Functor, Monad, MonadE
 
 trace_ label x = trace (label++":\t"++show x)
 
+
+class Monad m => MonadGraphGen m where
+   createConnections :: Unifier -> [Goal] -> [Branch] -> m ()
+   markSolution :: Unifier -> m ()
+   markCutBranches :: Stack -> m ()
+
+instance MonadGraphGen m => MonadGraphGen (ReaderT r m) where
+   createConnections x y z = lift (createConnections x y z)
+   markSolution = lift . markSolution
+   markCutBranches = lift . markCutBranches
+
+
+newtype NoGraphT m a = NoGraphT {runNoGraphT :: m a} deriving (Monad, Functor, MonadFix, MonadPlus, Applicative, MonadError e)
+instance MonadTrans NoGraphT where
+   lift = NoGraphT
+
+instance Monad m => MonadGraphGen (NoGraphT m) where
+   createConnections _ _ _ = NoGraphT $ return ()
+   markSolution      _     = NoGraphT $ return ()
+   markCutBranches   _     = NoGraphT $ return ()
+
+
+type Stack = [(Unifier, [Goal], [Branch])]
+type Branch = (Unifier, [Goal])
+
 resolve :: (Functor m, MonadTrace m, Error e, MonadError e m) => Program -> [Goal] -> m [Unifier]
+resolve program goals = runNoGraphT (resolve_ program goals)
+
+resolve_ :: (Functor m, MonadTrace m, Error e, MonadError e m, MonadGraphGen m) => Program -> [Goal] -> m [Unifier]
 -- Yield all unifiers that resolve <goal> using the clauses from <program>.
-resolve program goals = map cleanup <$> runReaderT (resolve' 1 [] goals []) (createDB (builtins ++ program) ["false","fail"])   -- NOTE Is it a good idea to "hardcode" the builtins like this?
+resolve_ program goals = map cleanup <$> runReaderT (resolve' 1 [] goals []) (createDB (builtins ++ program) ["false","fail"])   -- NOTE Is it a good idea to "hardcode" the builtins like this?
   where
       cleanup = filter ((\(VariableName i _) -> i == 0) . fst)
 
       whenPredicateIsUnknown sig action = asks (`hasPredicate` sig) >>= flip unless action
 
+      --resolve' :: Int -> Unifier -> [Goal] -> Stack -> m [Unifier]
       resolve' depth usf [] stack = do
          trace "=== yield solution ==="
          trace_ "Depth" depth
          trace_ "Unif." usf
+
+         markSolution usf
+
          (cleanup usf:) <$> backtrack depth stack
-      resolve' depth usf (Cut:gs) stack = do
+      resolve' depth usf (Cut n:gs) stack = do
          trace "=== resolve' (Cut) ==="
          trace_ "Depth"   depth
          trace_ "Unif."   usf
-         trace_ "Goals"   (Cut:gs)
+         trace_ "Goals"   (Cut n:gs)
          mapM_ (trace_ "Stack") stack
-         resolve' depth usf gs (cut stack)
+
+         createConnections usf (Cut n:gs) [(usf, gs)]
+
+         markCutBranches (take n stack)
+
+         resolve' depth usf gs (drop n stack)
       resolve' depth usf goals@(Struct "asserta" [fact]:gs) stack = do
          trace "=== resolve' (asserta/1) ==="
          trace_ "Depth"   depth
          trace_ "Unif."   usf
          trace_ "Goals"   goals
          mapM_ (trace_ "Stack") stack
+
+         createConnections usf goals [(usf, gs)]
+
          local (asserta fact) $ resolve' depth usf gs stack
+      resolve' depth usf goals@(Struct "assertz" [fact]:gs) stack = do
+         trace "=== resolve' (assertz/1) ==="
+         trace_ "Depth"   depth
+         trace_ "Unif."   usf
+         trace_ "Goals"   goals
+         mapM_ (trace_ "Stack") stack
+
+         createConnections usf goals [(usf, gs)]
+
+         local (assertz fact) $ resolve' depth usf gs stack
+      resolve' depth usf goals@(Struct "retract" [t]:gs) stack = do
+         trace "=== resolve' (retract/1) ==="
+         trace_ "Depth"   depth
+         trace_ "Unif."   usf
+         trace_ "Goals"   goals
+         mapM_ (trace_ "Stack") stack
+
+         createConnections usf goals [(usf, gs)]
+
+         clauses <- asks getClauses
+         case [ t' | Clause t' [] <- clauses, isJust (unify t t') ] of
+            []       -> return (fail "retract/1")
+            (fact:_) -> local (abolish fact) $ resolve' depth usf gs stack
       resolve' depth usf (nextGoal:gs) stack = do
          trace "=== resolve' ==="
          trace_ "Depth"   depth
@@ -249,20 +329,26 @@ resolve program goals = map cleanup <$> runReaderT (resolve' 1 [] goals []) (cre
          whenPredicateIsUnknown sig $ do
             throwError $ strMsg $ "Unknown predicate: " ++ show sig
          branches <- getBranches
+
+         createConnections usf (nextGoal:gs) branches
+
          choose depth usf gs branches stack
        where
          getBranches = do
             clauses <- asks getClauses
             return $ do
-               clause <- map renameVars clauses
-               unifier <- unify (apply usf nextGoal) (lhs clause)
-               return (unifier, rhs clause (map snd unifier))
+               clause <- renameVars clauses
+               u <- unify (apply usf nextGoal) (lhs clause)
+               let newGoals = rhs clause (map snd u)
+               let u' = usf +++ u
+               let gs'  = map (apply u') $ newGoals ++ gs
+               let gs'' = everywhere (mkT shiftCut) gs'
+               return (u', gs'')
 
-         renameVars = everywhere (mkT (\(VariableName _ v) -> VariableName depth v)) :: Clause -> Clause
+         shiftCut (Cut n) = Cut (succ n)
+         shiftCut t       = t
 
-      cut ((_,_,[]):stack) = cut stack
-      cut (_:stack) = stack
-      cut [] = []
+         renameVars = everywhere $ mkT $ \(VariableName _ v) -> VariableName depth v
 
       choose depth _ _  []              stack = backtrack depth stack
       choose depth u gs ((u',gs'):alts) stack = do
@@ -272,8 +358,7 @@ resolve program goals = map cleanup <$> runReaderT (resolve' 1 [] goals []) (cre
          trace_ "Goals"   gs
          mapM_ (trace_ "Alt.") ((u',gs'):alts)
          mapM_ (trace_ "Stack") stack
-         let u'' = u +++ u'
-         resolve' (succ depth) u'' (map (apply u'') $ gs' ++ gs) ((u,gs,alts) : stack)
+         resolve' (succ depth) u' gs' ((u,gs,alts) : stack)
 
       backtrack _     [] = do
          trace "=== give up ==="
@@ -288,7 +373,8 @@ simplify :: Unifier -> Unifier
 simplify u = map (second (apply u)) u
 
 
-newtype Signature = Signature (Atom, Int) deriving (Eq)
+
+newtype Signature = Signature (Atom, Int) deriving (Ord, Eq)
 instance Show Signature where
    show (Signature (name, arity)) = name ++ "/" ++ show arity
 
@@ -296,15 +382,20 @@ signature :: Term -> Signature
 signature (Struct name ts) = Signature (name, length ts)
 
 
-data Database = DB [Clause] [Signature]
+data Database = DB [Clause] (Set Signature)
 
-hasPredicate (DB _ signatures) sig = sig `elem` signatures
+hasPredicate (DB _ signatures) sig = sig `Set.member` signatures
 
-createDB clauses emptyPredicates = DB clauses (nub $ map (signature . lhs) clauses ++ [ Signature (name,0) | name <- emptyPredicates ])
+createDB clauses emptyPredicates = DB clauses (Set.fromList $ map (signature . lhs) clauses ++ [ Signature (name,0) | name <- emptyPredicates ])
 
 getClauses (DB clauses _) = clauses
 
-asserta fact (DB clauses signatures) = DB (Clause fact []:clauses) (signature fact:signatures)
+asserta fact (DB clauses signatures) = DB ([Clause fact []] ++ clauses) (Set.insert (signature fact) signatures)
+assertz fact (DB clauses signatures) = DB (clauses ++ [Clause fact []]) (Set.insert (signature fact) signatures)
+abolish fact (DB clauses signatures) = DB (deleteFact clauses) (signatures {- Once known, the signature is never removed. -} )
+   where deleteFact (Clause t []:cs) | t == fact = cs
+         deleteFact (_          :cs)             = cs
+         deleteFact []                           = []
 
 
 {- Parser -}
@@ -389,23 +480,23 @@ hierarchy ignoreConjunction =
 
 
 term' ignoreConjunction = buildExpressionParser (reverse $ map (map toParser) $ hierarchy ignoreConjunction) (bottom <* whitespace)
- where
-   bottom = variable
-        <|> struct
-        <|> list
-        <|> stringLiteral
-        <|> Cut <$ char '!'
-        <|> Struct "{}" <$> between (charWs '{') (char '}') terms
-        <|> between (charWs '(') (char ')') term
 
-   toParser (PrefixOp name) = Prefix (do{ reservedOp name; return (\t -> Struct name [t]) })
-   toParser (InfixOp assoc name) = Infix (do{ reservedOp name; return (\t1 t2 -> Struct name [t1, t2]) }) assoc
-   reservedOp = P.reservedOp $ P.makeTokenParser $ emptyDef
-      { P.opStart = oneOf ";,<=>\\i*+m"
-      , P.opLetter = oneOf "=.:<+"
-      , P.reservedOpNames = operatorNames
-      , P.caseSensitive = True
-      }
+bottom = variable
+      <|> struct
+      <|> list
+      <|> stringLiteral
+      <|> cut <$ char '!'
+      <|> Struct "{}" <$> between (charWs '{') (char '}') terms
+      <|> between (charWs '(') (char ')') term
+
+toParser (PrefixOp name) = Prefix (do{ reservedOp name; return (\t -> Struct name [t]) })
+toParser (InfixOp assoc name) = Infix (do{ reservedOp name; return (\t1 t2 -> Struct name [t1, t2]) }) assoc
+reservedOp = P.reservedOp $ P.makeTokenParser $ emptyDef
+   { P.opStart = oneOf ";,<=>\\i*+m"
+   , P.opLetter = oneOf "=.:<+"
+   , P.reservedOpNames = operatorNames
+   , P.caseSensitive = True
+   }
 
 charWs c = char c <* whitespace
 
@@ -462,3 +553,11 @@ instance IsString VariableName where
       case parse (vname <* eof) "(VariableName literal)" s of
          Left  e -> error (show e)
          Right c -> c
+
+
+-- SWI-Prolog-style interactive prompt:
+main = do putStrLn "Prolog.hs interactive prompt. (Exit with Ctrl-D)"
+          forever $ readline "?- " >>= handleExit >>= \input -> case parse (terms <* char '.' <* eof) "(input)" input of Left e -> print e; Right ts -> addHistory input >> resolve [] ts >>= printSolutions
+handleExit = maybe (fail "End of input") return
+printSolutions [] = putStrLn "false.\n"
+printSolutions (x:xs) = putStr (if null x then "true" else intercalate ",\n" [ show k ++ " = " ++ show v | (k,v) <- x ]) >> getChar >>= \c -> case c of ' ' -> putStrLn ";" >> printSolutions xs; _ -> putStrLn ""
