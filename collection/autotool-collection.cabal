@@ -60,7 +60,8 @@ Library
         haskell-src-exts,
         template-haskell,
         HUnit,
-        QuickCheck
+        QuickCheck,
+        prolog == 0.1.*
     Hs-source-dirs:
         src
         src/control

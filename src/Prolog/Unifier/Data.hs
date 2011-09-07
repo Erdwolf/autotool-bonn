@@ -1,4 +1,4 @@
-{-# LANGUAGE OverlappingInstances, TemplateHaskell, DeriveDataTypeable, StandaloneDeriving #-}
+{-# LANGUAGE OverlappingInstances, TemplateHaskell, DeriveDataTypeable #-}
 
 module Prolog.Unifier.Data where
 
@@ -9,12 +9,9 @@ import Autolib.Size
 import Data.Typeable
 import Data.Generics (gsize)
 
-import qualified Prolog.Programming.Prolog as Pl
+import qualified Language.Prolog as Pl
 import Text.Parsec
 import Control.Applicative ((<$>),(<*>),(<*))
-
-deriving instance Ord Pl.VariableName
-deriving instance Ord Pl.Term
 
 data Unifier = Unifier Pl.Unifier deriving ( Eq, Ord, Typeable, Read, Show )
 data Config = Config Pl.Term Pl.Term deriving ( Eq, Ord, Typeable, Read, Show  )

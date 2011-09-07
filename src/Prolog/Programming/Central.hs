@@ -2,7 +2,7 @@
 
 module Prolog.Programming.Central where
 
-import Prolog.Programming.Prolog (term, apply, resolve, consultString, VariableName(..), Term)
+import Language.Prolog (term, apply, resolve, consultString, VariableName(..), Term)
 import Prolog.Programming.Data
 
 import Debug ( debug )

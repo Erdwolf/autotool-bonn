@@ -8,7 +8,7 @@ import Autolib.Size
 
 import Data.Typeable
 
-import Prolog.Programming.Prolog (term, Term)
+import Language.Prolog (term, Term)
 import Text.Parsec
 import Control.Applicative ((<$>),(<*>),(<*))
 

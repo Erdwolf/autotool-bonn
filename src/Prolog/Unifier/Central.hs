@@ -23,7 +23,8 @@ import Control.Applicative ((<$>),(<*>),(<*))
 import Control.Arrow (first, second)
 import Control.Monad (guard)
 
-import Prolog.Programming.Prolog (unify_with_occurs_check, Term(Var), VariableName(..), simplify, apply)
+import Language.Prolog (unify_with_occurs_check, Term(Var), VariableName(..), apply)
+import Language.Prolog.IsString
 
 data Prolog_Unifier = Prolog_Unifier deriving Typeable
 
@@ -61,7 +62,7 @@ instance Partial Prolog_Unifier Config Unifier where
     initial p _ = Unifier [] -- [("X", "enter_solution_here")]
 
     total p (Config t1 t2) (Unifier u) = do
-        case unify_with_occurs_check t1 t2 >>= return . simplify >>= \u' -> guard (e u u' && e u' u) of
+        case unify_with_occurs_check t1 t2 >>= \u' -> guard (e u u' && e u' u) of
            Just () -> inform $ text "Ja."
            Nothing -> reject $ text "Nein."
          where

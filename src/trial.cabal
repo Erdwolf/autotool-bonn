@@ -18,7 +18,7 @@ executable Trial.cgi
             old-locale, old-time, xhtml, process, utf8-string, unix,
             hsql, hsql-mysql, parsec, cgi, obdd, array, pretty, filepath,
             hint, mueval, transformers, smallcheck, QuickCheck,
-            HUnit, template-haskell,
+            HUnit, template-haskell, prolog == 0.1.*,
             haskell-src-exts, temporary, syb, strict, haskell-src,
             autolib-todoc, autolib-reader, autolib-data, autolib-util,
             autolib-output, autolib-reporter, autolib-fa, autolib-relation,
