@@ -416,7 +416,6 @@ Library
         Haskell.Syntax.Central
         Prolog.Programming.Central
         Prolog.Programming.Data
-        Prolog.Programming.Prolog
         Prolog.Unifier.Central
         Prolog.Unifier.Data
         Hilbert.Actions
