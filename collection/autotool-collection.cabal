@@ -61,7 +61,8 @@ Library
         template-haskell,
         HUnit,
         QuickCheck,
-        prolog == 0.1.*
+        prolog == 0.1.*,
+        prolog-graph-lib == 0.1.*
     Hs-source-dirs:
         src
         src/control

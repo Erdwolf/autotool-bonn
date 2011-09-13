@@ -23,7 +23,10 @@ import Data.List ((\\), nub, isPrefixOf)
 import Data.Generics (everything, mkQ)
 import Text.Parsec hiding (Ok)
 import Control.Applicative ((<$>),(<*>),(<*))
-import Control.Arrow ((>>>),(***),(&&&),second,arr)
+import Control.Arrow ((>>>),(***),(&&&),first,second,arr)
+
+import Prolog.Programming.GraphViz (resolveWithTree, asInlinePng)
+
 
 rejectIO = Autolib.Reporter.IO.Type.reject
 informIO = Autolib.Reporter.IO.Type.inform
@@ -37,6 +40,7 @@ make_fixed = direct Prolog_Programming $ Config $ unlines
    , " * a_statement_that_has_to_be_true"
    , " * !a_predicate_whose_answers_are_hidden(Foo,Bar): a_predicate(expected_foo1,expected_bar1), a_predicate(expected_foo2,expected_bar2)"
    , " * !a_hidden_statement_that_has_to_be_true"
+   , " * §a_test_with_resolution_tree(X) % Only shown if test fails."
    , " */"
    , "/* Everything from here on (up to an optional hidden section separated by a line of 3 or more dashes)"
    , " * will be part of the visible exercise description (In other words: Only the first comment block is special)."
@@ -49,6 +53,8 @@ make_fixed = direct Prolog_Programming $ Config $ unlines
    , "a_fact."
    , "a_clause(Foo) :- a_clause(Foo)."
    , "a_dcg_rule --> a_dcg_rule, [terminal1, terminal2], { prolog_term }."
+   , "a_test_with_resolution_tree(left_branch) :- fail. % See test line 5"
+   , "a_test_with_resolution_tree(right_branch) :- fail. % See test line 5"
    , "/*"
    , " * The program text will be concatenated with whatever the student submits."
    , " */"
@@ -82,43 +88,59 @@ instance Partial Prolog_Programming Config Facts where
         case consultString (facts ++ "\n" ++ input) of
           Left err -> rejectIO $ text $ show err
           Right p -> do
-            let check (QueryWithAnswers query expected) = case resolveTerm p query of { Right actual | actual =~= expected -> Ok; Right actual -> WrongResult actual; Left err -> ErrorMsg err }
-                check (StatementToCheck query)          = case resolveTerm p query of { Right [] -> Wrong; Right _ -> Ok; Left err -> ErrorMsg err }
+            let check (QueryWithAnswers query expected) =
+                           case solutions p query of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,_) -> WrongResult actual; Left err -> ErrorMsg err }
+                check (WithTree (QueryWithAnswers query expected)) =
+                           case solutions p query of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,tree) -> Tree tree (WrongResult actual); Left err -> ErrorMsg err }
+                check (StatementToCheck query) =
+                           case solutions p query of { Right ([],_) -> Wrong; Right _ -> Ok; Left err -> ErrorMsg err }
+                check (WithTree (StatementToCheck query)) =
+                           case solutions p query of { Right ([],tree) -> Tree tree (Wrong); Right _ -> Ok; Left err -> ErrorMsg err }
                 check (Hidden _ spec)                   = check spec
             incorrect <- liftIO $ concatMap (\(s,mbb) -> maybe [(s,Timeout)] (\r -> case r of { Ok -> []; _ -> [(s,r)] }) mbb) <$> sequence [ (s,) <$> timeout 10000000 (evaluate (check s)) | s <- specs ]
             let explain x              Timeout              = hsep [ describe x, text "*scheint nicht zu terminieren*" ]
-                explain x              (ErrorMsg msg)       = vcat [ describe x, nest 4 $ vcat [ text "Folgender Fehler ist aufgetreten:", text $ msg ] ]
+                explain x              (ErrorMsg msg)       = vcat [ describe x, indent [ text "Folgender Fehler ist aufgetreten:", text $ msg ] ]
                 explain x@(Hidden _ _) _                    = describe x
-                explain x              (WrongResult actual) = vcat [ describe x, nest 4 $ vcat [ text "Ihre Lösung liefert:", text $ show $ actual ] ]
+                explain x              (WrongResult actual) = vcat [ describe x, indent [ text "Ihre Lösung liefert:", indent [ text $ show $ actual ] ] ]
                 explain x              Wrong                = describe x
+                explain x              (Tree tree r)        = vcat [ explain x r, indent [ text "Herleitungsbaum:", indent [ text $ asInlinePng tree ] ] ]
                 describe (QueryWithAnswers query _) = text $ show query
                 describe (StatementToCheck query)   = text $ show query
                 describe (Hidden str _)             = text $ "(ein versteckter Test" ++ str ++")"
+                describe (WithTree x)               = describe x
             if null incorrect
                then informIO $ text "Ja."
                else rejectIO $ vcat [ text "Nein."
-                                  , text "Die Antworten auf die folgenden Anfragen sind inkorrekt:"
-                                  , nest 4 $ vcat $ map (uncurry explain) incorrect
-                                  ]
+                                    , text "Die Antworten auf die folgenden Anfragen sind inkorrekt:"
+                                    , indent (map (uncurry explain) incorrect)
+                                    ]
 
-data TestResult r e = Ok
-                    | Wrong
-                    | WrongResult r
-                    | ErrorMsg e
-                    | Timeout
+indent = nest 4 . vcat
 
+data TestResult r e g = Ok
+                      | Wrong
+                      | WrongResult r
+                      | ErrorMsg e
+                      | Timeout
+                      | Tree g (TestResult r e g)
+
+(=~=) :: [Term] -> [Term] -> Bool
 actual =~= expected =
    (nub actual `isSublistOf` nub expected &&
     nub expected `isSublistOf` nub actual)
+ where
+  isSublistOf xs ys = xs \\ ys == []
 
-isSublistOf xs ys = xs \\ ys == []
+solutions p q = first (map (`apply` q)) <$> resolveWithTree p [q]
 
+
+{-
 resolveTerm p q = do
    us <- resolve p [q]
    return $ removeUnresolvedVariables $ map (flip apply q) us
  where
   removeUnresolvedVariables = filter $ (not.) $ everything (||) $ mkQ False $ \(VariableName i _) -> i /= 0
-
+-}
 
 {- Config parser -}
 
@@ -127,10 +149,13 @@ parseConfig = parse configuration "(config)"
 configuration =
    (,) <$> specification <*> sourceText
 
-data Spec = QueryWithAnswers Term [Term] | StatementToCheck Term | Hidden String Spec
+data Spec = QueryWithAnswers Term [Term]
+          | StatementToCheck Term
+          | Hidden String Spec
+          | WithTree Spec
 
 specification = do
-   let specLine = option id (char '!' >> Hidden <$> option "" (string "(\"" >> anyChar `manyTill`  string "\")")) <*> do
+   let specLine = (.) <$> withTreeFlag <*> hiddenFlag <*> do
          t <- term
          (do char ':' >> optional (char ' ')
              ts <- term `sepBy` string ", "
@@ -141,6 +166,9 @@ specification = do
       case parse specLine ("Specification line " ++ show i) s of
          Right spec -> return spec
          Left err   -> fail (show err)
+ where
+   hiddenFlag   = option id (char '!' >> Hidden <$> option "" (string "(\"" >> anyChar `manyTill`  string "\")"))
+   withTreeFlag = option id (char '§' >> return WithTree)
 
 commentBlock = do
    let startMarker =            string "/* "
