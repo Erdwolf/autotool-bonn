@@ -421,6 +421,7 @@ Library
         Prolog.Programming.Central
         Prolog.Programming.Data
         Prolog.Programming.GraphViz
+        Prolog.Programming.Hex
         Prolog.Unifier.Central
         Prolog.Unifier.Data
         Hilbert.Actions
