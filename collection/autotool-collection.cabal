@@ -65,6 +65,7 @@ Library
         prolog-graph-lib == 0.1.*,
         graphviz,
         fgl,
+        hashable,
         dataenc,
         bytestring
     Hs-source-dirs:
