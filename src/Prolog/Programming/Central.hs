@@ -103,7 +103,7 @@ instance Partial Prolog_Programming Config Facts where
                 explain x@(Hidden _ _) _                    = describe x
                 explain x              (WrongResult actual) = vcat [ describe x, indent [ text "Ihre Lösung liefert:", indent [ text $ show $ actual ] ] ]
                 explain x              Wrong                = describe x
-                explain x              (Tree tree r)        = vcat [ explain x r, indent [ text "Herleitungsbaum:", indent [ text $ asInlinePng tree ] ] ]
+                explain x              (Tree tree r)        = vcat [ explain x r, indent [ text "Ableitungsbaum (Anklicken zum Vergrößern):", indent [ text $ asInlinePng tree ] ] ]
                 describe (QueryWithAnswers query _) = text $ show query
                 describe (StatementToCheck query)   = text $ show query
                 describe (Hidden str _)             = text $ "(ein versteckter Test" ++ str ++")"

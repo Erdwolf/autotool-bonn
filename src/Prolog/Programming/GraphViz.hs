@@ -47,7 +47,7 @@ toPng graph = unsafePerformIO $ do
                Png
                (picsDir </> "thumb_" ++ fname)
    return $ anchor ! [ href ("../pics/" ++ fname) ]
-          $ image ! [ src ("../pics/thumb_" ++ fname), alt "Herleitungsbaum" ]
+          $ image ! [ src ("../pics/thumb_" ++ fname), alt "Ableitungsbaum" ]
  where
    params = nonClusteredParams { fmtNode = \(_,l) -> [toLabel l]
                                , fmtEdge = \(_, _, l) -> [toLabel l]
