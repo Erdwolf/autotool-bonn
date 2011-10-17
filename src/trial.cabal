@@ -759,6 +759,6 @@ executable Trial.cgi
                  Prolog.Unifier.Data,
                  Syntax.Central,
                  Syntax.Checker,
-                 Sytanx.Data,
+                 Syntax.Data,
                  Syntax.Printer,
                  Syntax.Syntax
