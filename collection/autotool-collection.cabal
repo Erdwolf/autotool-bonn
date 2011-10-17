@@ -426,6 +426,11 @@ Library
         Prolog.Programming.Hex
         Prolog.Unifier.Central
         Prolog.Unifier.Data
+        Syntax.Central
+        Syntax.Checker
+        Syntax.Data
+        Syntax.Printer
+        Syntax.Syntax
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central

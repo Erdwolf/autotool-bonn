@@ -756,4 +756,9 @@ executable Trial.cgi
                  Prolog.Programming.GraphViz,
                  Prolog.Programming.Hex,
                  Prolog.Unifier.Central,
-                 Prolog.Unifier.Data
+                 Prolog.Unifier.Data,
+                 Syntax.Central,
+                 Syntax.Checker,
+                 Sytanx.Data,
+                 Syntax.Printer,
+                 Syntax.Syntax

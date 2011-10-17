@@ -35,6 +35,8 @@ import qualified Prolog.Programming.Central
 
 import qualified Prolog.Unifier.Central
 
+import qualified Syntax.Central
+
 import qualified Specify.Inter
 
 import qualified String_Matching.KMP.Central
@@ -279,6 +281,9 @@ tmakers =
           ]
        , heading "Turing-Maschine (als Akzeptor)"
           [ item Turing.Make.acceptor
+          ]
+       , heading "Syntaxdiagramme"
+          [ item Syntax.Central.make_fixed
           ]
        ]
     , heading "Logik"
