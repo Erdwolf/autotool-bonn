@@ -306,7 +306,9 @@ pwmail stud = do
        $ stud { T.next_passwort = c }
 
     let echo = texter
-            [ "Sie haben ein neues Passwort"
+            [ "Subject: " ++ "neues autotool-passwort"
+            , "To: " ++ e
+            , "Sie haben ein neues Passwort"
             , "für das E-Learning-System autotool angefordert."
             , unwords [ "Es lautet:", "Matrikelnummer:", m, "Passwort:", p ]
             , "Es wird durch seine erste Benutzung aktiviert,"
@@ -318,9 +320,7 @@ pwmail stud = do
     let cmd = unwords
            [ echo
            , "|"
-           , "/usr/bin/mail"
-           , "-s", show "neues autotool-passwort"
-           , "-a", show "From: autotool"
+           , "/usr/sbin/sendmail"
            , e
            ]
     when Local.debug $ pre $ "running: " ++ cmd
@@ -339,7 +339,7 @@ pwmail stud = do
 texter :: [ String ] -> String
 texter lines = 
     let parens cs = "( " ++ cs ++ " )"
-        handle line = " echo " ++ line ++ " ; "
+        handle line = " echo " ++ show line ++ " ; "
     in  parens $ unlines $ map handle lines
 
 ----------------------------------------------------------------
