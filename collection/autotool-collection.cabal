@@ -429,6 +429,7 @@ Library
         Syntax.Central
         Syntax.Checker
         Syntax.Data
+        Syntax.LaTeX
         Syntax.Printer
         Syntax.Syntax
         Hilbert.Actions
