@@ -17,7 +17,7 @@ executable Trial.cgi
         build-depends: base==4.*, containers, mtl, directory, random,
             old-locale, old-time, xhtml, process, utf8-string, unix,
             hsql, hsql-mysql, parsec, cgi, obdd, array, pretty, filepath,
-            hint, mueval, transformers, smallcheck, QuickCheck,
+            hint, mueval, transformers, smallcheck, QuickCheck, haskell98,
             HUnit, template-haskell, graphviz, dataenc, bytestring,
             prolog == 0.1.*, prolog-graph-lib == 0.1.*, fgl, hashable,
             haskell-src-exts, temporary, syb, strict, haskell-src,
