@@ -43,12 +43,17 @@ lang4 =
                     ])
     ]
 
+lang5 =
+    [("Word", Loop (Terminal "a") `Chain` Loop (Terminal "b"))
+    ]
+
 
 toParser :: Graph -> LanguageParser ()
 toParser (Terminal t)  = string t
 toParser (Symbol s)    = asks (lookup s) >>= maybe (error "undefined symbol in language definition") id
 toParser (Fork g1 g2)  = toParser g1 `mplus` toParser g2
 toParser (Chain g1 g2) = toParser g1 >> toParser g2
+toParser (Loop g)      = toParser g >> (toParser (Loop g) `mplus` return ())
 toParser Empty         = return ()
 
 

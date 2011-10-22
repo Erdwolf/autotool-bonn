@@ -19,6 +19,7 @@ instance Hashable Graph where
       case graph of
          Chain g1 g2 -> hash "Chain"    `combine` hash g1 `combine` hash g2
          Fork  g1 g2 -> hash "Fork"     `combine` hash g1 `combine` hash g2
+         Loop  g     -> hash "Loop"     `combine` hash g
          Terminal t  -> hash "Terminal" `combine` hash t
          Symbol s    -> hash "Symbol"   `combine` hash s
          Empty       -> hash "Empty"
@@ -95,6 +96,11 @@ latex h (Fork g1 g2) = text "\\rail@bar" $$
                        text ("\\rail@nextbar{" ++ show h' ++ "}") $$
                        latex h' g2 $$
                        text "\\rail@endbar"
+latex h (Loop g) = text "\\rail@plus" $$
+                   latex h g $$
+                   let h' = h + height g in
+                   text ("\\rail@nextplus{" ++ show h' ++ " }") $$
+                   text "\\rail@endplus"
 latex h (Terminal t) = text ("\\rail@term{" ++ t ++ "}[]")
 latex h (Symbol s) = text ("\\rail@nont{" ++ s ++ "}[]")
 latex h Empty = empty
@@ -103,6 +109,7 @@ latex h Empty = empty
 height :: Graph -> Int
 height (Chain g1 g2) = height g1 `max` height g2
 height (Fork g1 g2) = height g1 + height g2
+height (Loop g) = height g + 1
 height (Terminal t) = 1
 height (Symbol s) = 1
 height Empty = 1
