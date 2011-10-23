@@ -653,7 +653,7 @@ tutor_statistik vnr auf = do
 
 
     open_btable_with_sorter 
-	      [ "Matrikel", "Vorname" , "Name" , "Oks" , "Nos" , "Result" ]
+	      [ "Loginname", "Vorname" , "Name" , "Oks" , "Nos" , "Result" ]
 
     begin -- mutex
 

@@ -36,6 +36,7 @@ import qualified Prolog.Programming.Central
 import qualified Prolog.Unifier.Central
 
 import qualified Syntax.Central
+import qualified Syntax.Quiz
 
 import qualified Specify.Inter
 
@@ -284,6 +285,7 @@ tmakers =
           ]
        , heading "Syntaxdiagramme"
           [ item Syntax.Central.make_fixed
+          , item Syntax.Quiz.make
           ]
        ]
     , heading "Logik"

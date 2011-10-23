@@ -430,8 +430,10 @@ Library
         Syntax.Central
         Syntax.Checker
         Syntax.Data
+        Syntax.Generator
         Syntax.LaTeX
         Syntax.Printer
+        Syntax.Quiz
         Syntax.Syntax
         Hilbert.Actions
         Hilbert.Axioms

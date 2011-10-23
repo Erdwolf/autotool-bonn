@@ -50,6 +50,13 @@ instance Partial Syntax Config Solution where
            , text ""
            --, vcat [ vcat [ text symbol <> text ":", nest 4 $ vcat $ map text $ ascii graph ] | (symbol,graph) <- lang ]
            , text (asImage lang)
+           , text ""
+           , text "Ihre Lösung sollte wie folgt aussehen:"
+           , text ""
+           , text "Solution"
+           , text "   [ \"Wort1\", \"Wort2\", \"Wort3\", \"Wort4\" ]"
+           , text ""
+           , text "e.g. [ \"\", \"ada\", \"abbcba\", \"dd\" ]"
            ]
 
     initial p _ = Solution []
