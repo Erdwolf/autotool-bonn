@@ -8,7 +8,6 @@ import System.IO (openTempFile, hClose, hPutStr, getContents)
 import System.IO.Unsafe (unsafePerformIO)
 import System (system)
 import Data.Hashable (Hashable(hash), combine)
-import qualified Codec.Binary.Base64 as Base64
 import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href)
 
 import Prolog.Programming.Hex (hex)

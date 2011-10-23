@@ -1,9 +1,7 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
 module Prolog.Programming.GraphViz (resolveWithTree, asInlinePng) where
 
-import qualified Data.ByteString as BS
 import System.IO.Unsafe (unsafePerformIO)
-import qualified Codec.Binary.Base64 as Base64
 import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href)
 import Data.GraphViz  --(runGraphviz, GraphvizCommand(Dot), setDirectedness, graphToDot, nonClusteredParams, fmtNode, fmtEdge, toLabel, GraphvizOutput(Png))
 import Data.GraphViz.Attributes.HTML (HtmlTextItem)
