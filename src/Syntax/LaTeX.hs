@@ -77,10 +77,11 @@ latexFull lang =
    text "\\begin{document}" $$
    text "\\pagestyle{empty}" $$
    text "\\makeatletter" $$
+   text "\\rail@p {acith}" $$
    text "\\rail@o {1}{" $$
    vcat [ text ("\\rail@begin{" ++ show (height graph) ++ "}{" ++ symb ++ "}") $$
           latex 0 graph $$
-          text "\\rail@end"
+          text "\\rail@vend"
         | (symb, graph) <- lang
         ] $$
    text "}" $$
@@ -100,8 +101,8 @@ latex h (Loop g) = text "\\rail@plus" $$
                    let h' = h + height g in
                    text ("\\rail@nextplus{" ++ show h' ++ " }") $$
                    text "\\rail@endplus"
-latex h (Terminal t) = text ("\\rail@term{" ++ t ++ "}[]")
-latex h (Symbol s) = text ("\\rail@nont{" ++ s ++ "}[]")
+latex h (Terminal t) = text ("\\rail@rterm{" ++ t ++ "}[]")
+latex h (Symbol s) = text ("\\rail@rnont{" ++ s ++ "}[]")
 latex h Empty = empty
 
 
