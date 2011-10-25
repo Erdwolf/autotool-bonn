@@ -34,7 +34,7 @@ removeForks ((x, g):rest) =
 
 
 paths (Fork g1 g2)  = paths g1 ++ paths g2
-paths (Chain g1 g2) = [ Chain x y | x <- paths g1, y <- paths g1 ]
+paths (Chain g1 g2) = [ Chain x y | x <- paths g1, y <- paths g2 ]
 paths x             = [x]
 
 pop = do
