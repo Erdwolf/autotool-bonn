@@ -45,7 +45,7 @@ instance Verify Syntax Config where
 
 instance Partial Syntax Config Solution where
     describe p (Config n lang) =
-      vcat [ hsep [ text "Geben Sie", text (show n), text "Wörter dieser Sprache (mit Startsymbol \"" <> text (fst (head lang)) <> text "\") an:"]
+      vcat [ hsep [ text "Geben Sie genau", text (show n), text "Wörter dieser Sprache (mit Startsymbol \"" <> text (fst (head lang)) <> text "\") an:"]
            , text ""
            --, vcat [ vcat [ text symbol <> text ":", nest 4 $ vcat $ map text $ ascii graph ] | (symbol,graph) <- lang ]
            , text (asImage lang)

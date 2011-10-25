@@ -3,10 +3,11 @@ module Syntax.LaTeX where
 import Text.PrettyPrint.HughesPJ
 
 import System.FilePath (replaceExtension,(</>),(<.>))
-import System.Directory (removeFile, getTemporaryDirectory)
+import System.Directory (removeFile, getTemporaryDirectory, doesFileExist)
 import System.IO (openTempFile, hClose, hPutStr, getContents)
 import System.IO.Unsafe (unsafePerformIO)
 import System (system)
+import Control.Monad (unless)
 import Data.Hashable (Hashable(hash), combine)
 import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href)
 
@@ -29,21 +30,25 @@ picsDir = ".."</>"pics"
 asImage :: [(String,Graph)] -> String
 asImage lang = unsafePerformIO $ do
    let name = hex $ fromIntegral $ hash lang
+   let imageFile = picsDir</>name<.>"png"
 
-   tmp_dir <- getTemporaryDirectory
-   (tempPath, tempHandle) <- openTempFile tmp_dir (name<.>"tex")
-   let pathTo ext = replaceExtension tempPath ext
+   alreadyCached <- doesFileExist imageFile
+   unless alreadyCached $ do
 
-   hPutStr tempHandle $ render $ latexFull lang
-   hClose tempHandle
+      tmp_dir <- getTemporaryDirectory
+      (tempPath, tempHandle) <- openTempFile tmp_dir (name<.>"tex")
+      let pathTo ext = replaceExtension tempPath ext
 
-   system $ "latex -interaction=batchmode --output-dir=\"" ++ tmp_dir ++ "\" " ++ pathTo "tex" ++ " > /dev/null"
-   removeFile $ pathTo "tex"
-   removeFile $ pathTo "aux"
-   removeFile $ pathTo "log"
+      hPutStr tempHandle $ render $ latexFull lang
+      hClose tempHandle
 
-   system $ "dvipng -T tight -z 9 -bg transparent -o " ++ picsDir</>name<.>"png" ++ " " ++ pathTo "dvi" ++ " > /dev/null"
-   removeFile $ pathTo "dvi"
+      system $ "latex -interaction=batchmode --output-dir=\"" ++ tmp_dir ++ "\" " ++ pathTo "tex" ++ " > /dev/null"
+      removeFile $ pathTo "tex"
+      removeFile $ pathTo "aux"
+      removeFile $ pathTo "log"
+
+      system $ "dvipng -T tight -z 9 -bg transparent -o " ++ imageFile ++ " " ++ pathTo "dvi" ++ " > /dev/null"
+      removeFile $ pathTo "dvi"
 
    return $ showHtml $ image ! [ src ("../pics/" ++ name ++ ".png"), alt "Railroad-Diagramm der Sprache" ]
 
