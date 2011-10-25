@@ -10,7 +10,6 @@ import Autolib.Size
 
 import Data.Typeable
 
-deriving instance Eq Graph
 deriving instance Ord Graph
 
 data Config = Config
