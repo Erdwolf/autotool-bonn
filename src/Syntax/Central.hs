@@ -3,7 +3,6 @@
 module Syntax.Central where
 
 import Syntax.Checker (check)
-import Syntax.Printer (ascii)
 import Syntax.Data
 import Syntax.Syntax
 import Syntax.LaTeX (asImage)
