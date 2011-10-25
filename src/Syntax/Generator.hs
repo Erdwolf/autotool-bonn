@@ -20,7 +20,11 @@ generate = do
       else generate
 
 isNice l =
-   all (`elem` terminals l) ["a","b","c","d"]
+   ["a","b","c","d"] `subset` terminals l
+   &&
+   ["B","C","D"] `subset` symbols (l !! 0)
+
+subset xs ys = all (`elem` ys) xs
 
 getRandomLang = getStdRandom $
    maybe (error "Error while generating language.") id . runStateT lang
