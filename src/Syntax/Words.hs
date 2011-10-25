@@ -11,7 +11,7 @@ import Data.List (nub)
 -- 'maxSteps" is the maximal number of production steps, not the number
 -- of generated words, although these are sometimes the same.
 generateWords maxSteps lang =
-    iterate oneStep [[startSymbol]] !! maxSteps
+    filter terminal $ iterate oneStep [[startSymbol]] !! maxSteps
  where
     terminal (T _) = True
     terminal _     = False
