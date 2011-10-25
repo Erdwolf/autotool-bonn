@@ -433,7 +433,6 @@ Library
         Syntax.Generator
         Syntax.Generics
         Syntax.LaTeX
-        Syntax.Printer
         Syntax.Quiz
         Syntax.Syntax
         Syntax.Transformer

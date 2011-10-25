@@ -763,7 +763,6 @@ executable Trial.cgi
                  Syntax.Generics,
                  Syntax.Data,
                  Syntax.LaTeX,
-                 Syntax.Printer,
                  Syntax.Quiz,
                  Syntax.Syntax,
                  Syntax.Transformer
