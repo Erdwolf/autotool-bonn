@@ -56,14 +56,25 @@ lang6 =
                         Empty))
     ]
 
+lang7 =
+    [ ( "S", Fork (Terminal "a")
+                  (Fork
+                       (Symbol "B")
+                       Empty))
+    , ( "B", Fork (Chain (Terminal "b")
+                         (Terminal "b"))
+                  (Fork (Symbol "B") Empty))
+    ]
+
 toParser :: Graph -> LanguageParser ()
 toParser (Terminal t)  = string t
-toParser (Symbol s)    = asks (lookup s) >>= maybe (error "undefined symbol in language definition") id
+toParser (Symbol s)    = ask >>= msum . lookupAll s
 toParser (Fork g1 g2)  = toParser g1 `mplus` toParser g2
 toParser (Chain g1 g2) = toParser g1 >> toParser g2
 toParser (Loop g)      = toParser g >> (toParser (Loop g) `mplus` return ())
 toParser Empty         = return ()
 
+lookupAll key = map snd . filter ((key==).fst)
 
 
 type Env = [(String, LanguageParser ())]
@@ -103,4 +114,5 @@ check lang word =
     let parsers = (map (second toParser) . transform) lang in
     if null parsers
         then False
-        else not $ null $ runLP (snd (head parsers) >> eof) word parsers
+        else let startSymbol = fst $ head $ lang
+             in not $ null $ runLP (msum (lookupAll startSymbol parsers) >> eof) word parsers
