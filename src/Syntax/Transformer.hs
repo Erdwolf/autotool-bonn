@@ -43,7 +43,7 @@ pop = do
     return x
 
 data Rule = Rule String [Item] deriving Show
-data Item = T String | N String deriving Show
+data Item = T String | N String deriving (Show,Eq)
 
 toRule :: (String, Graph) -> Rule
 toRule (x,g) = Rule x $ map toItem $ filter (/=Empty) $ everything (++) ([] `mkQ` q) g
