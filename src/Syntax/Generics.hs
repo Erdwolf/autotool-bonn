@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable, StandaloneDeriving, NoMonomorphismRestriction #-}
-module Generics where
+module Syntax.Generics where
 
 import Syntax.Syntax
 
