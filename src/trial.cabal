@@ -760,8 +760,10 @@ executable Trial.cgi
                  Syntax.Central,
                  Syntax.Checker,
                  Syntax.Generator,
+                 Syntax.Generics,
                  Syntax.Data,
                  Syntax.LaTeX,
                  Syntax.Printer,
                  Syntax.Quiz,
-                 Syntax.Syntax
+                 Syntax.Syntax,
+                 Syntax.Transformer

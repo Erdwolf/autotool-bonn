@@ -431,10 +431,12 @@ Library
         Syntax.Checker
         Syntax.Data
         Syntax.Generator
+        Syntax.Generics
         Syntax.LaTeX
         Syntax.Printer
         Syntax.Quiz
         Syntax.Syntax
+        Syntax.Transformer
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central

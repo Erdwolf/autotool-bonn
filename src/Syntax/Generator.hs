@@ -1,7 +1,8 @@
-{-# LANGUAGE NoMonomorphismRestriction, TupleSections, DeriveDataTypeable, StandaloneDeriving  #-}
+{-# LANGUAGE NoMonomorphismRestriction, TupleSections #-}
 module Syntax.Generator where
 
 import Syntax.Syntax
+import Syntax.Generics
 
 import Control.Applicative
 import Control.Monad
@@ -9,10 +10,7 @@ import Control.Monad.Reader
 import System.Random
 import Control.Monad.State
 
-import Data.Generics
 
-deriving instance Typeable Graph
-deriving instance Data Graph
 
 generate :: IO [(String,Graph)]
 generate = do
@@ -31,16 +29,6 @@ getRandomLang = getStdRandom $
 --   m1 `mplus` m2 = runRandT
 
 -- >>= \g -> guard () >> return g
-
-terminals = everything (++) ([] `mkQ` q)
- where
-   q (Terminal t) = [t]
-   q _            = []
-
-symbols = everything (++) ([] `mkQ` q)
- where
-   q (Symbol s) = [s]
-   q _          = []
 
 
 lang = sequence

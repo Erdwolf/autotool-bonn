@@ -6,5 +6,6 @@ data Graph = Chain    Graph Graph
            | Terminal String
            | Symbol   String
            | Empty
+        deriving Eq
 
-
+type Language = [(String, Graph)] -- The first entry is assumed to be the start symbol

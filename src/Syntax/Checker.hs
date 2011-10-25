@@ -6,9 +6,8 @@ import Control.Monad.State
 import Control.Arrow (second)
 
 import Syntax.Syntax
+import Syntax.Transformer
 
-
-type Language = [(String, Graph)] -- The first entry is assumed to be the start symbol
 
 forks = foldr1 Fork
 
@@ -47,6 +46,15 @@ lang5 =
     [("Word", Loop (Terminal "a") `Chain` Loop (Terminal "b"))
     ]
 
+lang6 =
+    [ ( "S", Fork (Terminal "a")
+                   (Fork (Symbol "B")
+                         Empty))
+    , ( "B", Fork (Chain (Terminal "b")
+                         (Terminal "b"))
+                  (Fork (Symbol "B")
+                        Empty))
+    ]
 
 toParser :: Graph -> LanguageParser ()
 toParser (Terminal t)  = string t
@@ -92,5 +100,7 @@ eof = do
 
 check :: Language -> String -> Bool
 check lang word =
-    let parsers = map (second toParser) lang in
-    not $ null $ runLP (snd (head parsers) >> eof) word parsers
+    let parsers = (map (second toParser) . transform) lang in
+    if null parsers
+        then False
+        else not $ null $ runLP (snd (head parsers) >> eof) word parsers
