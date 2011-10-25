@@ -7,7 +7,7 @@ import Syntax.Words
 
 import Control.Applicative
 import Control.Monad
-import Control.Monad.Reader
+import Control.Monad.Trans
 import System.Random
 import Control.Monad.State
 
@@ -23,7 +23,7 @@ generate = do
 isNice l =
    ["a","b","c","d"] `subset` terminals l
    &&
-   4 <= length (generateWords 10 l)
+   4 == length (take 4 $ generateWords 15 l)
 
 subset xs ys = all (`elem` ys) xs
 
@@ -37,14 +37,14 @@ getRandomLang = getStdRandom $
 
 
 lang = sequence
-         [ ("A",) <$> runReaderT graph 4
-         , ("B",) <$> runReaderT graph 4
-         , ("C",) <$> runReaderT graph 4
-         , ("D",) <$> runReaderT graph 4
+         [ ("A",) <$> evalStateT graph 6
+         , ("B",) <$> evalStateT graph 4
+         , ("C",) <$> evalStateT graph 4
+         , ("D",) <$> evalStateT graph 4
          ]
 
 graph = do
-   n <- ask
+   n <- get
    guard (n > 0)
    oneof
          [ Chain <$> graph' <*> graph'
@@ -54,7 +54,7 @@ graph = do
          , Symbol   <$> symbol
          , return Empty
          ]
-      where graph' = local pred graph
+      where graph' = (modify pred) >> graph
 
 terminal = oneof $ map return ["a","b","c","d"]
 symbol = oneof $ map return ["A","B","C","D"]
@@ -69,7 +69,7 @@ xs \! i = take i xs ++ drop (succ i) xs
 
 
 choose rng = do
-   g <- get
+   g <- lift get
    let (x,g') = randomR rng g
-   put g'
+   lift (put g')
    return x

@@ -66,6 +66,7 @@ lang7 =
                   (Fork (Symbol "B") Empty))
     ]
 
+
 toParser :: Graph -> LanguageParser ()
 toParser (Terminal t)  = string t
 toParser (Symbol s)    = ask >>= msum . lookupAll s
