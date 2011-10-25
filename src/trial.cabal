@@ -765,4 +765,5 @@ executable Trial.cgi
                  Syntax.LaTeX,
                  Syntax.Quiz,
                  Syntax.Syntax,
-                 Syntax.Transformer
+                 Syntax.Transformer,
+                 Syntax.Words

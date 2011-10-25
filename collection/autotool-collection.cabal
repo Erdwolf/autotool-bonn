@@ -436,6 +436,7 @@ Library
         Syntax.Quiz
         Syntax.Syntax
         Syntax.Transformer
+        Syntax.Words
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central

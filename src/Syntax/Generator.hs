@@ -3,6 +3,7 @@ module Syntax.Generator where
 
 import Syntax.Syntax
 import Syntax.Generics
+import Syntax.Words
 
 import Control.Applicative
 import Control.Monad
@@ -22,7 +23,7 @@ generate = do
 isNice l =
    ["a","b","c","d"] `subset` terminals l
    &&
-   ["B","C","D"] `subset` symbols (l !! 0)
+   4 <= length (generateWords 10 l)
 
 subset xs ys = all (`elem` ys) xs
 
