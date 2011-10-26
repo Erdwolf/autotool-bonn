@@ -15,7 +15,8 @@ transform = removeLeftRecursion . removeForks . removeLoops
 
 
 removeLoops lang =
-    fst $ flip runState (map show [1..]) $ do
+    let fresh = map show [1..] in -- Assuming no existing non-terminal contains only digits.
+    fst $ flip runState fresh $ do
         (xs,ys) <- runWriterT (everywhereM (mkM removeLoop) lang)
         return (xs++ys)
 
@@ -43,7 +44,7 @@ pop = do
     return x
 
 data Rule = Rule String [Item] deriving Show
-data Item = T String | N String deriving (Show,Eq)
+data Item = T String | N String deriving (Show, Eq)
 
 toRule :: (String, Graph) -> Rule
 toRule (x,g) = Rule x $ map toItem $ filter (/=Empty) $ everything (++) ([] `mkQ` q) g
@@ -64,7 +65,7 @@ fromItem (T x) = Terminal x
 
 -- Paull's algorithm
 --
-removeLeftRecursion lang = do
+removeLeftRecursion lang =
     map fromRule $ f (zip [0..] xs) $ map toRule lang
   where
     xs = map fst lang -- Arbitrarily ordered list of all non-terminals
@@ -80,8 +81,9 @@ removeLeftRecursion lang = do
                 [ Rule x (b++a) | Rule y' b <- l, y == y' ] ++ h rs
             h (r:rs) = r : h rs
 
-        removeDirect = concatMap h
+        removeDirect rs = concatMap h rs
           where
-            h (Rule x' (N x'':_)) | x == x' && x' == x'' =
-                []
+            h (Rule x' (N x'':a)) | x == x' && x' == x'' =
+                let new = x++"'" in -- Assuming no existing non-terminal has a prime at the end.
+                concat [ [Rule x (b++[N new]), Rule new a, Rule new (a++[N new])] | Rule x' b <- rs, x == x', take 1 b /= [N x] ]
             h r = [r]
