@@ -11,7 +11,6 @@ import Control.Monad.Trans
 import System.Random
 import Control.Monad.State
 
-import Printer
 import Data.List
 
 
