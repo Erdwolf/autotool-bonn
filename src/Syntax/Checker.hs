@@ -1,12 +1,13 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Syntax.Checker {- (check) -} where
 
+import Syntax.Syntax
+import Syntax.Transformer
+
 import Control.Monad.Reader
 import Control.Monad.State
 import Control.Arrow (second)
 
-import Syntax.Syntax
-import Syntax.Transformer
 
 
 forks = foldr1 Fork
@@ -66,6 +67,29 @@ lang7 =
                   (Fork (Symbol "B") Empty))
     ]
 
+lang8 =
+    [ ("A", Symbol "C" `Chain` Symbol "D")
+    , ("B", Fork (Terminal "a") (Terminal "b"))
+    , ("C", Terminal "d")
+    , ("D", Fork Empty (Terminal "d"))
+    ]
+
+lang9 =
+    [ ("A", Symbol "A" `Chain` Loop (Terminal "c") `Chain` Terminal "d")
+    , ("B", Symbol "B")
+    , ("C", Symbol "b")
+    , ("D", Symbol "a" `Chain` Fork (Terminal "d") (Symbol "B"))
+    ]
+
+lang10 =
+    [ ("A", Loop (Symbol "C" `Chain` Terminal "a"))
+    , ("C", Loop (Loop (Terminal "c")))
+    ]
+
+lang11 =
+    [ ("A", Symbol "A" `Chain` Terminal "a")
+    , ("A", Terminal "b")
+    ]
 
 toParser :: Graph -> LanguageParser ()
 toParser (Terminal t)  = string t
@@ -75,8 +99,9 @@ toParser (Chain g1 g2) = toParser g1 >> toParser g2
 toParser (Loop g)      = toParser g >> (toParser (Loop g) `mplus` return ())
 toParser Empty         = return ()
 
-lookupAll key = map snd . filter ((key==).fst)
+lookupAll key = liftM snd . filterMP ((key==).fst)
 
+filterMP f = msum . map return . filter f
 
 type Env = [(String, LanguageParser ())]
 

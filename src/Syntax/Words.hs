@@ -1,27 +1,39 @@
+{-#  LANGUAGE TupleSections #-}
 module Syntax.Words where
 
+import Syntax.Syntax
 import Syntax.Checker
 import Syntax.Transformer
 
 import Control.Monad
-import Data.List (nub)
+import Control.Monad.Writer
+import Data.List (nubBy)
+import Data.Function (on)
 
 
+type Word = [Item]
+type Symbols = [String]
 
--- 'maxSteps" is the maximal number of production steps, not the number
--- of generated words, although these are sometimes the same.
+generateWords :: Int -> -- ^ 'maxSteps" is the maximal number of production steps, not the number
+                        -- ^ of generated words, although these are sometimes the same.
+                 Language ->
+                 [(Word,Symbols)] -- ^ Words and Symbols used to generate them.
 generateWords maxSteps lang =
-    filter (all terminal) $ iterate oneStep [[startSymbol]] !! maxSteps
+    filter (all terminal . fst) $
+    iterate oneStep [([startSymbol],[])] !! maxSteps
  where
     terminal (T _) = True
     terminal _     = False
 
-    oneStep ws = nub $ ws ++ (ws >>= produceNew)
+    oneStep ws = nubBy ((==)`on`fst) $ ws ++ (ws >>= produceNew)
 
-    produceNew = liftM concat . mapM replace
+    --produceNew (w,ss) = runWriterT $ tell ss >> liftM concat (mapM replace w)
+    produceNew (w,ss) = runWriterT $ tell ss >> partitions w >>= f
 
-    replace (N t) = lookupAll t productions
-    replace x = [[x]]
+    f (as,b:bs) = ((as++).(++bs)) `liftM` replace b
+
+    replace (N nt) = tell [nt] >> lookupAll nt productions
+    replace x = return [x]
 
     startSymbol = N $ fst $ head productions
 
@@ -29,3 +41,5 @@ generateWords maxSteps lang =
 
     toGrammar = map toRule . removeForks . removeLoops
 
+partitions (x:xs) = return ([],x:xs) `mplus` liftM (\(as,bs) -> (x:as,bs)) (partitions xs)
+partitions []     = mzero
