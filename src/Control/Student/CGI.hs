@@ -29,7 +29,7 @@ login = do
     u <- click_choice "Hochschule" $ do
         u <- us
 	return ( toString $ Control.Schule.name u , u )
-    mnr <- defaulted_textfield "Matrikel" ""
+    mnr <- defaulted_textfield "Login" ""
     pwd <- defaulted_password  "Passwort" ""
 
     change <- click_choice_with_default 0 "Aktion"
@@ -56,7 +56,7 @@ login = do
              mzero
 
          xs -> do
-             plain "Mehrere Studenten mit dieser Matrikelnummer?"
+             plain "Mehrere Studenten mit diesem Login?"
              plain $ show $ map T.snr xs
              mzero
 
@@ -169,7 +169,7 @@ edit_create ms = do
             u <- us
 	    return ( toString $ Control.Schule.name u , u )
 
-    mnr <- dtf "Matrikelnummer" T.mnr
+    mnr <- dtf "Login" T.mnr
     vorname <- dtf "Vorname" T.vorname
     name <- dtf "Nachname" T.name
     email <- dtf "Email" T.email 
@@ -180,7 +180,7 @@ edit_create ms = do
 		         close -- row
                       )
 
-    is_a_word "Matrikelnummer" mnr    
+    is_a_word "Login" mnr    
     is_a_word "Vorname" vorname
     is_a_word "Nachname" name
     is_an_email_for_school u "Email" email
@@ -191,7 +191,7 @@ edit_create ms = do
             Nothing -> schon
     when ( not $ null others ) $ do
         open row
-	plain "diese Matrikelnummer ist bereits in Benutzung"
+	plain "dieser Login ist bereits in Benutzung"
         close
 	mzero
 
@@ -297,7 +297,7 @@ pwmail stud = do
     let e = toString $ email stud
     is_an_email "Email" e
     let m = toString $ mnr stud
-    is_a_word "Matrikel" m    
+    is_a_word "Login" m    
 
     p <- io $ pass
     is_a_word "Passwort" p    
@@ -310,7 +310,7 @@ pwmail stud = do
             , "To: " ++ e
             , "Sie haben ein neues Passwort"
             , "für das E-Learning-System autotool angefordert."
-            , unwords [ "Es lautet:", "Matrikelnummer:", m, "Passwort:", p ]
+            , unwords [ "Es lautet:", "Login:", m, "Passwort:", p ]
             , "Es wird durch seine erste Benutzung aktiviert,"
             , "Sie können es danach ändern."
             , "Sie können aber auch Ihr bisheriges Passwort weiter benutzen"

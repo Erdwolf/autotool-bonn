@@ -45,7 +45,7 @@ instance Verify Syntax Config where
 
 instance Partial Syntax Config Solution where
     describe p (Config n lang) =
-      vcat [ hsep [ text "Geben Sie genau", text (show n), text "Wörter dieser Sprache (mit Startsymbol \"" <> text (fst (head lang)) <> text "\") an:"]
+      vcat [ hsep [ text "Geben Sie genau", text (show n), text "Worte dieser Sprache (mit Startdiagram \"" <> text (fst (head lang)) <> text "\") an:"]
            , text ""
            --, vcat [ vcat [ text symbol <> text ":", nest 4 $ vcat $ map text $ ascii graph ] | (symbol,graph) <- lang ]
            , text (asImage lang)
@@ -55,16 +55,16 @@ instance Partial Syntax Config Solution where
            , text "Solution"
            , text "   [ \"Wort1\", \"Wort2\", \"Wort3\", \"Wort4\" ]"
            , text ""
-           , text "e.g. [ \"\", \"ada\", \"abbcba\", \"dd\" ]"
+           , text "(zum Beispiel [ \"\", \"ada\", \"abbcba\", \"dd\" ])"
            ]
 
     initial p _ = Solution []
 
     total p (Config n lang) (Solution words) = do
        when (length words /= n) $ do
-         reject $ hsep [ text "Nein, es ist nach genau", text (show n), text "Wörtern gefragt." ]
+         reject $ hsep [ text "Nein, es ist nach genau", text (show n), text "Worten gefragt." ]
        when (length (nub words) /= n) $ do
-         reject $ hsep [ text "Nein, die", text (show n), text "Wörter müssen unterschiedlich sein." ]
+         reject $ hsep [ text "Nein, die", text (show n), text "Worte müssen unterschiedlich sein." ]
        unless (all (check lang) words) $ do
-         reject $ text $ "Nein, eines oder mehrere der angegebenen Wörter sind nicht in der Sprache enthalten."
+         reject $ text $ "Nein, eines oder mehrere der angegebenen Worte sind nicht in der Sprache enthalten."
        inform $ text $ "Ja."
