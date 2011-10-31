@@ -32,7 +32,7 @@ isNice l =
    let nonterminalsInvolved = nub $ filter (`elem`["A","B","C","D"]) $ concat $ map snd smallestWords in
    3 == length (take 3 nonterminalsInvolved)
    &&
-   any ((5<=).length.snd) smallestWords
+   any ((5<=).length.filter (`elem`["A","B","C","D"]).snd) smallestWords
 
 
 subset xs ys = all (`elem` ys) xs
