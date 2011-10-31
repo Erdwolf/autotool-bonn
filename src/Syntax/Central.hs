@@ -27,7 +27,7 @@ data Syntax = Syntax deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''Syntax])
 
-make_fixed = direct Syntax $ Config 3
+make_fixed = direct Syntax $ Config True 3
    [ ("S", Fork (Terminal "a")
                 (Fork (Symbol "B")
                       Empty))
@@ -44,7 +44,7 @@ instance Verify Syntax Config where
 
 
 instance Partial Syntax Config Solution where
-    describe p (Config n lang) =
+    describe p (Config giveFeedback n lang) =
       vcat [ hsep [ text "Geben Sie genau", text (show n), text "Worte dieser Sprache (mit Startdiagram \"" <> text (fst (head lang)) <> text "\") an:"]
            , text ""
            --, vcat [ vcat [ text symbol <> text ":", nest 4 $ vcat $ map text $ ascii graph ] | (symbol,graph) <- lang ]
@@ -56,15 +56,20 @@ instance Partial Syntax Config Solution where
            , text "   [ \"Wort1\", \"Wort2\", \"Wort3\", \"Wort4\" ]"
            , text ""
            , text "(zum Beispiel [ \"\", \"ada\", \"abbcba\", \"dd\" ])"
+           ] ++ if giveFeedback then [] else
+           [ text ""
+           , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
+           , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
            ]
 
     initial p _ = Solution []
 
-    total p (Config n lang) (Solution words) = do
+    total p (Config giveFeedback n lang) (Solution words) = do
        when (length words /= n) $ do
          reject $ hsep [ text "Nein, es ist nach genau", text (show n), text "Worten gefragt." ]
        when (length (nub words) /= n) $ do
          reject $ hsep [ text "Nein, die", text (show n), text "Worte müssen unterschiedlich sein." ]
-       unless (all (check lang) words) $ do
-         reject $ text $ "Nein, eines oder mehrere der angegebenen Worte sind nicht in der Sprache enthalten."
+       when giveFeedback $ do
+          unless (all (check lang) words) $ do
+            reject $ text $ "Nein, eines oder mehrere der angegebenen Worte sind nicht in der Sprache enthalten."
        inform $ text $ "Ja."

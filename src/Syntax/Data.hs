@@ -13,8 +13,10 @@ import Data.Typeable
 deriving instance Ord Graph
 
 data Config = Config
- { expectedNumberOfWords :: Int
- , language :: Language }
+ { feedback :: Bool
+ , expectedNumberOfWords :: Int
+ , language :: Language
+ }
    deriving ( Eq, Ord, Typeable)
 
 data Solution = Solution [String]

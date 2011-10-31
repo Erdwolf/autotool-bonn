@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses, TemplateHaskell, DeriveDataTypeable #-}
 module Syntax.Quiz where
 
 import Control.Applicative
@@ -11,9 +11,20 @@ import Syntax.Syntax
 import Syntax.Data
 import Syntax.Generator
 
+import Data.Typeable
+
+
+data QuizConfig = QuizConfig
+    { feedback :: Bool
+    }
+  deriving ( Eq, Ord, Typeable)
+
+$(derives [makeReader, makeToDoc] [''QuizConfig])
+
+
 instance Generator Syntax () Config where
-    generator p () key = do -- IO
-      Config 4 <$> Syntax.Generator.generate
+    generator p (QuizConfig fb) key = do -- IO
+      Config fb 4 <$> Syntax.Generator.generate
 
 
 instance Project Syntax Config Config where
@@ -23,4 +34,3 @@ instance Project Syntax Config Config where
 
 make :: Make
 make = quiz Syntax ()
-
