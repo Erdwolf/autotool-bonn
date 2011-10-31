@@ -15,15 +15,15 @@ import Data.Typeable
 
 
 
-instance Generator Syntax () Config where
+instance Generator Syntax QuizConfig Config where
     generator p (QuizConfig fb) key = do -- IO
       Config fb 4 <$> Syntax.Generator.generate
 
 
-instance Project Syntax Config Config where
+instance Project Syntax QuizConfig Config where
     project p = id
 
 
 
 make :: Make
-make = quiz Syntax ()
+make = quiz Syntax (QuizConfig True)
