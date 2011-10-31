@@ -20,7 +20,7 @@ instance Generator Syntax QuizConfig Config where
       Config fb 4 <$> Syntax.Generator.generate
 
 
-instance Project Syntax QuizConfig Config where
+instance Project Syntax Config Config where
     project p = id
 
 
