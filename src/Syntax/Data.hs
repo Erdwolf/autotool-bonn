@@ -12,6 +12,11 @@ import Data.Typeable
 
 deriving instance Ord Graph
 
+data QuizConfig = QuizConfig
+ { quizFeedback :: Bool
+ }
+   deriving ( Eq, Ord, Typeable)
+
 data Config = Config
  { feedback :: Bool
  , expectedNumberOfWords :: Int
@@ -22,7 +27,7 @@ data Config = Config
 data Solution = Solution [String]
    deriving ( Eq, Ord, Typeable, Read, Show )
 
-$(derives [makeReader, makeToDoc] [''Config,''Solution,''Graph])
+$(derives [makeReader, makeToDoc] [''QuizConfig,''Config,''Solution,''Graph])
 
 
 instance Size Config   where size _ = 0
