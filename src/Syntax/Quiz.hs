@@ -6,6 +6,9 @@ import Control.Applicative
 import Inter.Quiz
 import Inter.Types
 
+import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), hsep, toDoc, nest, ToDoc(..))
+import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
+
 import Syntax.Central
 import Syntax.Syntax
 import Syntax.Data
