@@ -45,7 +45,7 @@ instance Verify Syntax Config where
 
 instance Partial Syntax Config Solution where
     describe p (Config giveFeedback n lang) =
-      vcat$[ hsep [ text "Geben Sie genau", text (show n), text "Worte der mit dem folgenden Syntaxdiagramm-System (Startdiagramm ist \"" <> text (fst (head lang)) <> text "\") erzeugbaren Sprache  an."]
+      vcat$[ hsep [ text "Geben Sie genau", text (show n), text "Worte der mit dem folgenden Syntaxdiagramm-System (Startdiagramm ist \"" <> text (fst (head lang)) <> text "\") erzeugbaren Sprache an."]
            , text "Das zugrundeliegende Alphabet besteht aus den Symbolen a, b, c und d."
            , text ""
            --, vcat [ vcat [ text symbol <> text ":", nest 4 $ vcat $ map text $ ascii graph ] | (symbol,graph) <- lang ]
