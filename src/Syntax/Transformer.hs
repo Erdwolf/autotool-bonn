@@ -11,8 +11,11 @@ import Control.Monad.State
 import Control.Arrow
 
 transform :: Language -> Language
-transform = removeLeftRecursion . removeForks . removeLoops
+transform = onGrammar (removeLeftRecursion . reorderEmpties)
+          . removeForks
+          . removeLoops
 
+onGrammar trans = fromGrammar . trans . toGrammar
 
 removeLoops lang =
     let fresh = map show [1..] in -- Assuming no existing non-terminal contains only digits.
@@ -33,6 +36,15 @@ removeForks ((x, g):rest) =
     let new = map (x,) $ paths g in
     new ++ removeForks rest
 
+reorderEmpties rs = 
+    let (empty, nonempty) = partitionEmpties rs in
+    nonempty ++ empty
+
+removeEmpties rs =
+    let (empty, nonempty) = partitionEmpties rs in
+    [ Rule y (delete (N x) ys) | Rule x _ <- empty, Rule y ys <- nonempty, N x `elem` ys ] ++ nonempty
+
+partitionEmpties = partition (null.rhs)
 
 paths (Fork g1 g2)  = paths g1 ++ paths g2
 paths (Chain g1 g2) = [ Chain x y | x <- paths g1, y <- paths g2 ]
@@ -43,8 +55,14 @@ pop = do
     put xs
     return x
 
-data Rule = Rule String [Item] deriving Show
+data Rule = Rule { lhs :: String, rhs :: [Item]} deriving Show
 data Item = T String | N String deriving (Show, Eq)
+
+toGrammar :: Language -> [Rule]
+toGrammar = map toRule
+
+fromGrammar :: [Rule] -> Language
+fromGrammar = map fromRule
 
 toRule :: (String, Graph) -> Rule
 toRule (x,g) = Rule x $ map toItem $ filter (/=Empty) $ everything (++) ([] `mkQ` q) g
@@ -66,9 +84,9 @@ fromItem (T x) = Terminal x
 -- Paull's algorithm
 --
 removeLeftRecursion lang =
-    map fromRule $ f (zip [0..] xs) $ map toRule lang
+    f (zip [0..] xs) lang
   where
-    xs = map fst lang -- Arbitrarily ordered list of all non-terminals
+    xs = map lhs lang -- Arbitrarily ordered list of all non-terminals
 
     f [] = id
     f ((i,x):ixs) = f ixs . removeDirect . g (take i xs)
