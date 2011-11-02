@@ -73,4 +73,4 @@ instance Partial Syntax Config Solution where
        when giveFeedback $ do
           unless (all (check lang) words) $ do
             reject $ text $ "Nein, eines oder mehrere der angegebenen Worte sind nicht in der Sprache enthalten."
-       inform $ text $ "Ja."
+       inform $ text $ if giveFeedback then "Ja, Ihre Einsendung ist richtig. :)" else "Ja, aber ob die Lösung richtig ist, überprüft erst Ihr Tutor. Von ihm erfahren Sie die Bewertung."
