@@ -34,7 +34,7 @@ login = do
 
     change <- click_choice_with_default 0 "Aktion"
            [ ("Login", False)
-           , ( "persönliche Daten ändern", True) 
+           --, ( "persönliche Daten ändern", True) 
            ]
 
     close -- btable
