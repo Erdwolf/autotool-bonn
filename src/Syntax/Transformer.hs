@@ -1,6 +1,5 @@
 {-# LANGUAGE NoMonomorphismRestriction, TupleSections #-}
 module Syntax.Transformer where
-
 import Syntax.Syntax
 import Syntax.Generics
 
@@ -11,7 +10,7 @@ import Control.Monad.State
 import Control.Arrow
 
 transform :: Language -> Language
-transform = onGrammar (removeLeftRecursion . reorderEmpties)
+transform = onGrammar (removeLeftRecursion . removeEmpties)
           . removeForks
           . removeLoops
 
@@ -36,13 +35,16 @@ removeForks ((x, g):rest) =
     let new = map (x,) $ paths g in
     new ++ removeForks rest
 
-reorderEmpties rs = 
+reorderEmpties rs =
     let (empty, nonempty) = partitionEmpties rs in
     nonempty ++ empty
 
-removeEmpties rs =
-    let (empty, nonempty) = partitionEmpties rs in
-    [ Rule y (delete (N x) ys) | Rule x _ <- empty, Rule y ys <- nonempty, N x `elem` ys ] ++ nonempty
+removeEmpties rs@(Rule s _:_) =
+    let (empty, nonempty) = partitionEmpties rs
+        emptyRule | Rule s [] `elem` empty = [Rule "0" [N s], Rule "0" []]
+                  | otherwise              = []          in
+    emptyRule ++ [ Rule y (delete (N x) ys) | Rule x _ <- empty, Rule y ys <- nonempty, N x `elem` ys ] ++ nonempty
+  where
 
 partitionEmpties = partition (null.rhs)
 
@@ -55,7 +57,7 @@ pop = do
     put xs
     return x
 
-data Rule = Rule { lhs :: String, rhs :: [Item]} deriving Show
+data Rule = Rule { lhs :: String, rhs :: [Item]} deriving (Show, Eq)
 data Item = T String | N String deriving (Show, Eq)
 
 toGrammar :: Language -> [Rule]

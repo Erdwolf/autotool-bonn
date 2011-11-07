@@ -1,5 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Syntax.Checker {- (check) -} where
+module Syntax.Checker (check) where
 
 import Syntax.Syntax
 import Syntax.Transformer
@@ -91,6 +91,34 @@ lang11 =
     , ("A", Terminal "b")
     ]
 
+lang12 =
+    [ ( "A", Fork (Chain (Chain (Symbol "B") (Symbol "A")) (Terminal "d"))
+                  Empty)
+    , ( "B", Fork (Chain (Symbol "C") (Terminal "c"))
+                   Empty)
+    , ( "C", Terminal "a")
+    ]
+
+lang12' =
+    [ ("A", Symbol "B" `Chain` Symbol "A" `Chain` Terminal "d")
+    , ("A", Empty)
+    , ("B", Symbol "C" `Chain` Terminal "c")
+    , ("B", Empty)
+    , ("C", Terminal "a")
+    ]
+
+lang12'' =
+    [ ("A", Symbol "B" `Chain` Symbol "A" `Chain` Terminal "d")
+    , ("A", Symbol "B" `Chain` Terminal "d")
+    , ("A", Symbol "A" `Chain` Terminal "d")
+    , ("A", Terminal "d")
+    , ("B", Symbol "C" `Chain` Terminal "c")
+    , ("C", Terminal "a")
+    ]
+
+lang13 = [("A",Fork (Terminal "c") (Fork (Chain (Symbol "B") (Terminal "b")) Empty)),("B",Chain (Symbol "D") (Terminal "c")),("C",Chain (Terminal "d") (Terminal "a")),("D",Loop (Chain (Symbol "A") (Symbol "A")))]
+
+
 toParser :: Graph -> LanguageParser ()
 toParser (Terminal t)  = string t
 toParser (Symbol s)    = ask >>= msum . lookupAll s
@@ -136,8 +164,11 @@ eof = do
 
 
 check :: Language -> String -> Bool
-check lang word =
-    let parsers = (map (second toParser) . transform) lang in
+check = check' . transform
+
+check' :: Language -> String -> Bool
+check' lang word =
+    let parsers = map (second toParser) lang in
     if null parsers
         then False
         else let startSymbol = fst $ head $ lang
