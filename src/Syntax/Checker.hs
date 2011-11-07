@@ -1,5 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Syntax.Checker (check) where
+module Syntax.Checker (check, lookupAll) where
 
 import Syntax.Syntax
 import Syntax.Transformer
