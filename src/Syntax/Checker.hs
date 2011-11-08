@@ -1,12 +1,11 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Syntax.Checker (check, lookupAll) where
+module Syntax.Checker {- (check) -} where
 
 import Syntax.Syntax
 import Syntax.Transformer
 
-import Control.Monad.Reader
-import Control.Monad.State
-import Control.Arrow (second)
+import Control.Monad.Writer
+import Data.List (nub)
 
 
 
@@ -118,6 +117,21 @@ lang12'' =
 
 lang13 = [("A",Fork (Terminal "c") (Fork (Chain (Symbol "B") (Terminal "b")) Empty)),("B",Chain (Symbol "D") (Terminal "c")),("C",Chain (Terminal "d") (Terminal "a")),("D",Loop (Chain (Symbol "A") (Symbol "A")))]
 
+lang14 = [("A",Fork (Symbol "B")
+                    (Chain (Fork (Terminal "a")
+                                 Empty)
+                           (Terminal "c")))
+         ,("B",Chain (Loop (Symbol "D"))
+                     (Terminal "b"))
+         ,("C",Terminal "d")
+         ,("D",Fork (Chain (Symbol "B")
+                           (Terminal "b"))
+                    Empty)
+         ]
+
+
+
+{-
 
 toParser :: Graph -> LanguageParser ()
 toParser (Terminal t)  = string t
@@ -126,11 +140,13 @@ toParser (Fork g1 g2)  = toParser g1 `mplus` toParser g2
 toParser (Chain g1 g2) = toParser g1 >> toParser g2
 toParser (Loop g)      = toParser g >> (toParser (Loop g) `mplus` return ())
 toParser Empty         = return ()
+-}
 
 lookupAll key = liftM snd . filterMP ((key==).fst)
 
 filterMP f = msum . map return . filter f
 
+{-
 type Env = [(String, LanguageParser ())]
 
 newtype LanguageParser a = LP
@@ -173,3 +189,38 @@ check' lang word =
         then False
         else let startSymbol = fst $ head $ lang
              in not $ null $ runLP (msum (lookupAll startSymbol parsers) >> eof) word parsers
+-}
+
+
+check = check' 7
+
+check' :: Int -> Language -> String -> Bool
+check' limit lang word =
+    go 0 [[startSymbol]]
+ where
+    go i ws = if target `elem` ws
+               then True
+               else let ws' = oneStep ws in
+                    if ws' == ws || i >= limit
+                       then False
+                       else go (succ i) ws'
+
+    target = [ T [c] | c <- word ]
+
+    oneStep ws = nub $ ws ++ (ws >>= produceNew)
+
+    produceNew w = partitions w >>= f
+
+    f (as,b:bs) = ((as++).(++bs)) `liftM` replace b
+
+    replace (N nt) = lookupAll nt productions
+    replace x = [[x]]
+
+    startSymbol = N $ fst $ head productions
+
+    productions = map (\(Rule x y) -> (x,y)) $ toGrammar lang
+
+    toGrammar = map toRule . removeForks . removeLoops
+
+    partitions (x:xs) = return ([],x:xs) `mplus` liftM (\(as,bs) -> (x:as,bs)) (partitions xs)
+    partitions []     = mzero
