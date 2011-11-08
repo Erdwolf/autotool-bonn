@@ -8,7 +8,6 @@ import Control.Monad.Writer
 import Data.List (nub)
 
 
-
 forks = foldr1 Fork
 
 lang1  =
@@ -129,6 +128,8 @@ lang14 = [("A",Fork (Symbol "B")
                     Empty)
          ]
 
+words14 = [ "ac", "c", "b", "bb" ]
+
 
 
 {-
@@ -192,7 +193,7 @@ check' lang word =
 -}
 
 
-check = check' 1000
+check = check' 10
 
 check' :: Int -> Language -> String -> Bool
 check' limit lang word =
@@ -203,7 +204,7 @@ check' limit lang word =
     go i ws = if target `elem` ws
                then True
                else let ws' = oneStep ws in
-                    if ws' == ws
+                    if ws' == ws || i >= limit
                        then False
                        else go (succ i) ws'
 
