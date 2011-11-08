@@ -1,5 +1,6 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Syntax.Checker {- (check) -} where
+
 import Syntax.Syntax
 import Syntax.Transformer
 
@@ -197,7 +198,7 @@ check' :: Int -> Language -> String -> Bool
 check' limit lang word =
     go 0 [[startSymbol]]
  where
-    n = length word + 1
+    n = length word
 
     go i ws = if target `elem` ws
                then True
@@ -208,7 +209,10 @@ check' limit lang word =
 
     target = [ T [c] | c <- word ]
 
-    oneStep ws = nub $ ws ++ filter ((<=n).length) (ws >>= produceNew)
+    oneStep ws = nub $ ws ++ filter ((<=n).length.filter terminal) (ws >>= produceNew)
+
+    terminal (T _) = True
+    terminal _     = False
 
     produceNew w = partitions w >>= f
 
