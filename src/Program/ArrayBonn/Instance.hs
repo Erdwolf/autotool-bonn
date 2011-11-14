@@ -42,11 +42,11 @@ instance Class Program_ArrayBonn Statement Program.ArrayBonn.Value.Value where
                 )
 
 make_quiz :: Make
-make_quiz = quiz Program_Array F.example
+make_quiz = quiz Program_ArrayBonn F.example
 
 
 instance Generator 
-	     Program_Array 
+	     Program_ArrayBonn 
 	     F.Config 
 	     ( Environment Program.ArrayBonn.Value.Value
              , Program Statement 
@@ -61,12 +61,12 @@ nontrivial conf (_, Program sts , final) = not $ or $ do
     return $ matches ( final ,  Program $ ps ++ sts , final )
 
 matches ( start, prog, final ) = 
-    isJust $ result $ C.total Program_Array ( prog, final ) start
+    isJust $ result $ C.total Program_ArrayBonn ( prog, final ) start
 
 
 
 instance Project
-	     Program_Array 
+	     Program_ArrayBonn 
 	     ( Environment Program.ArrayBonn.Value.Value
              , Program Statement 
              , Environment Program.ArrayBonn.Value.Value 
