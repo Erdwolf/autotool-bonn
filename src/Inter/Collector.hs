@@ -360,7 +360,7 @@ tmakers =
          , item Program.Array.Instance.make_quiz
          ]
       , heading "Programme mit Arrays (Bonn)"
-         [ item $ Program.GeneralBonn.Central.make_fixed Program.ArrayBonn.Instance.Program_Array
+         [ item $ Program.GeneralBonn.Central.make_fixed Program.ArrayBonn.Instance.Program_ArrayBonn
          , item Program.ArrayBonn.Instance.make_quiz
          ]
       , heading "Programme mit Listen, Stacks, Queues"
