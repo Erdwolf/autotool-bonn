@@ -23,10 +23,10 @@ d0 :: Statement
 d0 = read "int x = 8;"
 
 d1 :: Statement
-d1 = read "int [2] y = {5,3,1};"
+d1 = read "int y [2] = {5,3,1};"
 
 d2 :: Statement
-d2 = read "int [2][2] z = {{1,2},{3,4}};"
+d2 = read "int z [2][2] = {{1,2},{3,4}};"
 
 instance Size Statement where
     size ( Declare {} ) = 1

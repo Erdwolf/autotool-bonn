@@ -22,12 +22,29 @@ example :: Value
 example = Row $ map Scalar [ 3,1,4,1,5 ]
 
 instance E.Value Value where
-    typeform v = text "int" <+> hsep ( do d <- depth v ; return $ brackets $ toDoc d )
+    typeform v = 
     typeread = do -- :: Parser ( Parser val )
+
+instance Value val => ToDoc ( Environment val ) where
+    toDoc ( Environment e ) = vcat $ do
+        ( k, v ) <- fmToList e
+        return $ hsep [ text "int"
+                      , toDoc k
+                      , hsep ( do d <- depth v ; return $ brackets $ toDoc d )
+                      , equals
+                      , toDoc v
+                      , semi ]
+
+instance Value val => Reader ( Environment val ) where
+    reader = fmap make $ many $ do
         my_reserved "int"
-        ds <- many $ do my_brackets reader
-        return $ read_with ds
-            
+        id <- reader
+        ty <- read_with =<< many (my_brackets reader)
+        my_equals
+        val <- ty 
+        my_semi
+        return ( id, val )
+
 read_with :: [ Integer ] -> Parser Value
 read_with [] = scalar
 read_with (d : ds) = my_braces $ do

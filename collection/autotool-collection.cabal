@@ -633,6 +633,11 @@ Library
         Program.General.Environment
         Program.General.Program
         Program.General.Value
+        Program.GeneralBonn.Central
+        Program.GeneralBonn.Class
+        Program.GeneralBonn.Environment
+        Program.GeneralBonn.Program
+        Program.GeneralBonn.Value
         Program.List.Expression
         Program.List.Instance
         Program.List.Operation

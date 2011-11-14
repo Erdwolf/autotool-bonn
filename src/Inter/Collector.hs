@@ -166,6 +166,7 @@ import qualified RM.Make
 import qualified RAM.Make
 
 import qualified Program.General.Central
+import qualified Program.GeneralBonn.Central
 import qualified Program.Array.Instance
 import qualified Program.ArrayBonn.Instance
 import qualified Program.List.Instance
@@ -359,7 +360,7 @@ tmakers =
          , item Program.Array.Instance.make_quiz
          ]
       , heading "Programme mit Arrays (Bonn)"
-         [ item $ Program.General.Central.make_fixed Program.ArrayBonn.Instance.Program_Array
+         [ item $ Program.GeneralBonn.Central.make_fixed Program.ArrayBonn.Instance.Program_Array
          , item Program.ArrayBonn.Instance.make_quiz
          ]
       , heading "Programme mit Listen, Stacks, Queues"
