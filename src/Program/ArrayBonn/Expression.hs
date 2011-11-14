@@ -25,7 +25,7 @@ instance Size Access where
 
 instance ToDoc Access where
     toDoc ( Access name inds ) = 
-        toDoc name <+> hsep ( do ind <- inds ; return $ brackets $ toDoc ind )
+        toDoc name <> hsep ( do ind <- inds ; return $ brackets $ toDoc ind )
 
 instance Reader Access where
     reader = do
