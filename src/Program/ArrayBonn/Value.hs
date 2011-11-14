@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, FlexibleInstances #-}
 module Program.ArrayBonn.Value where
 
 import qualified Program.GeneralBonn.Environment as E
