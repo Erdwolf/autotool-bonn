@@ -30,7 +30,7 @@ instance ( ToDoc val, Reader val, Eq val
 
     describe _ (p, e) = vcat
         [ text "Deklarieren und initialisieren Sie die Variablen,"
-	, text "so daß sich nach Ausführung des Programmes"
+	, text "so dass sich nach Ausführung des Programmes"
 	, nest 4 $ toDoc p
 	, text "die folgende Belegung ergibt:"
 	, nest 4 $ toDoc e
