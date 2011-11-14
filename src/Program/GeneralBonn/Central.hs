@@ -49,7 +49,8 @@ instance ( ToDoc val, Reader val, Eq val
 
 
 
-make_fixed :: Class p st val => p -> Make
+make_fixed :: Class p st val, Reader ( Environment val ), ToDoc ( Environment val ) =>
+              p -> Make
 make_fixed p = direct 
        p
        ( example p )
