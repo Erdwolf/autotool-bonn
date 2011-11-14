@@ -17,6 +17,7 @@ import Data.Typeable
 class ( Read p, Show p, Typeable p
       , Reader st, ToDoc st , Typeable st
       , OrderScore p
+      , ToDoc val, Reader val, Typeable val, Eq val
       ) 
         => Class p st val | p -> st, p -> val where
     execute :: p -> Environment val -> Program st -> Reporter ( Environment val )
