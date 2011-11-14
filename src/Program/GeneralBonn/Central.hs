@@ -47,6 +47,7 @@ instance ( ToDoc val, Reader val, Eq val
 	    ]
 	inform $ text "Ich vergleiche mit der Aufgabenstellung:"
 	nested 4 $ must_be_equal target actual
+	inform $ text "Ok."
 
 
 

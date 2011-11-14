@@ -78,7 +78,7 @@ must_be_equal ( Environment e ) ( Environment f ) = do
 	     when ( p /= q ) $ reject 
 		  $ text "falsche Reihenfolge" <+> toDoc (p,q)
 	     when ( v /= w ) $ reject $ vcat
-	         [ text "Werte für Variable" <+> toDoc p
+	         [ text "Werte für Variable" <+> toDoc p <> text "[]"
 	            <+> text "stimmen nicht überein:"
 	         , nest 4 $ vcat [ toDoc v, toDoc w ]
 	         ]
