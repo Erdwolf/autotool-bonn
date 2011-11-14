@@ -36,14 +36,14 @@ instance ToDoc Statement where
     toDoc s = case s of
         Assign target exp ->
             hsep [ toDoc target, equals, toDoc exp, semi ]
-    Declare name dim val ->
+        Declare name dim val ->
             hsep [ text "int"
                  , toDoc name
                  , hsep ( do d <- dim ; return $ toDoc [d] )
                  , equals
                  , toDoc val
                  , semi
-            ]
+                 ]
 
 instance Reader Statement where
     reader = declaration <|> assignment
