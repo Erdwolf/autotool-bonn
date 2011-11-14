@@ -2,11 +2,12 @@
 
 module Program.GeneralBonn.Environment 
 
-( Environment
+( Environment(Environment)
 , empty, lookup
 , add
 , must_be_equal
 , contents, make, mapM
+, fmToList
 )
 
 where
