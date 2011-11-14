@@ -35,7 +35,7 @@ instance Size Statement where
 instance ToDoc Statement where
     toDoc s = case s of
         Assign target exp ->
-        hsep [ toDoc target, equals, toDoc exp, semi ]
+            hsep [ toDoc target, equals, toDoc exp, semi ]
     Declare name dim val ->
             hsep [ text "int"
                  , toDoc name
