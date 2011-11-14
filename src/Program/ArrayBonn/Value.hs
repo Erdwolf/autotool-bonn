@@ -21,9 +21,6 @@ data Value = Scalar Integer
 example :: Value
 example = Row $ map Scalar [ 3,1,4,1,5 ]
 
-instance E.Value Value where
-    typeform v = 
-    typeread = do -- :: Parser ( Parser val )
 
 instance Value val => ToDoc ( Environment val ) where
     toDoc ( Environment e ) = vcat $ do
