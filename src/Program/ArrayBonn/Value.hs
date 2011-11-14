@@ -22,9 +22,9 @@ example :: Value
 example = Row $ map Scalar [ 3,1,4,1,5 ]
 
 
-instance Value val => ToDoc ( Environment val ) where
-    toDoc ( Environment e ) = vcat $ do
-        ( k, v ) <- fmToList e
+instance Value val => ToDoc ( E.Environment val ) where
+    toDoc ( E.Environment e ) = vcat $ do
+        ( k, v ) <- E.fmToList e
         return $ hsep [ text "int"
                       , toDoc k
                       , hsep ( do d <- depth v ; return $ brackets $ toDoc d )
@@ -32,8 +32,8 @@ instance Value val => ToDoc ( Environment val ) where
                       , toDoc v
                       , semi ]
 
-instance Value val => Reader ( Environment val ) where
-    reader = fmap make $ many $ do
+instance Value val => Reader ( E.Environment val ) where
+    reader = fmap E.make $ many $ do
         my_reserved "int"
         id <- reader
         ty <- read_with =<< many (my_brackets reader)
