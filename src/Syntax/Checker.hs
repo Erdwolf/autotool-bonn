@@ -1,11 +1,11 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Syntax.Checker {- (check) -} where
-
 import Syntax.Syntax
 import Syntax.Transformer
 
 import Control.Monad.Writer
 import Data.List (nub)
+
 
 
 forks = foldr1 Fork

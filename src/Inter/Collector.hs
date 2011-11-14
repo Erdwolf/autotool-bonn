@@ -167,6 +167,7 @@ import qualified RAM.Make
 
 import qualified Program.General.Central
 import qualified Program.Array.Instance
+import qualified Program.ArrayBonn.Instance
 import qualified Program.List.Instance
 
 import qualified Program.Cexp.Interface
@@ -356,6 +357,10 @@ tmakers =
       , heading "Programme mit Arrays"
          [ item $ Program.General.Central.make_fixed Program.Array.Instance.Program_Array
          , item Program.Array.Instance.make_quiz
+         ]
+      , heading "Programme mit Arrays (Bonn)"
+         [ item $ Program.General.Central.make_fixed Program.ArrayBonn.Instance.Program_Array
+         , item Program.ArrayBonn.Instance.make_quiz
          ]
       , heading "Programme mit Listen, Stacks, Queues"
          [ heading "Programme mit Listen"

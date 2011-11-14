@@ -617,6 +617,14 @@ Library
         Program.Array.Semantics
         Program.Array.Statement
         Program.Array.Value
+        Program.ArrayBonn.Config
+        Program.ArrayBonn.Expression
+        Program.ArrayBonn.Instance
+        Program.ArrayBonn.Operator
+        Program.ArrayBonn.Roll
+        Program.ArrayBonn.Semantics
+        Program.ArrayBonn.Statement
+        Program.ArrayBonn.Value
         Program.Cexp.Annotated
         Program.Cexp.Interface
         Program.Cexp.Type
