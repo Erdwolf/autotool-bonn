@@ -23,7 +23,6 @@ import Data.Maybe ( isNothing, isJust )
 
 instance ( ToDoc val, Reader val, Eq val
          , Program.GeneralBonn.Class.Class p st val 
-         , Reader ( Environment val )
          , Typeable st
          )
     => C.Partial p ( Program st , Environment val ) ( Environment val ) where
