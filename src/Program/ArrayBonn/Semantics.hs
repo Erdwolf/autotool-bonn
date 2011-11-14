@@ -1,9 +1,9 @@
 module Program.ArrayBonn.Semantics where
 
-import Program.General.Environment ( Environment )
-import qualified Program.General.Environment as E
+import Program.GeneralBonn.Environment ( Environment )
+import qualified Program.GeneralBonn.Environment as E
 
-import Program.General.Program
+import Program.GeneralBonn.Program
 import Program.ArrayBonn.Statement
 import Program.ArrayBonn.Expression
 import Program.ArrayBonn.Operator

@@ -1,10 +1,10 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
 
-module Program.General.Central where
+module Program.GeneralBonn.Central where
 
-import Program.General.Environment
-import Program.General.Program
-import Program.General.Class
+import Program.GeneralBonn.Environment
+import Program.GeneralBonn.Program
+import Program.GeneralBonn.Class
 
 -- import qualified Program.Array.Roll as R
 -- import qualified Program.Array.Config as F
@@ -22,7 +22,7 @@ import Data.Typeable
 import Data.Maybe ( isNothing, isJust )
 
 instance ( Value val
-         , Program.General.Class.Class p st val 
+         , Program.GeneralBonn.Class.Class p st val 
          , Reader ( Environment val )
          , Typeable st
          )
@@ -40,7 +40,7 @@ instance ( Value val
 
     total tag ( p , target) start = do
         inform $ text "Ich führe das Programm aus:"
-        actual <- nested 4 $ Program.General.Class.execute tag start p
+        actual <- nested 4 $ Program.GeneralBonn.Class.execute tag start p
 	inform $ vcat
 	    [ text "Die resultierende Belegung ist:"
 	    , nest 4 $ toDoc actual
@@ -57,11 +57,11 @@ make_fixed p = direct
 
 {-
 make_quiz :: Make
-make_quiz = quiz Program_General F.example
+make_quiz = quiz Program.GeneralBonn F.example
 
 
 instance Generator 
-	     Program_General 
+	     Program.GeneralBonn 
 	     F.Config 
 	     ( Environment, Program, Environment ) where
     generator p conf key = 
@@ -73,13 +73,13 @@ nontrivial conf (_, Program sts , final) = not $ or $ do
     return $ matches ( final ,  Program $ ps ++ sts , final )
 
 matches ( start, prog, final ) = 
-    isJust $ result $ C.total Program_General ( prog, final ) start
+    isJust $ result $ C.total Program.GeneralBonn ( prog, final ) start
 
 
             
 
 instance Project
-	     Program_General 
+	     Program.GeneralBonn 
 	     ( Environment, Program, Environment )
 	     ( Program, Environment ) where
     project _ ( start, p, final ) = ( p, final )

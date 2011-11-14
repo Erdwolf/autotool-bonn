@@ -1,7 +1,7 @@
 module Program.ArrayBonn.Central where
 
-import Program.General.Program
-import Program.General.Environment
+import Program.GeneralBonn.Program
+import Program.GeneralBonn.Environment
 
 -- import Program.ArrayBonn.Semantics
 import qualified Program.ArrayBonn.Roll as R

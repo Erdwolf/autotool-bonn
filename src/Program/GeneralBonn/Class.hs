@@ -1,10 +1,10 @@
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
 -- , IncoherentInstances #-}
 
-module Program.General.Class where
+module Program.GeneralBonn.Class where
 
-import Program.General.Environment
-import Program.General.Program
+import Program.GeneralBonn.Environment
+import Program.GeneralBonn.Program
 
 import Autolib.Reader
 import Autolib.ToDoc

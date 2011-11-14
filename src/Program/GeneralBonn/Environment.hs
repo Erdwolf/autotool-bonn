@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module Program.General.Environment 
+module Program.GeneralBonn.Environment 
 
 ( Environment, Value(..)
 , empty, lookup
@@ -11,7 +11,7 @@ module Program.General.Environment
 
 where
 
-import Program.General.Value
+import Program.GeneralBonn.Value
 
 import Autolib.FiniteMap
 import Autolib.Set

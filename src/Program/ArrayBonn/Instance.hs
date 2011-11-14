@@ -9,10 +9,10 @@ import Program.ArrayBonn.Semantics
 import qualified Program.ArrayBonn.Roll as R
 import qualified Program.ArrayBonn.Config as F
 
-import Program.General.Class
-import Program.General.Central
-import Program.General.Environment
-import Program.General.Program
+import Program.GeneralBonn.Class
+import Program.GeneralBonn.Central
+import Program.GeneralBonn.Environment
+import Program.GeneralBonn.Program
 
 import Autolib.Reader
 import Autolib.ToDoc
@@ -37,7 +37,7 @@ instance OrderScore Program_Array where
 instance Class Program_Array Statement Program.ArrayBonn.Value.Value where
     execute p = Program.ArrayBonn.Semantics.execute
     example p = ( Program [ Program.ArrayBonn.Statement.s0 ]
-                , Program.General.Environment.make 
+                , Program.GeneralBonn.Environment.make 
                       [ ( read "x", Program.ArrayBonn.Value.example ) ]
                 )
 

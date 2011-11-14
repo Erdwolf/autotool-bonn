@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module Program.General.Program where
+module Program.GeneralBonn.Program where
 
 import Autolib.Reader
 import Autolib.ToDoc

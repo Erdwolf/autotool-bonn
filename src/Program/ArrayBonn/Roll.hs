@@ -7,8 +7,8 @@ import Program.ArrayBonn.Expression
 import Program.ArrayBonn.Statement
 import Program.ArrayBonn.Operator
 
-import qualified Program.General.Environment as E
-import qualified Program.General.Program as P
+import qualified Program.GeneralBonn.Environment as E
+import qualified Program.GeneralBonn.Program as P
 
 
 import qualified Program.ArrayBonn.Config as C
