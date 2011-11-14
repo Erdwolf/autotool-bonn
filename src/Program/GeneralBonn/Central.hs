@@ -21,8 +21,8 @@ import Autolib.Util.Zufall ( repeat_until )
 import Data.Typeable
 import Data.Maybe ( isNothing, isJust )
 
-instance ( Value val
-         , Program.GeneralBonn.Class.Class p st val 
+instance (
+           Program.GeneralBonn.Class.Class p st val 
          , Reader ( Environment val )
          , Typeable st
          )
