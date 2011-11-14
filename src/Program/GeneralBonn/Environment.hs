@@ -2,7 +2,7 @@
 
 module Program.GeneralBonn.Environment 
 
-( Environment,
+( Environment
 , empty, lookup
 , add
 , must_be_equal
