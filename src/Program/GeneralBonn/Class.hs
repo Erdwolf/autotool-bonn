@@ -16,7 +16,6 @@ import Data.Typeable
 
 class ( Read p, Show p, Typeable p
       , Reader st, ToDoc st , Typeable st
-      , Value val 
       , OrderScore p
       ) 
         => Class p st val | p -> st, p -> val where
