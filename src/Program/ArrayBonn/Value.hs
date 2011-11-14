@@ -36,9 +36,9 @@ instance Reader ( E.Environment Value ) where
     reader = fmap E.make $ many $ do
         my_reserved "int"
         id <- reader
-        ty <- read_with =<< many (my_brackets reader)
+        ds <- many (my_brackets reader)
         my_equals
-        val <- ty 
+        val <- read_with ds
         my_semi
         return ( id, val )
 
