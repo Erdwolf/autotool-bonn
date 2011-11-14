@@ -2,7 +2,7 @@
 
 module Program.GeneralBonn.Environment 
 
-( Environment, Value(..)
+( Environment,
 , empty, lookup
 , add
 , must_be_equal
@@ -10,8 +10,6 @@ module Program.GeneralBonn.Environment
 )
 
 where
-
-import Program.GeneralBonn.Value
 
 import Autolib.FiniteMap
 import Autolib.Set
