@@ -22,7 +22,7 @@ example :: Value
 example = Row $ map Scalar [ 3,1,4,1,5 ]
 
 
-instance Value val => ToDoc ( E.Environment val ) where
+instance ToDoc ( E.Environment Value ) where
     toDoc ( E.Environment e ) = vcat $ do
         ( k, v ) <- E.fmToList e
         return $ hsep [ text "int"
@@ -32,7 +32,7 @@ instance Value val => ToDoc ( E.Environment val ) where
                       , toDoc v
                       , semi ]
 
-instance Value val => Reader ( E.Environment val ) where
+instance Reader ( E.Environment Value ) where
     reader = fmap E.make $ many $ do
         my_reserved "int"
         id <- reader
