@@ -38,7 +38,7 @@ instance ToDoc Statement where
             hsep [ toDoc target, equals, toDoc exp, semi ]
         Declare name dim val ->
             hsep [ text "int"
-                 , toDoc name <> hsep ( do d <- dim ; return $ toDoc [d] )
+                 , toDoc name <> hsep ( do d <- dim ; return $ brackets $ toDoc d )
                  , equals
                  , toDoc val
                  , semi
