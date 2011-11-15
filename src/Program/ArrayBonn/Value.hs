@@ -26,8 +26,7 @@ instance ToDoc ( E.Environment Value ) where
     toDoc ( E.Environment e ) = vcat $ do
         ( k, v ) <- E.fmToList e
         return $ hsep [ text "int"
-                      , toDoc k
-                      , hsep ( do d <- depth v ; return $ brackets $ toDoc d )
+                      , toDoc k <> hsep ( do d <- depth v ; return $ brackets $ toDoc d )
                       , equals
                       , toDoc v
                       , semi ]
