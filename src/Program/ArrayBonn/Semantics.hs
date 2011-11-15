@@ -16,6 +16,8 @@ import Autolib.TES.Identifier
 
 import Data.Ix
 
+import Data.List (intersperse)
+
 execute start ( Program ss ) = foldM single  start ss
 
 single :: Environment Value
@@ -70,7 +72,7 @@ access env ( Scalar i ) [] = return i
 access env v @ ( Row vs ) ( p : ps ) = do
     q <- eval env p
     let bnd = ( 0, fromIntegral $ length vs - 1 )
-    when ( not $ inRange bnd q ) $ di
+    when ( not $ inRange bnd q ) $ do
          outOfRangeError p q bnd
     access env ( vs !! fromIntegral q ) ps
 access env v ps = reject $ vcat
