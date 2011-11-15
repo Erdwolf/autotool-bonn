@@ -70,11 +70,8 @@ access env ( Scalar i ) [] = return i
 access env v @ ( Row vs ) ( p : ps ) = do
     q <- eval env p
     let bnd = ( 0, fromIntegral $ length vs - 1 )
-    when ( not $ inRange bnd q ) $ reject 
-	 $ hsep [ text "Index:", toDoc p, comma
-		, text "Wert:", toDoc q, comma
-		, text "nicht im erlaubten Bereich:", toDoc bnd
-		]
+    when ( not $ inRange bnd q ) $ di
+         outOfRangeError p q bnd
     access env ( vs !! fromIntegral q ) ps
 access env v ps = reject $ vcat
     [ text "unpassende Dimensionen:"
@@ -92,11 +89,8 @@ update env ( Scalar i ) [] new = return $ Scalar new
 update env v @ ( Row vs ) ( p : ps ) new = do
     q <- eval env p
     let bnd = ( 0, fromIntegral $ length vs - 1 )
-    when ( not $ inRange bnd q ) $ reject 
-	 $ hsep [ text "Index", toDoc p 
-		, text "Wert", toDoc q
-		, text "nicht im erlaubten Bereich", toDoc bnd
-		]
+    when ( not $ inRange bnd q ) $ do
+         outOfRangeError p q bnd
     let ( pre, this : post ) = splitAt ( fromIntegral q ) vs
     that <- update env this ps new
     return $ Row $ pre ++ that : post
@@ -106,6 +100,17 @@ update env v ps new = reject $ vcat
     , text "Wert" <+> toDoc v
     , text "Indices" <+> toDoc ps
     ]
+
+outOfRangeError p q (a,b) =
+    reject $ hsep
+        [ text "Index:", toDoc p, comma
+		, text "Wert:", toDoc q, comma
+		, text "nicht im erlaubten Bereich:", showRange a b
+		]
+
+showRange a b | b < 5 =
+                hcat $ intersperse comma $ map toDoc [a..b]
+showRange a b = hcat [ toDoc a, text ", ..., " , toDoc b ]
 
 patches :: Environment Value
         -> ( Integer, Integer )
