@@ -102,22 +102,26 @@ swapAlong (_:path) (Branch (Marked down) _ _) = do
 swapAlong (L:path) (Branch (Unmarked down) l@(Branch (Marked up) ll lr) r) = do
     fail "Kann Knoten nicht nach links absenken. Der linke Kindsknoten ist bereits markiert."
 
+swapAlong (L:path) (Branch (Unmarked down) l@(Branch (Unmarked up) ll lr) r) | not (isMaxHeap l) || not (isMaxHeap r) = do
+    fail "Kann Knoten nicht absenken. Teilbaum erfüllt nicht die Heapeigenschaft."
+
+swapAlong (L:path) (Branch (Unmarked down) l@(Branch (Unmarked up) ll lr) r) | down > up = do
+    fail $ "Knoten " ++ show down ++ " kann nicht unter " ++ show up ++ " abgesenkt werden, da er größer ist."
+
 swapAlong (L:path) (Branch (Unmarked down) l@(Branch (Unmarked up) ll lr) r) = do
-    when (not (isMaxHeap l) || not (isMaxHeap r)) $
-        fail "Kann Knoten nicht absenken. Teilbaum erfüllt nicht die Heapeigenschaft."
-    when (down > up) $ do
-        fail $ "Knoten " ++ show down ++ " kann nicht unter " ++ show up ++ " abgesenkt werden, da er größer ist."
     l' <- swapAlong path (Branch (Unmarked down) ll lr)
     return (Branch (Unmarked up) l' r)
 
 swapAlong (R:path) (Branch (Unmarked down) l r@(Branch (Marked up) rl rr)) = do
     fail "Kann Knoten nicht nach rechts absenken. Der rechte Kindsknoten ist bereits markiert."
 
+swapAlong (R:path) (Branch (Unmarked down) l r@(Branch (Unmarked up) rl rr)) | not (isMaxHeap l) || not (isMaxHeap r) = do
+    fail "Kann Knoten nicht absenken. Teilbaum erfüllt nicht die Heapeigenschaft."
+
+swapAlong (R:path) (Branch (Unmarked down) l r@(Branch (Unmarked up) rl rr)) | down > up = do
+    fail $ "Knoten " ++ show down ++ " kann nicht unter " ++ show up ++ " abgesenkt werden, da er größer ist."
+
 swapAlong (R:path) (Branch (Unmarked down) l r@(Branch (Unmarked up) rl rr)) = do
-    when (not (isMaxHeap l) || not (isMaxHeap r)) $
-        fail "Kann Knoten nicht absenken. Teilbaum erfüllt nicht die Heapeigenschaft."
-    when (down > up) $ do
-        fail $ "Knoten " ++ show down ++ " kann nicht unter " ++ show up ++ " abgesenkt werden, da er größer ist."
     r' <- swapAlong path (Branch (Unmarked down) rl rr)
     return (Branch (Unmarked up) l r')
 
