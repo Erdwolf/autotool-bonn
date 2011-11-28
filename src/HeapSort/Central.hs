@@ -58,5 +58,5 @@ instance Partial HeapSort Config Solution where
 
     total p (Config giveFeedback unsortedNumbers) (Solution operations) = do
        t <- runWrapper $ execute operations (T.fromList unsortedNumbers)
-       inform "Huh?"
+       inform $ text "Huh?"
        return ()
