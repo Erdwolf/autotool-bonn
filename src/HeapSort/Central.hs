@@ -31,7 +31,7 @@ data HeapSort = HeapSort deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''HeapSort])
 
-make_fixed = direct HeapSort $ Config OnError [5,4,2,1,3,6]
+make_fixed = direct HeapSort $ Config OnFailure [5,4,2,1,3,6]
 
 instance OrderScore HeapSort where
     scoringOrder h = Increasing
