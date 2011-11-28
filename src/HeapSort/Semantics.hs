@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, MultiParamTypeClasses, FlexibleInstances #-}
 module HeapSort.Semantics where
 
 import HeapSort.Operation
@@ -16,6 +16,14 @@ execute path t = do
     (t',_) <- runStateT (undecorate =<< execute_ path =<< decorate t) [{- Markierte Knoten -}]
     return t'
 -}
+
+class Monad m => TreeOutputMonad a m where
+    treeOutput :: Tree a -> m ()
+
+instance Show a => TreeOutputMonad a IO where
+    treeOutput = putStrLn . showTree
+
+
 
 execute path t = undecorate =<< execute_ path =<< decorate t
 
@@ -61,6 +69,7 @@ execute_ (Sinken k path:ops)  t = do
     (t',Any found) <- runWriterT $ sinken k path t
     when (not found) $ do
        fail $ "Knoten " ++ show k ++ " nicht gefunden."
+    treeOutput t'
     execute_ ops t'
 execute_ (Tauschen k1 k2:ops) t = do
     t' <- tauschen k1 k2 t
@@ -71,6 +80,7 @@ execute_ (Tauschen k1 k2:ops) t = do
     when (not found2) $ do
        fail $ "Knoten " ++ show k2 ++ " nicht gefunden."
     -}
+    treeOutput t'
     execute_ ops t'
 
 

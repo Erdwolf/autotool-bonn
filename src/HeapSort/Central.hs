@@ -47,6 +47,10 @@ instance  Monad Wrapper where
     (Wrapper mx) >>= f = Wrapper $ mx >>= runWrapper . f
     fail x = Wrapper (reject $ text x)
 
+instance TreeOutputMonad Int Wrapper where
+    treeOutput = Wrapper . peng
+
+
 instance Partial HeapSort Config Solution where
     report p (Config giveFeedback numbers) = do
       inform $ vcat [ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
