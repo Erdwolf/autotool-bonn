@@ -68,7 +68,13 @@ instance Partial HeapSort Config Solution where
 
     total p (Config giveFeedback unsortedNumbers) (Solution operations) = do
        t <- runWrapper $ execute operations (T.fromList unsortedNumbers)
+       unless (isSorted $ T.toList t) $ do
+           reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
        inform $ text "Ja."
+
+isSorted []         = True
+isSorted [x]        = True
+isSorted (x1:x2:xs) = x1 <= x2 && isSorted (x2:xs)
 
 instance ToTree (Data.Tree.Tree String) where
   toTree = id
@@ -84,7 +90,10 @@ instance ToTree (T.Tree Int) where
 instance ToTree (T.Tree (Marked Int)) where
   toTree = Data.Tree.unfoldTree uf
     where
-      uf (T.Branch x Empty Empty) = (show x,[])
-      uf (T.Branch x l     Empty) = (show x,[l])
-      uf (T.Branch x Empty r    ) = (show x,[r])
-      uf (T.Branch x l     r    ) = (show x,[l,r])
+      uf (T.Branch x Empty Empty) = (showMarked x,[])
+      uf (T.Branch x l     Empty) = (showMarked x,[l])
+      uf (T.Branch x Empty r    ) = (showMarked x,[r])
+      uf (T.Branch x l     r    ) = (showMarked x,[l,r])
+
+      showMarked (Marked   x) = "[" ++ show x ++ "]"
+      showMarked (Unmarked x) = show x
