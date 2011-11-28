@@ -48,7 +48,7 @@ instance  Monad Wrapper where
     fail x = Wrapper (reject $ text x)
 
 instance TreeOutputMonad (Marked Int) Wrapper where
-    treeOutput = Wrapper . peng
+    treeOutput = Wrapper . peng . toTree
 
 
 instance Partial HeapSort Config Solution where
