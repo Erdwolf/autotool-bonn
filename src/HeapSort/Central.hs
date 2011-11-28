@@ -71,6 +71,11 @@ instance Partial HeapSort Config Solution where
 
       peng (T.fromList numbers)
 
+      inform $ vcat [ text "Als Operationen stehen ihnen Sinken und Tauschen zur Verfügung."
+                    , text ""
+                    , toDoc $ Solution [ Sinken 55 [L,R], Sinken 31 [R], Tauschen 23 66 ]
+                    ]
+
       when (feedback == None) $ do
         inform $ vcat [ text ""
                       , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
