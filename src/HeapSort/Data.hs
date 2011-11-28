@@ -13,13 +13,18 @@ import Data.Derive.All
 
 $(derives [makeEq,makeOrd] [''Operation,''Richtung])
 
+data Feedback = Verbose
+              | OnFailure
+              | None
+   deriving ( Eq, Ord, Typeable)
+
 data QuizConfig = QuizConfig
- { quizFeedback :: Bool
+ { quizFeedback :: Feedback
  }
    deriving ( Eq, Ord, Typeable)
 
 data Config = Config
- { feedback :: Bool
+ { feedback :: Feedback
  , unsortedNumbers :: [Int]
  }
    deriving ( Eq, Ord, Typeable)
@@ -30,7 +35,7 @@ data Solution = Solution [Operation]
    deriving ( Eq, Ord, Typeable, Read, Show )
 
 
-$(derives [makeReader, makeToDoc] [''Richtung,''QuizConfig,''Config,''Solution])
+$(derives [makeReader, makeToDoc] [''Richtung,''Feedback,''QuizConfig,''Config,''Solution])
 
 
 instance Size Config   where size _ = 0

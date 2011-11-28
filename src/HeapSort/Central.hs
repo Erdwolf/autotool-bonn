@@ -20,6 +20,7 @@ import Autolib.Dot.Dotty ( peng )
 
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless)
+import Control.Monad.Writer
 import Data.Derive.All (makeEq)
 import qualified Data.Tree
 
@@ -41,24 +42,25 @@ instance Verify HeapSort Config where
 
 $(derives [makeEq, makeToDoc] [''Tree])
 
-newtype Wrapper a = Wrapper { runWrapper :: Reporter a }
+newtype Wrapper a = Wrapper { runWrapper :: WriterT [Tree Int] Reporter a }
 instance  Monad Wrapper where
     return = Wrapper . return
     (Wrapper mx) >>= f = Wrapper $ mx >>= runWrapper . f
     fail x = Wrapper (reject $ text x)
 
 instance TreeOutputMonad (Marked Int) Wrapper where
-    treeOutput = Wrapper . peng . toTree
+    --treeOutput = Wrapper . peng . toTree
+    treeOutput = Wrapper . tell . (\x -> [x])
 
 
 instance Partial HeapSort Config Solution where
-    report p (Config giveFeedback numbers) = do
+    report p (Config feedback numbers) = do
       inform $ vcat [ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
                     ]
 
       peng (T.fromList numbers)
 
-      unless giveFeedback $ do
+      when (feedback == None) $ do
         inform $ vcat [ text ""
                       , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
                       , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
@@ -66,8 +68,8 @@ instance Partial HeapSort Config Solution where
 
     initial p _ = Solution []
 
-    total p (Config giveFeedback unsortedNumbers) (Solution operations) = do
-       t <- runWrapper $ execute operations (T.fromList unsortedNumbers)
+    total p (Config feedback unsortedNumbers) (Solution operations) = do
+       (t,ts) <- runWriterT $ runWrapper $ execute operations (T.fromList unsortedNumbers)
        unless (isSorted $ T.toList t) $ do
            reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
        inform $ text "Ja."
