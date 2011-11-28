@@ -46,7 +46,7 @@ newtype Wrapper a = Wrapper { runWrapper :: WriterT [Tree (Marked Int)] Reporter
 instance  Monad Wrapper where
     return = Wrapper . return
     (Wrapper mx) >>= f = Wrapper $ mx >>= runWrapper . f
-    fail x = Wrapper (reject $ text x)
+    fail x = Wrapper (lift $ reject $ text x)
 
 instance TreeOutputMonad (Marked Int) Wrapper where
     --treeOutput = Wrapper . peng . toTree
