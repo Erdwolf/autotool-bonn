@@ -15,6 +15,8 @@ import Autolib.Reporter (Reporter, reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
+import Autolib.Dot.Dotty ( peng )
+
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless)
 
@@ -56,4 +58,5 @@ instance Partial HeapSort Config Solution where
 
     total p (Config giveFeedback unsortedNumbers) (Solution operations) = do
        t <- runWrapper $ execute operations (T.fromList unsortedNumbers)
+       inform "Huh?"
        return ()
