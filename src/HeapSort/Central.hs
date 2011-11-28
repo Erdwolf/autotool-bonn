@@ -44,7 +44,7 @@ instance  Monad Wrapper where
     fail x = Wrapper (reject $ text x)
 
 instance Partial HeapSort Config Solution where
-    report p (Config giveFeedback numbers) =
+    report p (Config giveFeedback numbers) = do
       inform $ vcat [ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
                     ]
 
