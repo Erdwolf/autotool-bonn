@@ -19,6 +19,7 @@ import Autolib.Dot.Dotty ( peng )
 
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless)
+import qualified Data.Tree
 
 rejectIO = Autolib.Reporter.IO.Type.reject
 informIO = Autolib.Reporter.IO.Type.inform
@@ -43,12 +44,13 @@ instance  Monad Wrapper where
     fail x = Wrapper (reject $ text x)
 
 instance Partial HeapSort Config Solution where
-    describe p (Config giveFeedback numbers) =
-      vcat$[ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
-           , text ""
-           , text$"(Hier Baum mit Zahlen " ++ show numbers ++ ")"
-           , text ""
-           ] ++ if giveFeedback then [] else
+    report p (Config giveFeedback numbers) =
+      inform $ vcat $
+           [ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
+           ]
+      peng (toDataTree (T.fromList numbers))
+      unless giveFeedback $ do
+        inform $ vcat $
            [ text ""
            , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
            , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
@@ -60,3 +62,10 @@ instance Partial HeapSort Config Solution where
        t <- runWrapper $ execute operations (T.fromList unsortedNumbers)
        inform $ text "Huh?"
        return ()
+
+toDataTree :: T.Tree a -> Data.Tree.Tree a
+toDataTree = Data.Tree.unfoldTree uf
+    uf (T.Branch x Empty Empty) = (x,[])
+    uf (T.Branch x l     Empty) = (x,[l])
+    uf (T.Branch x Empty r    ) = (x,[r])
+    uf (T.Branch x l     r    ) = (x,[l,r])
