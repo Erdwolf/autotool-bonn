@@ -5,6 +5,7 @@ module HeapSort.Central where
 import HeapSort.Data
 import HeapSort.Tree as T
 import HeapSort.Semantics
+import Tree.Class ()
 
 import Debug ( debug )
 
