@@ -14,7 +14,7 @@ import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), hsep, toDoc, nest, T
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (Reporter, reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
-import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
+import Inter.Types (OrderScore(..), ScoringOrder(Increasing direct)
 
 import Autolib.Dot.Dotty ( peng )
 
