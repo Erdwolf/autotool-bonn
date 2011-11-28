@@ -38,6 +38,8 @@ instance Verify HeapSort Config where
     verify _ cfg = do
         return ()
 
+deriving instance Eq (Tree a)
+
 newtype Wrapper a = Wrapper { runWrapper :: Reporter a }
 instance  Monad Wrapper where
     return = Wrapper . return
