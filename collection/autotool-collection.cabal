@@ -68,7 +68,8 @@ Library
         hashable,
         haskell98,
         dataenc,
-        bytestring
+        bytestring,
+        derive
     Hs-source-dirs:
         src
         src/control
