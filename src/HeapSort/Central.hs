@@ -11,7 +11,7 @@ import Debug ( debug )
 import Challenger.Partial (Verify(..), Partial(..))
 import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), hsep, toDoc, nest, ToDoc(..))
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
-import Autolib.Reporter (reject, inform)
+import Autolib.Reporter (Reporter, reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
@@ -34,6 +34,11 @@ instance Verify HeapSort Config where
     verify _ cfg = do
         return ()
 
+newtype Wrapper a = Wrapper { runWrapper :: Reporter a }
+instance  Monad Wrapper where
+    return = Wrapper . return
+    (Wrapper mx) >>= f = Wrapper $ mx >>= runWrapper . f
+    fail x = Wrapper (reject $ text x)
 
 instance Partial HeapSort Config Solution where
     describe p (Config giveFeedback numbers) =
@@ -50,5 +55,5 @@ instance Partial HeapSort Config Solution where
     initial p _ = Solution []
 
     total p (Config giveFeedback unsortedNumbers) (Solution operations) = do
-       t <- execute operations (T.fromList unsortedNumbers)
+       t <- runWrapper $ execute operations (T.fromList unsortedNumbers)
        return ()
