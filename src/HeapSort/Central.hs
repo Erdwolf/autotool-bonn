@@ -54,7 +54,7 @@ instance Monad OnFailure where
     return = OnFailureReporter . return
     (OnFailureReporter mx) >>= f = OnFailureReporter $ mx >>= runOnFailure . f
     fail x = OnFailureReporter $ do
-        t <- gets head
+        t <- get
         lift $ peng $ toTree t
         lift $ reject $ text x
 
