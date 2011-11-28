@@ -20,7 +20,7 @@ import Autolib.Dot.Dotty ( peng )
 
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless)
-import Control.Monad.Writer
+import Control.Monad.State
 import Data.Derive.All (makeEq)
 import qualified Data.Tree
 
@@ -42,15 +42,18 @@ instance Verify HeapSort Config where
 
 $(derives [makeEq, makeToDoc] [''Tree])
 
-newtype Wrapper a = Wrapper { runWrapper :: WriterT [Tree (Marked Int)] Reporter a }
+newtype Wrapper a = Wrapper { runWrapper :: StateT [Tree (Marked Int)] Reporter a }
 instance  Monad Wrapper where
     return = Wrapper . return
     (Wrapper mx) >>= f = Wrapper $ mx >>= runWrapper . f
-    fail x = Wrapper (lift $ reject $ text x)
+    fail x = Wrapper $ do
+        t <- gets head
+        
+        lift $ reject $ text x
 
 instance TreeOutputMonad (Marked Int) Wrapper where
     --treeOutput = Wrapper . peng . toTree
-    treeOutput = Wrapper . tell . (\x -> [x])
+    treeOutput x = Wrapper $ modify (x:)
 
 
 instance Partial HeapSort Config Solution where
@@ -69,7 +72,7 @@ instance Partial HeapSort Config Solution where
     initial p _ = Solution []
 
     total p (Config feedback unsortedNumbers) (Solution operations) = do
-       (t,ts) <- runWriterT $ runWrapper $ execute operations (T.fromList unsortedNumbers)
+       (t,ts) <- flip runStateT [] $ runWrapper $ execute operations (T.fromList unsortedNumbers)
        unless (isSorted $ T.toList t) $ do
            reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
        inform $ text "Ja."
