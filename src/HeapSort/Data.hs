@@ -20,6 +20,9 @@ data Feedback = Verbose
 
 data QuizConfig = QuizConfig
  { quizFeedback :: Feedback
+ , numbers :: Int
+ , min :: Int
+ , max :: Int
  }
    deriving ( Eq, Ord, Typeable)
 

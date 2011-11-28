@@ -16,8 +16,8 @@ import Data.Typeable
 
 
 instance Generator HeapSort QuizConfig Config where
-    generator p (QuizConfig fb) key = do -- IO
-      Config fb <$> HeapSort.Generator.generate
+    generator p (QuizConfig fb n min max) key = do -- IO
+      Config fb <$> HeapSort.Generator.generate n (min,max)
 
 
 instance Project HeapSort Config Config where
@@ -26,4 +26,4 @@ instance Project HeapSort Config Config where
 
 
 make :: Make
-make = quiz HeapSort (QuizConfig OnFailure)
+make = quiz HeapSort (QuizConfig OnFailure 7 1 100)

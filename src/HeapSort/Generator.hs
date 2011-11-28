@@ -4,9 +4,8 @@ import System.Random (randomR, getStdGen, setStdGen)
 import Data.List (nubBy)
 import Data.Function (on)
 
-generate :: IO [Int]
-generate = do
-    let n = 7; range = (1,100)
+generate :: Int -> (Int, Int) -> IO [Int]
+generate n range = do
     g <- getStdGen
     let xs = take n $ nubBy ((==)`on`fst) $ randomRs' range g
     setStdGen $ snd $ last xs
