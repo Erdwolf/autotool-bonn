@@ -779,4 +779,11 @@ executable Trial.cgi
                  Syntax.Quiz,
                  Syntax.Syntax,
                  Syntax.Transformer,
-                 Syntax.Words
+                 Syntax.Words,
+                 HeapSort.Central,
+                 HeapSort.Data,
+                 HeapSort.Generator,
+                 HeapSort.Operation,
+                 HeapSort.Quiz,
+                 HeapSort.Semantics,
+                 HeapSort.Tree

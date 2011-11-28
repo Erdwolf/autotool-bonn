@@ -437,6 +437,13 @@ Library
         Syntax.Syntax
         Syntax.Transformer
         Syntax.Words
+        HeapSort.Central
+        HeapSort.Data
+        HeapSort.Generator
+        HeapSort.Operation
+        HeapSort.Quiz
+        HeapSort.Semantics
+        HeapSort.Tree
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central
