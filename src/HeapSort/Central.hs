@@ -74,6 +74,7 @@ instance ToTree (Data.Tree.Tree String) where
   toTree = id
 
 instance ToTree (T.Tree Int) where
+  toTree = Data.Tree.unfoldTree uf
     where
       uf (T.Branch x Empty Empty) = (show x,[])
       uf (T.Branch x l     Empty) = (show x,[l])
