@@ -76,6 +76,9 @@ instance Partial HeapSort Config Solution where
                     , text ""
                     , hsep [text "Also zum Beispiel", toDoc $ Solution [ Sinken 55 [L,R], Sinken 31 [R], Tauschen 23 66 ] ]
                     , text "wobei die erste Operation Knoten 55 erst nach links, dann nach rechts absinken lässt, die zweite Operation Knoten 31 nach rechts absenkt, und die dritte Operation Knoten 22 und 66 vertauscht, um 66 ans Ende des Arrays zu bewegen und zu markieren."
+                    , text ""
+                    , text "Bereits als abgespalten markierte Knoten (nach Verwendung von Tauschen) werden mit eckigen Klammern dargestellt."
+                    , text "Alle Knoten bis auf die Wurzel müssen am Ende markiert sein, damit der Algorithmus als vollständig durchgeführt gilt."
                     ]
 
       when (feedback == None) $ do
@@ -88,13 +91,15 @@ instance Partial HeapSort Config Solution where
 
     total p (Config feedback unsortedNumbers) (Solution operations) = do
        when (feedback /= None) $ do
-           let t = T.fromList unsortedNumbers
-           let m = do t' <- execute operations t
+           let t = decorate (T.fromList unsortedNumbers)
+           let m = do t' <- execute_ operations t
                       unless (isSorted $ T.toList t') $ do
                          fail "Baum entspricht nicht einer sortierten Liste."
+                      unless (all isMarked $ T.toList t') $ do
+                         fail "Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
            case feedback of
                   OnFailure ->
-                       flip evalStateT (decorate t) $ runOnFailure m
+                       flip evalStateT t $ runOnFailure m
                   Verbose ->
                        runVerbose m
        inform $ text "Ja."
