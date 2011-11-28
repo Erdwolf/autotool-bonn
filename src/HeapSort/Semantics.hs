@@ -25,7 +25,8 @@ instance Show a => TreeOutputMonad a IO where
 
 
 
-execute path t = undecorate =<< execute_ path =<< decorate t
+execute path t = do
+    undecorate `liftM` execute_ path (decorate t)
 
 data Marked a = Marked a
               | Unmarked a
@@ -48,21 +49,15 @@ isMarked (Marked _) = True
 isMarked _          = False
 -}
 
-decorate Empty = return Empty
-decorate (Branch x l r) = do
-    l' <- decorate l
-    r' <- decorate r
-    return (Branch (Unmarked x) l' r')
+decorate Empty = Empty
+decorate (Branch x l r) =
+    Branch (Unmarked x) (decorate l) (decorate r)
 
-undecorate Empty = return Empty
-undecorate (Branch (Unmarked x) l r) = do
-    l' <- undecorate l
-    r' <- undecorate r
-    return (Branch x l' r')
-undecorate (Branch (Marked x) l r) = do
-    l' <- undecorate l
-    r' <- undecorate r
-    return (Branch x l' r')
+undecorate Empty = Empty
+undecorate (Branch (Unmarked x) l r) =
+    Branch x (undecorate l) (undecorate r)
+undecorate (Branch (Marked x) l r) =
+    Branch x (undecorate l) (undecorate r)
 
 execute_ [] t = return t
 execute_ (Sinken k path:ops)  t = do
