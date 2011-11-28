@@ -5,7 +5,7 @@ module HeapSort.Central where
 import HeapSort.Data
 import HeapSort.Tree as T
 import HeapSort.Semantics
-import Tree.Class ()
+import Tree.Class (ToTree(..))
 
 import Debug ( debug )
 
@@ -63,10 +63,10 @@ instance Partial HeapSort Config Solution where
        t <- runWrapper $ execute operations (T.fromList unsortedNumbers)
        inform $ text "Ja."
 
-toDataTree :: T.Tree a -> Data.Tree.Tree a
-toDataTree = Data.Tree.unfoldTree uf
-  where
-    uf (T.Branch x Empty Empty) = (x,[])
-    uf (T.Branch x l     Empty) = (x,[l])
-    uf (T.Branch x Empty r    ) = (x,[r])
-    uf (T.Branch x l     r    ) = (x,[l,r])
+instance ToTree (T.Tree Int) where
+  toTree = Data.Tree.unfoldTree uf
+    where
+      uf (T.Branch x Empty Empty) = (show x,[])
+      uf (T.Branch x l     Empty) = (show x,[l])
+      uf (T.Branch x Empty r    ) = (show x,[r])
+      uf (T.Branch x l     r    ) = (show x,[l,r])
