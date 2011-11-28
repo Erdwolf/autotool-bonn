@@ -49,7 +49,7 @@ instance Partial HeapSort Config Solution where
       inform $ vcat [ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
                     ]
 
-      peng (toDataTree (T.fromList numbers))
+      peng (T.fromList numbers)
 
       unless giveFeedback $ do
         inform $ vcat [ text ""
