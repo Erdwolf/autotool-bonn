@@ -3,7 +3,7 @@
 module HeapSort.Central where
 
 import HeapSort.Data
-import HeapSort.Tree as T
+import qualified HeapSort.Tree as T
 import HeapSort.Semantics
 import Tree.Class (ToTree(..))
 
@@ -20,6 +20,7 @@ import Autolib.Dot.Dotty ( peng )
 
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless)
+import Data.Derive.All (makeEq)
 import qualified Data.Tree
 
 rejectIO = Autolib.Reporter.IO.Type.reject
@@ -38,8 +39,7 @@ instance Verify HeapSort Config where
     verify _ cfg = do
         return ()
 
-deriving instance Eq a => Eq (Tree a)
-instance ToDoc (Tree Int) where
+$(derives [makeEq, makeToDoc] [''T.Tree]
 
 newtype Wrapper a = Wrapper { runWrapper :: Reporter a }
 instance  Monad Wrapper where
