@@ -93,7 +93,7 @@ instance Partial HeapSort Config Solution where
        when (feedback /= None) $ do
            let t = decorate (T.fromList unsortedNumbers)
            let m = do t' <- execute_ operations t
-                      unless (isSorted $ T.toList t') $ do
+                      unless (isSorted $ map value $ T.toList t') $ do
                          fail "Baum entspricht nicht einer sortierten Liste."
                       unless (all isMarked $ tail $ T.toList t') $ do
                          fail "Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
@@ -103,6 +103,9 @@ instance Partial HeapSort Config Solution where
                   Verbose ->
                        runVerbose m
        inform $ text "Ja."
+
+value (Marked x)   = x
+value (Unmarked x) = x
 
 isMarked (Marked _)   = True
 isMarked (Unmarked _) = False
