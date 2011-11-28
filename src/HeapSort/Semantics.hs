@@ -108,6 +108,9 @@ swapAlong (L:path) (Branch (Unmarked down) l@(Branch (Unmarked up) ll lr) r) | n
 swapAlong (L:path) (Branch (Unmarked down) l@(Branch (Unmarked up) ll lr) r) | down > up = do
     fail $ "Knoten " ++ show down ++ " kann nicht unter " ++ show up ++ " abgesenkt werden, da er größer ist."
 
+swapAlong (L:path) (Branch (Unmarked down)   (Branch (Unmarked up) _ _) (Branch (Unmarked other) _ _)) | up < other = do
+    fail $ "Knoten " ++ show down ++ " kann nicht unter " ++ show up ++ " abgesenkt werden, da " ++ show other ++ " größer ist."
+
 swapAlong (L:path) (Branch (Unmarked down) l@(Branch (Unmarked up) ll lr) r) = do
     l' <- swapAlong path (Branch (Unmarked down) ll lr)
     return (Branch (Unmarked up) l' r)
@@ -120,6 +123,9 @@ swapAlong (R:path) (Branch (Unmarked down) l r@(Branch (Unmarked up) rl rr)) | n
 
 swapAlong (R:path) (Branch (Unmarked down) l r@(Branch (Unmarked up) rl rr)) | down > up = do
     fail $ "Knoten " ++ show down ++ " kann nicht unter " ++ show up ++ " abgesenkt werden, da er größer ist."
+
+swapAlong (R:path) (Branch (Unmarked down) (Branch (Unmarked other) _ _) (Branch (Unmarked up) _ _)) | up < other = do
+    fail $ "Knoten " ++ show down ++ " kann nicht unter " ++ show up ++ " abgesenkt werden, da " ++ show other ++ " größer ist."
 
 swapAlong (R:path) (Branch (Unmarked down) l r@(Branch (Unmarked up) rl rr)) = do
     r' <- swapAlong path (Branch (Unmarked down) rl rr)
