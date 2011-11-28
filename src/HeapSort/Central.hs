@@ -74,7 +74,7 @@ instance Partial HeapSort Config Solution where
 
       inform $ vcat [ text "Als Operationen stehen ihnen Sinken und Tauschen zur Verfügung."
                     , text ""
-                    , hsep [text "Also zum Beispiel", toDoc $ Solution [ Sinken 55 [L,R], Sinken 31 [R], Tauschen 23 66 ]
+                    , hsep [text "Also zum Beispiel", toDoc $ Solution [ Sinken 55 [L,R], Sinken 31 [R], Tauschen 23 66 ] ]
                     ]
 
       when (feedback == None) $ do
