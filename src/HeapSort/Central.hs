@@ -3,6 +3,7 @@
 module HeapSort.Central where
 
 import HeapSort.Data
+import HeapSort.Operation
 import HeapSort.Tree as T
 import HeapSort.Semantics
 import Tree.Class (ToTree(..))
