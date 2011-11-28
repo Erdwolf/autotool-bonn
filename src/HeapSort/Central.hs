@@ -65,6 +65,7 @@ instance Partial HeapSort Config Solution where
 
 toDataTree :: T.Tree a -> Data.Tree.Tree a
 toDataTree = Data.Tree.unfoldTree uf
+  where
     uf (T.Branch x Empty Empty) = (x,[])
     uf (T.Branch x l     Empty) = (x,[l])
     uf (T.Branch x Empty r    ) = (x,[r])
