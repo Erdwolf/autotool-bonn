@@ -61,7 +61,7 @@ instance Monad OnFailure where
 instance TreeOutputMonad (Marked Int) Verbose where
     treeOutput x = VerboseReporter $ peng $ toTree x
 instance TreeOutputMonad (Marked Int) OnFailure where
-    treeOutput x = OnFailureReporter $ modify (const x)
+    treeOutput x = OnFailureReporter $ put x
 
 
 instance Partial HeapSort Config Solution where
@@ -81,13 +81,14 @@ instance Partial HeapSort Config Solution where
 
     total p (Config feedback unsortedNumbers) (Solution operations) = do
        when (feedback /= None) $ do
-           let m = execute operations (T.fromList unsortedNumbers)
-           t <- case feedback of
+           let t = T.fromList unsortedNumbers
+           let m = execute operations t
+           t' <- case feedback of
                   OnFailure ->
-                       flip evalStateT [] $ runOnFailure m
+                       flip evalStateT t $ runOnFailure m
                   Verbose ->
                        runVerbose m
-           unless (isSorted $ T.toList t) $ do
+           unless (isSorted $ T.toList t') $ do
                reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
        inform $ text "Ja."
 
