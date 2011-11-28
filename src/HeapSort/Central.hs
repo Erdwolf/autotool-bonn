@@ -31,7 +31,7 @@ data HeapSort = HeapSort deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''HeapSort])
 
-make_fixed = direct HeapSort $ Config True [5,4,2,1,3,6]
+make_fixed = direct HeapSort $ Config OnError [5,4,2,1,3,6]
 
 instance OrderScore HeapSort where
     scoringOrder h = Increasing
@@ -42,7 +42,7 @@ instance Verify HeapSort Config where
 
 $(derives [makeEq, makeToDoc] [''Tree])
 
-newtype Wrapper a = Wrapper { runWrapper :: WriterT [Tree Int] Reporter a }
+newtype Wrapper a = Wrapper { runWrapper :: WriterT [Tree (Marked Int)] Reporter a }
 instance  Monad Wrapper where
     return = Wrapper . return
     (Wrapper mx) >>= f = Wrapper $ mx >>= runWrapper . f
