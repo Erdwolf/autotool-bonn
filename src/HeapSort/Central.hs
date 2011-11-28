@@ -80,9 +80,15 @@ instance Partial HeapSort Config Solution where
     initial p _ = Solution []
 
     total p (Config feedback unsortedNumbers) (Solution operations) = do
-       (t,ts) <- flip runStateT [] $ runWrapper $ execute operations (T.fromList unsortedNumbers)
-       unless (isSorted $ T.toList t) $ do
-           reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
+       when (feedback /= None) $ do
+           let m = execute operations (T.fromList unsortedNumbers)
+           t <- case feedback of
+                  OnFailure ->
+                       flip evalStateT [] $ runOnFailure m
+                  Verbose ->
+                       runVerbose m
+           unless (isSorted $ T.toList t) $ do
+               reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
        inform $ text "Ja."
 
 isSorted []         = True
