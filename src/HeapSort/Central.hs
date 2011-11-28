@@ -3,7 +3,7 @@
 module HeapSort.Central where
 
 import HeapSort.Data
-import qualified HeapSort.Tree as T
+import HeapSort.Tree as T
 import HeapSort.Semantics
 import Tree.Class (ToTree(..))
 
@@ -39,7 +39,7 @@ instance Verify HeapSort Config where
     verify _ cfg = do
         return ()
 
-$(derives [makeEq, makeToDoc] [''T.Tree])
+$(derives [makeEq, makeToDoc] [''Tree])
 
 newtype Wrapper a = Wrapper { runWrapper :: Reporter a }
 instance  Monad Wrapper where
