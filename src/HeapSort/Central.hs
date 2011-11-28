@@ -39,7 +39,7 @@ instance Verify HeapSort Config where
     verify _ cfg = do
         return ()
 
-$(derives [makeEq, makeToDoc] [''T.Tree]
+$(derives [makeEq, makeToDoc] [''T.Tree])
 
 newtype Wrapper a = Wrapper { runWrapper :: Reporter a }
 instance  Monad Wrapper where
