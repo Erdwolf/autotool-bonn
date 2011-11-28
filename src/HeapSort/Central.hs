@@ -47,7 +47,7 @@ instance  Monad Wrapper where
     (Wrapper mx) >>= f = Wrapper $ mx >>= runWrapper . f
     fail x = Wrapper (reject $ text x)
 
-instance TreeOutputMonad Int Wrapper where
+instance TreeOutputMonad (Marked Int) Wrapper where
     treeOutput = Wrapper . peng
 
 
@@ -71,6 +71,14 @@ instance Partial HeapSort Config Solution where
        inform $ text "Ja."
 
 instance ToTree (T.Tree Int) where
+  toTree = Data.Tree.unfoldTree uf
+    where
+      uf (T.Branch x Empty Empty) = (show x,[])
+      uf (T.Branch x l     Empty) = (show x,[l])
+      uf (T.Branch x Empty r    ) = (show x,[r])
+      uf (T.Branch x l     r    ) = (show x,[l,r])
+
+instance ToTree (T.Tree (Marked Int)) where
   toTree = Data.Tree.unfoldTree uf
     where
       uf (T.Branch x Empty Empty) = (show x,[])
