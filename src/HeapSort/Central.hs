@@ -95,7 +95,7 @@ instance Partial HeapSort Config Solution where
            let m = do t' <- execute_ operations t
                       unless (isSorted $ T.toList t') $ do
                          fail "Baum entspricht nicht einer sortierten Liste."
-                      unless (all isMarked $ T.toList t') $ do
+                      unless (all isMarked $ tail $ T.toList t') $ do
                          fail "Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
            case feedback of
                   OnFailure ->
@@ -103,6 +103,9 @@ instance Partial HeapSort Config Solution where
                   Verbose ->
                        runVerbose m
        inform $ text "Ja."
+
+isMarked (Marked _)   = True
+isMarked (Unmarked _) = False
 
 isSorted []         = True
 isSorted [x]        = True
