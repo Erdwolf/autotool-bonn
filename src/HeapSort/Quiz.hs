@@ -26,4 +26,4 @@ instance Project HeapSort Config Config where
 
 
 make :: Make
-make = quiz HeapSort (QuizConfig True)
+make = quiz HeapSort (QuizConfig OnFailure)

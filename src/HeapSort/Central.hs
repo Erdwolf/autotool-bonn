@@ -42,18 +42,26 @@ instance Verify HeapSort Config where
 
 $(derives [makeEq, makeToDoc] [''Tree])
 
-newtype Wrapper a = Wrapper { runWrapper :: StateT [Tree (Marked Int)] Reporter a }
-instance  Monad Wrapper where
-    return = Wrapper . return
-    (Wrapper mx) >>= f = Wrapper $ mx >>= runWrapper . f
-    fail x = Wrapper $ do
+data Verbose   a = VerboseReporter { runVerbose :: Reporter a }
+data OnFailure a = OnFailureReporter { runOnFailure :: StateT (Tree (Marked Int)) Reporter a }
+
+instance Monad Verbose where
+    return = VerboseReporter . return
+    (VerboseReporter mx) >>= f = VerboseReporter $ mx >>= runVerbose . f
+    fail x = VerboseReporter $ reject $ text x
+
+instance Monad OnFailure where
+    return = OnFailureReporter . return
+    (OnFailureReporter mx) >>= f = OnFailureReporter $ mx >>= runOnFailure . f
+    fail x = OnFailureReporter $ do
         t <- gets head
-        
+        lift $ peng $ toTree t
         lift $ reject $ text x
 
-instance TreeOutputMonad (Marked Int) Wrapper where
-    --treeOutput = Wrapper . peng . toTree
-    treeOutput x = Wrapper $ modify (x:)
+instance TreeOutputMonad (Marked Int) Verbose where
+    treeOutput x = VerboseReporter $ peng $ toTree x
+instance TreeOutputMonad (Marked Int) OnFailure where
+    treeOutput x = OnFailureReporter $ modify (const x)
 
 
 instance Partial HeapSort Config Solution where
