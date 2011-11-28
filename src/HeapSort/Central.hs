@@ -49,7 +49,7 @@ data OnFailure a = OnFailureReporter { runOnFailure :: StateT (Tree (Marked Int)
 instance Monad Verbose where
     return = VerboseReporter . return
     (VerboseReporter mx) >>= f = VerboseReporter $ mx >>= runVerbose . f
-    fail x = VerboseReporter $ reject $ text x
+    fail x = VerboseReporter $ reject $ text $ "Nein. " ++ x
 
 instance Monad OnFailure where
     return = OnFailureReporter . return
@@ -57,7 +57,7 @@ instance Monad OnFailure where
     fail x = OnFailureReporter $ do
         t <- get
         lift $ peng $ toTree t
-        lift $ reject $ text x
+        lift $ reject $ text $ "Nein. " ++ x
 
 instance TreeOutputMonad (Marked Int) Verbose where
     treeOutput x = VerboseReporter $ peng $ toTree x

@@ -11,11 +11,6 @@ import Data.Monoid
 import Control.Applicative
 import Data.List ((\\))
 
-{-
-execute path t = do
-    (t',_) <- runStateT (undecorate =<< execute_ path =<< decorate t) [{- Markierte Knoten -}]
-    return t'
--}
 
 class Monad m => TreeOutputMonad a m where
     treeOutput :: Tree a -> m ()
@@ -32,22 +27,10 @@ data Marked a = Marked a
               | Unmarked a
            deriving (Data, Typeable)
 
-{-
-instance Eq a => Eq (Marked a) where
-instance Ord a => Ord (Marked a) where
-    Marked _   <= _          = True
-    _          <= Marked a   = False
-    Unmarked a <= Unmarked b = a <= b
--}
-
 instance Show a => Show (Marked a) where
     show (Marked x)   = show x
     show (Unmarked x) = show x
 
-{-
-isMarked (Marked _) = True
-isMarked _          = False
--}
 
 decorate Empty = Empty
 decorate (Branch x l r) =
@@ -68,13 +51,6 @@ execute_ (Sinken k path:ops)  t = do
     execute_ ops t'
 execute_ (Tauschen k1 k2:ops) t = do
     t' <- tauschen k1 k2 t
-    {-
-    ((t',Any found1),Any found2) <- runWriterT $ runWriterT $ tauschen k1 k2 t
-    when (not found1) $ do
-       fail $ "Knoten " ++ show k1 ++ " nicht gefunden."
-    when (not found2) $ do
-       fail $ "Knoten " ++ show k2 ++ " nicht gefunden."
-    -}
     treeOutput t'
     execute_ ops t'
 
@@ -179,4 +155,3 @@ isMaxHeap (Branch (Unmarked x) l@(Branch (Unmarked x1) _ _) r@(Branch (Unmarked 
     isMaxHeap l &&
     isMaxHeap r
 isMaxHeap (Branch _ _ _) = True
-
