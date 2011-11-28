@@ -75,6 +75,7 @@ instance Partial HeapSort Config Solution where
       inform $ vcat [ text "Als Operationen stehen ihnen Sinken und Tauschen zur Verfügung."
                     , text ""
                     , hsep [text "Also zum Beispiel", toDoc $ Solution [ Sinken 55 [L,R], Sinken 31 [R], Tauschen 23 66 ] ]
+                    , text "wobei die erste Operation Knoten 55 erst nach links, dann nach rechts absinken lässt, die zweite Operation Knoten 31 nach rechts absenkt, und die dritte Operation Knoten 22 und 66 vertauscht, um 66 ans Ende des Arrays zu bewegen und zu markieren."
                     ]
 
       when (feedback == None) $ do
