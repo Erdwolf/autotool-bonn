@@ -75,7 +75,9 @@ instance Partial HeapSort Config Solution where
       inform $ vcat [ text "Als Operationen stehen ihnen Sinken und Tauschen zur Verfügung."
                     , text ""
                     , hsep [text "Also zum Beispiel", toDoc $ Solution [ Sinken 55 [L,R], Sinken 31 [R], Tauschen 23 66 ] ]
-                    , text "wobei die erste Operation Knoten 55 erst nach links, dann nach rechts absinken lässt, die zweite Operation Knoten 31 nach rechts absenkt, und die dritte Operation Knoten 22 und 66 vertauscht, um 66 ans Ende des Arrays zu bewegen und zu markieren."
+                    , text "wobei die erste Operation Knoten 55 erst nach links, dann nach rechts absinken lässt,"
+                    , text "die zweite Operation Knoten 31 nach rechts absenkt, und die dritte Operation Knoten 22"
+                    , text "und 66 vertauscht, um 66 ans Ende des Arrays zu bewegen und zu markieren."
                     , text ""
                     , text "Bereits als abgespalten markierte Knoten (nach Verwendung von Tauschen) werden mit eckigen Klammern dargestellt."
                     , text "Alle Knoten bis auf die Wurzel müssen am Ende markiert sein, damit der Algorithmus als vollständig durchgeführt gilt."
