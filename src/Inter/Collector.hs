@@ -490,8 +490,8 @@ tmakers =
          ]
       , heading "Sortierprogramme"
          [ item Sortier.Programm.Check.make
-         [ item HeapSort.Central.make
-         [ item HeapSort.Quiz.make
+         , item HeapSort.Central.make
+         , item HeapSort.Quiz.make
          ]
       , heading "String-Matching"
          [ item String_Matching.KMP.Central.make_fixed
