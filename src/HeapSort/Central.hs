@@ -39,6 +39,7 @@ instance Verify HeapSort Config where
         return ()
 
 deriving instance Eq a => Eq (Tree a)
+instance ToDoc (Tree Int) where
 
 newtype Wrapper a = Wrapper { runWrapper :: Reporter a }
 instance  Monad Wrapper where
