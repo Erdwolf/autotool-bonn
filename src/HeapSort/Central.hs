@@ -45,23 +45,22 @@ instance  Monad Wrapper where
 
 instance Partial HeapSort Config Solution where
     report p (Config giveFeedback numbers) =
-      inform $ vcat $
-           [ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
-           ]
+      inform $ vcat [ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
+                    ]
+
       peng (toDataTree (T.fromList numbers))
+
       unless giveFeedback $ do
-        inform $ vcat $
-           [ text ""
-           , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-           , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
-           ]
+        inform $ vcat [ text ""
+                      , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
+                      , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
+                      ]
 
     initial p _ = Solution []
 
     total p (Config giveFeedback unsortedNumbers) (Solution operations) = do
        t <- runWrapper $ execute operations (T.fromList unsortedNumbers)
-       inform $ text "Huh?"
-       return ()
+       inform $ text "Ja."
 
 toDataTree :: T.Tree a -> Data.Tree.Tree a
 toDataTree = Data.Tree.unfoldTree uf
