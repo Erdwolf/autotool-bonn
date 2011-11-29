@@ -112,11 +112,11 @@ instance Partial HeapSort Config Solution where
                          runVerbose m
            unless (isSorted $ map value $ T.toList t') $ do
                when (feedback == OnFailure) $ do
-                  lift $ lift $ peng $ toTree t'
+                  peng $ toTree t'
                reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
            unless (all isMarked $ tail $ T.toList t') $ do
                when (feedback == OnFailure) $ do
-                  lift $ lift $ peng $ toTree t'
+                  peng $ toTree t'
                reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
        inform $ text "Ja."
 
