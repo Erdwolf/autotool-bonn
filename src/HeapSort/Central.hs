@@ -44,7 +44,7 @@ instance Verify HeapSort Config where
 $(derives [makeEq, makeToDoc] [''Tree])
 
 data Verbose   a = VerboseReporter { runVerbose :: Reporter a }
-data OnFailure a = OnFailureReporter { runOnFailure :: StateT (Tree (Marked Int)) Reporter a }
+data OnFailure a = OnFailureReporter { runOnFailure :: StateT (Tree (Marked Int)) (StateT (Maybe Operation) Reporter) a }
 
 instance Monad Verbose where
     return = VerboseReporter . return
@@ -55,14 +55,19 @@ instance Monad OnFailure where
     return = OnFailureReporter . return
     (OnFailureReporter mx) >>= f = OnFailureReporter $ mx >>= runOnFailure . f
     fail x = OnFailureReporter $ do
-        t <- get
+        t  <- get
         lift $ peng $ toTree t
-        lift $ reject $ text $ "Nein. " ++ x
+        mb_op <- lift get
+        lift $ reject $ text $  "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance TreeOutputMonad (Marked Int) Verbose where
     treeOutput x = VerboseReporter $ peng $ toTree x
 instance TreeOutputMonad (Marked Int) OnFailure where
     treeOutput x = OnFailureReporter $ put x
+instance OpearationOutputMonad (Marked Int) Verbose where
+    operationOutput _ = VerboseReporter $ return ()
+instance OpearationOutputMonad (Marked Int) OnFailure where
+    operationOutput x = OnFailureReporter $ lift $ put $ Just x
 
 
 instance Partial HeapSort Config Solution where
@@ -106,7 +111,7 @@ instance Partial HeapSort Config Solution where
                          fail "Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
            case feedback of
                   OnFailure ->
-                       flip evalStateT t $ runOnFailure m
+                       flip evalStateT Nothing $ flip evalStateT t $ runOnFailure m
                   Verbose ->
                        runVerbose m
        inform $ text "Ja."
