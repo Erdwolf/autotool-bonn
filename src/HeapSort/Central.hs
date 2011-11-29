@@ -104,16 +104,16 @@ instance Partial HeapSort Config Solution where
     total p (Config feedback unsortedNumbers) (Solution operations) = do
        when (feedback /= None) $ do
            let t = decorate (T.fromList unsortedNumbers)
-           let m = do t' <- execute_ operations t
-                      unless (isSorted $ map value $ T.toList t') $ do
-                         fail "Baum entspricht nicht einer sortierten Liste."
-                      unless (all isMarked $ tail $ T.toList t') $ do
-                         fail "Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
-           case feedback of
-                  OnFailure ->
-                       flip evalStateT Nothing $ flip evalStateT t $ runOnFailure m
-                  Verbose ->
-                       runVerbose m
+           let m = execute_ operations t
+           t' <- case feedback of
+                    OnFailure ->
+                         flip evalStateT Nothing $ flip evalStateT t $ runOnFailure m
+                    Verbose ->
+                         runVerbose m
+           unless (isSorted $ map value $ T.toList t') $ do
+               fail "Nein. Baum entspricht nicht einer sortierten Liste."
+           unless (all isMarked $ tail $ T.toList t') $ do
+               fail "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
        inform $ text "Ja."
 
 value (Marked x)   = x
