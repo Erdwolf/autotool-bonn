@@ -18,10 +18,10 @@ class Monad m => TreeOutputMonad a m where
 instance Show a => TreeOutputMonad a IO where
     treeOutput = putStrLn . showTree
 
-class Monad m => OperationOutputMonad a m where
+class Monad m => OperationOutputMonad m where
     operationOutput :: Operation -> m ()
 
-instance Show a => OperationOutputMonad a IO where
+instance OperationOutputMonad IO where
     operationOutput _ = return ()
 
 

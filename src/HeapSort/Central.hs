@@ -56,17 +56,17 @@ instance Monad OnFailure where
     (OnFailureReporter mx) >>= f = OnFailureReporter $ mx >>= runOnFailure . f
     fail x = OnFailureReporter $ do
         t  <- get
-        lift $ peng $ toTree t
+        lift $ lift $ peng $ toTree t
         mb_op <- lift get
-        lift $ reject $ text $  "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
+        lift $ lift $ reject $ text $  "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance TreeOutputMonad (Marked Int) Verbose where
     treeOutput x = VerboseReporter $ peng $ toTree x
 instance TreeOutputMonad (Marked Int) OnFailure where
     treeOutput x = OnFailureReporter $ put x
-instance OperationOutputMonad (Marked Int) Verbose where
+instance OperationOutputMonad Verbose where
     operationOutput _ = VerboseReporter $ return ()
-instance OperationOutputMonad (Marked Int) OnFailure where
+instance OperationOutputMonad OnFailure where
     operationOutput x = OnFailureReporter $ lift $ put $ Just x
 
 
