@@ -87,7 +87,7 @@ instance Partial HeapSort Config Solution where
                     , text "    ]"
                     , text "Die erste Operation lässt Knoten 55 erst nach links, dann (im selben Zug) nach rechts absinken."
                     , text "Die zweite Operation senkt Knoten 31 nach rechts ab. Die dritte Operation vertauscht Knoten 23"
-                    , text "und 66 (und somit 66 ans Ende des Arrays bewegt und als abgespalten markiert)."
+                    , text "und 66 (und somit wird 66 ans Ende des Arrays bewegt und als abgespalten markiert)."
                     , text ""
                     , text "Bereits als abgespalten markierte Knoten (nach Verwendung von Tauschen) werden mit eckigen Klammern dargestellt."
                     , text "Alle Knoten bis auf die Wurzel müssen am Ende markiert sein, damit der Algorithmus als vollständig durchgeführt gilt."
