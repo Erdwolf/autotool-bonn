@@ -64,9 +64,9 @@ instance TreeOutputMonad (Marked Int) Verbose where
     treeOutput x = VerboseReporter $ peng $ toTree x
 instance TreeOutputMonad (Marked Int) OnFailure where
     treeOutput x = OnFailureReporter $ put x
-instance OpearationOutputMonad (Marked Int) Verbose where
+instance OperationOutputMonad (Marked Int) Verbose where
     operationOutput _ = VerboseReporter $ return ()
-instance OpearationOutputMonad (Marked Int) OnFailure where
+instance OperationOutputMonad (Marked Int) OnFailure where
     operationOutput x = OnFailureReporter $ lift $ put $ Just x
 
 
