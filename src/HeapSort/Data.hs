@@ -19,10 +19,11 @@ data Feedback = Verbose
    deriving ( Eq, Ord, Typeable)
 
 data QuizConfig = QuizConfig
- { quizFeedback :: Feedback
- , numbers :: Int
- , min :: Int
- , max :: Int
+ { quizFeedback :: Feedback  -- ^ Type of feedback
+ , chunks  :: Int            -- ^ Number of chunks during numbers sequence generation (use 1 to deactivate)
+ , numbers :: Int            -- ^ Length of the number sequence
+ , min :: Int                -- ^ Lower bound for random number generation
+ , max :: Int                -- ^ Upper bound for random number generation
  }
    deriving ( Eq, Ord, Typeable)
 

@@ -1,7 +1,7 @@
 module HeapSort.Operation where
 
-data Operation = Sinken Knoten [Richtung]
-               | Tauschen Knoten Knoten
+data Operation = S Knoten [Richtung]
+               | T (Knoten, Knoten)
 
 data Richtung = L | R
 
