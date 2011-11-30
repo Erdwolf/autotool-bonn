@@ -53,9 +53,11 @@ instance Partial EditDistance Config Solution where
     initial p (Config _ _ s t) =
         let n = length s
             m = length t
-        in Solution [ [ if i == n then j else if j == m then i else 0 | j <- [0..m] ] |  i <- [0..n] ]
+        in Solution [ [ if i == n then m-j else if j == m then n-i else 0 | j <- [0..m] ] |  i <- [0..n] ]
 
     total p (Config feedback e s t) (Solution dt1) = do
+       when (dimensions dt1 /= dimensions dt2) $ do
+          "Nein. Die eingegebene Matrix hat die falschen Dimensionen. Ändern Sie nur die Nulleinträge in der vorgegebenen Matrix und nicht die Anzahl der Reihen und Spalten."
        when (feedback /= None) $ do
          let dt2 = table s t
              wrongEntries = [ (i,j) | (i, row1, row2) <- zip3 [0..] dt1 dt2, (j, x1, x2) <- zip3 [0..] row1 row2, x1 /= x2 ]
@@ -64,10 +66,13 @@ instance Partial EditDistance Config Solution where
                 WrongEntries -> do
                     reject $ vcat $ [ text "Nein."
                                     , text ""
-                                    , text "Die folgenden Einträge sind falsch:"
+                                    , text $ "Die Einträge mit folgenden Indizes sind falsch (insgesamt: " ++ show (length wrongEntries) ++ ")"
                                     , nest 3 $ vcat $ map (text . show) wrongEntries
                                     ]
                 NumberOfErrors -> do
                     reject $ text $ "Nein, es sind " ++ show (length wrongEntries) ++ " Einträge falsch."
 
        inform $ text "Ja."
+
+dimensions :: [[a]] -> (Int,Int)
+dimensions xss = (length xss, if null xss then 0 else length (head xss))
