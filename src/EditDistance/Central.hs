@@ -8,7 +8,7 @@ import EditDistance.CalculateTable (table)
 import Debug ( debug )
 
 import Challenger.Partial (Verify(..), Partial(..))
-import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>))
+import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), (<+>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>))
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (Reporter, reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
@@ -42,10 +42,11 @@ instance Partial EditDistance Config Solution where
                     , nest 3 $ text (show s)
                     , text "und"
                     , nest 3 $ text (show t) <> text "."
+                    ]
 
       when (e > 0) $ do
         inform $ vcat [ text ""
-                      , text "Sie dürfen hierbei maximal" +<> text (show e) <+> text "Fehler machen, damit die Lösung als korrekt gewertet wird."
+                      , text "Sie dürfen hierbei maximal" <+> text (show e) <+> text "Fehler machen, damit die Lösung als korrekt gewertet wird."
                       ]
 
       when (feedback == None) $ do
@@ -60,28 +61,27 @@ instance Partial EditDistance Config Solution where
         in Solution [ [ if i == n then m-j else if j == m then n-i else 0 | j <- [0..m] ] |  i <- [0..n] ]
 
     total p (Config feedback e s t) (Solution dt1) = do
+       let dt2 = table s t
+           wrongEntries = [ (i,j) | (i, row1, row2) <- zip3 [0..] dt1 dt2, (j, x1, x2) <- zip3 [0..] row1 row2, x1 /= x2 ]
+           numberOfWrongEntries = length wrongEntries
+
        when (dimensions dt1 /= dimensions dt2) $ do
-          "Nein. Die eingegebene Matrix hat die falschen Dimensionen. Ändern Sie nur die Nulleinträge in der vorgegebenen Matrix und nicht die Anzahl der Reihen und Spalten."
+          reject $ text "Nein. Die eingegebene Matrix hat die falschen Dimensionen. Ändern Sie nur die Nulleinträge in der vorgegebenen Matrix und nicht die Anzahl der Reihen und Spalten."
 
        if feedback == None
           then inform $ text "Ja."
-          else do
-             let dt2 = table s t
-                 wrongEntries = [ (i,j) | (i, row1, row2) <- zip3 [0..] dt1 dt2, (j, x1, x2) <- zip3 [0..] row1 row2, x1 /= x2 ]
-                 numberOfWrongEntries = length wrongEntries
-
-             if (numberOfWrongEntries > e)
-                then reject $ text "Nein. Es sind mehr als " ++ show e ++ " Einträge falsch."
-                else do inform $ text "Ja."
-                        unless (numberOfWrongEntries == 0) $ do
-                          inform $ text ""
-                          case feedback of
-                            WrongEntries -> do
-                                inform $ vcat [ text $ "Die Einträge mit folgenden Indizes sind aber noch falsch (insgesamt " ++ show numberOfWrongEntries ++ " von " ++ show e ++ " erlaubten)"
-                                              , nest 3 $ vcat $ map (text . show) wrongEntries
-                                              ]
-                            NumberOfErrors -> do
-                              inform $ text $ "Es sind aber noch " ++ show numberOfWrongEntries ++ " Einträge falsch. Bis zu " ++ show e ++ " sind erlaubt."
+          else if (numberOfWrongEntries > e)
+                  then reject $ text "Nein. Es sind mehr als" <+> text (show e) <+> text "Einträge falsch."
+                  else do inform $ text "Ja."
+                          unless (numberOfWrongEntries == 0) $ do
+                            inform $ text ""
+                            case feedback of
+                               WrongEntries -> do
+                                  inform $ vcat [ text $ "Die Einträge mit folgenden Indizes sind aber noch falsch (insgesamt " ++ show numberOfWrongEntries ++ " von " ++ show e ++ " erlaubten)"
+                                                , nest 3 $ vcat $ map (text . show) wrongEntries
+                                                ]
+                               NumberOfErrors -> do
+                                  inform $ text $ "Es sind aber noch " ++ show numberOfWrongEntries ++ " Einträge falsch. Bis zu " ++ show e ++ " sind erlaubt."
 
 
 dimensions :: [[a]] -> (Int,Int)
