@@ -89,5 +89,5 @@ instance Partial EditDistance Config Solution where
                                             _ -> text $ "Es sind aber noch " ++ show numberOfWrongEntries ++ " Einträge falsch. Bis zu " ++ show e ++ " sind erlaubt."
 
 
-dimensions :: [[a]] -> (Int,Int)
-dimensions xss = (length xss, if null xss then 0 else length (head xss))
+dimensions :: [[a]] -> [Int]
+dimensions = map length
