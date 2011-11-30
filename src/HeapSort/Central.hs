@@ -92,7 +92,7 @@ instance Partial HeapSort Config Solution where
       when (feedback /= None) $ do
         inform $ vcat [ text ""
                       , text "Zum Ausgabeformat (nicht Teil Ihrer Eingabe):"
-                      , hsep [ case feedback of { OnFailure -> text "Bei Fehlern"; Verbose -> "Nach jeder Operation" }
+                      , hsep [ case feedback of { OnFailure -> text "Bei Fehlern"; Verbose -> text "Nach jeder Operation" }
                              , text "wird der jeweils aktuelle Baum ausgegeben."
                              ]
                       , text "Bereits als abgespalten markierte Knoten (nach Verwendung von Tauschen) werden im Baum mit eckigen Klammern dargestellt."
