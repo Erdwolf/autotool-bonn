@@ -46,7 +46,7 @@ instance Partial EditDistance Config Solution where
 
       when (e > 0) $ do
         inform $ vcat [ text ""
-                      , text "Sie dürfen hierbei maximal" <+> text (show e) <+> text "Fehler machen, damit die Lösung als korrekt gewertet wird."
+                      , text "Sie dürfen hierbei maximal" <+> text (show e) <+> text "Fehler machen, damit die Lösung noch als korrekt gewertet wird."
                       ]
 
       when (feedback == None) $ do
