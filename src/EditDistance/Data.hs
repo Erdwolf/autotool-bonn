@@ -12,13 +12,19 @@ data Feedback = WrongEntries
               | None
    deriving ( Eq, Ord, Typeable)
 
+
+data StringGen = Length Int -- ^ Generate  random string of a certain length.
+               | InsertReplaceDelete Int Int Int
+                  -- ^ Use certain numbers of deletions, replacements, and insertions
+                  --   (in that order) to generate the string from the other one.
+   deriving ( Eq, Ord, Typeable)
+
 data QuizConfig = QuizConfig
- { quizFeedback  :: Feedback  -- ^ Type of feedback
- , quizMaxErrors :: Int       -- ^ Allowed number of errors
- , stringLength1 :: Int       -- ^ Length of first string
- , stringLength2 :: Int       -- ^ Length of second string
- --, string2       :: (Int,Int,Int) -- Deletions/Replacements/Insertions used to generate the second string
- , characters    :: Int       -- ^ Number of different characters
+ { quizFeedback    :: Feedback  -- ^ Type of feedback
+ , quizMaxErrors   :: Int       -- ^ Allowed number of errors
+ , lengthOfstring1 :: Int       -- ^ Length of first string
+ , generateString2 :: StringGen -- ^ How to generate the second string
+ , characters      :: Int       -- ^ Number of different characters
  }
    deriving ( Eq, Ord, Typeable)
 
@@ -34,7 +40,7 @@ data Solution = Solution [[Int]]
    deriving ( Eq, Ord, Typeable, Read, Show )
 
 
-$(derives [makeReader, makeToDoc] [''Feedback,''QuizConfig,''Config,''Solution])
+$(derives [makeReader, makeToDoc] [''Feedback,''StringGen,''QuizConfig,''Config,''Solution])
 
 
 instance Size Config   where size _ = 0
