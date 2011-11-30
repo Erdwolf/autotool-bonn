@@ -14,7 +14,7 @@ data Feedback = WrongEntries
 
 data QuizConfig = QuizConfig
  { quizFeedback  :: Feedback  -- ^ Type of feedback
- , maxErrors     :: Int       -- ^ Allowed number of errors
+ , quizMaxErrors :: Int       -- ^ Allowed number of errors
  , stringLength1 :: Int       -- ^ Length of first string
  , stringLength2 :: Int       -- ^ Length of second string
  , characters    :: Int       -- ^ Number of different characters
