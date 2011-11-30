@@ -15,7 +15,7 @@ import Data.Typeable
 
 
 instance Generator EditDistance QuizConfig Config where
-    generator p (QuizConfig fb n m a) key = do -- IO
+    generator p (QuizConfig fb e n m a) key = do -- IO
       uncurry (Config fb e) <$> EditDistance.Generator.generate n m a
 
 
