@@ -41,6 +41,9 @@ import qualified Syntax.Quiz
 import qualified HeapSort.Central
 import qualified HeapSort.Quiz
 
+import qualified EditDistance.Central
+import qualified EditDistance.Quiz
+
 
 import qualified Specify.Inter
 
@@ -499,6 +502,8 @@ tmakers =
          , item String_Matching.BM.Central.make_fixed
          , item String_Matching.BM.Central.make_quiz
          ]
+      , item EditDistance.Central.make_fixed
+      , item EditDistance.Quiz.make
       ]
    , heading "Datenstrukturen"
       [ heading "Bäume"

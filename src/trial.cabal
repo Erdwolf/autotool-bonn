@@ -786,4 +786,9 @@ executable Trial.cgi
                  HeapSort.Operation,
                  HeapSort.Quiz,
                  HeapSort.Semantics,
-                 HeapSort.Tree
+                 HeapSort.Tree,
+                 EditDistance.Central,
+                 EditDistance.Data,
+                 EditDistance.Generator,
+                 EditDistance.Quiz,
+                 EditDistance.CalculateTable
