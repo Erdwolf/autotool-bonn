@@ -73,7 +73,7 @@ instance Partial EditDistance Config Solution where
           else if (numberOfWrongEntries > e)
                   then reject $ case e of
                                     0 -> text "Nein."
-                                    1 -> reject $ text "Nein. Es ist mehr als 1 Eintrag falsch." 
+                                    1 -> reject $ text "Nein. Es ist mehr als ein Eintrag falsch." 
                                     _ -> reject $ text "Nein. Es sind mehr als" <+> text (show e) <+> text "Einträge falsch."
                   else do inform $ text "Ja."
                           unless (numberOfWrongEntries == 0) $ do
@@ -84,7 +84,9 @@ instance Partial EditDistance Config Solution where
                                                , nest 3 $ vcat $ map (text . show) wrongEntries
                                                ]
                                        NumberOfErrors ->
-                                          text $ "Es sind aber noch " ++ show numberOfWrongEntries ++ " Einträge falsch. Bis zu " ++ show e ++ " sind erlaubt."
+                                          case numberOfWrongEntries of
+                                            1 -> text $ "Es ist aber noch ein Eintrag falsch. Bis zu " ++ show e ++ " sind erlaubt."
+                                            _ -> text $ "Es sind aber noch " ++ show numberOfWrongEntries ++ " Einträge falsch. Bis zu " ++ show e ++ " sind erlaubt."
 
 
 dimensions :: [[a]] -> (Int,Int)
