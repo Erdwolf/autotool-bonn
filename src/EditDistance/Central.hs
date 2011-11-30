@@ -58,7 +58,7 @@ instance Partial EditDistance Config Solution where
     total p (Config feedback e s t) (Solution dt1) = do
        when (feedback /= None) $ do
          let dt2 = table s t
-             wrongEntries = [ (i,j) | (i, row1, row2) <- zip3 [0..] dt1 dt2, (j, x1, x1) <- zip3 [0..] row1 row2, x1 /= x2 ]
+             wrongEntries = [ (i,j) | (i, row1, row2) <- zip3 [0..] dt1 dt2, (j, x1, x2) <- zip3 [0..] row1 row2, x1 /= x2 ]
          unless (null wrongEntries) $ do
             case feedback of
                 WrongEntries -> do
