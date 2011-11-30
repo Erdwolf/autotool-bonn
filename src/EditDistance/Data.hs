@@ -14,7 +14,7 @@ data Feedback = WrongEntries
 
 
 data StringGen = Length Int -- ^ Generate  random string of a certain length.
-               | InsertReplaceDelete Int Int Int
+               | DeleteReplaceInsert Int Int Int
                   -- ^ Use certain numbers of deletions, replacements, and insertions
                   --   (in that order) to generate the string from the other one.
    deriving ( Eq, Ord, Typeable)

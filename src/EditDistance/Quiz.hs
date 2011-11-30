@@ -19,7 +19,7 @@ instance Generator EditDistance QuizConfig Config where
       uncurry (Config fb e) <$> case tgen of
                                    Length m ->
                                       EditDistance.Generator.generate  n m a
-                                   InsertReplaceDelete d r i ->
+                                   DeleteReplaceInsert d r i ->
                                       EditDistance.Generator.generate2 n (d,r,i) a
 
 
@@ -29,4 +29,4 @@ instance Project EditDistance Config Config where
 
 
 make :: Make
-make = quiz EditDistance (QuizConfig NumberOfErrors 0 5 (InsertReplaceDelete 3 3 3) 4)
+make = quiz EditDistance (QuizConfig NumberOfErrors 0 5 (DeleteReplaceInsert 3 3 5) 4)
