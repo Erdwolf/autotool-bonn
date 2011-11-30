@@ -16,8 +16,8 @@ randomChar a = do
     return (['a'..] !! i)
 
 
-generate2 :: Int -> Int -> Int -> Int -> Int -> IO (String, String)
-generate2 n d r i a = do
+generate2 :: Int -> (Int,Int,Int) -> Int -> IO (String, String)
+generate2 n (d,r,i) a = do
     s <- replicateM n (randomChar a)
     t <- insertRandom i a =<< replaceRandom r a =<< deleteRandom d s
     return (s,t)

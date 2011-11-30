@@ -66,7 +66,8 @@ instance Partial EditDistance Config Solution where
            numberOfWrongEntries = length wrongEntries
 
        when (dimensions dt1 /= dimensions dt2) $ do
-          reject $ text "Nein. Die eingegebene Matrix hat die falschen Dimensionen. Füllen sie  Sie nur die Einträge in die vorgegebenen Matrix ein und ändern Sie nicht die Anzahl der Reihen und Spalten."
+          reject $ vcat [ text "Nein. Die eingegebene Matrix hat die falschen Dimensionen."
+                        , text "Füllen Sie nur die Einträge in die vorgegebenen Matrix ein und ändern Sie nicht die Anzahl der Reihen und Spalten."
 
        if feedback == None
           then inform $ text "Ja."

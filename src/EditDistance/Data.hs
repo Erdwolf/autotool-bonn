@@ -17,6 +17,7 @@ data QuizConfig = QuizConfig
  , quizMaxErrors :: Int       -- ^ Allowed number of errors
  , stringLength1 :: Int       -- ^ Length of first string
  , stringLength2 :: Int       -- ^ Length of second string
+ --, string2       :: (Int,Int,Int) -- Deletions/Replacements/Insertions used to generate the second string
  , characters    :: Int       -- ^ Number of different characters
  }
    deriving ( Eq, Ord, Typeable)
