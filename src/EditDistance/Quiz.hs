@@ -15,8 +15,8 @@ import Data.Typeable
 
 
 instance Generator EditDistance QuizConfig Config where
-    generator p (QuizConfig fb e n tgen a) key = do -- IO
-      uncurry (Config fb e) <$> case tgen of
+    generator p (QuizConfig fb et n tgen a) key = do -- IO
+      uncurry (Config fb et) <$> case tgen of
                                    Length m ->
                                       EditDistance.Generator.generate  n m a
                                    DeleteReplaceInsert d r i ->
@@ -29,4 +29,8 @@ instance Project EditDistance Config Config where
 
 
 make :: Make
-make = quiz EditDistance (QuizConfig NumberOfErrors 0 5 (DeleteReplaceInsert 3 3 5) 4)
+make = quiz EditDistance $ QuizConfig (NumberOfErrorsWithCutoffAt 0)
+                                      WrongNumbers
+                                      5 {- characters in the first string -}
+                                      (DeleteReplaceInsert 3 3 5)
+                                      4 {- different characters -}
