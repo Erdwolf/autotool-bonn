@@ -66,15 +66,15 @@ instance Partial EditDistance Config Solution where
            numberOfWrongEntries = length wrongEntries
 
        when (dimensions dt1 /= dimensions dt2) $ do
-          reject $ text "Nein. Die eingegebene Matrix hat die falschen Dimensionen. Ändern Sie nur die Nulleinträge in der vorgegebenen Matrix und nicht die Anzahl der Reihen und Spalten."
+          reject $ text "Nein. Die eingegebene Matrix hat die falschen Dimensionen. Füllen sie  Sie nur die Einträge in die vorgegebenen Matrix ein und ändern Sie nicht die Anzahl der Reihen und Spalten."
 
        if feedback == None
           then inform $ text "Ja."
           else if (numberOfWrongEntries > e)
                   then reject $ case e of
                                     0 -> text "Nein."
-                                    1 -> reject $ text "Nein. Es ist mehr als ein Eintrag falsch." 
-                                    _ -> reject $ text "Nein. Es sind mehr als" <+> text (show e) <+> text "Einträge falsch."
+                                    1 -> text "Nein. Es ist mehr als ein Eintrag falsch." 
+                                    _ -> text "Nein. Es sind mehr als" <+> text (show e) <+> text "Einträge falsch."
                   else do inform $ text "Ja."
                           unless (numberOfWrongEntries == 0) $ do
                             inform $ text ""
