@@ -69,5 +69,5 @@ instance Partial EditDistance Config Solution where
                                     ]
                 NumberOfErrors -> do
                     reject $ text $ "Nein, es sind " ++ show (length wrongEntries) ++ " Einträge falsch."
-"
+
        inform $ text "Ja."
