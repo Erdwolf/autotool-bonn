@@ -24,7 +24,7 @@ data EditDistance = EditDistance deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''EditDistance])
 
-make_fixed = direct EditDistance $ Config NumberOfErrors "acbda" "abcbcba"
+make_fixed = direct EditDistance $ Config NumberOfErrors 0 "acbda" "abcbcba"
 
 instance OrderScore EditDistance where
     scoringOrder h = Increasing
@@ -37,11 +37,11 @@ instance Verify EditDistance Config where
 
 
 instance Partial EditDistance Config Solution where
-    report p (Config feedback s t) = do
+    report p (Config feedback e s t) = do
       inform $ vcat [ text "Berechnen Sie die Tabelle der Edit-Distanzen d_ij für die Zeichenfolgen"
                     , nest 3 $ text (show s)
                     , text "und"
-                    , nest 3 $ text (show t) <> "."
+                    , nest 3 $ text (show t) <> text "."
                     ]
 
       when (feedback == None) $ do
