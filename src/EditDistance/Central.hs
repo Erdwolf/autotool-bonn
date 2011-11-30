@@ -42,7 +42,11 @@ instance Partial EditDistance Config Solution where
                     , nest 3 $ text (show s)
                     , text "und"
                     , nest 3 $ text (show t) <> text "."
-                    ]
+
+      when (e > 0) $ do
+        inform $ vcat [ text ""
+                      , text "Sie dürfen hierbei maximal" +<> text (show e) <+> text "Fehler machen, damit die Lösung als korrekt gewertet wird."
+                      ]
 
       when (feedback == None) $ do
         inform $ vcat [ text ""
@@ -58,21 +62,27 @@ instance Partial EditDistance Config Solution where
     total p (Config feedback e s t) (Solution dt1) = do
        when (dimensions dt1 /= dimensions dt2) $ do
           "Nein. Die eingegebene Matrix hat die falschen Dimensionen. Ändern Sie nur die Nulleinträge in der vorgegebenen Matrix und nicht die Anzahl der Reihen und Spalten."
-       when (feedback /= None) $ do
-         let dt2 = table s t
-             wrongEntries = [ (i,j) | (i, row1, row2) <- zip3 [0..] dt1 dt2, (j, x1, x2) <- zip3 [0..] row1 row2, x1 /= x2 ]
-         unless (null wrongEntries) $ do
-            case feedback of
-                WrongEntries -> do
-                    reject $ vcat $ [ text "Nein."
-                                    , text ""
-                                    , text $ "Die Einträge mit folgenden Indizes sind falsch (insgesamt: " ++ show (length wrongEntries) ++ ")"
-                                    , nest 3 $ vcat $ map (text . show) wrongEntries
-                                    ]
-                NumberOfErrors -> do
-                    reject $ text $ "Nein, es sind " ++ show (length wrongEntries) ++ " Einträge falsch."
 
-       inform $ text "Ja."
+       if feedback == None
+          then inform $ text "Ja."
+          else do
+             let dt2 = table s t
+                 wrongEntries = [ (i,j) | (i, row1, row2) <- zip3 [0..] dt1 dt2, (j, x1, x2) <- zip3 [0..] row1 row2, x1 /= x2 ]
+                 numberOfWrongEntries = length wrongEntries
+
+             if (numberOfWrongEntries > e)
+                then reject $ text "Nein. Es sind mehr als " ++ show e ++ " Einträge falsch."
+                else do inform $ text "Ja."
+                        unless (numberOfWrongEntries == 0) $ do
+                          inform $ text ""
+                          case feedback of
+                            WrongEntries -> do
+                                inform $ vcat [ text $ "Die Einträge mit folgenden Indizes sind aber noch falsch (insgesamt " ++ show numberOfWrongEntries ++ " von " ++ show e ++ " erlaubten)"
+                                              , nest 3 $ vcat $ map (text . show) wrongEntries
+                                              ]
+                            NumberOfErrors -> do
+                              inform $ text $ "Es sind aber noch " ++ show numberOfWrongEntries ++ " Einträge falsch. Bis zu " ++ show e ++ " sind erlaubt."
+
 
 dimensions :: [[a]] -> (Int,Int)
 dimensions xss = (length xss, if null xss then 0 else length (head xss))
