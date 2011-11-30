@@ -50,14 +50,24 @@ instance Partial EditDistance Config Solution where
                       , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
                       ]
 
-    initial p (Config _ s t) =
+    initial p (Config _ _ s t) =
         let n = length s
             m = length t
         in Solution [ [ if i == n then j else if j == m then i else 0 | j <- [0..m] ] |  i <- [0..n] ]
 
-    total p (Config feedback s t) (Solution dt1) = do
+    total p (Config feedback e s t) (Solution dt1) = do
        when (feedback /= None) $ do
          let dt2 = table s t
-         when (dt1 /= dt2) $ do
-            reject $ text "Nein."
+             wrongEntries = [ (i,j) | (i, row1, row2) <- zip3 [0..] dt1 dt2, (j, x1, x1) <- zip3 [0..] row1 row2, x1 /= x2 ]
+         unless (null wrongEntries) $ do
+            case feedback of
+                WrongEntries -> do
+                    reject $ vcat $ [ text "Nein."
+                                    , text ""
+                                    , text "Die folgenden Einträge sind falsch:"
+                                    , nest 3 $ vcat $ map (text . show) wrongEntries
+                                    ]
+                NumberOfErrors -> do
+                    reject $ text $ "Nein, es sind " ++ show (length wrongEntries) ++ " Einträge falsch."
+"
        inform $ text "Ja."
