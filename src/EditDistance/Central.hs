@@ -71,17 +71,20 @@ instance Partial EditDistance Config Solution where
        if feedback == None
           then inform $ text "Ja."
           else if (numberOfWrongEntries > e)
-                  then reject $ text "Nein. Es sind mehr als" <+> text (show e) <+> text "Einträge falsch."
+                  then reject $ case e of
+                                    0 -> text "Nein."
+                                    1 -> reject $ text "Nein. Es ist mehr als 1 Eintrag falsch." 
+                                    _ -> reject $ text "Nein. Es sind mehr als" <+> text (show e) <+> text "Einträge falsch."
                   else do inform $ text "Ja."
                           unless (numberOfWrongEntries == 0) $ do
                             inform $ text ""
-                            case feedback of
-                               WrongEntries -> do
-                                  inform $ vcat [ text $ "Die Einträge mit folgenden Indizes sind aber noch falsch (insgesamt " ++ show numberOfWrongEntries ++ " von " ++ show e ++ " erlaubten)"
-                                                , nest 3 $ vcat $ map (text . show) wrongEntries
-                                                ]
-                               NumberOfErrors -> do
-                                  inform $ text $ "Es sind aber noch " ++ show numberOfWrongEntries ++ " Einträge falsch. Bis zu " ++ show e ++ " sind erlaubt."
+                            inform $ case feedback of
+                                       WrongEntries ->
+                                          vcat [ text $ "Die Einträge mit folgenden Indizes sind aber noch falsch (insgesamt " ++ show numberOfWrongEntries ++ " von " ++ show e ++ " erlaubten)"
+                                               , nest 3 $ vcat $ map (text . show) wrongEntries
+                                               ]
+                                       NumberOfErrors ->
+                                          text $ "Es sind aber noch " ++ show numberOfWrongEntries ++ " Einträge falsch. Bis zu " ++ show e ++ " sind erlaubt."
 
 
 dimensions :: [[a]] -> (Int,Int)
