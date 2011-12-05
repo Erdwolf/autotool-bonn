@@ -52,21 +52,27 @@ type Comments = (String, String) -- The two input strings
 $(derives [makeReader, makeToDoc] [''Feedback,''StringGen,''ErrorType,''QuizConfig,''Config])
 
 instance Reader Solution where
-    reader = do
-        my_symbol "["
-        (xss,ts) <- liftM unzip $
-                    my_commaSep $ do
-                       my_symbol "["
-                       xs <- my_commaSep reader
-                       string "]"
-                       cs <- option "" $ do string " -- "
-                                            many (satisfy (not.isSpace))
-                       my_whiteSpace
-                       return (xs,cs)
-        let t = concat ts
-        string "]-- "
-        s <- anyChar `Autolib.Reader.sepEndBy` my_whiteSpace
-        return $ Solution (s,t) (transpose xss)
+    reader = parseWithComments
+
+ignoreComments = do
+    xss <- reader
+    return $ Solution ("","") (transpose xss)
+
+parseWithComments = do
+    my_symbol "["
+    (xss,ts) <- liftM unzip $
+                my_commaSep $ do
+                   my_symbol "["
+                   xs <- my_commaSep reader
+                   string "]"
+                   cs <- option "" $ do string " -- "
+                                        many (satisfy (not.isSpace))
+                   my_whiteSpace
+                   return (xs,cs)
+    let t = concat ts
+    string "]-- "
+    s <- anyChar `Autolib.Reader.sepEndBy` my_whiteSpace
+    return $ Solution (s,t) (transpose xss) 
 
 instance ToDoc Solution where
     -- The field should always be shown in rectangular form.
