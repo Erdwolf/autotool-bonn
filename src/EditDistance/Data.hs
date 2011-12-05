@@ -54,6 +54,7 @@ instance Reader Solution where
         my_symbol "["
         xss <- my_commaSep reader
         my_symbol "]"
+        my_symbol "--"
         return $ Solution ("","") (transpose xss)
 
 instance ToDoc Solution where
