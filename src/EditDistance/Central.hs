@@ -101,12 +101,12 @@ instance Partial EditDistance Config Solution where
                              case et of
                                WrongNumbers ->
                                  case e of
-                                   0 -> text $ "Nein. Es ist noch Einträge falsch."
+                                   0 -> text $ "Nein. Es sind noch Einträge falsch."
                                    1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch."
                                    _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch."
                                Miscalculations ->
                                  case e of
-                                   0 -> text $ "Nein. Es ist noch Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
+                                   0 -> text $ "Nein. Es sind noch Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
                                    1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
                                    _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
 
