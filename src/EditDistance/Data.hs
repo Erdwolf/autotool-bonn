@@ -53,14 +53,16 @@ $(derives [makeReader, makeToDoc] [''Feedback,''StringGen,''ErrorType,''QuizConf
 instance Reader Solution where
     reader = do
         my_symbol "["
-        (xss,t) <- liftM unzip $
-                   my_commaSep $ do
+        (xss,ts) <- liftM unzip $
+                    my_commaSep $ do
                        my_symbol "["
                        xs <- my_commaSep reader
-                       string "] -- "
-                       c <- anyChar
+                       string "]"
+                       cs <- option "" $ do string " -- "
+                                            manyTill anyChar newline
                        my_whiteSpace
-                       return (xs,c)
+                       return (xs,cs)
+        let t = concat ts
         string "]-- "
         s <- anyChar `Autolib.Reader.sepEndBy` my_whiteSpace
         return $ Solution (s,t) (transpose xss)
