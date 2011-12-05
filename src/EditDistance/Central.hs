@@ -55,7 +55,7 @@ instance Partial EditDistance Config Solution where
                       , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
                       ]
 
-    initial p (Config _ _ _ s t) =
+    initial p (Config _ _ s t) =
         let n = length s
             m = length t
         in Solution [ [ if i == n then m-j else if j == m then n-i else 0 | j <- [0..m] ] |  i <- [0..n] ]
