@@ -51,7 +51,9 @@ $(derives [makeReader, makeToDoc] [''Feedback,''StringGen,''ErrorType,''QuizConf
 
 instance Reader Solution where
     reader = do
-        xss <- reader
+        my_symbol "["
+        xss <- my_commaSep reader
+        my_symbol "]"
         return $ Solution ("","") (transpose xss)
 
 instance ToDoc Solution where
