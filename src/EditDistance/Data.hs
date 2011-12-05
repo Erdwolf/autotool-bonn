@@ -9,6 +9,7 @@ import Data.Typeable
 import Data.List (transpose, intersperse)
 import Control.Applicative ((<$>))
 import Control.Monad (liftM)
+import Data.Char (isSpace)
 
 data Feedback = WrongEntries
               | NumberOfErrorsWithCutoffAt Int
@@ -59,7 +60,7 @@ instance Reader Solution where
                        xs <- my_commaSep reader
                        string "]"
                        cs <- option "" $ do string " -- "
-                                            manyTill anyChar newline
+                                            many1 (satisfy (not.isSpace))
                        my_whiteSpace
                        return (xs,cs)
         let t = concat ts
