@@ -52,15 +52,16 @@ $(derives [makeReader, makeToDoc] [''Feedback,''StringGen,''ErrorType,''QuizConf
 instance Reader Solution where
     reader = do
         my_symbol "["
-        xss <- my_commaSep $ do
-            my_symbol "["
-            xs <- reader
-            string "] -- "
-            c <- anyChar
-            return xs
+        (xss,t) <- liftM unzip $
+                   my_commaSep $ do
+                       my_symbol "["
+                       xs <- my_commaSep reader
+                       string "] -- "
+                       c <- anyChar
+                       return xs
         string "]-- "
         s <- anyChar `Autolib.Reader.sepBy` my_whiteSpace
-        return $ Solution (s,"") (transpose xss)
+        return $ Solution (s,t) (transpose xss)
 
 instance ToDoc Solution where
     -- The field should always be shown in rectangular form.
