@@ -95,7 +95,10 @@ instance Partial EditDistance Config Solution where
                                                     _ -> "Nein. Die folgenden " ++ show numberOfErrors ++ " Einträge sind falsch berechnet worden (unter Berücksichtung von Folgefehlern):"
                                      , text ""
                                      --, vcat (zipWith (<+>) (text "[": repeat (text ",")) $ map toDoc (transpose xss)) $$ text "]"
-                                     , nest 4 $ vcat (zipWith (<+>) (text "[": repeat (text ",")) [ list [ if (i,j) `elem` errors then wrong (toDoc x) else toDoc x  | (i,x) <- zip [0..] row ] | (j,row) <- zip [0..] $ transpose dt1]) $$ text "]"
+                                     , nest 4 $ vcat (zipWith (<+>) (text "[": repeat (text ","))
+                                                                    (zipwith (<+>) [ list [ if (i,j) `elem` errors then wrong (toDoc x) else toDoc x  | (i,x) <- zip [0..] row ] | (j,row) <- zip [0..] $ transpose dt1 ]
+                                                                                   ([ text "--" <+> text [chr] | chr <- t ] ++ repeat empty)))
+                                                $$ (text "]-- " <> hcat (intersperse (text "   ") [ text [chr] | chr <- s ])
                                      ]
                           NumberOfErrorsWithCutoffAt e | numberOfErrors > e ->
                              case et of
