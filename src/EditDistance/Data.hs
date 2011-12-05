@@ -59,7 +59,7 @@ instance Reader Solution where
                        xs <- my_commaSep reader
                        string "] -- "
                        c <- anyChar
-                       return xs
+                       return (xs,c)
         string "]-- "
         s <- anyChar `Autolib.Reader.sepBy` my_whiteSpace
         return $ Solution (s,t) (transpose xss)
