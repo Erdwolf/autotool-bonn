@@ -7,6 +7,7 @@ import Autolib.Size
 
 import Data.Typeable
 import Data.List (transpose)
+import Control.Applicative ((<$>))
 
 data Feedback = WrongEntries
               | NumberOfErrorsWithCutoffAt Int
