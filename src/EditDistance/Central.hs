@@ -80,10 +80,13 @@ instance Partial EditDistance Config Solution where
           then inform $ text "Ja."
           else reject $ case feedback of
                           WrongEntries ->
-                             let wrong doc = "<span style='color: red;'>" <> doc <> "</span>"
+                             -- vcat [ text $ "Nein. Die Einträge mit folgenden Indizes sind falsch (insgesamt " ++ show numberOfErrors ++ ")"
+                             --      , nest 3 $ vcat $ map (wrong . text . show) errors
+                             let wrong doc = text "<strike style='color: red;'>" <> doc <> text "</strike>"
                              in
-                                vcat [ text $ "Nein. Die Einträge mit folgenden Indizes sind falsch (insgesamt " ++ show numberOfErrors ++ ")"
-                                     , nest 3 $ vcat $ map (wrong . text . show) errors
+                                vcat [ text $ "Nein. Die die folgenden Einträge sind falsch:"
+                                     --, vcat (zipWith (<+>) (text "[": repeat (text ",")) $ map toDoc (transpose xss)) $$ text "]"
+                                     , vcat (zipWith (<+>) (text "[": repeat (text ",")) [ joinWith (Text ", ") [ if (i,j) `elem` errors then wrong (toDoc x) else toDoc x  | (i,x) <- zip [0..] row ] | (j,row) <- zip [0..] $ transpose xss]) $$ text "]"
                                      ]
                           NumberOfErrorsWithCutoffAt e | numberOfErrors > e ->
                              case et of
@@ -108,6 +111,10 @@ instance Partial EditDistance Config Solution where
                                  case numberOfErrors of
                                    1 -> text $ "Nein. Es ist noch ein Eintrag falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
                                    _ -> text $ "Nein. Es sind noch " ++ show numberOfErrors ++ " Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
+
+
+joinWith :: Doc -> [Doc] -> Doc
+joinWith sep = hcat . intersperse sep
 
 dimensions :: [[a]] -> [Int]
 dimensions = map length
