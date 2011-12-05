@@ -8,7 +8,7 @@ import EditDistance.CalculateTable (table, miscalculations)
 import Debug ( debug )
 
 import Challenger.Partial (Verify(..), Partial(..))
-import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), (<+>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>))
+import Autolib.ToDoc (derives, makeToDoc, Doc(..), text, vcat, hcat, ($$),  (<>), (<+>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>))
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (Reporter, reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
@@ -16,7 +16,7 @@ import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
 
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless)
-import Data.List (zip5)
+import Data.List (zip5, transpose, intersperse)
 
 rejectIO = Autolib.Reporter.IO.Type.reject
 informIO = Autolib.Reporter.IO.Type.inform
@@ -86,7 +86,7 @@ instance Partial EditDistance Config Solution where
                              in
                                 vcat [ text $ "Nein. Die die folgenden Einträge sind falsch:"
                                      --, vcat (zipWith (<+>) (text "[": repeat (text ",")) $ map toDoc (transpose xss)) $$ text "]"
-                                     , vcat (zipWith (<+>) (text "[": repeat (text ",")) [ joinWith (Text ", ") [ if (i,j) `elem` errors then wrong (toDoc x) else toDoc x  | (i,x) <- zip [0..] row ] | (j,row) <- zip [0..] $ transpose xss]) $$ text "]"
+                                     , vcat (zipWith (<+>) (text "[": repeat (text ",")) [ list [ if (i,j) `elem` errors then wrong (toDoc x) else toDoc x  | (i,x) <- zip [0..] row ] | (j,row) <- zip [0..] $ transpose dt1]) $$ text "]"
                                      ]
                           NumberOfErrorsWithCutoffAt e | numberOfErrors > e ->
                              case et of
@@ -112,6 +112,8 @@ instance Partial EditDistance Config Solution where
                                    1 -> text $ "Nein. Es ist noch ein Eintrag falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
                                    _ -> text $ "Nein. Es sind noch " ++ show numberOfErrors ++ " Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
 
+list :: [Doc] -> Doc
+list docs = text "[" <+> joinWith (text ", ") docs <+> text "]"
 
 joinWith :: Doc -> [Doc] -> Doc
 joinWith sep = hcat . intersperse sep
