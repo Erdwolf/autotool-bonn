@@ -6,7 +6,7 @@ import Autolib.Reader
 import Autolib.Size
 
 import Data.Typeable
-import Data.List (transpose)
+import Data.List (transpose, intersperse)
 import Control.Applicative ((<$>))
 
 data Feedback = WrongEntries
