@@ -41,19 +41,23 @@ data Config = Config
  }
    deriving ( Eq, Ord, Typeable)
 
-data Solution = Solution [[Int]]
+data Solution = Solution Comments [[Int]]
    deriving ( Eq, Ord, Typeable, Read, Show )
+
+type Comments = (String, String) -- The two input strings
 
 
 $(derives [makeReader, makeToDoc] [''Feedback,''StringGen,''ErrorType,''QuizConfig,''Config])
 
 instance Reader Solution where
-    reader = (Solution . transpose) <$> reader
+    reader = (Solution ("","") . transpose) <$> reader
 
 instance ToDoc Solution where
     -- The field should always be shown in rectangular form.
-    toDoc (Solution xss) =
-        vcat (zipWith (<+>) (text "[": repeat (text ",")) $ map toDoc (transpose xss)) $$ text "]"
+    toDoc (Solution (s,t) xss) =
+        vcat (zipWith (<+>) (text "[": repeat (text ","))
+                            [ toDoc row <+> text "--" <+> text [chr] ) | (chr, row) <- zip t (transpose xss) ]
+             ) $$ text "]"
         --hsep (map (vcat . map (text . show)) xss)
 
 

@@ -58,9 +58,9 @@ instance Partial EditDistance Config Solution where
     initial p (Config _ _ s t) =
         let n = length s
             m = length t
-        in Solution [ [ if i == n then m-j else if j == m then n-i else 0 | j <- [0..m] ] |  i <- [0..n] ]
+        in Solution (s,t) [ [ if i == n then m-j else if j == m then n-i else 0 | j <- [0..m] ] |  i <- [0..n] ]
 
-    total p (Config feedback et s t) (Solution dt1) = do
+    total p (Config feedback et s t) (Solution _ dt1) = do
        let dt2 = table s t
            errors =
              case et of
