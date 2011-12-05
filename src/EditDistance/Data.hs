@@ -50,13 +50,16 @@ type Comments = (String, String) -- The two input strings
 $(derives [makeReader, makeToDoc] [''Feedback,''StringGen,''ErrorType,''QuizConfig,''Config])
 
 instance Reader Solution where
-    reader = (Solution ("","") . transpose) <$> reader
+    reader = do
+        xss <- reader
+        return $ Solution ("","") (transpose xss)
 
 instance ToDoc Solution where
     -- The field should always be shown in rectangular form.
     toDoc (Solution (s,t) xss) =
         vcat (zipWith (<+>) (text "[": repeat (text ","))
-                            [ toDoc row <+> text "--" <+> text [chr] | (chr, row) <- zip t (transpose xss) ]
+                            (zipWith  (<+>) (map toDoc $ transpose xss)
+                                            ([ text "--" <+> text [chr] | chr <- t ] ++ empty))
              ) $$ text "]-- " <+> hcat (intersperse (text "   ") [ text [chr] | chr <- s ])
         --hsep (map (vcat . map (text . show)) xss)
 
