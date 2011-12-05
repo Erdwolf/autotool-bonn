@@ -53,7 +53,7 @@ instance Reader Solution where
     reader = do
         my_symbol "["
         xss <- my_commaSep reader
-        my_symbol "]"
+        "]" <- token
         my_symbol "--"
         return $ Solution ("","") (transpose xss)
 
