@@ -62,7 +62,7 @@ instance Reader Solution where
                        my_whiteSpace
                        return (xs,c)
         string "]-- "
-        s <- anyChar `Autolib.Reader.sepBy` my_whiteSpace
+        s <- anyChar `Autolib.Reader.sepEndBy` my_whiteSpace
         return $ Solution (s,t) (transpose xss)
 
 instance ToDoc Solution where
