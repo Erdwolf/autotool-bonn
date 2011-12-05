@@ -80,7 +80,7 @@ instance Partial EditDistance Config Solution where
           then inform $ text "Ja."
           else reject $ case feedback of
                           WrongEntries ->
-                             vcat [ text $ "Nein. Die Einträge mit folgenden Indizes sind falsch (insgesamt " ++ show numberOfErrors ++ ")"
+                             vcat [ text $ "Nein. Die Einträge mit folgenden Indizes sind <span style='color: red;'>falsch</span> (insgesamt " ++ show numberOfErrors ++ ")"
                                   , nest 3 $ vcat $ map (text . show) errors
                                   ]
                           NumberOfErrorsWithCutoffAt e | numberOfErrors > e ->

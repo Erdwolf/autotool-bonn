@@ -53,7 +53,7 @@ instance Reader Solution where
 instance ToDoc Solution where
     -- The field should always be shown in rectangular form.
     toDoc (Solution xss) =
-        vcat (map toDoc (transpose xss))
+        vcat (zipWith (<+>) (text "[": repeat (text ",")) $ map toDoc (transpose xss)) $$ text "]"
         --hsep (map (vcat . map (text . show)) xss)
 
 
