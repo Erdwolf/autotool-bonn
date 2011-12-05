@@ -60,7 +60,7 @@ instance Reader Solution where
                        xs <- my_commaSep reader
                        string "]"
                        cs <- option "" $ do string " -- "
-                                            many1 (satisfy (not.isSpace))
+                                            many (satisfy (not.isSpace))
                        my_whiteSpace
                        return (xs,cs)
         let t = concat ts
