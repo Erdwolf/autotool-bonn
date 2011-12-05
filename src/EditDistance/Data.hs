@@ -59,7 +59,7 @@ instance ToDoc Solution where
     toDoc (Solution (s,t) xss) =
         vcat (zipWith (<+>) (text "[": repeat (text ","))
                             (zipWith  (<+>) (map toDoc $ transpose xss)
-                                            ([ text "--" <+> text [chr] | chr <- t ] ++ empty))
+                                            ([ text "--" <+> text [chr] | chr <- t ] ++ [empty]))
              ) $$ text "]-- " <+> hcat (intersperse (text "   ") [ text [chr] | chr <- s ])
         --hsep (map (vcat . map (text . show)) xss)
 
