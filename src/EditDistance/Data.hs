@@ -59,6 +59,7 @@ instance Reader Solution where
                        xs <- my_commaSep reader
                        string "] -- "
                        c <- anyChar
+                       my_whiteSpace
                        return (xs,c)
         string "]-- "
         s <- anyChar `Autolib.Reader.sepBy` my_whiteSpace
