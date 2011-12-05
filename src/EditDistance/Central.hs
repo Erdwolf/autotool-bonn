@@ -84,7 +84,8 @@ instance Partial EditDistance Config Solution where
                              --      , nest 3 $ vcat $ map (wrong . text . show) errors
                              let wrong doc = text "<strike style='color: red;'>" <> doc <> text "</strike>"
                              in
-                                vcat [ text $ "Nein. Die die folgenden Einträge sind falsch:"
+                                vcat [ text $ "Nein. Die die folgenden Einträge sind falsch" ++ case et of WrongNumbers -> ":"; Miscalculations -> " berechnet worden (unter Berücksichtung von Folgefehlern):"
+                                     , text ""
                                      --, vcat (zipWith (<+>) (text "[": repeat (text ",")) $ map toDoc (transpose xss)) $$ text "]"
                                      , vcat (zipWith (<+>) (text "[": repeat (text ",")) [ list [ if (i,j) `elem` errors then wrong (toDoc x) else toDoc x  | (i,x) <- zip [0..] row ] | (j,row) <- zip [0..] $ transpose dt1]) $$ text "]"
                                      ]
