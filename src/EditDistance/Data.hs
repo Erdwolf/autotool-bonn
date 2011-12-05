@@ -57,7 +57,7 @@ instance ToDoc Solution where
     toDoc (Solution (s,t) xss) =
         vcat (zipWith (<+>) (text "[": repeat (text ","))
                             [ toDoc row <+> text "--" <+> text [chr] | (chr, row) <- zip t (transpose xss) ]
-             ) $$ text "]"
+             ) $$ text "]-- " <+> hcat (intersperse (text "   ") [ text [chr] | chr <- s ])
         --hsep (map (vcat . map (text . show)) xss)
 
 

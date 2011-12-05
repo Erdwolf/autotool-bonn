@@ -122,7 +122,7 @@ instance Partial EditDistance Config Solution where
                                    _ -> text $ "Nein. Es sind noch " ++ show numberOfErrors ++ " Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
 
 list :: [Doc] -> Doc
-list docs = text "[" <+> joinWith (text ", ") docs <+> text "]"
+list docs = text "[" <+> joinWith (text " , ") docs <+> text "]"
 
 joinWith :: Doc -> [Doc] -> Doc
 joinWith sep = hcat . intersperse sep
