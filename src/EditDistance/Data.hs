@@ -54,7 +54,7 @@ instance Reader Solution where
         my_symbol "["
         xss <- my_commaSep reader
         string "]--"
-        s <- anyChar `sepBy` my_whitespace
+        s <- anyChar `Autolib.Reader.sepBy` my_whitespace
         return $ Solution (s,"") (transpose xss)
 
 instance ToDoc Solution where
