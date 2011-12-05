@@ -80,9 +80,11 @@ instance Partial EditDistance Config Solution where
           then inform $ text "Ja."
           else reject $ case feedback of
                           WrongEntries ->
-                             vcat [ text $ "Nein. Die Einträge mit folgenden Indizes sind <span style='color: red;'>falsch</span> (insgesamt " ++ show numberOfErrors ++ ")"
-                                  , nest 3 $ vcat $ map (text . show) errors
-                                  ]
+                             let wrong doc = "<span style='color: red;'>" <> doc <> "</span>"
+                             in
+                                vcat [ text $ "Nein. Die Einträge mit folgenden Indizes sind falsch (insgesamt " ++ show numberOfErrors ++ ")"
+                                     , nest 3 $ vcat $ map (wrong . text . show) errors
+                                     ]
                           NumberOfErrorsWithCutoffAt e | numberOfErrors > e ->
                              case et of
                                WrongNumbers ->
