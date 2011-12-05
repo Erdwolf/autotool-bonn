@@ -87,12 +87,12 @@ instance Partial EditDistance Config Solution where
                              case et of
                                WrongNumbers ->
                                  case e of
-                                   1 -> text "Nein. Es ist noch mehr als ein Eintrag falsch."
-                                   _ -> text "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch."
+                                   1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch."
+                                   _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch."
                                Miscalculations ->
                                  case e of
-                                   1 -> text "Nein. Es ist noch mehr als ein Eintrag falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
-                                   _ -> text "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
+                                   1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
+                                   _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
 
                           NumberOfErrorsWithCutoffAt _ ->
                              case et of
