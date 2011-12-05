@@ -6,6 +6,7 @@ import Autolib.Reader
 import Autolib.Size
 
 import Data.Typeable
+import Data.List (transpose)
 
 data Feedback = WrongEntries
               | NumberOfErrorsWithCutoffAt Int
@@ -46,7 +47,7 @@ data Solution = Solution [[Int]]
 $(derives [makeReader, makeToDoc] [''Feedback,''StringGen,''ErrorType,''QuizConfig,''Config])
 
 instance Reader Solution where
-    reader = (Solution . transpose) `liftM` reader
+    reader = (Solution . transpose) <$> reader
 
 instance ToDoc Solution where
     -- The field should always be shown in rectangular form.
