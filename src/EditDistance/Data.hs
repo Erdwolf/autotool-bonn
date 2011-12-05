@@ -53,9 +53,9 @@ instance Reader Solution where
     reader = do
         my_symbol "["
         xss <- my_commaSep reader
-        "]" <- token
-        my_symbol "--"
-        return $ Solution ("","") (transpose xss)
+        string "]--"
+        s <- anyChar `sepBy` my_whitespace
+        return $ Solution (s,"") (transpose xss)
 
 instance ToDoc Solution where
     -- The field should always be shown in rectangular form.
