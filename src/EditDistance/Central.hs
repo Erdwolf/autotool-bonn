@@ -8,7 +8,7 @@ import EditDistance.CalculateTable (table, miscalculations)
 import Debug ( debug )
 
 import Challenger.Partial (Verify(..), Partial(..))
-import Autolib.ToDoc (derives, makeToDoc, Doc(..), text, vcat, hcat, ($$),  (<>), (<+>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>))
+import Autolib.ToDoc (derives, makeToDoc, Doc(..), text, vcat, hcat, ($$),  (<>), (<+>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>), empty)
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (Reporter, reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
@@ -96,7 +96,7 @@ instance Partial EditDistance Config Solution where
                                      , text ""
                                      --, vcat (zipWith (<+>) (text "[": repeat (text ",")) $ map toDoc (transpose xss)) $$ text "]"
                                      , nest 4 $ vcat (zipWith (<+>) (text "[": repeat (text ","))
-                                                                    (zipwith (<+>) [ list [ if (i,j) `elem` errors then wrong (toDoc x) else toDoc x  | (i,x) <- zip [0..] row ] | (j,row) <- zip [0..] $ transpose dt1 ]
+                                                                    (zipWith (<+>) [ list [ if (i,j) `elem` errors then wrong (toDoc x) else toDoc x  | (i,x) <- zip [0..] row ] | (j,row) <- zip [0..] $ transpose dt1 ]
                                                                                    ([ text "--" <+> text [chr] | chr <- t ] ++ repeat empty)))
                                                 $$ (text "]-- " <> hcat (intersperse (text "   ") [ text [chr] | chr <- s ]))
                                      ]
