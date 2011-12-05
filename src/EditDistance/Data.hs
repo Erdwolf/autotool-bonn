@@ -52,7 +52,7 @@ $(derives [makeReader, makeToDoc] [''Feedback,''StringGen,''ErrorType,''QuizConf
 instance Reader Solution where
     reader = do
         my_symbol "["
-        xss <- my_commaSep do
+        xss <- my_commaSep $ do
             my_symbol "["
             xs <- reader
             string "] -- "
