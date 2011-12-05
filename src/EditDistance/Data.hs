@@ -8,6 +8,7 @@ import Autolib.Size
 import Data.Typeable
 import Data.List (transpose, intersperse)
 import Control.Applicative ((<$>))
+import Control.Monad (liftM)
 
 data Feedback = WrongEntries
               | NumberOfErrorsWithCutoffAt Int
