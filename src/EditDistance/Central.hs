@@ -45,7 +45,7 @@ instance Partial EditDistance Config Solution where
                     , nest 3 $ text (show t) <> text "."
                     , text ""
                     , text "Als Fehler zählen hierbei" <+> case et of
-                                                              WrongNumbers    -> text "falsche Einträge in der Matrix."
+                                                              WrongNumbers    -> text "falsche Einträge in der Matrix. Folgefehler werden nicht berücksichtigt."
                                                               Miscalculations -> text "Einträge, die falsch berechnet wurden (unter Berücksichtung von Folgefehlern)."
                     ]
 
@@ -80,15 +80,13 @@ instance Partial EditDistance Config Solution where
           then inform $ text "Ja."
           else reject $ case feedback of
                           WrongEntries ->
-                             -- vcat [ text $ "Nein. Die Einträge mit folgenden Indizes sind falsch (insgesamt " ++ show numberOfErrors ++ ")"
-                             --      , nest 3 $ vcat $ map (wrong . text . show) errors
                              let wrong doc = text "<strike style='color: red;'>" <> doc <> text "</strike>"
                              in
                                 vcat [ text $ case et of
                                                 WrongNumbers ->
                                                   case numberOfErrors of
-                                                    1 -> "Nein. Der folgende Eintrage ist falsch:"
-                                                    _ -> "Nein. Die folgenden " ++ show numberOfErrors ++ " Einträge sind falsch:"
+                                                    1 -> "Nein. Der folgende Eintrag ist falsch:"
+                                                    _ -> "Nein. Die folgenden " ++ show numberOfErrors ++ " Einträge (inklusive Folgefehlern) sind falsch:"
                                                 Miscalculations ->
                                                   case numberOfErrors of
                                                     1 -> "Nein. Der folgende Eintrag ist falsch berechnet worden (unter Berücksichtung von Folgefehlern):"
@@ -105,8 +103,8 @@ instance Partial EditDistance Config Solution where
                                WrongNumbers ->
                                  case e of
                                    0 -> text $ "Nein. Es sind noch Einträge falsch."
-                                   1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch."
-                                   _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch."
+                                   1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch. Folgefehler werden nicht berücksichtigt."
+                                   _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch. Folgefehler werden nicht berücksichtigt."
                                Miscalculations ->
                                  case e of
                                    0 -> text $ "Nein. Es sind noch Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
@@ -118,7 +116,7 @@ instance Partial EditDistance Config Solution where
                                WrongNumbers ->
                                  case numberOfErrors of
                                    1 -> text $ "Nein. Es ist noch ein Eintrag falsch."
-                                   _ -> text $ "Nein. Es sind noch " ++ show numberOfErrors ++ " Einträge falsch."
+                                   _ -> text $ "Nein. Es sind noch " ++ show numberOfErrors ++ " Einträge (inklusive Folgefehlern) falsch."
                                Miscalculations ->
                                  case numberOfErrors of
                                    1 -> text $ "Nein. Es ist noch ein Eintrag falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
