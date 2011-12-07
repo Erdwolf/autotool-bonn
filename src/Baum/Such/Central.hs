@@ -50,7 +50,7 @@ instance ( Tag t baum a ) =>
        inform $ text "Auf den Baum:"
        peng start
        inform $ vcat 
-	      [ text "sollen diese Operationen angewendet werden"
+          [ text "sollen diese Operationen angewendet werden"
               , text "(wobei Sie  Any  geeignet ersetzen sollen):"
               , nest 4 $ toDoc plan
               , text "so daß dieser Baum entsteht:"
@@ -61,12 +61,13 @@ instance ( Tag t baum a ) =>
         OpList plan
 
     total   _ ( start, plan, end ) (OpList ops) = do
-        inform $ text "Beginne mit"
-	peng start
+        --inform $ text "Beginne mit"
+        --peng start
         c <- steps start plan ops
-	inform $ text "Stimmt überein mit Aufgabenstellung?"
+        peng c
+        --inform $ text "Stimmt überein mit Aufgabenstellung?"
         peng end
-	assert ( c `equal` end) $ Autolib.ToDoc.empty
+        assert (c `equal` end) $ Autolib.ToDoc.empty
 
 
 instance Tag t baum a

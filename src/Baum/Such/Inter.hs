@@ -21,7 +21,6 @@ step b op = do
 	 Delete a -> return $ delete b a
 	 _        -> reject $ text "Operation ist unbekannt"
     --inform $ text "Resultat:"
-    peng c
     return c
 
 steps :: ( Such baum, OpC a, ToDot (baum a), Show (baum a), Hash (baum a) )
@@ -30,15 +29,17 @@ steps :: ( Such baum, OpC a, ToDot (baum a), Show (baum a), Hash (baum a) )
       -> [ Op a ] -- einsendung (ohne Any)
       -> Reporter ( baum a )
 steps b [] [] = return b
-steps b [] send = reject $ vcat
-         [ text "Sie wollen noch diese Operationen ausführen:"
-	 , nest 4 $ toDoc send
-	 , text "es sind aber keine mehr zugelassen."
-	 ]
-steps b plan [] = reject $ vcat
-         [ text "Es müssen noch diese Operationen ausgeführt werden:"
-	 , nest 4 $ toDoc plan
-	 ]
+steps b [] send = do peng
+                     reject $ vcat
+                       [ text "Sie wollen noch diese Operationen ausführen:"
+	                   , nest 4 $ toDoc send
+	                   , text "es sind aber keine mehr zugelassen."
+	                   ]
+steps b plan [] = do peng
+                     reject $ vcat
+                       [ text "Es müssen noch diese Operationen ausgeführt werden:"
+	                   , nest 4 $ toDoc plan
+	                   ]
 steps b (p : plan) (s : send) = do
     conforms p s
     c <- step b s
