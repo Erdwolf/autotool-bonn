@@ -16,7 +16,7 @@ toTree = unfoldTree uf
       uf t | isLeaf (left t) && isLeaf (right t) = (show x,[])
       uf t |                    isLeaf (right t) = (show x,[left t])
       uf t | isLeaf (left t)                     = (show x,[right t])
-      uf t |                                     = (show x,[left t, right t])
+      uf t                                       = (show x,[left t, right t])
 
 
 
