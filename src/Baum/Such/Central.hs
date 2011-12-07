@@ -63,12 +63,16 @@ instance ( Tag t baum a ) =>
         --inform $ text "Beginne mit"
         --peng start
         c <- steps start plan ops
-        peng c
         --inform $ text "Stimmt überein mit Aufgabenstellung?"
-        peng end
-        assert (c `equal` end) $ Autolib.ToDoc.empty
+        if c `equal` end
+           then inform $ text "Ja."
+           else rejectTree c $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
 
       where
+        rejectTree b reason = do
+            peng b   -- Tatsächlicher Baum
+            peng end -- Erwarteter Baum
+            reject $ text "Nein." <+> reason
 
         step b op = do
             --inform $ text "Operation:" <+> toDoc op
@@ -80,16 +84,12 @@ instance ( Tag t baum a ) =>
             return c
 
         steps b [] [] = return b
-        steps b [] send = do peng b
-                             peng start
-                             reject $ vcat
+        steps b [] send = rejectTree b $ vcat
                                [ text "Sie wollen noch diese Operationen ausführen:"
         	                   , nest 4 $ toDoc send
         	                   , text "es sind aber keine mehr zugelassen."
         	                   ]
-        steps b plan [] = do peng b
-                             peng start
-                             reject $ vcat
+        steps b plan [] = rejectTree b $ vcat
                                [ text "Es müssen noch diese Operationen ausgeführt werden:"
         	                   , nest 4 $ toDoc plan
         	                   ]
@@ -99,15 +99,11 @@ instance ( Tag t baum a ) =>
             steps c plan send
           where
             conforms _ Any = do
-                peng b
-                peng start
-                reject $ text "Sie sollen Any durch eine Operation ersetzen."
+                rejectTree b $ text "Sie sollen Any durch eine Operation ersetzen."
             conforms Any _ = return ()
             conforms x y | x == y = return ()
             conforms x y | x /= y = do
-                peng b
-                peng start
-                reject $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
+                rejectTree b $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
 
 
 instance Tag t baum a
