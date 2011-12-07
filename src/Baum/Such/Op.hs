@@ -19,8 +19,8 @@ data OpC a => Op a = Insert a | Delete a | Any
      deriving ( Eq, Typeable )
 
 -- $(derives [makeReader, makeToDoc] [''Op])
-instance Reader [Op] where
-instance ToDoc [Op] where
+instance Reader a => Reader [Op a] where
+instance ToDoc a => ToDoc [Op a] where
 
 conforms :: OpC a => Op a -> Op a -> Reporter ()
 conforms _ Any = reject $ 
