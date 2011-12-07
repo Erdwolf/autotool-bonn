@@ -1,6 +1,6 @@
-module Baum.AVLBonn.Show where
+module Baum.AVL.Show where
 
-import Baum.AVLBonn.Type (AVLTree, isLeaf, left, right, key)
+import Baum.AVL.Type (AVLTree, isLeaf, left, right, key)
 import Data.Tree (Tree, unfoldTree)
 
 
