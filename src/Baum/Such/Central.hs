@@ -87,12 +87,12 @@ instance ( Tag t baum a ) =>
         steps b [] [] = return b
         steps b [] send = rejectTree b $ vcat
                                [ text "Sie wollen noch diese Operationen ausführen:"
-        	                   , nest 4 $ toDoc send
+        	                   , nest 4 $ niceOps send
         	                   , text "es sind aber keine mehr zugelassen."
         	                   ]
         steps b plan [] = rejectTree b $ vcat
                                [ text "Es müssen noch diese Operationen ausgeführt werden:"
-        	                   , nest 4 $ toDoc plan
+        	                   , nest 4 $ niceOps plan
         	                   ]
         steps b (p : plan) (s : send) = do
             conforms p s
@@ -106,6 +106,11 @@ instance ( Tag t baum a ) =>
             conforms x y | x /= y = do
                 rejectTree b $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
 
+niceOps [] = text "[]"
+niceOps (x:xs) = vcat [ text "[" <+> toDoc x
+                      , vcat [ text "," <+> toDoc x' | x' <- xs ]
+                      , text "]"
+                      ]
 
 instance Tag t baum a
       => Generator (T t) ( Config a ) ( Instanz baum a ) where
