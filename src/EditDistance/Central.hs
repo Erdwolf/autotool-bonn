@@ -71,12 +71,14 @@ instance Partial EditDistance Config Solution where
            numberOfErrors = length errors
 
        when (dimensions dt1 /= dimensions dt2) $ do
-          reject $ vcat [ text "Nein. Die eingegebene Matrix hat die falschen Dimensionen."
+          reject $ vcat [ text "Nein. Die eingegebene Tabelle hat die falschen Dimensionen."
                         , text ""
-                        , text "Füllen Sie nur die Einträge in die vorgegebenen Matrix ein und ändern Sie nicht die Anzahl der Reihen und Spalten."
+                        , text "Füllen Sie nur die Einträge in die vorgegebene Tabelle ein und Ändern Sie nicht die Anzahl der Zeilen und Spalten."
                         ]
 
-       if feedback == None || numberOfErrors == 0
+       if feedback == None 
+        then inform $ text "Ja. (Aber die Einreichung muss nicht unbedingt korrekt sein.)" 
+        else if numberOfErrors == 0
           then inform $ text "Ja."
           else reject $ case feedback of
                           WrongEntries ->
@@ -85,12 +87,12 @@ instance Partial EditDistance Config Solution where
                                 vcat [ text $ case et of
                                                 WrongNumbers ->
                                                   case numberOfErrors of
-                                                    1 -> "Nein. Der folgende Eintrag ist falsch:"
-                                                    _ -> "Nein. Die folgenden " ++ show numberOfErrors ++ " Einträge (inklusive Folgefehlern) sind falsch:"
+                                                    1 -> "Nein. Der folgend markierte Eintrag ist falsch:"
+                                                    _ -> "Nein. Die folgend markierten " ++ show numberOfErrors ++ " Einträge (inklusive Folgefehlern) sind falsch:"
                                                 Miscalculations ->
                                                   case numberOfErrors of
-                                                    1 -> "Nein. Der folgende Eintrag ist falsch berechnet worden (unter Berücksichtung von Folgefehlern):"
-                                                    _ -> "Nein. Die folgenden " ++ show numberOfErrors ++ " Einträge sind falsch berechnet worden (unter Berücksichtung von Folgefehlern):"
+                                                    1 -> "Nein. Der folgend markierte Eintrag ist falsch berechnet worden (unter Berücksichtigung von Folgefehlern):"
+                                                    _ -> "Nein. Die folgend markierten " ++ show numberOfErrors ++ " Einträge sind falsch berechnet worden (unter Berücksichtigung von Folgefehlern):"
                                      , text ""
                                      --, vcat (zipWith (<+>) (text "[": repeat (text ",")) $ map toDoc (transpose xss)) $$ text "]"
                                      , nest 4 $ vcat (zipWith (<+>) (text "[": repeat (text ","))
@@ -103,24 +105,24 @@ instance Partial EditDistance Config Solution where
                                WrongNumbers ->
                                  case e of
                                    0 -> text $ "Nein. Es sind noch Einträge falsch."
-                                   1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch. Folgefehler werden nicht berücksichtigt."
-                                   _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch. Folgefehler werden nicht berücksichtigt."
+                                   1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch. Folgefehler werden nicht begünstigend berücksichtigt."
+                                   _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch. Folgefehler werden nicht begünstigend berücksichtigt."
                                Miscalculations ->
                                  case e of
-                                   0 -> text $ "Nein. Es sind noch Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
-                                   1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
-                                   _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
+                                   0 -> text $ "Nein. Es sind noch Einträge falsch berechnet worden."
+                                   1 -> text $ "Nein. Es ist noch mehr als ein Eintrag falsch berechnet worden."
+                                   _ -> text $ "Nein. Es sind noch mehr als " ++ show e ++ " Einträge falsch berechnet worden."
 
                           NumberOfErrorsWithCutoffAt _ ->
                              case et of
                                WrongNumbers ->
                                  case numberOfErrors of
                                    1 -> text $ "Nein. Es ist noch ein Eintrag falsch."
-                                   _ -> text $ "Nein. Es sind noch " ++ show numberOfErrors ++ " Einträge (inklusive Folgefehlern) falsch."
+                                   _ -> text $ "Nein. Es sind noch " ++ show numberOfErrors ++ " Einträge falsch. Folgefehler werden nicht begünstigend berücksichtigt."
                                Miscalculations ->
                                  case numberOfErrors of
-                                   1 -> text $ "Nein. Es ist noch ein Eintrag falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
-                                   _ -> text $ "Nein. Es sind noch " ++ show numberOfErrors ++ " Einträge falsch berechnet worden (unter Berücksichtung von Folgefehlern)."
+                                   1 -> text $ "Nein. Es ist noch ein Eintrag falsch berechnet worden (unter Abzug von eventuellen Folgefehlern)."
+                                   _ -> text $ "Nein. Es sind noch " ++ show numberOfErrors ++ " Einträge falsch berechnet worden (unter Abzug von eventuellen Folgefehlern)."
 
 list :: [Doc] -> Doc
 list docs = text "[" <+> joinWith (text " , ") docs <+> text "]"
