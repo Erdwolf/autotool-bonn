@@ -51,7 +51,7 @@ instance ( Tag t baum a ) =>
        inform $ vcat 
           [ text "sollen diese Operationen angewendet werden"
               , text "(wobei Sie  Any  geeignet ersetzen sollen):"
-              , nest 4 $ toDoc plan
+              , nest 4 $ niceOps plan
               , text "so daß dieser Baum entsteht:"
               ]
        peng end
@@ -70,7 +70,7 @@ instance ( Tag t baum a ) =>
 
       where
         rejectTree b reason = do
-            inform $ text $ "<b>Tatsächlicher Baum  /  Ziel-Baum</b>"
+            inform $ text $ "<b>Tatsächlicher Baum  <->  Ziel-Baum</b>"
             peng b   -- Tatsächlicher Baum
             peng end -- Erwarteter Baum
             reject $ text "Nein." <+> reason
