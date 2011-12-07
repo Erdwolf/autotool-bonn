@@ -40,11 +40,11 @@ instance OrderScore (T t) where
     scoringOrder _ = None
 
 instance ( Tag t baum a ) => 
-    Measure (T t) ( Instanz baum a ) [ Op a ] where
+    Measure (T t) ( Instanz baum a ) (OpList a) where
     measure t inst ops = fromIntegral $ length ops
 
 instance ( Tag t baum a ) => 
-    Partial (T t) ( Instanz baum a ) [ Op a ] where
+    Partial (T t) ( Instanz baum a ) (OpList a) where
 
     report _ ( start, plan, end ) = do
        inform $ text "Auf den Baum:"
@@ -58,9 +58,9 @@ instance ( Tag t baum a ) =>
        peng end
 
     initial _ ( start, plan, end ) =
-        plan
+        OpList plan
 
-    total   _ ( start, plan, end ) ops = do
+    total   _ ( start, plan, end ) (OpList ops) = do
         inform $ text "Beginne mit"
 	peng start
         c <- steps start plan ops
