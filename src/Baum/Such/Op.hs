@@ -22,7 +22,8 @@ $(derives [makeReader, makeToDoc] [''Op])
 
 newtype OpList a = OpList [Op a]
 
-$(derives [makeReader, makeToDoc] [''OpList])
+instance Reader a => Reader (OpList a)
+instance ToDoc a => ToDoc (OpList a)
 
 
 conforms :: OpC a => Op a -> Op a -> Reporter ()
