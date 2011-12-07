@@ -21,7 +21,9 @@ data OpC a => Op a = Insert a | Delete a | Any
 $(derives [makeReader] [''Op])
 
 instance OpC a => ToDoc (Op a) where
-    toDoc = text . gshow
+    toDoc (Insert a) = text "Insert" <+> toDoc a
+    toDoc (Delete a) = text "Delete" <+> toDoc a
+    toDoc Any        = text "Any"
 
 newtype OpList a = OpList [Op a] deriving (Typeable)
 
