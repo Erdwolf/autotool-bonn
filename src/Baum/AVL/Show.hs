@@ -1,6 +1,6 @@
 module Baum.AVL.Show where
 
-import Baum.AVL.Type (AVLTree (Leaf, Branch))
+import Baum.AVL.Type (AVLTree, isLeaf, left, right)
 import Data.Tree (Tree, unfoldTree)
 
 {-
@@ -13,10 +13,10 @@ toTree = foldt
 toTree :: Show a => AVLTree a -> Tree String
 toTree = unfoldTree uf
     where
-      uf (Branch Leaf x Leaf) = (show x,[])
-      uf (Branch l    x Leaf) = (show x,[l])
-      uf (Branch Leaf x r   ) = (show x,[r])
-      uf (Branch l    x r   ) = (show x,[l,r])
+      uf t | isLeaf (left t) && isLeaf (right t) = (show x,[])
+      uf t |                    isLeaf (right t) = (show x,[left t])
+      uf t | isLeaf (left t)                     = (show x,[right t])
+      uf t |                                     = (show x,[left t, right t])
 
 
 
