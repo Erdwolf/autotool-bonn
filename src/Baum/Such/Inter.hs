@@ -15,12 +15,12 @@ step :: ( Such baum, OpC a, ToDot (baum a), Show (baum a), Hash (baum a) )
       -> Op a
       -> Reporter ( baum a )
 step b op = do
-    inform $ text "Operation:" <+> toDoc op
+    --inform $ text "Operation:" <+> toDoc op
     c <- case op of
 	 Insert a -> return $ insert b a
 	 Delete a -> return $ delete b a
-	 _        -> reject $ text "ist unbekannt"
-    inform $ text "Resultat:"
+	 _        -> reject $ text "Operation ist unbekannt"
+    --inform $ text "Resultat:"
     peng c
     return c
 
