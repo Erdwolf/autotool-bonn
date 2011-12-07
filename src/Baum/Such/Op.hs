@@ -22,8 +22,6 @@ $(derives [makeReader, makeToDoc] [''Op])
 
 newtype OpList a = OpList [Op a] deriving (Typeable)
 
-$(derives [makeReader, makeToDoc] [''Op])
-
 instance OpC a => Reader (OpList a) where
     reader = do
         ops <- reader
