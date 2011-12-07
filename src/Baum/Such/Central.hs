@@ -70,6 +70,7 @@ instance ( Tag t baum a ) =>
 
       where
         rejectTree b reason = do
+            inform $ text $ "<b>Tatsächlicher Baum  /  Ziel-Baum</b>"
             peng b   -- Tatsächlicher Baum
             peng end -- Erwarteter Baum
             reject $ text "Nein." <+> reason
