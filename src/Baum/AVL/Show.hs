@@ -13,10 +13,11 @@ toTree = foldt
 toTree :: Show a => AVLTree a -> Tree String
 toTree = unfoldTree uf
     where
-      uf t | isLeaf (left t) && isLeaf (right t) = (show x,[])
-      uf t |                    isLeaf (right t) = (show x,[left t])
-      uf t | isLeaf (left t)                     = (show x,[right t])
-      uf t                                       = (show x,[left t, right t])
+      uf t | isLeaf (left t) && isLeaf (right t) = (x,[])
+           |                    isLeaf (right t) = (x,[left t])
+           | isLeaf (left t)                     = (x,[right t])
+           |             otherwise               = (x,[left t, right t])
+        where x = show (key t)
 
 
 
