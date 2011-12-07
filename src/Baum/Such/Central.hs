@@ -69,6 +69,43 @@ instance ( Tag t baum a ) =>
         peng end
         assert (c `equal` end) $ Autolib.ToDoc.empty
 
+      where
+
+        step b op = do
+            --inform $ text "Operation:" <+> toDoc op
+            c <- case op of
+        	 Insert a -> return $ insert b a
+        	 Delete a -> return $ delete b a
+        	 _        -> reject $ text "Operation ist unbekannt"
+            --inform $ text "Resultat:"
+            return c
+
+        steps b [] [] = return b
+        steps b [] send = do peng b
+                             reject $ vcat
+                               [ text "Sie wollen noch diese Operationen ausführen:"
+        	                   , nest 4 $ toDoc send
+        	                   , text "es sind aber keine mehr zugelassen."
+        	                   ]
+        steps b plan [] = do peng b
+                             reject $ vcat
+                               [ text "Es müssen noch diese Operationen ausgeführt werden:"
+        	                   , nest 4 $ toDoc plan
+        	                   ]
+        steps b (p : plan) (s : send) = do
+            conforms p s
+            c <- step b s
+            steps c plan send
+          where
+            conforms _ Any = do
+                peng b
+                reject $ text "Sie sollen Any durch eine Operation ersetzen."
+            conforms Any _ = return ()
+            conforms x y | x == y = return ()
+            conforms x y | x /= y = do
+                peng b
+                reject $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
+
 
 instance Tag t baum a
       => Generator (T t) ( Config a ) ( Instanz baum a ) where
@@ -79,7 +116,5 @@ instance Project (T t) ( Instanz baum a ) ( Instanz baum a ) where
 
 make_quiz :: ( Tag t baum Int ) => t -> Make
 make_quiz t = quiz (T t) Baum.Such.Config.example  
-
-
 
 

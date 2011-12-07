@@ -35,12 +35,3 @@ instance OpC a => Reader (OpList a) where
 instance OpC a => ToDoc (OpList a) where
     toDoc (OpList ops) = text (show ops)
 
-
-
-conforms :: OpC a => Op a -> Op a -> Reporter ()
-conforms _ Any = reject $
-     text "Sie sollen Any durch eine Operation ersetzen."
-conforms Any _ = return ()
-conforms x y = when ( x /= y ) $ reject $
-     text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
-
