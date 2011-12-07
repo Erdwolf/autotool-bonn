@@ -38,9 +38,9 @@ instance OpC a => ToDoc (OpList a) where
 
 
 conforms :: OpC a => Op a -> Op a -> Reporter ()
-conforms _ Any = reject $ 
+conforms _ Any = reject $
      text "Sie sollen Any durch eine Operation ersetzen."
 conforms Any _ = return ()
 conforms x y = when ( x /= y ) $ reject $
-     text "Die Operation" <+> toDoc x <+> text "soll nicht geÃ¤ndert werden." 
+     text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
 

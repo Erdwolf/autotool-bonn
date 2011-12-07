@@ -29,13 +29,13 @@ steps :: ( Such baum, OpC a, ToDot (baum a), Show (baum a), Hash (baum a) )
       -> [ Op a ] -- einsendung (ohne Any)
       -> Reporter ( baum a )
 steps b [] [] = return b
-steps b [] send = do peng
+steps b [] send = do peng b
                      reject $ vcat
                        [ text "Sie wollen noch diese Operationen ausführen:"
 	                   , nest 4 $ toDoc send
 	                   , text "es sind aber keine mehr zugelassen."
 	                   ]
-steps b plan [] = do peng
+steps b plan [] = do peng b
                      reject $ vcat
                        [ text "Es müssen noch diese Operationen ausgeführt werden:"
 	                   , nest 4 $ toDoc plan
@@ -44,4 +44,12 @@ steps b (p : plan) (s : send) = do
     conforms p s
     c <- step b s
     steps c plan send
-
+  where
+    conforms _ Any = do
+        peng b
+        reject $ text "Sie sollen Any durch eine Operation ersetzen."
+    conforms Any _ = return ()
+    conforms x y | x == y = return ()
+    conforms x y | x /= y = do
+        peng b
+        reject $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
