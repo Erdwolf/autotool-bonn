@@ -28,7 +28,7 @@ instance OpC a => Reader (OpList a) where
         return (OpList ops)
 
 instance OpC a => ToDoc (OpList a) where
-    toDoc (OpList ops) = text (show ops)
+    toDoc (OpList ops) = toDoc ops
 
 
 
