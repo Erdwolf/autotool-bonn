@@ -28,7 +28,7 @@ instance Reader a => Reader (OpList a) where
         return (OpList ops)
 
 instance ToDoc a => ToDoc (OpList a) where
-    toToc (OpList ops) = toDoc ops
+    toDoc (OpList ops) = toDoc ops
 
 
 
