@@ -22,8 +22,14 @@ $(derives [makeReader, makeToDoc] [''Op])
 
 newtype OpList a = OpList [Op a] deriving (Typeable)
 
-instance Reader a => Reader (OpList a)
-instance ToDoc a => ToDoc (OpList a)
+instance Reader a => Reader (OpList a) where
+    reader = do
+        ops <- reader
+        return (OpList ops)
+
+instance ToDoc a => ToDoc (OpList a) where
+    toToc (OpList ops) = toDoc ops
+
 
 
 conforms :: OpC a => Op a -> Op a -> Reporter ()
