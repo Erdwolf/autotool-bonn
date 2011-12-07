@@ -11,7 +11,6 @@ module Baum.Such.Central where
 import Baum.Such.Config
 import Baum.Such.Class
 import Baum.Such.Op
-import Baum.Such.Inter
 import Baum.Such.Generate
 import qualified Tree
 
@@ -82,12 +81,14 @@ instance ( Tag t baum a ) =>
 
         steps b [] [] = return b
         steps b [] send = do peng b
+                             peng start
                              reject $ vcat
                                [ text "Sie wollen noch diese Operationen ausführen:"
         	                   , nest 4 $ toDoc send
         	                   , text "es sind aber keine mehr zugelassen."
         	                   ]
         steps b plan [] = do peng b
+                             peng start
                              reject $ vcat
                                [ text "Es müssen noch diese Operationen ausgeführt werden:"
         	                   , nest 4 $ toDoc plan
@@ -99,11 +100,13 @@ instance ( Tag t baum a ) =>
           where
             conforms _ Any = do
                 peng b
+                peng start
                 reject $ text "Sie sollen Any durch eine Operation ersetzen."
             conforms Any _ = return ()
             conforms x y | x == y = return ()
             conforms x y | x /= y = do
                 peng b
+                peng start
                 reject $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
 
 
