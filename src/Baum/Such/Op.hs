@@ -20,7 +20,7 @@ data OpC a => Op a = Insert a | Delete a | Any
 
 $(derives [makeReader, makeToDoc] [''Op])
 
-newtype OpList a = OpList [Op a]
+newtype OpList a = OpList [Op a] deriving (Typeable)
 
 instance Reader a => Reader (OpList a)
 instance ToDoc a => ToDoc (OpList a)
