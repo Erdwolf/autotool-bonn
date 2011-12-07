@@ -41,7 +41,7 @@ instance OrderScore (T t) where
 
 instance ( Tag t baum a ) => 
     Measure (T t) ( Instanz baum a ) (OpList a) where
-    measure t inst ops = fromIntegral $ length ops
+    measure t inst (OpList ops) = fromIntegral $ length ops
 
 instance ( Tag t baum a ) => 
     Partial (T t) ( Instanz baum a ) (OpList a) where
