@@ -70,8 +70,9 @@ parseWithComments = do
                    my_whiteSpace
                    return (xs,cs)
     let t = concat ts
-    string "]-- "
-    s <- anyChar `Autolib.Reader.sepEndBy` my_whiteSpace
+    string "]"
+    s <- option "" $ do string "-- "
+                        anyChar `Autolib.Reader.sepEndBy` my_whiteSpace
     return $ Solution (s,t) (transpose xss) 
 
 instance ToDoc Solution where
