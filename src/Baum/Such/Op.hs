@@ -27,7 +27,7 @@ instance OpC a => Reader (OpList a) where
         ops <- reader
         return (OpList ops)
 
-instance ToDoc a => ToDoc (OpList a) where
+instance OpC a => ToDoc (OpList a) where
     toDoc (OpList ops) = text (show ops)
 
 
