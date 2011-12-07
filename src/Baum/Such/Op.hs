@@ -24,6 +24,7 @@ newtype OpList a = OpList [Op a] deriving (Typeable)
 
 instance OpC a => Reader (OpList a) where
     reader = do
+        error ""
         ops <- reader
         return (OpList ops)
 
