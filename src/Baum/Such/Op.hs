@@ -18,7 +18,10 @@ instance ( Eq a, Ord a, Show a, ToDoc a, Reader a, Random a )
 data OpC a => Op a = Insert a | Delete a | Any
      deriving ( Eq, Typeable )
 
-$(derives [makeReader, makeToDoc] [''Op])
+$(derives [makeReader] [''Op])
+
+instance OpC a => ToDoc (Op a) where
+    toDoc = text . gshow
 
 newtype OpList a = OpList [Op a] deriving (Typeable)
 
