@@ -22,14 +22,15 @@ $(derives [makeReader, makeToDoc] [''Op])
 
 newtype OpList a = OpList [Op a] deriving (Typeable)
 
+$(derives [makeReader, makeToDoc] [''Op])
+
 instance OpC a => Reader (OpList a) where
     reader = do
-        error ""
         ops <- reader
         return (OpList ops)
 
 instance OpC a => ToDoc (OpList a) where
-    toDoc (OpList ops) = text "?"
+    toDoc (OpList ops) = text (show ops)
 
 
 
