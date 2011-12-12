@@ -45,7 +45,7 @@ instance Partial EditDistance Config Solution where
                     , nest 3 $ text (show t) <> text "."
                     , text ""
                     , text "Als Fehler zählen hierbei" <+> case et of
-                                                              WrongNumbers    -> text "falsche Einträge in der Matrix. Folgefehler werden nicht berücksichtigt."
+                                                              WrongNumbers    -> text "falsche Einträge in der Tabelle. Folgefehler werden nicht begünstigend berücksichtigt."
                                                               Miscalculations -> text "Einträge, die falsch berechnet wurden (unter Berücksichtung von Folgefehlern)."
                     ]
 
@@ -73,7 +73,7 @@ instance Partial EditDistance Config Solution where
        when (dimensions dt1 /= dimensions dt2) $ do
           reject $ vcat [ text "Nein. Die eingegebene Tabelle hat die falschen Dimensionen."
                         , text ""
-                        , text "Füllen Sie nur die Einträge in die vorgegebene Tabelle ein und Ändern Sie nicht die Anzahl der Zeilen und Spalten."
+                        , text "Füllen Sie nur die Einträge in die vorgegebene Tabelle ein und ändern Sie nicht die Anzahl der Zeilen und Spalten."
                         ]
 
        if feedback == None 
@@ -93,6 +93,7 @@ instance Partial EditDistance Config Solution where
                                                   case numberOfErrors of
                                                     1 -> "Nein. Der folgend markierte Eintrag ist falsch berechnet worden (unter Berücksichtigung von Folgefehlern):"
                                                     _ -> "Nein. Die folgend markierten " ++ show numberOfErrors ++ " Einträge sind falsch berechnet worden (unter Berücksichtigung von Folgefehlern):"
+                                     , text ""
                                      , text ""
                                      --, vcat (zipWith (<+>) (text "[": repeat (text ",")) $ map toDoc (transpose xss)) $$ text "]"
                                      , nest 4 $ vcat (zipWith (<+>) (text "[": repeat (text ","))

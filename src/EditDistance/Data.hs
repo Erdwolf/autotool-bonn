@@ -7,7 +7,7 @@ import Autolib.Size
 
 import Data.Typeable
 import Data.List (transpose, intersperse)
-import Control.Applicative ((<$>))
+import Control.Applicative ((<$>),(<*))
 import Control.Monad (liftM)
 import Data.Char (isSpace)
 
@@ -65,15 +65,16 @@ parseWithComments = do
                    my_symbol "["
                    xs <- my_commaSep reader
                    string "]"
-                   cs <- option "" $ do string " -- "
+                   cs <- option "" $ do string " --" <* many (satisfy isSpace)
                                         many (satisfy (not.isSpace))
                    my_whiteSpace
                    return (xs,cs)
     let t = concat ts
     string "]"
-    s <- option "" $ do string "-- "
+    s <- option "" $ do string "--" <* many (satisfy isSpace)
                         anyChar `Autolib.Reader.sepEndBy` my_whiteSpace
     return $ Solution (s,t) (transpose xss) 
+
 
 instance ToDoc Solution where
     -- The field should always be shown in rectangular form.
