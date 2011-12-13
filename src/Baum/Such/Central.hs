@@ -109,14 +109,10 @@ instance ( Tag t baum a ) =>
                 rejectTree b $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
 
 niceOps [] = text "[]"
-niceOps (x:xs) = vcat [ text "[" <+> niceOp x
-                      , vcat [ text "," <+> niceOp x' | x' <- xs ]
+niceOps (x:xs) = vcat [ text "[" <+> toDoc x <> if x==Any then text "" else " -- fixed"
+                      , vcat [ text "," <+> toDoc x' <> if x'==Any then text "" else " -- fixed" | x' <- xs ]
                       , text "]"
                       ]
-
-niceOp :: Op a -> Doc
-niceOp Any = toDoc Any
-niceOp x   = toDoc x <+> text "-- fixed"
 
 instance Tag t baum a
       => Generator (T t) ( Config a ) ( Instanz baum a ) where
