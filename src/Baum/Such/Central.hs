@@ -110,7 +110,7 @@ instance ( Tag t baum a ) =>
 
 niceOps [] = text "[]"
 niceOps (x:xs) = vcat [ text "[" <+> toDoc x
-                      , vcat [ text "," <+> toDoc x' <> if x'==Any then text "" else " -- fixed" | x' <- xs ]
+                      , vcat [ text "," <+> toDoc x' <> text if x'==Any then "" else " -- fixed" | x' <- xs ]
                       , text "]"
                       ]
 
