@@ -110,9 +110,12 @@ instance ( Tag t baum a ) =>
 
 niceOps [] = text "[]"
 niceOps (x:xs) = vcat [ text "[" <+> toDoc x
-                      , vcat [ text "," <+> toDoc x' <> if x'==Any then text "" else text " -- fixed" | x' <- xs ]
+                      , vcat [ text "," <+> niceOp x' | x' <- xs ]
                       , text "]"
                       ]
+
+niceOp Any = toDoc x
+niceOp x   = toDoc x <+> text "-- fixed"
 
 instance Tag t baum a
       => Generator (T t) ( Config a ) ( Instanz baum a ) where
