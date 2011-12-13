@@ -114,7 +114,7 @@ niceOps (x:xs) = vcat [ text "[" <+> niceOp x
                       , text "]"
                       ]
 
-niceOp :: OpC a => a -> Doc
+niceOp :: Op a -> Doc
 niceOp Any = toDoc Any
 niceOp x   = toDoc x <+> text "-- fixed"
 
