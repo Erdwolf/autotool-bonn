@@ -109,12 +109,12 @@ instance ( Tag t baum a ) =>
                 rejectTree b $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
 
 niceOps [] = text "[]"
-niceOps (x:xs) = vcat [ text "[" <+> toDoc x
+niceOps (x:xs) = vcat [ text "[" <+> niceOp x
                       , vcat [ text "," <+> niceOp x' | x' <- xs ]
                       , text "]"
                       ]
 
-niceOp Any = toDoc x
+niceOp Any = toDoc Any
 niceOp x   = toDoc x <+> text "-- fixed"
 
 instance Tag t baum a
