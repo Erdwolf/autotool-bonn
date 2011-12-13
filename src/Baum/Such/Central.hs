@@ -48,13 +48,14 @@ instance ( Tag t baum a ) =>
     report _ ( start, plan, end ) = do
        inform $ text "Auf den Baum:"
        peng start
-       inform $ vcat 
+       inform $ vcat
           [ text "sollen diese Operationen angewendet werden"
               , text "(wobei Sie  Any  geeignet ersetzen sollen):"
               , nest 4 $ niceOps plan
               , text "so daß dieser Baum entsteht:"
               ]
        peng end
+       inform $ text "Beim Eingabeformat leitet \"--\" einen Kommentar ein. Sie können dies nutzen, um sich wie oben gezeigt Zeilen zu markieren."
 
     initial _ ( start, plan, end ) =
         OpList plan
@@ -108,7 +109,7 @@ instance ( Tag t baum a ) =>
 
 niceOps [] = text "[]"
 niceOps (x:xs) = vcat [ text "[" <+> toDoc x
-                      , vcat [ text "," <+> toDoc x' | x' <- xs ]
+                      , vcat [ text "," <+> toDoc x' <> if x'==Any then empty else " -- fixed" | x' <- xs ]
                       , text "]"
                       ]
 
