@@ -113,9 +113,10 @@ niceOps (x:xs) = vcat [ text "[" <+> niceOp x
                       , vcat [ text "," <+> niceOp x' | x' <- xs ]
                       , text "]"
                       ]
-        where
-            niceOp Any = toDoc Any
-            niceOp x   = toDoc x <+> text "-- fixed"
+
+niceOp :: OpC a => a -> Doc
+niceOp Any = toDoc Any
+niceOp x   = toDoc x <+> text "-- fixed"
 
 instance Tag t baum a
       => Generator (T t) ( Config a ) ( Instanz baum a ) where
