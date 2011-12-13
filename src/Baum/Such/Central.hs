@@ -55,6 +55,7 @@ instance ( Tag t baum a ) =>
               , text "so daß dieser Baum entsteht:"
               ]
        peng end
+       inform $ text "Im Bild leer dargestellte Knoten dienen nur der Verdeutlichung, welcher der beiden Teilbäume leer ist."
        inform $ text "Beim Eingabeformat leitet \"--\" einen Kommentar ein. Sie können dies nutzen, um sich wie oben gezeigt Zeilen zu markieren."
 
     initial _ ( start, plan, end ) =
@@ -109,7 +110,7 @@ instance ( Tag t baum a ) =>
 
 niceOps [] = text "[]"
 niceOps (x:xs) = vcat [ text "[" <+> toDoc x
-                      , vcat [ text "," <+> toDoc x' <> if x'==Any then empty else " -- fixed" | x' <- xs ]
+                      , vcat [ text "," <+> toDoc x' <> if x'==Any then text "" else " -- fixed" | x' <- xs ]
                       , text "]"
                       ]
 
