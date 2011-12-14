@@ -7,6 +7,7 @@ import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived cod
 import Autolib.Reporter (Reporter, reject, inform)
 
 import Autolib.Dot.Dot
+import Autolib.Hash
 import qualified Autolib.Dot.Graph
 import qualified Autolib.Dot.Node
 import qualified Autolib.Dot.Edge
@@ -30,9 +31,6 @@ import qualified Baum.AVL.Ops
 
 import Baum.AVL.Type (isLeaf, left, right, key)
 
-
-peng :: Baum.AVL.Type.AVLTree Int -> Reporter ()
-peng = Autolib.Dot.peng
 
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
     empty = Baum.AVL.Type.leaf
@@ -80,6 +78,9 @@ instance Hash (Baum.AVL.Type.AVLTree Int) where
 
 instance Show (Baum.AVL.Type.AVLTree Int)  where
     show _ = ""
+
+peng :: Baum.AVL.Type.AVLTree Int -> Reporter ()
+peng = Autolib.Dot.peng
 
 number :: Data.Tree.Tree a -> Data.Tree.Tree (Int, a)
 number t =
