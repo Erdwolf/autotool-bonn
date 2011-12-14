@@ -59,9 +59,6 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
               , Autolib.Dot.Graph.attributes = []
               }
 
-default_node :: String -> Autolib.Dot.Node.Type
-default_node cs =
-
 number :: Data.Tree.Tree a -> Data.Tree.Tree (Int, a)
 number t =
   flip evalState 0 $ flip traverse t $ \x -> do
