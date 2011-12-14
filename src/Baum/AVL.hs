@@ -34,7 +34,7 @@ instance C.Such AVLTree where
     contents =  inorder
 
 instance Show a => T.ToTree ( AVLTree a ) where
-    toTree = toTree
+    toTree = toTree . fmap show
 
 data SuchbaumAVL = SuchbaumAVL 
     deriving ( Eq, Ord, Show, Read, Typeable )

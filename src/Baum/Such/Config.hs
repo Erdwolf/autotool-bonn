@@ -7,7 +7,7 @@ import Autolib.Reader
 
 import Data.Typeable
 
-data Config a =
+data Config a = -- use phantom type for baum 
      Config { start_size   :: Int
 	    , min_key :: a
 	    , max_key :: a

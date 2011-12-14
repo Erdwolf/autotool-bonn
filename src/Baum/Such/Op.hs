@@ -18,20 +18,12 @@ instance ( Eq a, Ord a, Show a, ToDoc a, Reader a, Random a )
 data OpC a => Op a = Insert a | Delete a | Any
      deriving ( Eq, Typeable )
 
-$(derives [makeReader] [''Op])
+$(derives [makeReader, makeToDoc] [''Op])
 
-instance OpC a => ToDoc (Op a) where
-    toDoc (Insert a) = text "Insert" <+> toDoc a
-    toDoc (Delete a) = text "Delete" <+> toDoc a
-    toDoc Any        = text "Any"
-
-newtype OpList a = OpList [Op a] deriving (Typeable)
-
-instance OpC a => Reader (OpList a) where
-    reader = do
-        ops <- reader
-        return (OpList ops)
-
-instance OpC a => ToDoc (OpList a) where
-    toDoc (OpList ops) = text (show ops)
+conforms :: OpC a => Op a -> Op a -> Reporter ()
+conforms _ Any = reject $ 
+     text "Sie sollen Any durch eine Operation ersetzen."
+conforms Any _ = return ()
+conforms x y = when ( x /= y ) $ reject $
+     text "Die Operation" <+> toDoc x <+> text "soll nicht geÃ¤ndert werden." 
 

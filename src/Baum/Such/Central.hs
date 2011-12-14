@@ -11,6 +11,7 @@ module Baum.Such.Central where
 import Baum.Such.Config
 import Baum.Such.Class
 import Baum.Such.Op
+import Baum.Such.Inter
 import Baum.Such.Generate
 import qualified Tree
 
@@ -39,80 +40,34 @@ instance OrderScore (T t) where
     scoringOrder _ = None
 
 instance ( Tag t baum a ) => 
-    Measure (T t) ( Instanz baum a ) (OpList a) where
-    measure t inst (OpList ops) = fromIntegral $ length ops
+    Measure (T t) ( Instanz baum a ) [ Op a ] where
+    measure t inst ops = fromIntegral $ length ops
 
 instance ( Tag t baum a ) => 
-    Partial (T t) ( Instanz baum a ) (OpList a) where
+    Partial (T t) ( Instanz baum a ) [ Op a ] where
 
     report _ ( start, plan, end ) = do
        inform $ text "Auf den Baum:"
        peng start
-       inform $ vcat
-          [ text "sollen diese Operationen angewendet werden"
+       inform $ vcat 
+	      [ text "sollen diese Operationen angewendet werden"
               , text "(wobei Sie  Any  geeignet ersetzen sollen):"
-              , nest 4 $ niceOps plan
-              , text "so dass dieser Baum entsteht:"
+              , nest 4 $ toDoc plan
+              , text "so daß dieser Baum entsteht:"
               ]
        peng end
-       inform $ text "Im Bild leer dargestellte Knoten dienen nur der Verdeutlichung, welcher der beiden Teilbäume leer ist."
-       inform $ text "Beim Eingabeformat leitet \"--\" einen Kommentar ein. Sie können dies nutzen, um sich wie oben gezeigt Zeilen zu markieren."
 
     initial _ ( start, plan, end ) =
-        OpList plan
+        plan
 
-    total   _ ( start, plan, end ) (OpList ops) = do
-        --inform $ text "Beginne mit"
-        --peng start
+    total   _ ( start, plan, end ) ops = do
+        inform $ text "Beginne mit"
+	peng start
         c <- steps start plan ops
-        --inform $ text "Stimmt überein mit Aufgabenstellung?"
-        if c `equal` end
-           then inform $ text "Ja."
-           else rejectTree c $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
+	inform $ text "Stimmt überein mit Aufgabenstellung?"
+        peng end
+	assert ( c `equal` end) $ Autolib.ToDoc.empty
 
-      where
-        rejectTree b reason = do
-            inform $ text $ "<b>Tatsächlicher Baum  <->  Ziel-Baum</b>"
-            peng b   -- Tatsächlicher Baum
-            peng end -- Erwarteter Baum
-            reject $ text "Nein." <+> reason
-
-        step b op = do
-            --inform $ text "Operation:" <+> toDoc op
-            c <- case op of
-        	 Insert a -> return $ insert b a
-        	 Delete a -> return $ delete b a
-        	 _        -> reject $ text "Operation ist unbekannt"
-            --inform $ text "Resultat:"
-            return c
-
-        steps b [] [] = return b
-        steps b [] send = rejectTree b $ vcat
-                               [ text "Sie wollen noch diese Operationen ausführen:"
-        	                   , nest 4 $ niceOps send
-        	                   , text "es sind aber keine mehr zugelassen."
-        	                   ]
-        steps b plan [] = rejectTree b $ vcat
-                               [ text "Es müssen noch diese Operationen ausgeführt werden:"
-        	                   , nest 4 $ niceOps plan
-        	                   ]
-        steps b (p : plan) (s : send) = do
-            conforms p s
-            c <- step b s
-            steps c plan send
-          where
-            conforms _ Any = do
-                rejectTree b $ text "Sie sollen Any durch eine Operation ersetzen."
-            conforms Any _ = return ()
-            conforms x y | x == y = return ()
-            conforms x y | x /= y = do
-                rejectTree b $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
-
-niceOps [] = text "[]"
-niceOps (x:xs) = vcat [ text "[" <+> toDoc x <> if x==Any then text "" else text " -- fixed"
-                      , vcat [ text "," <+> toDoc x' <> if x'==Any then text "" else text " -- fixed" | x' <- xs ]
-                      , text "]"
-                      ]
 
 instance Tag t baum a
       => Generator (T t) ( Config a ) ( Instanz baum a ) where
@@ -123,5 +78,7 @@ instance Project (T t) ( Instanz baum a ) ( Instanz baum a ) where
 
 make_quiz :: ( Tag t baum Int ) => t -> Make
 make_quiz t = quiz (T t) Baum.Such.Config.example  
+
+
 
 
