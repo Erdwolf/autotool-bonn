@@ -53,12 +53,10 @@ make_fixed = direct AVLBaum $ (error "no direct configuration possible" :: Confi
 
 newtype OpList = OpList [Baum.Such.Op.Op Int] deriving (Typeable)
 
-{-
 instance ToDoc (Op Int) where
     toDoc (Insert a) = text "Insert" <+> toDoc a
     toDoc (Delete a) = text "Delete" <+> toDoc a
     toDoc Any        = text "Any"
--}
 
 instance Reader OpList where
     reader = do
