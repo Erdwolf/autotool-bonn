@@ -17,12 +17,15 @@ import qualified Baum.Such.Generate
 import qualified Baum.Such.Op
 import qualified Baum.AVL.Type
 import qualified Baum.AVL.Ops
+import qualified Baum.AVL.Show
 
 
 data AVLBaum = AVLBaum deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''AVLBaum])
 
+instance ToTree (Baum.AVL.Type.AVLTree Int) where
+    toTree = Baum.AVL.Show.toTree
 
 type Config = Baum.Such.Generate.Instanz Baum.AVL.Type.AVLTree Int
 
@@ -54,7 +57,7 @@ instance ToDoc OpList where
     toDoc (OpList ops) = text (show ops)
 
 instance Size OpList where
-    size (OpList ops) = size ops
+    size (OpList ops) = length ops
 
 instance Partial AVLBaum Config OpList where
     report _ ( start, plan, end ) = do
