@@ -65,7 +65,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
     toDotProgram _ = Dot
     toDotOptions _ = unwords [ "-Gordering=out", "-Gnodesep=0" ]
     toDot t =
-      let it = number $ Baum.AVL.Show.toTree t
+      let it = number $ toTree t
       in  Autolib.Dot.Graph.Type
               { Autolib.Dot.Graph.directed = True
               , Autolib.Dot.Graph.name = "foo"
