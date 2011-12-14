@@ -16,10 +16,21 @@ import Data.List (zip5, transpose, intersperse)
 
 import qualified Baum.Such.Generate
 import qualified Baum.Such.Op
+import qualified Baum.Such.Class
 import qualified Baum.AVL.Type
 import qualified Baum.AVL.Ops
 import qualified Baum.AVL.Show
 
+instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
+    empty = leaf
+    isEmpty = isLeaf
+
+    contains = Baum.AVL.Ops.contains
+    insert = Baum.AVL.Ops.insert
+    delete = error "Delete is für AVL-Bäume nicht implementiert"
+
+    equal = (==)
+    contents =  inorder
 
 data AVLBaum = AVLBaum deriving Typeable
 
