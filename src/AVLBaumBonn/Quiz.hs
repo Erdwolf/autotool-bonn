@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses, TypeSynonymInstance #-}
+{-# LANGUAGE MultiParamTypeClasses, TypeSynonymInstances #-}
 module AVLBaumBonn.Quiz where
 
 import Inter.Quiz
