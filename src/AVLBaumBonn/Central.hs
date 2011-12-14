@@ -15,6 +15,7 @@ import Data.List (zip5, transpose, intersperse)
 import qualified Baum.Such.Generate
 import qualified Baum.Such.Op
 import qualified Baum.AVL.Type
+import qualified Baum.AVL.Ops
 
 
 data AVLBaum = AVLBaum deriving Typeable
@@ -23,8 +24,6 @@ $(derives [makeReader, makeToDoc] [''AVLBaum])
 
 
 type Config = Baum.Such.Generate.Instanz Baum.AVL.Type.AVLTree Int
-
-make_fixed = direct AVLBaum example
 
 instance OrderScore AVLBaum where
     scoringOrder h = Increasing
@@ -76,7 +75,7 @@ instance Partial AVLBaum Config OpList where
         --peng start
         c <- steps start plan ops
         --inform $ text "Stimmt überein mit Aufgabenstellung?"
-        if c `equal` end
+        if c == end
            then inform $ text "Ja."
            else rejectTree c $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
 
@@ -90,9 +89,9 @@ instance Partial AVLBaum Config OpList where
         step b op = do
             --inform $ text "Operation:" <+> toDoc op
             c <- case op of
-             Insert a -> return $ insert b a
-             Delete a -> return $ delete b a
-             _        -> reject $ text "Operation ist unbekannt"
+             Baum.Such.Op.Insert a -> return $ Baum.AVL.Ops.insert b a
+             Baum.Such.Op.Delete a -> return $ Baum.AVL.Ops.delete b a
+             _                     -> reject $ text "Operation ist unbekannt"
             --inform $ text "Resultat:"
             return c
 
@@ -111,16 +110,16 @@ instance Partial AVLBaum Config OpList where
             c <- step b s
             steps c plan send
           where
-            conforms _ Any = do
+            conforms _ Baum.Such.Op.Any = do
                 rejectTree b $ text "Sie sollen Any durch eine Operation ersetzen."
-            conforms Any _ = return ()
+            conforms Baum.Such.Op.Any _ = return ()
             conforms x y | x == y = return ()
             conforms x y | x /= y = do
                 rejectTree b $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
 
 niceOps [] = text "[]"
-niceOps (x:xs) = vcat [ text "[" <+> toDoc x <> if x==Any then text "" else text " -- fixed"
-                      , vcat [ text "," <+> toDoc x' <> if x'==Any then text "" else text " -- fixed" | x' <- xs ]
+niceOps (x:xs) = vcat [ text "[" <+> toDoc x <> if x==Baum.Such.Op.Any then text "" else text " -- fixed"
+                      , vcat [ text "," <+> toDoc x' <> if x'==Baum.Such.Op.Any then text "" else text " -- fixed" | x' <- xs ]
                       , text "]"
                       ]
 
