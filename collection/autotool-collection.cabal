@@ -450,6 +450,8 @@ Library
         EditDistance.Generator
         EditDistance.Quiz
         EditDistance.CalculateTable
+        AVLBaumBonn.Central
+        AVLBaumBonn.Quiz
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central

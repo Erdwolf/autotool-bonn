@@ -44,6 +44,9 @@ import qualified HeapSort.Quiz
 import qualified EditDistance.Central
 import qualified EditDistance.Quiz
 
+import qualified AVLBaumBonn.Central
+import qualified AVLBaumBonn.Quiz
+
 
 import qualified Specify.Inter
 
@@ -514,6 +517,8 @@ tmakers =
          , heading "Suchbäume"
             [ item Baum.Binary.make_quiz
             , item Baum.AVL.make_quiz
+            , item AVLBaumBonn.Central.make_fixed
+            , item AVLBaumBonn.Quiz.make
             , item Baum.RedBlack.make_quiz
             , item Baum.ZweiDrei.make_quiz
             ]

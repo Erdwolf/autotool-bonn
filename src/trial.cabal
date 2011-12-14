@@ -791,4 +791,6 @@ executable Trial.cgi
                  EditDistance.Data,
                  EditDistance.Generator,
                  EditDistance.Quiz,
-                 EditDistance.CalculateTable
+                 EditDistance.CalculateTable,
+                 AVLBaumBonn.Central,
+                 AVLBaumBonn.Quiz
