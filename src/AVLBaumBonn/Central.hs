@@ -68,8 +68,8 @@ number t =
 nodes t =
   flip map (flatten t) $ \(i, x) ->
     Autolib.Dot.Node.blank
-      { Autolib.Dot.Node.label = return (show x)
-      , Autolib.Dot.Node.shape = return "plaintext"
+      { Autolib.Dot.Node.label = Just (show x)
+      , Autolib.Dot.Node.shape = Just "plaintext"
       , Autolib.Dot.Node.ident = show i
       }
 
@@ -151,6 +151,7 @@ instance Partial AVLBaum Config OpList where
            else rejectTree c $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
 
       where
+        rejectTree :: Baum.AVL.Type.AVLTree Int -> Doc -> Reporter ()
         rejectTree b reason = do
             inform $ text $ "<b>Tatsächlicher Baum  <->  Ziel-Baum</b>"
             peng b   -- Tatsächlicher Baum
