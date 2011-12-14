@@ -53,11 +53,12 @@ make_fixed = direct AVLBaum $ (error "no direct configuration possible" :: Confi
 data AVLOp = Insert Int
            | MyInsert Int
            | Any
+        deriving (Eq)
 
 convertOp :: Baum.Such.Op.Op Int -> AVLOp
-convertOp Baum.Such.Op.Insert x = Insert x
-convertOp Baum.Such.Op.Any      = Any
-convertOp _                     = error "Operation not valid on AVL Tree"
+convertOp (Baum.Such.Op.Insert x) = Insert x
+convertOp Baum.Such.Op.Any        = Any
+convertOp _                       = error "Operation not valid on AVL Tree"
 
 newtype OpList = OpList [AVLOp] deriving (Typeable)
 
