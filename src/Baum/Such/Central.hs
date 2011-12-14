@@ -52,7 +52,7 @@ instance ( Tag t baum a ) =>
           [ text "sollen diese Operationen angewendet werden"
               , text "(wobei Sie  Any  geeignet ersetzen sollen):"
               , nest 4 $ niceOps plan
-              , text "so daß dieser Baum entsteht:"
+              , text "so dass dieser Baum entsteht:"
               ]
        peng end
        inform $ text "Im Bild leer dargestellte Knoten dienen nur der Verdeutlichung, welcher der beiden Teilbäume leer ist."

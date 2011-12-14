@@ -46,7 +46,7 @@ instance Partial EditDistance Config Solution where
                     , text ""
                     , text "Als Fehler zählen hierbei" <+> case et of
                                                               WrongNumbers    -> text "falsche Einträge in der Tabelle. Folgefehler werden nicht begünstigend berücksichtigt."
-                                                              Miscalculations -> text "Einträge, die falsch berechnet wurden (unter Berücksichtung von Folgefehlern)."
+                                                              Miscalculations -> text "Einträge, die falsch berechnet wurden (unter Berücksichtigung von Folgefehlern)."
                     ]
 
       when (feedback == None) $ do
