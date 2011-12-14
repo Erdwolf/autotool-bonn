@@ -69,7 +69,7 @@ instance Partial AVLBaum Config OpList where
     initial _ ( start, plan, end ) =
         OpList plan
 
- total   _ ( start, plan, end ) (OpList ops) = do
+    total _ ( start, plan, end ) (OpList ops) = do
         --inform $ text "Beginne mit"
         --peng start
         c <- steps start plan ops
@@ -88,22 +88,22 @@ instance Partial AVLBaum Config OpList where
         step b op = do
             --inform $ text "Operation:" <+> toDoc op
             c <- case op of
-        	 Insert a -> return $ insert b a
-        	 Delete a -> return $ delete b a
-        	 _        -> reject $ text "Operation ist unbekannt"
+             Insert a -> return $ insert b a
+             Delete a -> return $ delete b a
+             _        -> reject $ text "Operation ist unbekannt"
             --inform $ text "Resultat:"
             return c
 
         steps b [] [] = return b
         steps b [] send = rejectTree b $ vcat
                                [ text "Sie wollen noch diese Operationen ausführen:"
-        	                   , nest 4 $ niceOps send
-        	                   , text "es sind aber keine mehr zugelassen."
-        	                   ]
+                               , nest 4 $ niceOps send
+                               , text "es sind aber keine mehr zugelassen."
+                               ]
         steps b plan [] = rejectTree b $ vcat
                                [ text "Es müssen noch diese Operationen ausgeführt werden:"
-        	                   , nest 4 $ niceOps plan
-        	                   ]
+                               , nest 4 $ niceOps plan
+                               ]
         steps b (p : plan) (s : send) = do
             conforms p s
             c <- step b s
