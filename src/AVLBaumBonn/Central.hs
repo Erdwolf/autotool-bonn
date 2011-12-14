@@ -151,7 +151,7 @@ instance Partial AVLBaum Config OpList where
            else rejectTree c $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
 
       where
-        rejectTree :: Baum.AVL.Type.AVLTree Int -> Doc -> Reporter ()
+        rejectTree :: Baum.AVL.Type.AVLTree Int -> Doc -> Reporter a
         rejectTree b reason = do
             inform $ text $ "<b>Tatsächlicher Baum  <->  Ziel-Baum</b>"
             peng b   -- Tatsächlicher Baum
