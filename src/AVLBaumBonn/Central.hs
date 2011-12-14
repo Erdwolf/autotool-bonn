@@ -32,7 +32,7 @@ instance Verify AVLBaum Config where
     verify _ cfg = do
         return ()
 
-make_fixed = direct AVLBaum $ error "no direct configuration possible"
+make_fixed = direct AVLBaum $ (error "no direct configuration possible" :: Config)
 
 
 newtype OpList = OpList [Baum.Such.Op.Op Int] deriving (Typeable)
@@ -52,6 +52,8 @@ instance Reader OpList where
 instance ToDoc OpList where
     toDoc (OpList ops) = text (show ops)
 
+instance Size OpList where
+    size (OpList ops) = size ops
 
 instance Partial AVLBaum Config OpList where
     report _ ( start, plan, end ) = do
