@@ -5,7 +5,7 @@ import Challenger.Partial (Verify(..), Partial(..))
 import Autolib.ToDoc (derives, makeToDoc, Doc(..), text, vcat, hcat, ($$),  (<>), (<+>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>), empty)
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (Reporter, reject, inform)
-import Autolib.Dot (peng)
+import Autolib.Dot (ToTree(toTree), peng)
 import Autolib.Size (Size(size))
 import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
 
