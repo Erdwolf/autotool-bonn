@@ -11,7 +11,7 @@ import Autolib.Size (Size(size))
 import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
 
 import Data.Typeable (Typeable)
-import Control.Monad (when,unless)
+import Control.Monad (when,unless,guard)
 import Data.List (zip5, transpose, intersperse)
 
 import qualified Baum.Such.Generate
@@ -63,7 +63,7 @@ newtype OpList = OpList [AVLOp] deriving (Typeable)
 
 $(derives [makeReader] [''AVLOp])
 
-instance ToDoc Op where
+instance ToDoc AVLOp where
     toDoc (Insert a) = text "Insert" <+> toDoc a
     toDoc Any        = text "Any"
 
