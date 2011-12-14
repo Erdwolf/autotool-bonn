@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE MultiParamTypeClasses, TypeSynonymInstance #-}
 module AVLBaumBonn.Quiz where
 
 import Inter.Quiz
@@ -19,4 +19,3 @@ instance Project AVLBaum Config Config where
 
 make :: Make
 make = quiz AVLBaum Baum.Such.Config.example
-
