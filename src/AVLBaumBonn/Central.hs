@@ -6,13 +6,19 @@ import Autolib.ToDoc (derives, makeToDoc, Doc(..), text, vcat, hcat, ($$),  (<>)
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (Reporter, reject, inform)
 import Autolib.Dot (peng)
-import Tree.Class (ToTree(toTree))
+
+import Autolib.Dot.Dot
+import qualified Autolib.Dot.Graph
+import qualified Autolib.Dot.Node
+import qualified Autolib.Dot.Edge
+
 import Autolib.Size (Size(size))
 import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
 
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless,guard)
 import Data.List (zip5, transpose, intersperse)
+import Data.Traversable (traverse)
 
 import qualified Baum.Such.Generate
 import qualified Baum.Such.Op
@@ -36,8 +42,41 @@ data AVLBaum = AVLBaum deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''AVLBaum])
 
-instance ToTree (Baum.AVL.Type.AVLTree Int) where
-    toTree = Baum.AVL.Show.toTree
+-------------------------
+--
+instance ToDoc (Baum.AVL.Type.AVLTree Int) where
+    toDotProgram _ = Dot
+    toDotOptions _ = unwords [ "-Gordering=out", "-Gnodesep=0" ]
+    toDot t =
+      let it = number $ fmap default_node $ Baum.AVL.Show.toTree t
+      in  Autolib.Dot.Graph.Type
+              { Autolib.Dot.Graph.directed = True
+              , Autolib.Dot.Graph.name = "foo"
+              , Autolib.Dot.Graph.nodes = nodes it
+              , Autolib.Dot.Graph.edges = edges it
+              , Autolib.Dot.Graph.attributes = []
+              }
+
+number :: Data.Tree.Tree a -> Data.Tree.Tree (Int, a)
+number t =
+  flip evalState 0 $ flip traverse t $ \x -> do
+    i <- get; put (succ i)
+    return (i, x)
+
+nodes t = [ n { Autolib.Dot.Node.ident = show i } | (i, n) <- flatten t ]
+
+edges t = do
+    Node (i, f) jxs  <- subtrees t
+    Node (j, x) args <- jxs
+    return $ Autolib.Dot.Edge.blank
+               { Autolib.Dot.Edge.from     = show i
+               , Autolib.Dot.Edge.to       = show j
+               , Autolib.Dot.Edge.directed = True
+               }
+
+subtrees t = t : concatMap subtrees (subForest t)
+
+-------------------------
 
 type Config = Baum.Such.Generate.Instanz Baum.AVL.Type.AVLTree Int
 
@@ -98,10 +137,7 @@ instance Partial AVLBaum Config OpList where
         OpList (map convertOp plan)
 
     total _ ( start, plan, end ) (OpList ops) = do
-        --inform $ text "Beginne mit"
-        --peng start
         c <- steps start (map convertOp plan) ops
-        --inform $ text "Stimmt überein mit Aufgabenstellung?"
         if c == end
            then inform $ text "Ja."
            else rejectTree c $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
