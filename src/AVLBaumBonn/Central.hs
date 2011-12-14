@@ -22,15 +22,15 @@ import qualified Baum.AVL.Ops
 import qualified Baum.AVL.Show
 
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
-    empty = leaf
-    isEmpty = isLeaf
+    empty = Baum.AVL.Type.leaf
+    isEmpty = Baum.AVL.Type.isLeaf
 
     contains = Baum.AVL.Ops.contains
     insert = Baum.AVL.Ops.insert
     delete = error "Delete is für AVL-Bäume nicht implementiert"
 
     equal = (==)
-    contents =  inorder
+    contents =  Baum.AVL.Type.inorder
 
 data AVLBaum = AVLBaum deriving Typeable
 
