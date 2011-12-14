@@ -87,7 +87,7 @@ instance Partial AVLBaum Config OpList where
        inform $ vcat
           [ text "sollen diese Operationen angewendet werden"
               , text "(wobei Sie Any durch MyInsert ersetzen sollen):"
-              , nest 4 $ niceOps plan
+              , nest 4 $ niceOps (map convertOp plan)
               , text "so dass dieser Baum entsteht:"
               ]
        peng end
@@ -100,7 +100,7 @@ instance Partial AVLBaum Config OpList where
     total _ ( start, plan, end ) (OpList ops) = do
         --inform $ text "Beginne mit"
         --peng start
-        c <- steps start plan ops
+        c <- steps start (map convertOp plan) ops
         --inform $ text "Stimmt überein mit Aufgabenstellung?"
         if c == end
            then inform $ text "Ja."
