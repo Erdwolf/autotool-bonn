@@ -50,7 +50,8 @@ instance ToDoc (Baum.AVL.Type.AVLTree Int) where
     toDotProgram _ = Dot
     toDotOptions _ = unwords [ "-Gordering=out", "-Gnodesep=0" ]
     toDot t =
-      let it = number $ fmap default_node $ Baum.AVL.Show.toTree t
+      let it = number $ fmap default_node
+                      $ Baum.AVL.Show.toTree t
       in  Autolib.Dot.Graph.Type
               { Autolib.Dot.Graph.directed = True
               , Autolib.Dot.Graph.name = "foo"
@@ -58,6 +59,12 @@ instance ToDoc (Baum.AVL.Type.AVLTree Int) where
               , Autolib.Dot.Graph.edges = edges it
               , Autolib.Dot.Graph.attributes = []
               }
+
+default_node :: String -> Autolib.Dot.Node.Type
+default_node cs = Autolib.Dot.Node.blank
+           { Autolib.Dot.Node.label = return cs
+           , Autolib.Dot.Node.shape = return "plaintext"
+           }
 
 number :: Data.Tree.Tree a -> Data.Tree.Tree (Int, a)
 number t =
@@ -68,8 +75,8 @@ number t =
 nodes t = [ n { Autolib.Dot.Node.ident = show i } | (i, n) <- flatten t ]
 
 edges t = do
-    Node (i, f) jxs  <- subtrees t
-    Node (j, x) args <- jxs
+    src@(Node (i, _) _) <- subtrees t
+    dst@(Node (j, _) _) <- subForest src
     return $ Autolib.Dot.Edge.blank
                { Autolib.Dot.Edge.from     = show i
                , Autolib.Dot.Edge.to       = show j
