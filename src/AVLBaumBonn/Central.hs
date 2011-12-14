@@ -50,15 +50,22 @@ instance Verify AVLBaum Config where
 
 make_fixed = direct AVLBaum $ (error "no direct configuration possible" :: Config)
 
+data AVLOp = Insert Int
+           | MyInsert Int
+           | Any
 
-newtype OpList = OpList [Baum.Such.Op.Op Int] deriving (Typeable)
+convertOp :: Baum.Such.Op.Op Int -> AVLOp
+convertOp Baum.Such.Op.Insert x = Insert x
+convertOp Baum.Such.Op.Any      = Any
+convertOp _                     = error "Operation not valid on AVL Tree"
 
-{-
-instance ToDoc (Op Int) where
+newtype OpList = OpList [Op] deriving (Typeable)
+
+$(derive makeReader ''AVLOp)
+
+instance ToDoc Op where
     toDoc (Insert a) = text "Insert" <+> toDoc a
-    toDoc (Delete a) = text "Delete" <+> toDoc a
     toDoc Any        = text "Any"
--}
 
 instance Reader OpList where
     reader = do
