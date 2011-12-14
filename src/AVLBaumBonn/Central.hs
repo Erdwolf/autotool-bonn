@@ -31,9 +31,6 @@ import qualified Baum.AVL.Ops
 import Baum.AVL.Type (isLeaf, left, right, key)
 
 
-toTree :: Show a => Baum.AVL.Type.AVLTree a -> Data.Tree.Tree String
-
-
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
     empty = Baum.AVL.Type.leaf
     isEmpty = Baum.AVL.Type.isLeaf
