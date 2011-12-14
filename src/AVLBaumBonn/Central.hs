@@ -30,6 +30,7 @@ import qualified Baum.AVL.Ops
 
 import Baum.AVL.Type (isLeaf, left, right, key)
 
+peng :: Baum.AVL.Type.AVLTree Int -> Reporter ()
 peng = Autolib.Dot.peng
 
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
