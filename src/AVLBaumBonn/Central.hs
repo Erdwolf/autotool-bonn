@@ -64,7 +64,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
 
 toTree t = Data.Tree.unfoldTree uf t
    where
-       uf t |       isLeaf t       = (" ",[])
+       uf t |       isLeaf t       = ("",[])
             | isLeaf l && isLeaf r = (show k,[])
             |             isLeaf r = (show k,[l,r])
             | isLeaf l             = (show k,[l,r])
@@ -89,7 +89,7 @@ number t =
 nodes t =
   flip map (flatten t) $ \(i, x) ->
     Autolib.Dot.Node.blank
-      { Autolib.Dot.Node.label = Just (show x)
+      { Autolib.Dot.Node.label = Just x
       , Autolib.Dot.Node.shape = Just "plaintext"
       , Autolib.Dot.Node.ident = show i
       }
