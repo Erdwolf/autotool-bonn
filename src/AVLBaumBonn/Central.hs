@@ -59,7 +59,7 @@ convertOp Baum.Such.Op.Insert x = Insert x
 convertOp Baum.Such.Op.Any      = Any
 convertOp _                     = error "Operation not valid on AVL Tree"
 
-newtype OpList = OpList [Op] deriving (Typeable)
+newtype OpList = OpList [AVLOp] deriving (Typeable)
 
 $(derive makeReader ''AVLOp)
 
