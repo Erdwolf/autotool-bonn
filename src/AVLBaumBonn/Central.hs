@@ -30,6 +30,7 @@ import qualified Baum.AVL.Ops
 
 import Baum.AVL.Type (isLeaf, left, right, key)
 
+
 peng :: Baum.AVL.Type.AVLTree Int -> Reporter ()
 peng = Autolib.Dot.peng
 
@@ -54,7 +55,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
     toDotProgram _ = Dot
     toDotOptions _ = unwords [ "-Gordering=out", "-Gnodesep=0" ]
     toDot t =
-      let it = number $ Data.Tree.unfoldTree uf t
+      let it = number $ toTree t
       in  Autolib.Dot.Graph.Type
               { Autolib.Dot.Graph.directed = True
               , Autolib.Dot.Graph.name = "foo"
@@ -62,7 +63,9 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
               , Autolib.Dot.Graph.edges = edges it
               , Autolib.Dot.Graph.attributes = []
               }
-     where
+
+toTree t = Data.Tree.unfoldTree uf t
+   where
        uf t |       isLeaf t       = (" ",[])
             | isLeaf l && isLeaf r = (show k,[])
             |             isLeaf r = (show k,[l,r])
@@ -71,6 +74,12 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
         where k = key t
               l = left t
               r = right t
+
+instance Hash (Baum.AVL.Type.AVLTree Int) where
+    hash = hash . toTree
+
+instance Show (Baum.AVL.Type.AVLTree Int)  where
+    show _ = ""
 
 number :: Data.Tree.Tree a -> Data.Tree.Tree (Int, a)
 number t =
