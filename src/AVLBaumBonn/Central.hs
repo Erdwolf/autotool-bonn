@@ -28,6 +28,22 @@ import qualified Baum.Such.Class
 import qualified Baum.AVL.Type
 import qualified Baum.AVL.Ops
 
+import Baum.AVL.Type (isLeaf, left, right, key)
+
+
+toTree :: Show a => Baum.AVL.Type.AVLTree a -> Data.Tree.Tree String
+toTree = Data.Tree.unfoldTree uf
+    where
+      uf t |       isLeaf t       = (" ",[])
+           | isLeaf l && isLeaf r = (show k,[])
+           |             isLeaf r = (show k,[l,r])
+           | isLeaf l             = (show k,[l,r])
+           |       otherwise      = (show k,[l,r])
+        where k = key t
+              l = left t
+              r = right t
+
+
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
     empty = Baum.AVL.Type.leaf
     isEmpty = Baum.AVL.Type.isLeaf
