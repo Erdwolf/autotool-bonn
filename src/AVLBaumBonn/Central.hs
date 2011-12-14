@@ -27,7 +27,6 @@ import qualified Baum.Such.Op
 import qualified Baum.Such.Class
 import qualified Baum.AVL.Type
 import qualified Baum.AVL.Ops
-import qualified Baum.AVL.Show
 
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
     empty = Baum.AVL.Type.leaf
