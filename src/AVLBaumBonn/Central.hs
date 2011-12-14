@@ -6,6 +6,7 @@ import Autolib.ToDoc (derives, makeToDoc, Doc(..), text, vcat, hcat, ($$),  (<>)
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (Reporter, reject, inform)
 import Autolib.Dot (peng)
+import Autolib.Size (Size(size))
 import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
 
 import Data.Typeable (Typeable)
