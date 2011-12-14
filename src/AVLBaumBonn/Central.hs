@@ -46,7 +46,7 @@ $(derives [makeReader, makeToDoc] [''AVLBaum])
 
 -------------------------
 --
-instance ToDoc (Baum.AVL.Type.AVLTree Int) where
+instance ToDot (Baum.AVL.Type.AVLTree Int) where
     toDotProgram _ = Dot
     toDotOptions _ = unwords [ "-Gordering=out", "-Gnodesep=0" ]
     toDot t =
