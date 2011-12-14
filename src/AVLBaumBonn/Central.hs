@@ -30,7 +30,7 @@ import qualified Baum.AVL.Ops
 
 import Baum.AVL.Type (isLeaf, left, right, key)
 
-peng = Autolib.Dot.peng . toDoc
+peng = Autolib.Dot.peng . toDot
 
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
     empty = Baum.AVL.Type.leaf
