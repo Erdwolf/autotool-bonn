@@ -32,16 +32,6 @@ import Baum.AVL.Type (isLeaf, left, right, key)
 
 
 toTree :: Show a => Baum.AVL.Type.AVLTree a -> Data.Tree.Tree String
-toTree = Data.Tree.unfoldTree uf
-    where
-      uf t |       isLeaf t       = (" ",[])
-           | isLeaf l && isLeaf r = (show k,[])
-           |             isLeaf r = (show k,[l,r])
-           | isLeaf l             = (show k,[l,r])
-           |       otherwise      = (show k,[l,r])
-        where k = key t
-              l = left t
-              r = right t
 
 
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
@@ -65,7 +55,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
     toDotProgram _ = Dot
     toDotOptions _ = unwords [ "-Gordering=out", "-Gnodesep=0" ]
     toDot t =
-      let it = number $ toTree t
+      let it = number $ Data.Tree.unfoldTree uf
       in  Autolib.Dot.Graph.Type
               { Autolib.Dot.Graph.directed = True
               , Autolib.Dot.Graph.name = "foo"
@@ -73,6 +63,15 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
               , Autolib.Dot.Graph.edges = edges it
               , Autolib.Dot.Graph.attributes = []
               }
+     where
+       uf t |       isLeaf t       = (" ",[])
+            | isLeaf l && isLeaf r = (show k,[])
+            |             isLeaf r = (show k,[l,r])
+            | isLeaf l             = (show k,[l,r])
+            |       otherwise      = (show k,[l,r])
+        where k = key t
+              l = left t
+              r = right t
 
 number :: Data.Tree.Tree a -> Data.Tree.Tree (Int, a)
 number t =
