@@ -61,7 +61,7 @@ convertOp _                     = error "Operation not valid on AVL Tree"
 
 newtype OpList = OpList [AVLOp] deriving (Typeable)
 
-$(derive makeReader ''AVLOp)
+$(derives [makeReader] [''AVLOp])
 
 instance ToDoc Op where
     toDoc (Insert a) = text "Insert" <+> toDoc a
