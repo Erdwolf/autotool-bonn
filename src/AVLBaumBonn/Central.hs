@@ -86,7 +86,7 @@ instance Partial AVLBaum Config OpList where
        peng start
        inform $ vcat
           [ text "sollen diese Operationen angewendet werden"
-              , text "(wobei Sie  Any  geeignet ersetzen sollen):"
+              , text "(wobei Sie Any durch MyInsert ersetzen sollen):"
               , nest 4 $ niceOps plan
               , text "so dass dieser Baum entsteht:"
               ]
@@ -95,7 +95,7 @@ instance Partial AVLBaum Config OpList where
        inform $ text "Beim Eingabeformat leitet \"--\" einen Kommentar ein. Sie können dies nutzen, um sich wie oben gezeigt Zeilen zu markieren."
 
     initial _ ( start, plan, end ) =
-        OpList plan
+        OpList (map convertOp plan)
 
     total _ ( start, plan, end ) (OpList ops) = do
         --inform $ text "Beginne mit"
