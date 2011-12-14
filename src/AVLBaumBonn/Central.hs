@@ -64,8 +64,9 @@ newtype OpList = OpList [AVLOp] deriving (Typeable)
 $(derives [makeReader] [''AVLOp])
 
 instance ToDoc AVLOp where
-    toDoc (Insert a) = text "Insert" <+> toDoc a
-    toDoc Any        = text "Any"
+    toDoc (Insert a)   = text "Insert" <+> toDoc a
+    toDoc (MyInsert a) = text "MyInsert" <+> toDoc a
+    toDoc Any          = text "Any"
 
 instance Reader OpList where
     reader = do
@@ -112,11 +113,10 @@ instance Partial AVLBaum Config OpList where
             reject $ text "Nein." <+> reason
 
         step b op = do
-            --inform $ text "Operation:" <+> toDoc op
             c <- case op of
-             Baum.Such.Op.Insert a -> return $ Baum.AVL.Ops.insert b a
-             _                     -> reject $ text "Operation ist unbekannt"
-            --inform $ text "Resultat:"
+             Insert a   -> return $ Baum.AVL.Ops.insert b a
+             MyInsert a -> return $ Baum.AVL.Ops.insert b a
+             _          -> reject $ text "Operation ist unbekannt"
             return c
 
         steps b [] [] = return b
@@ -134,16 +134,16 @@ instance Partial AVLBaum Config OpList where
             c <- step b s
             steps c plan send
           where
-            conforms _ Baum.Such.Op.Any = do
+            conforms _ Any = do
                 rejectTree b $ text "Sie sollen Any durch eine Operation ersetzen."
-            conforms Baum.Such.Op.Any _ = return ()
+            conforms Any _ = return ()
             conforms x y | x == y = return ()
             conforms x y | x /= y = do
                 rejectTree b $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
 
 niceOps [] = text "[]"
-niceOps (x:xs) = vcat [ text "[" <+> toDoc x <> if x==Baum.Such.Op.Any then text "" else text " -- fixed"
-                      , vcat [ text "," <+> toDoc x' <> if x'==Baum.Such.Op.Any then text "" else text " -- fixed" | x' <- xs ]
+niceOps (x:xs) = vcat [ text "[" <+> toDoc x
+                      , vcat [ text "," <+> toDoc x' | x' <- xs ]
                       , text "]"
                       ]
 
