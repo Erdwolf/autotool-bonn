@@ -90,7 +90,6 @@ instance Partial AVLBaum Config OpList where
             --inform $ text "Operation:" <+> toDoc op
             c <- case op of
              Baum.Such.Op.Insert a -> return $ Baum.AVL.Ops.insert b a
-             Baum.Such.Op.Delete a -> return $ Baum.AVL.Ops.delete b a
              _                     -> reject $ text "Operation ist unbekannt"
             --inform $ text "Resultat:"
             return c
