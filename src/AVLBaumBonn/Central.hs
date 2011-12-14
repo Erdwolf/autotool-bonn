@@ -76,8 +76,6 @@ toTree t = Data.Tree.unfoldTree uf t
 instance Hash (Baum.AVL.Type.AVLTree Int) where
     hash = hash . toTree
 
-instance Show (Baum.AVL.Type.AVLTree Int)  where
-    show _ = ""
 
 peng :: Baum.AVL.Type.AVLTree Int -> Reporter ()
 peng = Autolib.Dot.peng
