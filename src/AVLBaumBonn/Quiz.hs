@@ -9,6 +9,9 @@ import Autolib.Reader
 
 import Data.Typeable
 
+import Data.Tree (flatten)
+import Data.List ((\\), nub)
+
 import qualified Baum.Such.Config
 import qualified Baum.Such.Generate
 
