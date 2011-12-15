@@ -186,7 +186,7 @@ instance Partial AVLBaum Config OpList where
                 -- lässt diese Operation den Baum unverändert.
                 if b `contains` a
                    then return b
-                   then return $ Baum.AVL.Ops.insert b a
+                   else return $ Baum.AVL.Ops.insert b a
              MyInsert a -> return $ Baum.AVL.Ops.insert b a
              _          -> reject $ text "Operation ist unbekannt"
             return c
