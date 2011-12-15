@@ -4,10 +4,17 @@ module AVLBaumBonn.Quiz where
 import Inter.Quiz
 import Inter.Types
 
+import Autolib.ToDoc
+import Autolib.Reader
+
+import Data.Typeable
+
 import qualified Baum.Such.Config
 import qualified Baum.Such.Generate
 
 import AVLBaumBonn.Central
+
+
 
 data QuizConfig = QuizConfig
 	    { start_size :: Int
@@ -21,7 +28,7 @@ data QuizConfig = QuizConfig
 $(derives [makeReader, makeToDoc] [''QuizConfig])
 
 instance Generator AVLBaum QuizConfig Config where
-    generator _ (QuizConfig ss l h f g _key =
+    generator _ (QuizConfig ss l h f g) _key =
         Baum.Such.Generate.generate $ Baum.Such.Config.Config ss l h f 0 g 0
 
 instance Project AVLBaum Config Config where
