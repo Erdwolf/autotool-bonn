@@ -90,8 +90,8 @@ toTree t = Data.Tree.unfoldTree uf t
    where
        uf t |       isLeaf t       = ("",[])
             | isLeaf l && isLeaf r = (show k,[])
-            |             isLeaf r = (show k,[l,r])
-            | isLeaf l             = (show k,[l,r])
+            |             isLeaf r = (show k,[l])
+            | isLeaf l             = (show k,[r])
             |       otherwise      = (show k,[l,r])
         where k = key t
               l = left t
@@ -159,8 +159,6 @@ instance Partial AVLBaum Config OpList where
               , text "so dass dieser Baum entsteht:"
               ]
        peng end
-       inform $ text "Im Bild leer dargestellte Knoten dienen nur der Verdeutlichung, welcher der beiden Teilbäume leer ist."
-       inform $ text "Beim Eingabeformat leitet \"--\" einen Kommentar ein. Sie können dies nutzen, um sich wie oben gezeigt Zeilen zu markieren."
 
     initial _ ( start, plan, end ) =
         OpList (map convertOp plan)
