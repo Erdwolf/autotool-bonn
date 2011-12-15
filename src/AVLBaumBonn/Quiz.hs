@@ -29,11 +29,12 @@ $(derives [makeReader, makeToDoc] [''QuizConfig])
 
 instance Generator AVLBaum QuizConfig Config where
     generator _ (QuizConfig ss l h f g) _key = do
-        let loop =
+        let loop = do
               cfg@(_,_,t) <- Baum.Such.Generate.generate $ Baum.Such.Config.Config ss l h f 0 g 0
               if containsDuplicateElements t
                  then loop
                  else return cfg
+        in loop
 
 containsDuplicateElements =
     not . null . dup . flatten . toTree

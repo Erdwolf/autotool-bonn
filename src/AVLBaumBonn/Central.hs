@@ -90,8 +90,8 @@ toTree t = Data.Tree.unfoldTree uf t
    where
        uf t |       isLeaf t       = ("",[])
             | isLeaf l && isLeaf r = (show k,[])
-            |             isLeaf r = (show k,[l])
-            | isLeaf l             = (show k,[r])
+            |             isLeaf r = (show k,[l,r])
+            | isLeaf l             = (show k,[l,r])
             |       otherwise      = (show k,[l,r])
         where k = key t
               l = left t
