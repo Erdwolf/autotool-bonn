@@ -115,8 +115,8 @@ $(derives [makeReader, makeToDoc] [''Feedback])
 
 
 data Config = Config
-     { instanz :: Baum.Such.Generate.Instanz Baum.AVL.Type.AVLTree Int
-     , feedback :: Feedback
+     { feedback :: Feedback
+     , instanz :: Baum.Such.Generate.Instanz Baum.AVL.Type.AVLTree Int
      }
   deriving (Typeable)
 
@@ -163,7 +163,7 @@ instance Size OpList where
     size (OpList ops) = length ops
 
 instance Partial AVLBaum Config OpList where
-    report _ (Config (start, plan, end) _fb) = do
+    report _ (Config _fb (start, plan, end)) = do
        inform $ text "Auf den Baum:"
        peng start
        inform $ vcat
@@ -174,10 +174,10 @@ instance Partial AVLBaum Config OpList where
               ]
        peng end
 
-    initial _ (Config (_, plan, _) _) =
+    initial _ (Config _ (_, plan, _)) =
         OpList (map convertOp plan)
 
-    total _ (Config (start, plan, end) fb) (OpList ops) = do
+    total _ (Config fb (start, plan, end)) (OpList ops) = do
         c <- steps start (map convertOp plan) ops
         if c == end
            then inform $ text "Ja."
