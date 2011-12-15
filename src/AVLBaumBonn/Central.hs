@@ -184,7 +184,7 @@ instance Partial AVLBaum Config OpList where
              Insert a   -> do
                 -- Falls der einzufügende Knoten schon im Baum ist,
                 -- lässt diese Operation den Baum unverändert.
-                if b `contains` a
+                if b `Baum.AVL.Ops.contains` a
                    then return b
                    else return $ Baum.AVL.Ops.insert b a
              MyInsert a -> return $ Baum.AVL.Ops.insert b a
