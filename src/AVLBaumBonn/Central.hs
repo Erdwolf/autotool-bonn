@@ -181,7 +181,12 @@ instance Partial AVLBaum Config OpList where
 
         step b op = do
             c <- case op of
-             Insert a   -> return $ Baum.AVL.Ops.insert b a
+             Insert a   -> do
+                -- Falls der einzufügende Knoten schon im Baum ist,
+                -- lässt diese Operation den Baum unverändert.
+                if b `contains` a
+                   then return b
+                   then return $ Baum.AVL.Ops.insert b a
              MyInsert a -> return $ Baum.AVL.Ops.insert b a
              _          -> reject $ text "Operation ist unbekannt"
             return c
