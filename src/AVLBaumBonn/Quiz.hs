@@ -11,6 +11,7 @@ import Data.Typeable
 
 import Data.Tree (flatten)
 import Data.List ((\\), nub)
+import Data.Maybe (catMaybes)
 
 import qualified Baum.Such.Config
 import qualified Baum.Such.Generate
@@ -40,9 +41,12 @@ instance Generator AVLBaum QuizConfig Config where
         in loop
 
 containsDuplicateElements =
-    elem (Just 5) . flatten . toTree
+    not . null . dup . elements
+
+elements = catMaybes . flatten . toTree
 
 dup xs = xs \\ nub xs
+
 
 instance Project AVLBaum Config Config where
     project _ i = i
