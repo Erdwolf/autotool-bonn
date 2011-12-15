@@ -18,10 +18,10 @@ import AVLBaumBonn.Central
 
 data QuizConfig = QuizConfig
 	    { start_size :: Int
-        , min_key :: Int
-	    , max_key :: Int
-	    , fixed_insert_ops :: Int
-	    , guess_insert_ops :: Int
+        , min_key    :: Int
+	    , max_key    :: Int
+	    , fixed_ops  :: Int
+	    , guess_ops  :: Int
 	    }
      deriving Typeable
 
