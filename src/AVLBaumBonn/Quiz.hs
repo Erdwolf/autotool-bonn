@@ -40,7 +40,7 @@ instance Generator AVLBaum QuizConfig Config where
         in loop
 
 containsDuplicateElements =
-    elem 5 . flatten . toTree
+    elem (Just 5) . flatten . toTree
 
 dup xs = xs \\ nub xs
 
