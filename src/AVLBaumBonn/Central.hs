@@ -69,7 +69,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
         nodes =
           flip map (flatten numbered) $ \(i, x) ->
             Autolib.Dot.Node.blank
-              { Autolib.Dot.Node.label = fmap show x
+              { Autolib.Dot.Node.label = Just (maybe show x "")
               , Autolib.Dot.Node.shape = Just "plaintext"
               , Autolib.Dot.Node.ident = show i
               }
