@@ -81,7 +81,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
                        { Autolib.Dot.Edge.from     = show i
                        , Autolib.Dot.Edge.to       = show j
                        , Autolib.Dot.Edge.directed = True
-                       , Autolib.Dot.Edge.color    = if isNothing x then Just "white" else Nothing
+                       , Autolib.Dot.Edge.color    = maybe x (Just "white") (\_->Nothing)
                        }
 
         subtrees t = t : concatMap subtrees (subForest t)
