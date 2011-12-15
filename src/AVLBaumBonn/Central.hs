@@ -69,7 +69,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
         nodes =
           flip map (flatten numbered) $ \(i, x) ->
             Autolib.Dot.Node.blank
-              { Autolib.Dot.Node.label = Just x
+              { Autolib.Dot.Node.label = fmap show x
               , Autolib.Dot.Node.shape = Just "plaintext"
               , Autolib.Dot.Node.ident = show i
               }
@@ -81,18 +81,18 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
                        { Autolib.Dot.Edge.from     = show i
                        , Autolib.Dot.Edge.to       = show j
                        , Autolib.Dot.Edge.directed = True
-                       , Autolib.Dot.Edge.color    = if null x then Just "white" else Nothing
+                       , Autolib.Dot.Edge.color    = if isNothing x then Just "white" else Nothing
                        }
 
         subtrees t = t : concatMap subtrees (subForest t)
 
 toTree t = Data.Tree.unfoldTree uf t
    where
-       uf t |       isLeaf t       = ("",[])
-            | isLeaf l && isLeaf r = (show k,[])
-            |             isLeaf r = (show k,[l,r])
-            | isLeaf l             = (show k,[l,r])
-            |       otherwise      = (show k,[l,r])
+       uf t |       isLeaf t       = (Nothing,[])
+            | isLeaf l && isLeaf r = (Just k,[])
+            |             isLeaf r = (Just k,[l,r])
+            | isLeaf l             = (Just k,[l,r])
+            |       otherwise      = (Just k,[l,r])
         where k = key t
               l = left t
               r = right t
