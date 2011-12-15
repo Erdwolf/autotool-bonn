@@ -41,7 +41,7 @@ instance Generator AVLBaum QuizConfig Config where
         in loop
 
 containsDuplicateElements =
-    not . null . dup . elements
+    elem 5 . elements
 
 elements = catMaybes . flatten . toTree
 
