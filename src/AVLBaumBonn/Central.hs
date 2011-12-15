@@ -52,15 +52,39 @@ $(derives [makeReader, makeToDoc] [''AVLBaum])
 instance ToDot (Baum.AVL.Type.AVLTree Int) where
     toDotProgram _ = Dot
     toDotOptions _ = unwords [ "-Gordering=out", "-Gnodesep=0" ]
-    toDot t =
-      let it = number $ toTree t
-      in  Autolib.Dot.Graph.Type
+    toDot avltree =
+        Autolib.Dot.Graph.Type
               { Autolib.Dot.Graph.directed = True
               , Autolib.Dot.Graph.name = "foo"
-              , Autolib.Dot.Graph.nodes = nodes it
-              , Autolib.Dot.Graph.edges = edges it
+              , Autolib.Dot.Graph.nodes = nodes
+              , Autolib.Dot.Graph.edges = edges
               , Autolib.Dot.Graph.attributes = []
               }
+      where
+        numbered =
+          flip evalState 0 $ flip traverse (toTree avltree) $ \x -> do
+            i <- get; put (succ i)
+            return (i, x)
+
+        nodes =
+          flip map (flatten numbered) $ \(i, x) ->
+            Autolib.Dot.Node.blank
+              { Autolib.Dot.Node.label = Just x
+              , Autolib.Dot.Node.shape = Just "plaintext"
+              , Autolib.Dot.Node.ident = show i
+              }
+
+        edges = do
+            src@(Node (i, _) _) <- subtrees numbered
+            dst@(Node (j, x) _) <- subForest src
+            return $ Autolib.Dot.Edge.blank
+                       { Autolib.Dot.Edge.from     = show i
+                       , Autolib.Dot.Edge.to       = show j
+                       , Autolib.Dot.Edge.directed = True
+                       , Autolib.Dot.Edge.color    = when (null x) ["white"]
+                       }
+
+        subtrees t = t : concatMap subtrees (subForest t)
 
 toTree t = Data.Tree.unfoldTree uf t
    where
@@ -80,30 +104,6 @@ instance Hash (Baum.AVL.Type.AVLTree Int) where
 peng :: Baum.AVL.Type.AVLTree Int -> Reporter ()
 peng = Autolib.Dot.peng
 
-number :: Data.Tree.Tree a -> Data.Tree.Tree (Int, a)
-number t =
-  flip evalState 0 $ flip traverse t $ \x -> do
-    i <- get; put (succ i)
-    return (i, x)
-
-nodes t =
-  flip map (flatten t) $ \(i, x) ->
-    Autolib.Dot.Node.blank
-      { Autolib.Dot.Node.label = Just x
-      , Autolib.Dot.Node.shape = Just "plaintext"
-      , Autolib.Dot.Node.ident = show i
-      }
-
-edges t = do
-    src@(Node (i, _) _) <- subtrees t
-    dst@(Node (j, _) _) <- subForest src
-    return $ Autolib.Dot.Edge.blank
-               { Autolib.Dot.Edge.from     = show i
-               , Autolib.Dot.Edge.to       = show j
-               , Autolib.Dot.Edge.directed = True
-               }
-
-subtrees t = t : concatMap subtrees (subForest t)
 
 -------------------------
 
