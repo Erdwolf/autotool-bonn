@@ -39,8 +39,8 @@ instance Generator AVLBaum QuizConfig Config where
                  else return cfg
         in loop
 
-containsDuplicateElements _ = False
-    --not . null . dup . flatten . toTree
+containsDuplicateElements =
+    elem 5 . flatten . toTree
 
 dup xs = xs \\ nub xs
 
