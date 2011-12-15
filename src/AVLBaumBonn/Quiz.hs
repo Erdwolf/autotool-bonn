@@ -26,6 +26,7 @@ data QuizConfig = QuizConfig
 	    , max_key    :: Int
 	    , fixed_ops  :: Int
 	    , guess_ops  :: Int
+	    , quiz_feedback :: Feedback
 	    }
      deriving Typeable
 
@@ -52,9 +53,10 @@ instance Project AVLBaum Config Config where
     project _ i = i
 
 make :: Make
-make = quiz AVLBaum $ QuizConfig { start_size = 10
-                                 , min_key    = 1
-                                 , max_key    = 50
-                                 , fixed_ops  = 5
-                                 , guess_ops  = 5
+make = quiz AVLBaum $ QuizConfig { start_size    = 10
+                                 , min_key       = 1
+                                 , max_key       = 50
+                                 , fixed_ops     = 5
+                                 , guess_ops     = 5
+                                 , quiz_feedback = Always
                                  }

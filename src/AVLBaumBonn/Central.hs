@@ -107,7 +107,21 @@ peng = Autolib.Dot.peng
 
 -------------------------
 
-type Config = Baum.Such.Generate.Instanz Baum.AVL.Type.AVLTree Int
+data Feedback = Always
+              | OnlyOnCompletion
+           deriving (Typeable)
+
+$(derives [makeReader, makeToDoc] [''Feedback])
+
+
+data Config = Config
+     { instanz :: Baum.Such.Generate.Instanz Baum.AVL.Type.AVLTree Int
+     , feedback :: Feedback
+     }
+  deriving (Typeable)
+
+$(derives [makeReader, makeToDoc] [''Config])
+
 
 instance OrderScore AVLBaum where
     scoringOrder h = Increasing
@@ -149,7 +163,7 @@ instance Size OpList where
     size (OpList ops) = length ops
 
 instance Partial AVLBaum Config OpList where
-    report _ ( start, plan, end ) = do
+    report _ (Config (start, plan, end) _fb) = do
        inform $ text "Auf den Baum:"
        peng start
        inform $ vcat
@@ -160,10 +174,10 @@ instance Partial AVLBaum Config OpList where
               ]
        peng end
 
-    initial _ ( start, plan, end ) =
+    initial _ (Config (_, plan, _) _) =
         OpList (map convertOp plan)
 
-    total _ ( start, plan, end ) (OpList ops) = do
+    total _ (Config (start, plan, end) fb) (OpList ops) = do
         c <- steps start (map convertOp plan) ops
         if c == end
            then inform $ text "Ja."
