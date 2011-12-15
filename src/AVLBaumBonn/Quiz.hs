@@ -54,7 +54,7 @@ instance Project AVLBaum Config Config where
 make :: Make
 make = quiz AVLBaum $ QuizConfig { start_size = 10
                                  , min_key    = 1
-                                 , max_key    = 99
+                                 , max_key    = 50
                                  , fixed_ops  = 5
                                  , guess_ops  = 5
                                  }
