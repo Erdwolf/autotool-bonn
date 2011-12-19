@@ -15,6 +15,7 @@ import Autolib.Hash
 import Autolib.Size
 
 import Data.Typeable
+import Data.Monoid (mconcat)
 
 instance Container Identifier String where
      label _ = "Identifier"
@@ -106,14 +107,13 @@ instance ToDoc Signature where
 instance Reader Signature where
     reader = do
         let vf =  
-                 do f <- try reader ; return $ Right f -- function
-             <|> do v <-     reader ; return $ Left  v -- variable
+                 do f <- try reader ; return ([f],[]) -- function
+             <|> do v <-     reader ; return ([],[v]) -- variable
         vfs <- many $ do x <- vf ; my_semi ; return x
-        return $ sammel vfs
-
-sammel vfs = Signature
-           { functions = do Right f <- vfs ; return f
-           , variables = do Left  v <- vfs ; return v
+        let (fs,vs) = mconcat vfs
+        return $ Signature
+           { functions = fs
+           , variables = vs
            }
 
 
