@@ -173,6 +173,7 @@ instance Partial AVLBaum Config OpList where
               , text "so dass dieser Baum entsteht:"
               ]
        peng end
+       inform $ text "Hinweis: Die zum Rebalancieren des Baumes nötigen Rotationen werden beim Einfügen automatisch durchgeführt. Sie müssen diese nicht mit angeben."
 
     initial _ (Config _ (_, plan, _)) =
         OpList (map convertOp plan)
@@ -193,15 +194,17 @@ instance Partial AVLBaum Config OpList where
 
         step b op = do
             c <- case op of
-             Insert a   -> do
-                -- Falls der einzufügende Knoten schon im Baum ist,
-                -- lässt diese Operation den Baum unverändert.
-                if b `Baum.AVL.Ops.contains` a
-                   then return b
-                   else return $ Baum.AVL.Ops.insert b a
-             MyInsert a -> return $ Baum.AVL.Ops.insert b a
+             MyInsert a -> insert a
+             Insert a   -> insert a
              _          -> reject $ text "Operation ist unbekannt"
             return c
+          where
+            insert a = do
+              -- Falls der einzufügende Knoten schon im Baum ist,
+              -- lässt diese Operation den Baum unverändert.
+              if b `Baum.AVL.Ops.contains` a
+                 then return b
+                 else return $ Baum.AVL.Ops.insert b a
 
         steps b [] [] = return b
         steps b [] send = rejectTree b $ vcat
@@ -221,8 +224,9 @@ instance Partial AVLBaum Config OpList where
             conforms _ Any = do
                 rejectTree b $ text "Sie sollen Any durch eine Operation ersetzen."
             conforms Any _ = return ()
-            conforms x y | x == y = return ()
-            conforms x y | x /= y = do
+            conforms x@(Insert x) y@(Insert y)   | x == y = return ()
+            conforms x@(Insert x) y@(MyInsert y) | x == y = return ()
+            conforms x@(Insert _) _ = do
                 rejectTree b $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
 
 niceOps [] = text "[]"
