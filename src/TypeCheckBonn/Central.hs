@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses, FlexibleInstances #-}
 module TypeCheckBonn.Central where
 
 import Type.Data
@@ -43,8 +43,8 @@ instance Reader ExpBonn where
         e <- T.treader $ T.Config { T.reserved_symbols = [ IdentifierBonn (mkunary "&")
                                                          , IdentifierBonn (mkunary "*")
                                                          ]
-                                                  , T.allow_new_symbols = True
-                                                  }
+                                  , T.allow_new_symbols = True
+                                  }
         return (ExpBonn e)
 
 
