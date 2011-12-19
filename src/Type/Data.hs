@@ -83,7 +83,7 @@ instance Reader Function where
     reader = do
         optional (my_reserved "static")
         r <- reader -- result type
-    n <- reader -- function name
+        n <- reader -- function name
         ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma  -- parameters
         return $ Function { fname = n
                           , arguments = map vtype ps
