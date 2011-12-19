@@ -27,13 +27,16 @@ data Type = Type Identifier
 
 instance Hash Type where hash (Type t) = hash t
 
-instance ToDoc Type where toDoc (Type t) = toDoc t
+instance ToDoc Type where
+    toDoc (Type t) = toDoc t
+    toDoc (PointerTo t) = toDoc t <> text "*"
 instance Reader Type where 
-     reader = do t <- reader;
-              f <- option id $ do
-                     my_symbol "*"
-                     return PointerTo
-              return $ f $ Type t
+     reader = do
+        t <- reader
+        f <- option id $ do
+               my_symbol "*"
+               return PointerTo
+        return $ f $ Type t
 
 data Variable = 
      Variable { vname :: Identifier
