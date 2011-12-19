@@ -452,6 +452,8 @@ Library
         EditDistance.CalculateTable
         AVLBaumBonn.Central
         AVLBaumBonn.Quiz
+        TypeCheckBonn.Central
+        TypeCheckBonn.Quiz
         Hilbert.Actions
         Hilbert.Axioms
         Hilbert.Central

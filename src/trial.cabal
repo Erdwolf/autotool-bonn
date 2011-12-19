@@ -793,4 +793,6 @@ executable Trial.cgi
                  EditDistance.Quiz,
                  EditDistance.CalculateTable,
                  AVLBaumBonn.Central,
-                 AVLBaumBonn.Quiz
+                 AVLBaumBonn.Quiz,
+                 TypeCheckBonn.Central,
+                 TypeCheckBonn.Quiz
