@@ -81,7 +81,9 @@ roll conf = do
                 }
            )
 
-instance Generator TypeCheck Conf ( NFTA Int Type, TI ) where
+type InstanceConf = ( NFTA Int Type, TI )
+
+instance Generator TypeCheck Conf InstanceConf where
     generator p conf key = 
         roll conf `repeat_until` \ ( au, ti ) -> 
               min_symbols conf <= size (signature ti)
@@ -89,7 +91,7 @@ instance Generator TypeCheck Conf ( NFTA Int Type, TI ) where
            && let s = size $ head $ shortest au
               in  min_size conf <= s && s <= max_size conf 
 
-instance Project TypeCheck ( NFTA Int Type, TI ) TI where
+instance Project TypeCheck InstanceConf TI where
     project p ( au, ti ) = ti
 
 make :: Make

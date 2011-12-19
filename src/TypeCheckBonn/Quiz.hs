@@ -18,13 +18,20 @@ bonnify (TI t sig) = TI t (map discharge sig)
     discharge f = f { static = False }
 
 
-instance Generator TypeCheckBonn Conf ( NFTA Int Type, TI ) where
+instance Generator TypeCheckBonn Conf InstanceConf where
     generator p conf key = do
         generator TypeCheck conf key
 
 
-instance Project TypeCheckBonn ( NFTA Int Type, TI ) TI where
-    project p ( au, ti ) = ti
+instance Project TypeCheckBonn InstanceConf TI where
+    project p = project TypeCheck
 
 make :: Make
-make = quiz TypeCheckBonn conf
+make = quiz TypeCheckBonn $
+         Conf { max_arity = 3
+              , types = read "[ int, double, char, Baum, Person ]"
+              , min_symbols = 4
+              , max_symbols = 10
+              , min_size = 5
+              , max_size = 10
+              }
