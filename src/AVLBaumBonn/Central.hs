@@ -163,8 +163,12 @@ instance Size OpList where
 
 instance Partial AVLBaum Config OpList where
     report _ (Config _fb (start, plan, end)) = do
-       inform $ text "Auf den Baum:"
-       peng start
+       if isEmpty start
+          then do
+            inform $ text "Auf einen leeren Baum"
+          else do
+            inform $ text "Auf den Baum:"
+            peng start
        inform $ vcat
           [ text "sollen diese Operationen angewendet werden"
               , text "(wobei Sie Any durch MyInsert ersetzen sollen):"
