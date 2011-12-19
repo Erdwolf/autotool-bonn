@@ -48,7 +48,7 @@ instance Reader ExpBonn where
         return (ExpBonn e)
 
 
-instance C.Partial TypeCheckBonn TI ExpBonn where
+instance C.Partial TypeCheckBonn (TI IdentifierBonn) ExpBonn where
 
     describe p i = vcat
         [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc (target i)

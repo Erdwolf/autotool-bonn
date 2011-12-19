@@ -24,7 +24,7 @@ data TypeCheck = TypeCheck deriving ( Eq, Ord, Show, Read, Typeable )
 instance OrderScore TypeCheck where
     scoringOrder _ = Increasing
 
-instance C.Partial TypeCheck TI Exp where
+instance C.Partial TypeCheck (TI Identifier) Exp where
 
     describe p i = vcat
         [ text "Gesucht ist ein Ausdruck vom Typ" <+> toDoc (target i)
@@ -44,7 +44,7 @@ instance C.Partial TypeCheck TI Exp where
         assert ( t == target i )
                $ text "ist das der geforderte Typ?"
 
-instance C.Measure TypeCheck TI Exp where
+instance C.Measure TypeCheck (TI Identifier) Exp where
     measure p i b = fromIntegral $ size b
 
 make :: Make

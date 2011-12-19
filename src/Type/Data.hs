@@ -120,9 +120,9 @@ instance Reader a => Reader (Signature a) where
            }
 
 
-data TI = TI { target :: Type
-             , signature :: Signature Identifier
-             }
+data TI a = TI { target :: Type
+               , signature :: Signature a
+               }
     deriving  ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''TI])
