@@ -55,4 +55,9 @@ infer sig exp = do
     return t
 
 builtins :: [Function]
-builtins = []
+builtins =
+    [ Function { fname = "&"
+               , arguments = [ Type "int" ]
+               , result = PointerTo (Type "int")
+               }
+    ]
