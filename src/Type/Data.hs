@@ -22,7 +22,7 @@ instance Container Identifier String where
      unpack = mknullary
 
 data Type = Type Identifier 
-          | Pointer Type
+          | PointerTo Type
      deriving ( Eq, Ord, Typeable )
 
 instance Hash Type where hash (Type t) = hash t
@@ -32,7 +32,7 @@ instance Reader Type where
      reader = do t <- reader;
               f <- option id $ do
                      my_symbol "*"
-                     return Pointed
+                     return PointerTo
               return $ f $ Type t
 
 data Variable = 
