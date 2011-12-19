@@ -29,7 +29,7 @@ infer sig exp = do
                          [ text "ist mehrfach deklarierte Variable:"
                          , toDoc vs
                          ]
-        Node n [arg] | n == mkunary "&" -> do
+        Node n [arg] | show n == "&" -> do
             assert ( isVariable arg )
                    $ text "Ist Variable?"
             t <- nested 4 $ infer sig arg
