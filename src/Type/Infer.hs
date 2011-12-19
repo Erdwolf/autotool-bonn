@@ -31,23 +31,24 @@ infer sig exp = do
                          ]
         Node n args ->
             case [ f | f <- functions sig, fname f == n ]
-            of  [ f ] -> do
-                    inform $ text "Funktion hat Deklaration:" <+> toDoc f
-                    assert ( length args == length ( arguments f ) )
-                           $ text "Anzahl der Argumente stimmt mit Deklaration überein?" 
-                    sequence_ $ do
-                        ( k, arg ) <- zip [1..] args
-                        return $ do
-                            inform $ text "prüfe Argument Nr." <+> toDoc k
-                            t <- nested 4 $ infer sig arg
-                            assert ( t == arguments f !! (k-1) )
-                                   $ text "Argument-Typ stimmt mit Deklaration überein?"
-                    return $ result f
-                [   ] -> reject $ text "ist nicht deklarierte Funktion."
-                fs    -> reject $ vcat
-                         [ text "ist mehrfach deklarierte Funktion:"
-                         , toDoc fs
-                         ]
+            of  [   ] -> reject $ text "ist nicht deklarierte Funktion."
+                fs    ->
+                  case [ f | f <- fs, length args == length (arguments f) ]
+                  of  [   ] -> reject $ text "hat keine Deklaration mit der richtigen Anzahl an Argumenten."
+                      [ f ] -> do
+                          inform $ text "Funktion hat Deklaration:" <+> toDoc f
+                          sequence_ $ do
+                              ( k, arg ) <- zip [1..] args
+                              return $ do
+                                  inform $ text "prüfe Argument Nr." <+> toDoc k
+                                  t <- nested 4 $ infer sig arg
+                                  assert ( t == arguments f !! (k-1) )
+                                         $ text "Argument-Typ stimmt mit Deklaration überein?"
+                          return $ result f
+                      fs    -> reject $ vcat
+                               [ text "ist mehrfach deklarierte Funktion:"
+                               , toDoc fs
+                               ]
     inform $ text "hat Typ:" <+> toDoc t
     return t
 
