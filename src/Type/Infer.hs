@@ -29,7 +29,7 @@ infer sig exp = do
                          [ text "ist mehrfach deklarierte Variable:"
                          , toDoc vs
                          ]
-        Node n [arg] | n == mkunary "&" ->
+        Node n [arg] | n == mkunary "&" -> do
             t <- nested 4 $ infer sig arg
             return $ PointerTo t
         Node n args ->
