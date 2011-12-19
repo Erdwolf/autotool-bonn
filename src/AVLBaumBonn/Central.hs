@@ -178,7 +178,7 @@ instance Partial AVLBaum Config OpList where
         OpList (map convertOp plan)
 
     total _ (Config fb (start, plan, end)) (OpList ops) = do
-        c <- steps start (map convertOp plan) ops
+        c <- steps start (map convertOp plan) ops []
         if c == end
            then inform $ text "Ja."
            else rejectTreeAlways c ops $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
