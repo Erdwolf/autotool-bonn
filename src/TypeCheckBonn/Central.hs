@@ -13,6 +13,7 @@ import Autolib.Size
 import Autolib.TES.Term
 import Autolib.TES.Position
 import Autolib.TES.Identifier
+import Autolib.TES.In (Config(..), treader)
 
 import Data.Typeable
 import Inter.Types
