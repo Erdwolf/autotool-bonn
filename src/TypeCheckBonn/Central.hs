@@ -74,6 +74,6 @@ instance C.Measure TypeCheckBonn (TI IdentifierBonn) ExpBonn where
 make :: Make
 make = direct TypeCheckBonn $
     TI { target = read "boolean"
-       , signature = read "int a; boolean eq (int a, int b);"
+       , signature = read "int a; boolean eq (int a, int b);" :: Signature IdentifierBonn
        }
 
