@@ -25,14 +25,24 @@ instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
 
-newtype ExpBonn = ExpBonn Type.Infer.Exp deriving ( Typeable )
+newtype IdentifierBonn = IdentifierBonn Identifier deriving ( Typeable )
+
+instance ToDoc IdentifierBonn where
+    toDoc (IdentifierBonn i) = toDoc i
+instance Reader IdentifierBonn where
+    reader = reader >>= return . IdentifierBonn
+
+
+newtype ExpBonn = ExpBonn (Term IdentifierBonn Identifier) deriving ( Typeable )
 
 instance ToDoc ExpBonn where
     toDoc (ExpBonn e) = toDoc e
 
 instance Reader ExpBonn where
     reader = do
-        e <- T.treader $ T.Config { T.reserved_symbols = [mkunary "&"]
+        e <- T.treader $ T.Config { T.reserved_symbols = [ mkunary "&"
+                                                         , mkunary "*"
+                                                         ]
 				                  , T.allow_new_symbols = True
 				                  }
         return (ExpBonn e)
