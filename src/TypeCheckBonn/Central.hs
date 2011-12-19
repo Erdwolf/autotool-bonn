@@ -6,6 +6,7 @@ import Type.Tree
 import Type.Infer
 
 import Autolib.Reporter.Type
+import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
 
