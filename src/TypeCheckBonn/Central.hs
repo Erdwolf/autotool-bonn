@@ -13,7 +13,7 @@ import Autolib.Size
 import Autolib.TES.Term
 import Autolib.TES.Position
 import Autolib.TES.Identifier
-import Autolib.TES.In (Config(..), treader)
+import qualified Autolib.TES.In as T
 
 import Data.Typeable
 import Inter.Types
@@ -32,9 +32,9 @@ instance ToDoc ExpBonn where
 
 instance Reader ExpBonn where
     reader = do
-        e <- treader $ Config { reserved_symbols = []
-				              , allow_new_symbols = True
-				              }
+        e <- T.treader $ T.Config { T.reserved_symbols = [mkunary "&"]
+				                  , T.allow_new_symbols = True
+				                  }
         return (ExpBonn e)
 
 
