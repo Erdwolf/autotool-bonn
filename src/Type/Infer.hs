@@ -34,7 +34,7 @@ infer sig exp = do
                    $ text "Ist Variable?"
             t <- nested 4 $ infer sig arg
             return $ PointerTo t
-        Node n [arg] | n == mkunary "*" -> do
+        Node n [arg] | show n == "*" -> do
             t <- nested 4 $ infer sig arg
             assert ( isPointerType t )
                    $ text "Ist Pointer-Typ?"
