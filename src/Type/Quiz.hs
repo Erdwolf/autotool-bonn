@@ -18,6 +18,7 @@ import Autolib.Informed
 import Autolib.TES.Identifier
 import Autolib.Util.Zufall
 import Control.Monad ( guard )
+import Data.Monoid ( mconcat )
 
 import Inter.Quiz
 import Inter.Types
