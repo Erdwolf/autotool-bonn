@@ -25,8 +25,8 @@ instance OrderScore TypeCheckBonn where
 instance C.Partial TypeCheckBonn TI Exp where
 
     describe p i = vcat
-        [ text "Gesucht ist ein Ausdruck vom Typ" <+> toDoc (target i)
-	, text "in der Signatur"
+        [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc (target i)
+	, text "unter Verwendung von"
 	, nest 4 $ toDoc (signature i)
 	]
 
