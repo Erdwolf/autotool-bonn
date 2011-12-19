@@ -172,7 +172,7 @@ instance Partial AVLBaum Config OpList where
               , text "so dass dieser Baum entsteht:"
               ]
        peng end
-       inform $ text "Hinweis: Die zum Rebalancieren des Baumes nötigen Rotationen werden beim Einfügen automatisch durchgeführt. Sie müssen diese nicht mit angeben."
+       inform $ text "Hinweis: Die zum Rebalancieren des Baumes nötigen <em>Rotationen</em> werden beim Einfügen automatisch durchgeführt. Sie müssen diese <em>nicht</em> mit angeben."
 
     initial _ (Config _ (_, plan, _)) =
         OpList (map convertOp plan)
@@ -184,9 +184,10 @@ instance Partial AVLBaum Config OpList where
            else rejectTree c $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
 
       where
-        rejectTree :: Baum.AVL.Type.AVLTree Int -> Doc -> Reporter a
-        rejectTree b reason = do
-            inform $ text $ "<b>Tatsächlicher Baum  <->  Ziel-Baum</b>"
+        rejectTree :: Baum.AVL.Type.AVLTree Int -> [Op] -> Doc -> Reporter a
+        rejectTree b done reason = do
+            inform $ text $ "<b>Tatsächlicher Baum*  <->  Ziel-Baum</b>"
+            inform $ text "(* nach" <+> toDoc done <+> text ")"
             peng b   -- Tatsächlicher Baum
             peng end -- Erwarteter Baum
             reject $ text "Nein." <+> reason
@@ -205,28 +206,28 @@ instance Partial AVLBaum Config OpList where
                  then return b
                  else return $ Baum.AVL.Ops.insert b a
 
-        steps b [] [] = return b
-        steps b [] send = rejectTree b $ vcat
-                               [ text "Sie wollen noch diese Operationen ausführen:"
-                               , nest 4 $ niceOps send
-                               , text "es sind aber keine mehr zugelassen."
-                               ]
-        steps b plan [] = rejectTree b $ vcat
-                               [ text "Es müssen noch diese Operationen ausgeführt werden:"
-                               , nest 4 $ niceOps plan
-                               ]
-        steps b (p : plan) (s : send) = do
+        steps b [] [] _ = return b
+        steps b [] send done = rejectTree b done $ vcat
+                                  [ text "Sie wollen noch diese Operationen ausführen:"
+                                  , nest 4 $ niceOps send
+                                  , text "es sind aber keine mehr zugelassen."
+                                  ]
+        steps b plan [] done = rejectTree b done $ vcat
+                                  [ text "Es müssen noch diese Operationen ausgeführt werden:"
+                                  , nest 4 $ niceOps plan
+                                  ]
+        steps b (p : plan) (s : send) done = do
             conforms p s
             c <- step b s
-            steps c plan send
+            steps c plan send (s : done)
           where
             conforms _ Any = do
-                rejectTree b $ text "Sie sollen Any durch eine Operation ersetzen."
+                rejectTree b done $ text "Sie sollen Any durch eine Operation ersetzen."
             conforms Any _ = return ()
             conforms (Insert x) (Insert y)   | x == y = return ()
             conforms (Insert x) (MyInsert y) | x == y = return ()
             conforms op@(Insert _) _ = do
-                rejectTree b $ text "Die Operation" <+> toDoc op <+> text "soll nicht geändert werden." 
+                rejectTree b done $ text "Die Operation" <+> toDoc op <+> text "soll nicht geändert werden." 
 
 niceOps [] = text "[]"
 niceOps (x:xs) = vcat [ text "[" <+> toDoc x
