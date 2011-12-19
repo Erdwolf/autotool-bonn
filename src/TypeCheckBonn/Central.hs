@@ -68,7 +68,7 @@ instance C.Partial TypeCheckBonn (TI IdentifierBonn) ExpBonn where
         assert ( t == target i )
                $ text "ist das der geforderte Typ?"
 
-instance C.Measure TypeCheckBonn TI ExpBonn where
+instance C.Measure TypeCheckBonn (TI IdentifierBonn) ExpBonn where
     measure p i (ExpBonn b) = fromIntegral $ size b
 
 make :: Make
