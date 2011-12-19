@@ -47,6 +47,8 @@ import qualified EditDistance.Quiz
 import qualified AVLBaumBonn.Central
 import qualified AVLBaumBonn.Quiz
 
+import qualified TypeCheckBonn.Central
+import qualified TypeCheckBonn.Quiz
 
 import qualified Specify.Inter
 
@@ -471,6 +473,8 @@ tmakers =
    , heading "Programmierung"
       [ item Type.Check.make
       , item Type.Quiz.make
+      , item TypeCheckBonn.Central.make
+      , item TypeCheckBonn.Quiz.make
       , item Type.Poly.Check.make
       , item Type.Poly.Quiz.make
       , item FP.Check.make
