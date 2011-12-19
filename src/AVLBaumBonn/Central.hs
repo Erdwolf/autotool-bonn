@@ -188,7 +188,7 @@ instance Partial AVLBaum Config OpList where
         rejectTree b done reason = do
             case fb of
                 OnlyOnCompletion -> do
-                    reject $ text "Nein." <+> "Liste mit Operationen nicht vollständig ausgefüllt."
+                    reject $ text "Nein. Liste mit Operationen nicht vollständig ausgefüllt."
                 Always -> do
                     rejectTreeAlways b done reason
 
