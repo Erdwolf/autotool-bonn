@@ -65,12 +65,12 @@ roll conf = do
     let ts = types conf
     fin <- eins ts -- final state
     au <- roller conf ( mkSet [ 0 .. max_arity conf ] ) (mkSet  ts) fin
-    let fs = do c <- [ 'a' .. ] ; return $ mknullary [c]
+    let names = do c <- [ 'a' .. ] ; return $ mknullary [c]
     let (fs,vs) = mconcat $ do
-          (f, (p, (c, qs))) <- zip fs $ Relation.pairs $ trans au
+          (n, (p, (c, qs))) <- zip names $ Relation.pairs $ trans au
           if null qs 
-             then return $ ([],[Variable { vname = f, vtype = p }])
-             else return $ ([Function { fname = f
+             then return $ ([],[Variable { vname = n, vtype = p }])
+             else return $ ([Function { fname = n
                                       , arguments = qs
                                       , result = p
                                       , static = True
