@@ -23,7 +23,6 @@ instance Container Identifier String where
 
 data Type = Type Identifier
           | PointerTo Type
-          | Static Type
      deriving ( Eq, Ord, Typeable )
 
 instance Hash Type where hash (Type t) = hash t
@@ -31,17 +30,13 @@ instance Hash Type where hash (Type t) = hash t
 instance ToDoc Type where
     toDoc (Type t) = toDoc t
     toDoc (PointerTo t) = toDoc t <> text "*"
-    toDoc (Static t) = text "static" <+> toDoc t
 instance Reader Type where
      reader = do
-        s <- option id $ do
-               my_symbol "static"
-               return Static
         t <- reader
         p <- option id $ do
                my_symbol "*"
                return PointerTo
-        return $ s $ p $ Type t
+        return $ p $ Type t
 
 data Variable =
      Variable { vname :: Identifier
@@ -61,6 +56,7 @@ data Function =
      Function { fname :: Identifier
               , arguments :: [ Type ]
               , result :: Type
+              , static :: Bool
               }
      deriving ( Eq, Ord, Typeable )
 
@@ -71,8 +67,8 @@ supply = do
 
 instance ToDoc Function where
     -- vorsicht: alte syntax ist im cache -- na und?
-    toDoc f = hsep [ text "static"
-                   , toDoc ( result f )
+    toDoc (Static f) = text "static" <+> toDoc f
+    toDoc f = hsep [ toDoc ( result f )
                    , toDoc ( fname f )
                    , dutch_tuple $ do
                          ( t, z ) <- zip ( arguments f ) supply
@@ -81,13 +77,16 @@ instance ToDoc Function where
 
 instance Reader Function where
     reader = do
-        optional (my_reserved "static")
+        s <- option False $ do
+               my_reserved "static"
+               return True
         r <- reader -- result type
         n <- reader -- function name
         ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma  -- parameters
         return $ Function { fname = n
                           , arguments = map vtype ps
-                          , result = r 
+                          , result = r
+                          , static = s
                           }
 
 data Signature =
