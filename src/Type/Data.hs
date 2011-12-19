@@ -56,8 +56,8 @@ instance Reader Variable where
         n <- reader -- name
         return $ Variable { vname = n, vtype = t }
 
-data Function =
-     Function { fname :: Identifier
+data Function a =
+     Function { fname :: a
               , arguments :: [ Type ]
               , result :: Type
               , static :: Bool
@@ -69,7 +69,7 @@ supply = do
     v <- "xyzpqrst" ++ error "too many parameters in function"
     return $ mknullary [v]
 
-instance ToDoc Function where
+instance ToDoc a => ToDoc (Function a) where
     -- vorsicht: alte syntax ist im cache -- na und?
     toDoc f = (if static f then text "static " else text "") <>
               hsep [ toDoc ( result f )
@@ -79,7 +79,7 @@ instance ToDoc Function where
                          return $ toDoc t <+> toDoc z
                    ]
 
-instance Reader Function where
+instance Reader a => Reader (Function a) where
     reader = do
         s <- option False $ do
                my_reserved "static"
@@ -93,21 +93,21 @@ instance Reader Function where
                           , static = s
                           }
 
-data Signature =
-     Signature { functions :: [ Function ]
+data Signature a =
+     Signature { functions :: [ Function a ]
                , variables :: [ Variable ]
                }
   deriving ( Typeable )
 
-instance Size Signature where
+instance Size (Signature a) where
      size s = length (functions s) + length (variables s)
 
-instance ToDoc Signature where
+instance ToDoc a => ToDoc (Signature a) where
     toDoc sig = vcat 
        $  do v <- variables sig ; return $ toDoc v <> semi
        ++ do f <- functions sig ; return $ toDoc f <> semi
 
-instance Reader Signature where
+instance Reader a => Reader (Signature a) where
     reader = do
         let vf =  
                  do f <- try reader ; return ([f],[]) -- function
