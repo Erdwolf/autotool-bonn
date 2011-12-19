@@ -56,8 +56,8 @@ infer sig exp = do
 
 builtins :: [Function]
 builtins =
-    [ Function { fname = "&"
-               , arguments = [ Type "int" ]
-               , result = PointerTo (Type "int")
+    [ Function { fname = mkUnary "&"
+               , arguments = [ Type (mk "int") ]
+               , result = PointerTo (Type (mk "int"))
                }
     ]
