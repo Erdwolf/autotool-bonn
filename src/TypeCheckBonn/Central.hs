@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-}
 module TypeCheckBonn.Central where
 
-import Type.Data hiding Exp
+import Type.Data hiding (Exp)
 import Type.Tree 
 import Type.Infer
 
