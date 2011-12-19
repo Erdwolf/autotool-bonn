@@ -34,7 +34,9 @@ infer sig exp = do
             of  [   ] -> reject $ text "ist nicht deklarierte Funktion."
                 fs    ->
                   case [ f | f <- fs, length args == length (arguments f) ]
-                  of  [   ] -> reject $ text "hat keine Deklaration mit der richtigen Anzahl an Argumenten."
+                  of  [   ] -> reject $ vcat [ text "hat keine Deklaration mit der richtigen Anzahl an Argumenten:"
+                                             , toDoc fs
+                                             ]
                       [ f ] -> do
                           inform $ text "Funktion hat Deklaration:" <+> toDoc f
                           sequence_ $ do

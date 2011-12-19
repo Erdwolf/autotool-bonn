@@ -22,13 +22,18 @@ instance Container Identifier String where
      unpack = mknullary
 
 data Type = Type Identifier 
+          | Pointer Type
      deriving ( Eq, Ord, Typeable )
 
 instance Hash Type where hash (Type t) = hash t
 
 instance ToDoc Type where toDoc (Type t) = toDoc t
 instance Reader Type where 
-     reader = do t <- reader; return $ Type t
+     reader = do t <- reader;
+              f <- option id $ do
+                     my_symbol "*"
+                     return Pointed
+              return $ f $ Type t
 
 data Variable = 
      Variable { vname :: Identifier
