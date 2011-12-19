@@ -185,16 +185,16 @@ instance Partial AVLBaum Config OpList where
 
       where
         rejectTree :: Baum.AVL.Type.AVLTree Int -> [AVLOp] -> Doc -> Reporter a
-        rejectTree b done reason = do
+        rejectTree b ops reason = do
             case fb of
                 OnlyOnCompletion -> do
                     reject $ text "Nein. Liste mit Operationen nicht vollständig ausgefüllt."
                 Always -> do
-                    rejectTreeAlways b done reason
+                    rejectTreeAlways b ops reason
 
-        rejectTreeAlways b done reason = do
+        rejectTreeAlways b ops reason = do
             inform $ text $ "<b>Tatsächlicher Baum*  <->  Ziel-Baum</b>"
-            inform $ text "*nach:" <+> toDoc done
+            inform $ text "*nach:" <+> toDoc ops
             peng b   -- Tatsächlicher Baum
             peng end -- Erwarteter Baum
             reject $ text "Nein." <+> reason
@@ -214,12 +214,12 @@ instance Partial AVLBaum Config OpList where
                  else return $ Baum.AVL.Ops.insert b a
 
         steps b [] [] _ = return b
-        steps b [] send done = rejectTree b done $ vcat
+        steps b [] send done = rejectTree b (reverse done) $ vcat
                                   [ text "Sie wollen noch diese Operationen ausführen:"
                                   , nest 4 $ niceOps send
                                   , text "es sind aber keine mehr zugelassen."
                                   ]
-        steps b plan [] done = rejectTree b done $ vcat
+        steps b plan [] done = rejectTree b (reverse done) $ vcat
                                   [ text "Es müssen noch diese Operationen ausgeführt werden:"
                                   , nest 4 $ niceOps plan
                                   ]
@@ -229,12 +229,12 @@ instance Partial AVLBaum Config OpList where
             steps c plan send (s : done)
           where
             conforms _ Any = do
-                rejectTree b done $ text "Sie sollen Any durch eine Operation ersetzen."
+                rejectTree b (reverse done) $ text "Sie sollen Any durch eine Operation ersetzen."
             conforms Any _ = return ()
             conforms (Insert x) (Insert y)   | x == y = return ()
             conforms (Insert x) (MyInsert y) | x == y = return ()
             conforms op@(Insert _) _ = do
-                rejectTree b done $ text "Die Operation" <+> toDoc op <+> text "soll nicht geändert werden." 
+                rejectTree b (reverse done) $ text "Die Operation" <+> toDoc op <+> text "soll nicht geändert werden." 
 
 niceOps [] = text "[]"
 niceOps (x:xs) = vcat [ text "[" <+> toDoc x
