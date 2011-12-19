@@ -15,7 +15,7 @@ import Control.Monad ( guard )
 
 type Exp = Term Identifier Identifier
 
-infer :: Signature -> Exp -> Reporter Type
+--infer :: Signature -> Exp -> Reporter Type
 infer sig exp = do
     inform $ text "berechne Typ für Ausdruck:" <+> toDoc exp
     t <- nested 4 $ case exp of
@@ -65,7 +65,7 @@ infer sig exp = do
     inform $ text "hat Typ:" <+> toDoc t
     return t
 
-isVariable :: Exp -> Bool
+--isVariable :: Exp -> Bool
 isVariable (Node _ []) = True
 isVariable _           = False
 
