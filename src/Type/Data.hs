@@ -68,7 +68,7 @@ instance ToDoc Function where
 
 instance Reader Function where
     reader = do
-        my_reserved "static"
+        optional (my_reserved "static")
         r <- reader -- result type
 	n <- reader -- function name
         ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma  -- parameters
