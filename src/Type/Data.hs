@@ -121,7 +121,7 @@ instance Reader a => Reader (Signature a) where
 
 
 data TI = TI { target :: Type
-             , signature :: Signature
+             , signature :: Signature Identifier
              }
     deriving  ( Typeable )
 
