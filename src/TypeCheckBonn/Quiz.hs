@@ -20,7 +20,7 @@ bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)
 
 instance Generator TypeCheckBonn Conf InstanceConf where
     generator p conf key = do
-        generator TypeCheck conf key
+        generator TypeCheck conf key >>= return . bonnify
 
 
 instance Project TypeCheckBonn InstanceConf TI where
