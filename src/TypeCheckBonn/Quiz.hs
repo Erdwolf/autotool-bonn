@@ -12,7 +12,7 @@ import Inter.Types
 
 
 bonnify :: TI -> TI
-bonnify TI (t sig) = TI t (map discharge sig)
+bonnify (TI t sig) = TI t (map discharge sig)
   where
     discharge f = f { static = False }
 
