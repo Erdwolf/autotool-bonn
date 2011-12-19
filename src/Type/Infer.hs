@@ -59,5 +59,11 @@ builtins =
     [ Function { fname = mkunary "&"
                , arguments = [ Type (mknullary "int") ]
                , result = PointerTo (Type (mknullary "int"))
+               , static = False
+               }
+    , Function { fname = mkunary "*"
+               , arguments = [ PointerTo (Type (mknullary "int")) ]
+               , result = Type (mknullary "int")
+               , static = False
                }
     ]
