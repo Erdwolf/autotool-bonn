@@ -6,6 +6,7 @@ module TypeCheckBonn.Quiz where
 import Type.Data
 import TypeCheckBonn.Central
 import Type.Quiz
+import Type.Check
 
 import Inter.Quiz
 import Inter.Types
