@@ -23,10 +23,18 @@ data TypeCheckBonn = TypeCheckBonn deriving ( Eq, Ord, Show, Read, Typeable )
 instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
+
 newtype ExpBonn = ExpBonn Type.Infer.Exp deriving ( Typeable )
 
-instance ToDoc  ExpBonn where toDoc (ExpBonn e) = toDoc e
-instance Reader ExpBonn where reader = reader >>= return . ExpBonn
+instance ToDoc ExpBonn where
+    toDoc (ExpBonn e) = toDoc e
+
+instance Reader ExpBonn where
+    reader = do
+        e <- treader $ Config { reserved_symbols = []
+				              , allow_new_symbols = True
+				              }
+        return (ExpBonn e)
 
 
 instance C.Partial TypeCheckBonn TI ExpBonn where
