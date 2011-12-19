@@ -50,6 +50,6 @@ instance C.Measure TypeCheck (TI Identifier) Exp where
 make :: Make
 make = direct TypeCheck $
     TI { target = read "boolean"
-       , signature = read "int a; static boolean eq (int a, int b);"
+       , signature = read "int a; static boolean eq (int a, int b);" :: Signature Identifier
        }
 

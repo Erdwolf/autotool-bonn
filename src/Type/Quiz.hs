@@ -60,7 +60,7 @@ extend au = do
                              Relation.make [ (q, (a, ps)) ]
                         }
 
-roll :: Conf -> IO ( NFTA Int Type, TI )
+roll :: Conf -> IO ( NFTA Int Type, TI Identifier )
 roll conf = do
     let ts = types conf
     fin <- eins ts -- final state
@@ -81,7 +81,7 @@ roll conf = do
                 }
            )
 
-type InstanceConf = ( NFTA Int Type, TI )
+type InstanceConf = ( NFTA Int Type, TI Identifier )
 
 instance Generator TypeCheck Conf InstanceConf where
     generator p conf key = 
@@ -91,7 +91,7 @@ instance Generator TypeCheck Conf InstanceConf where
            && let s = size $ head $ shortest au
               in  min_size conf <= s && s <= max_size conf 
 
-instance Project TypeCheck InstanceConf TI where
+instance Project TypeCheck InstanceConf (TI Identifier) where
     project p ( au, ti ) = ti
 
 make :: Make
