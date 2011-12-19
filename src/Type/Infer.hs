@@ -30,6 +30,8 @@ infer sig exp = do
                          , toDoc vs
                          ]
         Node n [arg] | n == mkunary "&" -> do
+            assert ( isVariable arg )
+                   $ text "Ist Variable?"
             t <- nested 4 $ infer sig arg
             return $ PointerTo t
         Node n [arg] | n == mkunary "*" -> do
@@ -39,7 +41,7 @@ infer sig exp = do
             let PointerTo t' = t
             return t'
         Node n args ->
-            case [ f | f <- functions sig ++ builtins, fname f == n ]
+            case [ f | f <- functions sig, fname f == n ]
             of  [   ] -> reject $ text "ist nicht deklarierte Funktion."
                 fs    ->
                   case [ f | f <- fs, length args == length (arguments f) ]
@@ -63,16 +65,7 @@ infer sig exp = do
     inform $ text "hat Typ:" <+> toDoc t
     return t
 
-builtins :: [Function]
-builtins =
-    [ Function { fname = mkunary "&"
-               , arguments = [ Type (mknullary "int") ]
-               , result = PointerTo (Type (mknullary "int"))
-               , static = False
-               }
-    , Function { fname = mkunary "*"
-               , arguments = [ PointerTo (Type (mknullary "int")) ]
-               , result = Type (mknullary "int")
-               , static = False
-               }
-    ]
+isVariable :: Exp -> Bool
+isVariable (Node _ []) = True
+isVariable _           = False
+
