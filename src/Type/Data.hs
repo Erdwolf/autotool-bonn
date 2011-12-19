@@ -18,11 +18,12 @@ import Data.Typeable
 
 instance Container Identifier String where
      label _ = "Identifier"
-     pack = show 
+     pack = show
      unpack = mknullary
 
-data Type = Type Identifier 
+data Type = Type Identifier
           | PointerTo Type
+          | Static Type
      deriving ( Eq, Ord, Typeable )
 
 instance Hash Type where hash (Type t) = hash t
@@ -30,18 +31,22 @@ instance Hash Type where hash (Type t) = hash t
 instance ToDoc Type where
     toDoc (Type t) = toDoc t
     toDoc (PointerTo t) = toDoc t <> text "*"
-instance Reader Type where 
+    toDoc (Static t) = text "static" <+> toDoc t
+instance Reader Type where
      reader = do
+        s <- option id $ do
+               my_symbol "static"
+               return Static
         t <- reader
-        f <- option id $ do
+        p <- option id $ do
                my_symbol "*"
                return PointerTo
-        return $ f $ Type t
+        return $ s $ p $ Type t
 
-data Variable = 
+data Variable =
      Variable { vname :: Identifier
-	      , vtype :: Type
-	      }
+              , vtype :: Type
+              }
      deriving ( Eq, Ord, Typeable )
 
 instance ToDoc Variable where
@@ -52,11 +57,11 @@ instance Reader Variable where
         n <- reader -- name
         return $ Variable { vname = n, vtype = t }
 
-data Function = 
+data Function =
      Function { fname :: Identifier
-	      , arguments :: [ Type ] 
-	      , result :: Type
-	      }
+              , arguments :: [ Type ]
+              , result :: Type
+              }
      deriving ( Eq, Ord, Typeable )
 
 supply :: [ Identifier ]
@@ -67,28 +72,28 @@ supply = do
 instance ToDoc Function where
     -- vorsicht: alte syntax ist im cache -- na und?
     toDoc f = hsep [ text "static"
-		   , toDoc ( result f )
-		   , toDoc ( fname f )
-		   , dutch_tuple $ do
-		         ( t, z ) <- zip ( arguments f ) supply
-		         return $ toDoc t <+> toDoc z
-		   ]
+                   , toDoc ( result f )
+                   , toDoc ( fname f )
+                   , dutch_tuple $ do
+                         ( t, z ) <- zip ( arguments f ) supply
+                         return $ toDoc t <+> toDoc z
+                   ]
 
 instance Reader Function where
     reader = do
         optional (my_reserved "static")
         r <- reader -- result type
-	n <- reader -- function name
+    n <- reader -- function name
         ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma  -- parameters
         return $ Function { fname = n
-			  , arguments = map vtype ps
-			  , result = r 
-			  }
+                          , arguments = map vtype ps
+                          , result = r 
+                          }
 
 data Signature =
      Signature { functions :: [ Function ]
-	       , variables :: [ Variable ]
-	       }
+               , variables :: [ Variable ]
+               }
   deriving ( Typeable )
 
 instance Size Signature where
@@ -108,34 +113,34 @@ instance Reader Signature where
         return $ sammel vfs
 
 sammel vfs = Signature
-	       { functions = do Right f <- vfs ; return f
-	       , variables = do Left  v <- vfs ; return v
-	       }
+           { functions = do Right f <- vfs ; return f
+           , variables = do Left  v <- vfs ; return v
+           }
 
 
 data TI = TI { target :: Type
-	     , signature :: Signature
-	     }
+             , signature :: Signature
+             }
     deriving  ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''TI])
 
 data Conf = Conf { max_arity :: Int
-		 , types :: [ Type ]
-		 , min_symbols :: Int
-		 , max_symbols :: Int
-		 , min_size :: Int
-		 , max_size :: Int
-		 }
+                 , types :: [ Type ]
+                 , min_symbols :: Int
+                 , max_symbols :: Int
+                 , min_size :: Int
+                 , max_size :: Int
+                 }
     deriving ( Typeable )
 
 conf :: Conf
 conf = Conf { max_arity = 3
-	    , types = read "[ int, boolean, char, String, Foo, Bar ]"
-	    , min_symbols = 4
-	    , max_symbols = 10
-	    , min_size = 5
-	    , max_size = 10
-	    }
+            , types = read "[ int, boolean, char, String, Foo, Bar ]"
+            , min_symbols = 4
+            , max_symbols = 10
+            , min_size = 5
+            , max_size = 10
+            }
 
 $(derives [makeReader, makeToDoc] [''Conf])
