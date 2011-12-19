@@ -30,7 +30,7 @@ infer sig exp = do
                          , toDoc vs
                          ]
         Node n args ->
-            case [ f | f <- functions sig, fname f == n ]
+            case [ f | f <- functions sig ++ builtins, fname f == n ]
             of  [   ] -> reject $ text "ist nicht deklarierte Funktion."
                 fs    ->
                   case [ f | f <- fs, length args == length (arguments f) ]
@@ -54,3 +54,5 @@ infer sig exp = do
     inform $ text "hat Typ:" <+> toDoc t
     return t
 
+builtins :: [Function]
+builtins = []
