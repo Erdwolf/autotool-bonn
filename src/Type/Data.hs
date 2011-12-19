@@ -26,6 +26,9 @@ data Type = Type Identifier
           | PointerTo Type
      deriving ( Eq, Ord, Typeable )
 
+isPointerType (PointerTo _) = True
+isPointerType _             = False
+
 instance Hash Type where hash (Type t) = hash t
 
 instance ToDoc Type where

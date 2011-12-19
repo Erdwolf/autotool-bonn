@@ -32,6 +32,12 @@ infer sig exp = do
         Node n [arg] | n == mkunary "&" -> do
             t <- nested 4 $ infer sig arg
             return $ PointerTo t
+        Node n [arg] | n == mkunary "*" -> do
+            t <- nested 4 $ infer sig arg
+            assert ( isPointerType t )
+                   $ text "Ist Pointer-Typ?"
+            let PointerTo t' = t
+            return t'
         Node n args ->
             case [ f | f <- functions sig ++ builtins, fname f == n ]
             of  [   ] -> reject $ text "ist nicht deklarierte Funktion."
