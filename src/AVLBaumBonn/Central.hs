@@ -165,16 +165,18 @@ instance Partial AVLBaum Config OpList where
     report _ (Config _fb (start, plan, end)) = do
        if isLeaf start
           then do
-            inform $ text "Auf einen leeren Baum"
+            inform $ vcat [ text "Auf einen leeren Baum sollen diese Operationen angewendet werden"
+                          , text "(wobei Sie Any durch MyInsert ersetzen sollen):"
+                          ]
           else do
             inform $ text "Auf den Baum:"
             peng start
-       inform $ vcat
-          [ text "sollen diese Operationen angewendet werden"
-              , text "(wobei Sie Any durch MyInsert ersetzen sollen):"
-              , nest 4 $ niceOps (map convertOp plan)
-              , text "so dass dieser Baum entsteht:"
-              ]
+            inform $ vcat [ text "sollen diese Operationen angewendet werden"
+                          , text "(wobei Sie Any durch MyInsert ersetzen sollen):"
+                          ]
+       inform $ vcat [ nest 4 $ niceOps (map convertOp plan)
+                     , text "so dass dieser Baum entsteht:"
+                     ]
        peng end
        inform $ text "Hinweis: Die zum Rebalancieren des Baumes nötigen <em>Rotationen</em> werden beim Einfügen automatisch durchgeführt. Sie müssen diese <em>nicht</em> mit angeben."
 
