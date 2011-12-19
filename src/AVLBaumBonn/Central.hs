@@ -181,18 +181,18 @@ instance Partial AVLBaum Config OpList where
         c <- steps start (map convertOp plan) ops
         if c == end
            then inform $ text "Ja."
-           else rejectTreeAlways c $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
+           else rejectTreeAlways c ops $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
 
       where
-        rejectTree :: Baum.AVL.Type.AVLTree Int -> [Op] -> Doc -> Reporter a
+        rejectTree :: Baum.AVL.Type.AVLTree Int -> [AVLOp] -> Doc -> Reporter a
         rejectTree b done reason = do
             case fb of
                 OnlyOnCompletion -> do
                     reject $ text "Nein." <+> "Liste mit Operationen nicht vollständig ausgefüllt."
                 Always -> do
-                    rejectTreeAlways b reason
+                    rejectTreeAlways b done reason
 
-        rejectTreeAlways b reason = do
+        rejectTreeAlways b done reason = do
             inform $ text $ "<b>Tatsächlicher Baum*  <->  Ziel-Baum</b>"
             inform $ text "(* nach" <+> toDoc done <+> text ")"
             peng b   -- Tatsächlicher Baum
