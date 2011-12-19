@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts #-}
-module Type.Quiz where
+module TypeCheckBonn.Quiz where
 
 --  $Id$
 

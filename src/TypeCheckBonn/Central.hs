@@ -1,8 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-}
 module TypeCheckBonn.Central where
 
---  $Id$
-
 import Type.Data
 import Type.Tree
 import Type.Infer
