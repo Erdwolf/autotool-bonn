@@ -39,8 +39,8 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
 
     initial p i = read "f(a,g(b))"
 
-    total p i b = do
-        inform $ vcat 
+    total p i (ExpBonn b) = do
+        inform $ vcat
 	       [ text "Die Baumstruktur dieses Ausdrucks ist"
 	       , nest 4 $ draw b
 	       ]
@@ -50,7 +50,7 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
                $ text "ist das der geforderte Typ?"
 
 instance C.Measure TypeCheckBonn TI ExpBonn where
-    measure p i b = fromIntegral $ size b
+    measure p i (ExpBonn b) = fromIntegral $ size b
 
 make :: Make
 make = direct TypeCheckBonn $
