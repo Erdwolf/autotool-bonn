@@ -163,7 +163,7 @@ instance Size OpList where
 
 instance Partial AVLBaum Config OpList where
     report _ (Config _fb (start, plan, end)) = do
-       if isEmpty start
+       if isLeaf start
           then do
             inform $ text "Auf einen leeren Baum"
           else do
