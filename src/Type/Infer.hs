@@ -29,6 +29,9 @@ infer sig exp = do
                          [ text "ist mehrfach deklarierte Variable:"
                          , toDoc vs
                          ]
+        Node n [arg] | n == mkunary "&" ->
+            t <- nested 4 $ infer sig arg
+            return $ PointerTo t
         Node n args ->
             case [ f | f <- functions sig ++ builtins, fname f == n ]
             of  [   ] -> reject $ text "ist nicht deklarierte Funktion."

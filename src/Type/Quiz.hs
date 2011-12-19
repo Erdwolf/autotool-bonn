@@ -50,14 +50,14 @@ extend :: NFTAC Int s
 extend au = do
     let tau = trim au
     if  not $ isEmptySet $ finals tau
-	then return tau
-	else do
+        then return tau
+        else do
             q <- eins $ lstates au
             a <- eins $ setToList $ alphabet au
             ps <- sequence $ replicate a $ eins $ lstates au
-	    extend $ au { trans = trans au `Relation.plus`
-			     Relation.make [ (q, (a, ps)) ]
-			}
+            extend $ au { trans = trans au `Relation.plus`
+                             Relation.make [ (q, (a, ps)) ]
+                        }
 
 roll :: Conf -> IO ( NFTA Int Type, TI )
 roll conf = do
@@ -65,25 +65,26 @@ roll conf = do
     fin <- eins ts -- final state
     au <- roller conf ( mkSet [ 0 .. max_arity conf ] ) (mkSet  ts) fin
     let fs = do c <- [ 'a' .. ] ; return $ mknullary [c]
-    let vfs = do 
+    let (fs,vs) = mconcat $ do
           (f, (p, (c, qs))) <- zip fs $ Relation.pairs $ trans au
           if null qs 
-	     then return $ Left  $ Variable { vname = f, vtype = p }
-	     else return $ Right $ Function { fname = f
-					    , arguments = qs
-					    , result = p
-					    }
+             then return $ ([],[Variable { vname = f, vtype = p }])
+             else return $ ([Function { fname = f
+                                      , arguments = qs
+                                      , result = p
+                                      , static = True
+                                      }],[])
     return ( au
-	   , TI { target = fin
-		, signature = sammel vfs
-		}
-	   )
+           , TI { target = fin
+                , signature = Signature fs vs
+                }
+           )
 
 instance Generator TypeCheck Conf ( NFTA Int Type, TI ) where
     generator p conf key = 
         roll conf `repeat_until` \ ( au, ti ) -> 
               min_symbols conf <= size (signature ti)
-	   && size (signature ti) <= max_symbols conf
+           && size (signature ti) <= max_symbols conf
            && let s = size $ head $ shortest au
               in  min_size conf <= s && s <= max_size conf 
 
