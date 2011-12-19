@@ -33,7 +33,7 @@ instance Reader IdentifierBonn where
     reader = reader >>= return . IdentifierBonn
 
 
-newtype ExpBonn = ExpBonn (Term IdentifierBonn Identifier) deriving ( Typeable )
+newtype ExpBonn = ExpBonn (Term Identifier IdentifierBonn) deriving ( Typeable )
 
 instance ToDoc ExpBonn where
     toDoc (ExpBonn e) = toDoc e
@@ -43,8 +43,8 @@ instance Reader ExpBonn where
         e <- T.treader $ T.Config { T.reserved_symbols = [ IdentifierBonn (mkunary "&")
                                                          , IdentifierBonn (mkunary "*")
                                                          ]
-				                  , T.allow_new_symbols = True
-				                  }
+                                                  , T.allow_new_symbols = True
+                                                  }
         return (ExpBonn e)
 
 
@@ -52,18 +52,18 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
 
     describe p i = vcat
         [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc (target i)
-	, text "unter Verwendung von"
-	, nest 4 $ toDoc (signature i)
-	]
+        , text "unter Verwendung von"
+        , nest 4 $ toDoc (signature i)
+        ]
 
     initial p i = read "f(a,g(b))"
 
     total p i (ExpBonn b) = do
         inform $ vcat
-	       [ text "Die Baumstruktur dieses Ausdrucks ist"
-	       , nest 4 $ draw b
-	       ]
-	peng b
+               [ text "Die Baumstruktur dieses Ausdrucks ist"
+               , nest 4 $ draw b
+               ]
+        peng b
         t <- infer (signature i) b
         assert ( t == target i )
                $ text "ist das der geforderte Typ?"
