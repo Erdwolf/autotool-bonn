@@ -2,8 +2,8 @@
 module TypeCheckBonn.Central where
 
 import Type.Data
-import Type.Tree 
-import Type.Infer hiding (Exp)
+import Type.Tree
+import Type.Infer
 
 import Autolib.Reporter.Type
 import Autolib.ToDoc
@@ -22,7 +22,13 @@ data TypeCheckBonn = TypeCheckBonn deriving ( Eq, Ord, Show, Read, Typeable )
 instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
-instance C.Partial TypeCheckBonn TI Exp where
+newtype ExpBonn = ExpBonn Type.Infer.Exp
+
+instance ToDoc  ExpBonn where toDoc (ExpBonn e) = toDoc e
+instance Reader ExpBonn where reader = reader >>= return . ExpBonn
+
+
+instance C.Partial TypeCheckBonn TI ExpBonn where
 
     describe p i = vcat
         [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc (target i)
@@ -42,7 +48,7 @@ instance C.Partial TypeCheckBonn TI Exp where
         assert ( t == target i )
                $ text "ist das der geforderte Typ?"
 
-instance C.Measure TypeCheckBonn TI Exp where
+instance C.Measure TypeCheckBonn TI ExpBonn where
     measure p i b = fromIntegral $ size b
 
 make :: Make
