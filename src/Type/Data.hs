@@ -67,8 +67,8 @@ supply = do
 
 instance ToDoc Function where
     -- vorsicht: alte syntax ist im cache -- na und?
-    toDoc (Static f) = text "static" <+> toDoc f
-    toDoc f = hsep [ toDoc ( result f )
+    toDoc f = (if static f then text "static" else text "") <>
+              hsep [ toDoc ( result f )
                    , toDoc ( fname f )
                    , dutch_tuple $ do
                          ( t, z ) <- zip ( arguments f ) supply
