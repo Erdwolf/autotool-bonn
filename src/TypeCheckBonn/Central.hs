@@ -40,8 +40,8 @@ instance ToDoc ExpBonn where
 
 instance Reader ExpBonn where
     reader = do
-        e <- T.treader $ T.Config { T.reserved_symbols = [ mkunary "&"
-                                                         , mkunary "*"
+        e <- T.treader $ T.Config { T.reserved_symbols = [ IdentifierBonn (mkunary "&")
+                                                         , IdentifierBonn (mkunary "*")
                                                          ]
 				                  , T.allow_new_symbols = True
 				                  }
