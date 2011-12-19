@@ -135,7 +135,6 @@ make_fixed = direct AVLBaum $ (error "no direct configuration possible" :: Confi
 data AVLOp = Insert Int
            | MyInsert Int
            | Any
-        deriving (Eq)
 
 convertOp :: Baum.Such.Op.Op Int -> AVLOp
 convertOp (Baum.Such.Op.Insert x) = Insert x
@@ -224,10 +223,10 @@ instance Partial AVLBaum Config OpList where
             conforms _ Any = do
                 rejectTree b $ text "Sie sollen Any durch eine Operation ersetzen."
             conforms Any _ = return ()
-            conforms x@(Insert x) y@(Insert y)   | x == y = return ()
-            conforms x@(Insert x) y@(MyInsert y) | x == y = return ()
-            conforms x@(Insert _) _ = do
-                rejectTree b $ text "Die Operation" <+> toDoc x <+> text "soll nicht geändert werden." 
+            conforms (Insert x) (Insert y)   | x == y = return ()
+            conforms (Insert x) (MyInsert y) | x == y = return ()
+            conforms op@(Insert _) _ = do
+                rejectTree b $ text "Die Operation" <+> toDoc op <+> text "soll nicht geändert werden." 
 
 niceOps [] = text "[]"
 niceOps (x:xs) = vcat [ text "[" <+> toDoc x
