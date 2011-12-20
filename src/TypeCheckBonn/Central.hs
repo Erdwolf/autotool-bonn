@@ -31,6 +31,8 @@ instance OrderScore TypeCheckBonn where
 newtype IdentifierBonn = IdentifierBonn { unBonn :: Identifier }
     deriving ( Typeable, Eq, Ord )
 
+instance Show IdentifierBonn where
+    show = show . unBonn
 instance ToDoc IdentifierBonn where
     toDoc = toDoc . unBonn
 instance Reader IdentifierBonn where
