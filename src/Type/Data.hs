@@ -64,10 +64,6 @@ data Function a =
               }
      deriving ( Eq, Ord, Typeable )
 
-supply :: [ Identifier ]
-supply = do
-    v <- "xyzpqrst" ++ error "too many parameters in function"
-    return $ mknullary [v]
 
 instance ToDoc a => ToDoc (Function a) where
     -- vorsicht: alte syntax ist im cache -- na und?
@@ -75,6 +71,9 @@ instance ToDoc a => ToDoc (Function a) where
               toDoc ( result f ) <+> toDoc ( fname f ) <> parameterList
         where parameterList =
                  parens $ hsep $ punctuate (text ",") [ toDoc t <+> toDoc z | ( t, z ) <- zip ( arguments f ) supply ]
+
+              supply :: [ Identifier ]
+              supply = [ mknullary [v] | v <- "xyzpqrst" ++ error "too many parameters in function" ]
 
 
 instance Reader a => Reader (Function a) where
