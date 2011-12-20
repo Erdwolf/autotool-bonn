@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses, ScopedTypeVariables #-} 
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-} 
 
 module Type.Data where
 
@@ -42,22 +42,22 @@ instance Reader Type where
                return PointerTo
         return $ p $ Type t
 
-data Variable a =
-     Variable { vname :: a
+data Variable =
+     Variable { vname :: Identifier
               , vtype :: Type
               }
      deriving ( Eq, Ord, Typeable )
 
-instance ToDoc a => ToDoc (Variable a) where
+instance ToDoc Variable where
     toDoc v = toDoc (vtype v) <+> toDoc (vname v)
-instance Reader a => Reader (Variable a) where
+instance Reader Variable where
     reader = do
         t <- reader -- type
         n <- reader -- name
         return $ Variable { vname = n, vtype = t }
 
-data Function a =
-     Function { fname :: a
+data Function =
+     Function { fname :: Identifier
               , arguments :: [ Type ]
               , result :: Type
               , static :: Bool
@@ -65,7 +65,7 @@ data Function a =
      deriving ( Eq, Ord, Typeable )
 
 
-instance ToDoc a => ToDoc (Function a) where
+instance ToDoc Function where
     -- vorsicht: alte syntax ist im cache -- na und?
     toDoc f = (if static f then text "static " else text "") <>
               toDoc ( result f ) <+> toDoc ( fname f ) <> parameterList
@@ -76,37 +76,37 @@ instance ToDoc a => ToDoc (Function a) where
               supply = [ mknullary [v] | v <- "xyzpqrst" ++ error "too many parameters in function" ]
 
 
-instance Reader a => Reader (Function a) where
+instance Reader Function where
     reader = do
         s <- option False $ do
                my_reserved "static"
                return True
         r <- reader -- result type
         n <- reader -- function name
-        ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma :: Parser [Variable a]  -- parameters
+        ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma -- parameters
         return $ Function { fname = n
                           , arguments = map vtype ps
                           , result = r
                           , static = s
                           }
 
-data Signature a =
-     Signature { functions :: [ Function a ]
-               , variables :: [ Variable a ]
+data Signature =
+     Signature { functions :: [ Function ]
+               , variables :: [ Variable ]
                }
   deriving ( Typeable )
 
-instance Size (Signature a) where
+instance Size Signature where
      size s = length (functions s) + length (variables s)
 
-instance ToDoc a => ToDoc (Signature a) where
+instance ToDoc Signature where
     toDoc sig = vcat 
        $  do v <- variables sig ; return $ toDoc v <> semi
        ++ do f <- functions sig ; return $ toDoc f <> semi
 
-instance Reader a => Reader (Signature a) where
+instance Reader Signature where
     reader = do
-        let vf =  
+        let vf =
                  do f <- try reader ; return ([f],[]) -- function
              <|> do v <-     reader ; return ([],[v]) -- variable
         vfs <- many $ do x <- vf ; my_semi ; return x
@@ -117,9 +117,9 @@ instance Reader a => Reader (Signature a) where
            }
 
 
-data TI a = TI { target :: Type
-               , signature :: Signature a
-               }
+data TI = TI { target :: Type
+             , signature :: Signature
+             }
     deriving  ( Typeable )
 
 $(derives [makeReader, makeToDoc] [''TI])
