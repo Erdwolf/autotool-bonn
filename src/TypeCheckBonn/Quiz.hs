@@ -19,7 +19,7 @@ bonnify (TI t (Signature fs vs)) = TI t (Signature (map g $ map discharge fs) (m
   where
     discharge f = f { static = False }
     g f = f { fname = IdentifierBonn (fname f) }
-    h v = v { vname = IdentifierBonn (fname f) }
+    h v = v { vname = IdentifierBonn (vname g) }
 
 
 instance Generator TypeCheckBonn Conf InstanceConf where
