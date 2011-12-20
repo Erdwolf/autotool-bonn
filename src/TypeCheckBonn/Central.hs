@@ -36,6 +36,8 @@ instance ToDoc IdentifierBonn where
 instance Reader IdentifierBonn where
     reader = reader >>= return . IdentifierBonn
 
+instance Hash IdentifierBonn where
+    hash = hash . unBonn
 instance Size IdentifierBonn where
     size = size . unBonn
 instance Symbol IdentifierBonn where
