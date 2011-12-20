@@ -23,7 +23,7 @@ instance Generator TypeCheckBonn Conf InstanceConf where
         generator TypeCheck conf key
 
 
-instance Project TypeCheckBonn InstanceConf TI where
+instance Project TypeCheckBonn InstanceConf (TI IdentifierBonn) where
     project p = bonnify . project TypeCheck
 
 make :: Make
