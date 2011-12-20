@@ -15,7 +15,7 @@ import Inter.Types
 bonnify :: TI a -> TI a
 bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)
   where
-    discharge f = f { static = False }
+    discharge f = f { static = False, fname = IdentifierBonn (fname f) }
 
 
 instance Generator TypeCheckBonn Conf InstanceConf where
