@@ -4,12 +4,12 @@ module TypeCheckBonn.Central where
 import Type.Data
 import Type.Tree
 import Type.Infer
-import Tree.Class
 
 import Autolib.Reporter.Type
 import Autolib.Reader
 import Autolib.ToDoc
 import Autolib.Size
+import Autolib.Hash
 
 import Autolib.TES.Term
 import Autolib.TES.Position
