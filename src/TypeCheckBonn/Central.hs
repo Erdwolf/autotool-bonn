@@ -26,49 +26,16 @@ instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
 
-type IdentifierBonn = Identifier
-identifierBonn = id
-
-{-
-newtype IdentifierBonn = IdentifierBonn { unBonn :: Identifier }
-    deriving ( Typeable, Eq, Ord )
-
-instance Show IdentifierBonn where
-    show = show . unBonn
-instance ToDoc IdentifierBonn where
-    toDoc = toDoc . unBonn
-instance Reader IdentifierBonn where
-    reader = reader >>= return . IdentifierBonn
-
-instance Hash IdentifierBonn where
-    hash = hash . unBonn
-instance Size IdentifierBonn where
-    size = size . unBonn
-instance Symbol IdentifierBonn where
-    arity = arity . unBonn
-    set_arity a = IdentifierBonn . set_arity a . unBonn
-    pool = map IdentifierBonn pool
-    stringify = stringify . map unBonn
-
-    precedence (IdentifierBonn i) | show i `elem` ["&","*"] = Just 3
-    precedence _ = Nothing
--}
-
-
-newtype ExpBonn = ExpBonn (Term IdentifierBonn IdentifierBonn) deriving ( Typeable )
+newtype ExpBonn = ExpBonn Exp deriving ( Typeable )
 
 instance ToDoc ExpBonn where
     toDoc (ExpBonn e) = toDoc e
 
 instance Reader ExpBonn where
-    reader = do
-        e <- T.treader $ T.Config { T.reserved_symbols = [ ]
-                                  , T.allow_new_symbols = True
-                                  }
-        return (ExpBonn e)
+    reader = reader >>= return . ExpBonn
 
 
-instance C.Partial TypeCheckBonn (TI IdentifierBonn) ExpBonn where
+instance C.Partial TypeCheckBonn TI ExpBonn where
 
     describe p i = vcat
         [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc (target i)
@@ -86,12 +53,12 @@ instance C.Partial TypeCheckBonn (TI IdentifierBonn) ExpBonn where
         assert ( t == target i )
                $ text "ist das der geforderte Typ?"
 
-instance C.Measure TypeCheckBonn (TI IdentifierBonn) ExpBonn where
+instance C.Measure TypeCheckBonn TI ExpBonn where
     measure p i (ExpBonn b) = fromIntegral $ size b
 
 make :: Make
 make = direct TypeCheckBonn $
     TI { target = read "boolean"
-       , signature = read "int a; boolean eq (int a, int b);" :: Signature IdentifierBonn
+       , signature = read "int a; boolean eq (int a, int b);"
        }
 

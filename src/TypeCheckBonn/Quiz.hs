@@ -14,12 +14,10 @@ import Inter.Types
 import Autolib.TES.Identifier
 
 
-bonnify :: TI Identifier -> TI IdentifierBonn
-bonnify (TI t (Signature fs vs)) = TI t (Signature (map g $ map discharge fs) (map h vs))
+bonnify :: TI -> TI
+bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)
   where
     discharge f = f { static = False }
-    g f = f { fname = identifierBonn (fname f) }
-    h v = v { vname = identifierBonn (vname v) }
 
 
 instance Generator TypeCheckBonn Conf InstanceConf where
@@ -27,7 +25,7 @@ instance Generator TypeCheckBonn Conf InstanceConf where
         generator TypeCheck conf key
 
 
-instance Project TypeCheckBonn InstanceConf (TI IdentifierBonn) where
+instance Project TypeCheckBonn InstanceConf TI where
     project p = bonnify . project TypeCheck
 
 make :: Make
