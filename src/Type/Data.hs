@@ -74,7 +74,7 @@ instance ToDoc a => ToDoc (Function a) where
     toDoc f = (if static f then text "static " else text "") <>
               toDoc ( result f ) <+> toDoc ( fname f ) <> parameterList
         where parameterList =
-                 parens $ punctuate (text ",") [ toDoc t <+> toDoc z | ( t, z ) <- zip ( arguments f ) supply ]
+                 parens $ hsep $ punctuate (text ",") [ toDoc t <+> toDoc z | ( t, z ) <- zip ( arguments f ) supply ]
 
 
 instance Reader a => Reader (Function a) where
