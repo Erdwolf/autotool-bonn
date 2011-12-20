@@ -72,12 +72,10 @@ supply = do
 instance ToDoc a => ToDoc (Function a) where
     -- vorsicht: alte syntax ist im cache -- na und?
     toDoc f = (if static f then text "static " else text "") <>
-              hcat [ toDoc ( result f )
-                   , toDoc ( fname f )
-                   , dutch_tuple $ do
-                         ( t, z ) <- zip ( arguments f ) supply
-                         return $ toDoc t <+> toDoc z
-                   ]
+              toDoc ( result f ) <+> toDoc ( fname f ) <> parameterList
+        where parameterList =
+                 parens $ punctuate (text ",") [ toDoc t <+> toDoc z | ( t, z ) <- zip ( arguments f ) supply ]
+
 
 instance Reader a => Reader (Function a) where
     reader = do
