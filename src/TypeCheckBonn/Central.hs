@@ -59,7 +59,8 @@ instance C.Partial TypeCheckBonn (TI IdentifierBonn) ExpBonn where
 
     describe p i = vcat
         [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc (target i)
-        , text "unter Verwendung von"
+        , text "unter Verwendung von:"
+        , text ""
         , nest 4 $ toDoc (signature i)
         ]
 

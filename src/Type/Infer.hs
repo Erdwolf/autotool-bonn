@@ -17,16 +17,16 @@ type Exp = Term Identifier Identifier
 
 infer :: Symbol a => Signature a -> Term Identifier a -> Reporter Type
 infer sig exp = do
-    inform $ text "berechne Typ für Ausdruck:" <+> toDoc exp
+    inform $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
     t <- nested 4 $ case exp of
         Node n [] ->
             case [ v | v <- variables sig, show v == show n ]
             of  [ v ] -> do
-                    inform $ text "ist Variable mit Deklaration:" <+> toDoc v
+                    inform $ text "Ist Variable mit Deklaration:" <+> toDoc v
                     return $ vtype v
-                [   ] -> reject $ text "ist nicht deklarierte Variable."
+                [   ] -> reject $ text "Ist nicht deklarierte Variable."
                 vs -> reject $ vcat
-                         [ text "ist mehrfach deklarierte Variable:"
+                         [ text "Ist mehrfach deklarierte Variable:"
                          , toDoc vs
                          ]
         Node n [arg] | show n == "&" -> do
@@ -42,10 +42,10 @@ infer sig exp = do
             return t'
         Node n args ->
             case [ f | f <- functions sig, fname f == n ]
-            of  [   ] -> reject $ text "ist nicht deklarierte Funktion."
+            of  [   ] -> reject $ text "Ist nicht deklarierte Funktion."
                 fs    ->
                   case [ f | f <- fs, length args == length (arguments f) ]
-                  of  [   ] -> reject $ vcat [ text "hat keine Deklaration mit der richtigen Anzahl an Argumenten:"
+                  of  [   ] -> reject $ vcat [ text "Hat keine Deklaration mit der richtigen Anzahl an Argumenten:"
                                              , toDoc fs
                                              ]
                       [ f ] -> do
@@ -53,16 +53,16 @@ infer sig exp = do
                           sequence_ $ do
                               ( k, arg ) <- zip [1..] args
                               return $ do
-                                  inform $ text "prüfe Argument Nr." <+> toDoc k
+                                  inform $ text "Prüfe Argument Nr." <+> toDoc k
                                   t <- nested 4 $ infer sig arg
                                   assert ( t == arguments f !! (k-1) )
                                          $ text "Argument-Typ stimmt mit Deklaration überein?"
                           return $ result f
                       fs    -> reject $ vcat
-                               [ text "ist mehrfach deklarierte Funktion:"
+                               [ text "Ist mehrfach deklarierte Funktion:"
                                , toDoc fs
                                ]
-    inform $ text "hat Typ:" <+> toDoc t
+    inform $ text "Hat Typ:" <+> toDoc t
     return t
 
 --isVariable :: Exp -> Bool
