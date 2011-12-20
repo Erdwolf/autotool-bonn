@@ -146,8 +146,8 @@ newtype OpList = OpList [AVLOp] deriving (Typeable)
 $(derives [makeReader] [''AVLOp])
 
 instance ToDoc AVLOp where
-    toDoc (Insert a)   = text "Insert" <+> toDoc a
-    toDoc (MyInsert a) = text "MyInsert" <+> toDoc a
+    toDoc (Insert a)   = text "Insert(" <> toDoc a <> text ")"
+    toDoc (MyInsert a) = text "MyInsert(" <> toDoc a <> text ")"
     toDoc Any          = text "Any"
 
 instance Reader OpList where
@@ -166,7 +166,7 @@ instance Partial AVLBaum Config OpList where
        if isLeaf start
           then do
             inform $ vcat [ text "Auf einen leeren Baum sollen diese Operationen angewendet werden"
-                          , text "(wobei Sie Any durch MyInsert ersetzen sollen):"
+                          , text "(wobei Sie jedes Any durch ein MyInsert mit dem einzufügenden Knotenschlüssel als Argument ersetzen sollen):"
                           ]
           else do
             inform $ text "Auf den Baum:"
@@ -194,7 +194,7 @@ instance Partial AVLBaum Config OpList where
         rejectTree b ops reason = do
             case fb of
                 OnlyOnCompletion -> do
-                    reject $ text "Nein. Liste mit Operationen nicht vollständig ausgefüllt."
+                    reject reason
                 Always -> do
                     rejectTreeAlways b ops reason
 
