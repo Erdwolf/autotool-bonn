@@ -38,13 +38,11 @@ instance Reader IdentifierBonn where
 
 instance Size IdentifierBonn where
     size = size . unBonn
-instance ToTree IdentifierBonn where
-    toTree = toTree . unBonn
 instance Symbol IdentifierBonn where
     arity = arity . unBonn
     set_arity a = IdentifierBonn . set_arity a . unBonn
     pool = map IdentifierBonn pool
-    stringify = stringify . unBonn
+    stringify = stringify . map unBonn
 
 
 
