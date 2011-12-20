@@ -15,7 +15,7 @@ import Control.Monad ( guard )
 
 type Exp = Term Identifier Identifier
 
-infer :: Symbol a => Signature a -> Term Identifier a -> Reporter Type
+infer :: Symbol a => Signature a -> Term a a -> Reporter Type
 infer sig exp = do
     inform $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
     t <- nested 4 $ case exp of
