@@ -83,7 +83,7 @@ instance Reader a => Reader (Function a) where
                return True
         r <- reader -- result type
         n <- reader -- function name
-        ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma :: Reader (Variable a)  -- parameters
+        ps <- my_parens $ reader `Autolib.Reader.sepBy` my_comma :: (Variable a)  -- parameters
         return $ Function { fname = n
                           , arguments = map vtype ps
                           , result = r
