@@ -20,7 +20,7 @@ infer sig exp = do
     inform $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
     t <- nested 4 $ case exp of
         Node n [] ->
-            case [ v | v <- variables sig, show v == show n ]
+            case [ v | v <- variables sig, v == n ]
             of  [ v ] -> do
                     inform $ text "Ist Variable mit Deklaration:" <+> toDoc v
                     return $ vtype v
