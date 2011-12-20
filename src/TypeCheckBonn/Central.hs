@@ -46,6 +46,9 @@ instance Symbol IdentifierBonn where
     pool = map IdentifierBonn pool
     stringify = stringify . map unBonn
 
+    precedence (IdentifierBonn i) | show i `elem` ["&","*"] = Just 3
+    precedence _ = Nothing
+
 
 
 newtype ExpBonn = ExpBonn (Term Identifier IdentifierBonn) deriving ( Typeable )
