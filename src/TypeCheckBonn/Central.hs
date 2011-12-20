@@ -25,6 +25,8 @@ instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
 
+type IdentifierBonn = Identifier
+{-
 newtype IdentifierBonn = IdentifierBonn Identifier deriving ( Typeable, Eq, Ord )
 
 instance ToDoc IdentifierBonn where
@@ -35,6 +37,7 @@ instance Reader IdentifierBonn where
 instance Size   IdentifierBonn where
 instance ToTree IdentifierBonn where
 instance Symbol IdentifierBonn where
+-}
 
 
 newtype ExpBonn = ExpBonn (Term Identifier IdentifierBonn) deriving ( Typeable )
