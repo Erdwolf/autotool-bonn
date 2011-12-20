@@ -78,10 +78,7 @@ instance C.Partial TypeCheckBonn (TI IdentifierBonn) ExpBonn where
     initial p i = read "f(a,g(b))"
 
     total p i (ExpBonn b) = do
-        inform $ vcat
-               [ text "Die Baumstruktur dieses Ausdrucks ist"
-               , nest 4 $ draw b
-               ]
+        inform $ text "Die Baumstruktur dieses Ausdrucks ist:"
         peng b
         t <- infer (signature i) b
         assert ( t == target i )
