@@ -26,8 +26,10 @@ instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
 
---type IdentifierBonn = Identifier
+type IdentifierBonn = Identifier
+identifierBonn = id
 
+{-
 newtype IdentifierBonn = IdentifierBonn { unBonn :: Identifier }
     deriving ( Typeable, Eq, Ord )
 
@@ -50,7 +52,7 @@ instance Symbol IdentifierBonn where
 
     precedence (IdentifierBonn i) | show i `elem` ["&","*"] = Just 3
     precedence _ = Nothing
-
+-}
 
 
 newtype ExpBonn = ExpBonn (Term IdentifierBonn IdentifierBonn) deriving ( Typeable )
