@@ -12,7 +12,7 @@ import Inter.Quiz
 import Inter.Types
 
 
-bonnify :: TI a -> TI a
+bonnify :: TI Identifier -> TI IdentifierBonn
 bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)
   where
     discharge f = f { static = False, fname = IdentifierBonn (fname f) }
