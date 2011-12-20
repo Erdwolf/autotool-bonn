@@ -32,6 +32,7 @@ instance ToDoc IdentifierBonn where
 instance Reader IdentifierBonn where
     reader = reader >>= return . IdentifierBonn
 
+instance Symbol IdentifierBonn where
 
 
 newtype ExpBonn = ExpBonn (Term Identifier IdentifierBonn) deriving ( Typeable )
