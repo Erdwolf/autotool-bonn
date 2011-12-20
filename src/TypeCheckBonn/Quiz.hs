@@ -15,9 +15,11 @@ import Autolib.TES.Identifier
 
 
 bonnify :: TI Identifier -> TI IdentifierBonn
-bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)
+bonnify (TI t (Signature fs vs)) = TI t (Signature (map g $ map discharge fs) (map h vs))
   where
-    discharge f = f { static = False, fname = IdentifierBonn (fname f) }
+    discharge f = f { static = False }
+    g f = f { fname = IdentifierBonn (fname f) }
+    h v = v { vname = IdentifierBonn (fname f) }
 
 
 instance Generator TypeCheckBonn Conf InstanceConf where
