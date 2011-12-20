@@ -53,7 +53,7 @@ instance Symbol IdentifierBonn where
 
 
 
-newtype ExpBonn = ExpBonn (Term Identifier IdentifierBonn) deriving ( Typeable )
+newtype ExpBonn = ExpBonn (Term IdentifierBonn IdentifierBonn) deriving ( Typeable )
 
 instance ToDoc ExpBonn where
     toDoc (ExpBonn e) = toDoc e
