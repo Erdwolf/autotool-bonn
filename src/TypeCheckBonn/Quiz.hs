@@ -11,6 +11,8 @@ import Type.Check
 import Inter.Quiz
 import Inter.Types
 
+import Autolib.TES.Identifier
+
 
 bonnify :: TI Identifier -> TI IdentifierBonn
 bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)

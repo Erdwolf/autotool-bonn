@@ -28,16 +28,23 @@ instance OrderScore TypeCheckBonn where
 
 --type IdentifierBonn = Identifier
 
-newtype IdentifierBonn = IdentifierBonn Identifier deriving ( Typeable, Eq, Ord )
+newtype IdentifierBonn = IdentifierBonn { unBonn :: Identifier }
+    deriving ( Typeable, Eq, Ord )
 
 instance ToDoc IdentifierBonn where
-    toDoc (IdentifierBonn i) = toDoc i
+    toDoc = toDoc . unBonn
 instance Reader IdentifierBonn where
     reader = reader >>= return . IdentifierBonn
 
-instance Size   IdentifierBonn where
+instance Size IdentifierBonn where
+    size = size . unBonn
 instance ToTree IdentifierBonn where
+    toTree = toTree . unBonn
 instance Symbol IdentifierBonn where
+    arity = arity . unBonn
+    set_arity a = IdentifierBonn . set_arity a . unBonn
+    pool = map IdentifierBonn pool
+    stringify = stringify . unBonn
 
 
 
