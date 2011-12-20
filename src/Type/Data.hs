@@ -42,15 +42,15 @@ instance Reader Type where
                return PointerTo
         return $ p $ Type t
 
-data Variable =
-     Variable { vname :: Identifier
+data Variable a =
+     Variable { vname :: a
               , vtype :: Type
               }
      deriving ( Eq, Ord, Typeable )
 
-instance ToDoc Variable where
+instance ToDoc a => ToDoc (Variable a) where
     toDoc v = toDoc (vtype v) <+> toDoc (vname v)
-instance Reader Variable where
+instance Reader a => Reader (Variable a) where
     reader = do
         t <- reader -- type
         n <- reader -- name
@@ -92,7 +92,7 @@ instance Reader a => Reader (Function a) where
 
 data Signature a =
      Signature { functions :: [ Function a ]
-               , variables :: [ Variable ]
+               , variables :: [ Variable a ]
                }
   deriving ( Typeable )
 
