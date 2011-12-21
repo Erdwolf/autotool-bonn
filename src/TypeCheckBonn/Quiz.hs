@@ -33,7 +33,7 @@ instance Project TypeCheckBonn Config Config where
 make :: Make
 make = quiz TypeCheckBonn $
          QuizConfig
-              { quizFeedback = ???
+              { quizFeedback = Detailed
               , max_arity = 3
               , types = [ "int", "double", "char", "Baum", "Person" ]
               , minDeclss = 4
