@@ -13,24 +13,29 @@ import Control.Monad.Writer
 
 type Exp = Term Identifier Identifier
 
+reject, inform :: Doc -> Writer [Doc] (Maybe Type)
+
+inform :: Doc -> Writer [Doc] (Maybe ())
+inform x = tell [x] >> return (Just ())
+reject x = inform x >> return Nothing
+
+
 infer :: Signature -> Exp -> Writer [Doc] (Maybe Type)
 infer sig exp = do
-    tell $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
+    inform $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
     t <- censor (return . nest 4 . vcat) $ case exp of
         Node n [] ->
             case [ v | v <- variables sig, vname v == n ]
             of  [ v ] -> do
-                    tell $ text "Variable" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc v
+                    inform $ text "Variable" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc v
                     return $ vtype v
                 [   ] -> do
-                   tell $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
-                   mzero
+                   reject $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
                 vs -> do
-                   tell $ vcat
+                   reject $ vcat
                       [ text "Variable" <+> toDoc n <+> text "ist mehrfach deklariert:"
                       , toDoc vs
                       ]
-                   mzero
         Node n args ->
             case [ f | f <- functions sig, fname f == n ]
             of  [   ] -> reject $ text "Funktion" <+> toDoc n <+> text "ist nicht deklariert."
@@ -40,21 +45,19 @@ infer sig exp = do
                                              , toDoc fs
                                              ]
                       [ f ] -> do
-                          tell $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
+                          inform $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
                           zip [1..] args `forM_` \( k, arg ) -> do
                               let paramType = arguments f !! (k-1)
-                              tell $ text "Prüfe Argument Nr." <+> toDoc k
+                              inform $ text "Prüfe Argument Nr." <+> toDoc k
                               t <- censor (return . nest 4 . vcat) $ infer sig arg
                               assert ( t == paramType )
                                       $ text "Argument-Typ stimmt mit Deklaration überein?"
-                              mzero
                           return $ result f
-                      fs    -> tell $ vcat
+                      fs    -> reject $ vcat
                                [ text "Funktion" <+> toDoc n <+> text "ist mehrfach deklariert:"
                                , toDoc fs
                                ]
-                               mzero
-    tell $ text "Ausdruck" <+> toDoc exp <+> text "hat Typ:" <+> toDoc t
+    inform $ text "Ausdruck" <+> toDoc exp <+> text "hat Typ:" <+> toDoc t
     return t
 
 isVariable :: Exp -> Bool
