@@ -16,10 +16,10 @@ type Exp = Term Identifier Identifier
 type M a = WriterT [Doc] Maybe a
 
 inform :: Doc -> M ()
-inform x = tell [x] >> return (Just ())
+inform x = tell [x] >> return ()
 
 reject :: Doc -> M a
-reject x = inform x >> return Nothing
+reject x = inform x >> mzero
 
 assert :: Bool -> Doc -> M ()
 assert b x = do
