@@ -21,7 +21,7 @@ import Inter.Types
 import qualified Challenger as C
 
 import Control.Monad.Writer
-import Control.Monad.Either
+import Control.Monad.Error
 
 data TypeCheckBonn = TypeCheckBonn deriving ( Eq, Ord, Show, Read, Typeable )
 
