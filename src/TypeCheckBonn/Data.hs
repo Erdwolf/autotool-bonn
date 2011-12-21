@@ -10,15 +10,15 @@ import Data.Typeable
 import Type.Data (Signature, Type)
 
 
-data Feedback = A
-              | B
+data Feedback = Detailed
+              | YesNo
               | None
    deriving ( Eq, Ord, Typeable)
 
 data QuizConfig = QuizConfig
  { quizFeedback :: Feedback  -- ^ Type of feedback
  , maxArity :: Int           -- ^ Maximum arity
- , types = [String]          -- ^ Available type names
+ , types = [Type]          -- ^ Available type names
  , minDecls :: Int           -- ^ Minimum number of declarations
  , maxDecls :: Int           -- ^ Maximum number of declarations
  , minSize :: Int            -- ^ Minimum size of solution

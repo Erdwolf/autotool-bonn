@@ -20,14 +20,7 @@ bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)
     discharge f = f { static = False }
 
 
-instance Generator TypeCheckBonn Conf InstanceConf where
-    generator p conf key = do
-        generator TypeCheck conf key
 
-instance Project TypeCheckBonn InstanceConf TI where
-    project p = bonnify . project TypeCheck
-
-{-
 instance Generator TypeCheckBonn QuizConfig Config where
     generator p (QuizConfig fb a ts a b m n _) key = do
         TI t s <- generator TypeCheck (Conf a (map read ts) a b m n) key
@@ -35,19 +28,10 @@ instance Generator TypeCheckBonn QuizConfig Config where
 
 instance Project TypeCheckBonn Config Config where
     project p = id
--}
 
 
 make :: Make
 make = quiz TypeCheckBonn $
-         Conf { max_arity = 3
-              , types = read "[ int, double, char, Baum, Person ]"
-              , min_symbols = 4
-              , max_symbols = 10
-              , min_size = 5
-              , max_size = 10
-              }
-{-
          QuizConfig
               { quizFeedback = ???
               , max_arity = 3

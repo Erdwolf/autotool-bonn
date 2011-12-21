@@ -4,7 +4,7 @@ module TypeCheckBonn.Central where
 import Type.Data
 import Type.Tree
 import TypeCheckBonn.Infer
--- import TypeCheckBonn.Data (Config(..))
+import TypeCheckBonn.Data (Config(..), Feedback(..))
 
 import Autolib.Reporter.Type
 import Autolib.Reader
@@ -30,8 +30,6 @@ instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
 
-type Config = TI
-
 
 instance C.Partial TypeCheckBonn Config Exp where
 
@@ -45,19 +43,21 @@ instance C.Partial TypeCheckBonn Config Exp where
 
     initial p i = read "f(a,g(b))"
 
-    total p i b = do
-        let (e_t,output) = runWriter $ runErrorT $ infer (signature i) b
-        case e_t of
-            Right t | t == target i -> do
+    total p (Config fb goal decls) b = do
+        let (e_t,output) = runWriter $ runErrorT $ infer decls b
+        case (fb, e_t) of
+            (_, Right t) | t == target i -> do
                 inform $ text "Ja."
-            Right t -> do
-                inform $ text "Nein. Der eingebene Ausdruck hat Typ" <+> toDoc t <> text "gefordert war aber" <+> toDoc (target i) <> text "."
+            (YesNo, _) -> do
+                reject $ text "Nein."
+            (Detailed, Right t) -> do
+                inform $ text "Nein. Der eingebene Ausdruck hat Typ" <+> toDoc t <> text "gefordert war aber" <+> toDoc goal <> text "."
                 inform $ text ""
                 inform $ text "Der Ausdruck hat die Struktur"
                 peng b
                 inform $ text "und der Typcheck liefert folgende Aussage:"
                 inform $ vcat output
-            Left () -> do
+            (Detailed, Left ()) -> do
                 inform $ text "Nein."
                 inform $ text ""
                 inform $ text "Der Ausdruck hat die Struktur"
@@ -70,13 +70,8 @@ instance C.Measure TypeCheckBonn Config Exp where
 
 make :: Make
 make = direct TypeCheckBonn $
-    TI { target = read "boolean"
-       , signature = read "int a; boolean eq (int a, int b);"
-       }
-{-
-    Config { feedback = ???
+    Config { feedback = Detailed
            , targetType = read "boolean"
            , declarations = read "int a; boolean eq (int a, int b);"
            }
--}
 
