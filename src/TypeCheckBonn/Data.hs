@@ -25,14 +25,14 @@ data QuizConfig = QuizConfig
  , maxSize :: Int            -- ^ Maximum size of solution
  , seed :: Int               -- ^ Dummy value
  }
-   deriving ( Eq, Ord, Typeable)
+   deriving ( Typeable)
 
 data Config = Config
  { feedback :: Feedback
  , targetType :: Type
  , declarations :: Signature
  }
-   deriving ( Eq, Ord, Typeable)
+   deriving ( Typeable)
 
 $(derives [makeReader, makeToDoc] [''Feedback,''QuizConfig,''Config])
 
