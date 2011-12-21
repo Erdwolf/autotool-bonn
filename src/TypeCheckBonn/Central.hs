@@ -51,7 +51,11 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
         inform $ text "Der Ausdruck hat die Struktur"
         peng b
         inform $ text "und der Typcheck liefert folgende Aussage:"
-        infer (signature i) (target i) b
+        let (t,output) = runWriter $ infer (signature i) b
+        if (t == target i)
+           then inform $ text "Ja."
+           else mapM_ inform output
+                reject $ text "Nein."
 
 instance C.Measure TypeCheckBonn TI ExpBonn where
     measure p i (ExpBonn b) = fromIntegral $ size b
