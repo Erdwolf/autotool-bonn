@@ -26,7 +26,7 @@ infer sig exp = do
                     return $ vtype v
                 [   ] -> reject $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
                 vs -> reject $ vcat
-                         [ text "Variable" <+> toDoc n <+> "ist mehrfach deklariert:"
+                         [ text "Variable" <+> toDoc n <+> text "ist mehrfach deklariert:"
                          , toDoc vs
                          ]
         Node n [arg] | show n == "&" -> do
@@ -42,14 +42,14 @@ infer sig exp = do
             return t'
         Node n args ->
             case [ f | f <- functions sig, fname f == n ]
-            of  [   ] -> reject $ text "Ist nicht deklarierte Funktion."
+            of  [   ] -> reject $ text "Funktion" <+> toDoc n <+> text "ist nicht deklariert."
                 fs    ->
                   case [ f | f <- fs, length args == length (arguments f) ]
-                  of  [   ] -> reject $ vcat [ text "Hat keine Deklaration mit der richtigen Anzahl an Argumenten:"
+                  of  [   ] -> reject $ vcat [ text "Funktion" <+> toDoc n <+> text "hat keine Deklaration mit der richtigen Anzahl an Argumenten:"
                                              , toDoc fs
                                              ]
                       [ f ] -> do
-                          inform $ text "Funktion hat Deklaration:" <+> toDoc f
+                          inform $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
                           sequence_ $ do
                               ( k, arg ) <- zip [1..] args
                               return $ do
@@ -59,7 +59,7 @@ infer sig exp = do
                                          $ text "Argument-Typ stimmt mit Deklaration überein?"
                           return $ result f
                       fs    -> reject $ vcat
-                               [ text "Ist mehrfach deklarierte Funktion:"
+                               [ text "Funktion" ++ toDoc n ++ "ist mehrfach deklariert:"
                                , toDoc fs
                                ]
     inform $ "Ausdruck" <+> toDoc exp <+> text "hat Typ:" <+> toDoc t
