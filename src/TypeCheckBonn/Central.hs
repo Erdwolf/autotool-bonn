@@ -56,7 +56,7 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
             Right t | t == target i -> do
                 inform $ text "Ja."
             Right t -> do
-                inform $ text "Nein. Der eingebene Ausdruck hat Typ" <+> toDoc t <> "gefordert war aber" <+> toDoc (target i)
+                inform $ text "Nein. Der eingebene Ausdruck hat Typ" <+> toDoc t <> text "gefordert war aber" <+> toDoc (target i)
                 inform $ text ""
                 inform $ text "Der Ausdruck hat die Struktur"
                 peng b
