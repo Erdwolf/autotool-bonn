@@ -15,8 +15,8 @@ import Inter.Types
 import Autolib.TES.Identifier
 
 
-bonnify :: TI -> TI
-bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)
+bonnify :: Signature -> Signature
+bonnify (Signature fs vs) = Signature (map discharge fs) vs
   where
     discharge f = f { static = False }
 
@@ -36,7 +36,7 @@ make :: Make
 make = quiz TypeCheckBonn $
          QuizConfig
               { quizFeedback = Detailed
-              , max_arity = 3
+              , maxArity = 3
               , types = [ "int", "double", "char", "Baum", "Person" ]
               , minDecls = 4
               , maxDecls = 10
