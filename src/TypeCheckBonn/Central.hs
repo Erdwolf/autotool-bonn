@@ -51,18 +51,23 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
     initial p i = read "f(a,g(b))"
 
     total p i (ExpBonn b) = do
-        inform $ text "Der Ausdruck hat die Struktur"
-        peng b
-        inform $ text "und der Typcheck liefert folgende Aussage:"
         let (e_t,output) = runWriter $ runErrorT $ infer (signature i) b
         case e_t of
             Right t | t == target i -> do
                 inform $ text "Ja."
             Right t -> do
-                reject $ text "Nein."
+                inform $ text "Nein. Der eingebene Ausdruck hat Typ" <+> toDoc t <> "gefordert war aber" <+> toDoc (target i)
+                inform $ text ""
+                inform $ text "Der Ausdruck hat die Struktur"
+                peng b
+                inform $ text "und der Typcheck liefert folgende Aussage:"
             Left () -> do
                 inform $ vcat output
-                reject $ text "Nein."
+                inform $ text "Nein."
+                inform $ text ""
+                inform $ text "Der Ausdruck hat die Struktur"
+                peng b
+                inform $ text "und der Typcheck liefert folgende Aussage:"
 
 instance C.Measure TypeCheckBonn TI ExpBonn where
     measure p i (ExpBonn b) = fromIntegral $ size b
