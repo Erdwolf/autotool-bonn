@@ -56,13 +56,14 @@ instance C.Partial TypeCheckBonn Config Exp where
                 inform $ text "Der Ausdruck hat die Struktur"
                 peng b
                 inform $ text "und der Typcheck liefert folgende Aussage:"
-            Left () -> do
                 inform $ vcat output
+            Left () -> do
                 inform $ text "Nein."
                 inform $ text ""
                 inform $ text "Der Ausdruck hat die Struktur"
                 peng b
                 inform $ text "und der Typcheck liefert folgende Aussage:"
+                inform $ vcat output
 
 instance C.Measure TypeCheckBonn Config Exp where
     measure p i b = fromIntegral $ size b
