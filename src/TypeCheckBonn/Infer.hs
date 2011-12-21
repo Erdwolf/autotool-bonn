@@ -46,7 +46,7 @@ infer sig goal exp = do
                               return $ do
                                   let paramType = arguments f !! (k-1)
                                   inform $ text "Prüfe Argument Nr." <+> toDoc k
-                                  t <- nested 4 $ infer sig paramType arg
+                                  nested 4 $ infer sig paramType arg
                           return $ result f
                       fs    -> reject $ vcat
                                [ text "Funktion" <+> toDoc n <+> text "ist mehrfach deklariert:"
