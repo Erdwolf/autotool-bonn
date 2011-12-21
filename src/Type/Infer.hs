@@ -62,7 +62,7 @@ infer sig exp = do
                                [ text "Ist mehrfach deklarierte Funktion:"
                                , toDoc fs
                                ]
-    inform $ text $ toDoc exp <+> "hat Typ:" <+> toDoc t
+    inform $ toDoc exp <+> text "hat Typ:" <+> toDoc t
     return t
 
 --isVariable :: Exp -> Bool
