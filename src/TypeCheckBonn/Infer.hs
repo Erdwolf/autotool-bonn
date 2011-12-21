@@ -28,17 +28,6 @@ infer sig goal exp = do
                          [ text "Variable" <+> toDoc n <+> text "ist mehrfach deklariert:"
                          , toDoc vs
                          ]
-        Node n [arg] | show n == "&" -> do
-            assert ( isVariable arg )
-                   $ text "Ist Variable?"
-            t <- nested 4 $ infer sig arg
-            return $ PointerTo t
-        Node n [arg] | show n == "*" -> do
-            t <- nested 4 $ infer sig arg
-            assert ( isPointerType t )
-                   $ text "Ist Pointer-Typ?"
-            let PointerTo t' = t
-            return t'
         Node n args ->
             case [ f | f <- functions sig, fname f == n ]
             of  [   ] -> reject $ text "Funktion" <+> toDoc n <+> text "ist nicht deklariert."
@@ -52,9 +41,10 @@ infer sig goal exp = do
                           sequence_ $ do
                               ( k, arg ) <- zip [1..] args
                               return $ do
+                                  let paramType = arguments f !! (k-1)
                                   inform $ text "Prüfe Argument Nr." <+> toDoc k
-                                  t <- nested 4 $ infer sig arg
-                                  assert ( t == arguments f !! (k-1) )
+                                  t <- nested 4 $ infer sig paramType arg
+                                  assert ( t == paramType )
                                          $ text "Argument-Typ stimmt mit Deklaration überein?"
                           return $ result f
                       fs    -> reject $ vcat
