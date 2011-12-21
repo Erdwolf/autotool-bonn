@@ -172,7 +172,7 @@ instance Partial AVLBaum Config OpList where
             inform $ text "Auf den Baum:"
             peng start
             inform $ vcat [ text "sollen diese Operationen angewendet werden"
-                          , text "(wobei Sie Any durch MyInsert ersetzen sollen):"
+                          , text "(wobei Sie jedes Any durch ein MyInsert mit dem einzufügenden Knotenschlüssel als Argument ersetzen sollen):"
                           ]
        inform $ vcat [ nest 4 $ niceOps (map convertOp plan)
                      , text "so dass dieser Baum entsteht:"
