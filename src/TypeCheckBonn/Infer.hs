@@ -9,7 +9,7 @@ import Autolib.ToDoc
 import Autolib.TES.Term
 import Autolib.TES.Identifier
 
-import Control.Monad ( guard )
+import Control.Monad ( forM_ )
 
 type Exp = Term Identifier Identifier
 
