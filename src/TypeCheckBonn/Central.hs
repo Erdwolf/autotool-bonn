@@ -29,6 +29,9 @@ instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
 
+data Config = Config TI deriving ( Typeable )
+
+
 instance C.Partial TypeCheckBonn Config Exp where
 
     describe p i = vcat
@@ -60,7 +63,7 @@ instance C.Partial TypeCheckBonn Config Exp where
                 peng b
                 inform $ text "und der Typcheck liefert folgende Aussage:"
 
-instance C.Measure TypeCheckBonn TI Exp where
+instance C.Measure TypeCheckBonn Config Exp where
     measure p i b = fromIntegral $ size b
 
 make :: Make

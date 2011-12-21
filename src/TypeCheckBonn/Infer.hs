@@ -30,7 +30,7 @@ reject x = inform x >> mzero
 assert :: Bool -> Doc -> M ()
 assert b x = do
     inform x
-    if b then inform $ text "Ja."
+    if b then inform $ nest 4 $ text "Ja."
          else reject $ nest 4 $ text "Nein."
 
 nested :: Int -> M a -> M a
@@ -62,7 +62,7 @@ infer sig exp = do
                                              ]
                       [ f ] -> do
                           inform $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
-                          zip [1..] args `forM_` \(k, arg) -> $ nested 4 do
+                          zip [1..] args `forM_` \(k, arg) -> do
                               let paramType = arguments f !! (k-1)
                               inform $ text "Prüfe Argument Nr." <+> toDoc k
                               t <- nested 4 $ infer sig arg
