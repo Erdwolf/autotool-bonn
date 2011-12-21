@@ -13,7 +13,7 @@ import Control.Monad.Writer
 
 type Exp = Term Identifier Identifier
 
-type M a = Writer [Doc] (Maybe a)
+type M a = WriterT [Doc] Maybe a
 
 inform :: Doc -> M ()
 inform x = tell [x] >> return (Just ())
