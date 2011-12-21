@@ -43,6 +43,3 @@ make = quiz TypeCheckBonn $
               , minSize = 5
               , maxSize = 10
               }
-
-foo :: Int
-foo = "no int"
