@@ -63,7 +63,7 @@ instance C.Partial TypeCheckBonn Config Exp where
                 inform $ text "Der Ausdruck hat die Struktur"
                 peng b
                 inform $ text "und der Typcheck liefert folgende Aussage:"
-                inform $ vcat output
+                mapM_ inform output
 
 instance C.Measure TypeCheckBonn Config Exp where
     measure p i b = fromIntegral $ size b
