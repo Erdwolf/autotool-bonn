@@ -21,7 +21,7 @@ import Inter.Types
 import qualified Challenger as C
 
 import Control.Monad.Writer
-import Control.Monad.Error
+import Control.Monad.Either
 
 data TypeCheckBonn = TypeCheckBonn deriving ( Eq, Ord, Show, Read, Typeable )
 
@@ -54,7 +54,7 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
         inform $ text "Der Ausdruck hat die Struktur"
         peng b
         inform $ text "und der Typcheck liefert folgende Aussage:"
-        let (e_t,output) = runWriterT $ runErrorT $ infer (signature i) b
+        let (e_t,output) = runWriterT $ runEitherT $ infer (signature i) b
         case e_t of
             Right t | t == target i ->
                 inform $ text "Ja."

@@ -10,7 +10,7 @@ import Autolib.TES.Term
 import Autolib.TES.Identifier
 
 import Control.Monad.Writer
-import Control.Monad.Error
+import Control.Monad.Either
 
 type Exp = Term Identifier Identifier
 
