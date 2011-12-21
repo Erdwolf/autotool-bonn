@@ -46,7 +46,7 @@ instance C.Partial TypeCheckBonn Config Exp where
     total p (Config fb goal decls) b = do
         let (e_t,output) = runWriter $ runErrorT $ infer decls b
         case (fb, e_t) of
-            (_, Right t) | t == target i -> do
+            (_, Right t) | t == goal -> do
                 inform $ text "Ja."
             (YesNo, _) -> do
                 reject $ text "Nein."
