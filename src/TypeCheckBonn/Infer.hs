@@ -14,7 +14,7 @@ import Control.Monad.Error
 
 type Exp = Term Identifier Identifier
 
-type M a = ErrorT () (WriterT [Doc]) a
+type M a = ErrorT () (Writer [Doc]) a
 
 inform :: Doc -> M ()
 inform x = tell [x] >> return ()
