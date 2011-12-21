@@ -34,7 +34,7 @@ assert b x = do
          else reject $ nest 4 $ text "Nein."
 
 nested :: Int -> M a -> M a
-nested n = censor (return . nest n . vcat)
+nested n = censor (return . map nest n)
 
 infer :: Signature -> Exp -> M Type
 infer sig exp = do
