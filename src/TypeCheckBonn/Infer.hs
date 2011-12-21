@@ -31,7 +31,7 @@ assert :: Bool -> Doc -> M ()
 assert b x = do
     inform x
     if b then inform $ text "Ja."
-         else reject $ nested 4 $ text "Nein."
+         else reject $ nest 4 $ text "Nein."
 
 nested :: Int -> M a -> M a
 nested n = censor (return . nest n . vcat)
