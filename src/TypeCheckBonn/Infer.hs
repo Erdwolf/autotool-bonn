@@ -16,6 +16,11 @@ type Exp = Term Identifier Identifier
 
 type M a = ErrorT () (Writer [Doc]) a
 
+instance Error () where
+  noMsg = ()
+  strMsg _ = ()
+
+
 inform :: Doc -> M ()
 inform x = tell [x] >> return ()
 
