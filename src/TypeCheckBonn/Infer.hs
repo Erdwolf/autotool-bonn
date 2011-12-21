@@ -15,13 +15,13 @@ type Exp = Term Identifier Identifier
 
 infer :: Signature -> Type -> Exp -> Reporter Type
 infer sig goal exp = do
-    inform $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
-    inform $ text "Ziel-Typ ist:" <+> toDoc goal
+    inform $ text "Prüfe, ob der Ausdruck " <+> toDoc exp <+> text "den Typ" <+> toDoc goal <+> text "hat."
     t <- nested 4 $ case exp of
         Node n [] ->
             case [ v | v <- variables sig, vname v == n ]
             of  [ v ] -> do
                     inform $ text "Variable" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc v
+                    assert (vtype v == goal) $ text "Richtiger Typ?"
                     return $ vtype v
                 [   ] -> reject $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
                 vs -> reject $ vcat
@@ -38,20 +38,21 @@ infer sig goal exp = do
                                              ]
                       [ f ] -> do
                           inform $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
+                          assert (result f == goal) $ text "Richtiger Typ?"
+                          assert ( t == paramType )
+                                         $ text "Argument-Typ stimmt mit Deklaration überein?"
                           sequence_ $ do
                               ( k, arg ) <- zip [1..] args
                               return $ do
                                   let paramType = arguments f !! (k-1)
                                   inform $ text "Prüfe Argument Nr." <+> toDoc k
                                   t <- nested 4 $ infer sig paramType arg
-                                  assert ( t == paramType )
-                                         $ text "Argument-Typ stimmt mit Deklaration überein?"
                           return $ result f
                       fs    -> reject $ vcat
                                [ text "Funktion" <+> toDoc n <+> text "ist mehrfach deklariert:"
                                , toDoc fs
                                ]
-    inform $ text "Ausdruck" <+> toDoc exp <+> text "hat Typ:" <+> toDoc t
+    inform $ text "Ja, Ausdruck" <+> toDoc exp <+> text "hat Typ:" <+> toDoc t
     return t
 
 isVariable :: Exp -> Bool
