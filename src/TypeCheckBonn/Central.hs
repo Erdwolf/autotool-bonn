@@ -47,7 +47,7 @@ instance C.Partial TypeCheckBonn Config Exp where
         let (e_t,output) = runWriter $ runErrorT $ infer decls b
         case (fb, e_t) of
             (_, Right t) | t == goal -> do
-                inform $ text "Ja."
+                inform $ text "Ja. Die Lösung ist korrekt."
             (YesNo, _) -> do
                 reject $ text "Nein."
             (Detailed, Right t) -> do
