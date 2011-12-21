@@ -13,7 +13,7 @@ import Control.Monad ( guard )
 
 type Exp = Term Identifier Identifier
 
-infer :: Signature -> Type -> Exp -> Reporter Type
+infer :: Signature -> Type -> Exp -> Reporter ()
 infer sig goal exp = do
     inform $ text "Prüfe, ob der Ausdruck " <+> toDoc exp <+> text "den Typ" <+> toDoc goal <+> text "hat."
     t <- nested 4 $ case exp of
@@ -22,7 +22,7 @@ infer sig goal exp = do
             of  [ v ] -> do
                     inform $ text "Variable" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc v
                     assert (vtype v == goal) $ text "Richtiger Typ?"
-                    return $ vtype v
+                    return ()
                 [   ] -> reject $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
                 vs -> reject $ vcat
                          [ text "Variable" <+> toDoc n <+> text "ist mehrfach deklariert:"
@@ -39,8 +39,6 @@ infer sig goal exp = do
                       [ f ] -> do
                           inform $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
                           assert (result f == goal) $ text "Richtiger Typ?"
-                          assert ( t == paramType )
-                                         $ text "Argument-Typ stimmt mit Deklaration überein?"
                           sequence_ $ do
                               ( k, arg ) <- zip [1..] args
                               return $ do
@@ -53,7 +51,6 @@ infer sig goal exp = do
                                , toDoc fs
                                ]
     inform $ text "Ja, Ausdruck" <+> toDoc exp <+> text "hat Typ:" <+> toDoc t
-    return t
 
 isVariable :: Exp -> Bool
 isVariable (Node _ []) = True
