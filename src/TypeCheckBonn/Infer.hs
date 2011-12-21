@@ -3,7 +3,7 @@ module TypeCheckBonn.Infer where
 import Type.Data
 import Type.Tree
 
-import Autolib.Reporter.Type hiding ( result )
+--import Autolib.Reporter.Type hiding ( result )
 import Autolib.ToDoc
 
 import Autolib.TES.Term
