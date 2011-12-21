@@ -61,7 +61,7 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
             Right t ->
                 reject $ text "Nein."
             Left () ->
-                mapM_ inform output
+                inform $ vcat output
                 reject $ text "Nein."
 
 instance C.Measure TypeCheckBonn TI ExpBonn where
