@@ -41,6 +41,7 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
         [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc (target i)
         , text "unter Verwendung von:"
         , text ""
+        , text ""
         , nest 4 $ toDoc (signature i)
         ]
 
