@@ -14,10 +14,14 @@ import Control.Monad.Writer
 type Exp = Term Identifier Identifier
 
 reject, inform :: Doc -> Writer [Doc] (Maybe Type)
-
-inform :: Doc -> Writer [Doc] (Maybe ())
 inform x = tell [x] >> return (Just ())
 reject x = inform x >> return Nothing
+
+assert :: Bool -> Doc -> Writer [Doc] (Maybe ())
+assert b x = do
+    inform x
+    if b then inform "Ja."
+         else reject "Nein."
 
 
 infer :: Signature -> Exp -> Writer [Doc] (Maybe Type)
