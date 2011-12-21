@@ -42,4 +42,5 @@ make = quiz TypeCheckBonn $
               , maxDecls = 10
               , minSize = 5
               , maxSize = 10
+              , seed = 0
               }

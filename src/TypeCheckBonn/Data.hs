@@ -12,7 +12,6 @@ import Type.Data (Signature, Type, TI(TI))
 
 data Feedback = Detailed
               | YesNo
-              | None
    deriving ( Eq, Ord, Typeable)
 
 data QuizConfig = QuizConfig
