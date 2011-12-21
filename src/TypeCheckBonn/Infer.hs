@@ -13,21 +13,27 @@ import Control.Monad.Writer
 
 type Exp = Term Identifier Identifier
 
-reject, inform :: Doc -> Writer [Doc] (Maybe Type)
+type M a = Writer [Doc] (Maybe a)
+
+inform :: Doc -> M ()
 inform x = tell [x] >> return (Just ())
+
+reject :: Doc -> M a
 reject x = inform x >> return Nothing
 
-assert :: Bool -> Doc -> Writer [Doc] (Maybe ())
+assert :: Bool -> Doc -> M ()
 assert b x = do
     inform x
     if b then inform "Ja."
          else reject "Nein."
 
+nested :: Int -> M a -> M a
+censor (return . nest 4 . vcat)
 
-infer :: Signature -> Exp -> Writer [Doc] (Maybe Type)
+infer :: Signature -> Exp -> M Type
 infer sig exp = do
     inform $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
-    t <- censor (return . nest 4 . vcat) $ case exp of
+    t <- nested 4 $ case exp of
         Node n [] ->
             case [ v | v <- variables sig, vname v == n ]
             of  [ v ] -> do
