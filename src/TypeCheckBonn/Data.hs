@@ -18,7 +18,7 @@ data Feedback = Detailed
 data QuizConfig = QuizConfig
  { quizFeedback :: Feedback  -- ^ Type of feedback
  , maxArity :: Int           -- ^ Maximum arity
- , types = [Type]          -- ^ Available type names
+ , types :: [Type]          -- ^ Available type names
  , minDecls :: Int           -- ^ Minimum number of declarations
  , maxDecls :: Int           -- ^ Maximum number of declarations
  , minSize :: Int            -- ^ Minimum size of solution
