@@ -36,4 +36,3 @@ data Config = Config
 
 $(derives [makeReader, makeToDoc] [''Feedback,''QuizConfig,''Config])
 
-instance Size Config where size (Config _ t s) = size (TI t s)
