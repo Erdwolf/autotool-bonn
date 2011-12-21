@@ -53,9 +53,9 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
         inform $ text "und der Typcheck liefert folgende Aussage:"
         let (mb_t,output) = runWriter $ infer (signature i) b
         case mb_t of
-            Just t | t == target i =
+            Just t | t == target i ->
                 inform $ text "Ja."
-            Just t =
+            Just t ->
                 reject $ text "Nein."
             Nothing ->
                 mapM_ inform output
