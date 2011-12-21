@@ -29,16 +29,7 @@ instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
 
-newtype ExpBonn = ExpBonn Exp deriving ( Typeable )
-
-instance ToDoc ExpBonn where
-    toDoc (ExpBonn e) = toDoc e
-
-instance Reader ExpBonn where
-    reader = reader >>= return . ExpBonn
-
-
-instance C.Partial TypeCheckBonn TI ExpBonn where
+instance C.Partial TypeCheckBonn Config Exp where
 
     describe p i = vcat
         [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc (target i)
@@ -50,7 +41,7 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
 
     initial p i = read "f(a,g(b))"
 
-    total p i (ExpBonn b) = do
+    total p i b = do
         let (e_t,output) = runWriter $ runErrorT $ infer (signature i) b
         case e_t of
             Right t | t == target i -> do
@@ -69,8 +60,8 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
                 peng b
                 inform $ text "und der Typcheck liefert folgende Aussage:"
 
-instance C.Measure TypeCheckBonn TI ExpBonn where
-    measure p i (ExpBonn b) = fromIntegral $ size b
+instance C.Measure TypeCheckBonn TI Exp where
+    measure p i b = fromIntegral $ size b
 
 make :: Make
 make = direct TypeCheckBonn $

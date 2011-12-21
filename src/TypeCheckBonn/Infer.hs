@@ -62,7 +62,7 @@ infer sig exp = do
                                              ]
                       [ f ] -> do
                           inform $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
-                          zip [1..] args `forM_` \( k, arg ) -> do
+                          zip [1..] args `forM_` \(k, arg) -> $ nested 4 do
                               let paramType = arguments f !! (k-1)
                               inform $ text "Prüfe Argument Nr." <+> toDoc k
                               t <- nested 4 $ infer sig arg
