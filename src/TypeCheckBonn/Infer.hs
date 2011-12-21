@@ -13,17 +13,17 @@ import Control.Monad.Writer
 
 type Exp = Term Identifier Identifier
 
-infer :: Signature -> Exp -> Writer Doc (Maybe Type)
+infer :: Signature -> Exp -> Writer [Doc] (Maybe Type)
 infer sig exp = do
     tell $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
-    t <- nested 4 $ case exp of
+    t <- pass (nest 4) $ case exp of
         Node n [] ->
             case [ v | v <- variables sig, vname v == n ]
             of  [ v ] -> do
                     tell $ text "Variable" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc v
                     return $ vtype v
                 [   ] -> do
-                   reject $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
+                   tell $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
                    mzero
                 vs -> do
                    tell $ vcat
