@@ -59,7 +59,7 @@ infer sig exp = do
                                          $ text "Argument-Typ stimmt mit Deklaration überein?"
                           return $ result f
                       fs    -> reject $ vcat
-                               [ text "Funktion" ++ toDoc n ++ "ist mehrfach deklariert:"
+                               [ text "Funktion" ++ toDoc n ++ text "ist mehrfach deklariert:"
                                , toDoc fs
                                ]
     inform $ "Ausdruck" <+> toDoc exp <+> text "hat Typ:" <+> toDoc t
