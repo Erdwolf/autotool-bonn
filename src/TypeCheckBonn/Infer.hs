@@ -15,7 +15,7 @@ type Exp = Term Identifier Identifier
 
 infer :: Signature -> Type -> Exp -> Reporter ()
 infer sig goal exp = do
-    inform $ text "Prüfe, ob der Ausdruck " <+> toDoc exp <+> text "den Typ" <+> toDoc goal <+> text "hat."
+    inform $ text "Prüfe, ob der Ausdruck " <+> toDoc exp <+> text "den Typ" <+> toDoc goal <+> text "hat:"
     t <- nested 4 $ case exp of
         Node n [] ->
             case [ v | v <- variables sig, vname v == n ]
@@ -38,7 +38,7 @@ infer sig goal exp = do
                                              ]
                       [ f ] -> do
                           inform $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
-                          assert (result f == goal) $ text "Richtiger Typ?"
+                          assert (result f == goal) $ text "Richtiger Rückgabe-Typ?"
                           zip [1..] args `forM_` \( k, arg ) -> do
                               let paramType = arguments f !! (k-1)
                               inform $ text "Prüfe Argument Nr." <+> toDoc k
