@@ -48,8 +48,9 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
     initial p i = read "f(a,g(b))"
 
     total p i (ExpBonn b) = do
-        inform $ text "Die Baumstruktur dieses Ausdrucks ist:"
+        inform $ text "Der Ausdruck hat die Struktur"
         peng b
+        inform $ text "und der Typcheck liefert folgende Aussage:"
         t <- infer (signature i) b
         assert ( t == target i )
                $ text "ist das der geforderte Typ?"
