@@ -7,7 +7,7 @@ import Autolib.Size
 
 import Data.Typeable
 
-import Type.Data (Signature, Type)
+import Type.Data (Signature, Type, TI(TI))
 
 
 data Feedback = Detailed
