@@ -29,7 +29,8 @@ instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
 
-data Config = Config TI deriving ( Typeable )
+--data Config = Config TI deriving ( Typeable )
+type Config = TI
 
 
 instance C.Partial TypeCheckBonn Config Exp where
