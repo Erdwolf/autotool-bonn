@@ -3,7 +3,7 @@ module TypeCheckBonn.Quiz where
 
 --  $Id$
 
-import Type.Data
+import Type.Data hiding (types)
 import TypeCheckBonn.Central
 import TypeCheckBonn.Data
 import Type.Quiz
@@ -23,8 +23,8 @@ bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)
 
 
 instance Generator TypeCheckBonn QuizConfig Config where
-    generator p (QuizConfig fb a ts a b m n _) key = do
-        TI t s <- generator TypeCheck (Conf a (map read ts) a b m n) key
+    generator p (QuizConfig fb ar ts a b m n _) key = do
+        TI t s <- generator TypeCheck (Conf ar (map read ts) a b m n) key
         return $ Config fb t (bonnify s)
 
 instance Project TypeCheckBonn Config Config where
@@ -37,7 +37,7 @@ make = quiz TypeCheckBonn $
               { quizFeedback = Detailed
               , max_arity = 3
               , types = [ "int", "double", "char", "Baum", "Person" ]
-              , minDeclss = 4
+              , minDecls = 4
               , maxDecls = 10
               , minSize = 5
               , maxSize = 10
