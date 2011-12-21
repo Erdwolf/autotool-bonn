@@ -25,7 +25,7 @@ bonnify (Signature fs vs) = Signature (map discharge fs) vs
 instance Generator TypeCheckBonn QuizConfig Config where
     generator p (QuizConfig fb ar ts a b m n _) key = do
         cfg <- generator TypeCheck (Conf ar (map read ts) a b m n) key
-        let TI t s = project cfg
+        let TI t s = project TypeCheck cfg
         return $ Config fb t (bonnify s)
 
 instance Project TypeCheckBonn Config Config where
