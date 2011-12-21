@@ -795,5 +795,6 @@ executable Trial.cgi
                  AVLBaumBonn.Central,
                  AVLBaumBonn.Quiz,
                  TypeCheckBonn.Central,
+                 TypeCheckBonn.Data,
                  TypeCheckBonn.Infer,
                  TypeCheckBonn.Quiz

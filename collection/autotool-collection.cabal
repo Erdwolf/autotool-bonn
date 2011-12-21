@@ -453,6 +453,7 @@ Library
         AVLBaumBonn.Central
         AVLBaumBonn.Quiz
         TypeCheckBonn.Central
+        TypeCheckBonn.Data
         TypeCheckBonn.Infer
         TypeCheckBonn.Quiz
         Hilbert.Actions

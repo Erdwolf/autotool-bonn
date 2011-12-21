@@ -69,8 +69,14 @@ instance C.Measure TypeCheckBonn Config Exp where
     measure p i b = fromIntegral $ size b
 
 make :: Make
-make = direct TypeCheckBonn $ -- Config feedback $
+make = direct TypeCheckBonn $
     TI { target = read "boolean"
        , signature = read "int a; boolean eq (int a, int b);"
        }
+{-
+    Config { feedback = ???
+           , targetType = read "boolean"
+           , declarations = read "int a; boolean eq (int a, int b);"
+           }
+-}
 
