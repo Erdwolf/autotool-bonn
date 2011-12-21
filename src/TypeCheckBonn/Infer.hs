@@ -10,11 +10,11 @@ import Autolib.TES.Term
 import Autolib.TES.Identifier
 
 import Control.Monad.Writer
-import Control.Monad.Either
+import Control.Monad.Error
 
 type Exp = Term Identifier Identifier
 
-type M a = EitherT () (WriterT [Doc]) a
+type M a = ErrorT () (WriterT [Doc]) a
 
 inform :: Doc -> M ()
 inform x = tell [x] >> return ()
