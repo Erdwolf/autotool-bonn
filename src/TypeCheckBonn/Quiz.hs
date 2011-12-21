@@ -23,7 +23,10 @@ bonnify (TI t (Signature fs vs)) = TI t (Signature (map discharge fs) vs)
 instance Generator TypeCheckBonn Conf InstanceConf where
     generator p conf key = do
         generator TypeCheck conf key
-
+{-
+    generator p (Config fb a ts a b m n) =  key = do
+        QuizConfig fb `liftM` generator TypeCheck (Conf a (map read ts) a b m n)  key
+-}
 
 instance Project TypeCheckBonn InstanceConf TI where
     project p = bonnify . project TypeCheck
@@ -37,3 +40,12 @@ make = quiz TypeCheckBonn $
               , min_size = 5
               , max_size = 10
               }
+{-
+         Conf { max_arity = 3
+              , types = [ "int", "double", "char", "Baum", "Person" ]
+              , minDeclss = 4
+              , maxDecls = 10
+              , minSize = 5
+              , maxSize = 10
+              }
+-}

@@ -4,6 +4,7 @@ module TypeCheckBonn.Central where
 import Type.Data
 import Type.Tree
 import TypeCheckBonn.Infer
+-- import TypeCheckBonn.Data (Config(..))
 
 import Autolib.Reporter.Type
 import Autolib.Reader
@@ -29,7 +30,6 @@ instance OrderScore TypeCheckBonn where
     scoringOrder _ = Increasing
 
 
---data Config = Config TI deriving ( Typeable )
 type Config = TI
 
 
@@ -51,7 +51,7 @@ instance C.Partial TypeCheckBonn Config Exp where
             Right t | t == target i -> do
                 inform $ text "Ja."
             Right t -> do
-                inform $ text "Nein. Der eingebene Ausdruck hat Typ" <+> toDoc t <> text "gefordert war aber" <+> toDoc (target i)
+                inform $ text "Nein. Der eingebene Ausdruck hat Typ" <+> toDoc t <> text "gefordert war aber" <+> toDoc (target i) <> "."
                 inform $ text ""
                 inform $ text "Der Ausdruck hat die Struktur"
                 peng b
@@ -69,7 +69,7 @@ instance C.Measure TypeCheckBonn Config Exp where
     measure p i b = fromIntegral $ size b
 
 make :: Make
-make = direct TypeCheckBonn $
+make = direct TypeCheckBonn $ -- Config feedback $
     TI { target = read "boolean"
        , signature = read "int a; boolean eq (int a, int b);"
        }
