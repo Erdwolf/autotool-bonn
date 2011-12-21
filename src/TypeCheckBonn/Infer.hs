@@ -28,7 +28,7 @@ assert b x = do
          else reject "Nein."
 
 nested :: Int -> M a -> M a
-censor (return . nest 4 . vcat)
+nested n = censor (return . nest n . vcat)
 
 infer :: Signature -> Exp -> M Type
 infer sig exp = do
@@ -59,7 +59,7 @@ infer sig exp = do
                           zip [1..] args `forM_` \( k, arg ) -> do
                               let paramType = arguments f !! (k-1)
                               inform $ text "Prüfe Argument Nr." <+> toDoc k
-                              t <- censor (return . nest 4 . vcat) $ infer sig arg
+                              t <- nested 4 $ infer sig arg
                               assert ( t == paramType )
                                       $ text "Argument-Typ stimmt mit Deklaration überein?"
                           return $ result f
