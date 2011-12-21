@@ -20,6 +20,8 @@ import Data.Typeable
 import Inter.Types
 import qualified Challenger as C
 
+import Control.Monad.Writer
+
 data TypeCheckBonn = TypeCheckBonn deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance OrderScore TypeCheckBonn where
