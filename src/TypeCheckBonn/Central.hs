@@ -3,7 +3,7 @@ module TypeCheckBonn.Central where
 
 import Type.Data
 import Type.Tree
-import Type.Infer
+import TypeCheckBonn.Infer
 
 import Autolib.Reporter.Type
 import Autolib.Reader
