@@ -22,12 +22,15 @@ infer sig exp = do
             of  [ v ] -> do
                     tell $ text "Variable" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc v
                     return $ vtype v
-                [   ] -> reject $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
-                vs -> tell $ vcat
-                         [ text "Variable" <+> toDoc n <+> text "ist mehrfach deklariert:"
-                         , toDoc vs
-                         ]
-                      mzero
+                [   ] -> do
+                   reject $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
+                   mzero
+                vs -> do
+                   tell $ vcat
+                      [ text "Variable" <+> toDoc n <+> text "ist mehrfach deklariert:"
+                      , toDoc vs
+                      ]
+                   mzero
         Node n args ->
             case [ f | f <- functions sig, fname f == n ]
             of  [   ] -> reject $ text "Funktion" <+> toDoc n <+> text "ist nicht deklariert."
@@ -38,14 +41,13 @@ infer sig exp = do
                                              ]
                       [ f ] -> do
                           tell $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
-                          sequence_ $ do
-                              ( k, arg ) <- zip [1..] args
-                              return $ do
-                                  tell $ text "Prüfe Argument Nr." <+> toDoc k
-                                  t <- nested 4 $ infer sig arg
-                                  assert ( t == arguments f !! (k-1) )
-                                         $ text "Argument-Typ stimmt mit Deklaration überein?"
-                                 mzero
+                          zip [1..] args `forM_` \( k, arg ) -> do
+                              let paramType = arguments f !! (k-1)
+                              tell $ text "Prüfe Argument Nr." <+> toDoc k
+                              t <- nested 4 $ infer sig arg
+                              assert ( t == paramType )
+                                      $ text "Argument-Typ stimmt mit Deklaration überein?"
+                              mzero
                           return $ result f
                       fs    -> tell $ vcat
                                [ text "Funktion" <+> toDoc n <+> text "ist mehrfach deklariert:"
