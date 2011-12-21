@@ -13,10 +13,10 @@ import Control.Monad.Writer
 
 type Exp = Term Identifier Identifier
 
-infer :: Signature -> Exp -> Writer Doc (Maybe Type)
+infer :: Signature -> Exp -> Writer [Doc] (Maybe Type)
 infer sig exp = do
     tell $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
-    t <- censor (nest 4) $ case exp of
+    t <- censor (return . nest 4 . vcat) $ case exp of
         Node n [] ->
             case [ v | v <- variables sig, vname v == n ]
             of  [ v ] -> do
@@ -44,7 +44,7 @@ infer sig exp = do
                           zip [1..] args `forM_` \( k, arg ) -> do
                               let paramType = arguments f !! (k-1)
                               tell $ text "Prüfe Argument Nr." <+> toDoc k
-                              t <- nested 4 $ infer sig arg
+                              t <- censor (return . nest 4 . vcat) $ infer sig arg
                               assert ( t == paramType )
                                       $ text "Argument-Typ stimmt mit Deklaration überein?"
                               mzero
