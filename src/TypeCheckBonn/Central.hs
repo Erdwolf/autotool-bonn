@@ -33,12 +33,12 @@ instance OrderScore TypeCheckBonn where
 
 instance C.Partial TypeCheckBonn Config Exp where
 
-    describe p i = vcat
-        [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc (target i)
+    describe p (Config _ goal decls) = vcat
+        [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc goal
         , text "unter Verwendung von:"
         , text ""
         , text ""
-        , nest 4 $ toDoc (signature i)
+        , nest 4 $ toDoc decls
         ]
 
     initial p i = read "f(a,g(b))"
