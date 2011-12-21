@@ -1,4 +1,4 @@
-module TypeCheckBonn.Infer (Exp, infer) where
+module TypeCheckBonn.Infer (Exp, infer, runWriterT) where
 
 import Type.Data
 import Type.Tree
