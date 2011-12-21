@@ -56,11 +56,11 @@ instance C.Partial TypeCheckBonn TI ExpBonn where
         inform $ text "und der Typcheck liefert folgende Aussage:"
         let (e_t,output) = runWriter $ runErrorT $ infer (signature i) b
         case e_t of
-            Right t | t == target i ->
+            Right t | t == target i -> do
                 inform $ text "Ja."
-            Right t ->
+            Right t -> do
                 reject $ text "Nein."
-            Left () ->
+            Left () -> do
                 inform $ vcat output
                 reject $ text "Nein."
 
