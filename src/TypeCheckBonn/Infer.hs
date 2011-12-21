@@ -24,8 +24,8 @@ reject x = inform x >> return Nothing
 assert :: Bool -> Doc -> M ()
 assert b x = do
     inform x
-    if b then inform "Ja."
-         else reject "Nein."
+    if b then inform (text "Ja.")
+         else reject (text "Nein.")
 
 nested :: Int -> M a -> M a
 nested n = censor (return . nest n . vcat)
