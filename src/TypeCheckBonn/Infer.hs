@@ -39,13 +39,11 @@ infer sig goal exp = do
                       [ f ] -> do
                           inform $ text "Funktion" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc f
                           assert (result f == goal) $ text "Richtiger Typ?"
-                          sequence_ $ do
-                              ( k, arg ) <- zip [1..] args
-                              return $ do
-                                  let paramType = arguments f !! (k-1)
-                                  inform $ text "Prüfe Argument Nr." <+> toDoc k
-                                  nested 4 $ infer sig paramType arg
-                          return $ result f
+                          zip [1..] args `forM_` \( k, arg ) -> do
+                              let paramType = arguments f !! (k-1)
+                              inform $ text "Prüfe Argument Nr." <+> toDoc k
+                              nested 4 $ infer sig paramType arg
+
                       fs    -> reject $ vcat
                                [ text "Funktion" <+> toDoc n <+> text "ist mehrfach deklariert:"
                                , toDoc fs
