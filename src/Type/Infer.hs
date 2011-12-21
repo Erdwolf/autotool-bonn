@@ -22,11 +22,11 @@ infer sig exp = do
         Node n [] ->
             case [ v | v <- variables sig, vname v == n ]
             of  [ v ] -> do
-                    inform $ text "Ist Variable mit Deklaration:" <+> toDoc v
+                    inform $ text "Variable" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc v
                     return $ vtype v
-                [   ] -> reject $ text "Ist nicht deklarierte Variable."
+                [   ] -> reject $ text "Variable" <+> toDoc n <+> text "ist nicht deklariert."
                 vs -> reject $ vcat
-                         [ text "Ist mehrfach deklarierte Variable:"
+                         [ text "Variable" <+> toDoc n <+> "ist mehrfach deklariert:"
                          , toDoc vs
                          ]
         Node n [arg] | show n == "&" -> do
@@ -62,7 +62,7 @@ infer sig exp = do
                                [ text "Ist mehrfach deklarierte Funktion:"
                                , toDoc fs
                                ]
-    inform $ toDoc exp <+> text "hat Typ:" <+> toDoc t
+    inform $ "Ausdruck" <+> toDoc exp <+> text "hat Typ:" <+> toDoc t
     return t
 
 --isVariable :: Exp -> Bool

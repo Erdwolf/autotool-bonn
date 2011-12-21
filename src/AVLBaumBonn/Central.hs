@@ -178,7 +178,7 @@ instance Partial AVLBaum Config OpList where
                      , text "so dass dieser Baum entsteht:"
                      ]
        peng end
-       inform $ text "Hinweis: Die zum Rebalancieren des Baumes nötigen <em>Rotationen</em> werden beim Einfügen automatisch durchgeführt. Sie müssen diese <em>nicht</em> mit angeben."
+       inform $ text "<span style='color:red'>Hinweis: Die zum Rebalancieren des Baumes nötigen <em>Rotationen</em> werden beim Einfügen automatisch durchgeführt. Sie müssen diese <em>nicht</em> mit angeben.</span>"
 
     initial _ (Config _ (_, plan, _)) =
         OpList (map convertOp plan)
@@ -194,7 +194,7 @@ instance Partial AVLBaum Config OpList where
         rejectTree b ops reason = do
             case fb of
                 OnlyOnCompletion -> do
-                    reject reason
+                    reject $ text "Nein." <+> reason
                 Always -> do
                     rejectTreeAlways b ops reason
 
