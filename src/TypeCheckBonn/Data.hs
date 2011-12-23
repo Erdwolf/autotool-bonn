@@ -45,7 +45,7 @@ $(derives [makeReader, makeToDoc] [''Feedback,''QuizConfig,''Config])
 
 data Exp = Var Identifier
          | Call Identifier [Exp]
-      deriving (Typeable)
+      deriving (Typeable, Eq)
 
 instance Reader Exp where
     reader = convert `liftM` reader
