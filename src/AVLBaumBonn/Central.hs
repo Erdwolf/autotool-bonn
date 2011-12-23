@@ -175,8 +175,8 @@ instance Partial AVLBaum Config OpList where
                           , text "(wobei Sie jedes Any durch ein MyInsert mit dem einzufügenden Element als Argument ersetzen sollen):"
                           ]
        inform $ vcat [ nest 4 $ niceOps (map convertOp plan)
-                     , text "so dass dieser Baum entsteht:"
                      , text ""
+                     , text "so dass dieser Baum entsteht:"
                      ]
        peng end
        inform $ text "<span style='color:red'>Hinweis: Die zum Rebalancieren des Baumes nötigen <em>Rotationen</em> werden beim Einfügen automatisch durchgeführt. Sie müssen diese <em>nicht</em> mit angeben.</span>"
