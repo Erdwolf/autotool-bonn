@@ -47,5 +47,5 @@ instance Reader Exp where
                    Node n args -> Call n as
 
 instance ToDoc Exp where
-    toDoc (Var n)       -> toDoc n
-    toDoc (Call n args) -> toDoc n <> (parens $ vcat $ punctuate (text ",") $ map toDoc args)
+    toDoc (Var n)       = toDoc n
+    toDoc (Call n args) = toDoc n <> (parens $ vcat $ punctuate (text ",") $ map toDoc args)
