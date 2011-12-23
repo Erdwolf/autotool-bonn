@@ -6,6 +6,7 @@ import Autolib.Reader
 import Autolib.Size
 
 import Data.Typeable
+import Control.Monad (liftM)
 
 import Type.Data (Signature, Type, TI (TI))
 
