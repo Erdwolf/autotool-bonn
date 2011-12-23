@@ -10,7 +10,6 @@ import Tree.Class (ToTree (toTree))
 import qualified Data.Tree as T
 
 import Data.Typeable
-import Data.Generics (gtypecount)
 import Control.Monad (liftM)
 
 import Type.Data (Signature, Type, TI (TI))
@@ -69,4 +68,5 @@ instance Hash Exp where
     hash = hash . toTree
 
 instance Size Exp where
-    size = gtypecount (undefined :: Exp)
+    size (Var _) = 1
+    size (Call _ args) = 1 + sum (map size args)
