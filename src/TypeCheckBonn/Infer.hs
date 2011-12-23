@@ -2,6 +2,7 @@ module TypeCheckBonn.Infer (Exp, infer, runWriter) where
 
 import Type.Data
 import Type.Tree
+import TypeCheckBonn.Data
 
 --import Autolib.Reporter.Type hiding ( result )
 import Autolib.ToDoc
@@ -11,8 +12,6 @@ import Autolib.TES.Identifier
 
 import Control.Monad.Writer
 import Control.Monad.Error
-
-type Exp = Term Identifier Identifier
 
 type M a = ErrorT () (Writer [Doc]) a
 
@@ -36,11 +35,12 @@ assert b x = do
 nested :: Int -> M a -> M a
 nested n = censor (map (nest n))
 
+
 infer :: Signature -> Exp -> M Type
 infer sig exp = do
     inform $ text "Berechne Typ für Ausdruck:" <+> toDoc exp
     t <- nested 4 $ case exp of
-        Node n [] ->
+        Var n ->
             case [ v | v <- variables sig, vname v == n ]
             of  [ v ] -> do
                     inform $ text "Variable" <+> toDoc n <+> text "hat Deklaration:" <+> toDoc v
@@ -52,7 +52,7 @@ infer sig exp = do
                       [ text "Variable" <+> toDoc n <+> text "ist mehrfach deklariert:"
                       , toDoc vs
                       ]
-        Node n args ->
+        Call n args ->
             case [ f | f <- functions sig, fname f == n ]
             of  [   ] -> reject $ text "Funktion" <+> toDoc n <+> text "ist nicht deklariert."
                 fs    ->

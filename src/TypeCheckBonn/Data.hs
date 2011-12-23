@@ -12,7 +12,7 @@ import Type.Data (Signature, Type, TI(TI))
 
 data Feedback = Detailed
               | YesNo
-   deriving ( Eq, Ord, Typeable)
+   deriving (Eq, Ord, Typeable)
 
 data QuizConfig = QuizConfig
  { quizFeedback :: Feedback  -- ^ Type of feedback
@@ -24,14 +24,28 @@ data QuizConfig = QuizConfig
  , maxSize :: Int            -- ^ Maximum size of solution
  , seed :: Int               -- ^ Dummy value
  }
-   deriving ( Typeable)
+   deriving (Typeable)
 
 data Config = Config
  { feedback :: Feedback
  , targetType :: Type
  , declarations :: Signature
  }
-   deriving ( Typeable)
+   deriving (Typeable)
 
 $(derives [makeReader, makeToDoc] [''Feedback,''QuizConfig,''Config])
 
+data Exp = Var Identifier
+         | Call Identifier [Exp]
+      deriving (Typeable)
+
+instance Reader Exp where
+    reader = do
+        term <- reader
+        return $ case term of
+                   Node n []   -> Var n
+                   Node n args -> Call n as
+
+instance ToDoc Exp where
+    toDoc (Var n)       -> toDoc n
+    toDoc (Call n args) -> toDoc n <> (parens $ vcat $ punctuate (text ",") $ map toDoc args)
