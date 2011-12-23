@@ -4,8 +4,9 @@ module TypeCheckBonn.Data where
 import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
+import Autolib.Hash
 
-import Type.Tree (ToTree (toTree))
+import Type.Tree (ToTree)
 import qualified Data.Tree as T
 
 import Data.Typeable
@@ -62,3 +63,6 @@ instance ToTree Exp where
        where
          uf (Var n )      = (show n, [])
          uf (Call n args) = (show n, args)
+
+instance Hash Exp where
+    hash = hash . toTree
