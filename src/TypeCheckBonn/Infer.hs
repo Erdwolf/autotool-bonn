@@ -1,13 +1,10 @@
 module TypeCheckBonn.Infer (Exp, infer, runWriter) where
 
-import Type.Data
-import Type.Tree
 import TypeCheckBonn.Data
 
 --import Autolib.Reporter.Type hiding ( result )
 import Autolib.ToDoc
 
-import Autolib.TES.Term
 import Autolib.TES.Identifier
 
 import Control.Monad.Writer
@@ -77,8 +74,8 @@ infer sig exp = do
     return t
 
 isVariable :: Exp -> Bool
-isVariable (Node _ []) = True
-isVariable _           = False
+isVariable (Var _) = True
+isVariable _       = False
 
 {-
 infer :: Signature -> Type -> Exp -> Writer Doc ()
