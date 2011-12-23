@@ -6,7 +6,7 @@ import Autolib.Reader
 import Autolib.Size
 import Autolib.Hash
 
-import Type.Tree (ToTree)
+import Tree.Class (ToTree (toTree))
 import qualified Data.Tree as T
 
 import Data.Typeable
