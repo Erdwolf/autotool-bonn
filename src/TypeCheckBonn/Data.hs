@@ -5,6 +5,9 @@ import Autolib.ToDoc
 import Autolib.Reader
 import Autolib.Size
 
+import Type.Tree (ToTree (toTree))
+import qualified Data.Tree as T
+
 import Data.Typeable
 import Control.Monad (liftM)
 
@@ -53,3 +56,9 @@ convert (Node n args) = Call n (map convert args)
 instance ToDoc Exp where
     toDoc (Var n)       = toDoc n
     toDoc (Call n args) = toDoc n <> (parens $ vcat $ punctuate (text ",") $ map toDoc args)
+
+instance ToTree Exp where
+    toTree = T.unfoldTree uf
+  where
+    uf (Var n )      = (show n, [])
+    uf (Call n args) = (show n, args)

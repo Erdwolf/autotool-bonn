@@ -71,8 +71,10 @@ instance C.Partial TypeCheckBonn Config Exp where
                 mapM_ inform output
                 reject $ text ""
 
+{-
 instance C.Measure TypeCheckBonn Config Exp where
     measure p i b = fromIntegral $ size b
+-}
 
 make :: Make
 make = direct TypeCheckBonn $
