@@ -7,7 +7,10 @@ import Autolib.Size
 
 import Data.Typeable
 
-import Type.Data (Signature, Type, TI(TI))
+import Type.Data (Signature, Type, TI (TI))
+
+import Autolib.TES.Term (Term (Node))
+import Autolib.TES.Identifier (Identifier)
 
 
 data Feedback = Detailed
@@ -44,7 +47,7 @@ instance Reader Exp where
         term <- reader
         return $ case term of
                    Node n []   -> Var n
-                   Node n args -> Call n as
+                   Node n args -> Call n args
 
 instance ToDoc Exp where
     toDoc (Var n)       = toDoc n

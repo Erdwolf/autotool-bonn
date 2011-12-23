@@ -1,5 +1,6 @@
 module TypeCheckBonn.Infer (Exp, infer, runWriter) where
 
+import Type.Data
 import TypeCheckBonn.Data
 
 --import Autolib.Reporter.Type hiding ( result )
