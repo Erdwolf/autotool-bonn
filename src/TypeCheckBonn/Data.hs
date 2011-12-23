@@ -43,11 +43,11 @@ data Exp = Var Identifier
       deriving (Typeable)
 
 instance Reader Exp where
-    reader = do
-        term <- reader
-        return $ case term of
-                   Node n []   -> Var n
-                   Node n args -> Call n args
+    reader = convert `liftM` reader
+
+convert :: Term Identifier Identifier -> Exp
+convert (Node n [])   = Var n
+convert (Node n args) = Call n (map convert args)
 
 instance ToDoc Exp where
     toDoc (Var n)       = toDoc n
