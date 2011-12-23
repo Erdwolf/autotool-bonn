@@ -59,6 +59,6 @@ instance ToDoc Exp where
 
 instance ToTree Exp where
     toTree = T.unfoldTree uf
-  where
-    uf (Var n )      = (show n, [])
-    uf (Call n args) = (show n, args)
+       where
+         uf (Var n )      = (show n, [])
+         uf (Call n args) = (show n, args)
