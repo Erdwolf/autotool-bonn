@@ -53,7 +53,7 @@ instance C.Partial TypeCheckBonn Config Exp where
                 inform $ text ""
                 inform $ text "Der eingegebene Ausdruck hat die Struktur"
                 peng b
-                reject $ text ""
+                reject $ text "Die Typen passen jedoch nicht."
             (Detailed, Right t) -> do
                 inform $ text "Nein. Der eingebene Ausdruck hat Typ" <+> toDoc t <> text "gefordert war aber" <+> toDoc goal <> text "."
                 inform $ text ""
