@@ -51,7 +51,7 @@ instance C.Partial TypeCheckBonn Config Exp where
             (YesNo, _) -> do
                 inform $ text "Nein, die Lösung ist nicht korrekt."
                 inform $ text ""
-                inform $ text "Der eingegebene Ausdruck hat die Struktur"
+                inform $ text "Der eingegebene Ausdruck hat die Struktur:"
                 peng b
                 reject $ text "Die Typen und/oder Parameteranzahlen passen jedoch nicht."
             (Detailed, Right t) -> do
