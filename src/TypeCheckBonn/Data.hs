@@ -56,7 +56,7 @@ convert (Node n args) = Call n (map convert args)
 
 instance ToDoc Exp where
     toDoc (Var n)       = toDoc n
-    toDoc (Call n args) = toDoc n <> (parens $ hcat $ punctuate (text ",") $ map toDoc args)
+    toDoc (Call n args) = toDoc n <> (parens $ hsep $ punctuate (text ",") $ map toDoc args)
 
 instance ToTree Exp where
     toTree = T.unfoldTree uf
