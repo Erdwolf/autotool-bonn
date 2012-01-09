@@ -26,4 +26,4 @@ instance Project Syntax Config Config where
 
 
 make :: Make
-make = quiz Syntax (QuizConfig True 1)
+make = quiz Syntax (QuizConfig True 1 defaultConfig)
