@@ -130,7 +130,10 @@ instance Verify AVLBaum Config where
     verify _ cfg = do
         return ()
 
-make_fixed = direct AVLBaum $ (error "no direct configuration possible" :: Config)
+make_fixed = direct AVLBaum $ Config
+    { feedback = Always
+    , instanz = (leaf,[],leaf)
+    }
 
 data AVLOp = Insert Int
            | MyInsert Int
