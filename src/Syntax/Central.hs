@@ -54,7 +54,7 @@ instance Partial Syntax Config Solution where
            , text "Ihre Lösung sollte wie folgt aussehen:"
            , text ""
            , text "Solution"
-           , nest 3 $ toDoc [ "Wort1", "Wort2", "Wort3", "Wort4" ]
+           , nest 3 $ toDoc [ "Wort" ++ show i | i <- [1..n] ]
            , text ""
            , text "(zum Beispiel [ \"\", \"ada\", \"abbcba\", \"dd\" ])"
            ] ++ if giveFeedback then [] else
