@@ -132,7 +132,7 @@ instance Verify AVLBaum Config where
 
 make_fixed = direct AVLBaum $ Config
     { feedback = Always
-    , instanz = (nil, [Any], Baum.AVL.Type.branch nil 42 nil)
+    , instanz = (nil, [Baum.Such.Op.Any], Baum.AVL.Type.branch nil 42 nil)
     }
     where nil = Baum.AVL.Type.leaf
 
