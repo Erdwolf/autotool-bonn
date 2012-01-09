@@ -14,7 +14,7 @@ import Control.Monad.State
 import Data.List
 
 generate :: IO [(String,Graph)]
-generate = generate defaultConfig
+generate = generate' defaultConfig
 
 data GeneratorConfig = GC
     { gc_terminals    :: [String]
@@ -55,7 +55,7 @@ generate' cfg = do
    l <- getRandomLang
    --putStrLn "===================="
    --putStrLn $ intercalate "\n" $ concatMap (ascii . snd) l
-   if isNice cfg l
+   if isNice l
       then return l
       else generate
 
