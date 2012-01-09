@@ -1,11 +1,13 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Syntax.Checker {- (check) -} where
+
 import Syntax.Syntax
 import Syntax.Transformer
 
 import Control.Monad.Writer
 import Data.List (nub)
-
+import Data.List
+import Data.Array
 
 
 forks = foldr1 Fork
@@ -114,21 +116,29 @@ lang12'' =
     , ("C", Terminal "a")
     ]
 
-lang13 = [("A",Fork (Terminal "c") (Fork (Chain (Symbol "B") (Terminal "b")) Empty)),("B",Chain (Symbol "D") (Terminal "c")),("C",Chain (Terminal "d") (Terminal "a")),("D",Loop (Chain (Symbol "A") (Symbol "A")))]
+lang13 =
+    [ ("A", Fork (Terminal "c")
+                 (Fork (Symbol "B" `Chain` Terminal "b")
+                        Empty))
+    , ("B", Symbol "D" `Chain` Terminal "c")
+    , ("C", Terminal "d" `Chain` Terminal "a")
+    , ("D", Loop (Symbol "A" `Chain` Symbol "A"))
+    ]
 
-lang14 = [("A",Fork (Symbol "B")
-                    (Chain (Fork (Terminal "a")
-                                 Empty)
-                           (Terminal "c")))
-         ,("B",Chain (Loop (Symbol "D"))
-                     (Terminal "b"))
-         ,("C",Terminal "d")
-         ,("D",Fork (Chain (Symbol "B")
-                           (Terminal "b"))
-                    Empty)
-         ]
+lang14 =
+    [ ("A", Fork (Symbol "B")
+                 (Chain (Fork (Terminal "a")
+                              Empty)
+                        (Terminal "c")))
+    , ("B", Chain (Loop (Symbol "D"))
+                  (Terminal "b"))
+    , ("C", Terminal "d")
+    , ("D", Fork (Chain (Symbol "B")
+                        (Terminal "b"))
+                 Empty)
+    ]
 
-words14 = [ "ac", "c", "b", "bb" ]
+words14 = [ "ac", "c" ] ++ [ replicate k 'b' | k <- [1..]\\[2] ]
 
 
 
@@ -193,10 +203,10 @@ check' lang word =
 -}
 
 
-check = check' 10
+check_ = check_' 10
 
-check' :: Int -> Language -> String -> Bool
-check' limit lang word =
+check_' :: Int -> Language -> String -> Bool
+check_' limit lang word =
     go 0 [[startSymbol]]
  where
     n = length word
@@ -230,3 +240,74 @@ check' limit lang word =
 
     partitions (x:xs) = return ([],x:xs) `mplus` liftM (\(as,bs) -> (x:as,bs)) (partitions xs)
     partitions []     = mzero
+
+
+
+check ::Language -> String -> Bool
+check = cyk . chomsky . toGrammar . removeForks . removeLoops
+
+--cyk :: [Rule] -> String -> Bool
+cyk [] _  = False -- Empty language
+cyk rs@(Rule start _:_) []   = not $ null [ () | Rule a [] <- rs, a == start ] -- Empty word
+cyk rs@(Rule start _:_) word =
+    start `elem` head (head (cyk_table rs word))
+
+cyk_table rs word =
+    let n = length word -- at least 1
+    in times (n-1) addRow [[ [ a | Rule a [T y] <- rs, x == y ] | x <- map return word ]]
+ where
+    addRow xsss = [ [ a | (bs,cs) <- yss,  b <- bs, c <- cs, Rule a [N b',N c'] <- rs, b == b', c == c' ] |  yss <- combine xsss ] : xsss
+    combine xss = zipWith (zipWith (,)) (map reverse $ transpose xss) (tail (diagonals xss))
+
+-- | Apply a function a certain number of times to an argument.
+times :: Int -> (a -> a) -> a -> a
+times n _ _ | n < 0 = error "A function can't be applied a negative number of times."
+times 0 f x = x
+times n f x = f (times (pred n) f x)
+
+diagonals :: [[a]] -> [[a]]
+diagonals = transpose . go 0
+  where
+    go i (xs:xss) = drop i xs : go (i+1) xss
+    go _ []       = []
+
+
+cnf =
+    [ Rule "S" [N "A", N "B"]
+    , Rule "A" [N "C", N "D"]
+    , Rule "A" [N "C", N "F"]
+    , Rule "B" [T "c"]
+    , Rule "B" [N "E", N "B"]
+    , Rule "C" [T "a"]
+    , Rule "D" [T "b"]
+    , Rule "E" [T "c"]
+    , Rule "F" [N "A", N "D"]
+    ]
+
+cnf_eps =
+    [ Rule "S" [T "a"]
+    , Rule "S" [N "B", N "B"]
+    , Rule "B" [T "b"]
+    , Rule "S" []
+    ]
+
+cnf14 = {- wrong -}
+    [ Rule "A"  [N "a",N "c"]
+    , Rule "A"  [T "b"]
+    , Rule "A"  [T "c"]
+    , Rule "A"  [N "L1",N "b"]
+    , Rule "B"  [N "L1",N "b"]
+    , Rule "B"  [T "b"]
+    , Rule "C"  [N "B",N "b"]
+    , Rule "L1" [N "C",N "L1"]
+    , Rule "L1" [N "B",N "b"]
+    , Rule "a"  [T "a"]
+    , Rule "b"  [T "b"]
+    , Rule "c"  [T "c"]
+    , Rule "X"  [T "d"]
+    ]
+
+
+isInCNF (Rule _ [N _, N _]) = True
+isInCNF (Rule _ [T _])      = True
+isInCNF _                   = False
