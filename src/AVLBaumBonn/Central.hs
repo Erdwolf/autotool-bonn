@@ -132,7 +132,7 @@ instance Verify AVLBaum Config where
 
 make_fixed = direct AVLBaum $ Config
     { feedback = Always
-    , instanz = (Baum.AVL.Type.leaf,[],Baum.AVL.Type.leaf)
+    , instanz = (nil, [Any], Baum.AVL.Type.branch nil 42 nil) where nil = Baum.AVL.Type.leaf
     }
 
 data AVLOp = Insert Int
