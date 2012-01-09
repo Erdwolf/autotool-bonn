@@ -21,6 +21,7 @@ deriving instance Ord GeneratorConfig
 data QuizConfig = QuizConfig
  { quizFeedback :: Bool
  , seed :: Int
+ , quizExpectedNumberOfWords :: Int
  , generatorConfig :: GeneratorConfig
  }
    deriving ( Eq, Ord, Typeable)
