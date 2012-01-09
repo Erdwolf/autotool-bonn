@@ -14,6 +14,7 @@ deriving instance Ord Graph
 
 data QuizConfig = QuizConfig
  { quizFeedback :: Bool
+ , seed :: Int
  }
    deriving ( Eq, Ord, Typeable)
 

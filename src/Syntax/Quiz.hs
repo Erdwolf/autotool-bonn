@@ -16,7 +16,7 @@ import Data.Typeable
 
 
 instance Generator Syntax QuizConfig Config where
-    generator p (QuizConfig fb) key = do -- IO
+    generator p (QuizConfig fb _) key = do -- IO
       Config fb 4 <$> Syntax.Generator.generate
 
 
@@ -26,4 +26,4 @@ instance Project Syntax Config Config where
 
 
 make :: Make
-make = quiz Syntax (QuizConfig True)
+make = quiz Syntax (QuizConfig True 1)
