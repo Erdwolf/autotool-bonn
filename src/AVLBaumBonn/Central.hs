@@ -125,7 +125,7 @@ bonnifyTree t                          = Node (Baum.AVL.Type.key t)
                                               (Baum.AVL.Type.left t)
                                               (Baum.AVL.Type.right t)
 
-debonnifyTree :: AVLTreeBonn -> AVLTree Baum.AVL.Type.AVLTree Int
+debonnifyTree :: AVLTreeBonn -> Baum.AVL.Type.AVLTree Int
 debonnifyTree (Node x l r) = Baum.AVL.Type.branch l x r
 debonnifyTree Empty        = Baum.AVL.Type.leaf
 
