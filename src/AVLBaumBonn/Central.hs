@@ -20,7 +20,7 @@ import Data.Typeable (Typeable)
 import Control.Monad (when,unless,guard)
 import Data.List (zip5, transpose, intersperse)
 import Data.Traversable (traverse)
-import Data.Tree ()
+import qualified Data.Tree as T
 import Control.Monad.State (evalState, get, put)
 
 import qualified Baum.Such.Generate
@@ -67,7 +67,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
             return (i, x)
 
         nodes =
-          flip map (flatten numbered) $ \(i, x) ->
+          flip map (T.flatten numbered) $ \(i, x) ->
             Autolib.Dot.Node.blank
               { Autolib.Dot.Node.label = Just (maybe "" show x)
               , Autolib.Dot.Node.shape = Just "plaintext"
@@ -75,8 +75,8 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
               }
 
         edges = do
-            src@(Node (i, _) _) <- subtrees numbered
-            dst@(Node (j, x) _) <- subForest src
+            src@(T.Node (i, _) _) <- subtrees numbered
+            dst@(T.Node (j, x) _) <- T.subForest src
             return $ Autolib.Dot.Edge.blank
                        { Autolib.Dot.Edge.from     = show i
                        , Autolib.Dot.Edge.to       = show j
@@ -84,7 +84,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
                        , Autolib.Dot.Edge.color    = maybe (Just "white") (\_->Nothing) x
                        }
 
-        subtrees t = t : concatMap subtrees (subForest t)
+        subtrees t = t : concatMap subtrees (T.subForest t)
 
 toTree t = Data.Tree.unfoldTree uf t
    where
