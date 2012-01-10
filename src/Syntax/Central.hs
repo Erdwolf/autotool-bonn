@@ -19,7 +19,7 @@ import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless)
-import Data.List (nub)
+import Data.List (sort,nub)
 
 rejectIO = Autolib.Reporter.IO.Type.reject
 informIO = Autolib.Reporter.IO.Type.inform

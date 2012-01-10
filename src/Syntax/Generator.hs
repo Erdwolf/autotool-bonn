@@ -29,7 +29,7 @@ data GeneratorConfig = GC
 
 defaultConfig :: GeneratorConfig
 defaultConfig = GC
-    { gc_terminals    = ["a","b","c","d"]
+    { gc_terminals    = ["x"]
     , gc_nonterminals = ["A","B","C","D"]
     , gc_sizes        = [6,4,4,4]
     , gc_requiredWords      = 4
