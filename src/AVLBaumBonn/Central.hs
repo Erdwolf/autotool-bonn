@@ -117,7 +117,7 @@ data AVLTreeBonn = Node Int AVLTreeBonn AVLTreeBonn
                  | Empty
   deriving (Typeable)
 
-$(derives [makeReader, makeToDoc] [''AVLTree])
+$(derives [makeReader, makeToDoc] [''AVLTreeBonn])
 
 bonnifyTree :: Baum.AVL.Type.AVLTree Int -> AVLTreeBonn
 bonnifyTree t | Baum.AVL.Type.isLeaf t = Empty
