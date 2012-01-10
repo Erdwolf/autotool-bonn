@@ -20,7 +20,7 @@ import Data.Typeable (Typeable)
 import Control.Monad (when,unless,guard)
 import Data.List (zip5, transpose, intersperse)
 import Data.Traversable (traverse)
-import Data.Tree
+import Data.Tree ()
 import Control.Monad.State (evalState, get, put)
 
 import qualified Baum.Such.Generate
