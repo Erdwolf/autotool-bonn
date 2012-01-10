@@ -122,11 +122,11 @@ $(derives [makeReader, makeToDoc] [''AVLTreeBonn])
 bonnifyTree :: Baum.AVL.Type.AVLTree Int -> AVLTreeBonn
 bonnifyTree t | Baum.AVL.Type.isLeaf t = Empty
 bonnifyTree t                          = Node (Baum.AVL.Type.key t)
-                                              (Baum.AVL.Type.left t)
-                                              (Baum.AVL.Type.right t)
+                                              (bonnifyTree $ Baum.AVL.Type.left t)
+                                              (bonnifyTree $ Baum.AVL.Type.right t)
 
 debonnifyTree :: AVLTreeBonn -> Baum.AVL.Type.AVLTree Int
-debonnifyTree (Node x l r) = Baum.AVL.Type.branch l x r
+debonnifyTree (Node x l r) = Baum.AVL.Type.branch (debonnifyTree l) x (debonnifyTree r)
 debonnifyTree Empty        = Baum.AVL.Type.leaf
 
 
