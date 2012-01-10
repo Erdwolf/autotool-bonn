@@ -11,7 +11,7 @@ import Syntax.LaTeX (asImage)
 import Debug ( debug )
 
 import Challenger.Partial (Verify(..), Partial(..))
-import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), (<+>), hcat, hsep, toDoc, nest, ToDoc(..))
+import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), (<+>), hcat, hsep, toDoc, nest, ToDoc(..), punctuate)
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
@@ -47,7 +47,7 @@ instance Verify Syntax Config where
 instance Partial Syntax Config Solution where
     describe p (Config giveFeedback n lang) =
       vcat$[ hsep [ text "Geben Sie genau", text (show n), text "Worte der mit dem folgenden Syntaxdiagramm-System (Startdiagramm ist \"" <> text (fst (head lang)) <> text "\") erzeugbaren Sprache an."]
-           , text "Das zu Grunde liegende Alphabet besteht aus den Symbolen " <+> hcat (map toDoc (terminals lang))  <+> text "."
+           , text "Das zu Grunde liegende Alphabet besteht aus den Symbolen " <+> hcat (punctuate (text ", ") $ map text (sort $ nub $ terminals lang))  <+> text "."
            , text ""
            --, vcat [ vcat [ text symbol <> text ":", nest 4 $ vcat $ map text $ ascii graph ] | (symbol,graph) <- lang ]
            , text (asImage lang)
