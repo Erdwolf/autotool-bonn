@@ -51,15 +51,15 @@ defaultFrequencies = FQ 50 10 10 5 15 15
 
 
 generateWithConfig :: GeneratorConfig -> IO [(String,Graph)]
-generateWithConfig cfg = do
-   l <- getRandomLang
-   --putStrLn "===================="
-   --putStrLn $ intercalate "\n" $ concatMap (ascii . snd) l
-   if isNice l
-      then return l
-      else generate
-
+generateWithConfig cfg = loop
  where
+   loop = do
+      l <- getRandomLang
+      --putStrLn "===================="
+      --putStrLn $ intercalate "\n" $ concatMap (ascii . snd) l
+      if isNice l
+         then return l
+         else loop
 
    isNice l =
       gc_terminals cfg `subset` terminals l
