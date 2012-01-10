@@ -211,13 +211,16 @@ instance Partial AVLBaum Config OpList where
     initial _ (Config _ _ plan _) =
         OpList (map convertOp plan)
 
-    total _ (Config fb start plan end) (OpList ops) = do
+    total _ (Config fb startB plan endB) (OpList ops) = do
         c <- steps start (map convertOp plan) ops []
         if c == end
            then inform $ text "Ja."
            else rejectTreeAlways c ops $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
 
       where
+        start = debonnifyTree startB
+        end   = debonnifyTree endB
+
         rejectTree :: Baum.AVL.Type.AVLTree Int -> [AVLOp] -> Doc -> Reporter a
         rejectTree b ops reason = do
             case fb of
