@@ -13,8 +13,8 @@ import Control.Monad.State
 
 import Data.List
 
-generate :: IO [(String,Graph)]
-generate = generate' defaultConfig
+--generate :: IO [(String,Graph)]
+--generate = generateWithConfig defaultConfig
 
 data GeneratorConfig = GC
     { gc_terminals    :: [String]
@@ -29,7 +29,7 @@ data GeneratorConfig = GC
 
 defaultConfig :: GeneratorConfig
 defaultConfig = GC
-    { gc_terminals    = ["x"]
+    { gc_terminals    = ["a","b","c","d"]
     , gc_nonterminals = ["A","B","C","D"]
     , gc_sizes        = [6,4,4,4]
     , gc_requiredWords      = 4
@@ -50,8 +50,8 @@ data Frequencies = FQ
 defaultFrequencies = FQ 50 10 10 5 15 15
 
 
-generate' :: GeneratorConfig -> IO [(String,Graph)]
-generate' cfg = do
+generateWithConfig :: GeneratorConfig -> IO [(String,Graph)]
+generateWithConfig cfg = do
    l <- getRandomLang
    --putStrLn "===================="
    --putStrLn $ intercalate "\n" $ concatMap (ascii . snd) l

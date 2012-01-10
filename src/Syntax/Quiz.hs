@@ -17,7 +17,7 @@ import Data.Typeable
 
 instance Generator Syntax QuizConfig Config where
     generator p (QuizConfig fb _ n cfg) key = do -- IO
-      Config fb n <$> Syntax.Generator.generate' (cfg { gc_requiredWords = n `max` gc_requiredWords cfg })
+      Config fb n <$> Syntax.Generator.generateWithConfig (cfg { gc_requiredWords = n `max` gc_requiredWords cfg })
 
 
 instance Project Syntax Config Config where
