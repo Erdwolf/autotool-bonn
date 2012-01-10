@@ -152,11 +152,10 @@ instance Verify AVLBaum Config where
 
 make_fixed = direct AVLBaum $ Config
     { feedback = Always
-    , startTree = nil
+    , startTree = Empty
     , operations = [Baum.Such.Op.Any]
-    , finalTree = Baum.AVL.Type.branch nil 42 nil
+    , finalTree = Node 42 Empty Empty
     }
-    where nil = Baum.AVL.Type.leaf
 
 data AVLOp = Insert Int
            | MyInsert Int
