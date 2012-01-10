@@ -134,7 +134,7 @@ debonnifyTree Empty        = Baum.AVL.Type.leaf
 data Config = Config
      { feedback :: Feedback
      , startTree :: Baum.AVL.Type.AVLTree Int
-     , operations :: [Op]
+     , operations :: [Baum.Such.Op.Op Int]
      , finalTree :: Baum.AVL.Type.AVLTree Int
      }
   deriving (Typeable)
