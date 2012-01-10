@@ -133,9 +133,9 @@ debonnifyTree Empty        = Baum.AVL.Type.leaf
 
 data Config = Config
      { feedback :: Feedback
-     , startTree :: Baum.AVL.Type.AVLTree Int
+     , startTree :: AVLBaumBonn
      , operations :: [Baum.Such.Op.Op Int]
-     , finalTree :: Baum.AVL.Type.AVLTree Int
+     , finalTree :: AVLBaumBonn
      }
   deriving (Typeable)
 
@@ -188,7 +188,9 @@ instance Size OpList where
     size (OpList ops) = length ops
 
 instance Partial AVLBaum Config OpList where
-    report _ (Config _fb start plan end) = do
+    report _ (Config _fb startB plan endB) = do
+       let start = debonnifyTree startB
+           end   = debonnifyTree endB
        if isLeaf start
           then do
             inform $ vcat [ text "Auf einen leeren Baum sollen diese Operationen angewendet werden"

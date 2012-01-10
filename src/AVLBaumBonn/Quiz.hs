@@ -41,7 +41,7 @@ instance Generator AVLBaum QuizConfig Config where
                  then loop
                  else return cfg
         (t1,os,t2) <- loop
-        return (Config fb t1 os t2)
+        return (Config fb (bonnifyTree t1) os (bonnifyTree t2))
 
 containsDuplicateElements =
     not . null . dup . elements
