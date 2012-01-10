@@ -34,13 +34,14 @@ data QuizConfig = QuizConfig
 $(derives [makeReader, makeToDoc] [''QuizConfig])
 
 instance Generator AVLBaum QuizConfig Config where
-    generator _ (QuizConfig fb ss l h f g) _key = liftM (Config fb) $
+    generator _ (QuizConfig fb ss l h f g) _key = do
         let loop = do
               cfg@(_,_,t) <- Baum.Such.Generate.generate_once $ Baum.Such.Config.Config ss l h f 0 g 0
               if containsDuplicateElements t
                  then loop
                  else return cfg
-        in loop
+        (t1,os,t2) <- loop
+        return (Config fb t1 os t2)
 
 containsDuplicateElements =
     not . null . dup . elements

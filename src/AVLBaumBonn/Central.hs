@@ -113,12 +113,32 @@ data Feedback = Always
 
 $(derives [makeReader, makeToDoc] [''Feedback])
 
+data AVLTreeBonn = Node Int AVLTreeBonn AVLTreeBonn
+                 | Empty
+  deriving (Typeable)
+
+$(derives [makeReader, makeToDoc] [''AVLTree])
+
+bonnifyTree :: Baum.AVL.Type.AVLTree Int -> AVLTreeBonn
+bonnifyTree t | Baum.AVL.Type.isLeaf t = Empty
+bonnifyTree t                          = Node (Baum.AVL.Type.key t)
+                                              (Baum.AVL.Type.left t)
+                                              (Baum.AVL.Type.right t)
+
+debonnifyTree :: AVLTreeBonn -> AVLTree Baum.AVL.Type.AVLTree Int
+debonnifyTree (Node x l r) = Baum.AVL.Type.branch l x r
+debonnifyTree Empty        = Baum.AVL.Type.leaf
+
+
 
 data Config = Config
      { feedback :: Feedback
-     , instanz :: Baum.Such.Generate.Instanz Baum.AVL.Type.AVLTree Int
+     , startTree :: Baum.AVL.Type.AVLTree Int
+     , operations :: [Op]
+     , finalTree :: Baum.AVL.Type.AVLTree Int
      }
   deriving (Typeable)
+
 
 $(derives [makeReader, makeToDoc] [''Config])
 
@@ -132,7 +152,9 @@ instance Verify AVLBaum Config where
 
 make_fixed = direct AVLBaum $ Config
     { feedback = Always
-    , instanz = (nil, [Baum.Such.Op.Any], Baum.AVL.Type.branch nil 42 nil)
+    , startTree = nil
+    , operations = [Baum.Such.Op.Any]
+    , finalTree = Baum.AVL.Type.branch nil 42 nil
     }
     where nil = Baum.AVL.Type.leaf
 
@@ -166,7 +188,7 @@ instance Size OpList where
     size (OpList ops) = length ops
 
 instance Partial AVLBaum Config OpList where
-    report _ (Config _fb (start, plan, end)) = do
+    report _ (Config _fb start plan end) = do
        if isLeaf start
           then do
             inform $ vcat [ text "Auf einen leeren Baum sollen diese Operationen angewendet werden"
@@ -185,10 +207,10 @@ instance Partial AVLBaum Config OpList where
        peng end
        inform $ text "<span style='color:red'>Hinweis: Die zum Rebalancieren des Baumes nötigen <em>Rotationen</em> werden beim Einfügen automatisch durchgeführt. Sie müssen diese <em>nicht</em> mit angeben.</span>"
 
-    initial _ (Config _ (_, plan, _)) =
+    initial _ (Config _ _ plan _) =
         OpList (map convertOp plan)
 
-    total _ (Config fb (start, plan, end)) (OpList ops) = do
+    total _ (Config fb start plan end) (OpList ops) = do
         c <- steps start (map convertOp plan) ops []
         if c == end
            then inform $ text "Ja."
