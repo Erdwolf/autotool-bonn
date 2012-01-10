@@ -86,7 +86,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
 
         subtrees t = t : concatMap subtrees (T.subForest t)
 
-toTree t = Data.Tree.unfoldTree uf t
+toTree t = T.unfoldTree uf t
    where
        uf t |       isLeaf t       = (Nothing,[])
             | isLeaf l && isLeaf r = (Just k,[])
