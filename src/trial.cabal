@@ -19,7 +19,7 @@ executable Trial.cgi
             hsql, hsql-mysql, parsec, cgi, obdd, array, pretty, filepath,
             hint, mueval, transformers, smallcheck, QuickCheck, haskell98,
             HUnit, template-haskell, graphviz, dataenc, bytestring, derive,
-            prolog == 0.1.*, prolog-graph-lib == 0.1.*, fgl, hashable, MonadRandom
+            prolog == 0.1.*, prolog-graph-lib == 0.1.*, fgl, hashable, MonadRandom,
             haskell-src-exts, temporary, syb, strict, haskell-src,
             autolib-todoc, autolib-reader, autolib-data, autolib-util,
             autolib-output, autolib-reporter, autolib-fa, autolib-relation,
