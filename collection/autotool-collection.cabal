@@ -61,6 +61,7 @@ Library
         template-haskell,
         HUnit,
         QuickCheck,
+        MonadRandom,
         prolog == 0.1.*,
         prolog-graph-lib == 0.1.*,
         graphviz,
