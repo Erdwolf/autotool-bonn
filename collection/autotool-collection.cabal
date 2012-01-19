@@ -433,7 +433,6 @@ Library
         Syntax.Checker
         Syntax.Data
         Syntax.Generator
-        Syntax.Generics
         Syntax.LaTeX
         Syntax.Quiz
         Syntax.Syntax
