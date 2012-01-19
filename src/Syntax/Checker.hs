@@ -8,6 +8,8 @@ import Control.Monad.Writer
 import Data.List (nub)
 import Data.List
 import Data.Array
+import Data.Maybe
+
 
 
 forks = foldr1 Fork
@@ -140,67 +142,45 @@ lang14 =
 
 words14 = [ "ac", "c" ] ++ [ replicate k 'b' | k <- [1..]\\[2] ]
 
+lang15 =
+   [ ("A", Loop (Chain (Terminal "a") (Symbol "C")))
+   , ("B", Chain (Fork (Terminal "c") Empty) (Symbol "C"))
+   , ("C", Chain (Symbol "D") (Fork (Terminal "d") Empty))
+   , ("D", Terminal "b")
+   ]
 
+gram15 =
+    [ Rule "A"      [N "Loop_1"]
+    , Rule "B"      [T "c",N "C"]
+    , Rule "B"      [N "C"]
+    , Rule "C"      [N "D",T "d"]
+    , Rule "C"      [N "D"]
+    , Rule "D"      [T "b"]
+    , Rule "Loop_1" [T "a",N "C"]
+    , Rule "Loop_1" [T "a",N "C",N "Loop_1"]
+    ]
 
-{-
+lang16 =
+    [ ("A", Fork (Chain (Symbol "C") (Chain (Terminal "b") (Symbol "A"))) Empty)
+    , ("B", Fork (Terminal "c") (Terminal "a"))
+    , ("C",Fork (Chain (Terminal "d") (Symbol "D")) Empty)
+    , ("D",Chain (Terminal "d") (Terminal "a"))
+    ]
 
-toParser :: Graph -> LanguageParser ()
-toParser (Terminal t)  = string t
-toParser (Symbol s)    = ask >>= msum . lookupAll s
-toParser (Fork g1 g2)  = toParser g1 `mplus` toParser g2
-toParser (Chain g1 g2) = toParser g1 >> toParser g2
-toParser (Loop g)      = toParser g >> (toParser (Loop g) `mplus` return ())
-toParser Empty         = return ()
--}
+gram16 =
+    [ Rule "A" [N "C",T "b",N "A"]
+    , Rule "A" []
+    , Rule "B" [T "c"]
+    , Rule "B" [T "a"]
+    , Rule "C" [T "d",N "D"]
+    , Rule "C" []
+    , Rule "D" [T "d",T "a"]
+    ]
+
 
 lookupAll key = liftM snd . filterMP ((key==).fst)
 
 filterMP f = msum . map return . filter f
-
-{-
-type Env = [(String, LanguageParser ())]
-
-newtype LanguageParser a = LP
-       { unwrapLP :: StateT String
-                     (ReaderT Env [])
-                     a
-       }
- deriving ( Monad
-          , MonadPlus
-          , MonadState String
-          , MonadReader Env
-          )
-
-runLP = (runReaderT .) . evalStateT . unwrapLP
-
-string :: String -> LanguageParser ()
-string (x:xs) = char x >> string xs
-string []     = return ()
-
-char :: Char -> LanguageParser ()
-char c = do
-  (x:xs) <- get
-  guard (x == c)
-  put xs
-
-eof :: LanguageParser ()
-eof = do
-  "" <- get
-  return ()
-
-
-
-check :: Language -> String -> Bool
-check = check' . transform
-
-check' :: Language -> String -> Bool
-check' lang word =
-    let parsers = map (second toParser) lang in
-    if null parsers
-        then False
-        else let startSymbol = fst $ head $ lang
-             in not $ null $ runLP (msum (lookupAll startSymbol parsers) >> eof) word parsers
--}
 
 
 check_ = check_' 10
@@ -246,10 +226,10 @@ check_' limit lang word =
 check ::Language -> String -> Bool
 check = cyk . chomsky . toGrammar . removeForks . removeLoops
 
---cyk :: [Rule] -> String -> Bool
-cyk [] _  = False -- Empty language
-cyk rs@(Rule start _:_) []   = not $ null [ () | Rule a [] <- rs, a == start ] -- Empty word
-cyk rs@(Rule start _:_) word =
+cyk :: Grammar -> String -> Bool
+cyk (Grammar _  _   []) _  = False -- Empty language
+cyk (Grammar _  eps _ ) "" = fromJust eps   -- Empty word
+cyk (Grammar start _ rs) word =
     start `elem` head (head (cyk_table rs word))
 
 cyk_table rs word =
