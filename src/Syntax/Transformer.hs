@@ -16,7 +16,6 @@ import Control.Arrow
 import Control.Applicative
 
 
-
 pop = do
     (x:xs) <- get
     put xs

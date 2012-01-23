@@ -4,6 +4,7 @@ module Syntax.Central where
 
 import Syntax.Checker (check)
 import Syntax.Data
+import Syntax.Generics (terminals)
 import Syntax.Syntax
 import Syntax.LaTeX (asImage)
 
@@ -42,10 +43,6 @@ instance Verify Syntax Config where
     verify _ cfg = do
         return ()
 
-terminals = everything (++) ([] `mkQ` q)
-   where
-     q (Terminal t) = [t]
-     q _            = []
 
 instance Partial Syntax Config Solution where
     describe p (Config giveFeedback n lang) =
