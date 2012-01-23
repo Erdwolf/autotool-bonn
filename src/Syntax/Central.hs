@@ -5,6 +5,7 @@ module Syntax.Central where
 import Syntax.Checker (check)
 import Syntax.Data
 import Syntax.Syntax
+import Syntax.Generator (terminals)
 import Syntax.LaTeX (asImage)
 
 import Debug ( debug )
