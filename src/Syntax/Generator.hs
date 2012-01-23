@@ -70,8 +70,6 @@ instance MonadRandom m => MonadRandom (MaybeT m) where
     getRandomRs r = lift (getRandomRs r)
 
 
---generate :: IO [(String,Graph)]
-generate = do
 generateWithConfig :: GeneratorConfig -> IO [(String,Graph)]
 generateWithConfig cfg = loop
  where
