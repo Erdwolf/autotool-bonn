@@ -97,9 +97,6 @@ generateWithConfig cfg = loop
 
    subset xs ys = all (`elem` ys) xs
 
-   getRandomLang = getStdRandom $
-      maybe (error "Error while generating language.") id . runStateT lang
-
    lang = sequence [ (a,) <$> evalStateT graph k | (a,k) <- zip (gc_nonterminals cfg) (gc_sizes cfg) ]
 
    mustContain xs g = do
