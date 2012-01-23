@@ -81,7 +81,7 @@ generateWithConfig cfg = loop
          then return l
          else loop
 
-getRandomLang = runMaybeT lang >>= maybe getRandomLang return
+   getRandomLang = runMaybeT lang >>= maybe getRandomLang return
 
    isNice l =
       gc_terminals cfg `subset` terminals l
