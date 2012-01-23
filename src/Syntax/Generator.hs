@@ -79,7 +79,7 @@ generateWithConfig cfg = loop
       --putStrLn $ intercalate "\n" $ concatMap (ascii . snd) l
       if isNice l
          then return l
-      else generate
+         else generate
 
 getRandomLang = runMaybeT lang >>= maybe getRandomLang return
 
