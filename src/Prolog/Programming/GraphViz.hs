@@ -8,7 +8,7 @@ import Data.GraphViz.Attributes.HTML (HtmlTextItem)
 import Data.GraphViz.Attributes.Complete
 import Data.GraphViz.Types (GlobalAttributes(GraphAttrs))
 import Language.Prolog (resolve_)
-import Language.Prolog.GraphViz (runGraphGenT)
+import Language.Prolog.GraphViz (runGraphGenT, Gr)
 import System.Directory (getTemporaryDirectory)
 import System.FilePath ((</>),(<.>))
 import System.IO (openTempFile, hClose)
@@ -18,7 +18,6 @@ import Data.Hashable (Hashable(hash))
 import Prolog.Programming.Hex (hex)
 
 import Data.Graph.Inductive.Graph (labNodes, labEdges)
-import Data.Graph.Inductive.Tree (Gr)
 
 instance (Hashable a, Hashable b) => Hashable (Gr a b) where
    hash g = hash (labNodes g, labEdges g)
