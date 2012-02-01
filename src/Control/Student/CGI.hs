@@ -305,8 +305,10 @@ pwmail stud = do
     io $ Control.Student.DB.put ( Just $ T.snr stud )
        $ stud { T.next_passwort = c }
 
+    let sender = "autotool@iai.uni-bonn.de"
     let echo = texter
             [ "Subject: " ++ "neues autotool-passwort"
+            , "From: " ++ sender
             , "To: " ++ e
             , "Sie haben ein neues Passwort"
             , "für das E-Learning-System autotool angefordert."
@@ -321,6 +323,8 @@ pwmail stud = do
            [ echo
            , "|"
            , "/usr/sbin/sendmail"
+           , "-f"
+           , sender
            , e
            ]
     when Local.debug $ pre $ "running: " ++ cmd
