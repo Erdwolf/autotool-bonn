@@ -34,7 +34,7 @@ login = do
 
     change <- click_choice_with_default 0 "Aktion"
            [ ("Login", False)
-           --, ( "persönliche Daten ändern", True) 
+           , ( "persönliche Daten ändern", True) 
            ]
 
     close -- btable
@@ -89,13 +89,13 @@ use_next_passwort alt = do
 
 wrong_password stud = do
     plain "Passwort falsch."
-    --par 
-    --if ( Inter.Crypt.is_empty $ next_passwort stud )
-    --   then ask_pwmail stud
-    --   else plain $ unlines
-    --              [ "Sie haben eine Email mit einem neuen Passwort erhalten,"
-    --              , "aber Sie haben dieses neue Passwort noch nicht benutzt."
-    --              ]
+    par 
+    if ( Inter.Crypt.is_empty $ next_passwort stud )
+       then ask_pwmail stud
+       else plain $ unlines
+                  [ "Sie haben eine Email mit einem neuen Passwort erhalten,"
+                  , "aber Sie haben dieses neue Passwort noch nicht benutzt."
+                  ]
     mzero
 
 -----------------------------------------------------------------------
