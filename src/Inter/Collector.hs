@@ -620,4 +620,22 @@ tmakers =
    , heading "noch nicht eingeordnet"
       [ item Palindrom.Plain.make
       ]
+   , heading "Bonn"
+      [ item Haskell.Blueprint.Central.make_fixed
+      , item Haskell.Syntax.Central.make_fixed
+      , item Prolog.Programming.Central.make_fixed
+      , item Prolog.Unifier.Central.make_fixed
+      , item Syntax.Central.make_fixed
+      , item Syntax.Quiz.make
+      , item $ Program.GeneralBonn.Central.make_fixed Program.ArrayBonn.Instance.Program_ArrayBonn
+      , item Program.ArrayBonn.Instance.make_quiz
+      , item HeapSort.Central.make_fixed
+      , item HeapSort.Quiz.make
+      , item EditDistance.Central.make_fixed
+      , item EditDistance.Quiz.make
+      , item AVLBaumBonn.Central.make_fixed
+      , item AVLBaumBonn.Quiz.make
+      , item TypeCheckBonn.Central.make
+      , item TypeCheckBonn.Quiz.make
+      ]
    ]
