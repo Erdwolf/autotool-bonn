@@ -46,12 +46,12 @@ parse_or_complain cs =
 
 evaluate' p i b = do
        inform $ text "Einsendung akzeptiert?"
-       --inform $ text "partiell korrekt?"
+       inform $ text "partiell korrekt?"
        lift $ Challenger.partial     p i b
        lift $ Challenger.demonstrate p i b
-       --inform $ text "total korrekt?"
+       inform $ text "total korrekt?"
        code <- Challenger.total_neu       p i b
-       --inform $ text "Bewertung der Einsendung:" <+> toDoc code
+       inform $ text "Bewertung der Einsendung:" <+> toDoc code
        return $ code
 
 
