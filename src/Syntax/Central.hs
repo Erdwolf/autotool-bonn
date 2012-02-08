@@ -77,9 +77,9 @@ instance Partial Syntax Config Solution where
        inform $ text $
         if giveFeedback
            then "Ja, Ihre Einsendung ist richtig. :)"
-           inform $ vcat [ text "Nicht geprüft."
-                         , text ""
-                         , text "Die Einsendung wird von Ihrem Tutor bewertet."
-                         , text ""
-                         , text "Ignorieren Sie die unten angezeigte Bewertung. "
-                         ]
+           else inform $ vcat [ text "Nicht geprüft."
+                              , text ""
+                              , text "Die Einsendung wird von Ihrem Tutor bewertet."
+                              , text ""
+                              , text "Ignorieren Sie die unten angezeigte Bewertung. "
+                              ]
