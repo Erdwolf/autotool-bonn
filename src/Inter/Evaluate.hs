@@ -45,7 +45,6 @@ parse_or_complain cs =
                return b
 
 evaluate' p i b = do
-       inform $ text "Einsendung akzeptiert?"
        inform $ text "partiell korrekt?"
        lift $ Challenger.partial     p i b
        lift $ Challenger.demonstrate p i b
