@@ -111,7 +111,15 @@ instance Partial HeapSort Config Solution where
     initial p _ = Solution []
 
     total p (Config feedback unsortedNumbers) (Solution operations) = do
-       when (feedback /= None) $ do
+       if (feedback == None) 
+         then do
+           inform $ vcat [ text "Nicht geprüft."
+                         , text ""
+                         , text "Die Einsendung wird von Ihrem Tutor bewertet."
+                         , text ""
+                         , text "Ignorieren Sie die unten angezeigte Bewertung. "
+                         ]
+         else do
            let t = decorate (T.fromList unsortedNumbers)
            let m = execute_ operations t
            t' <- case feedback of
@@ -127,7 +135,7 @@ instance Partial HeapSort Config Solution where
                when (feedback == OnFailure) $ do
                   peng $ toTree t'
                reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
-       inform $ text "Ja."
+           inform $ text "Ja, Ihre Einsendung ist richtig."
 
 value (Marked x)   = x
 value (Unmarked x) = x

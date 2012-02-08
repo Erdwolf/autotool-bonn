@@ -77,9 +77,15 @@ instance Partial EditDistance Config Solution where
                         ]
 
        if feedback == None 
-        then inform $ text "Ja. (Aber die Einreichung muss nicht unbedingt korrekt sein.)" 
+        then do
+           inform $ vcat [ text "Nicht geprüft."
+                         , text ""
+                         , text "Die Einsendung wird von Ihrem Tutor bewertet."
+                         , text ""
+                         , text "Ignorieren Sie die unten angezeigte Bewertung. "
+                         ]
         else if numberOfErrors == 0
-          then inform $ text "Ja."
+          then inform $ text "Ja, Ihre Einsendung ist richtig."
           else reject $ case feedback of
                           WrongEntries ->
                              let wrong doc = text "<strike style='color: red;'>" <> doc <> text "</strike>"
