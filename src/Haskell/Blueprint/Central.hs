@@ -47,6 +47,7 @@ make_fixed = direct Haskell_Blueprint $ Code $ unlines
     , ""
     , "{- You can add additional modules separated by lines of three or more dashes: -}"
     , "----------"
+    , "{-# LANGUAGE ScopedTypeVariables #-}"
     , "module Test (test) where"
     , "import Prelude"
     , "{-"
