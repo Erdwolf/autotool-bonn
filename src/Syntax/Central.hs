@@ -57,11 +57,10 @@ instance Partial Syntax Config Solution where
            , text "Solution"
            , nest 3 $ toDoc [ "Wort" ++ show i | i <- [1..n] ]
            , text ""
-           , text "(zum Beispiel [ \"\", \"ada\", \"abbcba\", \"dd\" ])"
            ] ++ if giveFeedback then [] else
            [ text ""
            , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-           , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
+           , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
            ]
 
     initial p _ = Solution []
@@ -75,10 +74,13 @@ instance Partial Syntax Config Solution where
           unless (all (check lang) words) $ do
             reject $ text $ "Nein, eines oder mehrere der angegebenen Worte sind nicht in der Sprache enthalten."
        if giveFeedback
-           then inform $ text "Ja, Ihre Einsendung ist richtig. :)"
+           then inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
+                              , text ""
+                              , text "Ignorieren Sie die unten angezeigte Bewertung."
+                              ]
            else inform $ vcat [ text "Nicht geprüft."
                               , text ""
                               , text "Die Einsendung wird von Ihrem Tutor bewertet."
                               , text ""
-                              , text "Ignorieren Sie die unten angezeigte Bewertung. "
+                              , text "Ignorieren Sie die unten angezeigte Bewertung."
                               ]

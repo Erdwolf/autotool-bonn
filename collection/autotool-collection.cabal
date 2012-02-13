@@ -434,6 +434,7 @@ Library
         Syntax.Data
         Syntax.Generator
         Syntax.LaTeX
+        Syntax.Printer
         Syntax.Quiz
         Syntax.Syntax
         Syntax.Transformer
