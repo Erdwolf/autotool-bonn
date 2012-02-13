@@ -51,7 +51,7 @@ asImage lang = unsafePerformIO $ do
       system $ "dvipng -T tight -z 9 -bg transparent -o " ++ imageFile ++ " " ++ pathTo "dvi" ++ " > /dev/null"
       removeFile $ pathTo "dvi"
 
-   return $ showHtml $ image ! [ src ("../pics/" ++ name ++ ".png"), title "Railroad-Diagramm der Sprache", alt $ unlines $ concat [ a : ascii g | (a,g) <- lang10 ] ]
+   return $ showHtml $ image ! [ src ("../pics/" ++ name ++ ".png"), title "Railroad-Diagramm der Sprache", alt $ unlines $ concat [ a : ascii g | (a,g) <- lang ] ]
 
 
 {-
