@@ -9,7 +9,7 @@ import System.IO.Unsafe (unsafePerformIO)
 import System (system)
 import Control.Monad (unless)
 import Data.Hashable (Hashable(hash), combine)
-import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href)
+import Text.XHtml (showHtml, Html, image, (!), src, alt, title, anchor, href)
 
 import Prolog.Programming.Hex (hex)
 import Syntax.Syntax
