@@ -61,7 +61,7 @@ instance Generator Program_ArrayBonn Quiz.Config InstanceConfig where
             return $ matches ( final ,  Program $ ps ++ sts , final )
 
 matches ( start, prog, final ) = 
-    isJust $ result $ C.total Program_ArrayBonn ( prog, final ) start
+    isJust $ result $ C.total Program_ArrayBonn (Quiz.Config True undefined prog final) start
 
 
 
