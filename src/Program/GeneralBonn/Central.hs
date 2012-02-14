@@ -22,7 +22,7 @@ import Autolib.Util.Zufall ( repeat_until )
 import Data.Typeable
 import Data.Maybe ( isNothing, isJust )
 
-type Solution = Environment Statement
+type Solution = Environment Value
 
 instance C.Partial ArrayBonn InstanceConfig Solution where
 
