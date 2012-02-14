@@ -7,7 +7,7 @@ import Program.GeneralBonn.Program
 import Program.GeneralBonn.Class
 
 -- import qualified Program.Array.Roll as R
--- import qualified Program.Array.Config as F
+import Program.ArrayBonn.Config
 
 import Autolib.Reporter
 import Autolib.ToDoc
