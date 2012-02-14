@@ -10,7 +10,6 @@ import qualified Program.ArrayBonn.Roll as R
 import qualified Program.ArrayBonn.Config as Quiz
 
 import Program.GeneralBonn.Class
-import Program.GeneralBonn.Central
 import Program.GeneralBonn.Environment
 import Program.GeneralBonn.Program
 
