@@ -8,6 +8,7 @@ import Program.GeneralBonn.Class
 
 -- import qualified Program.Array.Roll as R
 import Program.ArrayBonn.Config
+import Program.ArrayBonn.Instance
 
 import Autolib.Reporter
 import Autolib.ToDoc
