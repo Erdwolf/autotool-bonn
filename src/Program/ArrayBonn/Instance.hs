@@ -7,7 +7,7 @@ import Program.ArrayBonn.Value
 import Program.ArrayBonn.Semantics
 
 import qualified Program.ArrayBonn.Roll as R
-import qualified Program.ArrayBonn.Config as F
+import qualified Program.ArrayBonn.Config as Quiz
 
 import Program.GeneralBonn.Class
 import Program.GeneralBonn.Central
@@ -42,23 +42,24 @@ instance Class Program_ArrayBonn Statement Program.ArrayBonn.Value.Value where
                 )
 
 make_quiz :: Make
-make_quiz = quiz Program_ArrayBonn F.example
+make_quiz = quiz Program_ArrayBonn Quiz.example
 
+data InstanceConfig = InstanceConfig
+    { feedback :: Bool
+    , initial :: Environment Program.ArrayBonn.Value.Value
+    , program :: Program Statement
+    , final   :: Environment Program.ArrayBonn.Value.Value
+    }
 
-instance Generator 
-	     Program_ArrayBonn 
-	     F.Config 
-	     ( Environment Program.ArrayBonn.Value.Value
-             , Program Statement 
-             , Environment Program.ArrayBonn.Value.Value 
-             ) where
-    generator p conf key = 
-        R.roll conf `repeat_until` nontrivial conf
-
-nontrivial conf (_, Program sts , final) = not $ or $ do
-    let bnd = ( 0 , fromIntegral $ F.max_data_size conf )
-    ps <- [] : map return ( patches final bnd )
-    return $ matches ( final ,  Program $ ps ++ sts , final )
+instance Generator Program_ArrayBonn Quiz.Config InstanceConfig where
+    generator p conf@(Config fb _ mds _ _ _ _) =
+        let (i,p,f) = R.roll conf `repeat_until` nontrivial conf
+        in InstanceConfig fb i p f
+      where
+        nontrivial (_, Program sts , final) = not $ or $ do
+            let bnd = ( 0 , fromIntegral mds )
+            ps <- [] : map return ( patches final bnd )
+            return $ matches ( final ,  Program $ ps ++ sts , final )
 
 matches ( start, prog, final ) = 
     isJust $ result $ C.total Program_ArrayBonn ( prog, final ) start

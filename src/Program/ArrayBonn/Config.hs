@@ -10,23 +10,26 @@ import Autolib.ToDoc
 import Data.Typeable
 
 data Config =
-     Config { variables_per_depth :: [ Int ]
+     Config
+        { feedback :: Bool
+        , seed :: Int -- Dummy value
+        , variables_per_depth :: [ Int ]
 	    , max_data_size :: Int
 	    , max_expression_size :: Int
 	    , statements :: Int
 	    , operators :: [ Operator ]
-        , seed :: Int -- Dummy value
 	    }
     deriving ( Typeable )
 
 example :: Config
 example = Config
-	{ variables_per_depth = [ 0, 2 ]
+    { feedback = True
+    , seed = 0
+	, variables_per_depth = [ 0, 2 ]
 	, max_data_size = 5
 	, max_expression_size = 6
 	, statements = 5
 	, operators = [ Add, Subtract, Multiply ]
-    , seed = 0
 	}
 
 $(derives [makeReader, makeToDoc] [''Config])

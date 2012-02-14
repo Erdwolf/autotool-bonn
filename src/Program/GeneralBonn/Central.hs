@@ -21,14 +21,11 @@ import Autolib.Util.Zufall ( repeat_until )
 import Data.Typeable
 import Data.Maybe ( isNothing, isJust )
 
-instance ( ToDoc val, Reader val, Eq val
-         , Program.GeneralBonn.Class.Class p st val 
-         , Reader ( Environment val ), ToDoc ( Environment val)
-         , Typeable st
-         )
-    => C.Partial p ( Program st , Environment val ) ( Environment val ) where
+type Solution = Environment Statement
 
-    describe _ (p, e) = vcat
+instance C.Partial ArrayBonn InstanceConfig Solution where
+
+    describe _ (InstanceConfig fb _ p e) = vcat
         [ text "Deklarieren und initialisieren Sie die Variablen,"
 	, text "so dass sich nach Ausführung des Programmes"
 	, nest 4 $ toDoc p
@@ -36,9 +33,9 @@ instance ( ToDoc val, Reader val, Eq val
 	, nest 4 $ toDoc e
 	]
 
-    initial _ (p, e) = e -- Program.Array.Environment.example
+    initial _ (InstanceConfig _ _ p e) = e -- Program.Array.Environment.example
 
-    total tag ( p , target) start = do
+    total tag (InstanceConfig fb _ p target) start = do
         inform $ text "Ich führe das Programm aus:"
         actual <- nested 4 $ Program.GeneralBonn.Class.execute tag start p
 	inform $ vcat
@@ -53,7 +50,7 @@ instance ( ToDoc val, Reader val, Eq val
 
 make_fixed :: (Class p st val, Reader ( Environment val ), ToDoc ( Environment val) ) =>
               p -> Make
-make_fixed p = direct 
+make_fixed p = direct
        p
        ( example p )
 
