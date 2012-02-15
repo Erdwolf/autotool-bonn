@@ -133,7 +133,6 @@ executable Trial.cgi
                  ArrayBonn.Config,
                  ArrayBonn.Environment,
                  ArrayBonn.Expression,
-                 ArrayBonn.Instance,
                  ArrayBonn.Operator,
                  ArrayBonn.Program,
                  ArrayBonn.Roll,
