@@ -41,8 +41,8 @@ data InstanceConfig = InstanceConfig
 $(derives [makeReader, makeToDoc] [''InstanceConfig])
 
 
-instance Generator ArrayBonn Quiz.Config InstanceConfig where
-    generator p conf@(Quiz.Config fb _ _ mds _ _ _) _ = do
+instance Generator ArrayBonn Config InstanceConfig where
+    generator p conf@(Config fb _ _ mds _ _ _) _ = do
         (i,prog,final) <- R.roll conf -- `repeat_until` nontrivial
         return $ InstanceConfig fb i prog final
      where
@@ -72,7 +72,7 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
 
     total tag (InstanceConfig fb _ p target) start = do
         inform $ text "Ich führe das Programm aus:"
-        actual <- nested 4 $ Program.GeneralBonn.Class.execute tag start p
+        actual <- nested 4 $ execute tag start p
 	inform $ vcat
 	    [ text "Die resultierende Belegung ist:"
 	    , nest 4 $ toDoc actual
@@ -83,8 +83,5 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
 
 
 
-make_fixed :: (Class p st val, Reader ( Environment val ), ToDoc ( Environment val) ) =>
-              p -> Make
-make_fixed p = direct
-       p
-       ( V.example p )
+make_fixed :: Make
+make_fixed = direct ArrayBonn ( V.example ArrayBonn )
