@@ -7,8 +7,8 @@ import ArrayBonn.Program
 import ArrayBonn.Statement
 
 import qualified ArrayBonn.Roll as R
-import ArrayBonn.Config
-import ArrayBonn.Value
+import ArrayBonn.Config as Cfg
+import ArrayBonn.Value as V
 
 import Autolib.Reporter
 import Autolib.ToDoc
@@ -28,7 +28,7 @@ instance OrderScore ArrayBonn where
     scoringOrder _ = None -- ?
 
 make_quiz :: Make
-make_quiz = quiz ArrayBonn example
+make_quiz = quiz ArrayBonn Cfg.example
 
 data InstanceConfig = InstanceConfig
     { feedback :: Bool
@@ -87,4 +87,4 @@ make_fixed :: (Class p st val, Reader ( Environment val ), ToDoc ( Environment v
               p -> Make
 make_fixed p = direct
        p
-       ( example p )
+       ( V.example p )
