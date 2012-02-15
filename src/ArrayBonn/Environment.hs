@@ -1,70 +1,63 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module ArrayBonn.Environment 
 
-( Environment
-, empty, lookup -- , example
+module ArrayBonn.Environment
+
+( Environment(Environment)
+, empty, lookup
 , add
 , must_be_equal
-, contents, make
+, contents, make, mapM
+, fmToList
 )
 
 where
-
-import Prelude hiding ( lookup )
-
-import ArrayBonn.Value
-import ArrayBonn.Program
-import ArrayBonn.Statement
 
 import Autolib.FiniteMap
 import Autolib.Set
 import Autolib.TES.Identifier
 
-import Autolib.Reporter
+import Autolib.Reporter hiding ( mapM )
 import Autolib.ToDoc hiding ( empty )
 import Autolib.Reader
 import Autolib.Size
 
 import Data.Typeable
+import Prelude hiding ( mapM, lookup )
 
-data Environment = Environment ( FiniteMap Identifier Value )
+data Environment val = Environment ( FiniteMap Identifier val )
     deriving ( Typeable, Eq )
 
 contents ( Environment e ) = fmToList e
 
 make kvs = Environment $ listToFM kvs
 
-instance Size Environment where size e = 0
+instance Size ( Environment val ) where size e = 0
 
-empty :: Environment
+empty :: Environment val
 empty = Environment $ emptyFM
 
-lookup :: Environment -> Identifier -> Maybe Value
+lookup :: Environment val -> Identifier -> Maybe val
 lookup ( Environment e ) = lookupFM e
 
-add :: Environment -> Identifier -> Value -> Environment
+add :: Environment val -> Identifier -> val -> Environment val
 add ( Environment e ) k v = Environment $ addToFM e k v
 
-example :: Environment
-example = Environment $ listToFM
-    [ ( read "x", read "{4,1,2}" ) ]
+mapM :: Monad m 
+     => ( v -> m w )
+     -> Environment v 
+     -> m ( Environment w )
+mapM f env = do
+    binds <- sequence $ do
+        ( k, v ) <- contents env
+        return $ do
+            w <- f v
+            return ( k, w )
+    return $ make binds
 
-pform :: Environment -> Program
-pform ( Environment e ) = Program $ do
-    ( k, v ) <- fmToList e
-    return $ Declare k ( depth v ) v
 
-instance ToDoc Environment where
-    toDoc = toDoc . pform
 
-instance Reader Environment where
-    reader = do
-        ds <- many declaration
-	return $ Environment $ listToFM $ do
-	    Declare name depth value <- ds
-	    return ( name, value )
-
-must_be_equal :: Environment -> Environment -> Reporter ()
+must_be_equal :: ( ToDoc val, Eq val ) 
+    => Environment val -> Environment val -> Reporter ()
 must_be_equal ( Environment e ) ( Environment f ) = do
     let ke = keysFM e
 	kf = keysFM f

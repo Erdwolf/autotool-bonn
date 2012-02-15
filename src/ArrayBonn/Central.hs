@@ -87,34 +87,3 @@ make_fixed :: (Class p st val, Reader ( Environment val ), ToDoc ( Environment v
 make_fixed p = direct
        p
        ( example p )
-
-{-
-make_quiz :: Make
-make_quiz = quiz Program.GeneralBonn F.example
-
-
-instance Generator 
-	     Program.GeneralBonn 
-	     F.Config 
-	     ( Environment, Program, Environment ) where
-    generator p conf key = 
-        R.roll conf `repeat_until` nontrivial conf
-
-nontrivial conf (_, Program sts , final) = not $ or $ do
-    let bnd = ( 0 , fromIntegral $ F.max_data_size conf )
-    ps <- [] : map return ( patches final bnd )
-    return $ matches ( final ,  Program $ ps ++ sts , final )
-
-matches ( start, prog, final ) = 
-    isJust $ result $ C.total Program.GeneralBonn ( prog, final ) start
-
-
-            
-
-instance Project
-	     Program.GeneralBonn 
-	     ( Environment, Program, Environment )
-	     ( Program, Environment ) where
-    project _ ( start, p, final ) = ( p, final )
-
--}
