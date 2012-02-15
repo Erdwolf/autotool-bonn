@@ -59,7 +59,7 @@ instance Generator ArrayBonn Quiz.Config InstanceConfig where
             let bnd = ( 0 , fromIntegral mds )
                 Program sts = prog
             ps <- [] : map return ( patches final bnd )
-            return $ isJust $ result $ C.total Program_ArrayBonn (InstanceConfig True undefined (Program $ ps ++ sts) final) final
+            return $ isJust $ result $ C.total ArrayBonn (InstanceConfig True undefined (Program $ ps ++ sts) final) final
 
 
 instance Project
