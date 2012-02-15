@@ -52,7 +52,7 @@ eval env exp = case exp of
     Binary op x y -> do
         a <- eval env x
 	b <- eval env y
-        return $ Program.ArrayBonn.Operator.semantics op a b
+        return $ ArrayBonn.Operator.semantics op a b
     Reference p -> dereference env p
 
 look env name = 
