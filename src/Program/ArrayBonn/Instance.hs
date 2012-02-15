@@ -28,12 +28,12 @@ import Data.Typeable
 import Data.Maybe ( isNothing, isJust )
 
 
-data Program_ArrayBonn = Program_ArrayBonn deriving ( Eq, Ord, Show, Read, Typeable )
+--data Program_ArrayBonn = Program_ArrayBonn deriving ( Eq, Ord, Show, Read, Typeable )
 
-instance OrderScore Program_ArrayBonn where
+instance OrderScore ArrayBonn where
     scoringOrder _ = None -- ?
 
-instance Class Program_ArrayBonn Statement Program.ArrayBonn.Value.Value where
+instance Class ArrayBonn Statement Program.ArrayBonn.Value.Value where
     execute p = Program.ArrayBonn.Semantics.execute
     example p = ( Program [ Program.ArrayBonn.Statement.s0 ]
                 , Program.GeneralBonn.Environment.make 
