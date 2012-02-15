@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts, TemplateHaskell, DeriveDataTypeable #-}
 
 module ArrayBonn.Central where
 
