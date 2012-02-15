@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module Program.ArrayBonn.Expression where
+module ArrayBonn.Expression where
 
-import Program.ArrayBonn.Operator
+import ArrayBonn.Operator
 
 import Autolib.TES.Identifier
 

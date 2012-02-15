@@ -1,18 +1,18 @@
-module Program.ArrayBonn.Roll where
+module ArrayBonn.Roll where
 
-import Program.ArrayBonn.Value
-import Program.ArrayBonn.Statement
-import Program.ArrayBonn.Semantics
-import Program.ArrayBonn.Expression
-import Program.ArrayBonn.Statement
-import Program.ArrayBonn.Operator
+import ArrayBonn.Value
+import ArrayBonn.Statement
+import ArrayBonn.Semantics
+import ArrayBonn.Expression
+import ArrayBonn.Statement
+import ArrayBonn.Operator
 
-import qualified Program.GeneralBonn.Environment as E
-import qualified Program.GeneralBonn.Program as P
+import qualified ArrayBonn.Environment as E
+import qualified ArrayBonn.Program as P
 
 
-import qualified Program.ArrayBonn.Config as C
-import qualified Program.ArrayBonn.Value as V
+import qualified ArrayBonn.Config as C
+import qualified ArrayBonn.Value as V
 
 import Autolib.Util.Zufall
 import Autolib.TES.Identifier

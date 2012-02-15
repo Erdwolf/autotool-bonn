@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-} 
 
-module Program.ArrayBonn.Config where
+module ArrayBonn.Config where
 
-import Program.ArrayBonn.Operator
+import ArrayBonn.Operator
 
 import Autolib.Reader
 import Autolib.ToDoc

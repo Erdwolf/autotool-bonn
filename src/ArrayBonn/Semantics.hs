@@ -1,13 +1,13 @@
-module Program.ArrayBonn.Semantics where
+module ArrayBonn.Semantics where
 
-import Program.GeneralBonn.Environment ( Environment )
-import qualified Program.GeneralBonn.Environment as E
+import ArrayBonn.Environment ( Environment )
+import qualified ArrayBonn.Environment as E
 
-import Program.GeneralBonn.Program
-import Program.ArrayBonn.Statement
-import Program.ArrayBonn.Expression
-import Program.ArrayBonn.Operator
-import Program.ArrayBonn.Value
+import ArrayBonn.Program
+import ArrayBonn.Statement
+import ArrayBonn.Expression
+import ArrayBonn.Operator
+import ArrayBonn.Value
 
 import Autolib.Reporter
 import Autolib.FiniteMap

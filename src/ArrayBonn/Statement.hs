@@ -1,9 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module Program.ArrayBonn.Statement where
+module ArrayBonn.Statement where
 
-import Program.ArrayBonn.Expression
-import Program.ArrayBonn.Value
+import ArrayBonn.Expression
+import ArrayBonn.Value
 
 import Autolib.Reader
 import Autolib.ToDoc

@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module Program.ArrayBonn.Environment 
+module ArrayBonn.Environment 
 
 ( Environment
 , empty, lookup -- , example
@@ -12,9 +12,9 @@ where
 
 import Prelude hiding ( lookup )
 
-import Program.ArrayBonn.Value
-import Program.ArrayBonn.Program
-import Program.ArrayBonn.Statement
+import ArrayBonn.Value
+import ArrayBonn.Program
+import ArrayBonn.Statement
 
 import Autolib.FiniteMap
 import Autolib.Set

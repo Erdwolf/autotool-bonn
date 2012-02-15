@@ -1,15 +1,15 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, FlexibleContexts, TemplateHaskell #-}
 
-module Program.GeneralBonn.Central where
+module ArrayBonn.Central where
 
-import Program.GeneralBonn.Environment
-import Program.GeneralBonn.Program
-import Program.GeneralBonn.Class
+import ArrayBonn.Environment
+import ArrayBonn.Program
+import ArrayBonn.Class
 
-import qualified Program.Array.Roll as R
-import Program.ArrayBonn.Config
-import Program.ArrayBonn.Instance
-import Program.ArrayBonn.Value
+import qualified ArrayBonn.Roll as R
+import ArrayBonn.Config
+import ArrayBonn.Instance
+import ArrayBonn.Value
 
 import Autolib.Reporter
 import Autolib.ToDoc

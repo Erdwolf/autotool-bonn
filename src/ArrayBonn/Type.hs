@@ -1,4 +1,4 @@
-module Program.ArrayBonn.Type where
+module ArrayBonn.Type where
 
 import Autolib.TES.Identifier
 

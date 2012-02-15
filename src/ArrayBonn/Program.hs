@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module Program.ArrayBonn.Program where
+module ArrayBonn.Program where
 
-import Program.ArrayBonn.Statement
+import ArrayBonn.Statement
 
 import Autolib.Reader
 import Autolib.ToDoc
