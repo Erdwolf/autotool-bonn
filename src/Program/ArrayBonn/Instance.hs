@@ -54,7 +54,7 @@ data InstanceConfig = InstanceConfig
 $(derives [makeReader, makeToDoc] [''InstanceConfig])
 
 instance Generator ArrayBonn Quiz.Config InstanceConfig where
-    generator p conf@(Quiz.Config fb _ _ mds _ _ _) = do
+    generator p conf@(Quiz.Config fb _ _ mds _ _ _) _ = do
         (i,prog,final) <- R.roll conf -- `repeat_until` nontrivial
         return $ InstanceConfig fb i prog final
      where
