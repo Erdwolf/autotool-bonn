@@ -5,6 +5,7 @@ module ArrayBonn.Central where
 import ArrayBonn.Environment
 import ArrayBonn.Program
 import ArrayBonn.Statement
+import ArrayBonn.Semantics
 
 import qualified ArrayBonn.Roll as R
 import ArrayBonn.Config as Cfg
