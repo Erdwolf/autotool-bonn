@@ -71,9 +71,9 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
 
     initial _ (InstanceConfig _ _ p e) = e -- Program.Array.Environment.example
 
-    total tag (InstanceConfig fb _ p target) start = do
+    total _ (InstanceConfig fb _ p target) start = do
         inform $ text "Ich führe das Programm aus:"
-        actual <- nested 4 $ S.execute tag start p
+        actual <- nested 4 $ S.execute start p
 	inform $ vcat
 	    [ text "Die resultierende Belegung ist:"
 	    , nest 4 $ toDoc actual
