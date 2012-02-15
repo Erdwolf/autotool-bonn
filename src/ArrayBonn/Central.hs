@@ -5,7 +5,7 @@ module ArrayBonn.Central where
 import ArrayBonn.Environment
 import ArrayBonn.Program
 import ArrayBonn.Statement
-import ArrayBonn.Semantics
+import ArrayBonn.Semantics as S
 
 import qualified ArrayBonn.Roll as R
 import ArrayBonn.Config as Cfg
@@ -73,7 +73,7 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
 
     total tag (InstanceConfig fb _ p target) start = do
         inform $ text "Ich führe das Programm aus:"
-        actual <- nested 4 $ execute tag start p
+        actual <- nested 4 $ S.execute tag start p
 	inform $ vcat
 	    [ text "Die resultierende Belegung ist:"
 	    , nest 4 $ toDoc actual
