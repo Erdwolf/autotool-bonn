@@ -62,14 +62,6 @@ instance Generator ArrayBonn Quiz.Config InstanceConfig where
             return $ isJust $ result $ C.total ArrayBonn (InstanceConfig True undefined (Program $ ps ++ sts) final) final
 
 
-instance Project
-	     ArrayBonn 
-	     ( Environment Program.ArrayBonn.Value.Value
-             , Program Statement 
-             , Environment Program.ArrayBonn.Value.Value 
-             )
-	     ( Program Statement
-             , Environment Program.ArrayBonn.Value.Value 
-             ) where
-    project _ ( start, p, final ) = ( p, final )
+instance Project ArrayBonn InstanceConfig InstanceConfig where
+    project _ = id
 
