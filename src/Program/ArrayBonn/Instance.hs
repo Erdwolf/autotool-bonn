@@ -51,7 +51,7 @@ data InstanceConfig = InstanceConfig
     }
   deriving Typeable
 
-$(derives [makeReader, makeToDoc] [''Config])
+$(derives [makeReader, makeToDoc] [''InstanceConfig])
 
 instance Generator ArrayBonn Quiz.Config InstanceConfig where
     generator p conf@(Quiz.Config fb _ _ mds _ _ _) =
