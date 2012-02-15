@@ -130,7 +130,6 @@ executable Trial.cgi
                  Program.Array.Config,
                  Program.Array.Instance,
                  ArrayBonn.Central,
-                 ArrayBonn.Class,
                  ArrayBonn.Config,
                  ArrayBonn.Environment,
                  ArrayBonn.Expression,
