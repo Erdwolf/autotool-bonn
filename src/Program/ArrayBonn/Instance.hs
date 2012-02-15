@@ -51,11 +51,12 @@ data InstanceConfig = InstanceConfig
     }
 
 instance Generator Program_ArrayBonn Quiz.Config InstanceConfig where
-    generator p conf@(Quiz.Config fb _ mds _ _ _ _) =
-        let (i,p,f) = R.roll conf `repeat_until` nontrivial conf
-        in InstanceConfig fb i p f
+    generator p conf@(Quiz.Config fb _ _ mds _ _ _) =
+        let (i,p,final) = R.roll conf `repeat_until` nontrivial
+            Program sts = p
+        in InstanceConfig fb i p final
       where
-        nontrivial (_, Program sts , final) = not $ or $ do
+        nontrivial = not $ or $ do
             let bnd = ( 0 , fromIntegral mds )
             ps <- [] : map return ( patches final bnd )
             return $ matches ( final ,  Program $ ps ++ sts , final )
