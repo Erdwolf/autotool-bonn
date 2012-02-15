@@ -627,8 +627,8 @@ tmakers =
       , item Prolog.Unifier.Central.make_fixed
       , item Syntax.Central.make_fixed
       , item Syntax.Quiz.make
-      , item $ Program.GeneralBonn.Central.make_fixed Program.ArrayBonn.Instance.Program_ArrayBonn
-      , item Program.ArrayBonn.Instance.make_quiz
+      , item ArrayBonn.Central.make_fixed
+      , item ArrayBonn.Central.make_quiz
       , item HeapSort.Central.make_fixed
       , item HeapSort.Quiz.make
       , item EditDistance.Central.make_fixed
