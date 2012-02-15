@@ -61,7 +61,7 @@ type Solution = Environment Value
 
 instance C.Partial ArrayBonn InstanceConfig Solution where
 
-    describe _ (InstanceConfig fb _ p e) = vcat $
+    describe _ (InstanceConfig giveFeedback _ p e) = vcat $
         [ text "Deklarieren und initialisieren Sie die Variablen,"
         , text "so dass sich nach Ausführung des Programmes"
         , nest 4 $ toDoc p
