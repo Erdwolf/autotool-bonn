@@ -28,29 +28,4 @@ import Data.Typeable
 import Data.Maybe ( isNothing, isJust )
 
 
-data ArrayBonn = ArrayBonn deriving ( Eq, Ord, Show, Read, Typeable )
-
-instance OrderScore ArrayBonn where
-    scoringOrder _ = None -- ?
-
-instance Class ArrayBonn Statement Program.ArrayBonn.Value.Value where
-    execute p = Program.ArrayBonn.Semantics.execute
-    example p = ( Program [ Program.ArrayBonn.Statement.s0 ]
-                , Program.GeneralBonn.Environment.make 
-                      [ ( read "x", Program.ArrayBonn.Value.example ) ]
-                )
-
-make_quiz :: Make
-make_quiz = quiz ArrayBonn Quiz.example
-
-data InstanceConfig = InstanceConfig
-    { feedback :: Bool
-    , initial :: Environment Program.ArrayBonn.Value.Value
-    , program :: Program Statement
-    , final   :: Environment Program.ArrayBonn.Value.Value
-    }
-  deriving Typeable
-
-$(derives [makeReader, makeToDoc] [''InstanceConfig])
-
 

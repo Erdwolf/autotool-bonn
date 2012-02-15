@@ -22,6 +22,25 @@ import Autolib.Util.Zufall ( repeat_until )
 import Data.Typeable
 import Data.Maybe ( isNothing, isJust )
 
+data ArrayBonn = ArrayBonn deriving ( Eq, Ord, Show, Read, Typeable )
+
+instance OrderScore ArrayBonn where
+    scoringOrder _ = None -- ?
+
+make_quiz :: Make
+make_quiz = quiz ArrayBonn Quiz.example
+
+data InstanceConfig = InstanceConfig
+    { feedback :: Bool
+    , initial :: Environment Program.ArrayBonn.Value.Value
+    , program :: Program Statement
+    , final   :: Environment Program.ArrayBonn.Value.Value
+    }
+  deriving Typeable
+
+$(derives [makeReader, makeToDoc] [''InstanceConfig])
+
+
 instance Generator ArrayBonn Quiz.Config InstanceConfig where
     generator p conf@(Quiz.Config fb _ _ mds _ _ _) _ = do
         (i,prog,final) <- R.roll conf -- `repeat_until` nontrivial
