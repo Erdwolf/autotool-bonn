@@ -4,6 +4,7 @@ module ArrayBonn.Central where
 
 import ArrayBonn.Environment
 import ArrayBonn.Program
+import ArrayBonn.Statement
 
 import qualified ArrayBonn.Roll as R
 import ArrayBonn.Config
@@ -27,13 +28,13 @@ instance OrderScore ArrayBonn where
     scoringOrder _ = None -- ?
 
 make_quiz :: Make
-make_quiz = quiz ArrayBonn Quiz.example
+make_quiz = quiz ArrayBonn example
 
 data InstanceConfig = InstanceConfig
     { feedback :: Bool
-    , initial :: Environment Program.ArrayBonn.Value.Value
+    , initial :: Environment ArrayBonn.Value.Value
     , program :: Program Statement
-    , final   :: Environment Program.ArrayBonn.Value.Value
+    , final   :: Environment ArrayBonn.Value.Value
     }
   deriving Typeable
 
