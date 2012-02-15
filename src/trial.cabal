@@ -138,6 +138,7 @@ executable Trial.cgi
                  ArrayBonn.Roll,
                  ArrayBonn.Semantics,
                  ArrayBonn.Statement,
+                 ArrayBonn.Value,
                  Debug,
                  Flow.Trace,
                  Flow.Goto.Semantics,

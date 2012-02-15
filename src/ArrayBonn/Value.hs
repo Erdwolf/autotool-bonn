@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable, FlexibleInstances #-}
 module ArrayBonn.Value where
 
-import qualified Program.GeneralBonn.Environment as E
+import qualified ArrayBonn.Environment as E
 
 import Autolib.TES.Identifier
 
