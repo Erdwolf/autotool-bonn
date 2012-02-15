@@ -85,4 +85,4 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
 
 
 make_fixed :: Make
-make_fixed = direct ArrayBonn ( V.example ArrayBonn )
+make_fixed = direct ArrayBonn V.example
