@@ -4,11 +4,9 @@ module ArrayBonn.Central where
 
 import ArrayBonn.Environment
 import ArrayBonn.Program
-import ArrayBonn.Class
 
 import qualified ArrayBonn.Roll as R
 import ArrayBonn.Config
-import ArrayBonn.Instance
 import ArrayBonn.Value
 
 import Autolib.Reporter
