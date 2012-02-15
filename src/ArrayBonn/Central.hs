@@ -85,4 +85,4 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
 
 
 make_fixed :: Make
-make_fixed = direct ArrayBonn $ InstanceConfig fb V.example (Program []) (Program []) V.example
+make_fixed = direct ArrayBonn $ InstanceConfig True V.example (Program []) V.example
