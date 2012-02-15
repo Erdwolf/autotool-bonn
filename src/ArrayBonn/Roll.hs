@@ -59,7 +59,7 @@ rollstat env ops bnd s = do
     ( acc @ ( Access name inds ) , vs ) <- rollacc env ops bnd s
     ( exp, val ) <- rollex env ops bnd s
     let st = Assign acc exp
-	menv' = result $ Program.ArrayBonn.Semantics.single env st
+	menv' = result $ ArrayBonn.Semantics.single env st
     case menv' of
 	Just env' | env /= env' -> return ( st, env' )
         _ -> rollstat env ops bnd s
