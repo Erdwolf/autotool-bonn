@@ -28,7 +28,7 @@ import Data.Typeable
 import Data.Maybe ( isNothing, isJust )
 
 
---data Program_ArrayBonn = Program_ArrayBonn deriving ( Eq, Ord, Show, Read, Typeable )
+data ArrayBonn = ArrayBonn deriving ( Eq, Ord, Show, Read, Typeable )
 
 instance OrderScore ArrayBonn where
     scoringOrder _ = None -- ?
@@ -41,7 +41,7 @@ instance Class ArrayBonn Statement Program.ArrayBonn.Value.Value where
                 )
 
 make_quiz :: Make
-make_quiz = quiz Program_ArrayBonn Quiz.example
+make_quiz = quiz ArrayBonn Quiz.example
 
 data InstanceConfig = InstanceConfig
     { feedback :: Bool
@@ -50,7 +50,7 @@ data InstanceConfig = InstanceConfig
     , final   :: Environment Program.ArrayBonn.Value.Value
     }
 
-instance Generator Program_ArrayBonn Quiz.Config InstanceConfig where
+instance Generator ArrayBonn Quiz.Config InstanceConfig where
     generator p conf@(Quiz.Config fb _ _ mds _ _ _) =
         let (i,prog,final) = R.roll conf `repeat_until` nontrivial
         in return $ InstanceConfig fb i prog final
@@ -63,7 +63,7 @@ instance Generator Program_ArrayBonn Quiz.Config InstanceConfig where
 
 
 instance Project
-	     Program_ArrayBonn 
+	     ArrayBonn 
 	     ( Environment Program.ArrayBonn.Value.Value
              , Program Statement 
              , Environment Program.ArrayBonn.Value.Value 
