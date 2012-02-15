@@ -47,11 +47,11 @@ instance Generator ArrayBonn Config InstanceConfig where
         (i,prog,final) <- R.roll conf `repeat_until` nontrivial
         return $ InstanceConfig fb i prog final
      where
-        nontrivial (i,prog,final) = not $ or $ do
+        nontrivial (i,prog,final) = and $ do
             let bnd = ( 0 , fromIntegral mds )
                 Program sts = prog
             ps <- [] : map return ( patches final bnd )
-            return $ isJust $ result $ C.total ArrayBonn (InstanceConfig True undefined (Program $ ps ++ sts) final) final
+            return $ not $ isJust $ result $ C.total ArrayBonn (InstanceConfig True undefined (Program $ ps ++ sts) final) final
 
 
 instance Project ArrayBonn InstanceConfig InstanceConfig where
@@ -69,18 +69,18 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
         , nest 4 $ toDoc e
         ]
 
-    initial _ (InstanceConfig _ _ p e) = e -- Program.Array.Environment.example
+    initial _ (InstanceConfig _ _ p e) = e
 
     total _ (InstanceConfig fb _ p target) start = do
         inform $ text "Ich führe das Programm aus:"
         actual <- nested 4 $ S.execute start p
-    inform $ vcat
-        [ text "Die resultierende Belegung ist:"
-        , nest 4 $ toDoc actual
-        ]
-    inform $ text "Ich vergleiche mit der Aufgabenstellung:"
-    nested 4 $ must_be_equal target actual
-    inform $ text "Ok."
+        inform $ vcat
+            [ text "Die resultierende Belegung ist:"
+            , nest 4 $ toDoc actual
+            ]
+        inform $ text "Ich vergleiche mit der Aufgabenstellung:"
+        nested 4 $ must_be_equal target actual
+        inform $ text "Ok."
 
 
 
