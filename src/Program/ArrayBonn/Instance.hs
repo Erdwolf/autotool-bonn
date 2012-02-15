@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses, DeriveDataTypeable, FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses, DeriveDataTypeable, FlexibleInstances, TemplateHaskell #-}
 
 module Program.ArrayBonn.Instance where
 
