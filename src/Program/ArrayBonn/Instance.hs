@@ -53,18 +53,4 @@ data InstanceConfig = InstanceConfig
 
 $(derives [makeReader, makeToDoc] [''InstanceConfig])
 
-instance Generator ArrayBonn Quiz.Config InstanceConfig where
-    generator p conf@(Quiz.Config fb _ _ mds _ _ _) _ = do
-        (i,prog,final) <- R.roll conf -- `repeat_until` nontrivial
-        return $ InstanceConfig fb i prog final
-     where
-        nontrivial (i,prog,final) = not $ or $ do
-            let bnd = ( 0 , fromIntegral mds )
-                Program sts = prog
-            ps <- [] : map return ( patches final bnd )
-            return $ isJust $ result $ C.total ArrayBonn (InstanceConfig True undefined (Program $ ps ++ sts) final) final
-
-
-instance Project ArrayBonn InstanceConfig InstanceConfig where
-    project _ = id
 
