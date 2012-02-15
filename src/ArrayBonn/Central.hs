@@ -32,9 +32,9 @@ make_quiz = quiz ArrayBonn Cfg.example
 
 data InstanceConfig = InstanceConfig
     { feedback :: Bool
-    , initial :: Environment ArrayBonn.Value.Value
+    , initial :: Environment Value
     , program :: Program Statement
-    , final   :: Environment ArrayBonn.Value.Value
+    , final   :: Environment Value
     }
   deriving Typeable
 
