@@ -44,7 +44,7 @@ $(derives [makeReader, makeToDoc] [''InstanceConfig])
 
 instance Generator ArrayBonn Config InstanceConfig where
     generator p conf@(Config fb _ _ mds _ _ _) _ = do
-        (i,prog,final) <- R.roll conf -- `repeat_until` nontrivial
+        (i,prog,final) <- R.roll conf `repeat_until` nontrivial
         return $ InstanceConfig fb i prog final
      where
         nontrivial (i,prog,final) = not $ or $ do
@@ -63,24 +63,24 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
 
     describe _ (InstanceConfig fb _ p e) = vcat
         [ text "Deklarieren und initialisieren Sie die Variablen,"
-	, text "so dass sich nach Ausführung des Programmes"
-	, nest 4 $ toDoc p
-	, text "die folgende Belegung ergibt:"
-	, nest 4 $ toDoc e
-	]
+        , text "so dass sich nach Ausführung des Programmes"
+        , nest 4 $ toDoc p
+        , text "die folgende Belegung ergibt:"
+        , nest 4 $ toDoc e
+        ]
 
     initial _ (InstanceConfig _ _ p e) = e -- Program.Array.Environment.example
 
     total _ (InstanceConfig fb _ p target) start = do
         inform $ text "Ich führe das Programm aus:"
         actual <- nested 4 $ S.execute start p
-	inform $ vcat
-	    [ text "Die resultierende Belegung ist:"
-	    , nest 4 $ toDoc actual
-	    ]
-	inform $ text "Ich vergleiche mit der Aufgabenstellung:"
-	nested 4 $ must_be_equal target actual
-	inform $ text "Ok."
+    inform $ vcat
+        [ text "Die resultierende Belegung ist:"
+        , nest 4 $ toDoc actual
+        ]
+    inform $ text "Ich vergleiche mit der Aufgabenstellung:"
+    nested 4 $ must_be_equal target actual
+    inform $ text "Ok."
 
 
 
