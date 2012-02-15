@@ -51,7 +51,7 @@ data InstanceConfig = InstanceConfig
     }
 
 instance Generator Program_ArrayBonn Quiz.Config InstanceConfig where
-    generator p conf@(Quiz.Config fb _ _ mds _ _ _) = do
+    generator p conf@(Quiz.Config fb _ _ mds _ _ _) =
         let (i,prog,final) = R.roll conf `repeat_until` nontrivial
         in return $ InstanceConfig fb i prog final
      where
