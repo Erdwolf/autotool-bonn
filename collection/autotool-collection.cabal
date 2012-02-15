@@ -637,14 +637,6 @@ Library
         Program.Array.Semantics
         Program.Array.Statement
         Program.Array.Value
-        Program.ArrayBonn.Config
-        Program.ArrayBonn.Expression
-        Program.ArrayBonn.Instance
-        Program.ArrayBonn.Operator
-        Program.ArrayBonn.Roll
-        Program.ArrayBonn.Semantics
-        Program.ArrayBonn.Statement
-        Program.ArrayBonn.Value
         Program.Cexp.Annotated
         Program.Cexp.Interface
         Program.Cexp.Type
@@ -653,11 +645,16 @@ Library
         Program.General.Environment
         Program.General.Program
         Program.General.Value
-        Program.GeneralBonn.Central
-        Program.GeneralBonn.Class
-        Program.GeneralBonn.Environment
-        Program.GeneralBonn.Program
-        Program.GeneralBonn.Value
+        ArrayBonn.Central
+        ArrayBonn.Config
+        ArrayBonn.Environment
+        ArrayBonn.Expression
+        ArrayBonn.Operator
+        ArrayBonn.Program
+        ArrayBonn.Roll
+        ArrayBonn.Semantics
+        ArrayBonn.Statement
+        ArrayBonn.Value
         Program.List.Expression
         Program.List.Instance
         Program.List.Operation
