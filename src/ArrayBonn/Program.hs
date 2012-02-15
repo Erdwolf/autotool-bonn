@@ -1,7 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module ArrayBonn.Program where
 
-import ArrayBonn.Statement
+module ArrayBonn.Program where
 
 import Autolib.Reader
 import Autolib.ToDoc
@@ -10,22 +9,18 @@ import Autolib.Size
 
 import Data.Typeable
 
-data Program = Program [ Statement ]
+data Program st = Program [ st ]
     deriving ( Typeable )
 
-s :: Program
-s = Program [ s0 ]
+plength ( Program sts ) = length sts
 
-d :: Program
-d = Program [ d0, d1, d2 ]
-
-instance ToDoc Program where
+instance ToDoc st => ToDoc ( Program st ) where
     toDoc ( Program ss ) = vcat $ map toDoc ss
 
-instance Reader Program where
+instance Reader st => Reader ( Program st ) where
     reader = do
         ss <- many reader
 	return $ Program ss
 
-instance Size Program where
+instance Size st => Size ( Program st ) where
     size ( Program ss ) = sum $ map size ss
