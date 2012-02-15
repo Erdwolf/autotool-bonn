@@ -49,6 +49,9 @@ data InstanceConfig = InstanceConfig
     , program :: Program Statement
     , final   :: Environment Program.ArrayBonn.Value.Value
     }
+  deriving Typeable
+
+$(derives [makeReader, makeToDoc] [''Config])
 
 instance Generator ArrayBonn Quiz.Config InstanceConfig where
     generator p conf@(Quiz.Config fb _ _ mds _ _ _) =
