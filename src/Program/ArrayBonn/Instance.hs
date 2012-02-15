@@ -52,18 +52,14 @@ data InstanceConfig = InstanceConfig
 
 instance Generator Program_ArrayBonn Quiz.Config InstanceConfig where
     generator p conf@(Quiz.Config fb _ _ mds _ _ _) = do
-        (i,p,final) <- R.roll conf `repeat_until` nontrivial
+        (i,prog,final) <- R.roll conf `repeat_until` nontrivial
         return $ InstanceConfig fb i p final
-      where
-        nontrivial = not $ or $ do
+     where
+        nontrivial (i,prog,final) = not $ or $ do
             let bnd = ( 0 , fromIntegral mds )
-                Program sts = p
+                Program sts = prog
             ps <- [] : map return ( patches final bnd )
-            return $ matches ( final ,  Program $ ps ++ sts , final )
-
-matches ( start, prog, final ) = 
-    isJust $ result $ C.total Program_ArrayBonn (InstanceConfig True undefined prog final) start
-
+            return $ isJust $ result $ C.total Program_ArrayBonn (InstanceConfig True undefined (Program $ ps ++ sts) final) final
 
 
 instance Project
