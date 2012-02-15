@@ -51,7 +51,7 @@ instance Generator ArrayBonn Config InstanceConfig where
             let bnd = ( 0 , fromIntegral mds )
                 Program sts = prog
             ps <- [] : map return ( patches final bnd )
-            return $ not $ isJust $ result $ C.total ArrayBonn (InstanceConfig True undefined (Program $ ps ++ sts) final) final
+            return $ isNothing $ result $ C.total ArrayBonn (InstanceConfig True undefined (Program $ ps ++ sts) final) final
 
 
 instance Project ArrayBonn InstanceConfig InstanceConfig where
@@ -61,17 +61,21 @@ type Solution = Environment Value
 
 instance C.Partial ArrayBonn InstanceConfig Solution where
 
-    describe _ (InstanceConfig fb _ p e) = vcat
+    describe _ (InstanceConfig fb _ p e) = vcat $
         [ text "Deklarieren und initialisieren Sie die Variablen,"
         , text "so dass sich nach Ausführung des Programmes"
         , nest 4 $ toDoc p
         , text "die folgende Belegung ergibt:"
         , nest 4 $ toDoc e
+        ] ++ if giveFeedback then [] else
+        [ text ""
+        , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
+        , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
         ]
 
     initial _ (InstanceConfig _ _ p e) = e
 
-    total _ (InstanceConfig fb _ p target) start = do
+    total _ (InstanceConfig True _ p target) start = do
         inform $ text "Ich führe das Programm aus:"
         actual <- nested 4 $ S.execute start p
         inform $ vcat
@@ -81,6 +85,14 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
         inform $ text "Ich vergleiche mit der Aufgabenstellung:"
         nested 4 $ must_be_equal target actual
         inform $ text "Ok."
+
+    total _ (InstanceConfig False _ p target) start = do
+        inform $ vcat [ text "Nicht geprüft."
+                      , text ""
+                      , text "Die Einsendung wird von Ihrem Tutor bewertet."
+                      , text ""
+                      , text "Ignorieren Sie die unten angezeigte Bewertung."
+                      ]
 
 
 
