@@ -85,4 +85,4 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
 
 
 make_fixed :: Make
-make_fixed = direct ArrayBonn $ InstanceConfig True V.example (Program []) V.example
+make_fixed = direct ArrayBonn $ InstanceConfig True env (Program []) env where env = read "int a[3] = { 1, 2, 3 };"
