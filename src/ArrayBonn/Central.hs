@@ -68,7 +68,6 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
         , text ""
         , nest 4 $ toDoc p
         , text ""
-        , text ""
         , text "die folgende Belegung ergibt:"
         , text ""
         , nest 4 $ toDoc e
