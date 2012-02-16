@@ -71,11 +71,9 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
         , text ""
         , text "die folgende Belegung ergibt:"
         , text ""
-        , text ""
         , nest 4 $ toDoc e
         ] ++ if giveFeedback then [] else
         [ text ""
-        , text ""
         , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
         , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
         ]
@@ -87,7 +85,7 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
         actual <- nested 4 $ S.execute start p
         inform $ vcat
             [ text "Die resultierende Belegung ist:"
-            [ text ""
+            , text ""
             , nest 4 $ toDoc actual
             ]
         inform $ text "Ich vergleiche mit der Aufgabenstellung:"
