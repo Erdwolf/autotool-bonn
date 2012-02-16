@@ -70,6 +70,7 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
         , text ""
         , text "die folgende Belegung ergibt:"
         , text ""
+        , text ""
         , nest 4 $ toDoc e
         ] ++ if giveFeedback then [] else
         [ text ""
