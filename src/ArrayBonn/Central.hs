@@ -64,11 +64,18 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
     describe _ (InstanceConfig giveFeedback _ p e) = vcat $
         [ text "Deklarieren und initialisieren Sie die Variablen,"
         , text "so dass sich nach Ausführung des Programmes"
+        , text ""
+        , text ""
         , nest 4 $ toDoc p
+        , text ""
+        , text ""
         , text "die folgende Belegung ergibt:"
+        , text ""
+        , text ""
         , nest 4 $ toDoc e
         ] ++ if giveFeedback then [] else
         [ text ""
+        , text ""
         , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
         , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
         ]
@@ -80,11 +87,15 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
         actual <- nested 4 $ S.execute start p
         inform $ vcat
             [ text "Die resultierende Belegung ist:"
+            [ text ""
             , nest 4 $ toDoc actual
             ]
         inform $ text "Ich vergleiche mit der Aufgabenstellung:"
         nested 4 $ must_be_equal target actual
-        inform $ text "Ok."
+        inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
+                      , text ""
+                      , text "Ignorieren Sie die unten angezeigte Bewertung."
+                      ]
 
     total _ (InstanceConfig False _ p target) start = do
         inform $ vcat [ text "Nicht geprüft."
