@@ -63,7 +63,7 @@ instance Monad OnFailure where
         lift $ lift $ reject $ text $ "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance TreeOutputMonad (Marked Int) Verbose where
-    treeOutput x = VerboseReporter $ peng $ toTree x
+    treeOutput x = VerboseReporter $ lift $ peng $ toTree x
 instance TreeOutputMonad (Marked Int) OnFailure where
     treeOutput x = OnFailureReporter $ put x
 instance OperationOutputMonad Verbose where
