@@ -109,6 +109,7 @@ peng = Autolib.Dot.peng
 
 data Feedback = Always
               | OnlyOnCompletion
+              | None
            deriving (Typeable)
 
 $(derives [makeReader, makeToDoc] [''Feedback])
@@ -206,15 +207,29 @@ instance Partial AVLBaum Config OpList where
                      , text "so dass dieser Baum entsteht:"
                      ]
        peng end
+       inform $ vcat [ text ""
+                     , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
+                     , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
+                     ]
        inform $ text "<span style='color:red'>Hinweis: Die zum Rebalancieren des Baumes nötigen <em>Rotationen</em> werden beim Einfügen automatisch durchgeführt. Sie müssen diese <em>nicht</em> mit angeben.</span>"
 
     initial _ (Config _ _ plan _) =
         OpList (map convertOp plan)
 
+    total _ (Config None _ _ _) _ = do
+        inform $ vcat [ text "Nicht geprüft."
+                      , text ""
+                      , text "Die Einsendung wird von Ihrem Tutor bewertet."
+                      , text ""
+                      , text "Ignorieren Sie die unten angezeigte Bewertung."
+                      ]
     total _ (Config fb startB plan endB) (OpList ops) = do
         c <- steps start (map convertOp plan) ops []
         if c == end
-           then inform $ text "Ja."
+           then inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
+                              , text ""
+                              , text "Ignorieren Sie die unten angezeigte Bewertung."
+                              ]
            else rejectTreeAlways c ops $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
 
       where

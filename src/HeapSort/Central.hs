@@ -43,13 +43,15 @@ instance Verify HeapSort Config where
 
 $(derives [makeEq, makeToDoc] [''Tree])
 
-data Verbose   a = VerboseReporter { runVerbose :: Reporter a }
+data Verbose   a = VerboseReporter { runVerbose :: StateT (Maybe Operation) Reporter a }
 data OnFailure a = OnFailureReporter { runOnFailure :: StateT (Tree (Marked Int)) (StateT (Maybe Operation) Reporter) a }
 
 instance Monad Verbose where
     return = VerboseReporter . return
     (VerboseReporter mx) >>= f = VerboseReporter $ mx >>= runVerbose . f
-    fail x = VerboseReporter $ reject $ text $ "Nein. " ++ x
+    fail x = VerboseReporter $ do
+        mb_op <- get
+        lift $ reject $ text $ "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance Monad OnFailure where
     return = OnFailureReporter . return
@@ -58,14 +60,14 @@ instance Monad OnFailure where
         t  <- get
         lift $ lift $ peng $ toTree t
         mb_op <- lift get
-        lift $ lift $ reject $ text $  "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
+        lift $ lift $ reject $ text $ "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance TreeOutputMonad (Marked Int) Verbose where
     treeOutput x = VerboseReporter $ peng $ toTree x
 instance TreeOutputMonad (Marked Int) OnFailure where
     treeOutput x = OnFailureReporter $ put x
 instance OperationOutputMonad Verbose where
-    operationOutput _ = VerboseReporter $ return ()
+    operationOutput x = VerboseReporter $ put $ Just x
 instance OperationOutputMonad OnFailure where
     operationOutput x = OnFailureReporter $ lift $ put $ Just x
 
@@ -80,11 +82,14 @@ instance Partial HeapSort Config Solution where
       inform $ vcat [ text "Als Operationen stehen ihnen S (Sinken) und T (Tauschen) zur Verfügung."
                     , text ""
                     , text "Also zum Beispiel (für einen entsprechenden Baum):"
-                    , text "  Solution"
-                    , text "    [ S(55) [L,R]"
-                    , text "    , S(31) [R]"
-                    , text "    , T(23,66)"
-                    , text "    ]"
+                    , text ""
+                    , nest 3 $ vcat [ text "Solution"
+                                    , text "  [ S(55) [L,R]"
+                                    , text "  , S(31) [R]"
+                                    , text "  , T(23,66)"
+                                    , text "  ]"
+                                    ]
+                    , text ""
                     , text "Die erste Operation lässt Knoten 55 erst nach links, dann (im selben Zug) nach rechts absinken."
                     , text "Die zweite Operation senkt Knoten 31 nach rechts ab. Die dritte Operation vertauscht Knoten 23"
                     , text "und 66 (und somit wird 66 ans Ende des Arrays bewegt und als abgespalten markiert)."
@@ -105,37 +110,38 @@ instance Partial HeapSort Config Solution where
       when (feedback == None) $ do
         inform $ vcat [ text ""
                       , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-                      , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
+                      , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
                       ]
 
     initial p _ = Solution []
 
-    total p (Config feedback unsortedNumbers) (Solution operations) = do
-       if (feedback == None) 
-         then do
-           inform $ vcat [ text "Nicht geprüft."
-                         , text ""
-                         , text "Die Einsendung wird von Ihrem Tutor bewertet."
-                         , text ""
-                         , text "Ignorieren Sie die unten angezeigte Bewertung. "
-                         ]
-         else do
-           let t = decorate (T.fromList unsortedNumbers)
-           let m = execute_ operations t
-           t' <- case feedback of
-                    OnFailure ->
-                         flip evalStateT Nothing $ flip evalStateT t $ runOnFailure m
-                    Verbose ->
-                         runVerbose m
-           unless (isSorted $ map value $ T.toList t') $ do
-               when (feedback == OnFailure) $ do
-                  peng $ toTree t'
-               reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
-           unless (all isMarked $ tail $ T.toList t') $ do
-               when (feedback == OnFailure) $ do
-                  peng $ toTree t'
-               reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
-           inform $ text "Ja, Ihre Einsendung ist richtig."
+    total _ (Config None _) _ = do
+        inform $ vcat [ text "Nicht geprüft."
+                      , text ""
+                      , text "Die Einsendung wird von Ihrem Tutor bewertet."
+                      , text ""
+                      , text "Ignorieren Sie die unten angezeigte Bewertung."
+                      ]
+    total p (Config feedback {- OnFailure or Verbose -} unsortedNumbers) (Solution operations) = do
+        let t = decorate (T.fromList unsortedNumbers)
+        let m = execute_ operations t
+        t' <- case feedback of
+                 OnFailure ->
+                      flip evalStateT Nothing $ flip evalStateT t $ runOnFailure m
+                 Verbose ->
+                      flip evalStateT Nothing $ runVerbose m
+        unless (isSorted $ map value $ T.toList t') $ do
+            when (feedback == OnFailure) $ do
+               peng $ toTree t'
+            reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
+        unless (all isMarked $ tail $ T.toList t') $ do
+            when (feedback == OnFailure) $ do
+               peng $ toTree t'
+            reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
+        inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
+                      , text ""
+                      , text "Ignorieren Sie die unten angezeigte Bewertung."
+                      ]
 
 value (Marked x)   = x
 value (Unmarked x) = x

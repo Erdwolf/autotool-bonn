@@ -33,12 +33,17 @@ instance OrderScore TypeCheckBonn where
 
 instance C.Partial TypeCheckBonn Config Exp where
 
-    describe p (Config _ goal decls) = vcat
+    describe p (Config fb goal decls) = vcat $
         [ text "Bilden Sie einen Ausdruck vom Typ" <+> toDoc goal
         , text "unter Verwendung von:"
         , text ""
         , text ""
         , nest 4 $ toDoc decls
+        , text ""
+        ] ++ if fb /= None then [] else
+        [ text ""
+        , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
+        , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
         ]
 
     initial p i = read "f(a,g(b))"
@@ -46,8 +51,18 @@ instance C.Partial TypeCheckBonn Config Exp where
     total p (Config fb goal decls) b = do
         let (e_t,output) = runWriter $ runErrorT $ infer decls b
         case (fb, e_t) of
+            (None, _) = do
+                inform $ vcat [ text "Nicht geprüft."
+                              , text ""
+                              , text "Die Einsendung wird von Ihrem Tutor bewertet."
+                              , text ""
+                              , text "Ignorieren Sie die unten angezeigte Bewertung."
+                              ]
             (_, Right t) | t == goal -> do
-                inform $ text "Ja. Die Lösung ist korrekt."
+                inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
+                              , text ""
+                              , text "Ignorieren Sie die unten angezeigte Bewertung."
+                              ]
             (YesNo, _) -> do
                 inform $ text "Nein, die Lösung ist nicht korrekt."
                 inform $ text ""

@@ -40,8 +40,11 @@ instance Verify EditDistance Config where
 instance Partial EditDistance Config Solution where
     report p (Config feedback et s t) = do
       inform $ vcat [ text "Berechnen Sie die Tabelle der Edit-Distanzen d_ij für die Zeichenfolgen"
+                    , text ""
                     , nest 3 $ text (show s)
+                    , text ""
                     , text "und"
+                    , text ""
                     , nest 3 $ text (show t) <> text "."
                     , text ""
                     , text "Als Fehler zählen hierbei" <+> case et of
@@ -52,7 +55,7 @@ instance Partial EditDistance Config Solution where
       when (feedback == None) $ do
         inform $ vcat [ text ""
                       , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-                      , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt sein muss."
+                      , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
                       ]
 
     initial p (Config _ _ s t) =
@@ -76,7 +79,7 @@ instance Partial EditDistance Config Solution where
                         , text "Füllen Sie nur die Einträge in die vorgegebene Tabelle ein und ändern Sie nicht die Anzahl der Zeilen und Spalten."
                         ]
 
-       if feedback == None 
+       if feedback == None
         then do
            inform $ vcat [ text "Nicht geprüft."
                          , text ""

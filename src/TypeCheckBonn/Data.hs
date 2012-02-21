@@ -20,6 +20,7 @@ import Autolib.TES.Identifier (Identifier)
 
 data Feedback = Detailed
               | YesNo
+              | None
    deriving (Eq, Ord, Typeable)
 
 data QuizConfig = QuizConfig
