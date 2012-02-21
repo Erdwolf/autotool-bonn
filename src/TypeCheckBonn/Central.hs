@@ -18,7 +18,7 @@ import Autolib.TES.Identifier
 import qualified Autolib.TES.In as T
 
 import Data.Typeable
-import Inter.Types ()
+import Inter.Types (OrderScore(scoringOrder),Increasing, Make, direct)
 import qualified Challenger as C
 
 import Control.Monad.Writer
