@@ -66,7 +66,7 @@ parseWithComments = do
                    xs <- my_commaSep reader
                    string "]"
                    cs <- option "" $ do many (try $ satisfy isSpace)
-                                        string " --" <* many (try $ satisfy isSpace)
+                                        string "--" <* many (try $ satisfy isSpace)
                                         many (satisfy (not.isSpace))
                    my_whiteSpace
                    return (xs,cs)
