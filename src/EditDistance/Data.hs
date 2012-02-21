@@ -65,13 +65,15 @@ parseWithComments = do
                    my_symbol "["
                    xs <- my_commaSep reader
                    string "]"
-                   cs <- option "" $ do string " --" <* many (satisfy isSpace)
+                   cs <- option "" $ do many (satisfy isSpace)
+                                        string " --" <* many (satisfy isSpace)
                                         many (satisfy (not.isSpace))
                    my_whiteSpace
                    return (xs,cs)
     let t = concat ts
     string "]"
-    s <- option "" $ do string "--" <* many (satisfy isSpace)
+    s <- option "" $ do many (satisfy isSpace)
+                        string "--" <* many (satisfy isSpace)
                         anyChar `Autolib.Reader.sepEndBy` my_whiteSpace
     return $ Solution (s,t) (transpose xss) 
 
