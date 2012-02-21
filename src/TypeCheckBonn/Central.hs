@@ -51,7 +51,7 @@ instance C.Partial TypeCheckBonn Config Exp where
     total p (Config fb goal decls) b = do
         let (e_t,output) = runWriter $ runErrorT $ infer decls b
         case (fb, e_t) of
-            (None, _) = do
+            (None, _) -> do
                 inform $ vcat [ text "Nicht geprüft."
                               , text ""
                               , text "Die Einsendung wird von Ihrem Tutor bewertet."
