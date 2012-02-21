@@ -41,9 +41,11 @@ instance Partial EditDistance Config Solution where
     report p (Config feedback et s t) = do
       inform $ vcat [ text "Berechnen Sie die Tabelle der Edit-Distanzen d_ij für die Zeichenfolgen"
                     , text ""
+                    , text ""
                     , nest 3 $ text (show s)
                     , text ""
                     , text "und"
+                    , text ""
                     , text ""
                     , nest 3 $ text (show t) <> text "."
                     , text ""
