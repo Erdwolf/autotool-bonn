@@ -16,6 +16,7 @@ import Control.Monad (liftM)
 
 import qualified Baum.Such.Config
 import qualified Baum.Such.Generate
+import Baum.AVL.Type (key, left, right, isEmpty)
 
 import AVLBaumBonn.Central
 
@@ -51,8 +52,8 @@ elements = catMaybes . flatten . toTree
 
 dup xs = xs \\ nub xs
 
-isPrefix Empty _ = True
-isPrefix (Node x1 l1 r1) (Node x2 l2 r2) | x1  == x2 = isPrefix l1 l2 && isPrefix r1 r2
+isPrefix t _ | isEmpty t = True
+isPrefix t1 t2 | key t1  == t2 = isPrefix (left t1) (left t2) && isPrefix (right t1) (right t2)
 isPrefix _ _ = False
 
 instance Project AVLBaum Config Config where
