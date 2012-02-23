@@ -2,7 +2,7 @@
 module AVLBaumBonn.Quiz where
 
 import Inter.Quiz
-import Inter.Types
+import Inter.Types hiding (key)
 
 import Autolib.ToDoc
 import Autolib.Reader
