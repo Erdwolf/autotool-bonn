@@ -52,7 +52,7 @@ elements = catMaybes . flatten . toTree
 
 dup xs = xs \\ nub xs
 
-isPrefix t _ | leaf t = True
+isPrefix t _ | isLeaf t = True
 isPrefix t1 t2 | key t1  == t2 = isPrefix (left t1) (left t2) && isPrefix (right t1) (right t2)
 isPrefix _ _ = False
 
