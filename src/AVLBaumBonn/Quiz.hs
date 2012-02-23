@@ -16,7 +16,7 @@ import Control.Monad (liftM)
 
 import qualified Baum.Such.Config
 import qualified Baum.Such.Generate
-import Baum.AVL.Type (key, left, right, leaf)
+import Baum.AVL.Type (key, left, right, isLeaf)
 
 import AVLBaumBonn.Central
 
