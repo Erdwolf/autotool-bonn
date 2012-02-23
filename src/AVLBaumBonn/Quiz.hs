@@ -28,16 +28,17 @@ data QuizConfig = QuizConfig
 	    , max_key    :: Int
 	    , fixed_ops  :: Int
 	    , guess_ops  :: Int
+	    , discard_prefix_trees :: Bool
 	    }
      deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''QuizConfig])
 
 instance Generator AVLBaum QuizConfig Config where
-    generator _ (QuizConfig fb ss l h f g) _key = do
+    generator _ (QuizConfig fb ss l h f g p) _key = do
         let loop = do
-              cfg@(_,_,t) <- Baum.Such.Generate.generate_once $ Baum.Such.Config.Config ss l h f 0 g 0
-              if containsDuplicateElements t
+              cfg@(s,_,t) <- Baum.Such.Generate.generate_once $ Baum.Such.Config.Config ss l h f 0 g 0
+              if p && isPrefix s t || containsDuplicateElements t
                  then loop
                  else return cfg
         (t1,os,t2) <- loop
@@ -50,6 +51,9 @@ elements = catMaybes . flatten . toTree
 
 dup xs = xs \\ nub xs
 
+isPrefix Empty _ = True
+isPrefix (Node x1 l1 r1) (Node x2 l2 r2) | x1  == x2 = isPrefix l1 l2 && isPrefix r1 r2
+isPrefix _ _ = False
 
 instance Project AVLBaum Config Config where
     project _ i = i
@@ -61,4 +65,5 @@ make = quiz AVLBaum $ QuizConfig { quiz_feedback = Always
                                  , max_key       = 50
                                  , fixed_ops     = 5
                                  , guess_ops     = 5
+                                 , discard_prefix_trees = True
                                  }
