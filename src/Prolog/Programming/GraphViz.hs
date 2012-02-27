@@ -8,7 +8,7 @@ import Data.GraphViz.Attributes.HTML (HtmlTextItem)
 import Data.GraphViz.Attributes.Complete
 import Data.GraphViz.Types (GlobalAttributes(GraphAttrs))
 import Language.Prolog (resolve_)
-import Language.Prolog.GraphViz (runGraphGenT, Gr(..))
+import Language.Prolog.GraphViz (runGraphGenT, Gr(..), toDot)
 import System.Directory (getTemporaryDirectory)
 import System.FilePath ((</>),(<.>))
 import System.IO (openTempFile, hClose)
