@@ -1,8 +1,8 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances, TupleSections #-}
+{-# LANGUAGE TemplateHaskell, QuasiQuotes, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances, TupleSections #-}
 
 module Prolog.Programming.Central where
 
-import Language.Prolog (term, apply, resolve, consultString, VariableName(..), Term)
+import Language.Prolog (term, apply, resolve, consultString, VariableName(..), Term(..))
 import Prolog.Programming.Data
 
 import Debug ( debug )
@@ -93,12 +93,12 @@ instance Partial Prolog_Programming Config Facts where
                            case solutions p query of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,_) -> WrongResult actual; Left err -> ErrorMsg err }
                 check (WithTree (QueryWithAnswers query expected)) =
                            case solutions p query of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,tree) -> Tree tree (WrongResult actual); Left err -> ErrorMsg err }
-                check (WithTreeNegative (QueryWithAnswers query expected)) =
-                           case solutions p (pl_not query) of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,tree) -> TreeNegative tree (WrongResult actual); Left err -> ErrorMsg err }
                 check (StatementToCheck query) =
                            case solutions p query of { Right ([],_) -> Wrong; Right _ -> Ok; Left err -> ErrorMsg err }
                 check (WithTree (StatementToCheck query)) =
                            case solutions p query of { Right ([],tree) -> Tree tree (Wrong); Right _ -> Ok; Left err -> ErrorMsg err }
+                check (WithTreeNegative (StatementToCheck query)) =
+                           case solutions p query of { Right ([],_) -> Ok; Right (_,tree) -> TreeNegative tree (Wrong); Left err -> ErrorMsg err }
                 check (Hidden _ spec)                   = check spec
             incorrect <- liftIO $ concatMap (\(s,mbb) -> maybe [(s,Timeout)] (\r -> case r of { Ok -> []; _ -> [(s,r)] }) mbb) <$> sequence [ (s,) <$> timeout 10000000 (evaluate (check s)) | s <- specs ]
             let explain x              Timeout              = hsep [ describe x, text "*scheint nicht zu terminieren*" ]
