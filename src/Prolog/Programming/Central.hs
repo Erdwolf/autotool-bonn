@@ -41,6 +41,7 @@ make_fixed = direct Prolog_Programming $ Config $ unlines
    , " * !a_predicate_whose_answers_are_hidden(Foo,Bar): a_predicate(expected_foo1,expected_bar1), a_predicate(expected_foo2,expected_bar2)"
    , " * !a_hidden_statement_that_has_to_be_true"
    , " * §a_test_with_resolution_tree(X) % Only shown if test fails."
+   , " * #a_negative_test_with_resolution_tree(X) % Only shown if test fails, e.g. the statement is true."
    , " */"
    , "/* Everything from here on (up to an optional hidden section separated by a line of 3 or more dashes)"
    , " * will be part of the visible exercise description (In other words: Only the first comment block is special)."
@@ -92,6 +93,8 @@ instance Partial Prolog_Programming Config Facts where
                            case solutions p query of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,_) -> WrongResult actual; Left err -> ErrorMsg err }
                 check (WithTree (QueryWithAnswers query expected)) =
                            case solutions p query of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,tree) -> Tree tree (WrongResult actual); Left err -> ErrorMsg err }
+                check (WithTreeNegative (QueryWithAnswers query expected)) =
+                           case solutions p (pl_not query) of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,tree) -> TreeNegative tree (WrongResult actual); Left err -> ErrorMsg err }
                 check (StatementToCheck query) =
                            case solutions p query of { Right ([],_) -> Wrong; Right _ -> Ok; Left err -> ErrorMsg err }
                 check (WithTree (StatementToCheck query)) =
@@ -104,10 +107,12 @@ instance Partial Prolog_Programming Config Facts where
                 explain x              (WrongResult actual) = vcat [ describe x, indent [ text "Ihre Lösung liefert:", indent [ text $ show $ actual ] ] ]
                 explain x              Wrong                = describe x
                 explain x              (Tree tree r)        = vcat [ explain x r, indent [ text "Ableitungsbaum (Anklicken zum Vergrößern):", indent [ text $ asInlinePng tree ] ] ]
+                explain x              (TreeNegative tree r)= vcat [ explain x r, indent [ text "Fälschlicherweise auftretender Ableitungsbaum (Anklicken zum Vergrößern):", indent [ text $ asInlinePng tree ] ] ]
                 describe (QueryWithAnswers query _) = text $ show query
                 describe (StatementToCheck query)   = text $ show query
                 describe (Hidden str _)             = text $ "(ein versteckter Test" ++ str ++")"
                 describe (WithTree x)               = describe x
+                describe (WithTreeNegative x)       = describe x ++ " sollte nicht herleitbar sein."
             if null incorrect
                then informIO $ text "Ja."
                else rejectIO $ vcat [ text "Nein."
@@ -123,6 +128,7 @@ data TestResult r e g = Ok
                       | ErrorMsg e
                       | Timeout
                       | Tree g (TestResult r e g)
+                      | TreeNegative g (TestResult r e g)
 
 (=~=) :: [Term] -> [Term] -> Bool
 actual =~= expected =
@@ -153,6 +159,8 @@ data Spec = QueryWithAnswers Term [Term]
           | StatementToCheck Term
           | Hidden String Spec
           | WithTree Spec
+          | WithTree Spec
+          | Negative Spec
 
 specification = do
    let specLine = (.) <$> withTreeFlag <*> hiddenFlag <*> do
@@ -169,6 +177,7 @@ specification = do
  where
    hiddenFlag   = option id (char '!' >> Hidden <$> option "" (string "(\"" >> anyChar `manyTill`  string "\")"))
    withTreeFlag = option id (char '§' >> return WithTree)
+              <|> option id (char '#' >> return WithTreeNegative)
 
 commentBlock = do
    let startMarker =            string "/* "
