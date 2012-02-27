@@ -159,8 +159,7 @@ data Spec = QueryWithAnswers Term [Term]
           | StatementToCheck Term
           | Hidden String Spec
           | WithTree Spec
-          | WithTree Spec
-          | Negative Spec
+          | WithTreeNegative Spec
 
 specification = do
    let specLine = (.) <$> withTreeFlag <*> hiddenFlag <*> do
