@@ -33,38 +33,12 @@ asInlinePng = showHtml . toPng
 picsDir = ".."</>"pics"
 
 toPng graph = unsafePerformIO $ do
-   --tmp <- getTemporaryDirectory
-   --(tmpfile, h) <- openTempFile tmp "graphviz"
-   --hClose h
    let fname = (hex $ fromIntegral $ hash graph) ++ ".png"
-   runGraphviz (setDirectedness graphToDot params graph)
+   runGraphviz (toDot [] graph)
                Png
                (picsDir </> fname)
-   runGraphviz (setDirectedness graphToDot (params { globalAttributes = [GraphAttrs [Size $ createPoint 1 1]] }) graph)
+   runGraphviz (toDot [Size (createPoint 1 1)] graph)
                Png
                (picsDir </> "thumb_" ++ fname)
    return $ anchor ! [ href ("../pics/" ++ fname) ]
           $ image ! [ src ("../pics/thumb_" ++ fname), alt "Ableitungsbaum" ]
- where
-   params = nonClusteredParams { fmtNode = \(_,l) -> [toLabel l]
-                               , fmtEdge = \(_, _, l) -> [toLabel l]
-                               }
-
-{-
-inlinePng :: BS.ByteString -> Html
-inlinePng pngImage =
-     let
-       -- Extract width and height from the PNG header
-       header = BS.drop 16 pngImage
-       w = valueOf $ BS.take 4 header
-       h = valueOf $ BS.take 4 $ BS.drop 4 header
-       valueOf = sum . zipWith (*) [256^3, 256^2, 256, 1]
-                     . map fromEnum
-                     . BS.unpack
-     in
-       image ! [ src $ "data:image/png;base64," ++ Base64.encode (BS.unpack pngImage)
-               , alt "Herleitungsbaum"
-               , width  (show w)
-               , height (show h)
-               ]
--}
