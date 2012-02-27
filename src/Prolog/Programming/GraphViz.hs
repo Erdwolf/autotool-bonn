@@ -17,10 +17,10 @@ import Data.Hashable (Hashable(hash))
 
 import Prolog.Programming.Hex (hex)
 
-import Data.Graph.Inductive.Graph (labNodes, labEdges)
+--import Data.Graph.Inductive.Graph (labNodes, labEdges)
 
 instance (Hashable a, Hashable b) => Hashable (Gr a b) where
-   hash g = hash (labNodes g, labEdges g)
+   hash (Gr ns es) = hash (ns, es)
 
 instance Hashable HtmlTextItem where
    hash = hash . show
