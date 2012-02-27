@@ -112,7 +112,7 @@ instance Partial Prolog_Programming Config Facts where
                 describe (StatementToCheck query)   = text $ show query
                 describe (Hidden str _)             = text $ "(ein versteckter Test" ++ str ++")"
                 describe (WithTree x)               = describe x
-                describe (WithTreeNegative x)       = describe x ++ " sollte nicht herleitbar sein."
+                describe (WithTreeNegative x)       = describe x <+> text " sollte nicht herleitbar sein."
             if null incorrect
                then informIO $ text "Ja."
                else rejectIO $ vcat [ text "Nein."
