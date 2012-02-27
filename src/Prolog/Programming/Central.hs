@@ -175,8 +175,8 @@ specification = do
          Left err   -> fail (show err)
  where
    hiddenFlag   = option id (char '!' >> Hidden <$> option "" (string "(\"" >> anyChar `manyTill`  string "\")"))
-   withTreeFlag = option id (char '§' >> return WithTree)
-              <|> option id (char '#' >> return WithTreeNegative)
+   withTreeFlag = option id $ char '§' >> return WithTree
+                          <|> char '#' >> return WithTreeNegative
 
 commentBlock = do
    let startMarker =            string "/* "
