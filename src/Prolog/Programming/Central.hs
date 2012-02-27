@@ -8,7 +8,7 @@ import Prolog.Programming.Data
 import Debug ( debug )
 
 import Challenger.Partial (Verify(..), Partial(..))
-import Autolib.ToDoc (derives, makeToDoc, text, vcat, hsep, toDoc, nest, ToDoc(..))
+import Autolib.ToDoc (derives, makeToDoc, text, vcat, hsep, (<+>), toDoc, nest, ToDoc(..))
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
 import Autolib.Reporter (reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
