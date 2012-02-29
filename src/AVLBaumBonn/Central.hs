@@ -18,8 +18,6 @@ import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless,guard)
 import Data.List (zip5, transpose, intersperse)
-import Data.Traversable (traverse)
-import Control.Monad.State (evalState, get, put)
 
 import qualified Baum.Such.Generate
 import qualified Baum.Such.Op
@@ -27,6 +25,8 @@ import qualified Baum.Such.Class
 import qualified Baum.AVL.Type
 import qualified Baum.AVL.Ops
 
+import Data.Traversable (traverse)
+import Control.Monad.State (evalState, get, put)
 import Baum.AVL.Type (isLeaf, left, right, key)
 
 import AVLBaumBonn.GraphViz

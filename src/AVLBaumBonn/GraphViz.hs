@@ -42,7 +42,7 @@ toDot avltree = graphElemsToDot params nodes edges
                                 , fmtEdge = \ (_, _, l) -> [toLabel l]
                                 , globalAttributes =
                                     [ GraphAttrs [Ordering "out"] -- child nodes are drawn in edge-order
-                                    , NodeAttrs [Shape "plaintext"]
+                                    , NodeAttrs [Shape Plaintext]
                                     ]
                                 , isDirected = True
                                 }
