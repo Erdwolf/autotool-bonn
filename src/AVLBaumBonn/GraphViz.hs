@@ -67,6 +67,7 @@ toDot avltree = graphElemsToDot params nodes edges
     subtrees t = t : concatMap subtrees (T.subForest t)
 
 
+toPng :: AVLTree Int -> IO Html
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
    runGraphviz (toDot tree)
