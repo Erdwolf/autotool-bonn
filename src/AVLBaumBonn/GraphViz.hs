@@ -41,7 +41,7 @@ instance Hashable (Baum.AVL.Type.AVLTree Int) where
     hash = hash . toTree
 
 
-toDot :: AVLTree = DotGraph Node
+toDot :: AVLTree -> DotGraph Node
 toDot avltree = graphElemsToDot params nodes edges
   where
     params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l]
