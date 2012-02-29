@@ -13,6 +13,9 @@ import System.IO (openTempFile, hClose)
 import Control.Concurrent (threadDelay)
 import Data.Hashable (Hashable(hash))
 import qualified Data.Tree as T
+import Data.Traversable (traverse)
+import Control.Monad.State (evalState, get, put)
+import Baum.AVL.Type (AVLTree)
 
 import AVLBaumBonn.Conversion (toTree)
 
