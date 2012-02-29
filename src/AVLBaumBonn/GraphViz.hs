@@ -1,4 +1,4 @@
-{-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE NoMonomorphismRestriction, OverloadedStrings #-}
 module AVLBaumBonn.GraphViz (toPng) where
 
 import System.IO.Unsafe (unsafePerformIO)
