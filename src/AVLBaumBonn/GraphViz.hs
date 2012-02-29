@@ -2,7 +2,7 @@
 module AVLBaumBonn.GraphViz (toPng) where
 
 import System.IO.Unsafe (unsafePerformIO)
-import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href, toHtml)
+import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href)
 import Data.GraphViz  --(runGraphviz, GraphvizCommand(Dot), setDirectedness, graphToDot, nonClusteredParams, fmtNode, fmtEdge, toLabel, GraphvizOutput(Png))
 import Data.GraphViz.Attributes.HTML (HtmlTextItem)
 import Data.GraphViz.Attributes.Complete
@@ -68,11 +68,12 @@ toDot avltree = graphElemsToDot params nodes edges
     subtrees t = t : concatMap subtrees (T.subForest t)
 
 
-toPng :: AVLTree Int -> Html
+toPng :: AVLTree Int -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
    runGraphviz (toDot tree)
                Png
                (picsDir </> fname)
-   return $ anchor ! [ href ("../pics/" ++ fname) ]
+   return $ showHtml
+          $ anchor ! [ href ("../pics/" ++ fname) ]
           $ image ! [ src ("../pics/thumb_" ++ fname), alt ("AVL-Baum: " ++ show tree) ]
