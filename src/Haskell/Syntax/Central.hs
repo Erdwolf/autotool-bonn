@@ -81,14 +81,19 @@ instance Partial Haskell_Syntax Code Code where
                         Left (WontCompile (GhcError msg:_)) -> rejectIO $ text msg       -- compilation error(s), only showing the first one
                         Left err ->                                                      -- unexpected error (our fault)
                              rejectIO $ vcat [ text "Es ist ein unerwarteter Fehler aufgetreten. Dies liegt im Allgemeinen nicht an Ihrer Lösung. Bitte kontaktieren Sie diesbezüglich die zuständigen Personen."
-                                            , text "Die Fehlermeldung lautet wie folgt:"
-                                            , nest 4 (text (show err))
-                                            ]
+                                             , text "Die Fehlermeldung lautet wie folgt:"
+                                             , nest 4 (text (show err))
+                                             ]
                         Right () -> do
-                           informIO $ text "Ihre Lösung ist syntaktisch korrekt."
                            let ParseOk (b :: Module) = parse (splitModules cfg !! 1)
                            case test b a of
-                              Ok _ -> return ()
-                              _ -> rejectIO $ text "Sie entspricht allerdings nicht mehr der Vorgabe. Es sollen nur die mindestens nötigen Veränderungen vorgenommen werden, um den Quelltext syntaktisch korrekt zu machen."
+                              Ok _ -> informIO $ vcat [ text "Ja, Ihre Einsendung ist richtig."
+                                                      , text ""
+                                                      , text "Ignorieren Sie die unten angezeigte Bewertung."
+                                                      ]
+                              _ ->  rejectIO $ vcat [ text "Ihre Lösung ist syntaktisch korrekt."
+                                                    , text ""
+                                                    , text "Sie entspricht allerdings nicht mehr der Vorgabe. Es sollen nur die mindestens nötigen Veränderungen vorgenommen werden, um den Quelltext syntaktisch korrekt zu machen."
+                                                    ]
             result
 

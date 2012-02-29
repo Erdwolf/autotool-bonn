@@ -114,7 +114,10 @@ instance Partial Prolog_Programming Config Facts where
                 describe (WithTree x)               = describe x
                 describe (WithTreeNegative x)       = describe x <+> text " sollte nicht herleitbar sein."
             if null incorrect
-               then informIO $ text "Ja."
+               then informIO $ vcat [ text "Ja, Ihre Einsendung ist richtig."
+                                    , text ""
+                                    , text "Ignorieren Sie die unten angezeigte Bewertung."
+                                    ]
                else rejectIO $ vcat [ text "Nein."
                                     , text "Die Antworten auf die folgenden Anfragen sind inkorrekt:"
                                     , indent (map (uncurry explain) incorrect)
