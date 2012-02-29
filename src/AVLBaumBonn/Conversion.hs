@@ -5,8 +5,8 @@ import qualified Data.Tree as T
 import qualified Baum.AVL.Type as A
 
 import Data.Typeable (Typeable)
-import Autolib.ToDoc (derives, makeToDoc)
-import Autolib.Reader (makeReader)
+import Autolib.ToDoc
+import Autolib.Reader
 
 
 data AVLTreeBonn = Node Int AVLTreeBonn AVLTreeBonn
