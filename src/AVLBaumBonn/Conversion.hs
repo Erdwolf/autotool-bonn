@@ -16,8 +16,8 @@ data AVLTreeBonn = Node Int AVLTreeBonn AVLTreeBonn
 $(derives [makeReader, makeToDoc] [''AVLTreeBonn])
 
 bonnifyTree :: A.AVLTree Int -> AVLTreeBonn
-bonnifyTree t | A.Type.isLeaf t = Empty
-bonnifyTree t                   = Node (A.key t)
+bonnifyTree t | A.isLeaf t = Empty
+bonnifyTree t              = Node (A.key t)
 
 debonnifyTree :: AVLTreeBonn -> A.AVLTree Int
 debonnifyTree (Node x l r) = A.branch (debonnifyTree l) x (debonnifyTree r)
