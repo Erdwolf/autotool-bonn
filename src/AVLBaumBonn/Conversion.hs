@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE TemplateHaskell, DeriveDataTypeable #-}
 module AVLBaumBonn.Conversion (AVLBaumBonn(..), bonnifyTree, debonnifyTree, toTree) where
 
 import qualified Data.Tree as T
