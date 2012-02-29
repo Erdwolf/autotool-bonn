@@ -19,6 +19,7 @@ import qualified Baum.Such.Generate
 import Baum.AVL.Type (key, left, right, isLeaf)
 
 import AVLBaumBonn.Central
+import AVLBaumBonn.Conversion (toTree)
 
 
 
