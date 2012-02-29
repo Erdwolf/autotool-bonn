@@ -17,7 +17,7 @@ import Data.Traversable (traverse)
 import Control.Monad.State (evalState, get, put)
 import Baum.AVL.Type (AVLTree)
 
-import AVLBaumBonn.Conversion (toTree)
+import AVLBaumBonn.Conversion (toTree, bonnify)
 
 import Hex (hex)
 
@@ -64,5 +64,4 @@ toPng tree = unsafePerformIO $ do
                Png
                (picsDir </> fname)
    return $ showHtml
-          $ anchor ! [ href ("../pics/" ++ fname) ]
-          $ image ! [ src ("../pics/thumb_" ++ fname), alt ("AVL-Baum: " ++ show tree) ]
+          $ image ! [ src ("../pics/" ++ fname), alt (show $ bonnify tree) ]

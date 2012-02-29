@@ -1,18 +1,35 @@
-module AVLBaumBonn.Conversion (toTree) where
+{-# LANGUAGE DeriveDataTypeable #-}
+module AVLBaumBonn.Conversion (AVLBaumBonn(..), bonnifyTree, debonnifyTree, toTree) where
 
 import qualified Data.Tree as T
+import qualified Baum.AVL.Type as A
 
-import Baum.AVL.Type (isLeaf, left, right, key, AVLTree)
+import Data.Typeable (Typeable)
 
 
-toTree :: Baum.AVL.Type.AVLTree Int -> T.Tree (Maybe Int)
+data AVLTreeBonn = Node Int AVLTreeBonn AVLTreeBonn
+                 | Empty
+  deriving (Typeable)
+
+$(derives [makeReader, makeToDoc] [''AVLTreeBonn])
+
+bonnifyTree :: A.AVLTree Int -> AVLTreeBonn
+bonnifyTree t | A.Type.isLeaf t = Empty
+bonnifyTree t                   = Node (A.key t)
+
+debonnifyTree :: AVLTreeBonn -> A.AVLTree Int
+debonnifyTree (Node x l r) = A.branch (debonnifyTree l) x (debonnifyTree r)
+debonnifyTree Empty        = A.leaf
+
+
+toTree :: A.AVLTree Int -> T.Tree (Maybe Int)
 toTree t = T.unfoldTree uf t
    where
-       uf t |       isLeaf t       = (Nothing,[])
-            | isLeaf l && isLeaf r = (Just k,[])
-            |             isLeaf r = (Just k,[l,r])
-            | isLeaf l             = (Just k,[l,r])
-            |       otherwise      = (Just k,[l,r])
-        where k = key t
-              l = left t
-              r = right t
+       uf t |        A.isLeaf t        = (Nothing,[])
+            | A.isLeaf l && A.isLeaf r = (Just k,[])
+            |               A.isLeaf r = (Just k,[l,r])
+            | A.isLeaf l               = (Just k,[l,r])
+            |       otherwise          = (Just k,[l,r])
+        where k = A.key t
+              l = A.left t
+              r = A.right t

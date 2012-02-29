@@ -30,6 +30,7 @@ import Control.Monad.State (evalState, get, put)
 import Baum.AVL.Type (isLeaf, left, right, key)
 
 import AVLBaumBonn.GraphViz
+import AVLBaumBonn.Conversion
 
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
     empty = Baum.AVL.Type.leaf
@@ -54,23 +55,6 @@ data Feedback = Always
            deriving (Typeable)
 
 $(derives [makeReader, makeToDoc] [''Feedback])
-
-data AVLTreeBonn = Node Int AVLTreeBonn AVLTreeBonn
-                 | Empty
-  deriving (Typeable)
-
-$(derives [makeReader, makeToDoc] [''AVLTreeBonn])
-
-bonnifyTree :: Baum.AVL.Type.AVLTree Int -> AVLTreeBonn
-bonnifyTree t | Baum.AVL.Type.isLeaf t = Empty
-bonnifyTree t                          = Node (Baum.AVL.Type.key t)
-                                              (bonnifyTree $ Baum.AVL.Type.left t)
-                                              (bonnifyTree $ Baum.AVL.Type.right t)
-
-debonnifyTree :: AVLTreeBonn -> Baum.AVL.Type.AVLTree Int
-debonnifyTree (Node x l r) = Baum.AVL.Type.branch (debonnifyTree l) x (debonnifyTree r)
-debonnifyTree Empty        = Baum.AVL.Type.leaf
-
 
 
 data Config = Config
