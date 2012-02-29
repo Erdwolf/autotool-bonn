@@ -19,7 +19,6 @@ import Data.Typeable (Typeable)
 import Control.Monad (when,unless,guard)
 import Data.List (zip5, transpose, intersperse)
 import Data.Traversable (traverse)
-import qualified Data.Tree as T
 import Control.Monad.State (evalState, get, put)
 
 import qualified Baum.Such.Generate
@@ -30,6 +29,7 @@ import qualified Baum.AVL.Ops
 
 import Baum.AVL.Type (isLeaf, left, right, key)
 
+import AVLBaumBonn.GraphViz
 
 instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
     empty = Baum.AVL.Type.leaf
@@ -45,62 +45,6 @@ instance Baum.Such.Class.Such Baum.AVL.Type.AVLTree where
 data AVLBaum = AVLBaum deriving Typeable
 
 $(derives [makeReader, makeToDoc] [''AVLBaum])
-
--------------------------
---
-{-
-instance ToDot (Baum.AVL.Type.AVLTree Int) where
-    toDotProgram _ = Dot
-    toDotOptions _ = unwords [ "-Gordering=out", "-Gnodesep=0" ]
-    toDot avltree =
-        Autolib.Dot.Graph.Type
-              { Autolib.Dot.Graph.directed = True
-              , Autolib.Dot.Graph.name = "foo"
-              , Autolib.Dot.Graph.nodes = nodes
-              , Autolib.Dot.Graph.edges = edges
-              , Autolib.Dot.Graph.attributes = []
-              }
-      where
-        numbered =
-          flip evalState 0 $ flip traverse (toTree avltree) $ \x -> do
-            i <- get; put (succ i)
-            return (i, x)
-
-        nodes =
-          flip map (T.flatten numbered) $ \(i, x) ->
-            Autolib.Dot.Node.blank
-              { Autolib.Dot.Node.label = Just (maybe "" show x)
-              , Autolib.Dot.Node.shape = Just "plaintext"
-              , Autolib.Dot.Node.ident = show i
-              }
-
-        edges = do
-            src@(T.Node (i, _) _) <- subtrees numbered
-            dst@(T.Node (j, x) _) <- T.subForest src
-            return $ Autolib.Dot.Edge.blank
-                       { Autolib.Dot.Edge.from     = show i
-                       , Autolib.Dot.Edge.to       = show j
-                       , Autolib.Dot.Edge.directed = True
-                       , Autolib.Dot.Edge.color    = maybe (Just "white") (\_->Nothing) x
-                       }
-
-        subtrees t = t : concatMap subtrees (T.subForest t)
--}
-
-toTree t = T.unfoldTree uf t
-   where
-       uf t |       isLeaf t       = (Nothing,[])
-            | isLeaf l && isLeaf r = (Just k,[])
-            |             isLeaf r = (Just k,[l,r])
-            | isLeaf l             = (Just k,[l,r])
-            |       otherwise      = (Just k,[l,r])
-        where k = key t
-              l = left t
-              r = right t
-
-instance Hash (Baum.AVL.Type.AVLTree Int) where
-    hash = hash . toTree
-
 
 -------------------------
 
