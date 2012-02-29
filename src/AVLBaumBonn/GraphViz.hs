@@ -34,7 +34,7 @@ toDot :: AVLTree Int -> DotGraph Int
 toDot avltree = graphElemsToDot params nodes edges
   where
     params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l]
-                                , fmtEdge = \ (_, _,n) -> maybe [Color [X11Color l]] (const []) n
+                                , fmtEdge = \ (_, _,n) -> maybe [Color [X11Color White]] (const []) n
                                 , globalAttributes =
                                     [ GraphAttrs [Ordering "out"] -- child nodes are drawn in edge-order
                                     , NodeAttrs [Shape PlainText]
