@@ -33,7 +33,7 @@ instance Hashable (Baum.AVL.Type.AVLTree Int) where
 toDot :: AVLTree Int -> DotGraph Int
 toDot avltree = graphElemsToDot params nodes edges
   where
-    params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l]
+    params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l] ++ [Color [X11Color White]]
                                 , fmtEdge = \ (_, _,l) -> [toLabel l]
                                 , globalAttributes =
                                     [ GraphAttrs [Ordering "out"] -- child nodes are drawn in edge-order
@@ -52,7 +52,7 @@ toDot avltree = graphElemsToDot params nodes edges
     edges = do
         src@(T.Node (i, _) _) <- subtrees numbered
         dst@(T.Node (j, x) _) <- T.subForest src
-        return (i, j, maybe "white" (\_->"" :: String) x) -- FIXME color not label
+        return (i, j, x) -- FIXME color not label
 
     subtrees t = t : concatMap subtrees (T.subForest t)
 
