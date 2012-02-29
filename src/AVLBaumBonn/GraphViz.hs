@@ -63,7 +63,7 @@ toDot avltree = graphElemsToDot params nodes edges
 
 
 toPng tree = unsafePerformIO $ do
-   let fname = (hex $ fromIntegral $ hash graph) ++ ".png"
+   let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
    runGraphviz (toDot tree)
                Png
                (picsDir </> fname)
