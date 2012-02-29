@@ -43,8 +43,8 @@ instance Hashable (Baum.AVL.Type.AVLTree Int) where
 
 toDot avltree = graphElemsToDot params nodes edges
   where
-    params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l]
-                                , fmtEdge = \ (_, _, l) -> [toLabel l]
+    params = nonClusteredParams { fmtNode = \ (_,l) -> [l]
+                                , fmtEdge = \ (_, _, l) -> [l]
                                 , globalAttributes =
                                     [ GraphAttrs [Ordering "out"] -- child nodes are drawn in edge-order
                                     , NodeAttrs [Shape PlainText]
