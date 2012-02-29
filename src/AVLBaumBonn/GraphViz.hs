@@ -34,7 +34,7 @@ toDot :: AVLTree Int -> DotGraph Int
 toDot avltree = graphElemsToDot params nodes edges
   where
     params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l]
-                                , fmtEdge = \ (_, _,l) -> [Color [X11Color White]]
+                                , fmtEdge = \ (_, _,n) -> maybe [Color [X11Color l]] (const []) n
                                 , globalAttributes =
                                     [ GraphAttrs [Ordering "out"] -- child nodes are drawn in edge-order
                                     , NodeAttrs [Shape PlainText]
@@ -52,7 +52,7 @@ toDot avltree = graphElemsToDot params nodes edges
     edges = do
         src@(T.Node (i, _) _) <- subtrees numbered
         dst@(T.Node (j, x) _) <- T.subForest src
-        return (i, j, x) -- FIXME color not label
+        return (i, j, x)
 
     subtrees t = t : concatMap subtrees (T.subForest t)
 
