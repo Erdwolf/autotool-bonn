@@ -75,4 +75,4 @@ toPng tree = unsafePerformIO $ do
                Png
                (picsDir </> fname)
    return $ anchor ! [ href ("../pics/" ++ fname) ]
-          $ image ! [ src ("../pics/thumb_" ++ fname), alt ("AVL-Baum: " ++ show tree) ]
+          $ image ! [ src ("../pics/thumb_" ++ fname), alt (toHtml $ "AVL-Baum: " ++ show tree) ]
