@@ -90,7 +90,10 @@ instance Partial EditDistance Config Solution where
                          , text "Ignorieren Sie die unten angezeigte Bewertung. "
                          ]
         else if numberOfErrors == 0
-          then inform $ text "Ja, Ihre Einsendung ist richtig."
+          then inform $ vcat $ [ text "Ja, Ihre Einsendung ist richtig."
+                               , text ""
+                               , text "Ignorieren Sie die unten angezeigte Bewertung. "
+                               ]
           else reject $ case feedback of
                           WrongEntries ->
                              let wrong doc = text "<strike style='color: red;'>" <> doc <> text "</strike>"
