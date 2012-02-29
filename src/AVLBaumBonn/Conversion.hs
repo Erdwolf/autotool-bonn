@@ -1,8 +1,11 @@
 module AVLBaumBonn.Conversion (toTree) where
 
+import qualified Data.Tree as T
 import Data.Traversable (traverse)
 import Control.Monad.State (evalState, get, put)
+
 import Baum.AVL.Type (isLeaf, left, right, key, AVLTree)
+
 
 toTree :: Baum.AVL.Type.AVLTree Int -> T.Tree (Maybe Int)
 toTree t = T.unfoldTree uf t
