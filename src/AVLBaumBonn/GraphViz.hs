@@ -33,8 +33,8 @@ toTree t = T.unfoldTree uf t
               l = left t
               r = right t
 
-instance Hash (Baum.AVL.Type.AVLTree Int) where
-    hash = hash . toTree
+--instance Hashable (Baum.AVL.Type.AVLTree Int) where
+--    hash = hash . toTree
 
 toDot avltree = graphElemsToDot params nodes edges
   where
