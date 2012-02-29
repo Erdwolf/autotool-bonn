@@ -35,7 +35,7 @@ toTree t = T.unfoldTree uf t
               r = right t
 
 instance Hashable a => Hashable (T.Tree a) where
-    hash = hash . levels
+    hash = hash . T.levels
 
 instance Hashable (Baum.AVL.Type.AVLTree Int) where
     hash = hash . toTree
