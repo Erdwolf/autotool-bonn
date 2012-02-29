@@ -11,7 +11,6 @@ import Autolib.Hash
 import qualified Autolib.Dot.Graph
 import qualified Autolib.Dot.Node
 import qualified Autolib.Dot.Edge
-import qualified Autolib.Dot (peng)
 
 import Autolib.Size (Size(size))
 import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
@@ -49,6 +48,7 @@ $(derives [makeReader, makeToDoc] [''AVLBaum])
 
 -------------------------
 --
+{-
 instance ToDot (Baum.AVL.Type.AVLTree Int) where
     toDotProgram _ = Dot
     toDotOptions _ = unwords [ "-Gordering=out", "-Gnodesep=0" ]
@@ -85,6 +85,7 @@ instance ToDot (Baum.AVL.Type.AVLTree Int) where
                        }
 
         subtrees t = t : concatMap subtrees (T.subForest t)
+-}
 
 toTree t = T.unfoldTree uf t
    where
@@ -99,10 +100,6 @@ toTree t = T.unfoldTree uf t
 
 instance Hash (Baum.AVL.Type.AVLTree Int) where
     hash = hash . toTree
-
-
-peng :: Baum.AVL.Type.AVLTree Int -> Reporter ()
-peng = Autolib.Dot.peng
 
 
 -------------------------
@@ -197,17 +194,19 @@ instance Partial AVLBaum Config OpList where
                           , text "(wobei Sie jedes Any durch ein MyInsert mit dem einzufügenden Element als Argument ersetzen sollen):"
                           ]
           else do
-            inform $ text "Auf den Baum:"
-            peng start
-            inform $ vcat [ text "sollen diese Operationen angewendet werden"
+            inform $ vcat [ text "Auf den Baum:"
+                          , text ""
+                          , text (toPng start)
+                          , text ""
+                          , text "sollen diese Operationen angewendet werden"
                           , text "(wobei Sie jedes Any durch ein MyInsert mit dem einzufügenden Element als Argument ersetzen sollen):"
                           ]
        inform $ vcat [ nest 4 $ niceOps (map convertOp plan)
                      , text ""
                      , text "so dass dieser Baum entsteht:"
-                     ]
-       peng end
-       inform $ vcat [ text ""
+                     , text ""
+                     , text (toPng end)
+                     , text ""
                      , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
                      , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
                      ]
@@ -248,8 +247,8 @@ instance Partial AVLBaum Config OpList where
             inform $ text "Nein." <+> reason
             inform $ text $ "<b>Tatsächlicher Baum*  <->  Ziel-Baum</b>"
             inform $ text "*Ausgeführte Operationen:" <+> toDoc ops
-            peng b   -- Tatsächlicher Baum
-            peng end -- Erwarteter Baum
+            inform $ text $ toPng b   -- Tatsächlicher Baum
+            inform $ text $ toPng end -- Erwarteter Baum
             reject $ text ""
 
         step b op = do

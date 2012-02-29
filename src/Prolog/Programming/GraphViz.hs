@@ -15,7 +15,7 @@ import System.IO (openTempFile, hClose)
 import Control.Concurrent (threadDelay)
 import Data.Hashable (Hashable(hash))
 
-import Prolog.Programming.Hex (hex)
+import Hex (hex)
 
 --import Data.Graph.Inductive.Graph (labNodes, labEdges)
 
