@@ -8,7 +8,7 @@ import Data.Generics (Data, Typeable)
 
 data Tree a = Branch a (Tree a) (Tree a)
             | Empty
-    deriving (Data, Typeable)
+    deriving (Data, Typeable, Functor)
 
 branch = Branch
 leaf x = Branch x Empty Empty

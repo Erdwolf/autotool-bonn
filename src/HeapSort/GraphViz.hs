@@ -76,7 +76,7 @@ toDot t = graphElemsToDot params nodes edges
 toPng :: ToTree (Tree a) => Tree a -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
-   runGraphviz (toDot $ toTree tree)
+   runGraphviz (toDot tree)
                Png
                (picsDir </> fname)
    return $ showHtml
