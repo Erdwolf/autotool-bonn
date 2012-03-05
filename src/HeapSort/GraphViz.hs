@@ -2,6 +2,7 @@
 module HeapSort.GraphViz (toPng) where
 
 import HeapSort.Tree
+import HeapSort.Semantics (Marked(..))
 
 import System.IO.Unsafe (unsafePerformIO)
 import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href)
@@ -14,7 +15,7 @@ import System.FilePath ((</>),(<.>))
 import System.IO (openTempFile, hClose)
 import Control.Concurrent (threadDelay)
 import Data.Hashable (Hashable(hash))
-import qualified Data.Tree as T
+import qualified Data.Tree
 import Data.Traversable (traverse)
 import Control.Monad.State (evalState, get, put)
 import Tree.Class (ToTree(..))
@@ -45,7 +46,7 @@ instance ToTree (Tree (Marked Int)) where
       showMarked (Marked   x) = "[" ++ show x ++ "]"
       showMarked (Unmarked x) = show x
 
-instance Hashable a => Hashable (T.Tree a) where
+instance Hashable a => Hashable (Data.Tree.Tree a) where
     hash = hash . T.levels
 
 toDot :: Tree String -> DotGraph Int
