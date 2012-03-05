@@ -36,10 +36,10 @@ instance ToTree (Tree String) where
       uf (Branch x l     r    ) = (x,[l,r])
 
 instance ToTree (Tree Int) where
-  toTree = fmap show . Data.Tree.unfoldTree uf
+  toTree = toTree . fmap show
 
 instance ToTree (Tree (Marked Int)) where
-  toTree = fmap showMarked . Data.Tree.unfoldTree uf
+  toTree = Data.Tree.unfoldTree uf . fmap showMarked
     where
       showMarked (Marked   x) = "[" ++ show x ++ "]"
       showMarked (Unmarked x) = show x
