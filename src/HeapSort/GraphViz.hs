@@ -1,7 +1,7 @@
 {-# LANGUAGE NoMonomorphismRestriction, OverloadedStrings, FlexibleInstances #-}
 module HeapSort.GraphViz (toPng) where
 
-import HeapSort.Tree (toList)
+import HeapSort.Tree (toList, Tree)
 
 import System.IO.Unsafe (unsafePerformIO)
 import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href)
@@ -25,7 +25,7 @@ picsDir = ".."</>"pics"
 instance Hashable a => Hashable (T.Tree a) where
     hash = hash . T.levels
 
-toDot :: T.Tree String -> DotGraph Int
+toDot :: Tree String -> DotGraph Int
 toDot t = graphElemsToDot params nodes edges
   where
     params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l]
@@ -36,7 +36,7 @@ toDot t = graphElemsToDot params nodes edges
                                 , isDirected = True
                                 }
     numbered =
-      flip evalState 0 $ flip traverse t $ \x -> do
+      flip evalState 0 $ flip traverse (toTree t) $ \x -> do
         i <- get; put (succ i)
         return (i, x)
 
@@ -51,7 +51,7 @@ toDot t = graphElemsToDot params nodes edges
     subtrees t = t : concatMap subtrees (T.subForest t)
 
 
-toPng :: T.Tree String -> String
+toPng :: Tree String -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
    runGraphviz (toDot tree)
