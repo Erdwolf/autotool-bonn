@@ -2,7 +2,7 @@
 module HeapSort.GraphViz (toPng) where
 
 import HeapSort.Tree
-import HeapSort.Semantics (Marked(..))
+import HeapSort.Semantics (Marked(..), undecorate)
 
 import System.IO.Unsafe (unsafePerformIO)
 import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href)
@@ -72,6 +72,14 @@ toDot t = graphElemsToDot params nodes edges
 
     subtrees t = t : concatMap subtrees (Data.Tree.subForest t)
 
+class Numbers a where
+    numbers :: Tree a -> [Int]
+
+instance Numbers Int where
+    numbers = toList
+instance Numbers (Marked Int) where
+    numbers = toList . undecorate
+
 
 toPng :: Tree Int -> String
 toPng tree = unsafePerformIO $ do
@@ -80,4 +88,4 @@ toPng tree = unsafePerformIO $ do
                Png
                (picsDir </> fname)
    return $ showHtml
-          $ image ! [ src ("../pics/" ++ fname), alt (show $ toList tree) ]
+          $ image ! [ src ("../pics/" ++ fname), alt (show $ numbers tree) ]
