@@ -1,4 +1,4 @@
-{-# LANGUAGE NoMonomorphismRestriction, OverloadedStrings, FlexibleInstances #-}
+{-# LANGUAGE NoMonomorphismRestriction, OverloadedStrings, FlexibleInstances, FlexibleContexts #-}
 module HeapSort.GraphViz (toPng) where
 
 import HeapSort.Tree
