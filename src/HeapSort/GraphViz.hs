@@ -1,6 +1,8 @@
 {-# LANGUAGE NoMonomorphismRestriction, OverloadedStrings, FlexibleInstances #-}
 module HeapSort.GraphViz (toPng) where
 
+import HeapSort.Tree (toList)
+
 import System.IO.Unsafe (unsafePerformIO)
 import Text.XHtml (showHtml, Html, image, (!), src, alt, anchor, href)
 import Data.GraphViz  --(runGraphviz, GraphvizCommand(Dot), setDirectedness, graphToDot, nonClusteredParams, fmtNode, fmtEdge, toLabel, GraphvizOutput(Png))
@@ -56,4 +58,4 @@ toPng tree = unsafePerformIO $ do
                Png
                (picsDir </> fname)
    return $ showHtml
-          $ image ! [ src ("../pics/" ++ fname), alt (show tree) ]
+          $ image ! [ src ("../pics/" ++ fname), alt (show $ toList tree) ]
