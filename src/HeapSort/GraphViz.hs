@@ -73,7 +73,7 @@ toDot t = graphElemsToDot params nodes edges
     subtrees t = t : concatMap subtrees (Data.Tree.subForest t)
 
 
-toPng :: ToTree (Tree a) => Tree a -> String
+toPng :: Tree Int -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash $ toTree tree) ++ ".png"
    runGraphviz (toDot tree)
