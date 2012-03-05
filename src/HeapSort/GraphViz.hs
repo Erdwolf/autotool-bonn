@@ -49,11 +49,11 @@ toDot t = graphElemsToDot params nodes edges
     subtrees t = t : concatMap subtrees (T.subForest t)
 
 
-toPng :: AVLTree Int -> String
+toPng :: Tree Int -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
    runGraphviz (toDot tree)
                Png
                (picsDir </> fname)
    return $ showHtml
-          $ image ! [ src ("../pics/" ++ fname), alt (show $ bonnifyTree tree) ]
+          $ image ! [ src ("../pics/" ++ fname), alt (show tree) ]
