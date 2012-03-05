@@ -39,7 +39,7 @@ instance ToTree (Tree Int) where
   toTree = toTree . fmap show
 
 instance ToTree (Tree (Marked Int)) where
-  toTree = Data.Tree.unfoldTree uf . fmap showMarked
+  toTree = toTree . fmap showMarked
     where
       showMarked (Marked   x) = "[" ++ show x ++ "]"
       showMarked (Unmarked x) = show x
