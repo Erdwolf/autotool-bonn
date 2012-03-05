@@ -23,7 +23,7 @@ picsDir = ".."</>"pics"
 instance Hashable a => Hashable (T.Tree a) where
     hash = hash . T.levels
 
-toDot :: T.Tree Int -> DotGraph Int
+toDot :: T.Tree String -> DotGraph Int
 toDot t = graphElemsToDot params nodes edges
   where
     params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l]
@@ -39,7 +39,7 @@ toDot t = graphElemsToDot params nodes edges
         return (i, x)
 
     nodes =
-      flip map (T.flatten numbered) $ \(i, x) -> (i, show x)
+      flip map (T.flatten numbered) $ \(i, x) -> (i, x)
 
     edges = do
         src@(T.Node (i, _) _) <- subtrees numbered
@@ -49,7 +49,7 @@ toDot t = graphElemsToDot params nodes edges
     subtrees t = t : concatMap subtrees (T.subForest t)
 
 
-toPng :: T.Tree Int -> String
+toPng :: T.Tree String -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
    runGraphviz (toDot tree)
