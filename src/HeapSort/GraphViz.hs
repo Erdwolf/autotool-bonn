@@ -33,7 +33,7 @@ toDot = graphToDot params
                                 , isDirected = True
                                 }
 
-toPng :: AVLTree Int -> String
+toPng :: T.Tree Int -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
    runGraphviz (toDot tree)
