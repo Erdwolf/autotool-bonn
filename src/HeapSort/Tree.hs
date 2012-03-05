@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, DeriveFunctor #-}
 module HeapSort.Tree (Tree(..), branch, leaf, empty, showTree, fromList, toList) where
 
 import Data.Ratio
