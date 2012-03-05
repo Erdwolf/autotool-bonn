@@ -69,7 +69,7 @@ toDot t = graphElemsToDot params nodes edges
 
     edges = do
         src@(Data.Tree.Node (i, _) _) <- subtrees numbered
-        dst@(Tata.Tree.Node (j, x) _) <- Data.Tree.subForest src
+        dst@(Data.Tree.Node (j, x) _) <- Data.Tree.subForest src
         return (i, j, x)
 
     subtrees t = t : concatMap subtrees (Data.Tree.subForest t)
