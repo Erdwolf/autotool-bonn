@@ -81,7 +81,7 @@ instance Numbers (Marked Int) where
     numbers = toList . undecorate
 
 
-toPng :: Tree Int -> String
+toPng :: (ToTree (Tree a), Numbers a) => Tree a -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash $ toTree tree) ++ ".png"
    runGraphviz (toDot tree)
