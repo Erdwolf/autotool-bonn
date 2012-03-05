@@ -47,7 +47,7 @@ instance ToTree (Tree (Marked Int)) where
       showMarked (Unmarked x) = show x
 
 instance Hashable a => Hashable (Data.Tree.Tree a) where
-    hash = hash . T.levels
+    hash = hash . Data.Tree.levels
 
 toDot :: Tree String -> DotGraph Int
 toDot t = graphElemsToDot params nodes edges
@@ -65,14 +65,14 @@ toDot t = graphElemsToDot params nodes edges
         return (i, x)
 
     nodes =
-      flip map (T.flatten numbered) $ \(i, x) -> (i, x)
+      flip map (Data.Tree.flatten numbered) $ \(i, x) -> (i, x)
 
     edges = do
-        src@(T.Node (i, _) _) <- subtrees numbered
-        dst@(T.Node (j, x) _) <- T.subForest src
+        src@(Data.Tree.Node (i, _) _) <- subtrees numbered
+        dst@(Tata.Tree.Node (j, x) _) <- Data.Tree.subForest src
         return (i, j, x)
 
-    subtrees t = t : concatMap subtrees (T.subForest t)
+    subtrees t = t : concatMap subtrees (Data.Tree.subForest t)
 
 
 toPng :: Tree String -> String
