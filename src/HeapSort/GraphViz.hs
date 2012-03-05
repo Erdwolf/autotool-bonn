@@ -27,22 +27,20 @@ picsDir = ".."</>"pics"
 instance ToTree (Data.Tree.Tree String) where
   toTree = id
 
-instance ToTree (Tree Int) where
+instance ToTree (Tree String) where
   toTree = Data.Tree.unfoldTree uf
     where
-      uf (Branch x Empty Empty) = (show x,[])
-      uf (Branch x l     Empty) = (show x,[l])
-      uf (Branch x Empty r    ) = (show x,[r])
-      uf (Branch x l     r    ) = (show x,[l,r])
+      uf (Branch x Empty Empty) = (x,[])
+      uf (Branch x l     Empty) = (x,[l])
+      uf (Branch x Empty r    ) = (x,[r])
+      uf (Branch x l     r    ) = (x,[l,r])
+
+instance ToTree (Tree Int) where
+  toTree = fmap show . Data.Tree.unfoldTree uf
 
 instance ToTree (Tree (Marked Int)) where
-  toTree = Data.Tree.unfoldTree uf
+  toTree = fmap showMarked . Data.Tree.unfoldTree uf
     where
-      uf (Branch x Empty Empty) = (showMarked x,[])
-      uf (Branch x l     Empty) = (showMarked x,[l])
-      uf (Branch x Empty r    ) = (showMarked x,[r])
-      uf (Branch x l     r    ) = (showMarked x,[l,r])
-
       showMarked (Marked   x) = "[" ++ show x ++ "]"
       showMarked (Unmarked x) = show x
 
@@ -75,7 +73,7 @@ toDot t = graphElemsToDot params nodes edges
     subtrees t = t : concatMap subtrees (Data.Tree.subForest t)
 
 
-toPng :: Tree String -> String
+toPng :: ToTree t => t -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
    runGraphviz (toDot tree)
