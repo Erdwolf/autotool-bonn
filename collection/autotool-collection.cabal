@@ -446,6 +446,7 @@ Library
         HeapSort.Quiz
         HeapSort.Semantics
         HeapSort.Tree
+        HeapSort.GraphViz
         EditDistance.Central
         EditDistance.Data
         EditDistance.Generator

@@ -5,6 +5,7 @@ module HeapSort.Central where
 import HeapSort.Data
 import HeapSort.Operation
 import HeapSort.Tree as T
+import HeapSort.GraphViz (toPng)
 import HeapSort.Semantics
 import Tree.Class (ToTree(..))
 
@@ -16,8 +17,6 @@ import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived cod
 import Autolib.Reporter (Reporter, reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
-
-import Autolib.Dot.Dotty ( peng )
 
 import Data.Typeable (Typeable)
 import Control.Monad (when,unless)
@@ -58,12 +57,12 @@ instance Monad OnFailure where
     (OnFailureReporter mx) >>= f = OnFailureReporter $ mx >>= runOnFailure . f
     fail x = OnFailureReporter $ do
         t  <- get
-        lift $ lift $ peng $ toTree t
+        lift $ lift $ inform $ text $ toPng $ toTree t
         mb_op <- lift get
         lift $ lift $ reject $ text $ "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance TreeOutputMonad (Marked Int) Verbose where
-    treeOutput x = VerboseReporter $ lift $ peng $ toTree x
+    treeOutput x = VerboseReporter $ lift $ inform $ text $ toPng $ toTree x
 instance TreeOutputMonad (Marked Int) OnFailure where
     treeOutput x = OnFailureReporter $ put x
 instance OperationOutputMonad Verbose where
@@ -75,11 +74,10 @@ instance OperationOutputMonad OnFailure where
 instance Partial HeapSort Config Solution where
     report p (Config feedback numbers) = do
       inform $ vcat [ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
-                    ]
-
-      peng (T.fromList numbers)
-
-      inform $ vcat [ text "Als Operationen stehen ihnen S (Sinken) und T (Tauschen) zur Verfügung."
+                    , text ""
+                    , text $ toPng $ T.fromList $ numbers
+                    , text ""
+                    , text "Als Operationen stehen ihnen S (Sinken) und T (Tauschen) zur Verfügung."
                     , text ""
                     , text "Also zum Beispiel (für einen entsprechenden Baum):"
                     , text ""
@@ -132,11 +130,11 @@ instance Partial HeapSort Config Solution where
                       flip evalStateT Nothing $ runVerbose m
         unless (isSorted $ map value $ T.toList t') $ do
             when (feedback == OnFailure) $ do
-               peng $ toTree t'
+               inform $ text $ toPng $ toTree t'
             reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
         unless (all isMarked $ tail $ T.toList t') $ do
             when (feedback == OnFailure) $ do
-               peng $ toTree t'
+               inform $ text $ toPng $ toTree t'
             reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
         inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
                       , text ""
