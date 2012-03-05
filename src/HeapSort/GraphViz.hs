@@ -47,7 +47,7 @@ instance ToTree (Tree (Marked Int)) where
 instance Hashable a => Hashable (Data.Tree.Tree a) where
     hash = hash . Data.Tree.levels
 
-toDot :: Tree String -> DotGraph Int
+toDot :: ToTree (Tree a) => Tree a -> DotGraph Int
 toDot t = graphElemsToDot params nodes edges
   where
     params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l]
