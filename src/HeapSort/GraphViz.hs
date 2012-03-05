@@ -24,20 +24,36 @@ instance Hashable a => Hashable (T.Tree a) where
     hash = hash . T.levels
 
 toDot :: T.Tree Int -> DotGraph Int
-toDot = graphToDot params
+toDot t = graphElemsToDot params nodes edges
   where
-    params = nonClusteredParams { globalAttributes =
+    params = nonClusteredParams { fmtNode = \ (_,l) -> [toLabel l]
+                                , globalAttributes =
                                     [ GraphAttrs [Ordering "out"] -- child nodes are drawn in edge-order
                                     , NodeAttrs [Shape PlainText]
                                     ]
                                 , isDirected = True
                                 }
+    numbered =
+      flip evalState 0 $ flip traverse t $ \x -> do
+        i <- get; put (succ i)
+        return (i, x)
 
-toPng :: T.Tree Int -> String
+    nodes =
+      flip map (T.flatten numbered) $ \(i, x) -> (i, show x)
+
+    edges = do
+        src@(T.Node (i, _) _) <- subtrees numbered
+        dst@(T.Node (j, x) _) <- T.subForest src
+        return (i, j, x)
+
+    subtrees t = t : concatMap subtrees (T.subForest t)
+
+
+toPng :: AVLTree Int -> String
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash tree) ++ ".png"
    runGraphviz (toDot tree)
                Png
                (picsDir </> fname)
    return $ showHtml
-          $ image ! [ src ("../pics/" ++ fname), alt (show $ tree) ]
+          $ image ! [ src ("../pics/" ++ fname), alt (show $ bonnifyTree tree) ]
