@@ -172,11 +172,14 @@ instance Partial AVLBaum Config OpList where
                     rejectTreeAlways b ops reason
 
         rejectTreeAlways b ops reason = do
-            inform $ text "Nein." <+> reason
-            inform $ text $ "<b>Tatsächlicher Baum*  <->  Ziel-Baum</b>"
-            inform $ text "*Ausgeführte Operationen:" <+> toDoc ops
-            inform $ text $ toPng b   -- Tatsächlicher Baum
-            inform $ text $ toPng end -- Erwarteter Baum
+            inform $ vcat [ text "Nein." <+> reason
+                          , text ""
+                          , text $ "<b>Tatsächlicher Baum*  <->  Ziel-Baum</b>"
+                          , text "*Ausgeführte Operationen:" <+> toDoc ops
+                          , hcat [ text $ toPng b   -- Tatsächlicher Baum
+                          ,      , text $ toPng end -- Erwarteter Baum
+                                 ]
+                          ]
             reject $ text ""
 
         step b op = do
