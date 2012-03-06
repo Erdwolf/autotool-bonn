@@ -136,6 +136,7 @@ instance Partial AVLBaum Config OpList where
                      , text "so dass dieser Baum entsteht:"
                      , text ""
                      , text (toPng end)
+                     ]
        when (fb == None) $ do
           inform TextConfig.noFeedbackDisclaimer
        inform $ text "<span style='color:red'>Hinweis: Die zum Rebalancieren des Baumes nötigen <em>Rotationen</em> werden beim Einfügen automatisch durchgeführt. Sie müssen diese <em>nicht</em> mit angeben.</span>"
