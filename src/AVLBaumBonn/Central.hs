@@ -177,7 +177,7 @@ instance Partial AVLBaum Config OpList where
                           , text $ "<b>Tatsächlicher Baum*  <->  Ziel-Baum</b>"
                           , text "*Ausgeführte Operationen:" <+> toDoc ops
                           , hcat [ text $ toPng b   -- Tatsächlicher Baum
-                          ,      , text $ toPng end -- Erwarteter Baum
+                                 , text $ toPng end -- Erwarteter Baum
                                  ]
                           ]
             reject $ text ""
