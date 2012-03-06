@@ -2,7 +2,7 @@
 
 module Prolog.Programming.Central where
 
-import Language.Prolog (term, apply, resolve, consultString, VariableName(..), Term(..))
+import Language.Prolog (terms, apply, resolve, consultString, VariableName(..), Term(..))
 import Prolog.Programming.Data
 
 import Debug ( debug )
@@ -158,19 +158,20 @@ parseConfig = parse configuration "(config)"
 configuration =
    (,) <$> specification <*> sourceText
 
-data Spec = QueryWithAnswers Term [Term]
-          | StatementToCheck Term
+type Query = [Term]
+data Spec = QueryWithAnswers Query [Term]
+          | StatementToCheck Query
           | Hidden String Spec
           | WithTree Spec
           | WithTreeNegative Spec
 
 specification = do
    let specLine = (.) <$> withTreeFlag <*> hiddenFlag <*> do
-         t <- term
+         q <- terms
          (do char ':' >> optional (char ' ')
              ts <- term `sepBy` string ", "
-             return (QueryWithAnswers t ts))
-          <|> return (StatementToCheck t)
+             return (QueryWithAnswers q ts))
+          <|> return (StatementToCheck q)
    lines <- commentBlock
    zip [1..] lines `forM` \(i,s) -> do
       case parse specLine ("Specification line " ++ show i) s of
