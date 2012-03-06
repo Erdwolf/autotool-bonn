@@ -2,6 +2,8 @@
 
 module ArrayBonn.Central where
 
+import qualified TextConfig
+
 import ArrayBonn.Environment
 import ArrayBonn.Program
 import ArrayBonn.Statement
@@ -74,8 +76,7 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
         , nest 4 $ toDoc e
         ] ++ if giveFeedback then [] else
         [ text ""
-        , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-        , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
+        , TextConfig.noFeedbackDisclaimer
         ]
 
     initial _ (InstanceConfig _ _ p e) = e
@@ -90,18 +91,10 @@ instance C.Partial ArrayBonn InstanceConfig Solution where
             ]
         inform $ text "Ich vergleiche mit der Aufgabenstellung:"
         nested 4 $ must_be_equal target actual
-        inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
-                      , text ""
-                      , text "Ignorieren Sie die unten angezeigte Bewertung."
-                      ]
+        inform $ TextConfig.ok
 
     total _ (InstanceConfig False _ p target) start = do
-        inform $ vcat [ text "Nicht geprüft."
-                      , text ""
-                      , text "Die Einsendung wird von Ihrem Tutor bewertet."
-                      , text ""
-                      , text "Ignorieren Sie die unten angezeigte Bewertung."
-                      ]
+        inform TextConfig.noFeedbackResult
 
 
 

@@ -1,6 +1,8 @@
 {-# LANGUAGE DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses, FlexibleInstances #-}
 module TypeCheckBonn.Central where
 
+import qualified TextConfig
+
 import Type.Data
 import Type.Tree
 import TypeCheckBonn.Infer
@@ -42,8 +44,7 @@ instance C.Partial TypeCheckBonn Config Exp where
         , text ""
         ] ++ if fb /= None then [] else
         [ text ""
-        , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-        , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
+        , TextConfig.noFeedbackDisclaimer
         ]
 
     initial p i = read "f(a,g(b))"
@@ -52,17 +53,9 @@ instance C.Partial TypeCheckBonn Config Exp where
         let (e_t,output) = runWriter $ runErrorT $ infer decls b
         case (fb, e_t) of
             (None, _) -> do
-                inform $ vcat [ text "Nicht geprüft."
-                              , text ""
-                              , text "Die Einsendung wird von Ihrem Tutor bewertet."
-                              , text ""
-                              , text "Ignorieren Sie die unten angezeigte Bewertung."
-                              ]
+                inform TextConfig.noFeedbackResult
             (_, Right t) | t == goal -> do
-                inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
-                              , text ""
-                              , text "Ignorieren Sie die unten angezeigte Bewertung."
-                              ]
+                inform TextConfig.ok
             (YesNo, _) -> do
                 inform $ text "Nein, die Lösung ist nicht korrekt."
                 inform $ text ""

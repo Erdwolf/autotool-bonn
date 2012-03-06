@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell, QuasiQuotes, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances, TupleSections #-}
-
 module Prolog.Programming.Central where
+
+import qualified TextConfig
 
 import Language.Prolog (terms, apply, resolve, consultString, VariableName(..), Term(..))
 import Prolog.Programming.Data
@@ -114,10 +115,7 @@ instance Partial Prolog_Programming Config Facts where
                 describe (WithTree x)               = describe x
                 describe (WithTreeNegative x)       = describe x <+> text " sollte nicht herleitbar sein."
             if null incorrect
-               then informIO $ vcat [ text "Ja, Ihre Einsendung ist richtig."
-                                    , text ""
-                                    , text "Ignorieren Sie die unten angezeigte Bewertung."
-                                    ]
+               then informIO TextConfig.ok
                else rejectIO $ vcat [ text "Nein."
                                     , text "Die Antworten auf die folgenden Anfragen sind inkorrekt:"
                                     , indent (map (uncurry explain) incorrect)

@@ -1,7 +1,8 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
-
 module Prolog.Unifier.Central where
+
+import qualified TextConfig
 
 import Prolog.Unifier.Data
 
@@ -63,10 +64,7 @@ instance Partial Prolog_Unifier Config Unifier where
 
     total p (Config t1 t2) (Unifier u) = do
         case unify_with_occurs_check t1 t2 >>= \u' -> guard (e u u' && e u' u) of
-           Just () -> inform $ vcat $ [ text "Ja, Ihre Einsendung ist richtig."
-                                      , text ""
-                                      , text "Ignorieren Sie die unten angezeigte Bewertung."
-                                      ]
+           Just () -> inform TextConfig.ok
            Nothing -> reject $ text "Nein."
          where
            e u = equivalent u . c u

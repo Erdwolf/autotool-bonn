@@ -2,6 +2,8 @@
 
 module EditDistance.Central where
 
+import qualified TextConfig
+
 import EditDistance.Data
 import EditDistance.CalculateTable (table, miscalculations)
 
@@ -55,10 +57,7 @@ instance Partial EditDistance Config Solution where
                     ]
 
       when (feedback == None) $ do
-        inform $ vcat [ text ""
-                      , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-                      , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
-                      ]
+        inform TextConfig.noFeedbackDisclaimer
 
     initial p (Config _ _ s t) =
         let n = length s
@@ -83,17 +82,9 @@ instance Partial EditDistance Config Solution where
 
        if feedback == None
         then do
-           inform $ vcat [ text "Nicht geprüft."
-                         , text ""
-                         , text "Die Einsendung wird von Ihrem Tutor bewertet."
-                         , text ""
-                         , text "Ignorieren Sie die unten angezeigte Bewertung. "
-                         ]
+           inform TextConfig.noFeedbackResult
         else if numberOfErrors == 0
-          then inform $ vcat $ [ text "Ja, Ihre Einsendung ist richtig."
-                               , text ""
-                               , text "Ignorieren Sie die unten angezeigte Bewertung. "
-                               ]
+          then inform TextConfig.ok
           else reject $ case feedback of
                           WrongEntries ->
                              let wrong doc = text "<strike style='color: red;'>" <> doc <> text "</strike>"

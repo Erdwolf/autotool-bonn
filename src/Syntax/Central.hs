@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances, TupleSections #-}
-
 module Syntax.Central where
+
+import qualified TextConfig
 
 import Syntax.Checker (check)
 import Syntax.Data
@@ -59,8 +60,7 @@ instance Partial Syntax Config Solution where
            , text ""
            ] ++ if giveFeedback then [] else
            [ text ""
-           , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-           , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
+           , TextConfig.noFeedbackDisclaimer
            ]
 
     initial p _ = Solution []
@@ -74,13 +74,5 @@ instance Partial Syntax Config Solution where
           unless (all (check lang) words) $ do
             reject $ text $ "Nein, eines oder mehrere der angegebenen Worte sind nicht in der Sprache enthalten."
        if giveFeedback
-           then inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
-                              , text ""
-                              , text "Ignorieren Sie die unten angezeigte Bewertung."
-                              ]
-           else inform $ vcat [ text "Nicht geprüft."
-                              , text ""
-                              , text "Die Einsendung wird von Ihrem Tutor bewertet."
-                              , text ""
-                              , text "Ignorieren Sie die unten angezeigte Bewertung."
-                              ]
+           then inform TextConfig.ok
+           else inform TextConfig.noFeedbackResult

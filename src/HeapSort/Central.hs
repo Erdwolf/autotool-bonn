@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances, TupleSections, FlexibleInstances,  NoMonomorphismRestriction #-}
-
 module HeapSort.Central where
+
+import qualified TextConfig
 
 import HeapSort.Data
 import HeapSort.Operation
@@ -105,20 +106,12 @@ instance Partial HeapSort Config Solution where
                     ]
 
       when (feedback == None) $ do
-        inform $ vcat [ text ""
-                      , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-                      , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
-                      ]
+        inform TextConfig.noFeedbackDisclaimer
 
     initial p _ = Solution []
 
     total _ (Config None _) _ = do
-        inform $ vcat [ text "Nicht geprüft."
-                      , text ""
-                      , text "Die Einsendung wird von Ihrem Tutor bewertet."
-                      , text ""
-                      , text "Ignorieren Sie die unten angezeigte Bewertung."
-                      ]
+        inform TextConfig.noFeedbackResult
     total p (Config feedback {- OnFailure or Verbose -} unsortedNumbers) (Solution operations) = do
         let t = decorate (T.fromList unsortedNumbers)
         let m = execute_ operations t
@@ -135,10 +128,7 @@ instance Partial HeapSort Config Solution where
             when (feedback == OnFailure) $ do
                inform $ text $ toPng t'
             reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
-        inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
-                      , text ""
-                      , text "Ignorieren Sie die unten angezeigte Bewertung."
-                      ]
+        inform TextConfig.ok
 
 value (Marked x)   = x
 value (Unmarked x) = x

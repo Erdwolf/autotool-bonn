@@ -2,6 +2,8 @@
 
 module Haskell.Syntax.Central where
 
+import qualified TextConfig
+
 import Debug ( debug )
 
  -- Reuse the functionality from Haskell.Blueprint
@@ -87,10 +89,7 @@ instance Partial Haskell_Syntax Code Code where
                         Right () -> do
                            let ParseOk (b :: Module) = parse (splitModules cfg !! 1)
                            case test b a of
-                              Ok _ -> informIO $ vcat [ text "Ja, Ihre Einsendung ist richtig."
-                                                      , text ""
-                                                      , text "Ignorieren Sie die unten angezeigte Bewertung."
-                                                      ]
+                              Ok _ -> informIO TextConfig.ok
                               _ ->  rejectIO $ vcat [ text "Ihre Lösung ist syntaktisch korrekt."
                                                     , text ""
                                                     , text "Sie entspricht allerdings nicht mehr der Vorgabe. Es sollen nur die mindestens nötigen Veränderungen vorgenommen werden, um den Quelltext syntaktisch korrekt zu machen."

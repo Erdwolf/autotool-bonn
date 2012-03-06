@@ -1,6 +1,8 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverlappingInstances, DeriveDataTypeable, StandaloneDeriving, TypeSynonymInstances, TupleSections, FlexibleInstances,  NoMonomorphismRestriction #-}
 module AVLBaumBonn.Central where
 
+import qualified TextConfig
+
 import Challenger.Partial (Verify(..), Partial(..))
 import Autolib.ToDoc -- (derives, makeToDoc, Doc(..), text, vcat, hcat, ($$),  (<>), (<+>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>), empty)
 import Autolib.Reader -- (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
@@ -113,7 +115,7 @@ instance Size OpList where
     size (OpList ops) = length ops
 
 instance Partial AVLBaum Config OpList where
-    report _ (Config _fb startB plan endB) = do
+    report _ (Config fb startB plan endB) = do
        let start = debonnifyTree startB
            end   = debonnifyTree endB
        if isLeaf start
@@ -134,29 +136,20 @@ instance Partial AVLBaum Config OpList where
                      , text "so dass dieser Baum entsteht:"
                      , text ""
                      , text (toPng end)
-                     , text ""
-                     , text "Hinweis: Bei dieser Aufgabe wird keine Rückmeldung über Korrektheit der Lösung gegeben."
-                     , text "         Wenn eine Einsendung akzeptiert wird, heißt dies nicht, dass sie korrekt ist."
-                     ]
+       when (fb == None) $ do
+          inform TextConfig.noFeedbackDisclaimer
        inform $ text "<span style='color:red'>Hinweis: Die zum Rebalancieren des Baumes nötigen <em>Rotationen</em> werden beim Einfügen automatisch durchgeführt. Sie müssen diese <em>nicht</em> mit angeben.</span>"
 
     initial _ (Config _ _ plan _) =
         OpList (map convertOp plan)
 
     total _ (Config None _ _ _) _ = do
-        inform $ vcat [ text "Nicht geprüft."
-                      , text ""
-                      , text "Die Einsendung wird von Ihrem Tutor bewertet."
-                      , text ""
-                      , text "Ignorieren Sie die unten angezeigte Bewertung."
-                      ]
+        inform TextConfig.noFeedbackResult
+
     total _ (Config fb startB plan endB) (OpList ops) = do
         c <- steps start (map convertOp plan) ops []
         if c == end
-           then inform $ vcat [ text "Ja, Ihre Einsendung ist richtig."
-                              , text ""
-                              , text "Ignorieren Sie die unten angezeigte Bewertung."
-                              ]
+           then inform TextConfig.ok
            else rejectTreeAlways c ops $ text "Resultat stimmt nicht mit Aufgabenstellung überein."
 
       where
