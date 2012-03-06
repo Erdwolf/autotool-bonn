@@ -89,8 +89,8 @@ instance Partial Prolog_Programming Config Facts where
         case consultString (facts ++ "\n" ++ input) of
           Left err -> rejectIO $ text $ show err
           Right p -> do
-            let check (QueryWithAnswers query expected) =
-                           case solutions p query of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,_) -> WrongResult actual; Left err -> ErrorMsg err }
+            let check (QueryWithAnswers q expected) =
+                           case solutions p [q] of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,_) -> WrongResult actual; Left err -> ErrorMsg err }
                 check (WithTree (QueryWithAnswers query expected)) =
                            case solutions p query of { Right (actual,_) | actual =~= expected -> Ok; Right (actual,tree) -> Tree tree (WrongResult actual); Left err -> ErrorMsg err }
                 check (StatementToCheck query) =
@@ -158,9 +158,8 @@ parseConfig = parse configuration "(config)"
 configuration =
    (,) <$> specification <*> sourceText
 
-type Query = [Term]
-data Spec = QueryWithAnswers Query [Term]
-          | StatementToCheck Query
+data Spec = QueryWithAnswers Term [Term]
+          | StatementToCheck [Term]
           | Hidden String Spec
           | WithTree Spec
           | WithTreeNegative Spec
