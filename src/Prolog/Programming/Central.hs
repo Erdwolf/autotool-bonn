@@ -140,7 +140,7 @@ actual =~= expected =
  where
   isSublistOf xs ys = xs \\ ys == []
 
-solutions p q = first (map  $ map (`apply` q)) <$> resolveWithTree p q
+solutions p q = first (map (\s -> map (apply s) q)) <$> resolveWithTree p q
 
 
 {-
