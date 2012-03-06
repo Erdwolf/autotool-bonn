@@ -158,7 +158,7 @@ parseConfig = parse configuration "(config)"
 configuration =
    (,) <$> specification <*> sourceText
 
-data Spec = QueryWithAnswers [Term] [Term]
+data Spec = QueryWithAnswers [Term] [[Term]]
           | StatementToCheck [Term]
           | Hidden String Spec
           | WithTree Spec
@@ -169,7 +169,7 @@ specification = do
          q <- terms
          (do char ':' >> optional (char ' ')
              ts <- terms
-             return (QueryWithAnswers q ts))
+             return (QueryWithAnswers q (map (\x->[x]) ts))
           <|> return (StatementToCheck q)
    lines <- commentBlock
    zip [1..] lines `forM` \(i,s) -> do
