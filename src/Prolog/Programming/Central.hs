@@ -169,7 +169,7 @@ specification = do
          q <- terms
          (do char ':' >> optional (char ' ')
              ts <- terms
-             return (QueryWithAnswers q (map (\x->[x]) ts))
+             return (QueryWithAnswers q (map (\x->[x]) ts)))
           <|> return (StatementToCheck q)
    lines <- commentBlock
    zip [1..] lines `forM` \(i,s) -> do
