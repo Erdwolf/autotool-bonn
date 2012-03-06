@@ -133,14 +133,14 @@ data TestResult r e g = Ok
                       | Tree g (TestResult r e g)
                       | TreeNegative g (TestResult r e g)
 
-(=~=) :: [Term] -> [Term] -> Bool
+(=~=) :: [[Term]] -> [[Term]] -> Bool
 actual =~= expected =
    (nub actual `isSublistOf` nub expected &&
     nub expected `isSublistOf` nub actual)
  where
   isSublistOf xs ys = xs \\ ys == []
 
-solutions p q = first (map (`apply` q)) <$> resolveWithTree p q
+solutions p q = first (map  $ map (`apply` q)) <$> resolveWithTree p q
 
 
 {-
