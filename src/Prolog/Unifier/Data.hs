@@ -58,7 +58,7 @@ instance Reader Config where
 symbol = between spaces spaces . string
 
 instance ToDoc Unifier where
-    toDoc (Unifier u) = text (unlines [ show v ++ " = " ++ show t  | (v,t) <- u ])
+    toDoc (Unifier u) = vcat $ map text [ show v ++ " = " ++ show t  | (v,t) <- u ])
 instance ToDoc Config where
     toDoc (Config t1 t2) = text (unlines [show t1 ++ c1, show t2 ++ c2])
 
