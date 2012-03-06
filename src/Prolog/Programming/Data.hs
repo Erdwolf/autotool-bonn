@@ -2,7 +2,7 @@
 
 module Prolog.Programming.Data where
 
-import Autolib.ToDoc (ToDoc(..), vcat, text)
+import Autolib.ToDoc (ToDoc(..), vcat, text, nest)
 import Autolib.Reader
 import Autolib.Size
 
@@ -23,7 +23,7 @@ instance Reader Config where
 instance ToDoc Facts where
     toDoc (Facts cs) = text cs
 instance ToDoc Config where
-    toDoc (Config cs) = text cs
+    toDoc (Config cs) = nest (length "gelesen: ") $ text cs
 
 -- FIXME: should use the size of the syntax tree
 instance Size Facts where
