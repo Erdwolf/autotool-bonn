@@ -54,7 +54,7 @@ $(derives [makeReader, makeToDoc] [''AVLBaum])
 data Feedback = Always
               | OnlyOnCompletion
               | None
-           deriving (Typeable)
+           deriving (Typeable, Eq)
 
 $(derives [makeReader, makeToDoc] [''Feedback])
 
