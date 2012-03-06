@@ -21,7 +21,7 @@ instance Reader Config where
     reader = do { cs <- getInput; setInput ""; return (Config cs) }
 
 instance ToDoc Facts where
-    toDoc (Facts cs) = nest (length "gelesen: ") $ text cs
+    toDoc (Facts cs) = vcat (map text $ lines cs)
 instance ToDoc Config where
     toDoc (Config cs) = text cs
 
