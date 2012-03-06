@@ -140,7 +140,7 @@ actual =~= expected =
  where
   isSublistOf xs ys = xs \\ ys == []
 
-solutions p q = first (map (`apply` q)) <$> resolveWithTree p [q]
+solutions p q = first (map (`apply` q)) <$> resolveWithTree p q
 
 
 {-
@@ -169,7 +169,7 @@ specification = do
    let specLine = (.) <$> withTreeFlag <*> hiddenFlag <*> do
          q <- terms
          (do char ':' >> optional (char ' ')
-             ts <- term `sepBy` string ", "
+             ts <- terms
              return (QueryWithAnswers q ts))
           <|> return (StatementToCheck q)
    lines <- commentBlock
