@@ -175,7 +175,7 @@ specification = do
          Right spec -> return spec
          Left err   -> fail (show err)
  where
-   hiddenFlag   = option id (char '!' >> Hidden <$> option "" (string "(\"" >> anyChar `manyTill`  string "\")"))
+   hiddenFlag   = option id (char '!' >> Hidden <$> option "" (try (string "(\"" >> anyChar `manyTill`  string "\")")))
    withTreeFlag = option id $ (char '§' >> return WithTree)
                           <|> (char '#' >> return WithTreeNegative)
 
