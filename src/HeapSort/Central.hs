@@ -73,7 +73,7 @@ instance OperationOutputMonad OnFailure where
 
 instance Partial HeapSort Config Solution where
     report p (Config feedback numbers) = do
-      inform $ vcat [ text "Führen Sie den Heap-Sort-Algorithmus auf folgendem Binärbaum durch:"
+      inform $ vcat [ text "Führen Sie den Heapsort-Algorithmus auf folgendem Binärbaum durch:"
                     , text ""
                     , text $ toPng $ T.fromList numbers
                     , text ""

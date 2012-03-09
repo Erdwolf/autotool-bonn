@@ -38,6 +38,8 @@ $(derives [makeReader, makeToDoc] [''Operation])
 data Solution = Solution [Operation]
    deriving ( Eq, Ord, Typeable, Read, Show )
 
+instance ToDoc Operation where
+    toDoc = text . show
 
 $(derives [makeReader, makeToDoc] [''Richtung,''Feedback,''QuizConfig,''Config,''Solution])
 
