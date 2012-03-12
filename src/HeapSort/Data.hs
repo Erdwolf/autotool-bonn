@@ -33,7 +33,7 @@ data Config = Config
  }
    deriving ( Eq, Ord, Typeable)
 
-$(derives [makeReader, makeToDoc] [''Operation])
+$(derives [makeReader] [''Operation])
 
 data Solution = Solution [Operation]
    deriving ( Eq, Ord, Typeable, Read, Show )
