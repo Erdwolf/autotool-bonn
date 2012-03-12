@@ -88,4 +88,4 @@ toPng tree = unsafePerformIO $ do
                Png
                (picsDir </> fname)
    return $ showHtml
-          $ image ! [ src ("../pics/" ++ fname), alt (show $ numbers tree) ]
+          $ image ! [ src ("../pics/" ++ fname), alt (show (numbers tree) ++ "\n\n") ]
