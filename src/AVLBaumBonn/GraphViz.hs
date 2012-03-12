@@ -64,4 +64,4 @@ toPng tree = unsafePerformIO $ do
                Png
                (picsDir </> fname)
    return $ showHtml
-          $ image ! [ src ("../pics/" ++ fname), alt (show $ bonnifyTree tree) ]
+          $ image ! [ src ("../pics/" ++ fname), alt (show (bonnifyTree tree) ++ "\n\n") ]
