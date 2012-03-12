@@ -117,10 +117,10 @@ instance Partial HeapSort Config Solution where
         let m = execute_ operations t
         t' <- case feedback of
                  OnFailure ->
-                      flip evalStateT Nothing $ flip evalStateT t $ runOnFailure m
+                      flip evalStateT [] $ flip evalStateT t $ runOnFailure m
                  Verbose -> do
                       inform $ text $ toPng t
-                      flip evalStateT Nothing $ runVerbose m
+                      flip evalStateT [] $ runVerbose m
         unless (isSorted $ map value $ T.toList t') $ do
             when (feedback == OnFailure) $ do
                inform $ text $ toPng t'
