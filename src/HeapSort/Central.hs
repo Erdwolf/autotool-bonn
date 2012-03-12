@@ -42,15 +42,15 @@ instance Verify HeapSort Config where
 
 $(derives [makeEq, makeToDoc] [''Tree])
 
-data Verbose   a = VerboseReporter { runVerbose :: StateT (Maybe Operation) Reporter a }
-data OnFailure a = OnFailureReporter { runOnFailure :: StateT (Tree (Marked Int)) (StateT (Maybe Operation) Reporter) a }
+data Verbose   a = VerboseReporter { runVerbose :: StateT [Operation] Reporter a }
+data OnFailure a = OnFailureReporter { runOnFailure :: StateT (Tree (Marked Int)) (StateT [Operation] Reporter) a }
 
 instance Monad Verbose where
     return = VerboseReporter . return
     (VerboseReporter mx) >>= f = VerboseReporter $ mx >>= runVerbose . f
     fail x = VerboseReporter $ do
-        mb_op <- get
-        lift $ reject $ text $ "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
+        ops <- get
+        lift $ reject $ text $ "Nein. " ++ case ops of {[] -> ""; (op:_) -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance Monad OnFailure where
     return = OnFailureReporter . return
@@ -58,17 +58,17 @@ instance Monad OnFailure where
     fail x = OnFailureReporter $ do
         t  <- get
         lift $ lift $ inform $ text $ toPng t
-        mb_op <- lift get
-        lift $ lift $ reject $ text $ "Nein. " ++ case mb_op of {Nothing -> ""; Just op -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
+        ops <- lift get
+        lift $ lift $ reject $ text $ "Nein. " ++ case ops of {[] -> ""; (op:_) -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance TreeOutputMonad (Marked Int) Verbose where
     treeOutput x = VerboseReporter $ lift $ inform $ text $ toPng x
 instance TreeOutputMonad (Marked Int) OnFailure where
     treeOutput x = OnFailureReporter $ put x
 instance OperationOutputMonad Verbose where
-    operationOutput x = VerboseReporter $ put $ Just x
+    operationOutput x = VerboseReporter $ modify (x:)
 instance OperationOutputMonad OnFailure where
-    operationOutput x = OnFailureReporter $ lift $ put $ Just x
+    operationOutput x = OnFailureReporter $ lift $ modify (x:)
 
 
 instance Partial HeapSort Config Solution where
