@@ -50,6 +50,7 @@ instance Monad Verbose where
     (VerboseReporter mx) >>= f = VerboseReporter $ mx >>= runVerbose . f
     fail x = VerboseReporter $ do
         ops <- get
+        lift $ inform $ text $ "(Nach Durchführung von: " ++ show ops ++ ")"
         lift $ reject $ text $ "Nein. " ++ case ops of {[] -> ""; (op:_) -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance Monad OnFailure where
@@ -59,6 +60,7 @@ instance Monad OnFailure where
         t  <- get
         lift $ lift $ inform $ text $ toPng t
         ops <- lift get
+        lift $ lift $ inform $ text $ "(Nach Durchführung von: " ++ show ops ++ ")"
         lift $ lift $ reject $ text $ "Nein. " ++ case ops of {[] -> ""; (op:_) -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
 
 instance TreeOutputMonad (Marked Int) Verbose where
@@ -124,12 +126,16 @@ instance Partial HeapSort Config Solution where
         unless (isSorted $ map value $ T.toList t') $ do
             when (feedback == OnFailure) $ do
                inform $ text $ toPng t'
+            inform $ text $ "(Nach Durchführung von: " ++ show operations ++ ")"
             reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
         unless (all isMarked $ tail $ T.toList t') $ do
             when (feedback == OnFailure) $ do
                inform $ text $ toPng t'
+            inform $ text $ "(Nach Durchführung von: " ++ show operations ++ ")"
             reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
         inform TextConfig.ok
+
+
 
 value (Marked x)   = x
 value (Unmarked x) = x
