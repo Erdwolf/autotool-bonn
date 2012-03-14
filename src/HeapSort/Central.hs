@@ -48,20 +48,27 @@ data OnFailure a = OnFailureReporter { runOnFailure :: StateT (Tree (Marked Int)
 instance Monad Verbose where
     return = VerboseReporter . return
     (VerboseReporter mx) >>= f = VerboseReporter $ mx >>= runVerbose . f
-    fail x = VerboseReporter $ do
+    fail reason = VerboseReporter $ do
         ops <- get
-        lift $ inform $ text $ "(Nach Durchführung von: " ++ show ops ++ ")"
-        lift $ reject $ text $ "Nein. " ++ case ops of {[] -> ""; (op:_) -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
+        lift $ rejectOps ops reason
 
 instance Monad OnFailure where
     return = OnFailureReporter . return
     (OnFailureReporter mx) >>= f = OnFailureReporter $ mx >>= runOnFailure . f
-    fail x = OnFailureReporter $ do
+    fail reason = OnFailureReporter $ do
         t  <- get
         lift $ lift $ inform $ text $ toPng t
         ops <- lift get
-        lift $ lift $ inform $ text $ "(Nach Durchführung von: " ++ show ops ++ ")"
-        lift $ lift $ reject $ text $ "Nein. " ++ case ops of {[] -> ""; (op:_) -> "Operation '" ++ show op ++ "' ist nicht möglich. "} ++ x
+        lift $ lift $ rejectOps ops reason
+
+
+rejectOps []        reason =
+    reject $ text $ "Nein. " ++ reason
+rejectOps (op:done) reason =
+    reject $ vcat [ text $ "(Nach Durchführung von: " ++ show (reverse done) ++ ")"
+                  , text ""
+                  , text $ "Nein. Operation '" ++ show op ++ "' ist nicht möglich. " ++ reason
+                  ]
 
 instance TreeOutputMonad (Marked Int) Verbose where
     treeOutput x = VerboseReporter $ lift $ inform $ text $ toPng x
