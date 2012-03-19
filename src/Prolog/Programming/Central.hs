@@ -108,12 +108,12 @@ instance Partial Prolog_Programming Config Facts where
                 explain x              (WrongResult actual) = vcat [ describe x, indent [ text "Ihre Lösung liefert:", indent [ text $ show $ actual ] ] ]
                 explain x              Wrong                = describe x
                 explain x              (Tree tree r)        = vcat [ explain x r, indent [ text "Ableitungsbaum (Anklicken zum Vergrößern):", indent [ text $ asInlinePng tree ] ] ]
-                explain x              (TreeNegative tree r)= vcat [ explain x r, indent [ text "Fälschlicherweise auftretender Ableitungsbaum (Anklicken zum Vergrößern):", indent [ text $ asInlinePng tree ] ] ]
+                explain x              (TreeNegative tree r)= vcat [ explain x r, indent [ text "Ableitungsbaum (Anklicken zum Vergrößern):", indent [ text $ asInlinePng tree ] ] ]
                 describe (QueryWithAnswers query _) = text $ show query
                 describe (StatementToCheck query)   = text $ show query
                 describe (Hidden str _)             = text $ "(ein versteckter Test" ++ str ++")"
                 describe (WithTree x)               = describe x
-                describe (WithTreeNegative x)       = describe x <+> text " sollte nicht herleitbar sein."
+                describe (WithTreeNegative (StatementToCheck query)) = text $ show [ Struct "not" [t] | t <- query ]
             if null incorrect
                then informIO TextConfig.ok
                else rejectIO $ vcat [ text "Nein."
