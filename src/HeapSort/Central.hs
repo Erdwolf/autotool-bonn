@@ -65,10 +65,12 @@ instance Monad OnFailure where
 rejectOps []        reason =
     reject $ text $ "Nein. " ++ reason
 rejectOps (op:done) reason =
-    reject $ vcat [ text "(Nach Durchführung von:" <+> toDoc (reverse done) <> text ")"
+    reject $ vcat [ after (reverse done)
                   , text ""
                   , text $ "Nein. Operation '" ++ show op ++ "' ist nicht möglich. " ++ reason
                   ]
+
+after ops = text "(Nach Durchführung von:" <+> toDoc ops <> text ")"
 
 instance TreeOutputMonad (Marked Int) Verbose where
     treeOutput x = VerboseReporter $ lift $ inform $ text $ toPng x
@@ -133,12 +135,12 @@ instance Partial HeapSort Config Solution where
         unless (isSorted $ map value $ T.toList t') $ do
             when (feedback == OnFailure) $ do
                inform $ text $ toPng t'
-            inform $ text $ "(Nach Durchführung von: " ++ show operations ++ ")"
+            inform $ text $ after operations
             reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
         unless (all isMarked $ tail $ T.toList t') $ do
             when (feedback == OnFailure) $ do
                inform $ text $ toPng t'
-            inform $ text $ "(Nach Durchführung von: " ++ show operations ++ ")"
+            inform $ after operations
             reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
         inform TextConfig.ok
 
