@@ -57,7 +57,7 @@ instance Monad OnFailure where
     (OnFailureReporter mx) >>= f = OnFailureReporter $ mx >>= runOnFailure . f
     fail reason = OnFailureReporter $ do
         t  <- get
-        lift $ lift $ inform $ text $ toPng t
+        lift $ lift $ output $ toPng t
         ops <- lift get
         lift $ lift $ rejectOps ops reason
 
@@ -71,7 +71,7 @@ rejectOps (op:done) reason =
                   ]
 
 instance TreeOutputMonad (Marked Int) Verbose where
-    treeOutput x = VerboseReporter $ lift $ inform $ text $ toPng x
+    treeOutput x = VerboseReporter $ lift $ output $ toPng x
 instance TreeOutputMonad (Marked Int) OnFailure where
     treeOutput x = OnFailureReporter $ put x
 instance OperationOutputMonad Verbose where
@@ -84,8 +84,9 @@ instance Partial HeapSort Config Solution where
     report p (Config feedback numbers) = do
       inform $ vcat [ text "Führen Sie den Heapsort-Algorithmus auf folgendem Binärbaum durch:"
                     , text ""
-                    , text $ toPng $ T.fromList numbers
-                    , text ""
+                    ]
+      output $ toPng $ T.fromList numbers
+      inform $ vcat [ text ""
                     , text "Als Operationen stehen ihnen S (Sinken) und T (Tauschen) zur Verfügung."
                     , text ""
                     , text "Also zum Beispiel (für einen entsprechenden Baum):"
@@ -132,7 +133,7 @@ instance Partial HeapSort Config Solution where
                       flip evalStateT [] $ runVerbose m
         unless (isSorted $ map value $ T.toList t') $ do
             when (feedback == OnFailure) $ do
-               inform $ text $ toPng t'
+               output $ toPng t'
             inform $ text $ "(Nach Durchführung von: " ++ show operations ++ ")"
             reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
         unless (all isMarked $ tail $ T.toList t') $ do

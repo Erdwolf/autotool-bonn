@@ -22,6 +22,8 @@ import Tree.Class (ToTree(..))
 
 import Hex (hex)
 
+import Autolib.Output
+
 picsDir = ".."</>"pics"
 
 instance ToTree (Data.Tree.Tree String) where
@@ -81,11 +83,12 @@ instance Numbers (Marked Int) where
     numbers = toList . undecorate
 
 
-toPng :: (ToTree (Tree a), Numbers a) => Tree a -> String
+toPng :: (ToTree (Tree a), Numbers a) => Tree a -> Output
 toPng tree = unsafePerformIO $ do
    let fname = (hex $ fromIntegral $ hash $ toTree tree) ++ ".png"
    runGraphviz (toDot tree)
                Png
                (picsDir </> fname)
-   return $ showHtml
+   return $ Text
+          $ showHtml
           $ image ! [ src ("../pics/" ++ fname), alt (show (numbers tree) ++ "\n\n") ]
