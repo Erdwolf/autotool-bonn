@@ -128,7 +128,7 @@ instance Partial HeapSort Config Solution where
                  OnFailure ->
                       flip evalStateT [] $ flip evalStateT t $ runOnFailure m
                  Verbose -> do
-                      inform $ text $ toPng t
+                      output $ toPng t
                       flip evalStateT [] $ runVerbose m
         unless (isSorted $ map value $ T.toList t') $ do
             when (feedback == OnFailure) $ do
