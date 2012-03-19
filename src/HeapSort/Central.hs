@@ -135,7 +135,7 @@ instance Partial HeapSort Config Solution where
         unless (isSorted $ map value $ T.toList t') $ do
             when (feedback == OnFailure) $ do
                inform $ text $ toPng t'
-            inform $ text $ after operations
+            inform $ after operations
             reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
         unless (all isMarked $ tail $ T.toList t') $ do
             when (feedback == OnFailure) $ do
