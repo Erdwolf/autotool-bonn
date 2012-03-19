@@ -22,7 +22,7 @@ import Tree.Class (ToTree(..))
 
 import Hex (hex)
 
-import Autolib.Output
+import Autolib.Output (Output(Text))
 
 picsDir = ".."</>"pics"
 
