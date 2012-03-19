@@ -14,7 +14,7 @@ import Debug ( debug )
 import Challenger.Partial (Verify(..), Partial(..))
 import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>))
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
-import Autolib.Reporter (Reporter, reject, inform, output)
+import Autolib.Reporter (Reporter, reject, inform)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
 
@@ -57,7 +57,7 @@ instance Monad OnFailure where
     (OnFailureReporter mx) >>= f = OnFailureReporter $ mx >>= runOnFailure . f
     fail reason = OnFailureReporter $ do
         t  <- get
-        lift $ lift $ output $ toPng t
+        lift $ lift $ inform $ text $ toPng t
         ops <- lift get
         lift $ lift $ rejectOps ops reason
 
@@ -71,7 +71,7 @@ rejectOps (op:done) reason =
                   ]
 
 instance TreeOutputMonad (Marked Int) Verbose where
-    treeOutput x = VerboseReporter $ lift $ output $ toPng x
+    treeOutput x = VerboseReporter $ lift $ inform $ text $ toPng x
 instance TreeOutputMonad (Marked Int) OnFailure where
     treeOutput x = OnFailureReporter $ put x
 instance OperationOutputMonad Verbose where
@@ -84,9 +84,8 @@ instance Partial HeapSort Config Solution where
     report p (Config feedback numbers) = do
       inform $ vcat [ text "Führen Sie den Heapsort-Algorithmus auf folgendem Binärbaum durch:"
                     , text ""
-                    ]
-      output $ toPng $ T.fromList numbers
-      inform $ vcat [ text ""
+                    , text $ toPng $ T.fromList numbers
+                    , text ""
                     , text "Als Operationen stehen ihnen S (Sinken) und T (Tauschen) zur Verfügung."
                     , text ""
                     , text "Also zum Beispiel (für einen entsprechenden Baum):"
@@ -129,16 +128,16 @@ instance Partial HeapSort Config Solution where
                  OnFailure ->
                       flip evalStateT [] $ flip evalStateT t $ runOnFailure m
                  Verbose -> do
-                      output $ toPng t
+                      inform $ text $ toPng t
                       flip evalStateT [] $ runVerbose m
         unless (isSorted $ map value $ T.toList t') $ do
             when (feedback == OnFailure) $ do
-               output $ toPng t'
+               inform $ text $ toPng t'
             inform $ text $ "(Nach Durchführung von: " ++ show operations ++ ")"
             reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
         unless (all isMarked $ tail $ T.toList t') $ do
             when (feedback == OnFailure) $ do
-               output $ toPng t'
+               inform $ text $ toPng t'
             inform $ text $ "(Nach Durchführung von: " ++ show operations ++ ")"
             reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
         inform TextConfig.ok
