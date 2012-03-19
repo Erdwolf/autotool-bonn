@@ -14,7 +14,7 @@ import Debug ( debug )
 import Challenger.Partial (Verify(..), Partial(..))
 import Autolib.ToDoc (derives, makeToDoc, text, vcat, (<>), hsep, toDoc, nest, ToDoc(..), docParen, fsep, (</>))
 import Autolib.Reader (makeReader, Reader(..), {- only needed inside derived code: -} readerParenPrec, my_reserved, pzero, (<|>))
-import Autolib.Reporter (Reporter, reject, inform)
+import Autolib.Reporter (Reporter, reject, inform, output)
 import qualified Autolib.Reporter.IO.Type (reject, inform)
 import Inter.Types (OrderScore(..), ScoringOrder(Increasing), direct)
 
