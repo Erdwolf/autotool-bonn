@@ -65,7 +65,7 @@ instance Monad OnFailure where
 rejectOps []        reason =
     reject $ text $ "Nein. " ++ reason
 rejectOps (op:done) reason =
-    reject $ vcat [ text $ "(Nach Durchführung von: " ++ show (reverse done) ++ ")"
+    reject $ vcat [ text "(Nach Durchführung von:" <+> toDoc (reverse done) <> text ")"
                   , text ""
                   , text $ "Nein. Operation '" ++ show op ++ "' ist nicht möglich. " ++ reason
                   ]
