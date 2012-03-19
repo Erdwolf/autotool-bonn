@@ -138,7 +138,7 @@ instance Partial HeapSort Config Solution where
             reject $ text "Nein. Baum entspricht nicht einer sortierten Liste."
         unless (all isMarked $ tail $ T.toList t') $ do
             when (feedback == OnFailure) $ do
-               inform $ text $ toPng t'
+               output $ toPng t'
             inform $ text $ "(Nach Durchführung von: " ++ show operations ++ ")"
             reject $ text "Nein. Es sind nicht alle Knoten markiert. Der Algorithmus würde hier noch nicht terminieren, obwohl die Elemente sortiert sind."
         inform TextConfig.ok
