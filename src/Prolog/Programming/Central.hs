@@ -20,7 +20,7 @@ import System.Timeout (timeout)
 import Data.Typeable (Typeable)
 import Inter.Types (OrderScore(..), ScoringOrder(..), direct)
 
-import Data.List ((\\), nub, isPrefixOf)
+import Data.List ((\\), nub, isPrefixOf, intercalate)
 import Data.Generics (everything, mkQ)
 import Text.Parsec hiding (Ok)
 import Control.Applicative ((<$>),(<*>),(<*))
