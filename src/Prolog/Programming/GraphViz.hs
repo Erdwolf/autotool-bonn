@@ -22,12 +22,6 @@ import Hex (hex)
 instance (Hashable a, Hashable b) => Hashable (Gr a b) where
    hash (Gr ns es) = hash (ns, es)
 
-instance Hashable VariableName where
-   hash = hash . show
-instance Hashable Term where
-   hash = hash . show
-instance Hashable CutFlag where
-   hash = hash . show
 
 resolveWithTree p q = runGraphGenT $ resolve_ p q
 
@@ -37,7 +31,7 @@ asInlinePng = showHtml . toPng
 picsDir = ".."</>"pics"
 
 toPng graph = unsafePerformIO $ do
-   let fname = (hex $ fromIntegral $ hash graph) ++ ".png"
+   let fname = (hex $ fromIntegral $ hash $ toDot graph) ++ ".png"
    runGraphviz (toDot [] graph)
                Png
                (picsDir </> fname)
