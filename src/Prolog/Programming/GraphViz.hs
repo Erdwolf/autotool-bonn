@@ -17,6 +17,8 @@ import Data.Hashable (Hashable(hash))
 
 import Hex (hex)
 
+import Autolib.ToDoc (ToDoc)
+
 --import Data.Graph.Inductive.Graph (labNodes, labEdges)
 
 instance (Hashable a, Hashable b) => Hashable (Gr a b) where
