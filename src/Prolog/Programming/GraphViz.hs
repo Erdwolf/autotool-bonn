@@ -22,7 +22,7 @@ import Hex (hex)
 instance (Hashable a, Hashable b) => Hashable (Gr a b) where
    hash (Gr ns es) = hash (ns, es)
 
-instance Hashable (DotGraph a) where
+instance ToDoc a => Hashable (DotGraph a) where
    hash = hash . show
 
 resolveWithTree p q = runGraphGenT $ resolve_ p q
