@@ -113,7 +113,7 @@ instance Partial Prolog_Programming Config Facts where
                 describe (StatementToCheck query)   = text $ show query
                 describe (Hidden str _)             = text $ "(ein versteckter Test" ++ str ++")"
                 describe (WithTree x)               = describe x
-                describe (WithTreeNegative (StatementToCheck query)) = text $ show [ Struct "not" query ]
+                describe (WithTreeNegative (StatementToCheck query)) = describe x
             if null incorrect
                then informIO TextConfig.ok
                else rejectIO $ vcat [ text "Nein."
