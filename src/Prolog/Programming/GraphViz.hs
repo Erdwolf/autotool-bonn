@@ -22,7 +22,11 @@ import Hex (hex)
 instance (Hashable a, Hashable b) => Hashable (Gr a b) where
    hash (Gr ns es) = hash (ns, es)
 
-instance Hashable HtmlTextItem where
+instance Hashable VariableName where
+   hash = hash . show
+instance Hashable Term where
+   hash = hash . show
+instance Hashable CutFlag where
    hash = hash . show
 
 resolveWithTree p q = runGraphGenT $ resolve_ p q
