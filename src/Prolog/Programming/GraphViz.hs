@@ -31,7 +31,7 @@ asInlinePng = showHtml . toPng
 picsDir = ".."</>"pics"
 
 toPng graph = unsafePerformIO $ do
-   let fname = (hex $ fromIntegral $ hash $ toDot graph) ++ ".png"
+   let fname = (hex $ fromIntegral $ hash $ toDot [] graph) ++ ".png"
    runGraphviz (toDot [] graph)
                Png
                (picsDir </> fname)
